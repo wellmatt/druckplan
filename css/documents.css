@@ -1,0 +1,94 @@
+ul.postnav_text,ul.postnav_text li {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+ul.postnav_text a {
+    text-align: center;
+    text-decoration: none;
+    color: #FFFFFF;
+    font: bold 12px Arial;
+    background-color: #888888;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    display: block;
+    -moz-border-radius:15px;
+    -khtml-border-radius:15px;	
+    border-radius:15px;
+}
+
+ul.postnav_text a:hover {
+    background-color: #00305D;
+    color: #FFFFFF;
+}
+
+ul.postnav_text_act a {
+    font: bold 12px Arial;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    display: block;
+    color: #FFFFFF;
+    background-color: #00305D;
+    text-align: center;
+    text-decoration: none;
+    -moz-border-radius:15px;
+    -khtml-border-radius:15px;	
+    border-radius:15px;
+}
+
+ul.postnav_text_act,ul.postnav_text_act li {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+}
+
+ul.postnav_text_save a {
+    background-color: #6CA171;
+    color: #FFFFFF;
+    text-decoration: none;
+    text-align: center;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    display: block;
+    font: bold 12px Arial;
+    -moz-border-radius:15px;
+    -khtml-border-radius:15px;	
+    border-radius:15px;
+}
+
+ul.postnav_text_save,ul.postnav_text_save li {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+}
+
+ul.postnav_text_del,ul.postnav_text_del li {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+ul.postnav_text_del a {
+    font: bold 12px Arial;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: #FFFFFF;
+    background-color: #E05555;
+    -moz-border-radius:15px;
+    -khtml-border-radius:15px;	
+    border-radius:15px;
+}
+
+ul.postnav_text_save a:hover {
+    color: #FFFFFF;
+    background-color: #49D93F;
+}
+
+ul.postnav_text_del a:hover {
+    background-color: #FF2626;
+    color: #FFFFFF;
+}

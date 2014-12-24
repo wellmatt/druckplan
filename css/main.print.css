@@ -1,0 +1,25 @@
+/* Seitenbereiche */
+div.pageHeader {
+	display:none;
+}
+
+/* Infofield */
+div.infofield {
+	display:none;
+}
+
+/* Mainmenü, alles weiter in menu.css */
+div.mainMenu {
+	display:none;
+	
+}
+
+/* content frame */
+div.content {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 1000px;
+	border-top:1px solid #000000;
+	padding-top:10px;
+}

@@ -1,0 +1,79 @@
+p.msg_folder {
+}
+
+a.mail_folder:link {text-decoration:none;color:#000;}
+a.mail_folder:visited {text-decoration:none;color:#000;}
+a.mail_folder:active {text-decoration:none;color:#000;}
+a.mail_folder:hover {text-decoration:none;color:#000;}
+
+a.mail_attachment:link {text-decoration:underline;color:#000;}
+a.mail_attachment:visited {text-decoration:underline;color:#000;}
+a.mail_attachment:active {text-decoration:underline;color:#000;}
+a.mail_attachment:hover {text-decoration:none;color:#000;}
+
+pre {
+	width: 600px;
+    white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+    white-space: -pre-wrap; /* Opera */
+    white-space: -o-pre-wrap; /* Opera */
+    white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+    word-wrap: break-word; /* IE 5.5+ */
+}
+
+p.msg_subfolder {
+	padding-left:14px;
+}
+
+div.showmailMenu {
+	background-color:#eeeeee;
+	height:26px;
+	border-bottom:1px solid #cccccc;
+	padding-left:10px;
+}
+
+div.showmailHeader {
+	border-bottom:1px solid #cccccc;
+	margin-bottom:10px;
+	padding:3px;
+}
+
+div.showmailBody {
+	padding:3px;
+	background-color:#ffffff;
+}
+
+div.newmailHeader {
+	
+}
+
+span.newmailToField {
+	background-color:#eaeaea;
+	border:1px solid #cccccc;
+	padding:4px;
+	padding-top:10px;
+	margin-right:4px;
+    -moz-border-radius:4px;
+    -khtml-border-radius:4px;	
+}
+
+span.newmailAttachmentField {
+	background-color:#eaeaea;
+	border:1px solid #cccccc;
+	padding:4px;
+	padding-top:10px;
+	margin-right:4px;
+    -moz-border-radius:4px;
+    -khtml-border-radius:4px;	
+}
+
+
+td#td_mail_to {
+	height:30px;
+}
+
+td#td_mail_subject {
+	height:30px;
+}
+td#td_mail_attach {
+	height:30px;
+}

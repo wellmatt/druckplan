@@ -1,0 +1,55 @@
+td.calendarDay {
+	background-color:#e2d1a9;
+	height:80px;
+	vertical-align:top;
+}
+
+td.calendarDayWeekend {
+	background-color:#e2c787;
+	height:80px;
+	vertical-align:top;
+}
+
+td.calendarDayOut {
+	background-color:#eeeeee;
+	vertical-align:top;
+	height:80px;
+}
+
+td.calendarDayOutWeekend {
+	background-color:#e0e0e0;
+	vertical-align:top;
+	height:80px;
+}
+
+td.weekDay {
+	background-color:#eeeeee;
+	height:20px;
+	width:137px;
+	font-weight:bold;
+}
+td.weekNum {
+	background-color:#eeeeee;
+	height:80px;
+	font-weight:bold;
+}
+
+td.dayviewEmptyHour {
+	border-bottom:1px solid #eeeeee;
+	border-left:1px solid #eeeeee;
+	border-right:1px solid #eeeeee;
+	min-width:30px;
+}
+
+td.dayviewEventHour {
+	border-left:1px solid #eeeeee;
+	background-color:#e2d1a9;
+	padding:0px;
+}
+
+td.dayviewHour {
+	width:80px;
+	border-bottom:1px solid #eeeeee;
+	border-left:1px solid #eeeeee;
+	
+}

@@ -1,0 +1,2833 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<translation lang="en">
+	<dictentry>
+		<source>Benutzer</source>
+		<translate>User</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gruppen</source>
+		<translate>Groups</translate>
+	</dictentry>
+	<dictentry>
+		<source>Abmelden</source>
+		<translate>Logout</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftr&#228;ge</source>
+		<translate>Orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag hinzuf&#252;gen</source>
+		<translate>Add order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Nummer</source>
+		<translate>Number</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kunde</source>
+		<translate>Customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Titel</source>
+		<translate>Title</translate>
+	</dictentry>
+	<dictentry>
+		<source>In Bearbeitung</source>
+		<translate>In process</translate>
+	</dictentry>
+	<dictentry>
+		<source>Optionen</source>
+		<translate>Options</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angemeldet als</source>
+		<translate>Logged in as</translate>
+	</dictentry>
+	<dictentry>
+		<source>Suche</source>
+		<translate>Search</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neue Nachrichten</source>
+		<translate>News</translate>
+	</dictentry>
+	<dictentry>
+		<source>Von</source>
+		<translate>From</translate>
+	</dictentry>
+	<dictentry>
+		<source>Betreff</source>
+		<translate>Subject</translate>
+	</dictentry>
+	<dictentry>
+		<source>Datum</source>
+		<translate>Date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Benutzer hinzuf&#252;gen</source>
+		<translate>Add user</translate>
+	</dictentry>
+	<dictentry>
+		<source>ID</source>
+		<translate>ID</translate>
+	</dictentry>
+	<dictentry>
+		<source>Benutzername</source>
+		<translate>User name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Voller Name</source>
+		<translate>Full name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Typ</source>
+		<translate>Type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mandant</source>
+		<translate>Client</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aktiv</source>
+		<translate>Active</translate>
+	</dictentry>
+	<dictentry>
+		<source>Passwort</source>
+		<translate>Password</translate>
+	</dictentry>
+	<dictentry>
+		<source>Passwort wiederholen</source>
+		<translate>Repeat Password</translate>
+	</dictentry>
+	<dictentry>
+		<source>Benutzertyp</source>
+		<translate>User type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Administrator</source>
+		<translate>Administrator</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sprache</source>
+		<translate>Language</translate>
+	</dictentry>
+	<dictentry>
+		<source>Benutzer aktiv</source>
+		<translate>User active</translate>
+	</dictentry>
+	<dictentry>
+		<source>Vorname</source>
+		<translate>First name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Telefon</source>
+		<translate>Phone</translate>
+	</dictentry>
+	<dictentry>
+		<source>E-Mail address</source>
+		<translate>Email address</translate>
+	</dictentry>
+	<dictentry>
+		<source>Nachname</source>
+		<translate>Last name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gruppe hinzuf&#252;;gen</source>
+		<translate>Add group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gruppenname</source>
+		<translate>Group name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Beschreibung</source>
+		<translate>Description</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mitglieder</source>
+		<translate>Members</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gruppe &#228;ndern</source>
+		<translate>Modify group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechte</source>
+		<translate>Permissions</translate>
+	</dictentry>
+	<dictentry>
+		<source>Recht</source>
+		<translate>Permission</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ja/Nein</source>
+		<translate>Yes/No</translate>
+	</dictentry>
+	<dictentry>
+		<source>Darf Urlaub genehmigen</source>
+		<translate>Is allowed to approve leave</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinenauswahl in Kalkulation anzeigen</source>
+		<translate>Display machine selection in calculation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ausf&#252;hrliche Kalkulation anzeigen</source>
+		<translate>Display detailed calculation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sollzeiten anzeigen</source>
+		<translate>Display planned times</translate>
+	</dictentry>
+	<dictentry>
+		<source>Teilauftr&#228;ge planen</source>
+		<translate>Plan partial orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verf&#252;gbare Benutzer</source>
+		<translate>Available user</translate>
+	</dictentry>
+	<dictentry>
+		<source>Speichern</source>
+		<translate>Save</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mandanten</source>
+		<translate>Client</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mandanten hinzuf&#252;gen</source>
+		<translate>Add client</translate>
+	</dictentry>
+	<dictentry>
+		<source>Adresse</source>
+		<translate>Address</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mandanten &#228;ndern</source>
+		<translate>Modify client</translate>
+	</dictentry>
+	<dictentry>
+		<source>PLZ / Ort</source>
+		<translate>Zip / City</translate>
+	</dictentry>
+	<dictentry>
+		<source>Land</source>
+		<translate>Country</translate>
+	</dictentry>
+	<dictentry>
+		<source>Fax</source>
+		<translate>Fax</translate>
+	</dictentry>
+	<dictentry>
+		<source>E-Mail</source>
+		<translate>Email</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mandant aktiv</source>
+		<translate>Client active</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zus&#228;tzliche Daten</source>
+		<translate>Additional Data</translate>
+	</dictentry>
+	<dictentry>
+		<source>Webseite</source>
+		<translate>Website</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bank</source>
+		<translate>Bank</translate>
+	</dictentry>
+	<dictentry>
+		<source>BLZ</source>
+		<translate>Bank code</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kontonummer</source>
+		<translate>Account number</translate>
+	</dictentry>
+	<dictentry>
+		<source>IBAN</source>
+		<translate>IBAN</translate>
+	</dictentry>
+	<dictentry>
+		<source>BIC</source>
+		<translate>BIC</translate>
+	</dictentry>
+	<dictentry>
+		<source>Amtsgericht</source>
+		<translate>Local Court</translate>
+	</dictentry>
+	<dictentry>
+		<source>Steuernummer</source>
+		<translate>Tax number</translate>
+	</dictentry>
+	<dictentry>
+		<source>UstID</source>
+		<translate>Tax ID number</translate>
+	</dictentry>
+	<dictentry>
+		<source>W&#228;hrung</source>
+		<translate>Currency</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dezimaltrenner</source>
+		<translate>Decimal separator </translate>
+	</dictentry>
+	<dictentry>
+		<source>Tausendertrenner</source>
+		<translate>Thousands separator</translate>
+	</dictentry>
+	<dictentry>
+		<source>Umsatzsteuer</source>
+		<translate>VAT</translate>
+	</dictentry>
+	<dictentry>
+		<source>Standardmarge</source>
+		<translate>Standard margin</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neuer Eintrag</source>
+		<translate>New entry</translate>
+	</dictentry>
+	<dictentry>
+		<source>Men&#252;konfiguration</source>
+		<translate>Menu configuration</translate>
+	</dictentry>
+	<dictentry>
+		<source>Eintrag editieren</source>
+		<translate>Edit entry</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bezeichnung</source>
+		<translate>Description</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sortierung</source>
+		<translate>Sorting</translate>
+	</dictentry>
+	<dictentry>
+		<source>&#214;ffentlich</source>
+		<translate>Public</translate>
+	</dictentry>
+	<dictentry>
+		<source>Nein</source>
+		<translate>No</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ja</source>
+		<translate>Yes</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ordner</source>
+		<translate>Folder</translate>
+	</dictentry>
+	<dictentry>
+		<source>Modul</source>
+		<translate>Module</translate>
+	</dictentry>
+	<dictentry>
+		<source>Modulpfad</source>
+		<translate>Module path</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ausw&#228;hlen</source>
+		<translate>Select</translate>
+	</dictentry>
+	<dictentry>
+		<source>Men&#252; Icon</source>
+		<translate>Menu icon</translate>
+	</dictentry>
+	<dictentry>
+		<source>Name</source>
+		<translate>Name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gruppe</source>
+		<translate>Group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Login</source>
+		<translate>Login</translate>
+	</dictentry>
+	<dictentry>
+		<source>L&#246;schen</source>
+		<translate>Delete</translate>
+	</dictentry>
+	<dictentry>
+		<source>Abmelden</source>
+		<translate>Log out</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktauswahl</source>
+		<translate>Product choice</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kalkulations&#252;bersicht</source>
+		<translate>Calculation overview</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dokumente</source>
+		<translate>Documents</translate>
+	</dictentry>
+	<dictentry>
+		<source>Druckbogenvorschau</source>
+		<translate>Printed sheet preview</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kundennummer</source>
+		<translate>Customer Number</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag</source>
+		<translate>Order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkt</source>
+		<translate>Product</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferadresse</source>
+		<translate>Delivery address</translate>
+	</dictentry>
+	<dictentry>
+		<source>an Standardadresse</source>
+		<translate>To standard address</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechnungsadresse</source>
+		<translate>Billing address</translate>
+	</dictentry>
+	<dictentry>
+		<source>keine gesonderte Rechnungsadresse</source>
+		<translate>No separate billing address</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferbedingung</source>
+		<translate>Terms of delivery</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bitte w&#228;hlen</source>
+		<translate>Please select</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlungsbedingung</source>
+		<translate>Terms of payment</translate>
+	</dictentry>
+	<dictentry>
+		<source>Voraussichtliches Lieferdatum</source>
+		<translate>Expected delivery date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bemerkungen (intern)</source>
+		<translate>Comments (in-house)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Status</source>
+		<translate>State</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neue Kalkulation anlegen</source>
+		<translate>Create new calculation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Format</source>
+		<translate>Format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auflage</source>
+		<translate>Run</translate>
+	</dictentry>
+	<dictentry>
+		<source>Materialkosten</source>
+		<translate>Material costs</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag anlegen</source>
+		<translate>Create order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kunden Ausw&#228;hlen</source>
+		<translate>Select customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Autragstitel</source>
+		<translate>Order title</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anlegen</source>
+		<translate>Create</translate>
+	</dictentry>
+	<dictentry>
+		<source>Endformat</source>
+		<translate>Trimmed size</translate>
+	</dictentry>
+	<dictentry>
+		<source>Breite</source>
+		<translate>Width</translate>
+	</dictentry>
+	<dictentry>
+		<source>H&#246;he</source>
+		<translate>Height</translate>
+	</dictentry>
+	<dictentry>
+		<source>offenes Format</source>
+		<translate>Open format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Offenes Format</source>
+		<translate>Open format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Material Inhalt</source>
+		<translate>Material content</translate>
+	</dictentry>
+	<dictentry>
+		<source>Material Inhalt Gewicht</source>
+		<translate>Material content weight</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anzahl Seiten</source>
+		<translate>Number Pages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farbigkeit</source>
+		<translate>Chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>zus. Inhalt</source>
+		<translate>Additional content</translate>
+	</dictentry>
+	<dictentry>
+		<source>zus. Material Inhalt</source>
+		<translate>Additional content meterial</translate>
+	</dictentry>
+	<dictentry>
+		<source>zus. Material Gewicht</source>
+		<translate>Additional content weight</translate>
+	</dictentry>
+	<dictentry>
+		<source>zus. Material Farbigkeit</source>
+		<translate>Additional content chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>zus. Material Seitenanzahl</source>
+		<translate>Additional content number pages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Umschlag</source>
+		<translate>Envelope</translate>
+	</dictentry>
+	<dictentry>
+		<source>Material Umschlag</source>
+		<translate>Material Envelope</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mat. Umschlag Gewicht</source>
+		<translate>Mat. envelope weight</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mat. Umschl. Farbigkeit</source>
+		<translate>Mat. envelope chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mat. Umschl. Seitenanzahl</source>
+		<translate>Mat. envelope number pages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Umschlag offenes Format</source>
+		<translate>Envelope open format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Optionen Weiterverarbeitung</source>
+		<translate>Options further processing</translate>
+	</dictentry>
+	<dictentry>
+		<source>Weiter</source>
+		<translate>Continue</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzung</source>
+		<translate>Folding</translate>
+	</dictentry>
+	<dictentry>
+		<source>Material Inhalt Gewicht</source>
+		<translate>Material content weight</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dokumentenname</source>
+		<translate>Document name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Versch.</source>
+		<translate></translate>
+	</dictentry>
+	<dictentry>
+		<source>Erstellt von</source>
+		<translate>Created by</translate>
+	</dictentry>
+	<dictentry>
+		<source>Erstellt am</source>
+		<translate>Created on</translate>
+	</dictentry>
+	<dictentry>
+		<source>nicht vorhanden</source>
+		<translate>not available</translate>
+	</dictentry>
+	<dictentry>
+		<source>Generieren</source>
+		<translate>Generate</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angebotsbest&#228;tigung</source>
+		<translate>Offer conformation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Drucktasche</source>
+		<translate>Docket</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechnung</source>
+		<translate>Invoice</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferschein</source>
+		<translate>Delivery note</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mail verschicken</source>
+		<translate>Send mail</translate>
+	</dictentry>
+	<dictentry>
+		<source>Empf&#228;nger</source>
+		<translate>Addressee</translate>
+	</dictentry>
+	<dictentry>
+		<source>Addresse hinzuf&#252;gen</source>
+		<translate>Add address</translate>
+	</dictentry>
+	<dictentry>
+		<source>Hinzuf&#252;gen</source>
+		<translate>Add</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anh&#228;nge</source>
+		<translate>Attachments</translate>
+	</dictentry>
+	<dictentry>
+		<source>Abschicken</source>
+		<translate>Send</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ihre Nachricht vom</source>
+		<translate>Your message from</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ihr Zeichen</source>
+		<translate>Your referenc</translate>
+	</dictentry>
+	<dictentry>
+		<source>Unser Zeichen</source>
+		<translate>Our reference</translate>
+	</dictentry>
+	<dictentry>
+		<source>Print</source>
+		<translate>Print</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angebot</source>
+		<translate>Offer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ausgangsrechnung-&#220;bersicht</source>
+		<translate>Outgoing invoice overview</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechnung erstellen</source>
+		<translate>Create invoice</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ort</source>
+		<translate>City</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferant</source>
+		<translate>Supplier</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zur&#252;ck</source>
+		<translate>Back</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kundendaten</source>
+		<translate>Customer data</translate>
+	</dictentry>
+	<dictentry>
+		<source>Firmenname</source>
+		<translate>Business name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Vor-/Nachname</source>
+		<translate>Full name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Strasse</source>
+		<translate>Street</translate>
+	</dictentry>
+	<dictentry>
+		<source>Postleitzahl/Ort</source>
+		<translate>Zip/city</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bemerkungen</source>
+		<translate>Comments</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragskopfdaten</source>
+		<translate>Order header data</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angebotsnummer</source>
+		<translate>Offer number</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ge&#228;ndert am</source>
+		<translate>Modified on</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlungsart</source>
+		<translate>Payment method</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ge&#228;ndert von</source>
+		<translate>Modified by</translate>
+	</dictentry>
+	<dictentry>
+		<source>Versandart</source>
+		<translate>Delivery type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Versandkosten</source>
+		<translate>Delivery charges</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragstitel</source>
+		<translate>Order title</translate>
+	</dictentry>
+	<dictentry>
+		<source>Position</source>
+		<translate>Position</translate>
+	</dictentry>
+	<dictentry>
+		<source>Menge</source>
+		<translate>Amount</translate>
+	</dictentry>
+	<dictentry>
+		<source>Einzelpreis net.</source>
+		<translate>Unit net price</translate>
+	</dictentry>
+	<dictentry>
+		<source>Steuer</source>
+		<translate>Tax</translate>
+	</dictentry>
+	<dictentry>
+		<source>Betrag net.</source>
+		<translate>Net amount</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinen anzeigen</source>
+		<translate>Display machines</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftr&#228;ge wurden gefunden</source>
+		<translate>orders have been found</translate>
+	</dictentry>
+	<dictentry>
+		<source>Die Anzeige wurde aus Performancegr&#252;nden auf 200 Datens&#228;tze limitiert!</source>
+		<translate>For performance reasons displaying data was limited to 200 records!</translate>
+	</dictentry>
+	<dictentry>
+		<source>Um die Details einzusehen, auf die Auftr.-Nr. klicken.</source>
+		<translate>To view details please click the order no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Filter</source>
+		<translate>Filter</translate>
+	</dictentry>
+	<dictentry>
+		<source>Offene und geschlossene Auftr&#228;ge</source>
+		<translate>Open and completed orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Offene Auftr&#228;ge</source>
+		<translate>Open orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Erledigte Auftr&#228;ge</source>
+		<translate>Completed orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neuen Auftrag hinzuf&#252;gen</source>
+		<translate>Add new order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ersteller</source>
+		<translate>Creator</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angelegt am</source>
+		<translate>Created on</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftr.-Nr.</source>
+		<translate>Order no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Objekt</source>
+		<translate>Object</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farben</source>
+		<translate>Colors</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lack</source>
+		<translate>Finish</translate>
+	</dictentry>
+	<dictentry>
+		<source>LT</source>
+		<translate>Del. Date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferort</source>
+		<translate>Place of delivery</translate>
+	</dictentry>
+	<dictentry>
+		<source>Teilauftr.</source>
+		<translate>Partial order</translate>
+	</dictentry>
+	<dictentry>
+		<source>DTP-Status:</source>
+		<translate>DTP status</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rot</source>
+		<translate>Red</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gelb</source>
+		<translate>Yellow</translate>
+	</dictentry>
+	<dictentry>
+		<source>Orange</source>
+		<translate>Orange</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gr&#252;n</source>
+		<translate>Green</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier-Status:</source>
+		<translate>Paper status</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrags-Status:</source>
+		<translate>Order status</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschine</source>
+		<translate>Machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>Teilauftrag</source>
+		<translate>Partial order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sollzeit in Std.</source>
+		<translate>Planned time in h</translate>
+	</dictentry>
+	<dictentry>
+		<source>Termin</source>
+		<translate>Date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Teilauftrag freigegeben</source>
+		<translate>Release partial order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kategorie</source>
+		<translate>Category</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dauer</source>
+		<translate>Duration</translate>
+	</dictentry>
+	<dictentry>
+		<source>soll</source>
+		<translate>planned</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinenzeit</source>
+		<translate>Machine time</translate>
+	</dictentry>
+	<dictentry>
+		<source>insgesamt</source>
+		<translate>total</translate>
+	</dictentry>
+	<dictentry>
+		<source>Std.</source>
+		<translate>hrs</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragsdaten</source>
+		<translate>Order data</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragsnummer</source>
+		<translate>Order no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Liefertermin</source>
+		<translate>Delivery date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Teilauftrag bearbeiten</source>
+		<translate>Edit partial order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Alle Tage anzeigen</source>
+		<translate>Display all days</translate>
+	</dictentry>
+	<dictentry>
+		<source>Abgeschlossene Auftr&#228;ge anzeigen</source>
+		<translate>Display completed orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Insgesamt</source>
+		<translate>Total</translate>
+	</dictentry>
+	<dictentry>
+		<source>S-Zeit</source>
+		<translate>P time</translate>/*planned time*/
+	</dictentry>
+	<dictentry>
+		<source>I-Zeit</source>
+		<translate>R time</translate>/*real time*/
+	</dictentry>
+	<dictentry>
+		<source>A-Zeit</source>
+		<translate>D time</translate>/*downtime*/
+	</dictentry>
+	<dictentry>
+		<source>Pos.</source>
+		<translate>Pos.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragsimport</source>
+		<translate>Order import</translate>
+	</dictentry>
+	<dictentry>
+		<source>Best&#228;tigte Auftr&#228;ge</source>
+		<translate>Confirmed orders</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag importieren</source>
+		<translate>Import order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Der Auftrag</source>
+		<translate>The order</translate>
+	</dictentry>
+	<dictentry>
+		<source>ist bereits in Druckplan vorhanden.</source>
+		<translate>is already included in Druckplan.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Soll der alte Auftrag gel&#246;scht und neu erstellt werden?</source>
+		<translate>Do you want to delete the old order and create a new one?</translate>
+	</dictentry>
+	<dictentry>
+		<source>Standardrechnungen</source>
+		<translate>Standard invoices</translate>
+	</dictentry>
+	<dictentry>
+		<source>Erfassung / Offen</source>
+		<translate>Capture / open</translate>
+	</dictentry>
+	<dictentry>
+		<source>Grund der Ausgabe</source>
+		<translate>Cause of issue</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lief</source>
+		<translate>Del.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Netto-Betrag</source>
+		<translate>Net amount</translate>
+	</dictentry>
+	<dictentry>
+		<source>MwSt-Satz</source>
+		<translate>Tax rate</translate>
+	</dictentry>
+	<dictentry>
+		<source>Brutto-Betrag</source>
+		<translate>Gros amount</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferant auswählen</source>
+		<translate>Select supplier</translate>
+	</dictentry>
+	<dictentry>
+		<source>MwSt-Betrag</source>
+		<translate>Tax amount</translate>
+	</dictentry>
+	<dictentry>
+		<source>Eingangs-&#220;bersicht</source>
+		<translate>Incoming invoice overview</translate>
+	</dictentry>
+	<dictentry>
+		<source>Monat:</source>
+		<translate>Month:</translate>
+	</dictentry>
+	<dictentry>
+		<source>Netto</source>
+		<translate>Net</translate>
+	</dictentry>
+	<dictentry>
+		<source>MwSt</source>
+		<translate>Tax</translate>
+	</dictentry>
+	<dictentry>
+		<source>Brutto</source>
+		<translate>Gros</translate>
+	</dictentry>
+	<dictentry>
+		<source>Re-Nummer</source>
+		<translate>Invoice no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>F&#228;llig</source>
+		<translate>Due</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bezahlt</source>
+		<translate>Paid</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bezahlte Vorg&#228;nge</source>
+		<translate>Paid operations</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bezahlt am</source>
+		<translate>Paid on</translate>
+	</dictentry>
+	<dictentry>
+		<source>Jahr:</source>
+		<translate>Year:</translate>
+	</dictentry>
+	<dictentry>
+		<source>Suche nach Kunde, Auftragstitel oder Rechnungsnr.</source>
+		<translate>Search for customer, order title or invoice no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechnungen</source>
+		<translate>Invoices</translate>
+	</dictentry>
+	<dictentry>
+		<source>Re-Nr.</source>
+		<translate>Inv no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Re-Typ</source>
+		<translate>Inv type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragsnr.</source>
+		<translate>Order no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>erstellt</source>
+		<translate>created</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anzeigen</source>
+		<translate>Display</translate>
+	</dictentry>
+	<dictentry>
+		<source>Firma</source>
+		<translate>Company</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesch&#228;ftskontakte hinzuf&#252;gen</source>
+		<translate>Add business contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesch&#228;ftskontakt &#228;ndern</source>
+		<translate>Edit business contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesch&#228;ftskontakte</source>
+		<translate>Business contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Stammdaten</source>
+		<translate>Master data</translate>
+	</dictentry>
+	<dictentry>
+		<source>Adressen</source>
+		<translate>Addresses</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ansprechpartner</source>
+		<translate>Contact person</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ansprechpartner hinzuf&#252;gen</source>
+		<translate>Add contact person</translate>
+	</dictentry>
+	<dictentry>
+		<source>Firmenzusatz</source>
+		<translate>Company affix</translate>
+	</dictentry>
+	<dictentry>
+		<source>Adressfeld 1</source>
+		<translate>Address array 1</translate>
+	</dictentry>
+	<dictentry>
+		<source>ab</source>
+		<translate>from</translate>
+	</dictentry>
+	<dictentry>
+		<source>Erschwerniszuschlag</source>
+		<translate>Additional fee</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falls Werte = 0, nicht vorhanden</source>
+		<translate>If value = 0, not set</translate>
+	</dictentry>
+	<dictentry>
+		<source>Adressfeld 2</source>
+		<translate>Address array 2</translate>
+	</dictentry>
+	<dictentry>
+		<source>Postleitzahl</source>
+		<translate>Postal code</translate>
+	</dictentry>
+	<dictentry>
+		<source>Stadt</source>
+		<translate>City</translate>
+	</dictentry>
+	<dictentry>
+		<source>Internetseite</source>
+		<translate>Website</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bestandskunde</source>
+		<translate>Existing customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sollkunde</source>
+		<translate>Target customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rabatt</source>
+		<translate>Discount</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lector-Import</source>
+		<translate>Lector import</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lacke</source>
+		<translate>Finishings</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lack hinzuf&#252;gen</source>
+		<translate>Add finishing</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kosten</source>
+		<translate>Costs</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lacke &#228;ndern</source>
+		<translate>Modify finishings</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lacke kopieren</source>
+		<translate>Copy finishings</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farbigkeit hinzuf&#252;gen</source>
+		<translate>Add chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>Vorderseite</source>
+		<translate>Front side</translate>
+	</dictentry>
+	<dictentry>
+		<source>R&#252;ckseite</source>
+		<translate>Back side</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sch&#246;ndruck</source>
+		<translate>Face printing</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sch&#246;n- und Widerdruck</source>
+		<translate>Face and reverse printing</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sch&#246;n-/Widerdruck</source>
+		<translate>Face and reverse printing</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aufschlag</source>
+		<translate>Additional charge</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farbigkeit bearbeiten</source>
+		<translate>Edit chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farben Vorderseite</source>
+		<translate>Colors front side</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farben R&#252;ckseite</source>
+		<translate>Colors back side</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aufschlag auf Maschinenpreis</source>
+		<translate>Additional charge to machine price</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farbigkeit kopieren</source>
+		<translate>Copy chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>Farbigkeit anlegen</source>
+		<translate>Create chromaticity</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkte</source>
+		<translate>Products</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkt hinzuf&#252;gen</source>
+		<translate>Add product</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkt kopieren</source>
+		<translate>Copy product</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktname</source>
+		<translate>Product name</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktbild</source>
+		<translate>Product image</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkt besteht aus</source>
+		<translate>Product consists of</translate>
+	</dictentry>
+	<dictentry>
+		<source>Inhalt</source>
+		<translate>Content</translate>
+	</dictentry>
+	<dictentry>
+		<source>zus&#228;tzlichem Inhalt</source>
+		<translate>Extra content</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papiere</source>
+		<translate>Papers</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier</source>
+		<translate>Paper</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gewichte</source>
+		<translate>Weights</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verf.</source>
+		<translate>av.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Standard bei Auflage</source>
+		<translate>Standard for amount</translate>
+	</dictentry>
+	<dictentry>
+		<source>von</source>
+		<translate>from</translate>
+	</dictentry>
+	<dictentry>
+		<source>bis</source>
+		<translate>to</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktformate</source>
+		<translate>Product formats</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktformat &#228;ndern</source>
+		<translate>Edit product format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktformat hinzuf&#252;gen</source>
+		<translate>Add product format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produktformat kopieren</source>
+		<translate>Copy product format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Weitere Angaben</source>
+		<translate>Further details</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bis</source>
+		<translate>to</translate>
+	</dictentry>
+	<dictentry>
+		<source>Interval</source>
+		<translate>Interval</translate>
+	</dictentry>
+	<dictentry>
+		<source>Faktor offen/geschlossen</source>
+		<translate>Factor open/closed</translate>
+	</dictentry>
+	<dictentry>
+		<source>mal Breite</source>
+		<translate>by width</translate>
+	</dictentry>
+	<dictentry>
+		<source>mal H&#246;he</source>
+		<translate>by height</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bild &#228;ndern</source>
+		<translate>Change image</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkt anlegen</source>
+		<translate>Create product</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferbedingungen</source>
+		<translate>Delivery terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferbedingungen hinzuf&#252;gen</source>
+		<translate>Add delivery terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferbedingung anlegen</source>
+		<translate>Create delivery terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lieferbedingung bearbeiten</source>
+		<translate>Edit delivery terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlungsbedingungen</source>
+		<translate>Payment terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlungsbedingungen hinzuf&#252;gen</source>
+		<translate>Add payment terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlungsbedingung anlegen</source>
+		<translate>Create payment terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Skonto Frist 1</source>
+		<translate>Discount time-limit 1</translate>
+	</dictentry>
+	<dictentry>
+		<source>Skonto 1</source>
+		<translate>Discount 1</translate>
+	</dictentry>
+	<dictentry>
+		<source>Skonto Frist 2</source>
+		<translate>Discount time-limit 2</translate>
+	</dictentry>
+	<dictentry>
+		<source>Skonto 2</source>
+		<translate>Discount 2</translate>
+	</dictentry>
+	<dictentry>
+		<source>Nettotage</source>
+		<translate>Net days</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlungsbedingung bearbeiten</source>
+		<translate>Edit payment terms</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzarten</source>
+		<translate>Foldings</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzart hinzuf&#252;gen</source>
+		<translate>Add folding</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anz. vert.</source>
+		<translate>vert. no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anz. hor.</source>
+		<translate>hor. no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzart anlegen</source>
+		<translate>Create folding</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzen vertikal</source>
+		<translate>Folding vertical</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzen horizontal</source>
+		<translate>Folding horizontal</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzart bearbeiten</source>
+		<translate>Edit folding</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzart kopieren</source>
+		<translate>Copy folding</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinen</source>
+		<translate>Machines</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinen hinzuf&#252;gen</source>
+		<translate>Add machines</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinengruppe</source>
+		<translate>Machine group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis</source>
+		<translate>Price</translate>
+	</dictentry>
+	<dictentry>
+		<source>Einheit</source>
+		<translate>Unit</translate>
+	</dictentry>
+	<dictentry>
+		<source>Importiert</source>
+		<translate>Imported</translate>
+	</dictentry>
+	<dictentry>
+		<source>pauschal</source>
+		<translate>all-inclusive</translate>
+	</dictentry>
+	<dictentry>
+		<source>nach Druckplatten</source>
+		<translate>by printing plates</translate>
+	</dictentry>
+	<dictentry>
+		<source>nach Minute</source>
+		<translate>by minutes</translate>
+	</dictentry>
+	<dictentry>
+		<source>nach Bogen</source>
+		<translate>by sheet</translate>
+	</dictentry>
+	<dictentry>
+		<source>pro Stunde</source>
+		<translate>per hour</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschine anlegen</source>
+		<translate>Create machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dokumententext (wird bei "Verarbeitung" gedruckt)</source>
+		<translate>Document text (is printed on "processing")</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinentyp</source>
+		<translate>Machine type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Druckmaschine Offset</source>
+		<translate>Printing machine offset</translate>
+	</dictentry>
+	<dictentry>
+		<source>Druckmaschine Digital</source>
+		<translate>Printing machine digital</translate>
+	</dictentry>
+	<dictentry>
+		<source>Computer To Plate</source>
+		<translate>Computer To Plate</translate>
+	</dictentry>
+	<dictentry>
+		<source>Falzmaschine</source>
+		<translate>Folding machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>Schneidemaschine</source>
+		<translate>Cutter</translate>
+	</dictentry>
+	<dictentry>
+		<source>Manuelle Arbeit</source>
+		<translate>manual work</translate>
+	</dictentry>
+	<dictentry>
+		<source>Andere</source>
+		<translate>Others</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preistyp</source>
+		<translate>Price type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis nach Auflage</source>
+		<translate>Price by run</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis nach Bogen</source>
+		<translate>Price by sheet</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis nach Druckplatten</source>
+		<translate>Price by printing plates</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis nach Minuten</source>
+		<translate>Price by minutes</translate>
+	</dictentry>
+	<dictentry>
+		<source>Pauschalpreis</source>
+		<translate>All-inclusive price</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis variabel</source>
+		<translate>Price variable</translate>
+	</dictentry>
+	<dictentry>
+		<source>Max. Papiergr&#246;&#223;e</source>
+		<translate>Max paper size</translate>
+	</dictentry>
+	<dictentry>
+		<source>Min. Papiergr&#246;&#223;e</source>
+		<translate>Min paper size</translate>
+	</dictentry>
+	<dictentry>
+		<source>nicht bedruckbarer Bereich</source>
+		<translate>non-printable area</translate>
+	</dictentry>
+	<dictentry>
+		<source>Grundzeit</source>
+		<translate>Basic time</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zeit pro Plattenwechsel</source>
+		<translate>Time per plate change</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zeit pro Farbwechsel</source>
+		<translate>Time per color change</translate>
+	</dictentry>
+	<dictentry>
+		<source>verf&#252;gbare Farbigkeiten</source>
+		<translate>Available chromaticities</translate>
+	</dictentry>
+	<dictentry>
+		<source>Option Lack verf&#252;gbar</source>
+		<translate>Optin finishing available</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis Lackplatte</source>
+		<translate>Price finishing plate</translate>
+	</dictentry>
+	<dictentry>
+		<source>Laufleistung</source>
+		<translate>Service performance</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bogen</source>
+		<translate>Sheet</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auflagen</source>
+		<translate>Runs</translate>
+	</dictentry>
+	<dictentry>
+		<source>Seiten</source>
+		<translate>Pages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Druckplatten</source>
+		<translate>Printing plates</translate>
+	</dictentry>
+	<dictentry>
+		<source>pro Stunde</source>
+		<translate>per hour</translate>
+	</dictentry>
+	<dictentry>
+		<source>Tageslaufzeit</source>
+		<translate>Daily operating time</translate>
+	</dictentry>
+	<dictentry>
+		<source>Stunden</source>
+		<translate>Hours</translate>
+	</dictentry>
+	<dictentry>
+		<source>nach Auflage</source>
+		<translate>by run</translate>
+	</dictentry>
+	<dictentry>
+		<source>variabel</source>
+		<translate>variable</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschine bearbeiten</source>
+		<translate>Edit machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>Importiert von Lector</source>
+		<translate>Imported by Lector</translate>
+	</dictentry>
+	<dictentry>
+		<source>Grammaturen</source>
+		<translate>grammages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier &#228;ndern</source>
+		<translate>Modify paper</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ab</source>
+		<translate>From</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis pro 1000 Bogen</source>
+		<translate>Price per 1000 sheets</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preisbasis</source>
+		<translate>Price basis</translate>
+	</dictentry>
+	<dictentry>
+		<source>pro</source>
+		<translate>per</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verf&#252;gbare Gr&#246;&#223;en</source>
+		<translate>Available sizes</translate>
+	</dictentry>
+	<dictentry>
+		<source>(BxH</source>
+		<translate>(WxH)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verf&#252;gbare Grammaturen</source>
+		<translate>Available grammages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preise</source>
+		<translate>Prices</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier hinzuf&#252;gen</source>
+		<translate>Add paper</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gr&#246;&#223;en</source>
+		<translate>Sizes</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinengruppen</source>
+		<translate>Machine groups</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinengruppe hinzuf&#252;gen</source>
+		<translate>Add machine group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinengruppe &#228;ndern</source>
+		<translate>Modify machine group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschinengruppe kopieren</source>
+		<translate>Copy machine group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Nachrichten</source>
+		<translate>Messages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neue Nachrichten</source>
+		<translate>New messages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ausgew&#228;hlte Nachrichten</source>
+		<translate>Selected messages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Als gelesen markieren</source>
+		<translate>Mark as read</translate>
+	</dictentry>
+	<dictentry>
+		<source>Empf&#228;nger</source>
+		<translate>Recipient</translate>
+	</dictentry>
+	<dictentry>
+		<source>Antworten</source>
+		<translate>Replay</translate>
+	</dictentry>
+	<dictentry>
+		<source>Weiterleiten</source>
+		<translate>Pass to</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verschieben in</source>
+		<translate>Displace to</translate>
+	</dictentry>
+	<dictentry>
+		<source>Absender</source>
+		<translate>Sender</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kontakte</source>
+		<translate>Contacts</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neuer Kontakt</source>
+		<translate>New contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kontakt hinzuf&#252;gen</source>
+		<translate>Add contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kontakt bearbeiten</source>
+		<translate>Edit contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Name 1</source>
+		<translate>Name 1</translate>
+	</dictentry>
+	<dictentry>
+		<source>Name 2</source>
+		<translate>Name 2</translate>
+	</dictentry>
+	<dictentry>
+		<source>Adresse 1</source>
+		<translate>Address 1</translate>
+	</dictentry>
+	<dictentry>
+		<source>Adresse 2</source>
+		<translate>Address 2</translate>
+	</dictentry>
+	<dictentry>
+		<source>PLZ/Ort</source>
+		<translate>Zip/city</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mobiltelefon</source>
+		<translate>Mobile</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kalender</source>
+		<translate>Calendar</translate>
+	</dictentry>
+	<dictentry>
+		<source>Montag</source>
+		<translate>Monday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dienstag</source>
+		<translate>Tuesday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mittwoch</source>
+		<translate>Wednesday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Donnerstag</source>
+		<translate>Thursday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Freitag</source>
+		<translate>Friday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Samstag</source>
+		<translate>Saturday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sonntag</source>
+		<translate>Sunday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neuer Termin</source>
+		<translate>New Date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Urlaubsplanung</source>
+		<translate>Vacation planning</translate>
+	</dictentry>
+	<dictentry>
+		<source>Urlaubskalender</source>
+		<translate>Vacation calendar</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bitte fuer das naechste Jahr getrennt Urlaub beantragen.</source>
+		<translate>Please request leave separately for the next year.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Urlaub &#228;ndern</source>
+		<translate>Modify vacation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Urlaub</source>
+		<translate>Vacation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verbrauchte Tage</source>
+		<translate>Spent days</translate>
+	</dictentry>
+	<dictentry>
+		<source>Offen</source>
+		<translate>Open</translate>
+	</dictentry>
+	<dictentry>
+		<source>Wartend</source>
+		<translate>Pending</translate>
+	</dictentry>
+	<dictentry>
+		<source>Genehmigt</source>
+		<translate>Passed</translate>
+	</dictentry>
+	<dictentry>
+		<source>Krank</source>
+		<translate>Sick</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sonstiges</source>
+		<translate>Other</translate>
+	</dictentry>
+	<dictentry>
+		<source>inhouse</source>
+		<translate>inhouse</translate>
+	</dictentry>
+	<dictentry>
+		<source>Fremdleistung</source>
+		<translate>external service</translate>
+	</dictentry>
+	<dictentry>
+		<source>Monat</source>
+		<translate>Month</translate>
+	</dictentry>
+	<dictentry>
+		<source>Jahr</source>
+		<translate>Year</translate>
+	</dictentry>
+	<dictentry>
+		<source>Hallo</source>
+		<translate>Hello</translate>
+	</dictentry>
+	<dictentry>
+		<source>eine neue Urlaubsanfrage ist eingegangen von Mitarbeiter</source>
+		<translate>we received a new request for vacation from employee</translate>
+	</dictentry>
+	<dictentry>
+		<source>Urlaub</source>
+		<translate>Vacation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Krankheit</source>
+		<translate>Sickness</translate>
+	</dictentry>
+	<dictentry>
+		<source>&#220;berstunden</source>
+		<translate>Overtime</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sonstiges</source>
+		<translate>Other</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verwendete Urlaubstage</source>
+		<translate>Used days of leave</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neuer Urlaubsantrag von</source>
+		<translate>New application for leave from</translate>
+	</dictentry>
+	<dictentry>
+		<source>Keine Ergebnisse</source>
+		<translate>No results</translate>
+	</dictentry>
+	<dictentry>
+		<source>Die Formulardaten sind unvollstaendig.</source>
+		<translate>Your data is uncomplete.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sind Sie sicher?</source>
+		<translate>Are you sure?</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrags-Nr.</source>
+		<translate>Order no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechnungs-Nr.</source>
+		<translate>Invoice no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kundenauswahl</source>
+		<translate>Customer selection</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kunden-Nr.</source>
+		<translate>Customer no.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bitte geben Sie eine Auftrags-, Rechnungs- oder Kunden-Nr. ein oder w&#228;hlen Sie einen Kunden aus</source>
+		<translate>Please enter an order no. or an invoice no. or a customer no. or select a customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Suche starten</source>
+		<translate>Start search</translate>
+	</dictentry>
+	<dictentry>
+		<source>E-Mail Adresse</source>
+		<translate>Email Address</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mails weiterleiten</source>
+		<translate>Pass mails</translate>
+	</dictentry>
+	<dictentry>
+		<source>Signatur</source>
+		<translate>Signature</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mitglied von</source>
+		<translate>Member of</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verf&#252;gbare Gruppen</source>
+		<translate>Available groups</translate>
+	</dictentry>
+	<dictentry>
+		<source>Benutzer &#228;ndern</source>
+		<translate>Modify user</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angemeldet bleiben</source>
+		<translate>Stay logged in</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gruppe hinzuf&#252;gen</source>
+		<translate>Add group</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mehr als ein Objekt gefunden</source>
+		<translate>More than one object is found</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag angelegt</source>
+		<translate>Order created</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angebot gesendet</source>
+		<translate>Offer sent</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag angenommen</source>
+		<translate>Order received</translate>
+	</dictentry>
+	<dictentry>
+		<source>In Produktion</source>
+		<translate>In production</translate>
+	</dictentry>
+	<dictentry>
+		<source>Erledigt</source>
+		<translate>Done</translate>
+	</dictentry>
+	<dictentry>
+		<source>Angeboten</source>
+		<translate>Offered</translate>
+	</dictentry>
+	<dictentry>
+		<source>Unbekannt</source>
+		<translate>Unknown</translate>
+	</dictentry>
+	<dictentry>
+		<source>Daten wurden gespeichert</source>
+		<translate>Data saved</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ein Fehler ist aufgetreten</source>
+		<translate>An error has occured</translate>
+	</dictentry>
+	<dictentry>
+		<source>So</source>
+		<translate>Su</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mo</source>
+		<translate>Mo</translate>
+	</dictentry>
+	<dictentry>
+		<source>Di</source>
+		<translate>Tu</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mi</source>
+		<translate>We</translate>
+	</dictentry>
+	<dictentry>
+		<source>Do</source>
+		<translate>Th</translate>
+	</dictentry>
+	<dictentry>
+		<source>Fr</source>
+		<translate>Fr</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sa</source>
+		<translate>Sa</translate>
+	</dictentry>
+	<dictentry>
+		<source>min.</source>
+		<translate>min.</translate>
+	</dictentry>
+	<dictentry>
+		<source>mm</source>
+		<translate>mm</translate>
+	</dictentry>
+	<dictentry>
+		<source>g</source>
+		<translate>g</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bitte w%E4hlen Sie einen Kunden aus!</source>
+		<translate>Please select a customer!</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bitte geben Sie einen Titel ein!</source>
+		<translate>Please enter a title!</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kunden ausw&#228;hlen</source>
+		<translate>Select customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mit Wechsel des Produkts werden alle Kalkulationen/Teilauftr%E4ge gel%F6scht. Weiter?</source>
+		<translate>Changing the product all calculations/partial orders will be deleted. Continue?</translate>
+	</dictentry>
+	<dictentry>
+		<source>Laufrichtung</source>
+		<translate>Running direction</translate>
+	</dictentry>
+	<dictentry>
+		<source>schmale Bahn</source>
+		<translate>narrow sheet</translate>
+	</dictentry>
+	<dictentry>
+		<source>breite Bahn</source>
+		<translate>wider sheet</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anzahl Druckmaschinen</source>
+		<translate>Number printing machines</translate>
+	</dictentry>
+	<dictentry>
+		<source>Rechnungs&#252;bersicht</source>
+		<translate>Invoice overview</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lizenzinformationen</source>
+		<translate>License information</translate>
+	</dictentry>
+	<dictentry>
+		<source>Registriert auf</source>
+		<translate>Registered to</translate>
+	</dictentry>
+	<dictentry>
+		<source>L&#228;uft ab am</source>
+		<translate>Expires</translate>
+	</dictentry>
+	<dictentry>
+		<source>Hardware-ID</source>
+		<translate>Hardware-ID</translate>
+	</dictentry>
+	<dictentry>
+		<source>Eintrag anlegen</source>
+		<translate>Create entry</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auswahl</source>
+		<translate>Selection</translate>
+	</dictentry>
+	<dictentry>
+		<source>Es sind keine bezahlten Vorgänge in diesem Monat vorhanden.</source>
+		<translate>There are no paid transactions in this month.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Abmessungen offen</source>
+		<translate>Open sizes</translate>
+	</dictentry>
+	<dictentry>
+		<source>Abmessungen geschlossen</source>
+		<translate>Closed sizes</translate>
+	</dictentry>
+	<dictentry>
+		<source>Material</source>
+		<translate>Material</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gewicht</source>
+		<translate>Weight</translate>
+	</dictentry>
+	<dictentry>
+		<source>Umfang</source>
+		<translate>Extent</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zeit</source>
+		<translate>Time</translate>
+	</dictentry>
+	<dictentry>
+		<source>Einstellungen</source>
+		<translate>Settings</translate>
+	</dictentry>
+	<dictentry>
+		<source>kein Lack</source>
+		<translate>No finishing</translate>
+	</dictentry>
+	<dictentry>
+		<source>wird beim Speichern aktualisiert</source>
+		<translate>Will be updated during saving</translate>
+	</dictentry>
+	<dictentry>
+		<source>Fertigungsprozess</source>
+		<translate>Production process</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zwischensumme</source>
+		<translate>Subtotal</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zusatzkosten</source>
+		<translate>Extra costs</translate>
+	</dictentry>
+	<dictentry>
+		<source>Marge</source>
+		<translate>Margin</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preiskorrekturen</source>
+		<translate>Price adjustments</translate>
+	</dictentry>
+	<dictentry>
+		<source>sonst. Auf-/Abschlag</source>
+		<translate>Other add. charge/deduction</translate>
+	</dictentry>
+	<dictentry>
+		<source>Endsumme</source>
+		<translate>Total</translate>
+	</dictentry>
+	<dictentry>
+		<source>Stückpreis</source>
+		<translate>Unit price</translate>
+	</dictentry>
+	<dictentry>
+		<source>Teilauftrag beauftragt</source>
+		<translate>Partial order ordered</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier Inhalt</source>
+		<translate>Paper content</translate>
+	</dictentry>
+	<dictentry>
+		<source>B&#246;gen</source>
+		<translate>Sheets</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier zus. Inhalt</source>
+		<translate>Paper extra content</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier Umschlag</source>
+		<translate>Paper envelope</translate>
+	</dictentry>
+	<dictentry>
+		<source>Feiertag</source>
+		<translate>Holiday</translate>
+	</dictentry>
+	<dictentry>
+		<source>Achtung</source>
+		<translate>Attention</translate>
+	</dictentry>
+	<dictentry>
+		<source>Wochenende</source>
+		<translate>Weekend</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kunde ausw&#228;hlen</source>
+		<translate>Select customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag w&#228;hlen</source>
+		<translate>Select order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag w&#228;hlen...</source>
+		<translate>Select order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikel w&#228;hlen</source>
+		<translate>Select article</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikel w&#228;hlen...</source>
+		<translate>Select article</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesamtsumme</source>
+		<translate>Total</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kalkulation</source>
+		<translate>Calculation</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mehr als einen Ansprechpartner gefunden.</source>
+		<translate>More than one contact person found.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesch&#228;ftskontakt hinzuf&#252;gen</source>
+		<translate>Add business contact</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kommentar</source>
+		<translate>Comment</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sind Sie sicher?</source>
+		<translate>Are you sure?</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verf&#252;gbare Seiten</source>
+		<translate>Available pages</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ändern</source>
+		<translate>Modify</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkt bearbeiten</source>
+		<translate>Edit product</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschine hinzufügen</source>
+		<translate>Add machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maschine kopieren</source>
+		<translate>Copy machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>ab</source>
+		<translate>from</translate>
+	</dictentry>
+	<dictentry>
+		<source>St.</source>
+		<translate>unit</translate>
+	</dictentry>
+	<dictentry>
+		<source>(BxH)</source>
+		<translate>(WxH)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Papier kopieren</source>
+		<translate>Copy paper</translate>
+	</dictentry>
+	<dictentry>
+		<source>Achtung \n\nDurch Aendern der Preisbasis werden alle Preise geloescht!</source>
+		<translate>Warning \n\nModifying the price basis will delete all prices!</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neue Nachricht</source>
+		<translate>New message</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ausgew&#228;hlte Nachrichten </source>
+		<translate>Selected messages </translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag ändern</source>
+		<translate>Modify order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bearbeiten</source>
+		<translate>Edit</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrag aufrufen</source>
+		<translate>Call the order</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftrags-Status</source>
+		<translate>Order status</translate>
+	</dictentry>
+	<dictentry>
+		<source>Ermittle Projektdaten</source>
+		<translate>Select project data</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gefundene Datensätze</source>
+		<translate>Found records</translate>
+	</dictentry>
+	<dictentry>
+		<source>Transfer</source>
+		<translate>Transfer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Liefertermin auf heutiges Datum gesetzt</source>
+		<translate>Delivery date set to today's date</translate>
+	</dictentry>
+	<dictentry>
+		<source>Transfer abgeschlossen.</source>
+		<translate>Transfer complete.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auslieferungsplan</source>
+		<translate>Delivery plan</translate>
+	</dictentry>
+	<dictentry>
+		<source>Alle Tage</source>
+		<translate>All days</translate>
+	</dictentry>
+	<dictentry>
+		<source>TESTCASE</source>
+		<translate>TESTCASE</translate>
+	</dictentry>
+	<dictentry>
+		<source>Modul ausw&#228;hlen</source>
+		<translate>Select module</translate>
+	</dictentry>
+	<dictentry>
+		<source>Icon ausw&#228;hlen</source>
+		<translate>Select icon</translate>
+	</dictentry>
+	<dictentry>
+		<source>Men&#252;icon</source>
+		<translate>Menu icon</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anschnitt</source>
+		<translate>bleed</translate>
+	</dictentry>
+	<dictentry>
+		<source>Warengruppe</source>
+		<translate>Tradegroup</translate>
+	</dictentry>
+	<dictentry>
+		<source>Warengruppen</source>
+		<translate>Tradegroups</translate>
+	</dictentry>
+	<dictentry>
+		<source>Freigabe</source>
+		<translate>Released</translate>
+	</dictentry>
+	<dictentry>
+		<source>Shop-Freigabe</source>
+		<translate>Shop released</translate>
+	</dictentry>
+	<dictentry>
+		<source>Warengruppe hinzuf&#252;gen</source>
+		<translate>Add tradegroup</translate>
+	</dictentry>
+	<dictentry>
+		<source>Warengruppe bearbeiten</source>
+		<translate>Edit tradegroup</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikel</source>
+		<translate>Article</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zus. Artikel</source>
+		<translate>Add. article</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikel hinzuf&#252;gen</source>
+		<translate>Add article</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikel bearbeiten</source>
+		<translate>Edit article</translate>
+	</dictentry>
+	<dictentry>
+		<source>pro Teilauftrag</source>
+		<translate>per part. order</translate>
+	</dictentry>
+	<dictentry>
+		<source>pro Stück</source>
+		<translate>per piece</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aufträge der letzten Monate</source>
+		<translate>Orders of the last months</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aufträge der letzten Monate tabellarisch</source>
+		<translate>Orders of the last months (schedular)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aufträge der letzten 30 Tage</source>
+		<translate>Orders of the last 30 days</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aufträge der letzten 30 Tage tabellarisch</source>
+		<translate>Orders of the last 30 days (schedular)</translate>
+	</dictentry>
+	<dictentry>
+		<source>PDF-Anzeige</source>
+		<translate>Show PDF</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sammelrechnungen</source>
+		<translate>Collective Invoice</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sammelrechnung erstellen</source>
+		<translate>Add collective invoice</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sammelauftrag anlegen</source>
+		<translate>New collective invoice</translate>
+	</dictentry>
+	<dictentry>
+		<source>Neuen Kunden anlegen</source>
+		<translate>Add business contact</translate>
+	</dictentry> 
+	<dictentry>
+		<source>Betrag</source>
+		<translate>Total</translate>
+	</dictentry>
+	<dictentry>
+		<source>Normal</source>
+		<translate>Normal</translate>
+	</dictentry>
+	<dictentry>
+		<source>Tage</source>
+		<translate>Days</translate>
+	</dictentry>
+	<dictentry>
+		<source>Buchdruck</source>
+		<translate>Letterpress</translate>
+	</dictentry>
+	<dictentry>
+		<source>Suchen</source>
+		<translate>Search</translate>
+	</dictentry>
+	<dictentry>
+		<source>Beispielbild</source>
+		<translate>Example</translate>
+	</dictentry>
+	<dictentry>
+		<source>Produkttyp</source>
+		<translate>Product type</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zuschussbogen pro Farbsatz</source>
+		<translate>Add. sheets per color set</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zusatztexte</source>
+		<translate>Additional texts</translate>
+	</dictentry>
+	<dictentry>
+		<source>Standardtext "Verarbeitung"</source>
+		<translate>Standard text "Processing"</translate>
+	</dictentry>
+	<dictentry>
+		<source>Statistiken</source>
+		<translate>Statistics</translate>
+	</dictentry>
+	<dictentry>
+		<source>Summe</source>
+		<translate>Total</translate>
+	</dictentry>
+	<dictentry>
+		<source>Statistik</source>
+		<translate>Statistic</translate>
+	</dictentry>
+	<dictentry>
+		<source>Umsatz pro Kunde</source>
+		<translate>Sales per customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftr&#228;ge pro Kunde (ohne Sammelrechnungen)</source>
+		<translate>Orders per customer (without collective invoices)</translate>
+	</dictentry>
+	
+	<dictentry>
+		<source>Auftr&#228;ge der letzten 30 Tage und letzten 12 Monate</source>
+		<translate>Orders of the last 30 days and the last 12 month</translate>
+	</dictentry>
+	<dictentry>
+		<source>Januar</source>
+		<translate>January</translate>
+	</dictentry>
+	<dictentry>
+		<source>Februar</source>
+		<translate>February</translate>
+	</dictentry>
+	<dictentry>
+		<source>M&#228;rz</source>
+		<translate>March</translate>
+	</dictentry>
+	<dictentry>
+		<source>April</source>
+		<translate>April</translate>
+	</dictentry>
+	<dictentry>
+		<source>Mai</source>
+		<translate>May</translate>
+	</dictentry>
+	<dictentry>
+		<source>Juni</source>
+		<translate>June</translate>
+	</dictentry>
+	<dictentry>
+		<source>Juli</source>
+		<translate>July</translate>
+	</dictentry>
+	<dictentry>
+		<source>August</source>
+		<translate>August</translate>
+	</dictentry>
+	<dictentry>
+		<source>September</source>
+		<translate>September</translate>
+	</dictentry>
+	<dictentry>
+		<source>Oktober</source>
+		<translate>October</translate>
+	</dictentry>
+	<dictentry>
+		<source>November</source>
+		<translate>November</translate>
+	</dictentry>
+	<dictentry>
+		<source>Dezember</source>
+		<translate>December</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sammel</source>
+		<translate>Collective</translate>
+	</dictentry>
+	<dictentry>
+		<source>Staffelpreis wird gel&#246;scht, falls Preis = 0</source>
+		<translate>If price = 0, graduated price will bee deleted</translate>
+	</dictentry>
+	<dictentry>
+		<source>Staffelpreise</source>
+		<translate>Graduated prices</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preisstaffeln</source>
+		<translate>Graduated prices</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikelnummer</source>
+		<translate>Article number</translate>
+	</dictentry>
+	<dictentry>
+		<source>Werte automatisch kalkulieren</source>
+		<translate>Calculate values automatically</translate>
+	</dictentry>
+	<dictentry>
+		<source>inkl. Zuschuss</source>
+		<translate>incl. grant</translate>
+	</dictentry>
+	<dictentry>
+		<source>Google Maps</source>
+		<translate>Google Maps</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bogengr&#246;&#223;e</source>
+		<translate>sheet size</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kombination aus Maschine und Inhalt pr&#252;fen</source>
+		<translate>Check combination of mashine an content</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kombination aus Maschine und zus. Inhalt pr&#252;fen</source>
+		<translate>Check combination of mashine an add. content</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kombination aus Maschine und Umschlag pr&#252;fen</source>
+		<translate>Check combination of mashine an envelope</translate>
+	</dictentry>
+	<dictentry>
+		<source>Passw&#246;rter stimmen nicht &#252;berein</source>
+		<translate>Passwords are not equal</translate>
+	</dictentry>
+	<dictentry>
+		<source>zzgl. Versand</source>
+		<translate>Plus dispatch</translate>
+	</dictentry>
+	<dictentry>
+		<source>Texte</source>
+		<translate>Texts</translate>
+	</dictentry>
+	<dictentry>
+		<source>Verarbeitung</source>
+		<translate>Processing</translate>
+	</dictentry>
+	<dictentry>
+		<source>Stk.</source>
+		<translate>Pc.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Versand</source>
+		<translate>Dispatch</translate>
+	</dictentry>
+	<dictentry>
+		<source>Status &#228;ndern</source>
+		<translate>Change state</translate>
+	</dictentry>
+	<dictentry>
+		<source>Position l&#246;schen</source>
+		<translate>Delete position</translate>
+	</dictentry>
+	<dictentry>
+		<source>Manuell</source>
+		<translate>Manual</translate>
+	</dictentry>
+	<dictentry>
+		<source>Suchergebnisse...</source>
+		<translate>Search results...</translate>
+	</dictentry>
+	<dictentry>
+		<source>Suchergebnisse</source>
+		<translate>Search results</translate>
+	</dictentry>
+	<dictentry>
+		<source>EP (Netto)</source>
+		<translate>SP (net)</translate>
+	</dictentry>
+	<dictentry>
+		<source>GP (Netto)</source>
+		<translate>TP (net)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Porto und Verpackung</source>
+		<translate>Postage and packing</translate>
+	</dictentry>
+	<dictentry>
+		<source>USt.</source>
+		<translate>VAT</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesamtsumme (Netto)</source>
+		<translate>Total (net)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Gesamtsumme (Brutto)</source>
+		<translate>Total (gross)</translate>
+	</dictentry>
+	<dictentry>
+		<source>Detailierte &#220;bersicht anzeigen</source>
+		<translate>Show detailed overview</translate>
+	</dictentry>
+	<dictentry>
+		<source>Keine passende Druckmaschine gefunden</source>
+		<translate>No matching printing machine found</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zu dieser Maschine konnte kein passendes Papierformat gefunden werden</source>
+		<translate>No paper format for this printing machine found</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anschitt</source>
+		<translate>add. cut section</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftragspositionen</source>
+		<translate>Order positions</translate>
+	</dictentry>
+	<dictentry>
+		<source>RE-rel.</source>
+		<translate>Inv-rel.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Staffelpreis aktualisieren</source>
+		<translate>Update graduated prices</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zahlung</source>
+		<translate>Payment</translate>
+	</dictentry>
+	<dictentry>
+		<source>Preis netto</source>
+		<translate>Price net</translate>
+	</dictentry>
+	<dictentry>
+		<source>Summe netto</source>
+		<translate>Total net</translate>
+	</dictentry>
+	<dictentry>
+		<source>USt. 7%</source>
+		<translate>VAT 7%</translate>
+	</dictentry>
+	<dictentry>
+		<source>USt. 19%</source>
+		<translate>VAT 19%</translate>
+	</dictentry>
+	<dictentry>
+		<source>B&#246;gen / St&#252;ck</source>
+		<translate>Sheets / pieces</translate>
+	</dictentry>
+	<dictentry>
+		<source>Art.-Nr.</source>
+		<translate>Art.-No.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Kopieren</source>
+		<translate>Copy</translate>
+	</dictentry>
+	<dictentry>
+		<source>Nr.</source>
+		<translate>No.</translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikelbild</source>
+		<translate>Article picture</translate>
+	</dictentry>
+	<dictentry>
+		<source>Uhr</source>
+		<translate></translate>
+	</dictentry>
+	<dictentry>
+		<source>Artikelnummer bereits vergeben!</source>
+		<translate>Article number already set</translate>
+	</dictentry>
+	<dictentry>
+		<source>Webshop-Login</source>
+		<translate>Webshop-Login</translate>
+	</dictentry>
+	<dictentry>
+		<source>Shop-Login &#228;ndern</source>
+		<translate>Change shop-login</translate>
+	</dictentry>
+	<dictentry>
+		<source>Maximale Anzahl an Druckmaschinen bereits erreicht.</source>
+		<translate>Maximun number of printing mashines reached</translate>
+	</dictentry>
+	<dictentry>
+		<source>f&#252;r</source>
+		<translate>for</translate>
+	</dictentry>
+	<dictentry>
+		<source>Sammelhefter</source>
+		<translate>Saddle stitcher</translate>
+	</dictentry>
+	<dictentry>
+		<source>Zeit Einrichtung Station</source>
+		<translate>Time Installation Station</translate>
+	</dictentry>
+	<dictentry>
+		<source>Stationen</source>
+		<translate>Stations</translate>
+	</dictentry>
+	<dictentry>
+		<source>Br&#252;che</source>
+		<translate>Breakings</translate>
+	</dictentry>
+	<dictentry>
+		<source>Grammatur</source>
+		<translate>Grammage</translate>
+	</dictentry>
+	<dictentry>
+		<source>Seiten pro Station</source>
+		<translate>Pages per station</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anzahl Stationen</source>
+		<translate>Number of stations</translate>
+	</dictentry>
+	<dictentry>
+		<source>Anzahl Signaturen</source>
+		<translate>Number of signatures</translate>
+	</dictentry>
+	<dictentry>
+		<source>R&#252;stzeit pro Signatur</source>
+		<translate>Setup time per signatures</translate>
+	</dictentry>
+	<dictentry>
+		<source>R&#252;stzeit Umschlaganleger</source>
+		<translate>Setup time cover feeder</translate>
+	</dictentry>
+	<dictentry>
+		<source>R&#252;stzeit Dreischneider</source>
+		<translate>Setup time trimmer</translate>
+	</dictentry>
+	<dictentry>
+		<source>R&#252;stzeit Kreuzleger</source>
+		<translate>Setup time compensating stacker</translate>
+	</dictentry>
+	<dictentry>
+		<source>Lagenfalz-/Zusammentragmaschine</source>
+		<translate>Gathering machine</translate>
+	</dictentry>
+	<dictentry>
+		<source>Format hinzuf&#252;gen</source>
+		<translate>Add format</translate>
+	</dictentry>
+	<dictentry>
+		<source>Hinweis</source>
+		<translate>Hint</translate>
+	</dictentry>
+	<dictentry>
+		<source>Bilder ohne Transparenz empfolen. Andernfalls kann es zu Darstellungsfehlern im Jobzettel kommen.</source>
+		<translate>Picture without transparency recommended. Otherwise there can be display errors at the dockets</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftr&#228;ge pro Kunde in EUR</source>
+		<translate>Orders per customer in EUR</translate>
+	</dictentry>
+	<dictentry>
+		<source>Auftr&#228;ge pro Kunde</source>
+		<translate>Orders per customer</translate>
+	</dictentry>
+	<dictentry>
+		<source>L&#228;nderverwaltung</source>
+		<translate>Country management</translate>
+	</dictentry>
+	<dictentry>
+		<source>Aktivierung</source>
+		<translate>Activation</translate>
+	</dictentry>
+	<dictentry>
+		<source>L&#228;nderk&#252;rzel</source>
+		<translate>Country code</translate>
+	</dictentry>
+</translation>
+

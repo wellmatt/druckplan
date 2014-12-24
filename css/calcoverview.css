@@ -1,0 +1,14 @@
+h1 {
+	padding:5px;
+	font-size:14px;
+	border-bottom:1px solid #000000;
+}
+
+h2 {
+	padding:5px;
+	font-size:12px;
+}
+
+div.outer {
+	padding:5px;
+}

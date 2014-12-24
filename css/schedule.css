@@ -1,0 +1,25 @@
+div.box1 {
+/* 	width:1300px; */
+}
+
+div.box2 {
+/* 	width:1300px; */
+}
+
+ul {
+}
+
+td.delivery_header {
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	padding: 3px;
+	font-weight: bold;
+}
+
+td.machine_header {
+	color: #000000;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 13px;
+}
+

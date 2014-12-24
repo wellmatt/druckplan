@@ -1,0 +1,65 @@
+@CHARSET "ISO-8859-1";
+div.box1 {
+/* 	width:350px; */
+}
+div.box2 {
+	width:350px;
+}
+
+td.home_left {
+	width: 1200px;
+}
+
+div.box1_home {
+	/*background-color: #eaeaea;*/
+	padding: 10px;
+	-moz-border-radius: 15px;
+	-khtml-border-radius: 15px;
+	border-radius: 15px;
+	width:1100px
+}
+
+td.home_right{
+	vertical-align: top;
+	/*background-color: #dddddd;
+	border: 2px solid #c7c7c7;*/
+	width: 470px;
+}
+
+div.home_chat{
+	background-color: #e6e6e6;
+	border: 2px solid #7e7e7e;
+	position: absolute;
+	height: auto !important;
+	width: 470px;
+	/* right: 150px; */
+	padding-left: 3px;
+	text-align: left;
+	vertical-align: top;
+	min-height:290px;
+}
+
+div.home_chat_inner_buttons{
+	position: absolute;
+	top: 10px;
+	text-align: center;
+}
+
+div.home_chat_inner{
+	position: absolute;
+	overflow: auto;					/* fuer Scrollbalken */
+	float: left;
+	text-align: left;
+	top: 45px;
+	height: 200px;
+	width: 450px;
+	padding-left: 3px;
+	text-align: left;
+	vertical-align: top;
+}
+
+tr.tabellenlinie td {
+ border-top-width: 1px;
+ border-top-style: solid;
+ border-top-color: #999999;
+}

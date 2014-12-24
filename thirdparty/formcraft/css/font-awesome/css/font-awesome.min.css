@@ -1,0 +1,1524 @@
+@font-face{font-family:'FontAwesome';src:url('../font/fontawesome-webfont.eot?v=3.2.0');src:url('../font/fontawesome-webfont.eot?#iefix&v=3.2.0') format('embedded-opentype'),url('../font/fontawesome-webfont.woff?v=3.2.0') format('woff'),url('../font/fontawesome-webfont.ttf?v=3.2.0') format('truetype'),url('../font/fontawesome-webfont.svg#fontawesomeregular?v=3.2.0') format('svg');font-weight:normal;font-style:normal;}
+
+[class^="icon-"],[class*=" icon-"]{font-family:FontAwesome;font-weight:normal;font-style:normal;text-decoration:inherit;-webkit-font-smoothing:antialiased;*margin-right:.3em;}
+[class^="icon-"]:before,[class*=" icon-"]:before{text-decoration:inherit;display:inline-block;cursor:default;speak:none;}
+
+
+.datepicker [class^="icon-"]:before, .datepicker [class*=" icon-"]:before {
+font-family: 'FontAwesome';
+}
+
+
+.icon-large:before{vertical-align:-10%;font-size:1.3333333333333333em;}
+a [class^="icon-"],a [class*=" icon-"]{display:inline;}
+[class^="icon-"].icon-fixed-width,[class*=" icon-"].icon-fixed-width{display:inline-block;width:1.1428571428571428em;text-align:right;padding-right:0.2857142857142857em;}[class^="icon-"].icon-fixed-width.icon-large,[class*=" icon-"].icon-fixed-width.icon-large{width:1.4285714285714286em;}
+.icons-ul{margin-left:2.142857142857143em;list-style-type:none;}.icons-ul>li{position:relative;}
+.icons-ul .icon-li{position:absolute;left:-2.142857142857143em;width:2.142857142857143em;text-align:center;line-height:inherit;}
+[class^="icon-"].hide,[class*=" icon-"].hide{display:none;}
+.icon-muted{color:#eeeeee;}
+.icon-light{color:#ffffff;}
+.icon-dark{color:#333333;}
+.icon-border{border:solid 1px #eeeeee;padding:.2em .25em .15em;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+.icon-2x{font-size:2em;}.icon-2x.icon-border{border-width:2px;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
+.icon-3x{font-size:3em;}.icon-3x.icon-border{border-width:3px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+.icon-4x{font-size:4em;}.icon-4x.icon-border{border-width:4px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;}
+.icon-5x{font-size:5em;}.icon-5x.icon-border{border-width:5px;-webkit-border-radius:7px;-moz-border-radius:7px;border-radius:7px;}
+.pull-right{float:right;}
+.pull-left{float:left;}
+[class^="icon-"].pull-left,[class*=" icon-"].pull-left{margin-right:.3em;}
+[class^="icon-"].pull-right,[class*=" icon-"].pull-right{margin-left:.3em;}
+[class^="icon-"],[class*=" icon-"]{display:inline;width:auto;height:auto;line-height:normal;vertical-align:baseline;background-image:none;background-position:0% 0%;background-repeat:repeat;margin-top:0;}
+.icon-white,.nav-pills>.active>a>[class^="icon-"],.nav-pills>.active>a>[class*=" icon-"],.nav-list>.active>a>[class^="icon-"],.nav-list>.active>a>[class*=" icon-"],.navbar-inverse .nav>.active>a>[class^="icon-"],.navbar-inverse .nav>.active>a>[class*=" icon-"],.dropdown-menu>li>a:hover>[class^="icon-"],.dropdown-menu>li>a:hover>[class*=" icon-"],.dropdown-menu>.active>a>[class^="icon-"],.dropdown-menu>.active>a>[class*=" icon-"],.dropdown-submenu:hover>a>[class^="icon-"],.dropdown-submenu:hover>a>[class*=" icon-"]{background-image:none;}
+.btn [class^="icon-"].icon-large,.nav [class^="icon-"].icon-large,.btn [class*=" icon-"].icon-large,.nav [class*=" icon-"].icon-large{line-height:.9em;}
+.btn [class^="icon-"].icon-spin,.nav [class^="icon-"].icon-spin,.btn [class*=" icon-"].icon-spin,.nav [class*=" icon-"].icon-spin{display:inline-block;}
+.nav-tabs [class^="icon-"],.nav-pills [class^="icon-"],.nav-tabs [class*=" icon-"],.nav-pills [class*=" icon-"],.nav-tabs [class^="icon-"].icon-large,.nav-pills [class^="icon-"].icon-large,.nav-tabs [class*=" icon-"].icon-large,.nav-pills [class*=" icon-"].icon-large{line-height:.9em;}
+.btn [class^="icon-"].pull-left.icon-2x,.btn [class*=" icon-"].pull-left.icon-2x,.btn [class^="icon-"].pull-right.icon-2x,.btn [class*=" icon-"].pull-right.icon-2x{margin-top:.18em;}
+.btn [class^="icon-"].icon-spin.icon-large,.btn [class*=" icon-"].icon-spin.icon-large{line-height:.8em;}
+.btn.btn-small [class^="icon-"].pull-left.icon-2x,.btn.btn-small [class*=" icon-"].pull-left.icon-2x,.btn.btn-small [class^="icon-"].pull-right.icon-2x,.btn.btn-small [class*=" icon-"].pull-right.icon-2x{margin-top:.25em;}
+.btn.btn-large [class^="icon-"],.btn.btn-large [class*=" icon-"]{margin-top:0;}.btn.btn-large [class^="icon-"].pull-left.icon-2x,.btn.btn-large [class*=" icon-"].pull-left.icon-2x,.btn.btn-large [class^="icon-"].pull-right.icon-2x,.btn.btn-large [class*=" icon-"].pull-right.icon-2x{margin-top:.05em;}
+.btn.btn-large [class^="icon-"].pull-left.icon-2x,.btn.btn-large [class*=" icon-"].pull-left.icon-2x{margin-right:.2em;}
+.btn.btn-large [class^="icon-"].pull-right.icon-2x,.btn.btn-large [class*=" icon-"].pull-right.icon-2x{margin-left:.2em;}
+.icon-stack{position:relative;display:inline-block;width:2em;height:2em;line-height:2em;vertical-align:-35%;}.icon-stack [class^="icon-"],.icon-stack [class*=" icon-"]{display:block;text-align:center;position:absolute;width:100%;height:100%;font-size:1em;line-height:inherit;*line-height:2em;}
+.icon-stack .icon-stack-base{font-size:2em;*line-height:1em;}
+.icon-spin{display:inline-block;-moz-animation:spin 2s infinite linear;-o-animation:spin 2s infinite linear;-webkit-animation:spin 2s infinite linear;animation:spin 2s infinite linear;}
+a .icon-spin{display:inline-block;text-decoration:none;}
+@-moz-keyframes spin{0%{-moz-transform:rotate(0deg);} 100%{-moz-transform:rotate(359deg);}}@-webkit-keyframes spin{0%{-webkit-transform:rotate(0deg);} 100%{-webkit-transform:rotate(359deg);}}@-o-keyframes spin{0%{-o-transform:rotate(0deg);} 100%{-o-transform:rotate(359deg);}}@-ms-keyframes spin{0%{-ms-transform:rotate(0deg);} 100%{-ms-transform:rotate(359deg);}}@keyframes spin{0%{transform:rotate(0deg);} 100%{transform:rotate(359deg);}}.icon-rotate-90:before{-webkit-transform:rotate(90deg);-moz-transform:rotate(90deg);-ms-transform:rotate(90deg);-o-transform:rotate(90deg);transform:rotate(90deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1);}
+.icon-rotate-180:before{-webkit-transform:rotate(180deg);-moz-transform:rotate(180deg);-ms-transform:rotate(180deg);-o-transform:rotate(180deg);transform:rotate(180deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2);}
+.icon-rotate-270:before{-webkit-transform:rotate(270deg);-moz-transform:rotate(270deg);-ms-transform:rotate(270deg);-o-transform:rotate(270deg);transform:rotate(270deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);}
+.icon-flip-horizontal:before{-webkit-transform:scale(-1, 1);-moz-transform:scale(-1, 1);-ms-transform:scale(-1, 1);-o-transform:scale(-1, 1);transform:scale(-1, 1);}
+.icon-flip-vertical:before{-webkit-transform:scale(1, -1);-moz-transform:scale(1, -1);-ms-transform:scale(1, -1);-o-transform:scale(1, -1);transform:scale(1, -1);}
+a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .icon-flip-horizontal:before,a .icon-flip-vertical:before{display:inline-block;}
+.bootstrap .icon-glass:before,
+.datepicker .icon-glass:before {
+  content: "\f000";
+}
+.bootstrap .icon-music:before,
+.datepicker .icon-music:before {
+  content: "\f001";
+}
+.bootstrap .icon-search:before,
+.datepicker .icon-search:before {
+  content: "\f002";
+}
+.bootstrap .icon-envelope-alt:before,
+.datepicker .icon-envelope-alt:before {
+  content: "\f003";
+}
+.bootstrap .icon-heart:before,
+.datepicker .icon-heart:before {
+  content: "\f004";
+}
+.bootstrap .icon-star:before,
+.datepicker .icon-star:before {
+  content: "\f005";
+}
+.bootstrap .icon-star-empty:before,
+.datepicker .icon-star-empty:before {
+  content: "\f006";
+}
+.bootstrap .icon-user:before,
+.datepicker .icon-user:before {
+  content: "\f007";
+}
+.bootstrap .icon-film:before,
+.datepicker .icon-film:before {
+  content: "\f008";
+}
+.bootstrap .icon-th-large:before,
+.datepicker .icon-th-large:before {
+  content: "\f009";
+}
+.bootstrap .icon-th:before,
+.datepicker .icon-th:before {
+  content: "\f00a";
+}
+.bootstrap .icon-th-list:before,
+.datepicker .icon-th-list:before {
+  content: "\f00b";
+}
+.bootstrap .icon-ok:before,
+.datepicker .icon-ok:before {
+  content: "\f00c";
+}
+.bootstrap .icon-remove:before,
+.datepicker .icon-remove:before {
+  content: "\f00d";
+}
+.bootstrap .icon-zoom-in:before,
+.datepicker .icon-zoom-in:before {
+  content: "\f00e";
+}
+.bootstrap .icon-zoom-out:before,
+.datepicker .icon-zoom-out:before {
+  content: "\f010";
+}
+.bootstrap .icon-power-off:before,
+.bootstrap .icon-off:before,
+.datepicker .icon-power-off:before,
+.datepicker .icon-off:before {
+  content: "\f011";
+}
+.bootstrap .icon-signal:before,
+.datepicker .icon-signal:before {
+  content: "\f012";
+}
+.bootstrap .icon-cog:before,
+.datepicker .icon-cog:before {
+  content: "\f013";
+}
+.bootstrap .icon-trash:before,
+.datepicker .icon-trash:before {
+  content: "\f014";
+}
+.bootstrap .icon-home:before,
+.datepicker .icon-home:before {
+  content: "\f015";
+}
+.bootstrap .icon-file-alt:before,
+.datepicker .icon-file-alt:before {
+  content: "\f016";
+}
+.bootstrap .icon-time:before,
+.datepicker .icon-time:before {
+  content: "\f017";
+}
+.bootstrap .icon-road:before,
+.datepicker .icon-road:before {
+  content: "\f018";
+}
+.bootstrap .icon-download-alt:before,
+.datepicker .icon-download-alt:before {
+  content: "\f019";
+}
+.bootstrap .icon-download:before,
+.datepicker .icon-download:before {
+  content: "\f01a";
+}
+.bootstrap .icon-upload:before,
+.datepicker .icon-upload:before {
+  content: "\f01b";
+}
+.bootstrap .icon-inbox:before,
+.datepicker .icon-inbox:before {
+  content: "\f01c";
+}
+.bootstrap .icon-play-circle:before,
+.datepicker .icon-play-circle:before {
+  content: "\f01d";
+}
+.bootstrap .icon-rotate-right:before,
+.bootstrap .icon-repeat:before,
+.datepicker .icon-rotate-right:before,
+.datepicker .icon-repeat:before {
+  content: "\f01e";
+}
+.bootstrap .icon-refresh:before,
+.datepicker .icon-refresh:before {
+  content: "\f021";
+}
+.bootstrap .icon-list-alt:before,
+.datepicker .icon-list-alt:before {
+  content: "\f022";
+}
+.bootstrap .icon-lock:before,
+.datepicker .icon-lock:before {
+  content: "\f023";
+}
+.bootstrap .icon-flag:before,
+.datepicker .icon-flag:before {
+  content: "\f024";
+}
+.bootstrap .icon-headphones:before,
+.datepicker .icon-headphones:before {
+  content: "\f025";
+}
+.bootstrap .icon-volume-off:before,
+.datepicker .icon-volume-off:before {
+  content: "\f026";
+}
+.bootstrap .icon-volume-down:before,
+.datepicker .icon-volume-down:before {
+  content: "\f027";
+}
+.bootstrap .icon-volume-up:before,
+.datepicker .icon-volume-up:before {
+  content: "\f028";
+}
+.bootstrap .icon-qrcode:before,
+.datepicker .icon-qrcode:before {
+  content: "\f029";
+}
+.bootstrap .icon-barcode:before,
+.datepicker .icon-barcode:before {
+  content: "\f02a";
+}
+.bootstrap .icon-tag:before,
+.datepicker .icon-tag:before {
+  content: "\f02b";
+}
+.bootstrap .icon-tags:before,
+.datepicker .icon-tags:before {
+  content: "\f02c";
+}
+.bootstrap .icon-book:before,
+.datepicker .icon-book:before {
+  content: "\f02d";
+}
+.bootstrap .icon-bookmark:before,
+.datepicker .icon-bookmark:before {
+  content: "\f02e";
+}
+.bootstrap .icon-print:before,
+.datepicker .icon-print:before {
+  content: "\f02f";
+}
+.bootstrap .icon-camera:before,
+.datepicker .icon-camera:before {
+  content: "\f030";
+}
+.bootstrap .icon-font:before,
+.datepicker .icon-font:before {
+  content: "\f031";
+}
+.bootstrap .icon-bold:before,
+.datepicker .icon-bold:before {
+  content: "\f032";
+}
+.bootstrap .icon-italic:before,
+.datepicker .icon-italic:before {
+  content: "\f033";
+}
+.bootstrap .icon-text-height:before,
+.datepicker .icon-text-height:before {
+  content: "\f034";
+}
+.bootstrap .icon-text-width:before,
+.datepicker .icon-text-width:before {
+  content: "\f035";
+}
+.bootstrap .icon-align-left:before,
+.datepicker .icon-align-left:before {
+  content: "\f036";
+}
+.bootstrap .icon-align-center:before,
+.datepicker .icon-align-center:before {
+  content: "\f037";
+}
+.bootstrap .icon-align-right:before,
+.datepicker .icon-align-right:before {
+  content: "\f038";
+}
+.bootstrap .icon-align-justify:before,
+.datepicker .icon-align-justify:before {
+  content: "\f039";
+}
+.bootstrap .icon-list:before,
+.datepicker .icon-list:before {
+  content: "\f03a";
+}
+.bootstrap .icon-indent-left:before,
+.datepicker .icon-indent-left:before {
+  content: "\f03b";
+}
+.bootstrap .icon-indent-right:before,
+.datepicker .icon-indent-right:before {
+  content: "\f03c";
+}
+.bootstrap .icon-facetime-video:before,
+.datepicker .icon-facetime-video:before {
+  content: "\f03d";
+}
+.bootstrap .icon-picture:before,
+.datepicker .icon-picture:before {
+  content: "\f03e";
+}
+.bootstrap .icon-pencil:before,
+.datepicker .icon-pencil:before {
+  content: "\f040";
+}
+.bootstrap .icon-map-marker:before,
+.datepicker .icon-map-marker:before {
+  content: "\f041";
+}
+.bootstrap .icon-adjust:before,
+.datepicker .icon-adjust:before {
+  content: "\f042";
+}
+.bootstrap .icon-tint:before,
+.datepicker .icon-tint:before {
+  content: "\f043";
+}
+.bootstrap .icon-edit:before,
+.datepicker .icon-edit:before {
+  content: "\f044";
+}
+.bootstrap .icon-share:before,
+.datepicker .icon-share:before {
+  content: "\f045";
+}
+.bootstrap .icon-check:before,
+.datepicker .icon-check:before {
+  content: "\f046";
+}
+.bootstrap .icon-move:before,
+.datepicker .icon-move:before {
+  content: "\f047";
+}
+.bootstrap .icon-step-backward:before,
+.datepicker .icon-step-backward:before {
+  content: "\f048";
+}
+.bootstrap .icon-fast-backward:before,
+.datepicker .icon-fast-backward:before {
+  content: "\f049";
+}
+.bootstrap .icon-backward:before,
+.datepicker .icon-backward:before {
+  content: "\f04a";
+}
+.bootstrap .icon-play:before,
+.datepicker .icon-play:before {
+  content: "\f04b";
+}
+.bootstrap .icon-pause:before,
+.datepicker .icon-pause:before {
+  content: "\f04c";
+}
+.bootstrap .icon-stop:before,
+.datepicker .icon-stop:before {
+  content: "\f04d";
+}
+.bootstrap .icon-forward:before,
+.datepicker .icon-forward:before {
+  content: "\f04e";
+}
+.bootstrap .icon-fast-forward:before,
+.datepicker .icon-fast-forward:before {
+  content: "\f050";
+}
+.bootstrap .icon-step-forward:before,
+.datepicker .icon-step-forward:before {
+  content: "\f051";
+}
+.bootstrap .icon-eject:before,
+.datepicker .icon-eject:before {
+  content: "\f052";
+}
+.bootstrap .icon-chevron-left:before,
+.datepicker .icon-chevron-left:before {
+  content: "\f053";
+}
+.bootstrap .icon-chevron-right:before,
+.datepicker .icon-chevron-right:before {
+  content: "\f054";
+}
+.bootstrap .icon-plus-sign:before,
+.datepicker .icon-plus-sign:before {
+  content: "\f055";
+}
+.bootstrap .icon-minus-sign:before,
+.datepicker .icon-minus-sign:before {
+  content: "\f056";
+}
+.bootstrap .icon-remove-sign:before,
+.datepicker .icon-remove-sign:before {
+  content: "\f057";
+}
+.bootstrap .icon-ok-sign:before,
+.datepicker .icon-ok-sign:before {
+  content: "\f058";
+}
+.bootstrap .icon-question-sign:before,
+.datepicker .icon-question-sign:before {
+  content: "\f059";
+}
+.bootstrap .icon-info-sign:before,
+.datepicker .icon-info-sign:before {
+  content: "\f05a";
+}
+.bootstrap .icon-screenshot:before,
+.datepicker .icon-screenshot:before {
+  content: "\f05b";
+}
+.bootstrap .icon-remove-circle:before,
+.datepicker .icon-remove-circle:before {
+  content: "\f05c";
+}
+.bootstrap .icon-ok-circle:before,
+.datepicker .icon-ok-circle:before {
+  content: "\f05d";
+}
+.bootstrap .icon-ban-circle:before,
+.datepicker .icon-ban-circle:before {
+  content: "\f05e";
+}
+.bootstrap .icon-arrow-left:before,
+.datepicker .icon-arrow-left:before {
+  content: "\f060";
+}
+.bootstrap .icon-arrow-right:before,
+.datepicker .icon-arrow-right:before {
+  content: "\f061";
+}
+.bootstrap .icon-arrow-up:before,
+.datepicker .icon-arrow-up:before {
+  content: "\f062";
+}
+.bootstrap .icon-arrow-down:before,
+.datepicker .icon-arrow-down:before {
+  content: "\f063";
+}
+.bootstrap .icon-mail-forward:before,
+.bootstrap .icon-share-alt:before,
+.datepicker .icon-mail-forward:before,
+.datepicker .icon-share-alt:before {
+  content: "\f064";
+}
+.bootstrap .icon-resize-full:before,
+.datepicker .icon-resize-full:before {
+  content: "\f065";
+}
+.bootstrap .icon-resize-small:before,
+.datepicker .icon-resize-small:before {
+  content: "\f066";
+}
+.bootstrap .icon-plus:before,
+.datepicker .icon-plus:before {
+  content: "\f067";
+}
+.bootstrap .icon-minus:before,
+.datepicker .icon-minus:before {
+  content: "\f068";
+}
+.bootstrap .icon-asterisk:before,
+.datepicker .icon-asterisk:before {
+  content: "\f069";
+}
+.bootstrap .icon-exclamation-sign:before,
+.datepicker .icon-exclamation-sign:before {
+  content: "\f06a";
+}
+.bootstrap .icon-gift:before,
+.datepicker .icon-gift:before {
+  content: "\f06b";
+}
+.bootstrap .icon-leaf:before,
+.datepicker .icon-leaf:before {
+  content: "\f06c";
+}
+.bootstrap .icon-fire:before,
+.datepicker .icon-fire:before {
+  content: "\f06d";
+}
+.bootstrap .icon-eye-open:before,
+.datepicker .icon-eye-open:before {
+  content: "\f06e";
+}
+.bootstrap .icon-eye-close:before,
+.datepicker .icon-eye-close:before {
+  content: "\f070";
+}
+.bootstrap .icon-warning-sign:before,
+.datepicker .icon-warning-sign:before {
+  content: "\f071";
+}
+.bootstrap .icon-plane:before,
+.datepicker .icon-plane:before {
+  content: "\f072";
+}
+.bootstrap .icon-calendar:before,
+.datepicker .icon-calendar:before {
+  content: "\f073";
+}
+.bootstrap .icon-random:before,
+.datepicker .icon-random:before {
+  content: "\f074";
+}
+.bootstrap .icon-comment:before,
+.datepicker .icon-comment:before {
+  content: "\f075";
+}
+.bootstrap .icon-magnet:before,
+.datepicker .icon-magnet:before {
+  content: "\f076";
+}
+.bootstrap .icon-chevron-up:before,
+.datepicker .icon-chevron-up:before {
+  content: "\f077";
+}
+.bootstrap .icon-chevron-down:before,
+.datepicker .icon-chevron-down:before {
+  content: "\f078";
+}
+.bootstrap .icon-retweet:before,
+.datepicker .icon-retweet:before {
+  content: "\f079";
+}
+.bootstrap .icon-shopping-cart:before,
+.datepicker .icon-shopping-cart:before {
+  content: "\f07a";
+}
+.bootstrap .icon-folder-close:before,
+.datepicker .icon-folder-close:before {
+  content: "\f07b";
+}
+.bootstrap .icon-folder-open:before,
+.datepicker .icon-folder-open:before {
+  content: "\f07c";
+}
+.bootstrap .icon-resize-vertical:before,
+.datepicker .icon-resize-vertical:before {
+  content: "\f07d";
+}
+.bootstrap .icon-resize-horizontal:before,
+.datepicker .icon-resize-horizontal:before {
+  content: "\f07e";
+}
+.bootstrap .icon-bar-chart:before,
+.datepicker .icon-bar-chart:before {
+  content: "\f080";
+}
+.bootstrap .icon-twitter-sign:before,
+.datepicker .icon-twitter-sign:before {
+  content: "\f081";
+}
+.bootstrap .icon-facebook-sign:before,
+.datepicker .icon-facebook-sign:before {
+  content: "\f082";
+}
+.bootstrap .icon-camera-retro:before,
+.datepicker .icon-camera-retro:before {
+  content: "\f083";
+}
+.bootstrap .icon-key:before,
+.datepicker .icon-key:before {
+  content: "\f084";
+}
+.bootstrap .icon-cogs:before,
+.datepicker .icon-cogs:before {
+  content: "\f085";
+}
+.bootstrap .icon-comments:before,
+.datepicker .icon-comments:before {
+  content: "\f086";
+}
+.bootstrap .icon-thumbs-up-alt:before,
+.datepicker .icon-thumbs-up-alt:before {
+  content: "\f087";
+}
+.bootstrap .icon-thumbs-down-alt:before,
+.datepicker .icon-thumbs-down-alt:before {
+  content: "\f088";
+}
+.bootstrap .icon-star-half:before,
+.datepicker .icon-star-half:before {
+  content: "\f089";
+}
+.bootstrap .icon-heart-empty:before,
+.datepicker .icon-heart-empty:before {
+  content: "\f08a";
+}
+.bootstrap .icon-signout:before,
+.datepicker .icon-signout:before {
+  content: "\f08b";
+}
+.bootstrap .icon-linkedin-sign:before,
+.datepicker .icon-linkedin-sign:before {
+  content: "\f08c";
+}
+.bootstrap .icon-pushpin:before,
+.datepicker .icon-pushpin:before {
+  content: "\f08d";
+}
+.bootstrap .icon-external-link:before,
+.datepicker .icon-external-link:before {
+  content: "\f08e";
+}
+.bootstrap .icon-signin:before,
+.datepicker .icon-signin:before {
+  content: "\f090";
+}
+.bootstrap .icon-trophy:before,
+.datepicker .icon-trophy:before {
+  content: "\f091";
+}
+.bootstrap .icon-github-sign:before,
+.datepicker .icon-github-sign:before {
+  content: "\f092";
+}
+.bootstrap .icon-upload-alt:before,
+.datepicker .icon-upload-alt:before {
+  content: "\f093";
+}
+.bootstrap .icon-lemon:before,
+.datepicker .icon-lemon:before {
+  content: "\f094";
+}
+.bootstrap .icon-phone:before,
+.datepicker .icon-phone:before {
+  content: "\f095";
+}
+.bootstrap .icon-unchecked:before,
+.bootstrap .icon-check-empty:before,
+.datepicker .icon-unchecked:before,
+.datepicker .icon-check-empty:before {
+  content: "\f096";
+}
+.bootstrap .icon-bookmark-empty:before,
+.datepicker .icon-bookmark-empty:before {
+  content: "\f097";
+}
+.bootstrap .icon-phone-sign:before,
+.datepicker .icon-phone-sign:before {
+  content: "\f098";
+}
+.bootstrap .icon-twitter:before,
+.datepicker .icon-twitter:before {
+  content: "\f099";
+}
+.bootstrap .icon-facebook:before,
+.datepicker .icon-facebook:before {
+  content: "\f09a";
+}
+.bootstrap .icon-github:before,
+.datepicker .icon-github:before {
+  content: "\f09b";
+}
+.bootstrap .icon-unlock:before,
+.datepicker .icon-unlock:before {
+  content: "\f09c";
+}
+.bootstrap .icon-credit-card:before,
+.datepicker .icon-credit-card:before {
+  content: "\f09d";
+}
+.bootstrap .icon-rss:before,
+.datepicker .icon-rss:before {
+  content: "\f09e";
+}
+.bootstrap .icon-hdd:before,
+.datepicker .icon-hdd:before {
+  content: "\f0a0";
+}
+.bootstrap .icon-bullhorn:before,
+.datepicker .icon-bullhorn:before {
+  content: "\f0a1";
+}
+.bootstrap .icon-bell:before,
+.datepicker .icon-bell:before {
+  content: "\f0a2";
+}
+.bootstrap .icon-certificate:before,
+.datepicker .icon-certificate:before {
+  content: "\f0a3";
+}
+.bootstrap .icon-hand-right:before,
+.datepicker .icon-hand-right:before {
+  content: "\f0a4";
+}
+.bootstrap .icon-hand-left:before,
+.datepicker .icon-hand-left:before {
+  content: "\f0a5";
+}
+.bootstrap .icon-hand-up:before,
+.datepicker .icon-hand-up:before {
+  content: "\f0a6";
+}
+.bootstrap .icon-hand-down:before,
+.datepicker .icon-hand-down:before {
+  content: "\f0a7";
+}
+.bootstrap .icon-circle-arrow-left:before,
+.datepicker .icon-circle-arrow-left:before {
+  content: "\f0a8";
+}
+.bootstrap .icon-circle-arrow-right:before,
+.datepicker .icon-circle-arrow-right:before {
+  content: "\f0a9";
+}
+.bootstrap .icon-circle-arrow-up:before,
+.datepicker .icon-circle-arrow-up:before {
+  content: "\f0aa";
+}
+.bootstrap .icon-circle-arrow-down:before,
+.datepicker .icon-circle-arrow-down:before {
+  content: "\f0ab";
+}
+.bootstrap .icon-globe:before,
+.datepicker .icon-globe:before {
+  content: "\f0ac";
+}
+.bootstrap .icon-wrench:before,
+.datepicker .icon-wrench:before {
+  content: "\f0ad";
+}
+.bootstrap .icon-tasks:before,
+.datepicker .icon-tasks:before {
+  content: "\f0ae";
+}
+.bootstrap .icon-filter:before,
+.datepicker .icon-filter:before {
+  content: "\f0b0";
+}
+.bootstrap .icon-briefcase:before,
+.datepicker .icon-briefcase:before {
+  content: "\f0b1";
+}
+.bootstrap .icon-fullscreen:before,
+.datepicker .icon-fullscreen:before {
+  content: "\f0b2";
+}
+.bootstrap .icon-group:before,
+.datepicker .icon-group:before {
+  content: "\f0c0";
+}
+.bootstrap .icon-link:before,
+.datepicker .icon-link:before {
+  content: "\f0c1";
+}
+.bootstrap .icon-cloud:before,
+.datepicker .icon-cloud:before {
+  content: "\f0c2";
+}
+.bootstrap .icon-beaker:before,
+.datepicker .icon-beaker:before {
+  content: "\f0c3";
+}
+.bootstrap .icon-cut:before,
+.datepicker .icon-cut:before {
+  content: "\f0c4";
+}
+.bootstrap .icon-copy:before,
+.datepicker .icon-copy:before {
+  content: "\f0c5";
+}
+.bootstrap .icon-paperclip:before,
+.bootstrap .icon-paper-clip:before,
+.datepicker .icon-paperclip:before,
+.datepicker .icon-paper-clip:before {
+  content: "\f0c6";
+}
+.bootstrap .icon-save:before,
+.datepicker .icon-save:before {
+  content: "\f0c7";
+}
+.bootstrap .icon-sign-blank:before,
+.datepicker .icon-sign-blank:before {
+  content: "\f0c8";
+}
+.bootstrap .icon-reorder:before,
+.datepicker .icon-reorder:before {
+  content: "\f0c9";
+}
+.bootstrap .icon-list-ul:before,
+.datepicker .icon-list-ul:before {
+  content: "\f0ca";
+}
+.bootstrap .icon-list-ol:before,
+.datepicker .icon-list-ol:before {
+  content: "\f0cb";
+}
+.bootstrap .icon-strikethrough:before,
+.datepicker .icon-strikethrough:before {
+  content: "\f0cc";
+}
+.bootstrap .icon-underline:before,
+.datepicker .icon-underline:before {
+  content: "\f0cd";
+}
+.bootstrap .icon-table:before,
+.datepicker .icon-table:before {
+  content: "\f0ce";
+}
+.bootstrap .icon-magic:before,
+.datepicker .icon-magic:before {
+  content: "\f0d0";
+}
+.bootstrap .icon-truck:before,
+.datepicker .icon-truck:before {
+  content: "\f0d1";
+}
+.bootstrap .icon-pinterest:before,
+.datepicker .icon-pinterest:before {
+  content: "\f0d2";
+}
+.bootstrap .icon-pinterest-sign:before,
+.datepicker .icon-pinterest-sign:before {
+  content: "\f0d3";
+}
+.bootstrap .icon-google-plus-sign:before,
+.datepicker .icon-google-plus-sign:before {
+  content: "\f0d4";
+}
+.bootstrap .icon-google-plus:before,
+.datepicker .icon-google-plus:before {
+  content: "\f0d5";
+}
+.bootstrap .icon-money:before,
+.datepicker .icon-money:before {
+  content: "\f0d6";
+}
+.bootstrap .icon-caret-down:before,
+.datepicker .icon-caret-down:before {
+  content: "\f0d7";
+}
+.bootstrap .icon-caret-up:before,
+.datepicker .icon-caret-up:before {
+  content: "\f0d8";
+}
+.bootstrap .icon-caret-left:before,
+.datepicker .icon-caret-left:before {
+  content: "\f0d9";
+}
+.bootstrap .icon-caret-right:before,
+.datepicker .icon-caret-right:before {
+  content: "\f0da";
+}
+.bootstrap .icon-columns:before,
+.datepicker .icon-columns:before {
+  content: "\f0db";
+}
+.bootstrap .icon-sort:before,
+.datepicker .icon-sort:before {
+  content: "\f0dc";
+}
+.bootstrap .icon-sort-down:before,
+.datepicker .icon-sort-down:before {
+  content: "\f0dd";
+}
+.bootstrap .icon-sort-up:before,
+.datepicker .icon-sort-up:before {
+  content: "\f0de";
+}
+.bootstrap .icon-envelope:before,
+.datepicker .icon-envelope:before {
+  content: "\f0e0";
+}
+.bootstrap .icon-linkedin:before,
+.datepicker .icon-linkedin:before {
+  content: "\f0e1";
+}
+.bootstrap .icon-rotate-left:before,
+.bootstrap .icon-undo:before,
+.datepicker .icon-rotate-left:before,
+.datepicker .icon-undo:before {
+  content: "\f0e2";
+}
+.bootstrap .icon-legal:before,
+.datepicker .icon-legal:before {
+  content: "\f0e3";
+}
+.bootstrap .icon-dashboard:before,
+.datepicker .icon-dashboard:before {
+  content: "\f0e4";
+}
+.bootstrap .icon-comment-alt:before,
+.datepicker .icon-comment-alt:before {
+  content: "\f0e5";
+}
+.bootstrap .icon-comments-alt:before,
+.datepicker .icon-comments-alt:before {
+  content: "\f0e6";
+}
+.bootstrap .icon-bolt:before,
+.datepicker .icon-bolt:before {
+  content: "\f0e7";
+}
+.bootstrap .icon-sitemap:before,
+.datepicker .icon-sitemap:before {
+  content: "\f0e8";
+}
+.bootstrap .icon-umbrella:before,
+.datepicker .icon-umbrella:before {
+  content: "\f0e9";
+}
+.bootstrap .icon-paste:before,
+.datepicker .icon-paste:before {
+  content: "\f0ea";
+}
+.bootstrap .icon-lightbulb:before,
+.datepicker .icon-lightbulb:before {
+  content: "\f0eb";
+}
+.bootstrap .icon-exchange:before,
+.datepicker .icon-exchange:before {
+  content: "\f0ec";
+}
+.bootstrap .icon-cloud-download:before,
+.datepicker .icon-cloud-download:before {
+  content: "\f0ed";
+}
+.bootstrap .icon-cloud-upload:before,
+.datepicker .icon-cloud-upload:before {
+  content: "\f0ee";
+}
+.bootstrap .icon-user-md:before,
+.datepicker .icon-user-md:before {
+  content: "\f0f0";
+}
+.bootstrap .icon-stethoscope:before,
+.datepicker .icon-stethoscope:before {
+  content: "\f0f1";
+}
+.bootstrap .icon-suitcase:before,
+.datepicker .icon-suitcase:before {
+  content: "\f0f2";
+}
+.bootstrap .icon-bell-alt:before,
+.datepicker .icon-bell-alt:before {
+  content: "\f0f3";
+}
+.bootstrap .icon-coffee:before,
+.datepicker .icon-coffee:before {
+  content: "\f0f4";
+}
+.bootstrap .icon-food:before,
+.datepicker .icon-food:before {
+  content: "\f0f5";
+}
+.bootstrap .icon-file-text-alt:before,
+.datepicker .icon-file-text-alt:before {
+  content: "\f0f6";
+}
+.bootstrap .icon-building:before,
+.datepicker .icon-building:before {
+  content: "\f0f7";
+}
+.bootstrap .icon-hospital:before,
+.datepicker .icon-hospital:before {
+  content: "\f0f8";
+}
+.bootstrap .icon-ambulance:before,
+.datepicker .icon-ambulance:before {
+  content: "\f0f9";
+}
+.bootstrap .icon-medkit:before,
+.datepicker .icon-medkit:before {
+  content: "\f0fa";
+}
+.bootstrap .icon-fighter-jet:before,
+.datepicker .icon-fighter-jet:before {
+  content: "\f0fb";
+}
+.bootstrap .icon-beer:before,
+.datepicker .icon-beer:before {
+  content: "\f0fc";
+}
+.bootstrap .icon-h-sign:before,
+.datepicker .icon-h-sign:before {
+  content: "\f0fd";
+}
+.bootstrap .icon-plus-sign-alt:before,
+.datepicker .icon-plus-sign-alt:before {
+  content: "\f0fe";
+}
+.bootstrap .icon-double-angle-left:before,
+.datepicker .icon-double-angle-left:before {
+  content: "\f100";
+}
+.bootstrap .icon-double-angle-right:before,
+.datepicker .icon-double-angle-right:before {
+  content: "\f101";
+}
+.bootstrap .icon-double-angle-up:before,
+.datepicker .icon-double-angle-up:before {
+  content: "\f102";
+}
+.bootstrap .icon-double-angle-down:before,
+.datepicker .icon-double-angle-down:before {
+  content: "\f103";
+}
+.bootstrap .icon-angle-left:before,
+.datepicker .icon-angle-left:before {
+  content: "\f104";
+}
+.bootstrap .icon-angle-right:before,
+.datepicker .icon-angle-right:before {
+  content: "\f105";
+}
+.bootstrap .icon-angle-up:before,
+.datepicker .icon-angle-up:before {
+  content: "\f106";
+}
+.bootstrap .icon-angle-down:before,
+.datepicker .icon-angle-down:before {
+  content: "\f107";
+}
+.bootstrap .icon-desktop:before,
+.datepicker .icon-desktop:before {
+  content: "\f108";
+}
+.bootstrap .icon-laptop:before,
+.datepicker .icon-laptop:before {
+  content: "\f109";
+}
+.bootstrap .icon-tablet:before,
+.datepicker .icon-tablet:before {
+  content: "\f10a";
+}
+.bootstrap .icon-mobile-phone:before,
+.datepicker .icon-mobile-phone:before {
+  content: "\f10b";
+}
+.bootstrap .icon-circle-blank:before,
+.datepicker .icon-circle-blank:before {
+  content: "\f10c";
+}
+.bootstrap .icon-quote-left:before,
+.datepicker .icon-quote-left:before {
+  content: "\f10d";
+}
+.bootstrap .icon-quote-right:before,
+.datepicker .icon-quote-right:before {
+  content: "\f10e";
+}
+.bootstrap .icon-spinner:before,
+.datepicker .icon-spinner:before {
+  content: "\f110";
+}
+.bootstrap .icon-circle:before,
+.datepicker .icon-circle:before {
+  content: "\f111";
+}
+.bootstrap .icon-mail-reply:before,
+.bootstrap .icon-reply:before,
+.datepicker .icon-mail-reply:before,
+.datepicker .icon-reply:before {
+  content: "\f112";
+}
+.bootstrap .icon-github-alt:before,
+.datepicker .icon-github-alt:before {
+  content: "\f113";
+}
+.bootstrap .icon-folder-close-alt:before,
+.datepicker .icon-folder-close-alt:before {
+  content: "\f114";
+}
+.bootstrap .icon-folder-open-alt:before,
+.datepicker .icon-folder-open-alt:before {
+  content: "\f115";
+}
+.bootstrap .icon-expand-alt:before,
+.datepicker .icon-expand-alt:before {
+  content: "\f116";
+}
+.bootstrap .icon-collapse-alt:before,
+.datepicker .icon-collapse-alt:before {
+  content: "\f117";
+}
+.bootstrap .icon-smile:before,
+.datepicker .icon-smile:before {
+  content: "\f118";
+}
+.bootstrap .icon-frown:before,
+.datepicker .icon-frown:before {
+  content: "\f119";
+}
+.bootstrap .icon-meh:before,
+.datepicker .icon-meh:before {
+  content: "\f11a";
+}
+.bootstrap .icon-gamepad:before,
+.datepicker .icon-gamepad:before {
+  content: "\f11b";
+}
+.bootstrap .icon-keyboard:before,
+.datepicker .icon-keyboard:before {
+  content: "\f11c";
+}
+.bootstrap .icon-flag-alt:before,
+.datepicker .icon-flag-alt:before {
+  content: "\f11d";
+}
+.bootstrap .icon-flag-checkered:before,
+.datepicker .icon-flag-checkered:before {
+  content: "\f11e";
+}
+.bootstrap .icon-terminal:before,
+.datepicker .icon-terminal:before {
+  content: "\f120";
+}
+.bootstrap .icon-code:before,
+.datepicker .icon-code:before {
+  content: "\f121";
+}
+.bootstrap .icon-reply-all:before,
+.datepicker .icon-reply-all:before {
+  content: "\f122";
+}
+.bootstrap .icon-mail-reply-all:before,
+.datepicker .icon-mail-reply-all:before {
+  content: "\f122";
+}
+.bootstrap .icon-star-half-full:before,
+.bootstrap .icon-star-half-empty:before,
+.datepicker .icon-star-half-full:before,
+.datepicker .icon-star-half-empty:before {
+  content: "\f123";
+}
+.bootstrap .icon-location-arrow:before,
+.datepicker .icon-location-arrow:before {
+  content: "\f124";
+}
+.bootstrap .icon-crop:before,
+.datepicker .icon-crop:before {
+  content: "\f125";
+}
+.bootstrap .icon-code-fork:before,
+.datepicker .icon-code-fork:before {
+  content: "\f126";
+}
+.bootstrap .icon-unlink:before,
+.datepicker .icon-unlink:before {
+  content: "\f127";
+}
+.bootstrap .icon-question:before,
+.datepicker .icon-question:before {
+  content: "\f128";
+}
+.bootstrap .icon-info:before,
+.datepicker .icon-info:before {
+  content: "\f129";
+}
+.bootstrap .icon-exclamation:before,
+.datepicker .icon-exclamation:before {
+  content: "\f12a";
+}
+.bootstrap .icon-superscript:before,
+.datepicker .icon-superscript:before {
+  content: "\f12b";
+}
+.bootstrap .icon-subscript:before,
+.datepicker .icon-subscript:before {
+  content: "\f12c";
+}
+.bootstrap .icon-eraser:before,
+.datepicker .icon-eraser:before {
+  content: "\f12d";
+}
+.bootstrap .icon-puzzle-piece:before,
+.datepicker .icon-puzzle-piece:before {
+  content: "\f12e";
+}
+.bootstrap .icon-microphone:before,
+.datepicker .icon-microphone:before {
+  content: "\f130";
+}
+.bootstrap .icon-microphone-off:before,
+.datepicker .icon-microphone-off:before {
+  content: "\f131";
+}
+.bootstrap .icon-shield:before,
+.datepicker .icon-shield:before {
+  content: "\f132";
+}
+.bootstrap .icon-calendar-empty:before,
+.datepicker .icon-calendar-empty:before {
+  content: "\f133";
+}
+.bootstrap .icon-fire-extinguisher:before,
+.datepicker .icon-fire-extinguisher:before {
+  content: "\f134";
+}
+.bootstrap .icon-rocket:before,
+.datepicker .icon-rocket:before {
+  content: "\f135";
+}
+.bootstrap .icon-maxcdn:before,
+.datepicker .icon-maxcdn:before {
+  content: "\f136";
+}
+.bootstrap .icon-chevron-sign-left:before,
+.datepicker .icon-chevron-sign-left:before {
+  content: "\f137";
+}
+.bootstrap .icon-chevron-sign-right:before,
+.datepicker .icon-chevron-sign-right:before {
+  content: "\f138";
+}
+.bootstrap .icon-chevron-sign-up:before,
+.datepicker .icon-chevron-sign-up:before {
+  content: "\f139";
+}
+.bootstrap .icon-chevron-sign-down:before,
+.datepicker .icon-chevron-sign-down:before {
+  content: "\f13a";
+}
+.bootstrap .icon-html5:before,
+.datepicker .icon-html5:before {
+  content: "\f13b";
+}
+.bootstrap .icon-css3:before,
+.datepicker .icon-css3:before {
+  content: "\f13c";
+}
+.bootstrap .icon-anchor:before,
+.datepicker .icon-anchor:before {
+  content: "\f13d";
+}
+.bootstrap .icon-unlock-alt:before,
+.datepicker .icon-unlock-alt:before {
+  content: "\f13e";
+}
+.bootstrap .icon-bullseye:before,
+.datepicker .icon-bullseye:before {
+  content: "\f140";
+}
+.bootstrap .icon-ellipsis-horizontal:before,
+.datepicker .icon-ellipsis-horizontal:before {
+  content: "\f141";
+}
+.bootstrap .icon-ellipsis-vertical:before,
+.datepicker .icon-ellipsis-vertical:before {
+  content: "\f142";
+}
+.bootstrap .icon-rss-sign:before,
+.datepicker .icon-rss-sign:before {
+  content: "\f143";
+}
+.bootstrap .icon-play-sign:before,
+.datepicker .icon-play-sign:before {
+  content: "\f144";
+}
+.bootstrap .icon-ticket:before,
+.datepicker .icon-ticket:before {
+  content: "\f145";
+}
+.bootstrap .icon-minus-sign-alt:before,
+.datepicker .icon-minus-sign-alt:before {
+  content: "\f146";
+}
+.bootstrap .icon-check-minus:before,
+.datepicker .icon-check-minus:before {
+  content: "\f147";
+}
+.bootstrap .icon-level-up:before,
+.datepicker .icon-level-up:before {
+  content: "\f148";
+}
+.bootstrap .icon-level-down:before,
+.datepicker .icon-level-down:before {
+  content: "\f149";
+}
+.bootstrap .icon-check-sign:before,
+.datepicker .icon-check-sign:before {
+  content: "\f14a";
+}
+.bootstrap .icon-edit-sign:before,
+.datepicker .icon-edit-sign:before {
+  content: "\f14b";
+}
+.bootstrap .icon-external-link-sign:before,
+.datepicker .icon-external-link-sign:before {
+  content: "\f14c";
+}
+.bootstrap .icon-share-sign:before,
+.datepicker .icon-share-sign:before {
+  content: "\f14d";
+}
+.bootstrap .icon-compass:before,
+.datepicker .icon-compass:before {
+  content: "\f14e";
+}
+.bootstrap .icon-collapse:before,
+.datepicker .icon-collapse:before {
+  content: "\f150";
+}
+.bootstrap .icon-collapse-top:before,
+.datepicker .icon-collapse-top:before {
+  content: "\f151";
+}
+.bootstrap .icon-expand:before,
+.datepicker .icon-expand:before {
+  content: "\f152";
+}
+.bootstrap .icon-euro:before,
+.bootstrap .icon-eur:before,
+.datepicker .icon-euro:before,
+.datepicker .icon-eur:before {
+  content: "\f153";
+}
+.bootstrap .icon-gbp:before,
+.datepicker .icon-gbp:before {
+  content: "\f154";
+}
+.bootstrap .icon-dollar:before,
+.bootstrap .icon-usd:before,
+.datepicker .icon-dollar:before,
+.datepicker .icon-usd:before {
+  content: "\f155";
+}
+.bootstrap .icon-rupee:before,
+.bootstrap .icon-inr:before,
+.datepicker .icon-rupee:before,
+.datepicker .icon-inr:before {
+  content: "\f156";
+}
+.bootstrap .icon-yen:before,
+.bootstrap .icon-jpy:before,
+.datepicker .icon-yen:before,
+.datepicker .icon-jpy:before {
+  content: "\f157";
+}
+.bootstrap .icon-renminbi:before,
+.bootstrap .icon-cny:before,
+.datepicker .icon-renminbi:before,
+.datepicker .icon-cny:before {
+  content: "\f158";
+}
+.bootstrap .icon-won:before,
+.bootstrap .icon-krw:before,
+.datepicker .icon-won:before,
+.datepicker .icon-krw:before {
+  content: "\f159";
+}
+.bootstrap .icon-bitcoin:before,
+.bootstrap .icon-btc:before,
+.datepicker .icon-bitcoin:before,
+.datepicker .icon-btc:before {
+  content: "\f15a";
+}
+.bootstrap .icon-file:before,
+.datepicker .icon-file:before {
+  content: "\f15b";
+}
+.bootstrap .icon-file-text:before,
+.datepicker .icon-file-text:before {
+  content: "\f15c";
+}
+.bootstrap .icon-sort-by-alphabet:before,
+.datepicker .icon-sort-by-alphabet:before {
+  content: "\f15d";
+}
+.bootstrap .icon-sort-by-alphabet-alt:before,
+.datepicker .icon-sort-by-alphabet-alt:before {
+  content: "\f15e";
+}
+.bootstrap .icon-sort-by-attributes:before,
+.datepicker .icon-sort-by-attributes:before {
+  content: "\f160";
+}
+.bootstrap .icon-sort-by-attributes-alt:before,
+.datepicker .icon-sort-by-attributes-alt:before {
+  content: "\f161";
+}
+.bootstrap .icon-sort-by-order:before,
+.datepicker .icon-sort-by-order:before {
+  content: "\f162";
+}
+.bootstrap .icon-sort-by-order-alt:before,
+.datepicker .icon-sort-by-order-alt:before {
+  content: "\f163";
+}
+.bootstrap .icon-thumbs-up:before,
+.datepicker .icon-thumbs-up:before {
+  content: "\f164";
+}
+.bootstrap .icon-thumbs-down:before,
+.datepicker .icon-thumbs-down:before {
+  content: "\f165";
+}
+.bootstrap .icon-youtube-sign:before,
+.datepicker .icon-youtube-sign:before {
+  content: "\f166";
+}
+.bootstrap .icon-youtube:before,
+.datepicker .icon-youtube:before {
+  content: "\f167";
+}
+.bootstrap .icon-xing:before,
+.datepicker .icon-xing:before {
+  content: "\f168";
+}
+.bootstrap .icon-xing-sign:before,
+.datepicker .icon-xing-sign:before {
+  content: "\f169";
+}
+.bootstrap .icon-youtube-play:before,
+.datepicker .icon-youtube-play:before {
+  content: "\f16a";
+}
+.bootstrap .icon-dropbox:before,
+.datepicker .icon-dropbox:before {
+  content: "\f16b";
+}
+.bootstrap .icon-stackexchange:before,
+.datepicker .icon-stackexchange:before {
+  content: "\f16c";
+}
+.bootstrap .icon-instagram:before,
+.datepicker .icon-instagram:before {
+  content: "\f16d";
+}
+.bootstrap .icon-flickr:before,
+.datepicker .icon-flickr:before {
+  content: "\f16e";
+}
+.bootstrap .icon-adn:before,
+.datepicker .icon-adn:before {
+  content: "\f170";
+}
+.bootstrap .icon-bitbucket:before,
+.datepicker .icon-bitbucket:before {
+  content: "\f171";
+}
+.bootstrap .icon-bitbucket-sign:before,
+.datepicker .icon-bitbucket-sign:before {
+  content: "\f172";
+}
+.bootstrap .icon-tumblr:before,
+.datepicker .icon-tumblr:before {
+  content: "\f173";
+}
+.bootstrap .icon-tumblr-sign:before,
+.datepicker .icon-tumblr-sign:before {
+  content: "\f174";
+}
+.bootstrap .icon-long-arrow-down:before,
+.datepicker .icon-long-arrow-down:before {
+  content: "\f175";
+}
+.bootstrap .icon-long-arrow-up:before,
+.datepicker .icon-long-arrow-up:before {
+  content: "\f176";
+}
+.bootstrap .icon-long-arrow-left:before,
+.datepicker .icon-long-arrow-left:before {
+  content: "\f177";
+}
+.bootstrap .icon-long-arrow-right:before,
+.datepicker .icon-long-arrow-right:before {
+  content: "\f178";
+}
+.bootstrap .icon-apple:before,
+.datepicker .icon-apple:before {
+  content: "\f179";
+}
+.bootstrap .icon-windows:before,
+.datepicker .icon-windows:before {
+  content: "\f17a";
+}
+.bootstrap .icon-android:before,
+.datepicker .icon-android:before {
+  content: "\f17b";
+}
+.bootstrap .icon-linux:before,
+.datepicker .icon-linux:before {
+  content: "\f17c";
+}
+.bootstrap .icon-dribble:before,
+.datepicker .icon-dribble:before {
+  content: "\f17d";
+}
+.bootstrap .icon-skype:before,
+.datepicker .icon-skype:before {
+  content: "\f17e";
+}
+.bootstrap .icon-foursquare:before,
+.datepicker .icon-foursquare:before {
+  content: "\f180";
+}
+.bootstrap .icon-trello:before,
+.datepicker .icon-trello:before {
+  content: "\f181";
+}
+.bootstrap .icon-female:before,
+.datepicker .icon-female:before {
+  content: "\f182";
+}
+.bootstrap .icon-male:before,
+.datepicker .icon-male:before {
+  content: "\f183";
+}
+.bootstrap .icon-gittip:before,
+.datepicker .icon-gittip:before {
+  content: "\f184";
+}
+.bootstrap .icon-sun:before,
+.datepicker .icon-sun:before {
+  content: "\f185";
+}
+.bootstrap .icon-moon:before,
+.datepicker .icon-moon:before {
+  content: "\f186";
+}
+.bootstrap .icon-archive:before,
+.datepicker .icon-archive:before {
+  content: "\f187";
+}
+.bootstrap .icon-bug:before,
+.datepicker .icon-bug:before {
+  content: "\f188";
+}
+.bootstrap .icon-vk:before,
+.datepicker .icon-vk:before {
+  content: "\f189";
+}
+.bootstrap .icon-weibo:before,
+.datepicker .icon-weibo:before {
+  content: "\f18a";
+}
+.bootstrap .icon-renren:before,
+.datepicker .icon-renren:before {
+  content: "\f18b";
+}

@@ -1,0 +1,658 @@
+<? // -------------------------------------------------------------------------------
+// Author:			iPactor GmbH
+// Updated:			09.07.2013
+// Copyright:		2013 by iPactor GmbH. All Rights Reserved.
+// Any unauthorized redistribution, reselling, modifying or reproduction of part
+// or all of the contents in any form is strictly prohibited.
+// ----------------------------------------------------------------------------------
+$perso = new Personalization($order->getId());
+
+// Elemente fuer Vorder- oder Reuckseite holen
+if ($this->getReverse() == 1){
+	$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_BACK);
+} else {
+	$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_FRONT);
+}
+
+$pdf->ezSetMargins(0, 0, 0, 0);
+
+$cur_y = $pdf->y;
+$page_width = $pdf->ez['pageWidth'];
+$page_height = $pdf->ez['pageHeight'];
+
+// $pdf->addPngFromFile("./docs/templates/logo_contilas.png", 0, 0, $page_width, $page_height);
+
+if ($perso->getLineByLine() == 0) {
+
+	foreach ($all_items as $item){
+		$it = new Personalizationitem($item->getPersoItemID());
+		$xpos 	= ($it->getXpos()/10 * 72) / 2.54;			// x-Pos der Ecke links unten			cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+		$ypos 	= ($item->calculateYPos()/10 * 72) / 2.54;	// y-Pos der Ecke links unten
+		$width	= ($it->getWidth()/10 * 72) / 2.54;			// Breite
+		$height	= ($it->getHeight()/10 * 72) / 2.54;		// Hoehe
+		$size	= $it->getTextsize();						// Schriftgroesse
+		$pdf->setColorCMYK($it->getColor_c(),$it->getColor_m(),$it->getColor_y(),$it->getColor_k());
+		$spacing = $it->getSpacing();
+		
+		switch ($it->getJustification()){
+			case 0 : $justification = "left"; break;
+			case 1 : $justification = "center"; break;
+			case 2 : $justification = "right"; break;
+			default: $justification = "left"; 
+		}
+		
+		$tmp_font = new PersoFont($it->getFont());
+		$font = $tmp_font->getFilename();
+// 		$pdf->selectFont("./fonts/".$font);
+		$pdf->selectFont($font);
+		
+		if ($it->getBoxtype() == 1){
+			$ypos = $page_height - $ypos; // - $size;
+			$pdf->y = $ypos;
+			$pdf->ezText($item->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+		} else {
+			$ypos = $page_height - $ypos;
+			$pdf->y = $ypos;
+			$pdf->ezText($item->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+		}
+	}
+
+}
+else if ($perso->getLineByLine() == 1) {
+
+	if ($this->getReverse() == 1){
+		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_BACK, "t2.id");
+	} else {
+		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_FRONT, "t2.id");
+	}
+
+	foreach ($all_items as $oitem){ // linke tabelle füllen
+		$item = new Personalizationitem($oitem->getPersoItemID());
+		if ($item->getJustification() == 0 && $oitem->getValue() != "") {
+			if ($item->getDependencyID() == 0) { // erstes fix object links
+				$xpos 	= ($item->getXpos()/10 * 72) / 2.54;		// x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+				$ypos 	= ($item->getYPos()/10 * 72) / 2.54;		// y-Pos der Ecke links unten
+				$width	= ($item->getWidth()/10 * 72) / 2.54;		// Breite
+				$height	= ($item->getHeight()/10 * 72) / 2.54;		// Hoehe
+				$size	= $item->getTextsize();						// Schriftgroesse
+				$pdf->setColorCMYK($item->getColor_c(),$item->getColor_m(),$item->getColor_y(),$item->getColor_k());
+				$spacing = $item->getSpacing();
+				$tmp_font = new PersoFont($item->getFont());
+				$font = $tmp_font->getFilename();
+// 				$pdf->selectFont("./fonts/".$font);
+		        $pdf->selectFont($font);
+				
+				switch ($item->getJustification()){
+					case 0 : $justification = "left"; break;
+					case 1 : $justification = "center"; break;
+					case 2 : $justification = "right"; break;
+					default: $justification = "left";
+				};
+				
+				if ($item->getBoxtype() == 1){
+					$ypos = $page_height - $ypos; // - $size;
+        			$pdf->y = $ypos;
+        			$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+					
+				} else {
+					$ypos = $page_height - $ypos;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+				}
+				
+				foreach ($all_items as $suboitem){
+					$subitem = new Personalizationitem($suboitem->getPersoItemID());
+					if ($subitem->getJustification() == 0 && $suboitem->getValue() != "") {
+						if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte
+							$width	= ($subitem->getWidth()/10 * 72) / 2.54;
+							$height	= ($subitem->getHeight()/10 * 72) / 2.54;
+							$size	= $subitem->getTextsize();
+							$pdf->setColorCMYK($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
+							$spacing = $subitem->getSpacing();
+							$tmp_font = new PersoFont($subitem->getFont());
+							$font = $tmp_font->getFilename();
+							$pdf->selectFont("./fonts/".$font);
+							if ($suboitem->getValue() != "spacer") {
+								if ($subitem->getXpos() > 0) {
+									$subxpos = ($subitem->getXpos()/10 * 72) / 2.54;
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+        			                    $pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+								} else {
+									if ($spacing != 0) {
+										$ypos 	= $ypos - $spacing;
+									}
+									else {
+										$ypos 	= $ypos - 8;
+									}
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+								}
+							} else {
+								if ($spacing != 0) {
+									$ypos 	= $ypos - $spacing;
+								}
+								else {
+									$ypos 	= $ypos - 8;
+								}
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+
+	foreach ($all_items as $oitem){ // mittlere tabelle füllen
+		$item = new Personalizationitem($oitem->getPersoItemID());
+		if ($item->getJustification() == 1 && $oitem->getValue() != "") {
+			if ($item->getDependencyID() == 0) { // erstes fix object links
+				$xpos 	= ($item->getXpos()/10 * 72) / 2.54;		// x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+				$ypos 	= ($item->getYPos()/10 * 72) / 2.54;		// y-Pos der Ecke links unten
+				$width	= ($item->getWidth()/10 * 72) / 2.54;		// Breite
+				$height	= ($item->getHeight()/10 * 72) / 2.54;		// Hoehe
+				$size	= $item->getTextsize();						// Schriftgroesse
+				$pdf->setColorCMYK($item->getColor_c(),$item->getColor_m(),$item->getColor_y(),$item->getColor_k());
+				$spacing = $item->getSpacing();
+				$tmp_font = new PersoFont($item->getFont());
+				$font = $tmp_font->getFilename();
+// 				$pdf->selectFont("./fonts/".$font);
+		        $pdf->selectFont($font);
+				
+				switch ($item->getJustification()){
+					case 0 : $justification = "left"; break;
+					case 1 : $justification = "center"; break;
+					case 2 : $justification = "right"; break;
+					default: $justification = "left";
+				};
+
+				
+				if ($item->getBoxtype() == 1){
+					$ypos = $page_height - $ypos; // - $size;
+        			$pdf->y = $ypos;
+        			$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+					
+				} else {
+					$ypos = $page_height - $ypos;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+				}
+				
+				foreach ($all_items as $suboitem){
+					$subitem = new Personalizationitem($suboitem->getPersoItemID());
+					if ($subitem->getJustification() == 1 && $suboitem->getValue() != "") {
+						if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte
+							$width	= ($subitem->getWidth()/10 * 72) / 2.54;
+							$height	= ($subitem->getHeight()/10 * 72) / 2.54;
+							$size	= $subitem->getTextsize();
+							$pdf->setColorCMYK($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
+							$spacing = $subitem->getSpacing();
+							$tmp_font = new PersoFont($subitem->getFont());
+							$font = $tmp_font->getFilename();
+							$pdf->selectFont("./fonts/".$font);
+							if ($suboitem->getValue() != "spacer") {
+								if ($subitem->getXpos() > 0) {
+									$subxpos = ($subitem->getXpos()/10 * 72) / 2.54;
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+        			                    $pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+								} else {
+									if ($spacing != 0) {
+										$ypos 	= $ypos - $spacing;
+									}
+									else {
+										$ypos 	= $ypos - 8;
+									}
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+        			                    $pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+								}
+							} else {
+								if ($spacing != 0) {
+									$ypos 	= $ypos - $spacing;
+								}
+								else {
+									$ypos 	= $ypos - 8;
+								}
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+	
+	foreach ($all_items as $oitem){ // rechte tabelle füllen
+		$item = new Personalizationitem($oitem->getPersoItemID());
+		if ($item->getJustification() == 2 && $oitem->getValue() != "") {
+			if ($item->getDependencyID() == 0) { // erstes fix object links
+				$xpos 	= ($item->getXpos()/10 * 72) / 2.54;		// x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+				$ypos 	= ($item->getYPos()/10 * 72) / 2.54;		// y-Pos der Ecke links unten
+				$width	= ($item->getWidth()/10 * 72) / 2.54;		// Breite
+				$height	= ($item->getHeight()/10 * 72) / 2.54;		// Hoehe
+				$size	= $item->getTextsize();						// Schriftgroesse
+				$pdf->setColorCMYK($item->getColor_c(),$item->getColor_m(),$item->getColor_y(),$item->getColor_k());
+				$spacing = $item->getSpacing();
+				$tmp_font = new PersoFont($item->getFont());
+				$font = $tmp_font->getFilename();
+// 				$pdf->selectFont("./fonts/".$font);
+		        $pdf->selectFont($font);
+				
+				switch ($item->getJustification()){
+					case 0 : $justification = "left"; break;
+					case 1 : $justification = "center"; break;
+					case 2 : $justification = "right"; break;
+					default: $justification = "left";
+				};
+
+				
+				if ($item->getBoxtype() == 1){
+					$ypos = $page_height - $ypos; // - $size;
+        			$pdf->y = $ypos;
+        			$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+					
+				} else {
+					$ypos = $page_height - $ypos;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+				}
+				
+				foreach ($all_items as $suboitem){
+					$subitem = new Personalizationitem($suboitem->getPersoItemID());
+					if ($subitem->getJustification() == 2 && $suboitem->getValue() != "") {
+						if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte
+							$width	= ($subitem->getWidth()/10 * 72) / 2.54;
+							$height	= ($subitem->getHeight()/10 * 72) / 2.54;
+							$size	= $subitem->getTextsize();
+							$pdf->setColorCMYK($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
+							$spacing = $subitem->getSpacing();
+							$tmp_font = new PersoFont($subitem->getFont());
+							$font = $tmp_font->getFilename();
+							$pdf->selectFont("./fonts/".$font);
+							if ($suboitem->getValue() != "spacer") {
+								if ($subitem->getXpos() > 0) {
+									$subxpos = ($subitem->getXpos()/10 * 72) / 2.54;
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+        			                    $pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+								} else {
+									if ($spacing != 0) {
+										$ypos 	= $ypos - $spacing;
+									}
+									else {
+										$ypos 	= $ypos - 8;
+									}
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+								}
+							} else {
+								if ($spacing != 0) {
+									$ypos 	= $ypos - $spacing;
+								}
+								else {
+									$ypos 	= $ypos - 8;
+								}
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+
+}
+else if ($perso->getLineByLine() == 2) {
+
+	if ($this->getReverse() == 1){
+		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_BACK, "t2.id");
+	} else {
+		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_FRONT, "t2.id");
+	}
+	$all_items_reverse = array_reverse ($all_items);
+
+	foreach ($all_items as $oitem){ // linke tabelle füllen
+		$item = new Personalizationitem($oitem->getPersoItemID());
+		if ($item->getJustification() == 0 && $oitem->getValue() != "") {
+			if ($item->getDependencyID() == 0) { // erstes fix object links
+				$xpos 	= ($item->getXpos()/10 * 72) / 2.54;		// x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+				$ypos 	= ($item->getYPos()/10 * 72) / 2.54;		// y-Pos der Ecke links unten
+				$width	= ($item->getWidth()/10 * 72) / 2.54;		// Breite
+				$height	= ($item->getHeight()/10 * 72) / 2.54;		// Hoehe
+				$size	= $item->getTextsize();						// Schriftgroesse
+				$pdf->setColorCMYK($item->getColor_c(),$item->getColor_m(),$item->getColor_y(),$item->getColor_k());
+				$spacing = $item->getSpacing();
+				$tmp_font = new PersoFont($item->getFont());
+				$font = $tmp_font->getFilename();
+// 				$pdf->selectFont("./fonts/".$font);
+		        $pdf->selectFont($font);
+				
+				switch ($item->getJustification()){
+					case 0 : $justification = "left"; break;
+					case 1 : $justification = "center"; break;
+					case 2 : $justification = "right"; break;
+					default: $justification = "left";
+				};
+				
+				if ($item->getBoxtype() == 1){
+					$ypos = $page_height - $ypos; // - $size;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+					
+				} else {
+					$ypos = $page_height - $ypos;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+				}
+				
+				$samelevel = false;
+				foreach ($all_items_reverse as $suboitem){
+					$subitem = new Personalizationitem($suboitem->getPersoItemID());
+					if ($subitem->getJustification() == 0 && $suboitem->getValue() != "") {
+						if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte
+							$width	= ($subitem->getWidth()/10 * 72) / 2.54;
+							$height	= ($subitem->getHeight()/10 * 72) / 2.54;
+							$size	= $subitem->getTextsize();
+							$pdf->setColorCMYK($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
+							$spacing = $subitem->getSpacing();
+							$tmp_font = new PersoFont($subitem->getFont());
+							$font = $tmp_font->getFilename();
+							$pdf->selectFont("./fonts/".$font);
+							if ($suboitem->getValue() != "spacer") {
+								if ($subitem->getXpos() > 0) {
+									if ($spacing != 0) {
+										$ypos 	= $ypos + $spacing;
+									}
+									else {
+										$ypos 	= $ypos + 8;
+									}
+									$subxpos = ($subitem->getXpos()/10 * 72) / 2.54;
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+									$samelevel = true;
+								} else {
+									if (!$samelevel) {
+										if ($spacing != 0) {
+											$ypos 	= $ypos + $spacing;
+										}
+										else {
+											$ypos 	= $ypos + 8;
+										}
+									}
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+									$samelevel = false;
+								}
+							} else {
+								if (!$samelevel) {
+									if ($spacing != 0) {
+										$ypos 	= $ypos + $spacing;
+									}
+									else {
+										$ypos 	= $ypos + 8;
+									}
+								}
+								$samelevel = false;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+
+	foreach ($all_items as $oitem){ // mittlere tabelle füllen
+		$item = new Personalizationitem($oitem->getPersoItemID());
+		if ($item->getJustification() == 1 && $oitem->getValue() != "") {
+			if ($item->getDependencyID() == 0) { // erstes fix object links
+				$xpos 	= ($item->getXpos()/10 * 72) / 2.54;		// x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+				$ypos 	= ($item->getYPos()/10 * 72) / 2.54;		// y-Pos der Ecke links unten
+				$width	= ($item->getWidth()/10 * 72) / 2.54;		// Breite
+				$height	= ($item->getHeight()/10 * 72) / 2.54;		// Hoehe
+				$size	= $item->getTextsize();						// Schriftgroesse
+				$pdf->setColorCMYK($item->getColor_c(),$item->getColor_m(),$item->getColor_y(),$item->getColor_k());
+				$spacing = $item->getSpacing();
+				$tmp_font = new PersoFont($item->getFont());
+				$font = $tmp_font->getFilename();
+// 				$pdf->selectFont("./fonts/".$font);
+		        $pdf->selectFont($font);
+				
+				switch ($item->getJustification()){
+					case 0 : $justification = "left"; break;
+					case 1 : $justification = "center"; break;
+					case 2 : $justification = "right"; break;
+					default: $justification = "left";
+				};
+
+				
+				if ($item->getBoxtype() == 1){
+					$ypos = $page_height - $ypos; // - $size;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+					
+				} else {
+					$ypos = $page_height - $ypos;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+				}
+				
+				$samelevel = false;
+				foreach ($all_items_reverse as $suboitem){
+					$subitem = new Personalizationitem($suboitem->getPersoItemID());
+					if ($subitem->getJustification() == 1 && $suboitem->getValue() != "") {
+						if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte
+							$width	= ($subitem->getWidth()/10 * 72) / 2.54;
+							$height	= ($subitem->getHeight()/10 * 72) / 2.54;
+							$size	= $subitem->getTextsize();
+							$pdf->setColorCMYK($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
+							$spacing = $subitem->getSpacing();
+							$tmp_font = new PersoFont($subitem->getFont());
+							$font = $tmp_font->getFilename();
+							$pdf->selectFont("./fonts/".$font);
+							if ($suboitem->getValue() != "spacer") {
+								if ($subitem->getXpos() > 0) {
+									if ($spacing != 0) {
+										$ypos 	= $ypos + $spacing;
+									}
+									else {
+										$ypos 	= $ypos + 8;
+									}
+									$subxpos = ($subitem->getXpos()/10 * 72) / 2.54;
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+									$samelevel = true;
+								} else {
+									if (!$samelevel) {
+										if ($spacing != 0) {
+											$ypos 	= $ypos + $spacing;
+										}
+										else {
+											$ypos 	= $ypos + 8;
+										}
+									}
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+									$samelevel = false;
+								}
+							} else {
+								if ($spacing != 0) {
+									$ypos 	= $ypos + $spacing;
+								}
+								else {
+									$ypos 	= $ypos + 8;
+								}
+								$samelevel = false;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+	
+	foreach ($all_items as $oitem){ // rechte tabelle füllen
+		$item = new Personalizationitem($oitem->getPersoItemID());
+		if ($item->getJustification() == 2 && $oitem->getValue() != "") {
+			if ($item->getDependencyID() == 0) { // erstes fix object links
+				$xpos 	= ($item->getXpos()/10 * 72) / 2.54;		// x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+				$ypos 	= ($item->getYPos()/10 * 72) / 2.54;		// y-Pos der Ecke links unten
+				$width	= ($item->getWidth()/10 * 72) / 2.54;		// Breite
+				$height	= ($item->getHeight()/10 * 72) / 2.54;		// Hoehe
+				$size	= $item->getTextsize();						// Schriftgroesse
+				$pdf->setColorCMYK($item->getColor_c(),$item->getColor_m(),$item->getColor_y(),$item->getColor_k());
+				$spacing = $item->getSpacing();
+				$tmp_font = new PersoFont($item->getFont());
+				$font = $tmp_font->getFilename();
+// 				$pdf->selectFont("./fonts/".$font);
+		        $pdf->selectFont($font);
+				
+				switch ($item->getJustification()){
+					case 0 : $justification = "left"; break;
+					case 1 : $justification = "center"; break;
+					case 2 : $justification = "right"; break;
+					default: $justification = "left";
+				};
+
+				
+				if ($item->getBoxtype() == 1){
+					$ypos = $page_height - $ypos; // - $size;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+					
+				} else {
+					$ypos = $page_height - $ypos;
+					$pdf->y = $ypos;
+					$pdf->ezText($oitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+				}
+				
+				$samelevel = false;
+				foreach ($all_items_reverse as $suboitem){
+					$subitem = new Personalizationitem($suboitem->getPersoItemID());
+					if ($subitem->getJustification() == 2 && $suboitem->getValue() != "") {
+						if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte
+							$width	= ($subitem->getWidth()/10 * 72) / 2.54;
+							$height	= ($subitem->getHeight()/10 * 72) / 2.54;
+							$size	= $subitem->getTextsize();
+							$pdf->setColorCMYK($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
+							$spacing = $subitem->getSpacing();
+							$tmp_font = new PersoFont($subitem->getFont());
+							$font = $tmp_font->getFilename();
+							$pdf->selectFont("./fonts/".$font);
+							if ($suboitem->getValue() != "spacer") {
+								if ($subitem->getXpos() > 0) {
+									if ($spacing != 0) {
+										$ypos 	= $ypos + $spacing;
+									}
+									else {
+										$ypos 	= $ypos + 8;
+									}
+									$subxpos = ($subitem->getXpos()/10 * 72) / 2.54;
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$subxpos, 'aright'=>$subxpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+									$samelevel = true;
+								} else {
+									if (!$samelevel) {
+										if ($spacing != 0) {
+											$ypos 	= $ypos + $spacing;
+										}
+										else {
+											$ypos 	= $ypos + 8;
+										}
+									}
+									if ($subitem->getBoxtype() == 1){
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+										
+									} else {
+			                            $pdf->y = $ypos;
+										$pdf->ezText($suboitem->getValue(), $size ,Array('aleft'=>$xpos, 'aright'=>$xpos+$width, 'justification'=> $justification, 'spacing'=>$spacing));
+									}
+									$samelevel = false;
+								}
+							} else {
+								if (!$samelevel) {
+									if ($spacing != 0) {
+										$ypos 	= $ypos + $spacing;
+									}
+									else {
+										$ypos 	= $ypos + 8;
+									}
+								}
+								$samelevel = false;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+}
+
+?>

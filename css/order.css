@@ -1,0 +1,91 @@
+div.box1 {
+/* 	width:994px; */
+}
+div.box2 {
+/* 	width:994px; */
+}
+
+ul.step1 {
+	background:url(../images/page/balken-hell.png);
+	color:#ffffff;
+	padding:8px;
+	font-weight:bold;
+	height:23px;
+	width:250px;
+	position:absolute;
+	z-index:40;
+}
+ul.step2 {
+	background:url(../images/page/balken-hell.png);
+	color:#ffffff;
+	padding:8px 8px 8px 24px;
+	font-weight:bold;
+	height:23px;
+	width:238px;
+	position:absolute;
+	left:246px;
+	z-index:30;
+}
+
+ul.step3 {
+	background:url(../images/page/balken-hell.png);
+	color:#ffffff;
+	padding:8px 8px 8px 24px;
+	font-weight:bold;
+	height:23px;
+	width:238px;
+	position:absolute;
+	left:492px;
+	z-index:20;
+}
+ul.step4 {
+	background:url(../images/page/balken-hell.png);
+	color:#ffffff;
+	padding:8px 8px 8px 26px;
+	font-weight:bold;
+	height:23px;
+	width:236px;
+	position:absolute;
+	left:736px;
+	z-index:10;
+}
+
+ul.active {
+	background:url(../images/page/balken-dunkel-grau.png);
+}
+
+div.orderMainform
+{
+/* 	position:absolute; */
+	top:60px;
+	/*width:100%;*/
+}
+
+div.producttitle {
+	margin:20px 0px 0px 0px;
+	border-top:1px solid #000000;
+	border-bottom:1px solid #000000;
+	padding:5px 0px 5px 0px;
+	position:relative;
+	bottom:0px;
+}
+
+td.value {
+	border-left: double 3px black;
+	text-align:center;
+}
+
+input.selectbutton {
+        background:url(../images/page/organizer.png);
+	color: #000;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #000;
+	cursor: pointer;
+	background-color: #F7F7F7;
+	font-family: Arial;
+        width: 110px;
+        height: 35px;
+        margin-bottom: 3px;
+        border-radius: 15px;
+}

@@ -1,0 +1,91 @@
+table.urlaubTable {
+	padding:0px;
+}
+
+table.urlaubTable td.urlaubHeader {
+	/*border-top:1px solid #000000;*/
+}
+
+table.urlaubTable td.urlaubHeaderDays {
+	border-right:1px solid #000000;
+	border-top:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	text-align:center;
+}
+
+table.urlaubTable td.urlaubHeaderDaysFirst {
+	border-right:1px solid #000000;
+	border-left:1px solid #000000;
+	border-top:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	text-align:center;
+}
+
+table.urlaubTable td.urlaubHeaderDaysNames {
+	border-right:1px solid #000000;
+	border-bottom:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	text-align:center;
+}
+
+table.urlaubTable td.urlaubHeaderDaysNamesFirst {
+	border-right:1px solid #000000;
+	border-left:1px solid #000000;
+	border-bottom:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	text-align:center;
+}
+
+table.urlaubTable td.urlaubNames {
+	border-bottom:1px solid #000000;
+	border-right:1px solid #000000;
+	border-left:1px solid #000000;
+	padding:2px 2px 2px 2px;
+}
+
+table.urlaubTable td.urlaubDaysLeft {
+	border-bottom:1px solid #000000;
+	border-right:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	height:18px;
+	width:30px;
+}
+
+table.urlaubTable td.urlaubDays {
+	border-bottom:1px solid #000000;
+	border-right:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	height:18px;
+	width:18px;
+	text-align:center;
+}
+
+table.urlaubTable td.urlaubDaysFirst {
+	border-bottom:1px solid #000000;
+	border-right:1px solid #000000;
+	border-left:1px solid #000000;
+	padding:2px 2px 2px 2px;
+	height:18px;
+	width:18px;
+	text-align:center;
+}
+
+table.urlaubTable td.weekend {
+	background-color:#8eb9d7;
+}
+
+table.urlaubTable td.feiertag {
+	background-color:#e2c276;
+}
+
+table.urlaubTable td.unseen {
+	background-color:#ff8888;
+}
+
+table.urlaubTable td.wait {
+	background-color:#eee711;
+}
+
+table.urlaubTable td.approved {
+	background-color:#88ff88;
+}
