@@ -101,7 +101,7 @@ class Notification {
         }
     }
     
-    public static function readAll()
+    public function readAll()
     {
         global $DB;
         global $_USER;
@@ -118,11 +118,13 @@ class Notification {
         }
     }
     
-    public static function getMyNotifications(){
+    public function getMyNotifications($limit = 10){
         global $DB;
+        global $_USER;
         $retval = Array();
         
-        $sql = "SELECT id FROM notifications WHERE user = {$_USER->getId()} ORDER BY crtdate DESC";
+        $sql = "SELECT id FROM notifications WHERE user = {$_USER->getId()} ORDER BY crtdate DESC LIMIT {$limit}";
+//         echo $sql;
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Notification($r["id"]);
@@ -130,7 +132,7 @@ class Notification {
         }
         return $retval;
     }
-    
+     
     public static function generateNotification($touser, $crtmodule, $type, $reference, $objectid){
         global $_USER;
         $tmp_notification = new Notification();

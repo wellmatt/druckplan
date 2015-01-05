@@ -339,9 +339,9 @@ if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
                         
             <!-- calendar -->
             <li class="dropdown-grid">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, cal_refresh);"><i class="fa fa-newspaper-o"></i>&nbsp;<span class="hidden-sm">Benachrichtigungen</span><span class="caret"></span></a>
+              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, updateNotifications);"><i class="fa fa-newspaper-o"></i>&nbsp;<span class="hidden-sm">Benachrichtigungen</span><span class="caret"></span></a>
               <div class="dropdown-grid-wrapper" role="menu">
-                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-7">
+                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-4"> 
                   <li>
                       <h3 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;"><i class="fa fa-newspaper-o"></i> Benachrichtigungen</h3>
 							<? 

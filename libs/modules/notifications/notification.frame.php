@@ -7,12 +7,31 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 ?>
-
+ 
 <!-- FancyBox -->
 <script	type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 <script	type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <link rel="stylesheet" type="text/css" href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
 <!-- FancyBox -->
+<script type="text/javascript">
+function updateNotifications(){
+	$('#notification_loading_ch').html("loading...");
+    $.ajax({
+        url: "libs/modules/notifications/notification.ajax.php",
+        type: "GET",
+        dataType: "html",
+        success: function (data) {
+            $('#notification_loading_ch').html(data);
+        },
+        error: function (xhr, status) {
+            alert("Sorry, there was a problem!");
+        },
+        complete: function (xhr, status) {
+            //$('#showresults').slideDown('slow')
+        }
+    });
+}
+</script>
 <style>
 	#notification_ch {
 /* 		width: 300px; */
@@ -22,7 +41,7 @@
 </style>
 
 
-<table cellspacing="0" cellpadding="0">
+<table cellspacing="0" cellpadding="0" width="100%">
 	<tr class="tabellenlinie">
         <td>
         	<div id='notification_loading_ch'>loading...</div>
