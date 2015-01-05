@@ -7,10 +7,9 @@
    // or all of the contents in any form is strictly prohibited.
    // ----------------------------------------------------------------------------------
    
-// require_once 'thirdparty/ezpdf/class.ezpdf.php';
-require_once 'thirdparty/ezpdf/new/src/Cezpdf.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
 require_once 'thirdparty/tcpdf/contilas.tcpdf.php';
+require_once 'libs/modules/perferences/perferences.class.php';
 
 class Document
 {
