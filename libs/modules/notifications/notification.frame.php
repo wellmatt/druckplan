@@ -17,7 +17,7 @@
 function updateNotifications(){
 	$('#notification_loading_ch').html("loading...");
     $.ajax({
-        url: "libs/modules/notifications/notification.ajax.php",
+        url: "libs/modules/notifications/notification.ajax.php?exec=getNotifications",
         type: "GET",
         dataType: "html",
         success: function (data) {
@@ -31,6 +31,35 @@ function updateNotifications(){
         }
     });
 }
+function NotificationsReadAll(){
+    $.ajax({
+        url: "libs/modules/notifications/notification.ajax.php?exec=readAll",
+        type: "POST",
+        dataType: "html",
+        success: function (data) {
+            updateNotifications();
+            refreshNotificationCount();
+        },
+        error: function (xhr, status) {
+            alert("Sorry, there was a problem!");
+        },
+        complete: function (xhr, status) {
+            //$('#showresults').slideDown('slow')
+        }
+    });
+}
+function refreshNotificationCount() {
+    $.ajax({
+        url: "libs/modules/notifications/notification.ajax.php?exec=getCount",
+        type: "GET",
+        dataType: "html",
+        success: function (data) {
+            $('#notify_count').html(" ("+data+")");
+        }
+    });
+}
+setInterval( refreshNotificationCount, 2*60*1000 );
+refreshNotificationCount();
 </script>
 <style>
 	#notification_ch {
@@ -51,7 +80,7 @@ function updateNotifications(){
 	<tr class="tabellenlinie">
 		<td colspan="2">
 		<center>
-			<a href='#'>alle als gelesen markieren</a>
+			<a href='#' onclick='NotificationsReadAll();'>alle als gelesen markieren</a>
 		</center>
 		</td>
 	</tr>

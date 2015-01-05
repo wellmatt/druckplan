@@ -105,16 +105,13 @@ class Notification {
     {
         global $DB;
         global $_USER;
-        if ($this->id > 0) {
-            $sql = "UPDATE notifications SET
-            state = 0
-            WHERE user = {$_USER->getId()}";
-            if ($DB->no_result($sql)) {
-                unset($this);
-                return true;
-            } else {
-                return false;
-            }
+        $sql = "UPDATE notifications SET
+        state = 0
+        WHERE user = {$_USER->getId()}";
+        if ($DB->no_result($sql)) {
+            return true;
+        } else {
+            return false;
         }
     }
     
@@ -123,7 +120,7 @@ class Notification {
         global $_USER;
         $retval = Array();
         
-        $sql = "SELECT id FROM notifications WHERE user = {$_USER->getId()} ORDER BY crtdate DESC LIMIT {$limit}";
+        $sql = "SELECT id FROM notifications WHERE user = {$_USER->getId()} AND state > 0 ORDER BY crtdate DESC LIMIT {$limit}";
 //         echo $sql;
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){

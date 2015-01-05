@@ -1,4 +1,6 @@
-<?php // ---------------------------------------------------------------------------
+<?php
+ob_start();
+// ---------------------------------------------------------------------------
 // Author:        iPactor GmbH
 // Updated:       04.06.2013
 // Copyright:     2012-13 by iPactor GmbH. All Rights Reserved.
@@ -339,7 +341,7 @@ if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
                         
             <!-- calendar -->
             <li class="dropdown-grid">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, updateNotifications);"><i class="fa fa-newspaper-o"></i>&nbsp;<span class="hidden-sm">Benachrichtigungen</span><span class="caret"></span></a>
+              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, updateNotifications);"><i class="fa fa-newspaper-o"></i>&nbsp;<span class="hidden-sm">Benachrichtigungen</span><span id="notify_count"></span><span class="caret"></span></a>
               <div class="dropdown-grid-wrapper" role="menu">
                 <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-4"> 
                   <li>
