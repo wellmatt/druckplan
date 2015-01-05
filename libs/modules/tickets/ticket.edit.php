@@ -1,5 +1,7 @@
 <?php 
 
+global $_USER;
+
 function reArrayFiles(&$file_post) {
 
     $file_ary = array();
@@ -35,10 +37,14 @@ if($_REQUEST["exec"] == "edit"){
             $ticket->setAssigned_group(new Group(0));
             $ticket->setAssigned_user(new User((int)substr($_REQUEST["tkt_assigned"], 2)));
             $new_assiged = "Benutzer <b>" . $ticket->getAssigned_user()->getNameAsLine() . "</b>";
+            Notification::generateNotification($ticket->getAssigned_user(), get_class($ticket), "Assign", $ticket->getNumber(), $ticket->getId());
         } elseif (substr($_REQUEST["tkt_assigned"], 0, 2) == "g_") {
             $ticket->setAssigned_group(new Group((int)substr($_REQUEST["tkt_assigned"], 2)));
             $ticket->setAssigned_user(new User(0));
             $new_assiged = "Gruppe <b>" . $ticket->getAssigned_group()->getName() . "</b>";
+            foreach ($ticket->getAssigned_group()->getMembers() as $grmem){
+                Notification::generateNotification($grmem, get_class($ticket), "AssignGroup", $ticket->getNumber(), $ticket->getId());
+            }
         }
         $ticket->setState(new TicketState((int)$_REQUEST["tkt_state"]));
         $ticket->setCategory(new TicketCategory((int)$_REQUEST["tkt_category"]));
@@ -65,6 +71,16 @@ if($_REQUEST["exec"] == "edit"){
             $ticketcomment->setVisability((int)$_REQUEST["tktc_type"]);
             $save_ok = $ticketcomment->save();
             $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
+            if ($save_ok){
+                $participants = Comment::getObjectParticipants(get_class($ticket),$ticket->getId());
+                if (count($participants) > 0){
+                    foreach ($participants as $participant){
+                        if ($participant->getId() != $_USER->getId()){
+                            Notification::generateNotification($participant, get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
+                        }
+                    }
+                }
+            }
             if ($save_ok && $_REQUEST["tktc_article_id"] != "" && $_REQUEST["tktc_article_amount"] != ""){
                 $tc_article = new CommentArticle();
                 $tc_article->setArticle(new Article($_REQUEST["tktc_article_id"]));
@@ -477,8 +493,8 @@ $(function() {
 		      <tr>
 		          <td width="25%">Typ:</td>
 		          <td width="75%">
-                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Antwort<br>
                     <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar<br>
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Antwort<br>
                     <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
 		          </td>
 		      </tr>

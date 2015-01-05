@@ -280,11 +280,11 @@ if (isset($_REQUEST["submit_search"])) {
     	<tr>
     		<td>&nbsp;</td>
     	</tr>
-    	<tr>
+    	<!--<tr>
     		<td valign="top">
-    				<?require_once("./libs/modules/tickets/ticket.due.php");?>
+    				<?//require_once("./libs/modules/tickets/ticket.due.php");?>
     		</td>
-    	</tr>    	
+    	</tr> -->	
     	<!-- <tr>
     		<td>&nbsp;</td>
     	</tr>

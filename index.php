@@ -332,6 +332,29 @@ if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
               </div>
             </li>
 
+
+            <!-- divider -->
+            <li class="divider"></li>
+                        
+                        
+            <!-- calendar -->
+            <li class="dropdown-grid">
+              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, cal_refresh);"><i class="fa fa-newspaper-o"></i>&nbsp;<span class="hidden-sm">Benachrichtigungen</span><span class="caret"></span></a>
+              <div class="dropdown-grid-wrapper" role="menu">
+                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-7">
+                  <li>
+                      <h3 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;"><i class="fa fa-newspaper-o"></i> Benachrichtigungen</h3>
+							<? 
+								require_once 'libs/modules/notifications/notification.frame.php'; 
+							?>
+                  
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <!-- /calendar -->
+            
+            
             <!-- divider -->
             <li class="divider"></li>
                         

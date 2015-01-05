@@ -6,7 +6,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-include 'libs/modules/article/article.class.php';
+require_once 'libs/modules/article/article.class.php';
 include 'comment.article.class.php';
 include 'libs/modules/attachment/attachment.class.php';
 
@@ -136,6 +136,36 @@ class Comment {
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
             	$retval[] = new Comment($r["id"]);
+            }
+        }
+        
+        return $retval;
+    }
+    
+    public function getLatestCommentsForObject($module,$objectid)
+    {
+        global $DB;
+        $retval = Array();
+    
+        $sql = "SELECT id FROM comments WHERE module = '{$module}' AND objectid = {$objectid} AND state > 0 ORDER BY crtdate DESC LIMIT 3";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Comment($r["id"]);
+            }
+        }
+    
+        return $retval;
+    }
+    
+    public function getObjectParticipants($module,$objectid){
+        global $DB;
+        $retval = Array();
+        
+        $sql = "SELECT crtuser FROM comments WHERE module = '{$module}' AND objectid = {$objectid} AND state > 0 GROUP BY crtuser ORDER BY crtdate";
+//         echo $sql;
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = new User($r["crtuser"]);
             }
         }
         

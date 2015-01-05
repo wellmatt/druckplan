@@ -12,6 +12,7 @@ include 'libs/modules/tickets/ticket.category.class.php';
 include 'libs/modules/tickets/ticket.priority.class.php';
 include 'libs/modules/tickets/ticket.state.class.php';
 include 'libs/modules/comment/comment.class.php';
+include 'libs/modules/notifications/notification.class.php';
 
 class Ticket {
     

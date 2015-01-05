@@ -1,6 +1,12 @@
 <?php
+//     error_reporting(-1);
+//     ini_set('display_errors', 1);
 
-    require_once '../../../config.php';
+    chdir("../../../");
+    require_once 'config.php';
+    require_once 'libs/basic/basic.importer.php';
+    require_once 'libs/modules/tickets/ticket.class.php';
+    require_once 'libs/modules/comment/comment.class.php';
 
     $aColumns = array( 'id', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
      
@@ -122,21 +128,37 @@
     
     if ( $sWhere == "" )
     {
-        $sWhere = " WHERE state > 1 ";
+        $sWhere = " WHERE state = 'offen' ";
     }
     else
     {
-        $sWhere .= " AND state > 1 ";
+        $sWhere .= " AND state = 'offen' ";
+    }
+    
+    if ($_REQUEST["forme"]){
+        $foruser = new User((int)$_REQUEST["forme"]);
+        $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
+        $forgroups = $foruser->getGroups();
+        if (count($forgroups) > 0){
+            $groupsql = " OR assigned IN (";
+            foreach ($forgroups as $ugroup){
+                $groupsql .= "'".utf8_decode($ugroup->getName()) . "',";
+            }
+            $groupsql = substr($groupsql, 0, strlen($groupsql)-1);
+            $groupsql .= ") ";
+        }
+        $sWhere .= " AND (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
     }
     
     /*
      * SQL queries
      * Get data to display
      */ 
-    $sQuery = "SELECT
+    $sQuery = "SELECT * FROM (SELECT
                tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
                businesscontact.name1 as customer, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
-               IF (`user`.login != '', `user`.login, groups.group_name) assigned, CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser 
+               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -144,11 +166,11 @@
                LEFT JOIN tickets_categories ON tickets_categories.id = tickets.category
                LEFT JOIN `user` ON `user`.id = tickets.assigned_user
                LEFT JOIN groups ON groups.id = tickets.assigned_group
-               LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser
+               LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
+               $sLimit 
+               ) tickets 
                $sWhere
-               $sOrder
-               $sLimit
-               ";
+               $sOrder";
     
 //     var_dump($sQuery);
     
@@ -192,9 +214,33 @@
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( $aColumns[$i] == 'crtdate' || $aColumns[$i] == 'duedate' )
+            if ( $aColumns[$i] == 'crtdate' )
             {
                 $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
+            }
+            else if ( $aColumns[$i] == 'duedate' )
+            {
+                if (time() > $aRow[$aColumns[$i]]){
+                    $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<img src='images/icons/exclamation--frame.png'>";
+                } else {
+                    $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
+                }
+            }
+            else if ( $aColumns[$i] == 'state' )
+            {
+                $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
+                $commenthtml = "<img src='images/icons/message_inbox.gif' title='";
+                foreach ($latestcomments as $comment){
+                    if ($_USER->isAdmin()
+                        || $comment->getVisability() == Comment::VISABILITY_PUBLIC
+                        || $comment->getVisability() == Comment::VISABILITY_INTERNAL
+                        || $comment->getCrtuser() == $_USER)
+                    {
+                        $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . $comment->getComment();
+                    }
+                }
+                $commenthtml .= "'>";
+                $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ])).$commenthtml;
             }
             else if ( $aColumns[$i] == 'priority' )
             {
