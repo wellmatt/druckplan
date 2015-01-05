@@ -6,8 +6,8 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-require_once 'TmplDefault.class.php';
-require_once 'TmplAgent.class.php';
+require_once 'libs/modules/autodoc/TmplDefault.class.php';
+require_once 'libs/modules/autodoc/TmplAgent.class.php';
 
 $tmplfolder = "./docs/tmpl_files/";
 $tmp = 'libs/modules/autodoc/default.js';
