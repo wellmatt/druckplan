@@ -1,0 +1,68 @@
+<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
+
+<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CustomerName}<br />
+{$CustomerAddress}</span></span></p>
+
+<table border="0" cellspacing="1" style="width:450px">
+	<tbody>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihre Nachricht</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihr Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Unser Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Datum</span></span></td>
+		</tr>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirMessage}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$OurSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CurrentDate}</span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong>Lieferschein Nr. {$Id}</strong></span><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span><span style="font-size:14px"><strong>&nbsp; Kunden-Nr. {$CustomerId}</strong></span><br />
+<span style="font-size:12px">Auftrag: {$OrderTitle}</span></p>
+
+<p>&nbsp;</p>
+
+<p><br />
+<span style="font-family:arial,helvetica,sans-serif"><span style="font-size:12px">Sehr geehrte Damen und Herren</span></span><br />
+<span style="font-family:arial,helvetica,sans-serif"><span style="font-size:12px">hiermit erhalten Sie den Lieferschein zum Auftrag {$OrderId}</span></span></p>
+
+<table border="0" cellpadding="1" cellspacing="1" style="width:450px">
+	<thead>
+		<tr>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:center; width:25px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Pos.</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:385px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Beschreibung</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Menge</span></span></th>
+		</tr>
+	</thead>
+	<tbody><!-- {foreach $OrderPos as $Pos} -->
+		<tr>
+			<td style="text-align:center; width:25px">
+			<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos@iteration}</span></span></p>
+			</td>
+			<td style="text-align:left; width:385px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></td>
+			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getQuantity()}</span></span></td>
+		</tr>
+		<!-- {/foreach} -->
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>Die Ware bleibt bis zur vollst&auml;ndigen Bezahlung unser Eigentum.</p>
+
+<p>Ware unbesch&auml;digt erhalten<br />
+&nbsp;</p>
+
+<p>_______________________</p>
+
+<p>F&uuml;r R&uuml;ckfragen stehen wir Ihnen selbstverst&auml;ndlich gerne zur Verf&uuml;gung.</p>
+
+<p><span style="font-size:12px"><span style="font-family:arial,helvetica,sans-serif">Mit freundlichen Gr&uuml;&szlig;en<br />
+{$UserFirstname} {$UserLastname}<br />
+<br />
+{$UserClient}</span></span></p>

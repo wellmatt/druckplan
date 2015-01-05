@@ -1,7 +1,8 @@
-<? // -------------------------------------------------------------------------------
-// Author:			iPactor GmbH
-// Updated:			28.10.2013
-// Copyright:		2013 by iPactor GmbH. All Rights Reserved.
+<? 
+// ----------------------------------------------------------------------------------
+// Author: Klein Druck+Medien GmbH
+// Updated: 23.12.2014
+// Copyright: Klein Druck+Medien GmbH - All Rights Reserved.
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
@@ -24,39 +25,31 @@ foreach ($attrib_filter as $atfil){
     $all_busicon = array_merge($all_busicon,$tmp_busicon);
 }
 
-$pdf->setPrintHeader(false);
-$pdf->setPrintFooter(false);
-$pdf->SetFont($font, '', 11);
 
-$font = "helvetica";
-$pdf->SetMargins(30, 30, 15, TRUE);
-$pdf->AddPage();
+// Einbindung der generellen Variablen im Templatesystem
 
-foreach ($all_busicon AS $busicon){
-    
-    if($version == self::DOCTYPE_EMAIL)
-        $pdf->Image($img_path, '', 0, '', '', '', '', 'R');
-    
-    $pdf->Ln(8);
-    $pdf->Ln(8);
-    $pdf->Ln(8);
-    $pdf->Ln(8);
-    
-    $pdf->Cell(0, 0,$busicon->getNameAsLine(), 0, 1);
-    $pdf->MultiCell(0, 0, $busicon->getAddressAsLine(), 0,'L');
-    
-    $pdf->Ln(8);
-    $pdf->Ln(8);
-    $pdf->SetMargins(15, 30, 15, TRUE);
-    $pdf->Ln(8);
-	
-	// $this ist bezogen auf den Serienbrief (libs/modules/bulkLetter/bulkletter.class.php)
-	$pdf->MultiCell(0, 0, $this->getText(), 0,'L');
-	
-	if (count($all_busicon) > 1) {
-	    $pdf->SetMargins(30, 30, 15, TRUE);
-	   	$pdf->AddPage();
-	}
-}
+require 'docs/templates/generel.tmpl.php';
+$tmp = 'docs/tmpl_files/bulkletter.tmpl';
+$datei = ckeditor_to_smarty($tmp);
+
+$smarty->assign('Busicons',$all_busicon);
+
+$smarty->assign('IfEmail', self::DOCTYPE_EMAIL);
+
+$smarty->assign('IfPrint', self::DOCTYPE_PRINT);
+
+$smarty->assign('Version', $version);
+
+$smarty->assign('Img',$img_path);
+
+$smarty->assign('Text',$this->getText());
+
+// var_dump ($datei);
+
+$htmldump = $smarty->fetch('string:'.$datei);
+
+// var_dump($htmltemp);
+
+$pdf->writeHTML($htmldump);
 
 ?>

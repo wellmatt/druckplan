@@ -1,33 +1,25 @@
-<? // -------------------------------------------------------------------------------
-// Author:			iPactor GmbH
-// Updated:			01.10.2013
-// Copyright:		2013 by iPactor GmbH. All Rights Reserved.
+<?
+// ----------------------------------------------------------------------------------
+// Author: Klein Druck+Medien GmbH
+// Updated: 23.12.2014
+// Copyright: Klein Druck+Medien GmbH - All Rights Reserved.
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-$font = "helvetica";
+require_once 'thirdparty/smarty/Smarty.class.php';
+require_once 'thirdparty/tcpdf/tcpdf.php';
+require_once 'docs/autodoc/smarty_functions.php';
 
-$pdf->SetFont($font, 'b', 13);
-$pdf->Ln();
-$pdf->Cell(100, 0, "Mahnung {$this->name} ", 0, 0);
-$pdf->Cell(100, 0, "Kunden-Nr. {$order->getCustomer()->getId()}", 0, 1);
-$pdf->Ln();
-$pdf->Ln();
-$pdf->SetFont($font, '', 10);
-$pdf->Cell(0, 0, $_LANG->get("Sehr geehrte Damen und Herren") . ", ", 0, 1);
-$pdf->Ln();
+require 'docs/templates/generel.tmpl.php';
+$tmp = 'docs/tmpl_files/invoicewarning.tmpl';
+$datei = ckeditor_to_smarty(tmp);
 
-// Inhalt der Mahnung
-$pdf->MultiCell(0, 0, $_REQUEST["warn_text"], 0, 'L');
-$pdf->Ln();
+$smarty->assign("WarningText", $_REQUEST["warn_text"]);
 
-// Footer
-$pdf->MultiCell(0, 0, $_LANG->get("Mit freundlichen Gr&uuml;&szlig;en"),0, 'L');
-$pdf->MultiCell(0, 0, "{$_USER->getFirstname()} {$_USER->getLastname()}", 0, 'L');
-$pdf->Ln();
-$pdf->SetFont($font, 'b', 10);
-$pdf->MultiCell(0, 0, $_USER->getClient()->getName(), 0, 'L');
-$pdf->SetFont($font, '', 10);
-$pdf->Ln();
+$htmldump = $smarty->fetch('string:'.$datei);
+
+// var_dump($htmltemp);
+
+$pdf->writeHTML($htmldump);
 
 ?>

@@ -541,7 +541,9 @@ class Document
                 $format[1] = 60;
                 $pdf = new TCPDF('L','mm',$format);
             } else {
+                $pref= new Perferences();
                 $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
+                $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
             }
         }
 
@@ -550,13 +552,11 @@ class Document
                 if ($version == self::VERSION_EMAIL){
                     $pdf->SetHeaderData();
                         $pdf->Image("docs/templates/briefbogen.jpg", '', 0, '', '', '', '', 'R');
-                    require_once 'docs/templates/general.tmpl.email.php';
                 }
-                else
-                    require_once 'docs/templates/general.tmpl.print.php';
+                $pdf->SetMargins($pref->getPdf_margin_left(), $pref->getPdf_margin_top(), $pref->getPdf_margin_right(), TRUE);
+                $pdf->AddPage();
             }
         }
-        
         
         
         // apply specific template

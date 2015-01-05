@@ -1,9 +1,8 @@
 <?
-use Zend\Barcode\Renderer\Pdf;
 // ----------------------------------------------------------------------------------
-// Author: iPactor GmbH
-// Updated: 25.04.2012
-// Copyright: 2012 by iPactor GmbH. All Rights Reserved.
+// Author: Klein Druck+Medien GmbH
+// Updated: 23.12.2014
+// Copyright: Klein Druck+Medien GmbH - All Rights Reserved.
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
@@ -105,13 +104,9 @@ foreach ($calcs as $calc) {
         $pdf->Ln();
         
         // --------------------------------------------------------------------------
-        $tmp_margin = $pdf->getMargins();
-        $tmp_margin = $tmp_margin['left'] - 5;
-        $pdf->SetMargins($tmp_margin);
+        $pdf->SetMargins($pdf->getMargins()['left'] - 5);
         $pdf->Ln(0);
-        $tmp_margin = $pdf->getMargins();
-        $tmp_margin = $tmp_margin['left'] + 5;
-        $pdf->SetMargins($tmp_margin);
+        $pdf->SetMargins($pdf->getMargins()['left'] + 5);
         $pdf->Cell(0, 0, $linestr, 0, 1);
         $pdf->Ln($b);
         
@@ -171,13 +166,9 @@ foreach ($calcs as $calc) {
         $pdf->Cell(0, 0, $tmp_date, 0, 1);
         // --------------------------------------------------------------------------
         
-        $tmp_margin = $pdf->getMargins();
-        $tmp_margin = $tmp_margin['left'] - 5;
-        $pdf->SetMargins($tmp_margin);
+        $pdf->SetMargins($pdf->getMargins()['left'] - 5);
         $pdf->Ln(0);
-        $tmp_margin = $pdf->getMargins();
-        $tmp_margin = $tmp_margin['left'] + 5;
-        $pdf->SetMargins($tmp_margin);
+        $pdf->SetMargins($pdf->getMargins()['left'] + 5);
         $pdf->Cell(0, 0, $linestr, 0, 1);
         $pdf->Ln($b);
         
@@ -197,13 +188,9 @@ foreach ($calcs as $calc) {
             $machentries = Machineentry::getAllMachineentries($calc->getId(), Machineentry::ORDER_GROUP, $mg->getId());
             
             if (!empty($machentries)) {
-                $tmp_margin = $pdf->getMargins();
-                $tmp_margin = $tmp_margin['left'] - 5;
-                $pdf->SetMargins($tmp_margin);
+                $pdf->SetMargins($pdf->getMargins()['left'] - 5);
                 $pdf->Ln(0);
-                $tmp_margin = $pdf->getMargins();
-                $tmp_margin = $tmp_margin['left'] + 5;
-                $pdf->SetMargins($tmp_margin);
+                $pdf->SetMargins($pdf->getMargins()['left'] + 5);
                 $pdf->writeHTMLCell(0, 0, '', '', "<b>{$mg->getName()}</b>", 0, 1);
                 $pdf->Ln($b);
             }
@@ -277,24 +264,20 @@ foreach ($calcs as $calc) {
                 $pdf->writeHTMLCell($tablesize[3], 0, $pdf->GetX(), $y_start, $temp["Zeit"], 0, $ln = 1, $fill = false, $reseth = true, $align = 'R', $autopadding = true);
                 $pdf->Ln($b);
                 
-                if ($me->getColor_detail() != "" && $me->getColor_detail() != FALSE){
-                    $y_start = $pdf->GetY();
-                    $pdf->writeHTMLCell($tablesize[0], 0, '', '', "Farbton: " . $me->getColor_detail(), 0, 2);
-                    $y_end = $pdf->GetY();
-                }
+//                 if ($me->getColor_detail() != "" && $me->getColor_detail() != FALSE){
+//                     $y_start = $pdf->GetY();
+//                     $pdf->writeHTMLCell($tablesize[0], 0, '', '', "Farbton: " . $me->getColor_detail(), 0, 2);
+//                     $y_end = $pdf->GetY();
+//                 }
                 
                 // Fix wegen der html Cell um Überlaufe über andere Texte zu verhindern.
                 $pdf->SetY($y_end);
             }              
         }
         
-        $tmp_margin = $pdf->getMargins();
-        $tmp_margin = $tmp_margin['left'] - 5;
-        $pdf->SetMargins($tmp_margin);
+        $pdf->SetMargins($pdf->getMargins()['left'] - 5);
         $pdf->Ln(0);
-        $tmp_margin = $pdf->getMargins();
-        $tmp_margin = $tmp_margin['left'] + 5;
-        $pdf->SetMargins($tmp_margin);
+        $pdf->SetMargins($pdf->getMargins()['left'] + 5);
         $pdf->Cell(0, 0, $linestr, 0, 1);
         $pdf->Ln($b);
         

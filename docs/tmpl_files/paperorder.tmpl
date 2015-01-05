@@ -1,0 +1,53 @@
+<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
+
+<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CustomerName}<br />
+{$CustomerAddress}</span></span></p>
+
+<table border="0" cellspacing="1" style="width:450px">
+	<tbody>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihre Nachricht</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihr Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Unser Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Datum</span></span></td>
+		</tr>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirMessage}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$OurSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CurrentDate}</span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong>Papier Bestellung Nr. {$Id}</strong></span><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span><span style="font-size:14px"><strong>&nbsp; Kunden-Nr. {$CustomerId}</strong></span></p>
+
+<p>&nbsp;</p>
+
+<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:12px">Sehr geehrte Damen und Herren</span></span><br />
+hiermit erhalten Sie die Bestellung &uuml;ber {$PaperId}</p>
+
+<table border="0" cellpadding="1" cellspacing="1" style="width:500px">
+	<tbody>
+		<tr>
+			<td>Produkt</td>
+			<td>{$PaperId}</td>
+		</tr>
+		<tr>
+			<td>Menge</td>
+			<td>{$PaperAmount}</td>
+		</tr>
+		<tr>
+			<td>Preis</td>
+			<td>{PrintPrice var=$PaperPrice} {$Currency}</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><br />
+F&uuml;r R&uuml;ckfragen stehen wir Ihnen gerne zur Verf&uuml;gung</p>
+
+<p>Mit freundlichen Gr&uuml;&szlig;en<br />
+{$UserFirstname} {$UserLastname}</p>

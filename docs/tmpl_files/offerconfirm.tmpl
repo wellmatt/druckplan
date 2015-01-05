@@ -1,45 +1,27 @@
-<?
-// ----------------------------------------------------------------------------------
-// Author: Klein Druck+Medien GmbH
-// Updated: 23.12.2014
-// Copyright: Klein Druck+Medien GmbH - All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-// ----------------------------------------------------------------------------------
-require_once 'thirdparty/smarty/Smarty.class.php';
-require_once 'thirdparty/tcpdf/tcpdf.php';
+<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
 
-// Vorbereitung der Ausgabe
-$calcs = Calculation::getAllCalculations($order, Calculation::ORDER_AMOUNT);
-foreach ($calcs as $calc)
-{
-    // Produktnamen holen oder ggf. ueberschreiben
-    $tmp_productname = $order->getProduct()->getName();
-    if ($order->getProductName() != "" && $order->getProductName() != NULL) {
-        $tmp_productname = $order->getProductName();
-    }
-    $order->setProductName($tmp_productname);
-}
+<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CustomerName}<br />
+{$CustomerAddress}</span></span></p>
 
-// Einbindung der generellen Variablen im Templatesystem
+<table border="0" cellspacing="1" style="width:450px">
+	<tbody>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihre Nachricht</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihr Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Unser Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Datum</span></span></td>
+		</tr>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirMessage}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$OurSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CurrentDate}</span></span></td>
+		</tr>
+	</tbody>
+</table>
 
-require 'docs/templates/generel.tmpl.php';
-$tmp = 'docs/tmpl_files/offer.tmpl';
-$datei = ckeditor_to_smarty($tmp);
+<p>&nbsp;</p>
 
-$smarty->assign('Calcs',$calcs);
-
-// var_dump ($datei);
-
-$htmldump = $smarty->fetch('string:'.$datei);
-
-// var_dump($htmltemp);
-
-$pdf->writeHTML($htmldump);
-?>
-<?php
-//Sicherheitskopie
-/*
 <p><span style="font-size:14px"><strong>Angebot Nr. {$Id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span><span style="font-size:14px"><strong>&nbsp; Kunden-Nr. {$CustomerId}</strong></span><br />
 <span style="font-size:12px">Auftrag: {$OrderTitle}</span></p>
 
@@ -48,7 +30,7 @@ $pdf->writeHTML($htmldump);
 <p><span style="font-size:12px"><span style="font-family:arial,helvetica,sans-serif">Sehr geehrter {$ContactPerson-&gt;getNameAsLine3()}<br />
 <!-- {else} --> Sehr geehrte {$ContactPerson-&gt;getNameAsLine3()}<br />
 <!-- {/if} --> <!-- {else} --> Sehr geehrte Damen und Herren<br />
-<!-- {/if} --> gerne unterbreiten wir Ihnen nachfolgendes Angebot:</span></span></p>
+<!-- {/if} --> vielen Dank f&uuml;r Ihren Auftrag. Wir best&auml;tigen Ihnen wie folgt:</span></span></p>
 
 <p>&nbsp;</p>
 
@@ -160,20 +142,12 @@ $pdf->writeHTML($htmldump);
 </table>
 
 <p>&nbsp;</p>
+<!--  {/foreach} -->
 
-<p><!--  {/foreach} --></p>
-
-<p><span style="font-size:12px">Wir hoffen, dass unser Angebot Ihren Vorstellungen entspricht und w&uuml;rden uns &uuml;ber eine Auftragserteilung freuen.<br />
-F&uuml;r R&uuml;ckfragen stehen wir Ihnen selbstverst&auml;ndlich gerne zur Verf&uuml;gung. </span></p>
-
-<p><span style="font-size:12px">Dieses Angebot hat eine G&uuml;ltigkeit von 6 Wochen.<br />
-Es gelten die allgemeinen Gesch&auml;ftsbedingungen der {$UserClient}.</span></p>
+<p><span style="font-size:12px"><span style="font-family:arial,helvetica,sans-serif">{$Order-&gt;getTextOffer()}</span></span></p>
 
 <p><span style="font-size:12px">Mit freundlichen Gr&uuml;&szlig;en</span></p>
 
 <p>&nbsp;</p>
 
 <p>&nbsp;</p>
-*/ 
-?>
-
