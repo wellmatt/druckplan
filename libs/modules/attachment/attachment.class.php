@@ -42,8 +42,8 @@ class Attachment {
                 $this->filename   	    = $r["filename"];
                 $this->orig_filename   	= $r["orig_filename"];
     
-                if ($r["tkt_crtuser"] > 0){
-                    $this->crtuser		= new User($r["tkt_crtuser"]);
+                if ($r["crtuser"] > 0){
+                    $this->crtuser		= new User($r["crtuser"]);
                 } else {
                     $this->crtuser		= new User(0);
                 }

@@ -205,7 +205,7 @@ class Machine
         }
     }
 
-    static function getAllMachines($order = self::ORDER_ID, $group = 0)
+    static function getAllMachines($order = self::ORDER_ID, $group = 0, $filter = "")
     {
         global $DB;
         $retval = Array();
@@ -214,6 +214,7 @@ class Machine
         state = 1 ";
         if($group > 0)
             $sql .= "AND `group` = {$group} ";
+        $sql .= " " . $filter . " ";
         $sql .= "ORDER BY {$order}";
         if ($DB->num_rows($sql))
         {
@@ -285,7 +286,7 @@ class Machine
         }
         return new Machine();
     }
-
+    
     function save()
     {
 

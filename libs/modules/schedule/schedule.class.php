@@ -187,8 +187,7 @@ class Schedule
 		    	WHERE status > 0
 		    	AND
 		    	(  number LIKE '%{$search_string}%'
-		    	OR object LIKE '%{$search_string}%'
-		    	OR delivery_location LIKE '%{$search_string}%' )
+		    	OR object LIKE '%{$search_string}%' )
 		    	ORDER BY {$order} ";
 		
     	if ($DB->num_rows($sql)){

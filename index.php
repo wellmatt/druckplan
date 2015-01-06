@@ -27,6 +27,7 @@ require_once("./vendor/autoload.php");
 require_once 'libs/modules/timekeeping/timekeeper.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/organizer/mail/mailModel.class.php';
+require_once 'libs/modules/associations/association.class.php';
 
 
 $DB = new DBMysql();

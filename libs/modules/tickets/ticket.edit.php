@@ -163,7 +163,7 @@ if($_REQUEST["exec"] == "edit"){
 			'transitionOut'	:	'elastic',
 			'speedIn'		:	600, 
 			'speedOut'		:	200, 
-			'height'		:	800, 
+			'height'		:	350, 
 			'overlayShow'	:	true,
 			'helpers'		:   { overlay:null, closeClick:true }
 		});
@@ -282,6 +282,36 @@ $(document).ready(function () {
                 <td width="50%">
                      <h3><?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
                      <i class="icon-refresh"></i> Ticket #<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></h3>
+                     <?php if ($ticket->getId()>0){
+                      $associations = Association::getAssociationsForObject(get_class($ticket), $ticket->getId());?>
+                      <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Verknüpfungen (<?php echo count($associations);?>)<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        <?php 
+                            if (count($associations)>0){
+                                foreach ($associations as $association){
+                                    if ($association->getModule1() == get_class($ticket) && $association->getObjectid1() == $ticket->getId()){
+                                        $classname = $association->getModule2();
+                                        $object = new $classname($association->getObjectid2());
+                                        $link_href = Association::getPath($classname);
+                                        $object_name = Association::getName($object);
+                                    } else {
+                                        $classname = $association->getModule1();
+                                        $object = new $classname($association->getObjectid1());
+                                        $link_href = Association::getPath($classname);
+                                        $object_name = Association::getName($object);
+                                    }
+                                    echo '<li><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
+                                    echo '> ' . $classname . ' - ' . $object_name;
+                                    echo '</a></li>';
+                                }
+                            }
+                            echo '<li><a href="#" onclick="callBoxFancy(\'libs/modules/associations/association.frame.php?module='.get_class($ticket).'&objectid='.$ticket->getId().'\');">> NEU</a></li>';
+                        ?>
+                        </ul>
+                      </li>
+                      </br>
+                     <?php } ?>
                 </td>
                 <td width="50%" align="right">
                	  <?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete&tktid=<?=$ticket->getId()?>"><?php } ?><i class="icon-trash"></i> Löschen<?php if ($ticket->getId()>0){?></a><?php } ?>

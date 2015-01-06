@@ -151,6 +151,12 @@ function callBoxFancy(my_href) {
 	}
 </style>
 
+<?php 
+if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
+    echo "<script type=\"text/javascript\">$(document).ready(function() { callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid=".$_REQUEST["id"]."');});</script>";
+}
+?>
+
 	<div id='loading'>loading...</div>
 
 	<div id='calendar'></div>

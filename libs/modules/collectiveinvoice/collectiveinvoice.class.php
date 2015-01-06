@@ -189,9 +189,9 @@ class CollectiveInvoice{
 	 * 
 	 * @return Array : CollectiveInvoice
 	 */
-	static function getAllCollectiveInvoice($order = self::ORDER_NUMBER){
+	static function getAllCollectiveInvoice($order = self::ORDER_NUMBER, $filter = ""){
 		global $DB;
-		$sql = "SELECT * FROM collectiveinvoice WHERE status > 0 ORDER By {$order}";
+		$sql = "SELECT * FROM collectiveinvoice WHERE status > 0 {$filter} ORDER By {$order}";
 		$collectiveInvoices = Array();
 		if($DB->no_result($sql)){
 			$result = $DB->select($sql);
