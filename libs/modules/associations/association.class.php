@@ -112,19 +112,19 @@ class Association {
         switch ($classname)
         {
             case "Order":
-                return $object->getNumber() . ' ' . $object->getTitle();
+                return 'Kalkulation - ' . $object->getNumber() . ' ' . $object->getTitle();
                 break;
             case "CollectiveInvoice":
-                return $object->getNumber() . ' ' . $object->getTitle();
+                return 'Vorgang - ' . $object->getNumber() . ' ' . $object->getTitle();
                 break;
             case "Event":
-                return $object->getTitle();
+                return 'Termin - ' . $object->getTitle();
                 break;
             case "Schedule":
-                return $object->getNumber() . ' ' . $object->getObject();
+                return 'Planung - ' . $object->getNumber() . ' ' . $object->getObject();
                 break;
             case "Machine":
-                return $object->getName();
+                return 'Maschine - ' . $object->getName();
                 break;
         }
     }

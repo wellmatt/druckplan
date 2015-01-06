@@ -302,7 +302,7 @@ $(document).ready(function () {
                                         $object_name = Association::getName($object);
                                     }
                                     echo '<li><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
-                                    echo '> ' . $classname . ' - ' . $object_name;
+                                    echo '> ' . $object_name;
                                     echo '</a></li>';
                                 }
                             }
@@ -477,7 +477,7 @@ $(document).ready(function () {
   
   if (count($all_comments) > 0){?>
   <div class="ticket_comments">
-    <table><tr><td align="left"><h3><i class="icon-comment"></i> Kommentare <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=desc">DESC</a></h3></td></tr></table>
+    <table><tr><td align="left"><h3><i class="icon-comment"></i> Kommentare <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=desc"><img src="images/icons/arrow-270.png"/></a></h3></td></tr></table>
     
     <?php 
     foreach ($all_comments as $comment){
