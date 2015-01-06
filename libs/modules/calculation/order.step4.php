@@ -7,7 +7,7 @@
 //----------------------------------------------------------------------------------
 $calculations = Calculation::getAllCalculations($order, Calculation::ORDER_AMOUNT);
 
-$adj_tickets = Ticket::getAllTicketsByOrder(Ticket::ORDER_NUMBER, $order->getId());
+$adj_tickets = Ticket::getTicketsForObject(get_class($order),$order->getId());
 
 $all_user = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
 

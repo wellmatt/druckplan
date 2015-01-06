@@ -712,13 +712,15 @@ class Calculation
                     {
                         $papers = $this->getPagesAddContent3() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3);
                     }
-                    $platesets += ceil($papers);
-                    $platesets += round($papers, 0, PHP_ROUND_HALF_DOWN);
+                    $tmp_platesets += ceil($papers);
+                    $tmp_platesets += round($papers, 0, PHP_ROUND_HALF_DOWN);
 	            	//gln, umschlagen/umstuelpen
 	           		//if($me->getMachine()->getUmschlUmst())
 	           		if($me->getUmschlagenUmstuelpen())
 	       	        {
-	       	        	$platesets = ceil($platesets / 2);
+	       	        	$platesets += ceil($tmp_platesets / 2);
+	       	        } else {
+	       	            $platesets += $tmp_platesets;
 	       	        }
                 }
             }
@@ -745,13 +747,15 @@ class Calculation
                 {
                     $papers = $this->getPagesAddContent3() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3);
                 }
-                $platesets += ceil($papers);
-                $platesets += round($papers, 0, PHP_ROUND_HALF_DOWN);
+                $tmp_platesets += ceil($papers);
+                $tmp_platesets += round($papers, 0, PHP_ROUND_HALF_DOWN);
             	//gln, umschlagen/umstuelpen
-           		//if($machineEntry->getMachine()->getUmschlUmst())
+           		//if($me->getMachine()->getUmschlUmst())
            		if($machineEntry->getUmschlagenUmstuelpen())
        	        {
-       	        	$platesets = ceil($platesets / 2);
+       	        	$platesets += ceil($tmp_platesets / 2);
+       	        } else {
+       	            $platesets += $tmp_platesets;
        	        }
             }
     

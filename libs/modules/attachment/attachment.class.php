@@ -116,7 +116,7 @@ class Attachment {
     }
 
 
-    public function getAttachmentsForObject($module,$objectid)
+    public static function getAttachmentsForObject($module,$objectid)
     {
         global $DB;
         $retval = Array();

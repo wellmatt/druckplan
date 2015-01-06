@@ -74,6 +74,7 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
+		            null,
 		            null
 		          ],
 		"language": 
@@ -99,7 +100,29 @@ $(document).ready(function() {
 							"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
 							"sortDescending": ": aktivieren um absteigend zu sortieren"
 						}
-					}
+					},
+		"initComplete": function () {
+			            var api = this.api();
+			 
+			            api.columns().indexes().flatten().each( function ( i ) {
+			                var column = api.column( i ); 
+			                var select = $('<select><option value=""></option></select>')
+			                    .appendTo( $(column.header()).empty() )
+			                    .on( 'change', function () {
+			                        var val = $.fn.dataTable.util.escapeRegex(
+			                            $(this).val()
+			                        );
+			 
+			                        column
+			                            .search( val ? '^'+val+'$' : '', true, false )
+			                            .draw();
+			                    } );
+			 
+			                column.data().unique().sort().each( function ( d, j ) {
+			                    select.append( '<option value="'+d+'">'+d+'</option>' )
+			                } );
+			            } );
+			        }
     } );
 
     $("#ticketstable tbody td").live('click',function(){
@@ -132,7 +155,8 @@ $(document).ready(function() {
 	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th><?=$_LANG->get('Ticket-ID')?></th>
+                <th><?=$_LANG->get('ID')?></th>
+                <th><?=$_LANG->get('#')?></th>
                 <th><?=$_LANG->get('Kategorie')?></th>
                 <th><?=$_LANG->get('Datum')?></th>
                 <th><?=$_LANG->get('erst. von')?></th>
@@ -143,6 +167,5 @@ $(document).ready(function() {
                 <th><?=$_LANG->get('Priorität')?></th>
                 <th><?=$_LANG->get('Zugewiesen an')?></th>
             </tr>
-        </thead>
 	</table>
 </div>

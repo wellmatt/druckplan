@@ -8,7 +8,7 @@
     require_once 'libs/modules/tickets/ticket.class.php';
     require_once 'libs/modules/comment/comment.class.php';
 
-    $aColumns = array( 'id', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
+    $aColumns = array( 'id', 'number', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -148,6 +148,11 @@
             $groupsql .= ") ";
         }
         $sWhere .= " AND (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+    } elseif ($_REQUEST["bcid"]){
+        $sWhere .= " AND bcid = " . (int)$_REQUEST["bcid"];
+        if ((int)$_REQUEST["notes_only"] == 1){
+            $sWhere .= " AND tcid = 1 ";
+        }
     }
     
     /*
@@ -155,8 +160,8 @@
      * Get data to display
      */ 
     $sQuery = "SELECT * FROM (SELECT
-               tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
-               businesscontact.name1 as customer, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+               businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
                IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, 
                CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser 
                FROM tickets

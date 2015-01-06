@@ -50,7 +50,7 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
     };
     
     $(document).ready(function() {
-        var tickets = $('#tasks').DataTable( {
+        var tasks = $('#tasks').DataTable( {
             "paging": true,
     		"stateSave": true,
     		"pageLength": 50,

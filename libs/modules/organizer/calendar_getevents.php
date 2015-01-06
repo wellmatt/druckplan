@@ -55,7 +55,7 @@ if($events) {
 		$end = date("Y-m-d\TH:i:s",$event->getEnd());
 		if(strpos($event->getTitle(),"[TICKET]")!==false) {
 			if ($user->getCalTickets() == 1) {
-				$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "allDay" => "true", "url" => "index.php?page=libs/modules/tickets/tickets.php&exec=edit&tktid=".$event->getTicket()->getId());
+				$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end, "url" => "index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$event->getTicket()->getId());
 			}
 		} elseif(strpos($event->getTitle(),"[AUFTRAG]")!==false) {
 			if ($user->getCalOrders() == 1) {

@@ -8,7 +8,6 @@
 //----------------------------------------------------------------------------------
 require_once('libs/modules/organizer/nachricht.class.php');
 require_once ('libs/modules/tickets/ticket.class.php');
-require_once ('libs/modules/notes/notes.class.php');
 require_once ('libs/modules/commissioncontact/commissioncontact.class.php');
 
 global $_CONFIG;
@@ -18,20 +17,6 @@ $_REQUEST["id"] = (int)$_REQUEST["id"];
 $businessContact = new BusinessContact($_REQUEST["id"]);
 
 $all_attributes = Attribute::getAllAttributesForCustomer();
-
-if ($_REQUEST["subexec"] == "deletenote"){
-	$del_note = new Notes($_REQUEST["delnoteid"]);
-	$del_note->delete();
-}
-
-// Datei-Anhang einer Notiz loeschen
-if ($_REQUEST["subexec"] == "deletenotefile"){
-	$tmp_note = new Notes($_REQUEST["delnoteid"]);
-	$del_filename = Notes::FILE_DESTINATION.$tmp_note->getFileName();
-	unlink($del_filename);
-	$tmp_note->setFileName("");
-	$tmp_note->save();
-}
 
 // Nachricht senden, dann Speichern
 if($_REQUEST["subexec"] == "send"){
@@ -183,45 +168,6 @@ if ($_REQUEST["subexec"] == "save")
         }
     }
     
-    // Notizen speichern
-    if($_REQUEST["notes_title"] != NULL && $_REQUEST["notes_title"] != ""){
-	    $note = new Notes((int)$_REQUEST["notes_id"]);
-	    $note->setComment(trim(addslashes($_REQUEST["notes_comment"])));
-	    $note->setTitle(trim(addslashes($_REQUEST["notes_title"])));
-	    $note->setModule(Notes::MODULE_BUSINESSCONTACT);
-	    $note->setObjectid($businessContact->getId());
-	    
-	    /*echo "<pre>";
-	    var_dump($_FILES["file_comment"]);
-	    echo "</pre>";*/
-	    
-	    if (isset($_FILES["file_comment"])) {
-	    	if ($_FILES["file_comment"]["name"] != "" && $_FILES["file_comment"]["name"] != NULL){
-	    	
-		    	$destination = Notes::FILE_DESTINATION;
-		    	
-		    	// alte Datei loeschen, falls eine neue Datei hochgeladen wird
-		    	$old_filename = $destination.$note->getFileName();
-		    	unlink($old_filename);
-		    	
-	    		$filename = date("Y_m_d-H_i_s_").$_FILES["file_comment"]["name"];
-	    		$new_filename = $destination.$filename;
-	    		$tmp_outer = move_uploaded_file($_FILES["file_comment"]["tmp_name"], $new_filename);
-	    		
-	    		$note->setFileName($filename);
-	    	}
-	    }
-	    
-	    // Nur Admins und der Ersteller der Notiz duerfen diese bearbeiten und wenn es eine neue ist, muss Sie auch gespeichert werden
-	    if ($note->getCrtuser()->getId() == $_USER->getId() || $_USER->isAdmin() || $note->getId() == 0){
-	    	$note->save();
-	    }
-	    
-	    if($DB->getLastError()!=NULL && $DB->getLastError()!=""){
-	    	$savemsg .= $DB->getLastError();
-	    }
-    }
-    
     // Merkmale speichern
     $businessContact->clearAttributes();	// Erstmal alle loeschen und dann nur aktive neu setzen
     $save_attributes = Array();
@@ -270,14 +216,9 @@ if($send_mail){
 $show_tab=(int)$_REQUEST["tabshow"];
 $languages = Translator::getAllLangs(Translator::ORDER_NAME);
 $countries = Country::getAllCountries();
-$all_notes = Notes::getAllNotes(Notes::ORDER_CRTDATE, Notes::MODULE_BUSINESSCONTACT, $businessContact->getId());
 $all_active_attributes = $businessContact->getActiveAttributeItems();
 
 
-$count_notes = " ";
-if(count($all_notes) > 0){
-	$count_notes = " (".count($all_notes).")";
-}
 
 /**************************************************************************
  ******* 				Java-Script									*******
@@ -358,31 +299,6 @@ function generadeCustomerNumber(){
 		// Setzen der neu-generierten Nummer
 		document.getElementById('customernumber').value= data;
 	});
-}
-
-<? /*************************************
-	* Laed die Details zu einer Notiz
-	***********************************/ ?>
-function loadNoteDetails(noteid){
-	$.post("libs/modules/notes/notes.ajax.php", 
-        {exec: 'loadNoteDetails', noteid: noteid}, 
-        function(data) {
-        	var data = data.split('_+-+_+-+_');
-        	document.getElementById('table_notes').style.display="";
-        	document.getElementById('notes_id').value = data[0];
-        	document.getElementById('notes_title').value = data[1];
-            document.getElementById('notes_comment').innerHTML = data[2];
-            document.getElementById('img_notes_clear').style.display="";
-        });
-}
-<? /*******************************************************
-	* Aktiviert die eingabefelder fuer Notizen
-	******************************************************/ ?>
-function showNoteFields(){
-	document.getElementById('table_notes').style.display="";
-	document.getElementById('notes_id').value = '';
-	document.getElementById('notes_title').value = '';
-	document.getElementById('notes_comment').innerHTML = '';
 }
 
 <? /*******************************************************
@@ -466,12 +382,12 @@ function commi_checkbox(){
 			<li><a href="#tabs-0"><? echo $_LANG->get('&Uuml;bersicht');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Stammdaten');?></a></li>
 			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li> 
-			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li>
-			<li><a href="#tabs-6"><? echo $_LANG->get('Notizen').$count_notes;?></a></li> 
+			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li> 
 			<li><a href="#tabs-3"><? echo $_LANG->get('Ansprechpartner');?></a></li>
 			<?if ($_CONFIG->shopActivation){?>
 				<li><a href="#tabs-4"><? echo $_LANG->get('Kundenportal');?></a></li>
 			<?}?>
+			<li><a href="#tabs-6"><? echo $_LANG->get('Notizen');?></a></li>
 			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?></a></li>
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
@@ -1549,110 +1465,29 @@ function commi_checkbox(){
 			<p></p>
 		</div>
 	
-		<? // ------------------------------------- Notizen ----------------------------------------------?>
+		<? // ------------------------------------- verbundene Tickets (Notizen) ----------------------------------------------?>
+		
 		<div id="tabs-6">
-		<?if($businessContact->getId()){?>	
+		<?if($businessContact->getId()){?>
 			<table width="100%">
 					<tr>
 						<td width="200" class="content_header">
 							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
 							<?=$_LANG->get('Notizen');?>
-							&emsp;
-							<img id="img_notes_clear" src="images/icons/plus.png" title="<?=$_LANG->get('Neue Notiz');?>" 
-								 class="pointer icon-link" onclick="showNoteFields()">
 						</td>
 						<td></td>
-						<td width="200" class="content_header" align="right"><?=$savemsg?></td>
+						<td width="200" class="content_header" align="right">&ensp;</td>
 					</tr>
 			</table>
-			<table width="100%" cellpadding="0" cellspacing="0">
-				<colgroup>
-					<col width="250">
-					<col>
-					<col width="170">
-					<col width="200">
-					<col width="130">
-				</colgroup>
-				<tr>
-				<? 
-				if ($all_notes != false && count($all_notes) > 0){ ?>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Inhalt')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Datei-Anhang')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Erstellt')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-					</tr>
-				<?	foreach ($all_notes AS $n){ ?>
-						<tr onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-							<td class="content_row" valign="top"><?=$n->getTitle()?></td>
-							<td class="content_row">
-								<?=nl2br(substr($n->getComment(), 0, 50))?>
-							</td>
-							<td class="content_row" valign="top">
-							<? if ($n->getFileName() != "" && $n->getFileName() != NULL){?>
-								<a href="<?=Notes::FILE_DESTINATION.$n->getFileName()?>" target="_blank" class="icon-link"
-									><img src="images/icons/navigation-270-frame.png" alt="<?=$_LANG->get('Datei aufrufen');?>" 
-											title="<?=$n->getFileName()?>&ensp;<?=$_LANG->get('aufrufen');?>"></a>
-								&emsp;
-								<a href="#"  class="icon-link"
-									onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=deletenotefile&id=<?=$businessContact->getId()?>&delnoteid=<?=$n->getId()?>')"
-									><img src="images/icons/cross-script.png" alt="<?=$_LANG->get('Anhang l&ouml;schen');?>" 
-											title="<?=$_LANG->get('Anhang l&ouml;schen');?>"></a>
-							<? } ?>&nbsp;
-							</td>
-							<td class="content_row" valign="top">
-								<? echo date('d.m.Y', $n->getCrtdate())." ".$_LANG->get('von')."  ".$n->getCrtuser()->getNameAsLine();?>
-							</td>
-							<td class="content_row" valign="top" class="icon-link">
-								<?if($_USER->getId() == $n->getCrtuser()->getId()  || $_USER->isAdmin()){ ?>
-									<a href="#notes_anchor"><img src="images/icons/application-import.png" title="<?=$_LANG->get('Notiz laden');?>" class="pointer icon-link"
-										 onclick="loadNoteDetails(<?=$n->getId();?>)"></a>
-								<? } ?>
-								&ensp;
-								<?if($_USER->getId() == $n->getCrtuser()->getId()  || $_USER->isAdmin()){?>
-									<a href="#" class="icon-link"
-										onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=deletenote&id=<?=$businessContact->getId()?>&delnoteid=<?=$n->getId()?>')"
-										><img src="images/icons/cross-script.png" alt="<?=$_LANG->get('Notiz l&ouml;schen');?>" 
-												title="<?=$_LANG->get('Notiz l&ouml;schen');?>"></a>
-								<? } ?>
-							</td>
-						</tr>
-				<? } 
-				} else {?>
-					<tr><td colspan="2"><span class="msg_error"><?=$_LANG->get('Keine Notizen hinterlegt');?></span></td></tr>
-				<? } ?>
-			</table>
-			<br/>
-			<table id="table_notes" style="display:none">
-				<tr>
-					<td class="content_row_header" colspan="2"><?=$_LANG->get('Notiz verfassen')?></td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-					<td class="content_row_clear">
-						<input name="notes_id" id="notes_id" value="" type="hidden" >
-						<input 	name="notes_title" id="notes_title" style="width: 300px;" class="text" 
-								value="" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Bemerkung')?></td>
-					<td class="content_row_clear">
-						<textarea name="notes_comment" id="notes_comment" style="width: 482px;height: 150px;"><?=$businessContact->getComment()?></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Datei-Anhang');?></td>
-					<td class="content_row_clear">
-						<input type="file" name="file_comment" id="file_comment" style="width: 480px;">
-					</td>
-				</tr>
-			</table>
-			<a name="notes_anchor"></a>
+			
+			<? // Tickets laden, die dem Kunden zugeordnet wurden
+				$from_busicon = true;
+				$notes_only = true;
+				$contactID = $businessContact->getId();
+				require_once 'libs/modules/tickets/ticket.notesfor.php';?>
 		<? } ?>
 		</div>
-		
+
 		<? // ------------------------------------- verbundene Tickets ----------------------------------------------?>
 		
 		<div id="tabs-7">
@@ -1670,8 +1505,9 @@ function commi_checkbox(){
 			
 			<? // Tickets laden, die dem Kunden zugeordnet wurden
 				$from_busicon = true;
-				$busiconID = $businessContact->getId();
-				require_once 'libs/modules/tickets/ticket.forbusinesscontact.php';?>
+				$notes_only = false;
+				$contactID = $businessContact->getId();
+				require_once 'libs/modules/tickets/ticket.for.php';?>
 		<? } ?>
 		</div>
 

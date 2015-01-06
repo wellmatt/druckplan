@@ -6,9 +6,17 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 
-?>
+if ($from_busicon){
+    if ($notes_only){
+        $ajax_url = "libs/modules/tickets/ticket.dt.ajax.php?notes_only=1&bcid=".$contactID;
+    } else {
+        $ajax_url = "libs/modules/tickets/ticket.dt.ajax.php?bcid=".$contactID;
+    }
+} elseif ($from_cc){
+    $ajax_url = "libs/modules/tickets/ticket.dt.ajax.php?ccid=".$contactID;
+}
 
-<? // echo $DB->getLastError();?>
+?>
 
 <!-- DataTables -->
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.1/css/jquery.dataTables.css">
@@ -38,11 +46,11 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 };
 
 $(document).ready(function() {
-    var ticketstable = $('#ticketstable').DataTable( {
+    var ticketsnotestable = $('#ticketsnotestable').DataTable( {
         // "scrollY": "600px",
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php?forme=<?php echo $_USER->getId();?>",
+        "sAjaxSource": '<?php echo $ajax_url;?>',
         "paging": true,
 		"stateSave": true,
 // 		"dom": 'flrtip',        
@@ -102,9 +110,9 @@ $(document).ready(function() {
 					}
     } );
 
-    $("#ticketstable tbody td").live('click',function(){
-        var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
-        var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
+    $("#ticketsnotestable tbody td").live('click',function(){
+        var aPos = $('#ticketsnotestable').dataTable().fnGetPosition(this);
+        var aData = $('#ticketsnotestable').dataTable().fnGetData(aPos[0]);
         document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0];
     });
 } );
@@ -114,7 +122,7 @@ $(document).ready(function() {
 	<tr>
 		<td width="150" class="content_header">
 			<img src="images/icons/clipboard-task.png"> 
-			<span style="font-size: 13px"><?=$_LANG->get('Meine Tickets')?></span>
+			<span style="font-size: 13px"><?=$_LANG->get('Verknüpfte Tickets (Notizen)')?></span>
 		</td>
 		<td width="250" class="content_header" align="right">
 		<?=$savemsg?>
@@ -129,7 +137,7 @@ $(document).ready(function() {
 
 <br/>
 <div class="box1">
-	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
+	<table id="ticketsnotestable" width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <th><?=$_LANG->get('ID')?></th>

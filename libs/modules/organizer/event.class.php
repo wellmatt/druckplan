@@ -179,12 +179,12 @@ class Event {
             foreach($tickets as $ticket) {
 
                 $event = new Event();
-                $event->setTitle('[TICKET] ' . $ticket->getTicketnumber());
+                $event->setTitle('[TICKET] ' . $ticket->getNumber());
                 $event->setPublic(1);
                 $event->setUser($user);
-                $event->setDesc('Ticket ' . $ticket->getTicketnumber() . ' (' . $ticket->getTitle() . ')');
-                $event->setBegin(mktime(7,0,0, date('m',$ticket->getDue()), date('d',$ticket->getDue()), date('Y',$ticket->getDue())));
-                $event->setEnd(mktime(8,0,0, date('m',$ticket->getDue()), date('d',$ticket->getDue()), date('Y',$ticket->getDue())));
+                $event->setDesc('Ticket ' . $ticket->getNumber() . ' (' . $ticket->getTitle() . ')');
+                $event->setBegin($ticket->getDuedate());
+                $event->setEnd($ticket->getDuedate()+3600);
 				$event->setTicket($ticket);
                 $retval[] = $event;
 

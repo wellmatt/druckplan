@@ -1,6 +1,6 @@
 <?
-require_once 'event.class.php';
-chdir('../../../');
+require_once 'libs/modules/organizer/event.class.php';
+// chdir('../../../');
 
 global $_USER;
 if((int)$_REQUEST["sel_user"] > 0)

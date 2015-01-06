@@ -1413,9 +1413,6 @@ if((int)$_REQUEST["step"] == 7){
 	
 }
 
-$all_notes = Notes::getAllNotes(Notes::ORDER_CRTDATE, Notes::MODULE_CALCULATION, $order->getId());
-$note_counter = count($all_notes);
-
 ?>
 
 <link rel="stylesheet" href="css/order.css" type="text/css" />
@@ -1452,7 +1449,6 @@ $note_counter = count($all_notes);
   </li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li>
-  <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=7'">Notizen ( <?=$note_counter?> )</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=5'">Druckbogenvorschau</a></li>
 </ul> 
 
@@ -1480,9 +1476,6 @@ $note_counter = count($all_notes);
 			break;
 		case 6:
 			require_once 'order.documents.php';
-			break;
-		case 7:		//gln 
-			require_once 'order.notizen.php';
 			break;
 		default:
 			require_once 'order.step1.php';

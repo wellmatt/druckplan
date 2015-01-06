@@ -209,7 +209,7 @@ if($_REQUEST["exec"] == "parts")
 	</thead>
     <? $x = 1; 
     foreach($schedules as $s) { 
-    	$adj_tickets = Ticket::getAllTicketsByPlanning(Ticket::ORDER_NUMBER, $s->getId());?>
+    	$adj_tickets = Ticket::getTicketsForObject(get_class($s), $s->getId());?>
     <tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
         <td class="content_row" valign="top" align="center" style="background-color:<?if($s->getFinished()) echo "green"; else echo "red"?>;color:white"><?=$s->getId()?></td>
         <td class="content_row" valign="top"><?=$s->getCreateuser()?>&nbsp;</td>

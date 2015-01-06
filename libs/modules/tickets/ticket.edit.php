@@ -19,7 +19,9 @@ function reArrayFiles(&$file_post) {
 
 $_REQUEST["tktid"] = (int)$_REQUEST["tktid"];
 
+$new_ticket = false;
 if($_REQUEST["exec"] == "new"){
+    $new_ticket = true;
     $ticket = new Ticket();
     $header_title = $_LANG->get('Ticket erstellen');
 }
@@ -137,9 +139,24 @@ if($_REQUEST["exec"] == "edit"){
 <script>
 	$(function() {
 		$( "#tabs" ).tabs();
-		CKEDITOR.replace( 'tktc_comment' );
-		$("#ticket_edit").validate();
-
+		CKEDITOR.replace( 'tktc_comment', {
+			// Define the toolbar groups as it is a more accessible solution.
+			toolbarGroups: [
+                { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+                { name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                { name: 'tools' },
+                { name: 'others' },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },
+                { name: 'styles' },
+                { name: 'colors' }
+			]
+			// Remove the redundant buttons from toolbar groups defined above.
+			//removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+		} );
 		$("a#hiddenclicker").fancybox({
 			'type'    : 'iframe',
 			'transitionIn'	:	'elastic',
@@ -209,6 +226,38 @@ $(function() {
 		 });
 });
 </script>
+<script>
+$(document).ready(function () {
+    $('#ticket_edit').validate({
+        rules: {
+            'tktc_comment': {
+                required: true
+            }
+        },
+        errorPlacement: function(error, $elem) {
+            if ($elem.is('textarea')) {
+                $elem.next().css('border', '1px solid red');
+            }
+        },
+        ignore: []
+    });
+    CKEDITOR.on('instanceReady', function () {
+        $.each(CKEDITOR.instances, function (instance) {
+            CKEDITOR.instances[instance].document.on("keyup", CK_jQ);
+            CKEDITOR.instances[instance].document.on("paste", CK_jQ);
+            CKEDITOR.instances[instance].document.on("keypress", CK_jQ);
+            CKEDITOR.instances[instance].document.on("blur", CK_jQ);
+            CKEDITOR.instances[instance].document.on("change", CK_jQ);
+        });
+    });
+
+    function CK_jQ() {
+        for (instance in CKEDITOR.instances) {
+            CKEDITOR.instances[instance].updateElement();
+        }
+    }
+});
+</script>
 
 <body>
 
@@ -231,8 +280,8 @@ $(function() {
         <tbody>
         	<tr>
                 <td width="50%">
-                     <h3><?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload"><?php } ?>
-                     <i class="icon-refresh"></i> Ticket #<?=$ticket->getNumber()?><?php if ($ticket->getId()>0){?></a><?php } ?></h3>
+                     <h3><?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
+                     <i class="icon-refresh"></i> Ticket #<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></h3>
                 </td>
                 <td width="50%" align="right">
                	  <?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete&tktid=<?=$ticket->getId()?>"><?php } ?><i class="icon-trash"></i> Löschen<?php if ($ticket->getId()>0){?></a><?php } ?>
@@ -256,15 +305,15 @@ $(function() {
         </td>
         <td width="25%">Kunde:</td>
         <td width="25%">
-            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2();?>" style="width:160px" required/>
-            <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php echo $ticket->getCustomer()->getId();?>"/>
-            <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php echo $ticket->getCustomer_cp()->getId();?>"/>
+            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2(); } ?>" style="width:160px" required/>
+            <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php echo $ticket->getCustomer()->getId();?>" required/>
+            <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php echo $ticket->getCustomer_cp()->getId();?>" required/>
         </td>
       </tr>
       <tr>
         <td width="25%">Status:</td>
         <td width="25%">
-            <select name="tkt_state" id="tkt_state" style="width:160px">
+            <select name="tkt_state" id="tkt_state" style="width:160px" required>
             <?php 
             $tkt_all_states = TicketState::getAllStates();
             foreach ($tkt_all_states as $tkt_state){
@@ -340,7 +389,7 @@ $(function() {
             }
         } else {?>
             <select name="tkt_assigned" id="tkt_assigned" style="width:160px" required>
-            <option disabled>─ Users ─</option>
+            <option disabled>-- Users --</option>
             <?php 
             $all_user = User::getAllUser(User::ORDER_NAME);
             $all_groups = Group::getAllGroups(Group::ORDER_NAME);
@@ -354,7 +403,7 @@ $(function() {
                 }
             }
             ?>
-            <option disabled>─ Groups ─</option>
+            <option disabled>-- Groups --</option>
             <?php 
             foreach ($all_groups as $tkt_groups){
                 if ($ticket->getAssigned_group() == $tkt_groups){
@@ -382,7 +431,7 @@ $(function() {
 			<input type="text" style="width:160px" id="tkt_due" name="tkt_due"
 			class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
 			onfocus="markfield(this,0)" onblur="markfield(this,1)"
-			value="<?if($ticket->getDuedate() != 0){ echo date('d.m.Y H:i', $ticket->getDuedate());}?>"/>
+			value="<?if($ticket->getDuedate() != 0){ echo date('d.m.Y H:i', $ticket->getDuedate());}?>" required/>
         </td>
         <td width="25%">Letzte Mitteilung:</td>
         <td width="25%"><?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?>&nbsp;</td>
@@ -433,12 +482,12 @@ $(function() {
               <tr>
                 <td colspan="3"><?php echo $comment->getComment();?></td>
               </tr>
-              <?php if (count(Attachment::getAttachmentsForObject("Comment",$comment->getId())) > 0){ ?>
+              <?php if (count(Attachment::getAttachmentsForObject(get_class($comment),$comment->getId())) > 0){ ?>
               <tr>
                 <td width="25%">Anhänge:</td>
                 <td colspan="2">
                     <?php 
-                        foreach (Attachment::getAttachmentsForObject("Comment",$comment->getId()) as $c_attachment){
+                        foreach (Attachment::getAttachmentsForObject(get_class($comment),$comment->getId()) as $c_attachment){
                             echo '<span><a href="'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a></span></br>';
                         }
                     ?>
@@ -471,7 +520,7 @@ $(function() {
   ?>
   </br>
 	<div class="ticket_comment">
-		  <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea>
+		  <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80" required></textarea>
 		  </br>
 		  <table width="100%" border="1">
 		      <tr>
@@ -498,12 +547,13 @@ $(function() {
                     <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
 		          </td>
 		      </tr>
+		      <?php if ($new_ticket == false){?>
 		      <tr>
 		          <td width="25%">neuen MA zuweisen:</td>
 		          <td width="75%">
                     <select name="tkt_assigned" id="tkt_assigned" style="width:160px" required>
                     <option value="0" selected>&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-                    <option disabled>─ Users ─</option>
+                    <option disabled>-- Users --</option>
                     <?php 
                     $all_user = User::getAllUser(User::ORDER_NAME);
                     $all_groups = Group::getAllGroups(Group::ORDER_NAME);
@@ -511,7 +561,7 @@ $(function() {
                         echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
                     }
                     ?>
-                    <option disabled>─ Groups ─</option>
+                    <option disabled>-- Groups --</option>
                     <?php 
                     foreach ($all_groups as $tkt_groups){
                         echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
@@ -520,6 +570,7 @@ $(function() {
                     </select>
 		          </td>
 		      </tr>
+		      <?php } ?>
 		  </table>
 	</div>
 	<table width="100%">

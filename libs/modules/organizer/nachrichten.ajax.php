@@ -30,7 +30,6 @@ require_once 'libs/modules/finishings/finishing.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/personalization/personalization.order.class.php';
-require_once 'libs/modules/notes/notes.class.php';
 require_once "libs/modules/organizer/mail/mailModel.class.php";
 use Zend\Mail;
 use Zend\Mail\Headers;

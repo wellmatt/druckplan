@@ -49,7 +49,7 @@ $string_total_time_w = "Gesamt";
 $string_total_time_m = "Gesamt";
 $string_total_time_y = "Gesamt"; 
 
-$all_tickets = Ticket::getAllTickets(Ticket::ORDER_TITLE,"");
+$all_tickets = Ticket::getAllTickets("");
 foreach ($all_tickets as $ticket){
 
 	if (date("YmWd") == date("YmWd",$ticket->getCrtdate())){

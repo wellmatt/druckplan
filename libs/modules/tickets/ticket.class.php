@@ -146,6 +146,8 @@ class Ticket {
 
     public function getTicketsForObject($module,$objectid)
     {
+        global $DB;
+        global $_USER;
         $retval = Array();
     
         $sql = "SELECT ticketid FROM tickets_association WHERE module = {$module} AND objectid = {$objectid}";
@@ -178,6 +180,68 @@ class Ticket {
                 return false;
             }
         }
+    }
+    
+    static function getDueTicketsWithinTimeFrame($start, $end, User $user) {
+        global $DB;
+        $retval = Array();
+    
+        $foruser = $user;
+        $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
+        $forgroups = $foruser->getGroups();
+        if (count($forgroups) > 0){
+            $groupsql = " OR assigned IN (";
+            foreach ($forgroups as $ugroup){
+                $groupsql .= "'".$ugroup->getName() . "',";
+            }
+            $groupsql = substr($groupsql, 0, strlen($groupsql)-1);
+            $groupsql .= ") ";
+        }
+        $sWhere .= " WHERE (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+        
+        $sql = "SELECT id, assigned, crtuser FROM (SELECT
+        tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+        businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title,
+        IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned,
+        CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser
+        FROM tickets
+        LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
+        LEFT JOIN tickets_states ON tickets_states.id = tickets.state
+        LEFT JOIN tickets_priorities ON tickets_priorities.id = tickets.priority
+        LEFT JOIN tickets_categories ON tickets_categories.id = tickets.category
+        LEFT JOIN `user` ON `user`.id = tickets.assigned_user
+        LEFT JOIN groups ON groups.id = tickets.assigned_group
+        LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser
+        HAVING duedate >= {$start} AND duedate <= {$end}
+        ) tickets
+        $sWhere 
+        ORDER BY id ASC";
+
+//         echo $sql;
+        
+        if($DB->num_rows($sql)) {
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Ticket((int)$r["id"]);
+            }
+        }
+//         var_dump($retval);
+        return $retval;
+    }
+    
+    public static function getAllTickets($filter = '')
+    {
+        global $DB;
+        global $_USER;
+        $retval = Array();
+    
+        $sql = "SELECT id FROM tickets {$filter}";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Ticket($r["id"]);
+            }
+        }
+    
+        return $retval;
     }
     
 	/**

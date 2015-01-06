@@ -127,7 +127,7 @@ class Comment {
         }
     }
     
-    public function getCommentsForObject($module,$objectid)
+    public static function getCommentsForObject($module,$objectid)
     {
         global $DB;
         $retval = Array();
@@ -142,7 +142,7 @@ class Comment {
         return $retval;
     }
     
-    public function getLatestCommentsForObject($module,$objectid)
+    public static function getLatestCommentsForObject($module,$objectid)
     {
         global $DB;
         $retval = Array();
@@ -157,7 +157,7 @@ class Comment {
         return $retval;
     }
     
-    public function getObjectParticipants($module,$objectid){
+    public static function getObjectParticipants($module,$objectid){
         global $DB;
         $retval = Array();
         

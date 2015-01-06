@@ -11,7 +11,6 @@
 require_once "libs/modules/organizer/mail/mailModel.class.php";
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/calculation/calculation.class.php';
-require_once 'libs/modules/notes/notes.class.php';
 
 use Zend\Mail;
 use Zend\Mail\Headers;

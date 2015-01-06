@@ -19,7 +19,7 @@ if($_REQUEST["subexec"] == "deletepart")
 }
 
 $parts = SchedulePart::getAllScheduleParts($sched->getId());
-$adj_tickets = Ticket::getAllTicketsByPlanning(Ticket::ORDER_NUMBER, $sched->getId());
+$adj_tickets = Ticket::getTicketsForObject(get_class($sched), $sched->getId());
 //gln, nur Lieferscheine und Etiketten anzeigen
 //$adj_docs = Document::getDocuments(Array("requestId" => $sched->getDruckplanId(), "module" => Document::REQ_MODULE_ORDER));
 $adj_docs = array();
