@@ -168,5 +168,20 @@ $(document).ready(function() {
                 <th><?=$_LANG->get('Priorität')?></th>
                 <th><?=$_LANG->get('Zugewiesen an')?></th>
             </tr>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </tfoot>
 	</table>
 </div>

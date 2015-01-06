@@ -126,15 +126,6 @@
         }
     }
     
-    if ( $sWhere == "" )
-    {
-        $sWhere = " WHERE state = 'offen' ";
-    }
-    else
-    {
-        $sWhere .= " AND state = 'offen' ";
-    }
-    
     if ($_REQUEST["forme"]){
         $foruser = new User((int)$_REQUEST["forme"]);
         $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
@@ -172,6 +163,7 @@
                LEFT JOIN `user` ON `user`.id = tickets.assigned_user
                LEFT JOIN groups ON groups.id = tickets.assigned_group
                LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
+               WHERE tickets_states.id > 1 
                $sLimit 
                ) tickets 
                $sWhere
@@ -245,12 +237,12 @@
                     }
                 }
                 $commenthtml .= "'>";
-                $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ])).$commenthtml;
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ]))).$commenthtml;
             }
             else if ( $aColumns[$i] == 'priority' )
             {
                 /* do not print the id */
-                $row[] = nl2br(htmlentities($aRow['priority_title']));
+                $row[] = nl2br(htmlentities(utf8_encode($aRow['priority_title'])));
             }
             else if ( $aColumns[$i] == 'id' )
             {
@@ -260,7 +252,7 @@
             else
             {
                 /* General output */
-                $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ]));
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
         $output['aaData'][] = $row;

@@ -221,11 +221,13 @@
             else if ( $aColumns[$i] == 'name1' )
             {
 //                 $row[] = utf8_encode(nl2br(htmlentities($aRow[ $aColumns[$i] ])));
-                $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
+//                 $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
             else if ( $aColumns[$i] == 'city' )
             {
-                $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ]));
+//                 $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ]));
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
             else if ( $aColumns[$i] == 'matchcode' )
             {
@@ -254,12 +256,14 @@
                 if ($tmp_row == ''){
                     $tmp_row = 'keine';
                 }
-                $row[] = nl2br(htmlentities($tmp_row));
+                $row[] = nl2br(htmlentities(utf8_encode($tmp_row)));
+//                 $row[] = nl2br(htmlentities($tmp_row));
             }
             else
             {
                 /* General output */
-                $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ]));
+//                 $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ]));
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
 		$row[] = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><img src="../images/icons/pencil.png"></a>
