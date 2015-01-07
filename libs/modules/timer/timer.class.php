@@ -26,11 +26,14 @@ class Timer
     function __construct($id = 0)
     {
         global $DB;
+        
+        $this->crtuser	= new User(0);
+        
         if ($id) {
             $sql = "SELECT * FROM timer WHERE id = {$id};";
             $r = $DB->select($sql);
             $this->id = $r[0]["id"];
-            $this->crtuser = $r[0]["crtuser"];
+            $this->crtuser = new User($r[0]["crtuser"]);
             $this->module = $r[0]["module"];
             $this->objectid = $r[0]["objectid"];
             $this->state = $r[0]["state"];
@@ -94,23 +97,31 @@ class Timer
     {
         global $DB;
         global $_USER;
+        $now = time();
         
         $this->setCrtuser($_USER);
         $this->setModule($module);
         $this->setObjectid($objectid);
         $this->setState(Timer::TIMER_RUNNING);
         
-        $sql = "SELECT SELECT max(stoptimer) stoptimer FROM timer WHERE crtuser = {$this->crtuser->getId()} ;";
+        $sql = "SELECT max(id) id FROM timer WHERE crtuser = {$this->crtuser->getId()} ;";
         $r = $DB->select($sql);
         
-        $this->setStarttime($r[0]["stoptimer"]);
-        $this->setStoptime(NULL);
+        $lasttimer = new Timer($r[0]["id"]);
+        if($lasttimer->getState()==TIMER::TIMER_RUNNING)
+        {
+            $lasttimer->stop($now);
+            $lasttimer->save();
+            $this->setStarttime(++$now);
+        }
+        else 
+            $this->setStarttime($lasttimer->getStoptime()+1);
     }
 
     public function stop($cdate = 0)
     {
         if ($cdate)
-            $this->stoptime = time();
+            $this->stoptime = $cdate;
         else
             $this->stoptime = time();
         $this->state = Timer::TIMER_STOP;
@@ -124,7 +135,7 @@ class Timer
         if (! $crtuser)
             $crtuser = $_USER;
         
-        $sql = "SELECT max(starttime) id FROM timer WHERE crtuser = {$crtuser};";
+        $sql = "SELECT max(id) id FROM timer WHERE crtuser = {$crtuser->getId()};";
         $r = $DB->select($sql);
         $thisid = $DB->select($sql);
         
@@ -132,24 +143,19 @@ class Timer
         return $timer;
     }
 
-    public static function getTimerList($module, $objectid, $crtuser = NULL)
+    public static function getTimerForObject($module, $objectid, $filter = "")
     {
-        global $_USER;
         global $DB;
-        $timerlist = array();
-        
-        if (! $crtuser)
-            $crtuser = $_USER;
-        
-        $sql = "SELECT id FROM timer WHERE 
-        module = {$module} AND
-        objectid = {$objectid} AND 
-        crtuser = {$crtuser};";
-        $r = $DB->select($sql);
-        
-        foreach ($r as $pos) 
-            $timerlist[] = new Timer($pos);
-        return $timerlist;
+        $retval = Array();
+    
+        $sql = "SELECT id FROM timer WHERE module = '{$module}' AND objectid = {$objectid} {$filter};";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Timer($r["id"]);
+            }
+        }
+    
+        return $retval;
     }
 
     /**
