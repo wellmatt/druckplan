@@ -155,7 +155,7 @@ class Article {
             } else {
                 return false;
             }
-		}
+		} 
 	}
 	
 	/**

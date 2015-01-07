@@ -12,31 +12,32 @@ require_once 'thirdparty/tcpdf/tcpdf.php';
 // Einbindung der generellen Variablen im Templatesystem
 
 require 'docs/templates/generel.tmpl.php';
-$tmp = 'C:/xampp/htdocs/dev/docs/tmpl_files/delivery.tmpl';
+$tmp = 'docs/tmpl_files/delivery.tmpl';
 $datei = ckeditor_to_smarty($tmp);
 
 // Table
-$smarty->assign('Order',$order);
+$smarty->assign('Order', $order);
 $calcs = Calculation::getAllCalculations($order, Calculation::ORDER_AMOUNT);
 
 // Vorbearbeitung
-foreach ($calcs as $calc)
-{
-    // Produktnamen holen oder ggf. ueberschreiben
-    $tmp_productname = $order->getProduct()->getName();
-    if ($order->getProductName() != "" && $order->getProductName() != NULL) {
-        $tmp_productname = $order->getProductName();
-    }
-    $order->setProductName($tmp_productname);
-    
-    if ((int) $_REQUEST["delivery_amount"] > 0) {
-        $calc->setAmount((int) $_REQUEST["delivery_amount"]);
+foreach ($calcs as $calc) {
+    if ($calc->getState()) {
+        // Produktnamen holen oder ggf. ueberschreiben
+        $tmp_productname = $order->getProduct()->getName();
+        if ($order->getProductName() != "" && $order->getProductName() != NULL) {
+            $tmp_productname = $order->getProductName();
+        }
+        $order->setProductName($tmp_productname);
+        
+        if ((int) $_REQUEST["delivery_amount"] > 0) {
+            $calc->setAmount((int) $_REQUEST["delivery_amount"]);
+        }
     }
 }
 
-$smarty->assign('Calcs',$calcs);
+$smarty->assign('Calcs', $calcs);
 
-$htmldump = $smarty->fetch('string:'.$datei);
+$htmldump = $smarty->fetch('string:' . $datei);
 
 // var_dump($htmltemp);
 

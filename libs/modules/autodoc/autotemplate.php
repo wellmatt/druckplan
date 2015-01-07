@@ -14,7 +14,7 @@ $tmp = 'libs/modules/autodoc/default.js';
 
 $editors = array(
     new TmplDefault("Angebot", "coloffer"),
-    new TmplDefault("Angebotsbestätigung", "colofferconfirm"),
+    new TmplDefault("AngebotsbestÃ¤tigung", "colofferconfirm"),
     new TmplDefault("Rechnung", "colinvoice"),
     new TmplDefault("Lieferschein", "coldelivery"),
     new TmplDefault("Gutschrift", "revert"),
@@ -60,7 +60,7 @@ foreach ($editors as $editor) {
 }
 
 
-// Löschen von Vorlagen
+// Lï¿½schen von Vorlagen
 $del = $_REQUEST["del"];
 $del_text = $_REQUEST["del_text"];
 if($del && $del_text)
@@ -202,7 +202,7 @@ function tmplFunction(obj) {
 							</td>
 							<td align="right" width=""><input type="hidden" id="exec"
 								name="del" value="del"> <input type="submit"
-								value="<?php echo $_LANG->get("Löschen")?>"></td>
+								value="<?php echo $_LANG->get("Lï¿½schen")?>"></td>
 						</tr>
 					</table>
 				</form>
