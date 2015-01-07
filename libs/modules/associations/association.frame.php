@@ -89,7 +89,15 @@ if ($_REQUEST["delete"] && $_REQUEST["id"])
         $association->setObjectid2((int)$_REQUEST["machine_id"]);
         $save_ok = $association->save();
     }
-    echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.reload;</script>';
+    if ($_REQUEST["ticket_id"] != ""){
+        $association = new Association();
+        $association->setModule1($_REQUEST["module"]);
+        $association->setObjectid1((int)$_REQUEST["objectid"]);
+        $association->setModule2("Ticket");
+        $association->setObjectid2((int)$_REQUEST["ticket_id"]);
+        $save_ok = $association->save();
+    }
+    echo '<script language="JavaScript">parent.$.fancybox.close(); window.opener.location.href = window.opener.location.href;</script>';
 } elseif($_REQUEST["module"] && $_REQUEST["objectid"]) {
 
 $module = $_REQUEST["module"];
@@ -184,6 +192,19 @@ $(function() {
     		 $( "#maschine_id" ).val( ui.item.value );
     		 return false;
 		 }
+	 });	 
+	 $( "#ticket" ).autocomplete({
+		 source: "association.ajax.php?ajax_action=search_ticket",
+		 minLength: 2,
+		 focus: function( event, ui ) {
+    		 $( "#ticket" ).val( ui.item.label );
+    		 return false;
+		 },
+		 select: function( event, ui ) {
+    		 $( "#ticket" ).val( ui.item.label );
+    		 $( "#ticket_id" ).val( ui.item.value );
+    		 return false;
+		 }
 	 });
 });
 </script>
@@ -195,15 +216,22 @@ $(function() {
 <table width="100%">
     <tr>
         <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/node-select.png"> <?php echo $_LANG->get('Verknüpfung');?></h1>
+            <h1><img src="../../../images/icons/node-select.png"> <?php echo utf8_decode($_LANG->get('Neue VerknÃ¼pfung'));?></h1>
         </td>
     </tr>
 </table>
 
 <input type="submit" value="<?php echo $_LANG->get('Speichern');?>" class="text">
 
-<div class="box1">
+<div class="box1"> 
 		<table id="association_table" width="500">
+    		<tr>
+    		    <td class="content_header"><?php echo $_LANG->get('Ticket');?></td>
+    			<td class="content_row_clear">
+    			     <input type="text" id="ticket" name="ticket" value="" style="width:160px"/>
+                     <input type="hidden" id="ticket_id" name="ticket_id" value=""/>
+                </td>
+    		</tr>
     		<tr>
     		    <td class="content_header"><?php echo $_LANG->get('Kalkulation');?></td>
     			<td class="content_row_clear">

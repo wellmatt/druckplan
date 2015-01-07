@@ -8,6 +8,7 @@
 // ----------------------------------------------------------------------------------
 chdir("../../../");
 require_once 'libs/basic/basic.importer.php';
+require_once 'libs/modules/tickets/ticket.class.php';
 
 error_reporting(-1); 
 ini_set('display_errors', 1);
@@ -60,6 +61,16 @@ if ($_REQUEST["ajax_action"] == "search_maschine"){
     $machines = Machine::getAllMachines(Machine::ORDER_NAME, 0, " AND name LIKE '%{$_REQUEST['term']}%' ");
     foreach ($machines as $machine){
         $retval[] = Array("label" => $machine->getName(), "value" => $machine->getId());
+	} 
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
+}
+if ($_REQUEST["ajax_action"] == "search_ticket"){
+    $retval = Array();
+    $tickets = Ticket::getAllTickets(" WHERE (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($tickets as $ticket){
+        $retval[] = Array("label" => $ticket->getNumber() . " - " . $ticket->getTitle(), "value" => $ticket->getId());
 	} 
 	$retval = json_encode($retval);
 	header("Content-Type: application/json");

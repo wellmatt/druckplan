@@ -203,6 +203,12 @@ function updateDeliveryPrice(){
 <?if ($collectinv->getId() >0){?>
 <div class="menuorder">
 	<span class="menu_order" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&exec=docs&ciid=<?=$collectinv->getId()?>'"><?= $_LANG->get('Dokumente')?></span>
+	<?php 
+    // Associations
+    $association_object = $collectinv;
+    include 'libs/modules/associations/association.include.php';
+    //-> END Associations
+    ?>
 </div>
 <?}?>	
 <div class="box1" <?if ($collectinv->getId() >0){?>style="margin-top:50px;"<?}?>>
@@ -671,7 +677,7 @@ function updateDeliveryPrice(){
 
 
 						<a href="index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>">
-							<img src="images/icons/cross-script.png" title="<?= $_LANG->get('Position löschen')?>"></a>
+							<img src="images/icons/cross-script.png" title="<?= $_LANG->get('Position lï¿½schen')?>"></a>
 						<? 
 						if ($i == 0){
 						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=movedown&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">

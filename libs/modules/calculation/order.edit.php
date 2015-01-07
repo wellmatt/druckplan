@@ -1450,6 +1450,14 @@ if((int)$_REQUEST["step"] == 7){
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=5'">Druckbogenvorschau</a></li>
+  <?php 
+  if ($order->getId() > 0){
+      // Associations
+      $association_object = $order;
+      include 'libs/modules/associations/association.include.php';
+      //-> END Associations
+  }
+  ?>
 </ul> 
 
 

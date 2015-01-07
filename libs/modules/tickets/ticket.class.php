@@ -144,7 +144,7 @@ class Ticket {
     }
 
 
-    public function getTicketsForObject($module,$objectid)
+    public static function getTicketsForObject($module,$objectid)
     {
         global $DB;
         global $_USER;

@@ -157,22 +157,6 @@ if($_REQUEST["exec"] == "edit"){
 			// Remove the redundant buttons from toolbar groups defined above.
 			//removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
 		} );
-		$("a#hiddenclicker").fancybox({
-			'type'    : 'iframe',
-			'transitionIn'	:	'elastic',
-			'transitionOut'	:	'elastic',
-			'speedIn'		:	600, 
-			'speedOut'		:	200, 
-			'height'		:	350, 
-			'overlayShow'	:	true,
-			'helpers'		:   { overlay:null, closeClick:true }
-		});
-	});
-	function callBoxFancy(my_href) {
-		var j1 = document.getElementById("hiddenclicker");
-		j1.href = my_href;
-		$('#hiddenclicker').trigger('click');
-	}
 </script>
 <script language="JavaScript" >
 $(function() {
@@ -261,7 +245,7 @@ $(document).ready(function () {
 
 <body>
 
-<div id="hidden_clicker" style="display:none"><a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
+
 
 <div class="ticket_view">
 
@@ -283,35 +267,12 @@ $(document).ready(function () {
                      <h3><?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
                      <i class="icon-refresh"></i> Ticket #<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></h3>
                      <?php if ($ticket->getId()>0){
-                      $associations = Association::getAssociationsForObject(get_class($ticket), $ticket->getId());?>
-                      <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Verknüpfungen (<?php echo count($associations);?>)<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        <?php 
-                            if (count($associations)>0){
-                                foreach ($associations as $association){
-                                    if ($association->getModule1() == get_class($ticket) && $association->getObjectid1() == $ticket->getId()){
-                                        $classname = $association->getModule2();
-                                        $object = new $classname($association->getObjectid2());
-                                        $link_href = Association::getPath($classname);
-                                        $object_name = Association::getName($object);
-                                    } else {
-                                        $classname = $association->getModule1();
-                                        $object = new $classname($association->getObjectid1());
-                                        $link_href = Association::getPath($classname);
-                                        $object_name = Association::getName($object);
-                                    }
-                                    echo '<li><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
-                                    echo '> ' . $object_name;
-                                    echo '</a></li>';
-                                }
-                            }
-                            echo '<li><a href="#" onclick="callBoxFancy(\'libs/modules/associations/association.frame.php?module='.get_class($ticket).'&objectid='.$ticket->getId().'\');">> NEU</a></li>';
-                        ?>
-                        </ul>
-                      </li>
-                      </br>
-                     <?php } ?>
+                      
+                      // Associations
+                      $association_object = $ticket;
+                      include 'libs/modules/associations/association.include.php';
+                      //-> END Associations
+                     } ?>
                 </td>
                 <td width="50%" align="right">
                	  <?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete&tktid=<?=$ticket->getId()?>"><?php } ?><i class="icon-trash"></i> Löschen<?php if ($ticket->getId()>0){?></a><?php } ?>

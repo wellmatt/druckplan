@@ -27,9 +27,9 @@ if ($_REQUEST["edit_items"]){
 		$tmp_item->setAmount($amount);
     	if($tmp_item->getType() == Shoppingbasketitem::TYPE_ARTICLE){
     		$tmp_article = new Article($tmp_item->getId());
+		    //ggf Preis anpassen
+		    $tmp_item->setPrice($tmp_article->getPrice($amount));
     	}
-		//ggf Preis anpassen
-		$tmp_item->setPrice($tmp_article->getPrice($amount));
 		// liefer und rechnungsadresse setzen
 		$tmp_item->setDeliveryAdressID((int)$_REQUEST["entry_deliv_{$tmp_item->getId()}"]);
 		$tmp_item->setInvoiceAdressID((int)$_REQUEST["entry_invoice_{$tmp_item->getId()}"]);

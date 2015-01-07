@@ -19,12 +19,14 @@
 			$article = new Article((int)$_REQUEST["articleid"]);
 			$all_pictures = $article->getAllPictures();
 			$art_prices = $article->getPrices();
-			$warehouses = Warehouse::getAllStocksByArticle((int)$_REQUEST["articleid"]);
+// 			$warehouses = Warehouse::getAllStocksByArticle((int)$_REQUEST["articleid"]);
 			
-			$wh_count = 0;
-			foreach ($warehouses as $wh) {
-				$wh_count += $wh->getAmount();
-			}
+// 			$wh_count = 0;
+// 			foreach ($warehouses as $wh) {
+// 				$wh_count += $wh->getAmount();
+// 			}
+			
+			$wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
 			
 			if ($_SESSION["shopping_basket"]){
 				$shopping_basket = $_SESSION["shopping_basket"];

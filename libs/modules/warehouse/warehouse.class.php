@@ -9,23 +9,24 @@ require_once './libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
 
 class Warehouse{
-	const ORDER_NAME 		= "wa.wh_name";			// Lagerplatz-Name
+	const ORDER_NAME 		= "wa.wh_name";			    // Lagerplatz-Name
 	const ORDER_ORDERNUMBER	= "wa.wh_ordernumber";		// Auftragsnummer
 	const ORDER_RECALL		= "wa.wh_recall";			// Lagerabruf
 	const ORDER_CUSTOMER	= "bus.wh_customer";		// Kunde/Lieferant
 
 	private $id=0;
-	private $name;			// Name des Lagerplatzes (Bezeichnung)
-	private $customer;		// Kunde		
-	private $input;			// Artikel/Material/Dinge , die da stehen 
-	private $amount;		// Menge die dort steht
-	private $recall = 0;	// Lagerabruf: Datum, bis wann eingelagert wird (bzw. bis wann bezahlt ist)
-	private $ordernumber;	// Auftragsnummer
-	private $status = 1;	// Status
-	private $comment;		// Freier Kommentar
-	private $minimum;		// Warnmenge (Mindestbestand)
-	private $contactperson; // Ansprechpartner, wenn Warnmenge (Mindestbestand) unterschritten wird
-	private $article;		// Verknuepfter Artikel
+	private $name;			   // Name des Lagerplatzes (Bezeichnung)
+	private $customer;		   // Kunde
+	private $input;			   // Artikel/Material/Dinge , die da stehen
+	private $amount;		   // Menge die dort steht
+	private $amount_reserved;  // Reservierte Menge
+	private $recall = 0;	   // Lagerabruf: Datum, bis wann eingelagert wird (bzw. bis wann bezahlt ist)
+	private $ordernumber;	   // Auftragsnummer
+	private $status = 1;	   // Status
+	private $comment;	       // Freier Kommentar
+	private $minimum;		   // Warnmenge (Mindestbestand)
+	private $contactperson;    // Ansprechpartner, wenn Warnmenge (Mindestbestand) unterschritten wird
+	private $article;		   // Verknuepfter Artikel
 
 	function __construct($id = 0){
 		global $DB;
@@ -48,6 +49,7 @@ class Warehouse{
 				$this->customer 	= new BusinessContact($r[0]["wh_customer"]);
 				$this->input 		= $r[0]["wh_input"];
 				$this->amount 		= $r[0]["wh_amount"];
+				$this->amount_reserved 		= $r[0]["wh_amount_reserved"];
 				$this->recall 		= $r[0]["wh_recall"];
 				$this->ordernumber	= $r[0]["wh_ordernumber"];
 				$this->status 		= $r[0]["wh_status"];
@@ -212,7 +214,8 @@ class Warehouse{
 					wh_customer		= '{$this->getCustomer()->getId()}',
 					wh_input 		= '{$this->input}',
 					wh_ordernumber	= '{$this->ordernumber}',
-					wh_amount 		= '{$this->amount}', 
+					wh_amount 		= {$this->amount}, 
+					wh_amount_reserved = {$this->amount_reserved}, 
 					wh_recall		= {$this->recall},  
 					wh_status		= {$this->status}, 
 					wh_comment		= '{$this->comment}',
@@ -261,7 +264,7 @@ class Warehouse{
 	 * Funktion zur Validierung, ob ein Benutzer die Stellplaetze bearbeiten darf
 	 * @return boolean
 	 */
-	function hasGroupRight($userId){
+	static function hasGroupRight($userId){
 		
 		// TODO  definitiv ueberarbeiten
 		global $DB;
@@ -305,6 +308,84 @@ class Warehouse{
 			}
 		}
 		return $retval;
+	}
+	
+	/**
+	 * ... Reserviert Artikel bzw. hebt Reservierung eines Artikels auf
+	 *
+	 * @param Int $articleid
+	 * @param Int $amount
+	 * @return boolean
+	 */
+	public static function addRemoveReservation($articleid, $amount)
+	{
+	    if (self::getTotalStockByArticle($articleid) < $amount){
+	        return false;
+	    } else {
+	        $whs = self::getAllStocksByArticle($articleid);
+	        if ($amount > 0){
+	            foreach ($whs as $wh){
+	                if (($wh->getAmount() - $wh->getAmount_reserved()) > $amount){
+	                    $wh->setAmount_reserved($wh->getAmount_reserved()+$amount);
+	                } else {
+	                    $tmp_amount = $wh->getAmount() - $wh->getAmount_reserved();
+	                    $wh->setAmount_reserved($wh->getAmount_reserved()+$tmp_amount);
+	                    $amount += $tmp_amount;
+	                }
+	                $wh->save();
+	                if ($amount == 0){
+	                    return true;
+	                    break;
+	                }
+	            }
+	        } else {
+	            $amount = abs($amount);
+	            foreach ($whs as $wh){
+	                if (($wh->getAmount_reserved()) > $amount){
+	                    $wh->setAmount_reserved($wh->getAmount_reserved()-$amount);
+	                } else {
+	                    $tmp_amount = $wh->getAmount_reserved();
+	                    $wh->setAmount_reserved(0);
+	                    $amount += $tmp_amount;
+	                }
+	                $wh->save();
+	                if ($amount == 0){
+	                    return true;
+	                    break;
+	                }
+	            }
+	        }
+	    }
+	}
+	
+	
+	/**
+	 * ... liefert verfügbare NICHT reservierte Menge auf Lager eines Artikels
+	 *
+	 * @param Int $articleid
+	 * @param String $order
+	 * @return multitype:Warehouse
+	 */
+	static function getTotalStockByArticle($articleid, $order = self::ORDER_NAME){
+	    global $DB;
+	    
+	    $stock = 0;
+	
+	    $sql = "SELECT wa.id FROM warehouse as wa
+	    WHERE
+	    wa.wh_status > 0
+	    AND wa.wh_articleid = {$articleid}
+	    ORDER BY {$order} ";
+	    //error_log($sql);
+	    $res = $DB->select($sql);
+	    if (is_array($res)){
+	        foreach ($res as $wh){
+	            $tmp_wh = new Warehouse($wh["id"]);
+	            $tmp_count = $tmp_wh->getAmount() - $tmp_wh->getAmount_reserved();
+	            $stock += $tmp_count;
+	        }
+	    }
+	    return $stock;
 	}
 
 	public function getId()
@@ -424,5 +505,23 @@ class Warehouse{
 	{
 	    $this->article = $article;
 	}
+	/**
+     * @return the $amount_reserved
+     */
+    public function getAmount_reserved()
+    {
+        return $this->amount_reserved;
+    }
+
+	/**
+     * @param field_type $amount_reserved
+     */
+    public function setAmount_reserved($amount_reserved)
+    {
+        $this->amount_reserved = $amount_reserved;
+    }
+
+	
+	
 }
 ?>

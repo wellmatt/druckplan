@@ -96,7 +96,7 @@
     $sWhere = "";
     if ( isset($_GET['sSearch']) && $_GET['sSearch'] != "" )
     {
-        $_GET['sSearch'] = utf8_decode($_GET['sSearch']);
+        $_GET['sSearch'] = $_GET['sSearch'];
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
@@ -133,16 +133,28 @@
         if (count($forgroups) > 0){
             $groupsql = " OR assigned IN (";
             foreach ($forgroups as $ugroup){
-                $groupsql .= "'".utf8_decode($ugroup->getName()) . "',";
+                $groupsql .= "'".$ugroup->getName() . "',";
             }
             $groupsql = substr($groupsql, 0, strlen($groupsql)-1);
             $groupsql .= ") ";
         }
-        $sWhere .= " AND (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+        if ($sWhere == ""){
+            $sWhere .= " WHERE (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+        } else {
+            $sWhere .= " AND (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+        }
     } elseif ($_REQUEST["bcid"]){
-        $sWhere .= " AND bcid = " . (int)$_REQUEST["bcid"];
+        if ($sWhere == ""){
+            $sWhere .= " WHERE bcid = " . (int)$_REQUEST["bcid"];
+        } else {
+            $sWhere .= " AND bcid = " . (int)$_REQUEST["bcid"];
+        }
         if ((int)$_REQUEST["notes_only"] == 1){
-            $sWhere .= " AND tcid = 1 ";
+            if ($sWhere == ""){
+                $sWhere .= " WHERE tcid = 1 ";
+            } else {
+                $sWhere .= " AND tcid = 1 ";
+            }
         }
     }
     

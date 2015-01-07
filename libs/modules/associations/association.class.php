@@ -58,6 +58,7 @@ class Association {
         VALUES
         ( '{$this->module1}', {$this->objectid1}, '{$this->module2}', {$this->objectid2}, {$now}, {$_USER->getId()} )";
         $res = $DB->no_result($sql);
+//         echo $sql;
         if ($res) {
             $sql = "SELECT max(id) id FROM association WHERE crtdate = {$now}";
             $thisid = $DB->select($sql);
@@ -111,6 +112,9 @@ class Association {
         $classname = get_class($object);
         switch ($classname)
         {
+            case "Ticket":
+                return 'Ticket - ' . $object->getNumber() . ' ' . $object->getTitle();
+                break;
             case "Order":
                 return 'Kalkulation - ' . $object->getNumber() . ' ' . $object->getTitle();
                 break;
@@ -133,6 +137,9 @@ class Association {
     {
         switch ($classname)
         {
+            case "Ticket":
+                return 'libs/modules/tickets/ticket.php&exec=edit&tktid=';
+                break;
             case "Order":
                 return 'libs/modules/calculation/order.php&exec=edit&step=4&id=';
                 break;

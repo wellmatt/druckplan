@@ -157,7 +157,7 @@ class Product {
         }
     }
     
-    function getAllProducts($order = self::ORDER_ID)
+    static function getAllProducts($order = self::ORDER_ID)
     {
         global $DB;
         $retval = Array();
@@ -170,7 +170,7 @@ class Product {
         return $retval;
     }
     
-    function getAllProductsByIndividuality($whereIsIndividual = false, $order = self::ORDER_ID)
+    static function getAllProductsByIndividuality($whereIsIndividual = false, $order = self::ORDER_ID)
     {
     	global $DB;
     	$retval = array();

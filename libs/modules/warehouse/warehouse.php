@@ -206,7 +206,7 @@ if($_REQUEST["exec"] == "edit"){
 		<td class="content_row_header"><?=$_LANG->get('Material / Ware / Inhalt');?></td>
 		<td class="content_row_header"><?=$_LANG->get('Artikel');?></td>
 		<td class="content_row_header"><a class="link" href="index.php?page=<?=$_REQUEST['page']?>&orderby=ordernum"><?=$_LANG->get('Auftragsnummer');?></a></td>
-		<td class="content_row_header"><?=$_LANG->get('Lagermenge');?></td>
+		<td class="content_row_header"><?=$_LANG->get('Lagermenge (Reserviert)');?></td>
 		<td class="content_row_header"><a class="link" href="index.php?page=<?=$_REQUEST['page']?>&orderby=recall"><?=$_LANG->get('Abruf-Datum');?></a></td>
 		<td class="content_row_header">&ensp;<? // Kommentar?></td>
 		<td class="content_row_header" align="center"><?=$_LANG->get('Optionen');?></td>
@@ -249,7 +249,7 @@ if($_REQUEST["exec"] == "edit"){
 					 } ?> &emsp;
 				</td>
 				<td class="content_row"><?=$stock->getOrdernumber()?>&ensp;</td>
-				<td class="content_row"><?=$stock->getAmount()?>&ensp;</td>
+				<td class="content_row"><?=$stock->getAmount()?> (<?=$stock->getAmount_reserved()?>)&ensp;</td>
 				<td class="content_row">
 					<?if($stock->getRecall() != 0){ echo date('d.m.Y', $stock->getRecall());}?>&ensp;
 				</td>

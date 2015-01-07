@@ -52,18 +52,18 @@ class Translator {
         }
     }
      
-    /* Übersetzung für $s ausgeben */
+    /* ï¿½bersetzung fï¿½r $s ausgeben */
     function get($s)
     {
     	global $_CONFIG;
-        $s  = str_replace("&auml;", "ä", $s);
-        $s = str_replace("&Auml;", "Ä", $s);
-        $s = str_replace("&Ouml;","Ö", $s);
-        $s = str_replace("&Uuml;", "Ü", $s);
-        $s = str_replace("&ouml;", "ö", $s);
-        $s = str_replace("&uuml;", "ü", $s);
-        $s = str_replace("&szlig;", "ß", $s);
-        $s = utf8_encode($s);
+        $s = str_replace("&auml;", "Ã¤", $s);
+        $s = str_replace("&Auml;", "Ã„", $s);
+        $s = str_replace("&Ouml;","Ã–", $s);
+        $s = str_replace("&Uuml;", "Ãœ", $s);
+        $s = str_replace("&ouml;", "Ã¶", $s);
+        $s = str_replace("&uuml;", "Ã¼", $s);
+        $s = str_replace("&szlig;", "ÃŸ", $s);
+//         $s = utf8_encode($s);
          
         if ($this->loaded)
             // Nach Eintrag suchen
@@ -76,7 +76,7 @@ class Translator {
                 }
             }
              
-            // Keine Übersetzung gefunden
+            // Keine ï¿½bersetzung gefunden
             if($_CONFIG->logTranslations)
             {
                 if (!$handle = fopen('german.txt', "ab")) {

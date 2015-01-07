@@ -14,6 +14,7 @@ require_once('libs/modules/calculation/order.class.php');
 require_once 'libs/modules/personalization/personalization.order.class.php';
 require_once('collectiveinvoice.class.php');
 require_once('orderposition.class.php');
+require_once 'libs/modules/warehouse/warehouse.class.php';
 
 global $_LANG;
 global $_MENU;
@@ -32,10 +33,18 @@ case 'select_user':
 case 'delete':
 	$delete_invoice = new CollectiveInvoice((int)$_REQUEST["del_id"]);
 	$del_title = $delete_invoice->getTitle(); 
+	
+	$del_positions = Orderposition::getAllOrderposition($delete_invoice->getId());
+	foreach ($del_positions as $del_position){
+	    if ($del_position->getType() == Orderposition::TYPE_ARTICLE){
+	        Warehouse::addRemoveReservation($del_position->getObjectid(), 0-$del_position->getQuantity());
+	    }
+	}
+	
 	$delete_invoice->delete();
 	
-	$savemsg = $msg = '<span class="ok">'.$del_title." ".$_LANG->get('wurde gelöscht').'</span>';
-	// Hier könnte auch die globale Funktion angepasst werden, dass es spezifischeres Feedback gibt
+	$savemsg = $msg = '<span class="ok">'.$del_title." ".$_LANG->get('wurde gelÃ¶scht').'</span>';
+	// Hier kÃ¶nnte auch die globale Funktion angepasst werden, dass es spezifischeres Feedback gibt
 	
 // 	require_once('collectiveinvoice.overview.php');
     echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
@@ -43,14 +52,20 @@ case 'delete':
 case 'deletepos':
 	$delpos = new Orderposition((int)$_REQUEST['delpos']);
 	
-	//Beim Löschen von Aufträgen werden diese insgesammt gelöscht (also status=0 gesetzt)
+	//Beim Lï¿½schen von AuftrÃ¤gen werden diese insgesammt gelÃ¶scht (also status=0 gesetzt)
 	if($delpos->getType() == 1){
 		$tmp_order = new Order($delpos->getObjectid());
 		$tmp_order->setCollectiveinvoiceId(0);
 		$tmp_order->save();
 	}
+	$tmp_del_amount = 0 - $delpos->getQuantity();
+	$tmp_del_article = $delpos->getObjectid();
+	$tmp_del_type = $delpos->getType();
 	
 	$savemsg = getSaveMessage($delpos->delete());
+	if ($savemsg && $tmp_del_type == Orderposition::TYPE_ARTICLE){
+	    Warehouse::addRemoveReservation($tmp_del_article, $tmp_del_amount);
+	}
 	
 	require_once('collectiveinvoice.edit.php');
 	break;
@@ -58,7 +73,7 @@ case 'save':
 	//Number berechnen bei neuer Rechnung
 	if($_REQUEST["ciid"] == NULL || $collectinv->getId() == 0 ){
 		$tmp_number = $collectinv->getClient()->createOrderNumber(1);
-	} else {					//wenn Bearbeiten oder Position hinzugefügt, wieder öffnen
+	} else {					//wenn Bearbeiten oder Position hinzugefï¿½gt, wieder ï¿½ffnen
 		$tmp_number=$_REQUEST["colinv_number"];
 	}
 	
@@ -88,7 +103,7 @@ case 'save':
 		$collectinv = CollectiveInvoice::getLastSavedCollectiveInvoice();
 	}
 	
-	// Positionen speichern/ändern/erstellen
+	// Positionen speichern/Ã¤ndern/erstellen
 	$orderpositions = Array(); 
 	$xi=0;
 	$au_suffix=1;
@@ -101,8 +116,10 @@ case 'save':
 			
 			if ($_REQUEST["orderpos"][$xi]["id"]==""){ 		// Fuer bestehende Orderpositionen
 				$newpos = new Orderposition();
+				$old_amount = 0;
 			} else {											// Fuer neue Orderpositionen
 				$newpos = new Orderposition((int)$_REQUEST["orderpos"][$xi]["id"]);
+				$old_amount = $newpos->getQuantity();
 			}
 			//Daten passend konvertieren
 			$tmp_oprice = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["orderpos"][$xi]["price"])));
@@ -122,6 +139,12 @@ case 'save':
 				$tmp_order->setCollectiveinvoiceId($collectinv->getId());
 				$tmp_order->save();
 				$au_suffix++;
+			}
+			if ($newpos->getType() == Orderposition::TYPE_ARTICLE){
+			    if ($old_amount != $newpos->getQuantity()){
+			        $reservation_amount = $newpos->getQuantity() - $old_amount;
+			        Warehouse::addRemoveReservation($newpos->getObjectid(), $reservation_amount);
+			    }
 			}
 			$orderpositions[] = $newpos;
 			$xi++;

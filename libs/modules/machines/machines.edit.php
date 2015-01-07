@@ -353,6 +353,15 @@ function addDifficultyField(id)
    </tr>
 </table>
 
+<?php 
+if ($machine->getId() > 0){
+      // Associations
+      $association_object = $machine;
+      include 'libs/modules/associations/association.include.php';
+      //-> END Associations
+}
+?>
+
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="machine_form" onSubmit="return checkform(new Array(this.machine_name, this.machine_group,this.machine_type,this.machine_pricebase))">
 <input type="hidden" name="exec" value="edit">
 <input type="hidden" name="subexec" value="save">

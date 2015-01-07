@@ -81,6 +81,7 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
+		            null,
 		            null
 		          ],
 		"language": 
@@ -121,7 +122,7 @@ $(document).ready(function() {
 	<tr>
 		<td width="150" class="content_header">
 			<img src="images/icons/clipboard-task.png"> 
-			<span style="font-size: 13px"><?=$_LANG->get('Verknüpfte Tickets')?></span>
+			<span style="font-size: 13px"><?=$_LANG->get('VerknÃ¼pfte Tickets')?></span>
 		</td>
 		<td width="250" class="content_header" align="right">
 		<?=$savemsg?>
@@ -139,15 +140,16 @@ $(document).ready(function() {
 	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th><?=$_LANG->get('Ticket-ID')?></th>
+                <th><?=$_LANG->get('ID')?></th>
+                <th><?=$_LANG->get('#')?></th>
                 <th><?=$_LANG->get('Kategorie')?></th>
                 <th><?=$_LANG->get('Datum')?></th>
                 <th><?=$_LANG->get('erst. von')?></th>
-                <th><?=$_LANG->get('Fällig')?></th>
+                <th><?=$_LANG->get('FÃ¤llig')?></th>
                 <th><?=$_LANG->get('Betreff')?></th>
                 <th><?=$_LANG->get('Status')?></th>
                 <th><?=$_LANG->get('Von')?></th>
-                <th><?=$_LANG->get('Priorität')?></th>
+                <th><?=$_LANG->get('PrioritÃ¤t')?></th>
                 <th><?=$_LANG->get('Zugewiesen an')?></th>
             </tr>
         </thead>

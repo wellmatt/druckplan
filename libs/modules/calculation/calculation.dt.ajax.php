@@ -185,7 +185,7 @@
      
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
-//         echo "Durchlauf für :" . $aRow[ $aColumns[0] ] . "</br> </br>";
+//         echo "Durchlauf fï¿½r :" . $aRow[ $aColumns[0] ] . "</br> </br>";
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
@@ -331,10 +331,10 @@
         if ($aRow['type'] == 1){
             $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><img src="images/icons/pencil.png"></a>
                       <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png"></a>
-                      <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/calculation/order.php&exec=delete&id='.$aRow[ $aColumns[0] ].'\')"><img src="images/icons/cross-script.png"></a>';
+                      <a class="icon-link" href="#"><img src="images/icons/cross-script.png" onclick="askDel(\'index.php?page=libs/modules/calculation/order.php&exec=delete&id='.$aRow[ $aColumns[0] ].'\')"></a>';
         } else {
             $row[] = '<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='.$aRow[ $aColumns[0] ].'"><img src="images/icons/pencil.png"></a>
-                      <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id='.$aRow[ $aColumns[0] ].'\')"><img src="images/icons/cross-script.png"></a>';
+                      <a class="icon-link" href="#"><img src="images/icons/cross-script.png" onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id='.$aRow[ $aColumns[0] ].'\')"></a>';
         }
 // 		var_dump($row); echo "</br>";
         $output['aaData'][] = $row;

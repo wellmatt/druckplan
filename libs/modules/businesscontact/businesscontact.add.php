@@ -819,7 +819,7 @@ function commi_checkbox(){
 							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 							<? $commissioncontacts = CommissionContact::getAllCommissionContacts();
 							foreach($commissioncontacts as $comcon)
-							{
+							{ 
 								echo '<option value="'.$comcon->getId().'" ';
 								if($businessContact->getCommissionpartner() == $comcon->getId()) echo 'selected="selected"';
 								echo '>'.$comcon->getName1().', '.$comcon->getCity().'</option>';

@@ -53,6 +53,15 @@ function saveStats(mode, job_id, newval, objprefix, color)
 }
 </script>
 
+<?php 
+if ($sched->getId() > 0){
+    // Associations
+    $association_object = $sched;
+    include 'libs/modules/associations/association.include.php';
+    //-> END Associations
+}
+?>
+
 <table width="100%">
    <tr>
       <td width="600" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 

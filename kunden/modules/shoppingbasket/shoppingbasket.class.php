@@ -222,16 +222,22 @@ class Shoppingbasket{
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
         	                }
         	                if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
-        	                    $tmp_perso = new Personalizationorder($entry->getId());
-        	                    $tmp_order_pos->setType(Orderposition::TYPE_PERSONALIZATION);
+        	                    $tmp_perso_order = new Personalizationorder($entry->getId());
+        	                    $tmp_perso = new Personalization($tmp_perso_order->getPersoID());
+        	                    
+        	                    $tmp_article = $tmp_perso->getArticle();
+        	                    $tmp_order_pos->setObjectid($tmp_article->getId());
+        	                    
+        	                    $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
         	                    $tmp_order_pos->setTax(CollectiveInvoice::TAX_PEROSALIZATION);
-        	                    $tmp_order_pos->setComment($tmp_perso->getTitle()." (".$entry->getAmount()." ".$_LANG->get("Stk.").")");
-        	                    $tmp_order_pos->setQuantity(1);
+        	                    $tmp_order_pos->setComment($tmp_perso_order->getTitle());
+        	                    $tmp_order_pos->setQuantity($entry->getAmount());
+        	                    
         	                    // Bestellung aktualisieren, damit sie im Backend auftaucht
         	                    // $tmp_perso->setStatus(2);	// nicht mehr den Status umsetzen, damit diese als Vorlage bleibt
-        	                    $tmp_perso->setOrderdate(time());
-        	                    $tmp_perso->save();
-        	                    $tmp_perso->copyPersoOrderForShopOrder();
+        	                    $tmp_perso_order->setOrderdate(time());
+        	                    $tmp_perso_order->save();
+        	                    $tmp_perso_order->copyPersoOrderForShopOrder();
         	                }
         	                $save_items[] = $tmp_order_pos;
     	                }

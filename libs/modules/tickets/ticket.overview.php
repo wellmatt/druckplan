@@ -101,29 +101,6 @@ $(document).ready(function() {
 							"sortDescending": ": aktivieren um absteigend zu sortieren"
 						}
 					}
-// 					,
-// 		"initComplete": function () {
-// 			            var api = this.api();
-			 
-// 			            api.columns().indexes().flatten().each( function ( i ) {
-// 			                var column = api.column( i ); 
-// 			                var select = $('<select><option value=""></option></select>')
-// 			                    .appendTo( $(column.footer()).empty() )
-// 			                    .on( 'change', function () {
-// 			                        var val = $.fn.dataTable.util.escapeRegex(
-// 			                            $(this).val()
-// 			                        );
-			 
-// 			                        column
-// 			                            .search( val ? '^'+val+'$' : '', true, false )
-// 			                            .draw();
-// 			                    } );
-			 
-// 			                column.data().unique().sort().each( function ( d, j ) {
-// 			                    select.append( '<option value="'+d+'">'+d+'</option>' )
-// 			                } );
-// 			            } );
-// 			        }
     } );
 
     $("#ticketstable tbody td").live('click',function(){
@@ -136,52 +113,54 @@ $(document).ready(function() {
 
 <table width="100%">
 	<tr>
-		<td width="150" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<span style="font-size: 13px"><?=$_LANG->get('Tickets')?></span>
-		</td>
+		<td width="150" class="content_header"><img
+			src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <span
+			style="font-size: 13px"><?=$_LANG->get('Tickets')?></span></td>
 		<td width="250" class="content_header" align="right">
 		<?=$savemsg?>
 		</td>
-		<td class="content_header" align="right">
-		  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> 
-		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
+		<td class="content_header" align="right"><a
+			href="index.php?page=<?=$_REQUEST['page']?>&exec=new"
+			class="icon-link"><img src="images/icons/ticket--plus.png"> <span
+				style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
 		</td>
 	</tr>
 </table>
 
 
-<br/>
+<br />
 <div class="box1">
 	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('#')?></th>
-                <th><?=$_LANG->get('Kategorie')?></th>
-                <th><?=$_LANG->get('Datum')?></th>
-                <th><?=$_LANG->get('erst. von')?></th>
-                <th><?=$_LANG->get('F�llig')?></th>
-                <th><?=$_LANG->get('Betreff')?></th>
-                <th><?=$_LANG->get('Status')?></th>
-                <th><?=$_LANG->get('Von')?></th>
-                <th><?=$_LANG->get('Priorit�t')?></th>
-                <th><?=$_LANG->get('Zugewiesen an')?></th>
-            </tr>
-        <tfoot>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-        </tfoot>
+		<thead>
+			<tr>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('#')?></th>
+				<th><?=$_LANG->get('Kategorie')?></th>
+				<th><?=$_LANG->get('Datum')?></th>
+				<th><?=$_LANG->get('erst. von')?></th>
+				<th><?=$_LANG->get('Fällig')?></th>
+				<th><?=$_LANG->get('Betreff')?></th>
+				<th><?=$_LANG->get('Status')?></th>
+				<th><?=$_LANG->get('Von')?></th>
+				<th><?=$_LANG->get('Priorität')?></th>
+				<th><?=$_LANG->get('Zugewiesen an')?></th>
+			</tr>
+		
+		
+		<tfoot>
+			<tr>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('#')?></th>
+				<th><?=$_LANG->get('Kategorie')?></th>
+				<th><?=$_LANG->get('Datum')?></th>
+				<th><?=$_LANG->get('erst. von')?></th>
+				<th><?=$_LANG->get('Fällig')?></th>
+				<th><?=$_LANG->get('Betreff')?></th>
+				<th><?=$_LANG->get('Status')?></th>
+				<th><?=$_LANG->get('Von')?></th>
+				<th><?=$_LANG->get('Priorität')?></th>
+				<th><?=$_LANG->get('Zugewiesen an')?></th>
+			</tr>
+		</tfoot>
 	</table>
 </div>

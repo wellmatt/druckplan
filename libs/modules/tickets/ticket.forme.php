@@ -137,11 +137,11 @@ $(document).ready(function() {
                 <th><?=$_LANG->get('Kategorie')?></th>
                 <th><?=$_LANG->get('Datum')?></th>
                 <th><?=$_LANG->get('erst. von')?></th>
-                <th><?=$_LANG->get('Fällig')?></th>
+                <th><?=$_LANG->get('FÃ¤llig')?></th>
                 <th><?=$_LANG->get('Betreff')?></th>
                 <th><?=$_LANG->get('Status')?></th>
                 <th><?=$_LANG->get('Von')?></th>
-                <th><?=$_LANG->get('Priorität')?></th>
+                <th><?=$_LANG->get('PrioritÃ¤t')?></th>
                 <th><?=$_LANG->get('Zugewiesen an')?></th>
             </tr>
         </thead>
