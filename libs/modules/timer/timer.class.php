@@ -17,7 +17,7 @@ class Timer
 
     private $objectid;
 
-    private $state = Timer::TIMER_STOP;
+    private $state = self::TIMER_STOP;
 
     private $starttime = NULL;
 
@@ -33,7 +33,7 @@ class Timer
             $sql = "SELECT * FROM timer WHERE id = {$id};";
             $r = $DB->select($sql);
             $this->id = $r[0]["id"];
-            $this->crtuser = new User($r[0]["crtuser"]);
+            $this->crtuser = new User((int)$r[0]["crtuser"]);
             $this->module = $r[0]["module"];
             $this->objectid = $r[0]["objectid"];
             $this->state = $r[0]["state"];
@@ -59,13 +59,13 @@ class Timer
             
             $sql = "INSERT INTO timer 
             (crtuser, module, objectid, state, starttime, stoptime) VALUES
-            ({$_USER->getId()}, {$this->module}, {$this->objectid}, {$this->state},  {$this->starttime}, {$this->stoptime});";
+            ({$_USER->getId()}, '{$this->module}', {$this->objectid}, {$this->state},  {$this->starttime}, {$this->stoptime});";
             $res = $DB->no_result($sql);
             
             if ($res) {
                 $sql = "SELECT max(id) id FROM timer WHERE
                 crtuser = {$this->crtuser->getId()} AND
-                module = {$this->module} AND
+                module = '{$this->module}' AND
                 objectid = {$this->objectid} AND
                 state = {$this->state};";
                 $thisid = $DB->select($sql);
@@ -102,13 +102,13 @@ class Timer
         $this->setCrtuser($_USER);
         $this->setModule($module);
         $this->setObjectid($objectid);
-        $this->setState(Timer::TIMER_RUNNING);
+        $this->setState(self::TIMER_RUNNING);
         
         $sql = "SELECT max(id) id FROM timer WHERE crtuser = {$this->crtuser->getId()} ;";
         $r = $DB->select($sql);
         
         $lasttimer = new Timer($r[0]["id"]);
-        if($lasttimer->getState()==TIMER::TIMER_RUNNING)
+        if($lasttimer->getState() == self::TIMER_RUNNING)
         {
             $lasttimer->stop($now);
             $lasttimer->save();
@@ -124,7 +124,7 @@ class Timer
             $this->stoptime = $cdate;
         else
             $this->stoptime = time();
-        $this->state = Timer::TIMER_STOP;
+        $this->state = self::TIMER_STOP;
     }
 
     public static function getLastUsed($crtuser = NULL)
@@ -149,6 +149,21 @@ class Timer
         $retval = Array();
     
         $sql = "SELECT id FROM timer WHERE module = '{$module}' AND objectid = {$objectid} {$filter};";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Timer($r["id"]);
+            }
+        }
+    
+        return $retval;
+    }
+    
+    public static function getAllTimer($filter = "")
+    {
+        global $DB;
+        $retval = Array();
+    
+        $sql = "SELECT id FROM timer {$filter};";
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Timer($r["id"]);
