@@ -136,9 +136,8 @@ if($_REQUEST["exec"] == "edit"){
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <script src="jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
 
-<script>
+<script language="JavaScript">
 	$(function() {
-		$( "#tabs" ).tabs();
 		CKEDITOR.replace( 'tktc_comment', {
 			// Define the toolbar groups as it is a more accessible solution.
 			toolbarGroups: [
@@ -157,8 +156,9 @@ if($_REQUEST["exec"] == "edit"){
 			// Remove the redundant buttons from toolbar groups defined above.
 			//removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
 		} );
+	} );
 </script>
-<script language="JavaScript" >
+<script language="JavaScript">
 $(function() {
 	$('#tkt_due').datetimepicker({
 		 lang:'de',
@@ -210,7 +210,7 @@ $(function() {
 		 });
 });
 </script>
-<script>
+<script language="JavaScript">
 $(document).ready(function () {
     $('#ticket_edit').validate({
         rules: {
