@@ -6,6 +6,10 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
+/**
+ * Es handelt sich bei der Klasse nur um einen Datenkontainer zur besseren Verwaltung
+ *
+ */
 class TmplDefault
 {
 

@@ -6,12 +6,8 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-require_once 'tmplDefault.class.php';
-
 class TmplAgent
 {
-
-    private $tmpldefault = array();
 
     private $tmplfile = 'libs/modules/autodoc/default.js';
 
@@ -20,20 +16,21 @@ class TmplAgent
     private $backtext = ");";
 
     /**
-     *
-     * @param tmplDefault[] $defaulttemplates            
-     * @param string $templatefile            
+     *        
+     * @param string $templatefile Datei + Pfad des CKeditor-Template-Json            
      */
-    function __construct($defaulttemplates = NULL, $templatefile = NULL)
+    function __construct($templatefile = NULL)
     {
-        if ($defaulttemplates)
-            $this->tmpldefault = $defaulttemplates;
-        
         if ($templatefile)
             $this->tmplfile = $templatefile;
     }
 
-    function tmplLoad($filepath = NULL)
+    /**
+     * 
+     * @param string $filepath Datei + Pfad des CKeditor-Template-Json
+     * @return mixed|NULL Gibt ein JSON zurück
+     */
+    function Load($filepath = NULL)
     {
         if ($filepath)
             $file = file($filepath);
@@ -53,89 +50,92 @@ class TmplAgent
         } else
             return NULL;
     }
-
-    function tmplAdd($tmpltitle, $tmplimg, $tmpldesc, $tmplvalue)
+    
+    /**
+     * 
+     * @param unknown $tmpltitle Titel des Templates (Primärschlüssel)
+     * @return string Gib das Template zurück (html)
+     */
+    function Get($tmpltitle)
     {
-        // var_dump($tmplvalue);
-        if ($tmpltitle) {
-            $tmpl_js = $this->tmplLoad();
-            if ($tmpl_js) {
-                // Überprüft vorher, dass Default-Templates nicht überschrieben werden
-                $check = TRUE;
-                // var_dump($this->tmpldefault);
-                foreach ($this->tmpldefault as $default)
-                    if ("default_" . $default->getName() == $tmpltitle)
-                        $check = FALSE;
-                
-                $overwrite = FALSE;
-                if ($check) {
-                    foreach ($tmpl_js->{"templates"} as $tmpl) {
-                        if ($tmpl->{"title"} == $tmpltitle) {
-                            $tmpl->{"image"} = $tmplimg;
-                            $tmpl->{"description"} = $tmpldesc;
-                            $tmpl->{"html"} = $tmplvalue;
-                            $overwrite = TRUE;
-                            break;
-                        }
-                    }
-                    if (! $overwrite) {
-                        $tmpl = clone $tmpl;
-                        $tmpl->{"title"} = $tmpltitle;
-                        $tmpl->{"image"} = $tmplimg;
-                        $tmpl->{"description"} = $tmpldesc;
-                        $tmpl->{"html"} = $tmplvalue;
-                        
-                        $tmpl_js->{"templates"}[] = $tmpl;
-                    }
-                }
-                
-                $datei = $this->fronttext . json_encode($tmpl_js) . $this->backtext;
-                
-                // var_dump ($datei);
-                file_put_contents($this->tmplfile, $datei);
-            }
+        $tmplvalue = "";
+        $tmpl_js = $this->Load();
+        if ($tmpl_js) {
+            foreach ($tmpl_js->{"templates"} as $tmpl)
+                if ($tmpl->{"title"} == $tmpltitle)
+                    $tmplvalue = $tmpl->{"html"};
         }
-    }
-
-    function tmplDelete($tmpltitle)
-    {
-        if ($tmpltitle) {
-            $tmpl_js = $this->tmplLoad();
-            if ($tmpl_js) {
-                // Überprüft vorher, dass Default-Templates nicht überschrieben werden
-                $check = TRUE;
-                foreach ($this->tmpldefault as $default)
-                    if ("default_" . $default->getName() == $tmpltitle)
-                        $check = FALSE;
-                
-                if ($check) {
-                    $dump = array();
-                    foreach ($tmpl_js->{"templates"} as $tmpl) {
-                        if ($tmpl->{"title"} != $tmpltitle) {
-                            $dump[] = $tmpl;
-                            // Unset verändert das JSON-format in Verbindung mit dem CKEditor kann dieser das JSON nicht mehr nutzen.
-                            // Der Fehler taucht nicht immer auf.
-                            // unset($tmpl_js->{"templates"}[$i]);
-                        }
-                    }
-                    $tmpl_js->{"templates"} = $dump;
-                }
-                
-                $datei = $this->fronttext . json_encode($tmpl_js) . $this->backtext;
-                
-                // var_dump ($datei);
-                file_put_contents($this->tmplfile, $datei);
-            }
-        }
+        return $tmplvalue;
     }
 
     /**
-     *
-     * @return the $tmpldefault
+     * Hinzufügen eines Templates im Json
+     * @param unknown $tmpltitle Title des Templates (Primärschlüssel)
+     * @param unknown $tmplimg Bildname + Pfad
+     * @param unknown $tmpldesc Kurzbeschreibung des Templates
+     * @param unknown $tmplvalue Templateinhalt als html
      */
-    public function getTmpldefault()
+    function Add($tmpltitle, $tmplimg, $tmpldesc, $tmplvalue)
     {
-        return $this->tmpldefault;
+        // var_dump($tmplvalue);
+        if ($tmpltitle) {
+            $tmpl_js = $this->Load();
+            if ($tmpl_js) {
+                // var_dump($this->tmpldefault);
+                
+                $overwrite = FALSE;
+                foreach ($tmpl_js->{"templates"} as $tmpl) {
+                    if ($tmpl->{"title"} == $tmpltitle) {
+                        $tmpl->{"image"} = $tmplimg;
+                        $tmpl->{"description"} = $tmpldesc;
+                        $tmpl->{"html"} = $tmplvalue;
+                        $overwrite = TRUE;
+                        break;
+                    }
+                }
+                if (! $overwrite) {
+                    $tmpl = clone $tmpl;
+                    $tmpl->{"title"} = $tmpltitle;
+                    $tmpl->{"image"} = $tmplimg;
+                    $tmpl->{"description"} = $tmpldesc;
+                    $tmpl->{"html"} = $tmplvalue;
+                    
+                    $tmpl_js->{"templates"}[] = $tmpl;
+                }
+                
+                $datei = $this->fronttext . json_encode($tmpl_js) . $this->backtext;
+                
+                // var_dump ($datei);
+                file_put_contents($this->tmplfile, $datei);
+            }
+        }
+    }
+    /**
+     * Löscht ein Template aus dem Json
+     * @param unknown $tmpltitle Titel des Templates (Primärschlüssel)
+     */
+    function Delete($tmpltitle)
+    {
+        if ($tmpltitle) {
+            $tmpl_js = $this->Load();
+            if ($tmpl_js) {
+                $dump = array();
+                foreach ($tmpl_js->{"templates"} as $tmpl) {
+                    if ($tmpl->{"title"} != $tmpltitle) {
+                        $dump[] = $tmpl;
+                        // Unset verändert das JSON-format in Verbindung mit dem CKEditor kann dieser das JSON nicht mehr nutzen.
+                        // Der Fehler taucht nicht immer auf.
+                        // unset($tmpl_js->{"templates"}[$i]);
+                    }
+                }
+                $tmpl_js->{"templates"} = $dump;
+                
+                $datei = $this->fronttext . json_encode($tmpl_js) . $this->backtext;
+                
+                // var_dump ($datei);
+                file_put_contents($this->tmplfile, $datei);
+            }
+        }
     }
 
     /**
@@ -163,15 +163,6 @@ class TmplAgent
     public function getBacktext()
     {
         return $this->backtext;
-    }
-
-    /**
-     *
-     * @param multitype: $tmpldefault            
-     */
-    public function setTmpldefault($tmpldefault)
-    {
-        $this->tmpldefault = $tmpldefault;
     }
 
     /**
