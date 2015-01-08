@@ -584,14 +584,29 @@ function stopWatch() {
                 	}
                     $( "#ticket_timer" ).click(function() {
                         if ($( "#ticket_timer" ).hasClass("btn-warning")){
-                            alert("Timer läuft für anderes Ticket!");
-//                         	window.clearInterval(clock);
-//                         	$( "#ticket_timer" ).removeClass("btn-warning");
+                        	window.clearInterval(clock);
+                        	$( "#ticket_timer" ).removeClass("btn-warning");
+                        	$.ajax({
+                        		type: "POST",
+                        		url: "libs/modules/timer/timer.ajax.php",
+                        		data: { ajax_action: "stop", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
+                        		})
+                        		.done(function( msg ) {
+                        		alert( "Data Saved: " + msg );
+                        		});
                         } else {
                             sec = moment().unix();
                             start = moment().unix();
                         	clock = setInterval(stopWatch,1000);
                         	$( "#ticket_timer" ).addClass("btn-warning");
+                        	$.ajax({
+                        		type: "POST",
+                        		url: "libs/modules/timer/timer.ajax.php",
+                        		data: { ajax_action: "start", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
+                        		})
+                        		.done(function( msg ) {
+                        		alert( "Data Saved: " + msg );
+                        		});
                         }
                     });
                     function stopWatch() {

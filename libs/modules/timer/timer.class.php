@@ -21,7 +21,7 @@ class Timer
 
     private $starttime = NULL;
 
-    private $stoptime = NULL;
+    private $stoptime = 0;
 
     function __construct($id = 0)
     {
@@ -30,7 +30,7 @@ class Timer
         $this->crtuser	= new User(0);
         
         if ($id) {
-            $sql = "SELECT * FROM timer WHERE id = {$id};";
+            $sql = "SELECT * FROM timers WHERE id = {$id};";
             $r = $DB->select($sql);
             $this->id = $r[0]["id"];
             $this->crtuser = new User((int)$r[0]["crtuser"]);
@@ -46,24 +46,22 @@ class Timer
         global $DB;
         global $_USER;
         if ($this->id > 0) {
-            $sql = "UPDATE timer SET
-            crtuser = '{$this->crtuser}',
-            module = '{$this->module}',
-            objectid = '{$this->objectid}',
-            state = '{$this->state}',
-            starttime = '{$this->starttime}'
-            stoptime = '{$this->stoptime}' 
+            $sql = "UPDATE timers SET
+            state = {$this->state},
+            starttime = {$this->starttime}
+            stoptime = {$this->stoptime}'
             WHERE id = {$this->id};";
             return $DB->no_result($sql);
         } else {
             
-            $sql = "INSERT INTO timer 
+            $sql = "INSERT INTO timers 
             (crtuser, module, objectid, state, starttime, stoptime) VALUES
             ({$_USER->getId()}, '{$this->module}', {$this->objectid}, {$this->state},  {$this->starttime}, {$this->stoptime});";
             $res = $DB->no_result($sql);
+            echo $sql;
             
             if ($res) {
-                $sql = "SELECT max(id) id FROM timer WHERE
+                $sql = "SELECT max(id) id FROM timers WHERE
                 crtuser = {$this->crtuser->getId()} AND
                 module = '{$this->module}' AND
                 objectid = {$this->objectid} AND
@@ -81,7 +79,7 @@ class Timer
     {
         global $DB;
         if ($this->id > 0) {
-            $sql = "UPDATE timer SET
+            $sql = "UPDATE timers SET
             state = {$this->TIMER_DELETE}
             WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
@@ -104,7 +102,7 @@ class Timer
         $this->setObjectid($objectid);
         $this->setState(self::TIMER_RUNNING);
         
-        $sql = "SELECT max(id) id FROM timer WHERE crtuser = {$this->crtuser->getId()} ;";
+        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$this->crtuser->getId()} ;";
         $r = $DB->select($sql);
         
         $lasttimer = new Timer($r[0]["id"]);
@@ -136,7 +134,7 @@ class Timer
         if (! $crtuser)
             $crtuser = $_USER;
         
-        $sql = "SELECT max(id) id FROM timer WHERE crtuser = {$crtuser->getId()};";
+        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$crtuser->getId()};";
         if($DB->num_rows($sql)){
             $timer = new Timer($thisid[0]["id"]);
         }
@@ -149,7 +147,7 @@ class Timer
         global $DB;
         $retval = Array();
     
-        $sql = "SELECT id FROM timer WHERE module = '{$module}' AND objectid = {$objectid} {$filter};";
+        $sql = "SELECT id FROM timers WHERE module = '{$module}' AND objectid = {$objectid} {$filter};";
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Timer($r["id"]);
@@ -164,7 +162,7 @@ class Timer
         global $DB;
         $retval = Array();
     
-        $sql = "SELECT id FROM timer {$filter};";
+        $sql = "SELECT id FROM timers {$filter};";
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Timer($r["id"]);

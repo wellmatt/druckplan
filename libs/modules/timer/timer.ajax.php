@@ -20,9 +20,13 @@ if ($_REQUEST['module'] && $_REQUEST['objectid']){
     }
     if ($_REQUEST["ajax_action"] == "stop"){
         $timer = Timer::getLastUsed();
-        $timer->stop();
-        $timer->save();
-        echo $timer->getId();
+        if ($timer->getState() == Timer::TIMER_RUNNING){
+            $timer->stop();
+            $timer->save();
+            echo $timer->getId();
+        } else {
+            echo "0";
+        }
     }
 }
 

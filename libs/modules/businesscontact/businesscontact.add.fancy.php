@@ -18,8 +18,8 @@ require_once("libs/basic/countries/country.class.php");
 require_once 'libs/modules/organizer/contact.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 
-error_reporting(-1);
-ini_set('display_errors', 1);
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 
 session_start();
 
