@@ -27,10 +27,7 @@ $editors = array(
     new TmplDefault("Mahnung", "invoicewarning"),
     new TmplDefault("Serienbrief", "bulkletter")
 );
-$agent = new TmplAgent($editors, $tmp);
-
-// var_dump($_REQUEST["exec"]);
-// var_dump($_REQUEST["templatename"]);
+$agent = new TmplAgent($tmp);
 
 // Speichern und Speichern von Vorlagen
 $datei = NULL;
@@ -39,34 +36,42 @@ $index = -1;
 $i = 0;
 foreach ($editors as $editor) {
     if ($exec == $_LANG->get($editor->getName())) {
-        $index = $i;
-        // var_dump($_POST[$_LANG->get($editor->getName())]);
-        // var_dump($_REQUEST["templatename_".$_LANG->get($editor->getName())]);
+        $index = $i; // Sieht Unwichtig aus, wird aber für die html-tab benötigt.
+        
         $tmplname = $_REQUEST["templatename_" . $_LANG->get($editor->getName())];
         
         $datei[$_LANG->get($editor->getName())] = $_POST[$_LANG->get($editor->getName())];
         file_put_contents($tmplfolder . $editor->getFile() . ".tmpl", $datei[$_LANG->get($editor->getName())]);
         
-        if ($tmplname != "") {
+        // Überprüft vorher, dass Default-Templates nicht überschrieben werden
+        if ($tmplname != "" && $tmplname != "default_" . $editor->getName()) {
             // var_dump($exec);
             // var_dump($datei[$_LANG->get($editor->getName())]);
-            $agent->tmplAdd($tmplname, "", $exec, $datei[$_LANG->get($editor->getName())]);
+            $agent->Add($tmplname, "", $exec, $datei[$_LANG->get($editor->getName())]);
         }
         
     } else {
-        $datei[$_LANG->get($editor->getName())] = implode("", file($tmplfolder . $editor->getFile() . ".tmpl"));
+        $output = implode("", file($tmplfolder . $editor->getFile() . ".tmpl"));
+        if(empty(trim($output)))
+            $output = $agent->Get( "default_" . $editor->getName());
+        $datei[$_LANG->get($editor->getName())] = $output;
     }
-    $i++;
 }
 
 
-// L�schen von Vorlagen
+// Löschen von Vorlagen
 $del = $_REQUEST["del"];
 $del_text = $_REQUEST["del_text"];
 if($del && $del_text)
 {
     $index = count($editors);
-    $agent->tmplDelete($del_text);
+    // Überprüft vorher, dass Default-Templates nicht überschrieben werden
+    $check = TRUE;    
+    foreach ($editors as $editor)
+        if ("default_" . $editor->getName() == $del_text)
+            $check=FALSE;
+    if($check)
+        $agent->Delete($del_text);
 }
 ?>
 
@@ -173,7 +178,7 @@ function tmplFunction(obj) {
 					</thead>
 					<tbody>
 						<?
-    $tmpl_js = $agent->tmplLoad();
+    $tmpl_js = $agent->Load();
     $i = 1;
     foreach ($tmpl_js->{"templates"} as $tmpl) {
         ?>
@@ -202,7 +207,7 @@ function tmplFunction(obj) {
 							</td>
 							<td align="right" width=""><input type="hidden" id="exec"
 								name="del" value="del"> <input type="submit"
-								value="<?php echo $_LANG->get("L�schen")?>"></td>
+								value="<?php echo $_LANG->get("Löschen")?>"></td>
 						</tr>
 					</table>
 				</form>
