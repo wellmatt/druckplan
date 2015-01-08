@@ -241,7 +241,12 @@ $(document).ready(function () {
         }
     }
 });
+function stopWatch() {
+	sec++;
+	$("#ticket_timer").html(sec);
+}
 </script>
+
 
 <body>
 
@@ -530,6 +535,84 @@ $(document).ready(function () {
 		      <tr>
 		          <td colspan="2">&nbsp;</td>
 		      </tr>
+		      <?php ////// TIMER STUFF >>> ///?>
+		      <?php if ($ticket->getId() > 0){ ?>
+		      <tr>
+		          <td width="25%">Timer:</td>
+		          <td width="75%" colspan="2">
+		              <?php
+		              $timer = Timer::getLastUsed();
+		              $timer_start = 0;
+		              if ($timer !== false){
+		                  if ($timer->getState() == Timer::TIMER_RUNNING){
+		                      $timer_start = $timer->getStarttime();
+		                      if ($timer->getModule() == "Ticket" && $timer->getObjectid() == $ticket->getId()){ // Timer läuft für dieses Ticket
+		                          ?>
+		                          <span id="ticket_timer" class="timer duration btn btn-warning" data-duration="0"></span>
+		                          <?php
+		                      } else { // Timer läuft für anderes Ticket
+		                          ?>
+		                          <span id="ticket_timer" class="timer duration btn btn-error" data-duration="0"></span>
+		                          <?php
+		                      }
+		                  } else { // Timer läuft nicht
+		                      $timer_start = $timer->getStoptime();
+	                          ?>
+	                          <span id="ticket_timer" class="timer duration btn" data-duration="0"></span>
+	                          <?php
+		                  }
+		              } else { // kein Timer gefunden
+                          ?>
+                          <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span>
+                          <?php
+		              }
+		              ?>
+		              <input id="ticket_timer_timestamp" type="hidden" value="<?php echo $timer_start;?>"/>
+		          </td>
+		      </tr>
+		      <tr>
+		          <td colspan="2">&nbsp;</td>
+		      </tr>
+		      <?php } ?>
+                <script>
+                $(document).ready(function () {
+                	var clock;
+                	var sec = parseInt($('#ticket_timer_timestamp').val());
+                	var start = parseInt($('#ticket_timer_timestamp').val());
+                	if (sec != 0){
+                		clock = setInterval(stopWatch,1000);
+                	}
+                    $( "#ticket_timer" ).click(function() {
+                        if ($( "#ticket_timer" ).hasClass("btn-warning")){
+                            alert("Timer läuft für anderes Ticket!");
+//                         	window.clearInterval(clock);
+//                         	$( "#ticket_timer" ).removeClass("btn-warning");
+                        } else {
+                            sec = moment().unix();
+                            start = moment().unix();
+                        	clock = setInterval(stopWatch,1000);
+                        	$( "#ticket_timer" ).addClass("btn-warning");
+                        }
+                    });
+                    function stopWatch() {
+                    	sec++;
+                    	var timestamp = sec-start;
+                    	$("#ticket_timer").html(rectime(timestamp));
+                    }
+                    function rectime(secs) {
+                    	var hr = Math.floor(secs / 3600);
+                    	var min = Math.floor((secs - (hr * 3600))/60);
+                    	var sec = Math.floor(secs - (hr * 3600) - (min * 60));
+                    	
+                    	if (hr < 10) {hr = "0" + hr; }
+                    	if (min < 10) {min = "0" + min;}
+                    	if (sec < 10) {sec = "0" + sec;}
+                    	if (hr) {hr = "00";}
+                    	return hr + ':' + min + ':' + sec;
+                    }
+                });
+                </script>
+              <?php // <<< TIMER STUFF //////?>
 		      <tr>
 		          <td width="25%">Typ:</td>
 		          <td width="75%">

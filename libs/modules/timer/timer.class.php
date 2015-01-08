@@ -3,7 +3,7 @@
 class Timer
 {
 
-    const TIMER_DELETE = 0;
+    const TIMER_DELETED = 0;
 
     const TIMER_RUNNING = 1;
 
@@ -131,15 +131,16 @@ class Timer
     {
         global $DB;
         global $_USER;
+        $timer = false;
         
         if (! $crtuser)
             $crtuser = $_USER;
         
         $sql = "SELECT max(id) id FROM timer WHERE crtuser = {$crtuser->getId()};";
-        $r = $DB->select($sql);
-        $thisid = $DB->select($sql);
+        if($DB->num_rows($sql)){
+            $timer = new Timer($thisid[0]["id"]);
+        }
         
-        $timer = new Timer($thisid[0]["id"]);
         return $timer;
     }
 

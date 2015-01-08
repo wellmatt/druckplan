@@ -13,6 +13,7 @@ include 'libs/modules/tickets/ticket.priority.class.php';
 include 'libs/modules/tickets/ticket.state.class.php';
 include 'libs/modules/comment/comment.class.php';
 include 'libs/modules/notifications/notification.class.php';
+require_once 'libs/modules/timer/timer.class.php';
 
 class Ticket {
     
