@@ -185,6 +185,7 @@ if ($_USER == false)
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" type="text/css" href="./css/main.css" />
+<link rel="stylesheet" type="text/css" href="./css/ticket.css" />
 <link rel="stylesheet" type="text/css" href="./css/menu.css" />
 <link rel="stylesheet" type="text/css" href="./css/main.print.css" media="print"/>
 
@@ -194,6 +195,7 @@ if ($_USER == false)
 <script type="text/javascript" src="jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script language="JavaScript" src="./jscripts/jquery/local/jquery.ui.datepicker-<?=$_LANG->getCode()?>.js"></script>
 <script type="text/javascript" src="jscripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="jscripts/moment/moment-with-locales.min.js"></script>
 <!-- /jQuery -->
 <!-- FancyBox -->
 <script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>

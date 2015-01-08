@@ -240,6 +240,8 @@ class Shoppingbasket{
         	                    $tmp_perso_order->copyPersoOrderForShopOrder();
         	                }
         	                $save_items[] = $tmp_order_pos;
+        	                
+        	                // TODO: hier reservierung der artikel machen für artikel    new Article($tmp_order_pos->getObjectid())
     	                }
     	            }
 	            }
