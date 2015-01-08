@@ -38,6 +38,7 @@ class Timer
             $this->objectid = $r[0]["objectid"];
             $this->state = $r[0]["state"];
             $this->starttime = $r[0]["starttime"];
+            $this->stoptime = $r[0]["stoptime"];
         }
     }
 
@@ -46,16 +47,17 @@ class Timer
         global $DB;
         global $_USER;
         if ($this->id > 0) {
-            $sql = "UPDATE timers SET
-            state = {$this->state},
-            starttime = {$this->starttime}
-            stoptime = {$this->stoptime}'
+            $sql = "UPDATE timers SET 
+            state = {$this->state}, 
+            starttime = {$this->starttime}, 
+            stoptime = {$this->stoptime} 
             WHERE id = {$this->id};";
+            echo $sql;
             return $DB->no_result($sql);
         } else {
             
             $sql = "INSERT INTO timers 
-            (crtuser, module, objectid, state, starttime, stoptime) VALUES
+            (crtuser, module, objectid, state, starttime, stoptime) VALUES 
             ({$_USER->getId()}, '{$this->module}', {$this->objectid}, {$this->state},  {$this->starttime}, {$this->stoptime});";
             $res = $DB->no_result($sql);
             echo $sql;
@@ -68,6 +70,7 @@ class Timer
                 state = {$this->state};";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
+                $this->crtuser = $_USER;
                 return true;
             } else {
                 return false;
@@ -91,29 +94,32 @@ class Timer
         }
     }
 
-    public function start($module, $objectid)
+    public function start($module, $objectid, $timestamp = 0)
     {
         global $DB;
         global $_USER;
-        $now = time();
+        if ($timestamp == 0){
+            $now = time();
+        } else {
+            $now = $timestamp;
+        }
         
-        $this->setCrtuser($_USER);
         $this->setModule($module);
         $this->setObjectid($objectid);
         $this->setState(self::TIMER_RUNNING);
+
+        $this->setStarttime($now);
         
-        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$this->crtuser->getId()} ;";
-        $r = $DB->select($sql);
-        
-        $lasttimer = new Timer($r[0]["id"]);
-        if($lasttimer->getState() == self::TIMER_RUNNING)
-        {
-            $lasttimer->stop($now);
-            $lasttimer->save();
-            $this->setStarttime(++$now);
+        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$_USER->getId()} ;";
+        if($DB->num_rows($sql)){
+            $r = $DB->select($sql);
+            $lasttimer = new Timer($r[0]["id"]);
+            if ($lasttimer->getState() == self::TIMER_RUNNING){
+                $lasttimer->stop($now);
+                $lasttimer->save();
+                $this->setStarttime($lasttimer->getStoptime()+1);
+            }
         }
-        else 
-            $this->setStarttime($lasttimer->getStoptime()+1);
     }
 
     public function stop($cdate = 0)
@@ -125,19 +131,18 @@ class Timer
         $this->state = self::TIMER_STOP;
     }
 
-    public static function getLastUsed($crtuser = NULL)
+    public static function getLastUsed()
     {
         global $DB;
         global $_USER;
-        $timer = false;
+        $timer = new Timer();
         
-        if (! $crtuser)
-            $crtuser = $_USER;
-        
-        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$crtuser->getId()};";
+        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$_USER->getId()};";
         if($DB->num_rows($sql)){
-            $timer = new Timer($thisid[0]["id"]);
+            $r = $DB->select($sql);
+            $timer = new Timer($r[0]["id"]);
         }
+//         echo $sql;
         
         return $timer;
     }
