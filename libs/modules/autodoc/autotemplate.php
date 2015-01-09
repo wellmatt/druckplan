@@ -20,6 +20,7 @@ $editors = array(
     new TmplDefault("Gutschrift", "revert"),
     new TmplDefault("Kalk_AN", "offer"),
     new TmplDefault("Kalk_AB", "offerconfirm"),
+    new TmplDefault("Kalk_DR", "factory"),
     new TmplDefault("Kalk_RE", "invoice"),
     new TmplDefault("Kalk_LS", "delivery"),
     new TmplDefault("Kalk_PO", "paperorder"),

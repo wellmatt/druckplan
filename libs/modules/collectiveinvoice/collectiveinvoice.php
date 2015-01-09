@@ -14,6 +14,7 @@ require_once('libs/modules/calculation/order.class.php');
 require_once 'libs/modules/personalization/personalization.order.class.php';
 require_once('collectiveinvoice.class.php');
 require_once('orderposition.class.php');
+require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
 
 global $_LANG;
@@ -37,7 +38,10 @@ case 'delete':
 	$del_positions = Orderposition::getAllOrderposition($delete_invoice->getId());
 	foreach ($del_positions as $del_position){
 	    if ($del_position->getType() == Orderposition::TYPE_ARTICLE){
-	        Warehouse::addRemoveReservation($del_position->getObjectid(), 0-$del_position->getQuantity());
+	       // Loeschen jeder Reservierung der momentanen Position
+	       $rvs = Reservation::getAllReservationByOrderposition($del_position->getId());
+	       foreach ($rvs as $r)
+	           $r->delete();
 	    }
 	}
 	
@@ -64,7 +68,10 @@ case 'deletepos':
 	
 	$savemsg = getSaveMessage($delpos->delete());
 	if ($savemsg && $tmp_del_type == Orderposition::TYPE_ARTICLE){
-	    Warehouse::addRemoveReservation($tmp_del_article, $tmp_del_amount);
+	    // Reserverungen einer Position loeschen
+	    $rvs = Reservation::getAllReservationByOrderposition($delpos->getId());
+	    foreach ($rvs as $r)
+	        $r->delete();
 	}
 	
 	require_once('collectiveinvoice.edit.php');
@@ -130,7 +137,7 @@ case 'save':
 			$newpos->setType((int)$_REQUEST["orderpos"][$xi]["type"]);
 			$newpos->setInvrel((int)$_REQUEST["orderpos"][$xi]["inv_rel"]);
 			$newpos->setRevrel((int)$_REQUEST["orderpos"][$xi]["rev_rel"]);
-			$newpos->setObjectid((int)$_REQUEST["orderpos"][$xi]["obj_id"]);
+			$newpos->setObjectid((int)$_REQUEST["orderpos"][$xi]["obj_id"]); // Artikelnummer
 			$newpos->setTax((int)$_REQUEST["orderpos"][$xi]["tax"]);
 			$newpos->setCollectiveinvoice((int)$collectinv->getId());
 			//AUftragsnummer anpassen (mit Suffix versehen)
@@ -139,12 +146,6 @@ case 'save':
 				$tmp_order->setCollectiveinvoiceId($collectinv->getId());
 				$tmp_order->save();
 				$au_suffix++;
-			}
-			if ($newpos->getType() == Orderposition::TYPE_ARTICLE){
-			    if ($old_amount != $newpos->getQuantity()){
-			        $reservation_amount = $newpos->getQuantity() - $old_amount;
-			        Warehouse::addRemoveReservation($newpos->getObjectid(), $reservation_amount);
-			    }
 			}
 			$orderpositions[] = $newpos;
 			$xi++;

@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------------
 require_once('libs/modules/documents/document.class.php');
 require_once('libs/modules/organizer/nachricht.class.php');
+require_once('libs/modules/warehouse/warehouse.reservation.class.php');
 
 if((int)$_REQUEST["deleteDoc"] > 0){
     $doc = new Document((int)$_REQUEST["deleteDoc"]);
@@ -21,13 +22,97 @@ if($_REQUEST["createDoc"]){
     if($_REQUEST["createDoc"] == "offer")
         $doc->setType(Document::TYPE_OFFER);
     if($_REQUEST["createDoc"] == "offerconfirm")
-        $doc->setType(Document::TYPE_OFFERCONFIRM);
+    {
+        // Reservierung anlegen
+        $check = TRUE;
+        $opositions = Orderposition::getAllOrderposition($collectinv);
+        foreach ($opositions as $op)
+        {        
+            // Wird überprüft, ob genug Ware verfügbar ist für eine Reservierungs
+            if(Warehouse::getTotalStockByArticle($op->getObjectid())>=$op->getQuantity())
+            {
+                $whouses = Warehouse::getAllStocksByArticle($op->getObjectid());
+            	$opamount = $op->getQuantity();
+            	// Durchgehen aller Warenhaeuser mit Produkt x und die entsprechenden Mengen reservieren
+            	foreach ($whouses as $w)
+                {
+                   $rsv = new Reservation();
+            	   // Es darf aus keinem Warenhouse reserviert werden, welches explizit einem anderen Kunden zugewiesen ist.
+            	   if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$collectinv->getCustomer()->getId())) 
+            	   {
+                       $rsum = Reservation::getTotalReservationByWarehouse($w);
+                	   $faiwh = $w->getAmount()-$rsum; // $faiwh - free amount in warehouse
+    
+                	   if($faiwh>=0)
+                	   {
+                	       $rsv->setArticle(new Article($op->getObjectid()));
+                	       $rsv->setOrderposition($op);
+                	       $rsv->setWarehouse($w);
+                    	   if($faiwh>=$opamount)
+                    	   {
+                               $rsv->setAmount($opamount);
+                    	   }
+                           else
+                           {
+                    	       $rsv->setAmount($faiwh);
+                               $opamount = $opamount-$faiwh;
+                           }
+                           $rsv->save();
+                	   }
+                       if($opamount==0)
+                           break;
+            	   }
+            	}             
+            }
+            else
+            {
+                // Nicht genug Ware vorhanden
+                // Meldung?
+                $check = FALSE;
+                break;
+            }
+        }
+        if($check)
+            $doc->setType(Document::TYPE_OFFERCONFIRM);
+    }
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
     if($_REQUEST["createDoc"] == "delivery")
+    {
+        $opositions = Orderposition::getAllOrderposition($collectinv);
+        foreach ($opositions as $op)
+        {
+            $rvs = Reservation::getAllReservationByOrderposition($op->getObjectid());
+            foreach ($rvs as $r)
+            {   
+                // Ware entnehmen
+                $w = $r->getWarehouse();
+                $w->setAmount($w->getAmount()-$r->getAmount());
+                $w->save();
+                // Reservierung loeschen
+                $r->delete();
+            }
+        }
         $doc->setType(Document::TYPE_DELIVERY);
+    }
     if($_REQUEST["createDoc"] == "invoice")
+    {
+        $opositions = Orderposition::getAllOrderposition($collectinv);
+        foreach ($opositions as $op)
+        {
+            $rvs = Reservation::getAllReservationByOrderposition($op->getObjectid());
+            foreach ($rvs as $r)
+            {   
+                // Ware entnehmen
+                $w = $r->getWarehouse();
+                $w->setAmount($w->getAmount()-$r->getAmount());
+                $w->save();
+                // Reservierung loeschen
+                $r->delete();
+            }
+        }
         $doc->setType(Document::TYPE_INVOICE);
+    }
     if($_REQUEST["createDoc"] == "revert")
     	$doc->setType(Document::TYPE_REVERT);
     

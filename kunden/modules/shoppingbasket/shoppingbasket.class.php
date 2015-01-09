@@ -10,6 +10,8 @@ require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/personalization/personalization.order.class.php';
 require_once 'shoppingbasketitem.class.php';
 require_once 'libs/modules/businesscontact/address.class.php';
+require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
+require_once 'libs/modules/warehouse/warehouse.class.php';
 
 class Shoppingbasket{
 	
@@ -241,7 +243,34 @@ class Shoppingbasket{
         	                }
         	                $save_items[] = $tmp_order_pos;
         	                
-        	                // TODO: hier reservierung der artikel machen fÃ¼r artikel    new Article($tmp_order_pos->getObjectid())
+        	                // Bestellungen direkt abziehen vom Warenhaus,
+        	                // vorher muss geprueft werden, ob von entsprechenden Warenhaus soviel entnommen werden darf.
+        	                // Beispiel:   W1=50 - (R=50)
+        	                //             W2=150 (Free) 
+        	                //             Total=150 (Free=100) 
+        	                //             Einkauf=50 
+        	                // Diese dürfen nicht vom ersten Lager entnommen werden
+        	                // auch wenn die benoetige Ware vorhanden ist.
+        	                $whouses = Warehouse::getAllStocksByArticle($tmp_order_pos->getObjectid());
+        	                $opamount = $tmp_order_pos->getQuantity();
+        	                foreach ($whouses as $w)
+        	                {
+        	                    // Es darf aus keinem Warenhouse entnommen werden, welches explizit einem anderen Kunden zugewiesens ist.
+        	                    if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$col_inv->getCustomer()->getId())) 
+        	                    {
+            	                    $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w); // $faiwh - free amount in warehouse  
+            	                    if($faiwh>=$opamount)
+            	                        $w->setAmount($w->getAmount() - $opamount);
+            	                    else
+            	                    {
+            	                        $w->setAmount($w->getAmount() - $faiwh);
+            	                        $opamount = $opamount-$faiwh;
+            	                    }
+            	                    $w->save();
+            	                    if($opamount==0)
+            	                        break;
+        	                    }
+        	                } 
     	                }
     	            }
 	            }

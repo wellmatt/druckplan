@@ -19,54 +19,49 @@
 			$article = new Article((int)$_REQUEST["articleid"]);
 			$all_pictures = $article->getAllPictures();
 			$art_prices = $article->getPrices();
-// 			$warehouses = Warehouse::getAllStocksByArticle((int)$_REQUEST["articleid"]);
-			
-// 			$wh_count = 0;
-// 			foreach ($warehouses as $wh) {
-// 				$wh_count += $wh->getAmount();
-// 			}
-			
-			$wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
 			
 			if ($_SESSION["shopping_basket"]){
 				$shopping_basket = $_SESSION["shopping_basket"];
 			} else {
 				$shopping_basket = new Shoppingbasket();
 			}
-			
+			// Verfügbare Menge vorhanden?
 			if ($_REQUEST["subexec"]=="add_item"){
-				if ($_REQUEST["shopping_amount"]>0){
-					$attributes["id"] 		= $article->getId();
-					$attributes["title"] 	= $article->getTitle();
-					$attributes["amount"] 	= (int)$_REQUEST["shopping_amount"];
-					$attributes["price"]	= $article->getPrice($attributes["amount"]);
-					$attributes["type"]		= Shoppingbasketitem::TYPE_ARTICLE;
-					$item = new Shoppingbasketitem($attributes);
-			
-					//schauen, ob Artikel schon im Warenkorb ist
-					if($shopping_basket->itemExists($item)){
-						// Altes loeschen, aber temporaer zwischenspeichern
-						$del_item = $shopping_basket->deleteItem($item->getId(), $item->getType());
-						if ($del_item != NULL){
-							// Neue Menge berechnen
-							$newamount = $del_item->getAmount() + $item->getAmount();
-							$item->setAmount($newamount);
-							// ggf Preis anpassen (an die neue Menge)
-							$newprice = $article->getPrice($newamount); // $item->getAmount());
-							$item->setPrice($newprice);
-								
-							$shopping_basket->addItem($item);
-						}
-					}else{
-					    $tmp_def_invc_ad = Address::getDefaultAddress($busicon, Address::FILTER_INVC);
-					    $tmp_def_deli_ad = Address::getDefaultAddress($busicon, Address::FILTER_DELIV);
-					    $item->setInvoiceAdressID($tmp_def_invc_ad->getId());
-					    $item->setDeliveryAdressID($tmp_def_deli_ad->getId());
-						$shopping_basket->addItem($item);
-					}
-					// Einkaufskorb auch wieder in die Session schreiben
-					$_SESSION["shopping_basket"] = $shopping_basket;
-				}
+			    $wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
+			    if((int)$_REQUEST["shopping_amount"]<=$wh_count)
+    				if ($_REQUEST["shopping_amount"]>0){
+    					$attributes["id"] 		= $article->getId();
+    					$attributes["title"] 	= $article->getTitle();
+    					$attributes["amount"] 	= (int)$_REQUEST["shopping_amount"];
+    					$attributes["price"]	= $article->getPrice($attributes["amount"]);
+    					$attributes["type"]		= Shoppingbasketitem::TYPE_ARTICLE;
+    					$item = new Shoppingbasketitem($attributes);
+    			
+    					//schauen, ob Artikel schon im Warenkorb ist
+    					if($shopping_basket->itemExists($item)){
+    						// Altes loeschen, aber temporaer zwischenspeichern
+    						$del_item = $shopping_basket->deleteItem($item->getId(), $item->getType());
+    						if ($del_item != NULL){
+    							// Neue Menge berechnen
+    							$newamount = $del_item->getAmount() + $item->getAmount();
+    							$item->setAmount($newamount);
+    							// ggf Preis anpassen (an die neue Menge)
+    							$newprice = $article->getPrice($newamount); // $item->getAmount());
+    							$item->setPrice($newprice);
+    								
+    							$shopping_basket->addItem($item);
+    						}
+    					}else{
+    					    $tmp_def_invc_ad = Address::getDefaultAddress($busicon, Address::FILTER_INVC);
+    					    $tmp_def_deli_ad = Address::getDefaultAddress($busicon, Address::FILTER_DELIV);
+    					    $item->setInvoiceAdressID($tmp_def_invc_ad->getId());
+    					    $item->setDeliveryAdressID($tmp_def_deli_ad->getId());
+    						$shopping_basket->addItem($item);
+    					}
+    					// Einkaufskorb auch wieder in die Session schreiben
+    					$_SESSION["shopping_basket"] = $shopping_basket;
+    				}
+			    // else Meldung: Meldung nicht genug Artikel auf Lager!
 			}
 			?>	
 		<form method="post" action="index.php" name="form_additems">
