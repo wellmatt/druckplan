@@ -95,6 +95,21 @@ if($_REQUEST["exec"] == "edit"){
                     $ticketcomment->setArticles(Array($tc_article));
                 }
             }
+            if ($save_ok && $_REQUEST["stop_timer"] == 1 && $_REQUEST["ticket_timer_timestamp"]){
+                $timer = Timer::getLastUsed();
+                if ($timer->getState() == Timer::TIMER_RUNNING){
+                    $timer->stop();
+                    $timer->save();
+                    $time_ok = true;
+                } else {
+                    $timer = new Timer();
+                    $timer->start(get_class($ticket), $ticket->getId(), (int)$_REQUEST["ticket_timer_timestamp"]);
+                    $timer->save();
+                    $timer->stop();
+                    $timer->save();
+                }
+                unset($timer);
+            }
             $save_ok = $ticketcomment->save();
             $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
             if ($save_ok) {
@@ -204,7 +219,9 @@ $(function() {
 		 select: function( event, ui ) {
 		 $( "#tktc_article" ).val( ui.item.label );
 		 $( "#tktc_article_id" ).val( ui.item.value );
-		 $( "#tktc_article_amount" ).val("1");
+		 if (!$("#stop_timer").prop('checked')){
+			 $( "#tktc_article_amount" ).val("1");
+		 }
 		 return false;
 		 }
 		 });
@@ -216,6 +233,12 @@ $(document).ready(function () {
         rules: {
             'tktc_comment': {
                 required: true
+            },
+            'tktc_article_id': {
+            	required: "#stop_timer:checked"
+            },
+            'tktc_article': {
+            	required: "#stop_timer:checked"
             }
         },
         errorPlacement: function(error, $elem) {
@@ -241,10 +264,6 @@ $(document).ready(function () {
         }
     }
 });
-function stopWatch() {
-	sec++;
-	$("#ticket_timer").html(sec);
-}
 </script>
 
 
@@ -543,7 +562,7 @@ function stopWatch() {
 		              <?php
 		              $timer = Timer::getLastUsed();
 		              $timer_start = 0;
-		              if ($timer !== false){
+		              if ($timer->getId() > 0){
 		                  if ($timer->getState() == Timer::TIMER_RUNNING){
 		                      $timer_start = $timer->getStarttime();
 		                      if ($timer->getModule() == "Ticket" && $timer->getObjectid() == $ticket->getId()){ // Timer läuft für dieses Ticket
@@ -556,19 +575,24 @@ function stopWatch() {
 		                          <?php
 		                      }
 		                  } else { // Timer läuft nicht
-		                      $timer_start = $timer->getStoptime();
+		                      $timer_start = $timer->getStoptime()+1;
 	                          ?>
-	                          <span id="ticket_timer" class="timer duration btn" data-duration="0"></span>
+	                          <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span>
 	                          <?php
 		                  }
 		              } else { // kein Timer gefunden
+		                  $timer_start = time();
                           ?>
                           <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span>
                           <?php
 		              }
 		              ?>
-		              <input id="ticket_timer_timestamp" type="hidden" value="<?php echo $timer_start;?>"/>
+		              <input id="ticket_timer_timestamp" name="ticket_timer_timestamp" type="hidden" value="<?php echo $timer_start;?>"/>
 		          </td>
+		      </tr>
+		      <tr>
+		          <td width="25%">&nbsp;</td>
+		          <td width="75%"><input type="checkbox" name="stop_timer" id="stop_timer" value="1"> Zeit eintragen und zurücksetzen?</td>
 		      </tr>
 		      <tr>
 		          <td colspan="2">&nbsp;</td>
@@ -577,27 +601,47 @@ function stopWatch() {
                 <script>
                 $(document).ready(function () {
                 	var clock;
-                	var sec = parseInt($('#ticket_timer_timestamp').val());
+                	var sec = moment().unix();
                 	var start = parseInt($('#ticket_timer_timestamp').val());
-                	if (sec != 0){
+                	if (start != 0){
                 		clock = setInterval(stopWatch,1000);
                 	}
+                	<?php /*
                     $( "#ticket_timer" ).click(function() {
                         if ($( "#ticket_timer" ).hasClass("btn-warning")){
-                            alert("Timer läuft für anderes Ticket!");
-//                         	window.clearInterval(clock);
-//                         	$( "#ticket_timer" ).removeClass("btn-warning");
+                        	window.clearInterval(clock);
+                        	$( "#ticket_timer" ).removeClass("btn-warning");
+                        	$.ajax({
+                        		type: "POST",
+                        		url: "libs/modules/timer/timer.ajax.php",
+                        		data: { ajax_action: "stop", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
+                        		})
+                        		.done(function( msg ) {
+                        		alert( "Data Saved: " + msg );
+                        		});
                         } else {
                             sec = moment().unix();
                             start = moment().unix();
                         	clock = setInterval(stopWatch,1000);
                         	$( "#ticket_timer" ).addClass("btn-warning");
+                        	$.ajax({
+                        		type: "POST",
+                        		url: "libs/modules/timer/timer.ajax.php",
+                        		data: { ajax_action: "start", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
+                        		})
+                        		.done(function( msg ) {
+                        		alert( "Data Saved: " + msg );
+                        		});
                         }
                     });
+                	*/?>
                     function stopWatch() {
                     	sec++;
                     	var timestamp = sec-start;
                     	$("#ticket_timer").html(rectime(timestamp));
+                        if ($("#stop_timer").prop('checked')){
+                            $("#tktc_article_amount").val(precise_round((sec-start)/60/60,2));
+                        }
                     }
                     function rectime(secs) {
                     	var hr = Math.floor(secs / 3600);
@@ -610,6 +654,15 @@ function stopWatch() {
                     	if (hr) {hr = "00";}
                     	return hr + ':' + min + ':' + sec;
                     }
+                    $( "#stop_timer" ).click(function() {
+                        if ($("#stop_timer").prop('checked')){
+                            $("#tktc_article_amount").val(precise_round((sec-start)/60/60,2));
+                        }
+                    });
+                    function precise_round(num, decimals) {
+                    	var t=Math.pow(10, decimals);   
+                 	    return (Math.round((num * t) + (decimals>0?1:0)*(Math.sign(num) * (10 / Math.pow(100, decimals)))) / t).toFixed(decimals);
+                   	}
                 });
                 </script>
               <?php // <<< TIMER STUFF //////?>
