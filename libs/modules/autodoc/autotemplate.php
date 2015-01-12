@@ -38,7 +38,6 @@ $i = 0;
 foreach ($editors as $editor) {
     if ($exec == $_LANG->get($editor->getName())) {
         $index = $i; // Sieht Unwichtig aus, wird aber für die html-tab benötigt.
-        
         $tmplname = $_REQUEST["templatename_" . $_LANG->get($editor->getName())];
         
         $datei[$_LANG->get($editor->getName())] = $_POST[$_LANG->get($editor->getName())];
@@ -57,6 +56,7 @@ foreach ($editors as $editor) {
             $output = $agent->Get( "default_" . $editor->getName());
         $datei[$_LANG->get($editor->getName())] = $output;
     }
+    $i++;
 }
 
 
