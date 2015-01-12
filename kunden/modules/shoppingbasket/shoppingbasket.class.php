@@ -258,9 +258,12 @@ class Shoppingbasket{
         	                    // Es darf aus keinem Warenhouse entnommen werden, welches explizit einem anderen Kunden zugewiesens ist.
         	                    if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$col_inv->getCustomer()->getId())) 
         	                    {
-            	                    $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w); // $faiwh - free amount in warehouse  
+            	                    $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse  
             	                    if($faiwh>=$opamount)
+            	                    {
             	                        $w->setAmount($w->getAmount() - $opamount);
+            	                        $opamount = 0;
+            	                    }
             	                    else
             	                    {
             	                        $w->setAmount($w->getAmount() - $faiwh);
@@ -270,7 +273,11 @@ class Shoppingbasket{
             	                    if($opamount==0)
             	                        break;
         	                    }
-        	                } 
+        	                }
+        	                if ($opamount > 0)
+        	                {
+        	                    // MELDUNG NICHT GENUG FREIE WARE
+        	                }
     	                }
     	            }
 	            }

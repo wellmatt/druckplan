@@ -23,66 +23,82 @@ if($_REQUEST["createDoc"]){
         $doc->setType(Document::TYPE_OFFER);
     if($_REQUEST["createDoc"] == "offerconfirm")
     {
-        // Reservierung anlegen
+        // Reservierung anlegen WICHTIG das Löschen der Reservierung bei Dokumentenlöschung nicht vergessen
         $check = TRUE;
-        $opositions = Orderposition::getAllOrderposition($collectinv);
+        $opositions = Orderposition::getAllOrderposition($collectinv->getId());
         foreach ($opositions as $op)
         {        
-            // Wird überprüft, ob genug Ware verfügbar ist für eine Reservierungs
-            if(Warehouse::getTotalStockByArticle($op->getObjectid())>=$op->getQuantity())
+            if($op->getType() == Orderposition::TYPE_ARTICLE)
             {
-                $whouses = Warehouse::getAllStocksByArticle($op->getObjectid());
-            	$opamount = $op->getQuantity();
-            	// Durchgehen aller Warenhaeuser mit Produkt x und die entsprechenden Mengen reservieren
-            	foreach ($whouses as $w)
+                // Wird überprüft, ob genug Ware verfügbar ist für eine Reservierungs
+                if(Warehouse::getTotalStockByArticle($op->getObjectid())>=$op->getQuantity())
                 {
-                   $rsv = new Reservation();
-            	   // Es darf aus keinem Warenhouse reserviert werden, welches explizit einem anderen Kunden zugewiesen ist.
-            	   if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$collectinv->getCustomer()->getId())) 
-            	   {
-                       $rsum = Reservation::getTotalReservationByWarehouse($w);
-                	   $faiwh = $w->getAmount()-$rsum; // $faiwh - free amount in warehouse
-    
-                	   if($faiwh>=0)
+                    $whouses = Warehouse::getAllStocksByArticle($op->getObjectid());
+                	$opamount = $op->getQuantity();
+                	// Durchgehen aller Warenhaeuser mit Produkt x und die entsprechenden Mengen reservieren
+                	foreach ($whouses as $w)
+                    {     
+                       $rsv = new Reservation();
+                	   // Es darf aus keinem Warenhouse reserviert werden, welches explizit einem anderen Kunden zugewiesen ist.
+                	   if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$collectinv->getCustomer()->getId())) 
                 	   {
-                	       $rsv->setArticle(new Article($op->getObjectid()));
-                	       $rsv->setOrderposition($op);
-                	       $rsv->setWarehouse($w);
-                    	   if($faiwh>=$opamount)
+                	       $rsum = Reservation::getTotalReservationByWarehouse($w->getId());
+                	       $faiwh = $w->getAmount()-$rsum; // $faiwh - free amount in warehouse
+                    	   if($faiwh>=0)
                     	   {
-                               $rsv->setAmount($opamount);
+                    	       $rsv->setArticle(new Article($op->getObjectid()));
+                    	       $rsv->setOrderposition($op);
+                    	       $rsv->setWarehouse($w); 
+                        	   if($faiwh>=$opamount)
+                        	   {
+                                   $rsv->setAmount($opamount);
+                                   $opamount = 0;
+                        	   }
+                               else
+                               {
+                        	       $rsv->setAmount($faiwh);
+                                   $opamount = $opamount-$faiwh;
+                               }
+                               $rsv->save();
                     	   }
-                           else
-                           {
-                    	       $rsv->setAmount($faiwh);
-                               $opamount = $opamount-$faiwh;
-                           }
-                           $rsv->save();
+                           if($opamount==0)
+                               break;
                 	   }
-                       if($opamount==0)
-                           break;
-            	   }
-            	}             
-            }
-            else
-            {
-                // Nicht genug Ware vorhanden
-                // Meldung?
-                $check = FALSE;
-                break;
+                	}
+                	if($opamount>0)
+                	{
+                	    // Nicht genug nicht reservierte Ware vorhanden
+                	    // Meldung?
+                	    $check = FALSE;
+                	    break;
+                	}
+                }
+                else
+                {
+                    // Nicht genug Ware vorhanden
+                    // Meldung?
+                    $check = FALSE;
+                    break;
+                }
             }
         }
         if($check)
             $doc->setType(Document::TYPE_OFFERCONFIRM);
+        else
+        {
+            // Nicht genug Ware vorhanden
+            // Nicht genug nicht reservierte Ware vorhanden
+            // Meldung?
+        }
     }
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
     if($_REQUEST["createDoc"] == "delivery")
     {
-        $opositions = Orderposition::getAllOrderposition($collectinv);
+        $opositions = Orderposition::getAllOrderposition($collectinv->getId());
         foreach ($opositions as $op)
         {
-            $rvs = Reservation::getAllReservationByOrderposition($op->getObjectid());
+            $rvs = Reservation::getAllReservationByOrderposition($op->getId());
             foreach ($rvs as $r)
             {   
                 // Ware entnehmen
@@ -97,10 +113,10 @@ if($_REQUEST["createDoc"]){
     }
     if($_REQUEST["createDoc"] == "invoice")
     {
-        $opositions = Orderposition::getAllOrderposition($collectinv);
+        $opositions = Orderposition::getAllOrderposition($collectinv->getId());
         foreach ($opositions as $op)
         {
-            $rvs = Reservation::getAllReservationByOrderposition($op->getObjectid());
+            $rvs = Reservation::getAllReservationByOrderposition($op->getId());
             foreach ($rvs as $r)
             {   
                 // Ware entnehmen
