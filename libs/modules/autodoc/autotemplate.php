@@ -44,7 +44,7 @@ foreach ($editors as $editor) {
         file_put_contents($tmplfolder . $editor->getFile() . ".tmpl", $datei[$_LANG->get($editor->getName())]);
         
         // Überprüft vorher, dass Default-Templates nicht überschrieben werden
-        if ($tmplname != "" && $tmplname != "default_" . $editor->getName()) {
+        if ($tmplname != "" && $tmplname != "default_" . $editor->getName() ) { 
             // var_dump($exec);
             // var_dump($datei[$_LANG->get($editor->getName())]);
             $agent->Add($tmplname, "", $exec, $datei[$_LANG->get($editor->getName())]);
@@ -79,7 +79,7 @@ if($del && $del_text)
 <script type="text/javascript" language="javascript"
 	src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
 <!-- Make sure the path to CKEditor is correct. -->
-<script src="./thirdparty/ckeditor/ckeditor.js"></script>
+<script src="/thirdparty/ckeditor/ckeditor.js"></script>
 
 <script type="text/javascript">
     $(function() {
