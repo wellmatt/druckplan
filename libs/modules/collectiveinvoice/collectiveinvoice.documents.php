@@ -11,7 +11,60 @@ require_once('libs/modules/warehouse/warehouse.reservation.class.php');
 
 if((int)$_REQUEST["deleteDoc"] > 0){
     $doc = new Document((int)$_REQUEST["deleteDoc"]);
-    $doc->delete();
+    
+    if($doc->getType() == Document::TYPE_OFFERCONFIRM)
+    {
+        if($status != Document::TYPE_DELIVERY && $status != Document::TYPE_INVOICE)
+        {
+            $opositions = Orderposition::getAllOrderposition($collectinv->getId());
+            foreach ($opositions as $op)
+            {
+                $rvs = Reservation::getAllReservationByOrderposition($op->getId());
+                foreach ($rvs as $r)
+                    // Reservierung loeschen
+                    $r->delete();
+            }
+            $doc->delete();
+        }
+        else
+        {
+            echo "<script type='text/javascript' language='javascript'>\n";
+            echo "<!--\n";
+            echo "alert('".$_LANG->get("Dokument kann nicht gelöscht werden, da Rechnung und/oder Lieferschein vorhanden sind.")."')\n";
+            echo "//-->\n";
+            echo "</script>\n";
+        }
+    }
+    else if($doc->getType() == Document::TYPE_INVOICE || $doc->getType() == Document::TYPE_DELIVERY )
+    {
+        if($status > 0)
+        {
+            $opositions = Orderposition::getAllOrderposition($collectinv->getId());
+            foreach ($opositions as $op)
+            {
+                $rvs = Reservation::getAllReservationByFilter("WHERE status = ".Reservation::Reservation_Delete." AND op_id = {$op->getId()}");
+                $g = 0;
+                var_dump(sizeof($rvs));
+                foreach ($rvs as $r)
+                    if($g < $r->getGid())
+                        $g = $r->getGid();   
+                    
+                foreach ($rvs as $r)
+                    if($g == $r->getGid())
+                    {
+                        $w = $r->getWarehouse();
+                        $w->setAmount($w->getAmount() + $r->getAmount());
+                        // Nicht ganz sauber, aber erstmal ausreichend.
+                        $r->setStatus(Reservation::Reservation_Active);
+                        $r->save();
+                        $w->save();
+                    }
+            }
+            $doc->delete();
+        }
+    } 
+    else  
+        $doc->delete();
 }
 
 if($_REQUEST["createDoc"]){
@@ -25,7 +78,10 @@ if($_REQUEST["createDoc"]){
     {
         // Reservierung anlegen WICHTIG das Löschen der Reservierung bei Dokumentenlöschung nicht vergessen
         $check = TRUE;
+        $msg = "Nicht genug Ware verfügbar.";
         $opositions = Orderposition::getAllOrderposition($collectinv->getId());
+        $rsvlist = array();
+        
         foreach ($opositions as $op)
         {        
             if($op->getType() == Orderposition::TYPE_ARTICLE)
@@ -38,7 +94,6 @@ if($_REQUEST["createDoc"]){
                 	// Durchgehen aller Warenhaeuser mit Produkt x und die entsprechenden Mengen reservieren
                 	foreach ($whouses as $w)
                     {     
-                       $rsv = new Reservation();
                 	   // Es darf aus keinem Warenhouse reserviert werden, welches explizit einem anderen Kunden zugewiesen ist.
                 	   if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$collectinv->getCustomer()->getId())) 
                 	   {
@@ -46,20 +101,21 @@ if($_REQUEST["createDoc"]){
                 	       $faiwh = $w->getAmount()-$rsum; // $faiwh - free amount in warehouse
                     	   if($faiwh>=0)
                     	   {
-                    	       $rsv->setArticle(new Article($op->getObjectid()));
-                    	       $rsv->setOrderposition($op);
-                    	       $rsv->setWarehouse($w); 
+                    	       $tmp = array();
+                    	       $tmp["Article"] = $op->getObjectid();
+                    	       $tmp["Orderposition"] = $op->getId();
+                    	       $tmp["Warehouse"] = $w->getId();
                         	   if($faiwh>=$opamount)
                         	   {
-                                   $rsv->setAmount($opamount);
+                    	           $tmp["Amount"] = $opamount;
                                    $opamount = 0;
                         	   }
                                else
                                {
-                        	       $rsv->setAmount($faiwh);
+                                   $tmp["Amount"] = $faiwh;
                                    $opamount = $opamount-$faiwh;
                                }
-                               $rsv->save();
+                               $rsvlist[] = $tmp;
                     	   }
                            if($opamount==0)
                                break;
@@ -67,28 +123,45 @@ if($_REQUEST["createDoc"]){
                 	}
                 	if($opamount>0)
                 	{
-                	    // Nicht genug nicht reservierte Ware vorhanden
-                	    // Meldung?
+                	    $msg .= " ID={$op->getObjectid()}"; 
                 	    $check = FALSE;
-                	    break;
                 	}
                 }
                 else
                 {
-                    // Nicht genug Ware vorhanden
-                    // Meldung?
+                    $msg .= " ID={$op->getObjectid()}"; 
                     $check = FALSE;
-                    break;
-                }
+                }     
             }
         }
         if($check)
+        {
+            // Ware Reservieren
+            $rsv = null;
+            $gid = (int)Reservation::getMaxReservationGroupId() + 1;
+            foreach ($rsvlist as $r)
+            {              
+                if(!empty($rsv))
+                    if($r["Orderposition"]->getId()!=$rsv->getOrderposition()->getId())
+                        $gid = (int)Reservation::getMaxReservationGroupId() + 1;
+                    
+                $rsv = new Reservation();
+                $rsv->setArticle(new Article((int)$r["Article"]));
+                $rsv->setOrderposition(new Orderposition((int)$r["Orderposition"]));
+                $rsv->setWarehouse(new Warehouse((int)$r["Warehouse"]));
+                $rsv->setAmount($r["Amount"]);   
+                $rsv->setGid($gid);
+                $rsv->save();
+            }
             $doc->setType(Document::TYPE_OFFERCONFIRM);
+        }
         else
         {
-            // Nicht genug Ware vorhanden
-            // Nicht genug nicht reservierte Ware vorhanden
-            // Meldung?
+            echo "<script type='text/javascript' language='javascript'>\n";
+            echo "<!--\n";
+            echo "alert('".$_LANG->get($msg)."')\n";
+            echo "//-->\n";
+            echo "</script>\n";
         }
     }
     if($_REQUEST["createDoc"] == "factory")
@@ -109,7 +182,16 @@ if($_REQUEST["createDoc"]){
                 $r->delete();
             }
         }
-        $doc->setType(Document::TYPE_DELIVERY);
+        if(!empty($rvs))
+            $doc->setType(Document::TYPE_DELIVERY);
+        else 
+        {
+          echo "<script type='text/javascript' language='javascript'>\n";
+          echo "<!--\n";
+          echo "alert('".$_LANG->get("Es fehlt eine Angebotsbest&auml;tigung f&uuml;r diesen Vorgang.")."')\n";
+          echo "//-->\n";
+          echo "</script>\n";
+        }    
     }
     if($_REQUEST["createDoc"] == "invoice")
     {
@@ -127,7 +209,16 @@ if($_REQUEST["createDoc"]){
                 $r->delete();
             }
         }
-        $doc->setType(Document::TYPE_INVOICE);
+        if(!empty($rvs))
+            $doc->setType(Document::TYPE_INVOICE);
+        else
+        {
+          echo "<script type='text/javascript' language='javascript'>\n";
+          echo "<!--\n";
+          echo "alert('".$_LANG->get("Es fehlt eine Angebotsbest&auml;tigung f&uuml;r diesen Vorgang.")."')\n";
+          echo "//-->\n";
+          echo "</script>\n";
+        }
     }
     if($_REQUEST["createDoc"] == "revert")
     	$doc->setType(Document::TYPE_REVERT);
