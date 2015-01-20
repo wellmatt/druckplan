@@ -1334,6 +1334,7 @@ if((int)$_REQUEST["step"] == 4)
 		$order->setTitle(trim(addslashes($_REQUEST["order_title"])));
 		$order->setCustMessage(trim(addslashes($_REQUEST["cust_message"])));
 		$order->setCustSign(trim(addslashes($_REQUEST["cust_sign"])));
+		$order->setBeilagen(trim(addslashes($_REQUEST["order_beilagen"])));
 		$order->save();
 
 		// Kalkulationsdaten

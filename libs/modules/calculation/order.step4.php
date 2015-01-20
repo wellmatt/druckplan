@@ -356,6 +356,13 @@ $(document).ready(function() {
             value="<?=$order->getCustSign()?>">
     </td>
 </tr>
+<tr>
+    <td class="content_row" valign="top" colspan="2" rowspawn="3"></td>
+    <td class="content_row" valign="top" rowspan="3"><b><?=$_LANG->get('Beilagen-Hinweis')?></b></td>
+    <td class="content_row" rowspan="3">
+        <textarea name="order_beilagen" style="width:330px;height:60px" class="text"><?=$order->getBeilagen()?></textarea>
+    </td>
+</tr>
 
 <?if ($order->getCollectiveinvoiceId() > 0){
 $collective = new CollectiveInvoice($order->getCollectiveinvoiceId());?>

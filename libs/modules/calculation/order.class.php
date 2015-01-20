@@ -64,6 +64,8 @@ class Order {
     private $paper_order_supplier = 0;	// Lieferant für Papierbestellung
     private $paper_order_calc = 0;		// Calculation für Papierbestellung
     
+    private $beilagen;                  // Text Feld für Beilagen
+    
     function __construct($id)
     {
         $this->deliveryAddress = new Address();
@@ -124,6 +126,7 @@ class Order {
                 $this->paper_order_price = $res["paper_order_price"];
                 $this->paper_order_supplier = $res["paper_order_supplier"];
                 $this->paper_order_calc = $res["paper_order_calc"];
+                $this->beilagen = $res["beilagen"];
             }
         }
     }
@@ -593,6 +596,7 @@ static function getCountOrdersPerCustMonth($year)
                 		paper_order_price = '{$this->paper_order_price}', 
                 		paper_order_supplier = {$this->paper_order_supplier}, 
                 		paper_order_calc = {$this->paper_order_calc}, 
+                		beilagen = '{$this->beilagen}', 
                 		show_price_per_thousand = {$this->showPricePer1000} 
                     WHERE id = {$this->id}";
 			// echo $sql . "</br>";
@@ -614,7 +618,7 @@ static function getCountOrdersPerCustMonth($year)
                          cust_sign, cust_contactperson, inv_amount, 
                          inv_price_update, deliv_amount, label_logo_active,
                          label_box_amount, label_title, show_product, productname, 
-                         show_price_per_thousand, paper_order_boegen, paper_order_price, paper_order_supplier, paper_order_calc )
+                         show_price_per_thousand, paper_order_boegen, paper_order_price, paper_order_supplier, paper_order_calc, beilagen )
                     VALUES
                         ('{$this->number}', 1, '{$this->customer->getId()}', $tmp_product,
                          '{$this->title}', '{$this->notes}', '0', '0', '0',
@@ -624,7 +628,7 @@ static function getCountOrdersPerCustMonth($year)
             			 {$this->invoicePriceUpdate}, {$this->deliveryAmount}, {$this->labelLogoActive}, 
             			 {$this->labelLogoActive}, '{$this->labelTitle}', {$this->showProduct}, '{$this->productName}', 
             			 {$this->showPricePer1000}, '{$this->paper_order_boegen}', '{$this->paper_order_price}', 
-						 {$this->paper_order_supplier}, {$this->paper_order_calc} )";
+						 {$this->paper_order_supplier}, {$this->paper_order_calc}, '{$this->beilagen}' )";
             $res = $DB->no_result($sql);
 //             echo $sql . "</br>";
             if($res)
@@ -1076,6 +1080,25 @@ static function getCountOrdersPerCustMonth($year)
 	{
 	    $this->paper_order_calc = $paper_order_calc;
 	}
+	
+	/**
+     * @return the $beilagen
+     */
+    public function getBeilagen()
+    {
+        return $this->beilagen;
+    }
+
+	/**
+     * @param field_type $beilagen
+     */
+    public function setBeilagen($beilagen)
+    {
+        $this->beilagen = $beilagen;
+    }
+
+	
+	
 }
          
 ?>
