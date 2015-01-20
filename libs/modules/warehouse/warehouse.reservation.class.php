@@ -15,6 +15,7 @@ class Reservation
     const Reservation_Delete = 0;
     const Reservation_Active = 1;
     private $id = 0;
+    private $gid = 0;
     private $warehouse; // Name des Lagerplatzesid
     private $orderposition;
     private $article;
@@ -35,6 +36,7 @@ class Reservation
             $r = $DB->select($sql);
             if (is_array($r)) {
                 $this->id = $r[0]["id"];
+                $this->gid = $r[0]["gid"];
                 $this->warehouse = new Warehouse($r[0]["wh_id"]);
                 $this->orderposition = new Orderposition($r[0]["op_id"]);
                 $this->article = new Article($r[0]["article_id"]);
@@ -58,6 +60,7 @@ class Reservation
             $sql = "UPDATE warehouse_reservations
             SET
             id 		    = {$this->id},
+            gid 		= {$this->gid},
             wh_id		= {$this->warehouse->getId()},
             op_id 	    = {$this->orderposition->getId()},
             article_id	= {$this->article->getId()},
@@ -68,10 +71,19 @@ class Reservation
             $res = $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO warehouse_reservations
-            (wh_id, op_id, article_id,
-            amount, status)
+            (gid,
+             wh_id,
+             op_id,
+             article_id,
+             amount,
+             status)
             VALUES
-                ({$this->warehouse->getId()}, {$this->orderposition->getId()}, {$this->article->getId()}, {$this->amount}, {$this->status})";
+            ({$this->gid},
+             {$this->warehouse->getId()},
+             {$this->orderposition->getId()}, 
+             {$this->article->getId()}, 
+             {$this->amount}, 
+             {$this->status})";
             $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT MAX(id) id
@@ -190,6 +202,35 @@ class Reservation
         }
         return $retval;
     }
+    
+    static function getMaxReservationGroupId($filter = "")
+    {
+        global $DB;
+    
+        $retval = Array();
+        $del = self::Reservation_Delete;
+        $sql = "SELECT Max(gid) AS mgid FROM warehouse_reservations {$filter};";
+        // error_log($sql);
+        $res = $DB->select($sql);
+        return $res[0]["mgid"];
+    }
+    
+    static function getAllReservationByFilter($filter = "")
+    {
+        global $DB;
+    
+        $retval = Array();
+        $del = self::Reservation_Delete;
+        $sql = "SELECT id FROM warehouse_reservations {$filter};";
+//         error_log($sql);
+        $res = $DB->select($sql);
+        if (is_array($res)) {
+            foreach ($res as $r) {
+                $retval[] = new Reservation($r["id"]);
+            }
+        }
+        return $retval;
+    }
 
     /**
      * @return the $id
@@ -197,6 +238,14 @@ class Reservation
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * @return the $gid
+     */
+    public function getGid()
+    {
+        return $this->gid;
     }
     
     /**
@@ -286,5 +335,15 @@ class Reservation
     {
         $this->status = $status;
     }
+
+	/**
+     * @param field_type $gid
+     */
+    public function setGid($gid)
+    {
+        $this->gid = $gid;
+    }
+
+    
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+use Zend\Form\Element\Date;
 // ----------------------------------------------------------------------------------
 // Author: Klein Druck+Medien GmbH
 // Updated: 23.12.2014
@@ -92,6 +93,10 @@ if (is_a($order, "Order")) {
     
     $smarty->assign('Order', $order);
     
+    $date = new DateTime();
+    $date->setTimestamp($order->getCrtdat());
+    $smarty->assign('OrderCreation', $date->format('d.m.Y'));
+    
     $smarty->assign('OrderTitle', $order->getTitle());
     
     $smarty->assign('OrderId', $order->getNumber());
@@ -122,7 +127,5 @@ if (is_a($order, "Order")) {
     
     $smarty->assign('CustomerWebsite', $order->getCustomer()
         ->getWeb());
-    
-    $smarty->assign('CustomerNote', $order->getCustomer());
 }
 ?>
