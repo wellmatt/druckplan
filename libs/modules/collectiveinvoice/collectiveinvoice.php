@@ -25,26 +25,6 @@ $_USER;
 $collectinv = new CollectiveInvoice((int)$_REQUEST['ciid']);
 $ci = $collectiveinvoice;
 
-// Prüfung ob eine Reservierung oder eine Rechnung vorhanden sind
-$status = 0; // Keine Reservierung oder Rechnung vorhanden
-$docsofferconfirm = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
-$docsinvoice = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
-$docsdelivery = Document::getDocuments(Array("type" => Document::TYPE_DELIVERY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
-
-if(!empty($docsofferconfirm))
-{
-    if(!empty($docsinvoice))
-    {
-        if(!empty($docsdelivery))
-            $status = Document::TYPE_DELIVERY;
-        else
-            $status = Document::TYPE_INVOICE;
-    }
-    else
-        $status = Document::TYPE_OFFERCONFIRM;
-}
-// ------
-
 switch($_REQUEST['exec']){
 case 'edit':
 	require_once('collectiveinvoice.edit.php');

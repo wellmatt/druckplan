@@ -42,8 +42,6 @@ if((int)$_REQUEST["deleteDoc"] > 0){
     }
     else if($doc->getType() == Document::TYPE_INVOICE || $doc->getType() == Document::TYPE_DELIVERY )
     {
-        if($status)
-        {
             $opositions = Orderposition::getAllOrderposition($collectinv->getId());
             foreach ($opositions as $op)
             {
@@ -74,7 +72,6 @@ if((int)$_REQUEST["deleteDoc"] > 0){
                     foreach ($docsinvoice as $d)
                         $d->delete();              
             $doc->delete();
-        }
     } 
     else  
         $doc->delete();
