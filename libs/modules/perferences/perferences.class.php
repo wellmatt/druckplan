@@ -11,6 +11,10 @@ class Perferences {
    private $pdf_margin_left;
    private $pdf_margin_right;
    private $pdf_margin_bottom;
+   
+   // Formats
+   
+   private $formats_raw = Array();
 
    function __construct()
    {
@@ -28,6 +32,16 @@ class Perferences {
            $this->pdf_margin_right = $r["pdf_margin_right"];
            $this->pdf_margin_bottom = $r["pdf_margin_bottom"];
        }
+       
+       $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
+       if($DB->num_rows($sql)){
+           $formats_raw_tmp = Array();
+           foreach($DB->select($sql) as $r){
+           				$formats_raw_tmp[] = Array("id" => $r["id"], "width" => $r["width"], "height" => $r["height"]);
+           }
+           $this->formats_raw = $formats_raw_tmp;
+       }
+       
    }
    
    /**
@@ -39,7 +53,15 @@ class Perferences {
        global $DB;
        global $_USER;
        $now = time();
-   
+       
+       $sql = "TRUNCATE perferences_formats_raw;";
+       $DB->no_result($sql);
+       
+       foreach ($this->formats_raw as $format_raw){
+           $sql = "INSERT INTO perferences_formats_raw (width, height) VALUES ({$format_raw["width"]},{$format_raw["height"]})";
+           $DB->no_result($sql);
+       }
+       
        $sql = "UPDATE perferences SET
                zuschussprodp 	= '{$this->ZuschussProDP}',
                calc_detailed_printpreview 	= '{$this->calc_detailed_printpreview}',
@@ -146,6 +168,24 @@ class Perferences {
     {
         $this->pdf_margin_bottom = $pdf_margin_bottom;
     }
+    
+	/**
+     * @return the $formats_raw
+     */
+    public function getFormats_raw()
+    {
+        return $this->formats_raw;
+    }
+
+	/**
+     * @param multitype: $formats_raw
+     */
+    public function setFormats_raw($formats_raw)
+    {
+        $this->formats_raw = $formats_raw;
+    }
+
    
+    
 }
 ?>

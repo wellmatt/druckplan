@@ -22,6 +22,8 @@ class Timer
     private $starttime = NULL;
 
     private $stoptime = 0;
+    
+    private $timeslices = Array();
 
     function __construct($id = 0)
     {
@@ -52,7 +54,7 @@ class Timer
             starttime = {$this->starttime}, 
             stoptime = {$this->stoptime} 
             WHERE id = {$this->id};";
-            echo $sql;
+//             echo $sql;
             return $DB->no_result($sql);
         } else {
             
@@ -60,7 +62,7 @@ class Timer
             (crtuser, module, objectid, state, starttime, stoptime) VALUES 
             ({$_USER->getId()}, '{$this->module}', {$this->objectid}, {$this->state},  {$this->starttime}, {$this->stoptime});";
             $res = $DB->no_result($sql);
-            echo $sql;
+//             echo $sql;
             
             if ($res) {
                 $sql = "SELECT max(id) id FROM timers WHERE

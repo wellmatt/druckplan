@@ -56,6 +56,25 @@ if ($_REQUEST["clear_shoppingbasket"]){
 if ($_REQUEST["send_shoppingbasket"]){
 	$shopping_basket->setIntent(trim(addslashes($_REQUEST["shopping_intent"])));
 	$shopping_basket->setDeliveryAdressID((int)$_REQUEST["shopping_deliv_id"]);
+	
+	$tmp_entrys = $shopping_basket->getEntrys();
+	$shopping_basket->clear();
+	foreach($tmp_entrys as $tmp_item){
+	    //Menge aktualisieren
+	    $amount = (int)$_REQUEST["amount_{$tmp_item->getType()}_{$tmp_item->getId()}"];
+	    $tmp_item->setAmount($amount);
+	    if($tmp_item->getType() == Shoppingbasketitem::TYPE_ARTICLE){
+	        $tmp_article = new Article($tmp_item->getId());
+	        //ggf Preis anpassen
+	        $tmp_item->setPrice($tmp_article->getPrice($amount));
+	    }
+	    // liefer und rechnungsadresse setzen
+	    $tmp_item->setDeliveryAdressID((int)$_REQUEST["entry_deliv_{$tmp_item->getId()}"]);
+	    $tmp_item->setInvoiceAdressID((int)$_REQUEST["entry_invoice_{$tmp_item->getId()}"]);
+	    // Eintrag zum Warenkorb hinzufuegen
+	    $shopping_basket->addItem($tmp_item);
+	}
+	
 	$save_msg = $shopping_basket->send();
 	
 	// nur wenn erfolgreich gespeichert wurde darf geleert werden

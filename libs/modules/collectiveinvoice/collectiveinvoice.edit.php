@@ -11,12 +11,14 @@
 
 $all_user = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
 
+
 //Falls eine neue manuelle Rechnung erzeugt wird
 if($collectinv->getId()==0){
 	
 	//ausgew?hlten Benutzer aus der DB holen und setzen
 	$selected_customer = new BusinessContact((int)$_REQUEST["order_customer"]);
 	$collectinv->setBusinesscontact($selected_customer);
+	
 	
 	//Datum und Benutzer setzen, wer erstellt hat
 	$collectinv->setCrtuser($_USER);
@@ -200,7 +202,9 @@ function updateDeliveryPrice(){
 
 
 <?//--------------------------------------HTML ----------------------------------------?>
-<?if ($collectinv->getId() >0){?>
+<?if ($collectinv->getId() >0){
+
+	$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact());?>
 <div class="menuorder">
 	<span class="menu_order" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&exec=docs&ciid=<?=$collectinv->getId()?>'"><?= $_LANG->get('Dokumente')?></span>
 	<?php 
@@ -540,6 +544,22 @@ function updateDeliveryPrice(){
                         echo '<option value="'.$us->getId().'" ';
                         if($collectinv->getInternContact()->getId() == $us->getId()) echo "selected";
                         echo '>'.$us->getNameAsLine().'</option>';
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="content_row" valign="top"><b><?=$_LANG->get('Ansprechp. d. Kunden')?></b></td>
+            <td class="content_row" valign="top">
+                <select name="custContactperson" style="width:300px" class="text">
+                    <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
+                    <? 
+                    foreach($all_bc_cp as $cp)
+                    {
+                        echo '<option value="'.$cp->getId().'" ';
+                        if($collectinv->getCustContactperson()->getId() == $cp->getId()) echo "selected";
+                        echo '>'.$cp->getNameAsLine().'</option>';
                     }
                     ?>
                 </select>

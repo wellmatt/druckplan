@@ -84,7 +84,7 @@ class TicketCategory {
     }
     
 
-    public function getAllCategories()
+    public static function getAllCategories()
     {
         global $DB;
         $retval = Array();

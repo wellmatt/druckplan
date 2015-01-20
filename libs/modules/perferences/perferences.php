@@ -13,6 +13,17 @@ if ($_REQUEST["exec"] == "save")
 		}
 	}
 	
+	$tmp_formats_raw = Array();
+	$all_formatsraw = (int)$_REQUEST["count_formatsraw"];
+	for ($i=0 ; $i <= $all_formatsraw ; $i++){
+	    $f_width = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["formatsraw_width_".$i])));
+	    $f_height = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["formatsraw_height_".$i])));
+	    if ($f_width > 0 && $f_height > 0){
+	        $tmp_formats_raw[] = Array("id" => $i, "width" => $f_width, "height" => $f_height);
+	    }
+	}
+	$perf->setFormats_raw($tmp_formats_raw);
+	
 	$perf->setZuschussProDP(str_replace(",",".",str_replace(".","",$_REQUEST["zuschussprodp"])));
 	$perf->setCalc_detailed_printpreview($_REQUEST["calc_detailed_printpreview"]);
 	$perf->setPdf_margin_top(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_top"])));
@@ -51,6 +62,30 @@ function validateExtension(v)
       }
       return false;
 }
+
+function addFormatRawRow()
+{
+	var obj = document.getElementById('table-formatsraw');
+	var count = parseInt(document.getElementById('count_formatsraw').value) + 1;
+
+	var insert = '<tr><td class="content_row_clear">'+count+'</td>';
+	insert += '<td class="content_row_clear">';
+	insert += '<input name="formatsraw_width_'+count+'" class="text" type="text"';
+	insert += 'value ="" style="width: 50px">&nbsp;x&nbsp;';
+	insert += '</td>';
+	insert += '<td class="content_row_clear">';
+	insert += '<input name="formatsraw_height_'+count+'" class="text" type="text"';
+	insert += 'value ="" style="width: 50px"> &nbsp;&nbsp;&nbsp;<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteFormatRawRow(this)">';
+	insert += '</td></tr>';
+	
+	obj.insertAdjacentHTML("BeforeEnd", insert);
+	document.getElementById('count_formatsraw').value = count;
+}
+
+function deleteFormatRawRow(obj)
+{
+	$(obj).parents("tr").remove();
+}
 </script>
 
 <table width="100%">
@@ -68,6 +103,7 @@ function validateExtension(v)
 			<li><a href="#tabs-0"><? echo $_LANG->get('Allgemein');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('PDF');?></a></li>
+			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
 		</ul>
 
 		<div id="tabs-0">
@@ -140,6 +176,49 @@ function validateExtension(v)
                </tr>
             </table>
        </div>
+       <div id="tabs-3">
+            <?php 
+            $formats_raw = $perf->getFormats_raw();
+            ?>
+   			<input 	type="hidden" name="count_formatsraw" id="count_formatsraw" 
+				value="<? if(count($formats_raw) > 0) echo count($formats_raw); else echo "1";?>">
+            <table border="0" cellpadding="0" cellspacing="0" id="table-formatsraw">
+				<colgroup>
+		        	<col width="40">
+		        	<col width="100">
+		        	<col width="120">
+		    	</colgroup>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Nr')?></td>
+					<td class="content_row_header"><?=$_LANG->get('Breite')?></td>
+					<td class="content_row_header"><?=$_LANG->get('Höhe')?></td>
+				</tr>
+				<?
+				$x = count($formats_raw);
+				if ($x < 1){
+					$x++;
+				}
+				for ($y=0; $y < $x ; $y++){ ?>
+					<tr>
+						<td class="content_row_clear">
+						<?=$y+1?>
+						</td>
+						<td class="content_row_clear">
+							<input 	name="formatsraw_width_<?=$y?>" class="text" type="text"
+									value ="<?=printPrice($formats_raw[$y]["width"]);?>" style="width: 50px">&nbsp;x&nbsp;
+						</td>
+						<td class="content_row_clear">
+							<input 	name="formatsraw_height_<?=$y?>" class="text" type="text"
+									value ="<?=printPrice($formats_raw[$y]["height"]);?>" style="width: 50px">
+							&nbsp;&nbsp;&nbsp;<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteFormatRawRow(this)">&nbsp;
+							<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+								echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addFormatRawRow()">';
+							}?> 
+						</td>
+					</tr>
+				<? } ?>
+			</table>
+       </div>
 
 <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
 <tr>
@@ -154,4 +233,3 @@ function validateExtension(v)
 </table>
 
 </form>
-</div>

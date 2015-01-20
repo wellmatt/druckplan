@@ -167,6 +167,8 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_envelope').style.display = 'none';
 	    document.getElementById('tr_machine_time_trimmer').style.display = 'none';
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
+	    document.getElementById('tr_machine_breaks').style.display = 'none';
+	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 	    
 	    showHideClpr(0); <?/*gln*/?>
 	    
@@ -190,6 +192,8 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_envelope').style.display = 'none';
 	    document.getElementById('tr_machine_time_trimmer').style.display = 'none';
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
+	    document.getElementById('tr_machine_breaks').style.display = 'none';
+	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 	    <?/*gln*/?>
 		if (document.getElementById('machine_pricebase').value == <?=Machine::PRICE_MINUTE?> )
 	    	showHideClpr(<?=Machine::PRICE_MINUTE?>);
@@ -215,6 +219,8 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_envelope').style.display = 'none';
 	    document.getElementById('tr_machine_time_trimmer').style.display = 'none';
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
+	    document.getElementById('tr_machine_breaks').style.display = 'none';
+	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_LAGENFALZ?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -236,6 +242,8 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_envelope').style.display = 'none';
 	    document.getElementById('tr_machine_time_trimmer').style.display = 'none';
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
+	    document.getElementById('tr_machine_breaks').style.display = 'none';
+	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_SAMMELHEFTER?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -257,6 +265,31 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_envelope').style.display = '';
 	    document.getElementById('tr_machine_time_trimmer').style.display = '';
 	    document.getElementById('tr_machine_time_stacker').style.display = '';
+	    document.getElementById('tr_machine_breaks').style.display = 'none';
+	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+	    showHideClpr(0); <?/*gln*/?>
+	} else if (val == <?=Machine::TYPE_FOLDER?>) {
+		document.getElementById('tr_machine_paper_size').style.display = '';
+		document.getElementById('tr_machine_paper_min_size').style.display = '';
+		document.getElementById('tr_machine_border').style.display = 'none';
+		document.getElementById('tr_machine_colors_front').style.display = 'none';
+		document.getElementById('tr_machine_colors_back').style.display = 'none';
+	    document.getElementById('tr_machine_timeplatechange').style.display = 'none';
+	    document.getElementById('tr_machine_timecolorchange').style.display = 'none';
+	    document.getElementById('tr_machine_paperperhour').style.display = '';
+	    document.getElementById('tr_machine_chromaticity').style.display = 'none';
+	    document.getElementById('tr_machine_finish').style.display = 'none';
+	    document.getElementById('tr_machine_umschl_umst').style.display = 'none';	//gln
+	    document.getElementById('tr_machine_setup_stations').style.display = 'none';
+	    document.getElementById('tr_machine_anz_stations').style.display = 'none';
+	    document.getElementById('tr_machine_pages_per_station').style.display = 'none';
+	    document.getElementById('tr_machine_anz_signatures').style.display = 'none';
+	    document.getElementById('tr_machine_time_signatures').style.display = 'none';
+	    document.getElementById('tr_machine_time_envelope').style.display = 'none';
+	    document.getElementById('tr_machine_time_trimmer').style.display = 'none';
+	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
+	    document.getElementById('tr_machine_breaks').style.display = '';
+	    document.getElementById('tr_machine_breaks_time').style.display = '';
 	    showHideClpr(0); <?/*gln*/?>
 	} else {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -278,6 +311,8 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_envelope').style.display = 'none';
 	    document.getElementById('tr_machine_time_trimmer').style.display = 'none';
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
+	    document.getElementById('tr_machine_breaks').style.display = 'none';
+	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	}
 }
@@ -339,6 +374,12 @@ function addDifficultyField(id)
     document.getElementById('tr_difficulty_fields_'+id).insertAdjacentHTML("beforeEnd", text);
     document.getElementsByName('difficulty_counter_'+id)[0].value = count+1;
 }
+
+<?php 
+if($machine->getId() > 0){
+    echo 'showHide('.$machine->getType().');';
+}
+?>
 
 </script>
 
@@ -552,6 +593,18 @@ if ($machine->getId() > 0){
         <td class="content_row_header"><?=$_LANG->get('Grundzeit')?></td>
         <td class="content_row_clear">
             <input name="time_base" style="width:60px;text-align:center" value="<?=$machine->getTimeBase()?>"> min
+        </td>
+    </tr>
+    <tr id="tr_machine_breaks" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
+        <td class="content_row_header"><?=$_LANG->get('Anzahl Br&uuml;che')?></td>
+        <td class="content_row_clear">
+            <input name="breaks" value="<?=$machine->getBreaks()?>" style="width:60px;text-align:center">
+        </td>
+    </tr>
+    <tr id="tr_machine_breaks_time" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
+        <td class="content_row_header"><?=$_LANG->get('R&uuml;sten pro Bruch')?></td>
+        <td class="content_row_clear">
+            <input name="breaks_time" value="<?=$machine->getBreaks_time()?>"  style="width:60px;text-align:center"> min
         </td>
     </tr>
     <tr id="tr_machine_timeplatechange" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">

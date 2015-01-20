@@ -33,6 +33,7 @@ class CollectiveInvoice{
 	private $deliverycosts = 0;
 	private $comment = "";				// interner Kommentar
 	private $businesscontact = 0;		// zugehoeriger Geschaeftskontakt
+    private $custContactperson;			// Anspr. des Kunden
 	private $client = 0;
 	private $deliveryterm = 0;
 	private $paymentterm = 0;
@@ -62,6 +63,7 @@ class CollectiveInvoice{
 		$this->deliveryaddress = new Address();
         $this->invoiceAddress = new Address();
         $this->internContact = new User();
+        $this->custContactperson = new ContactPerson();
 		
 		if($id>0){
 			$sql = "SELECT * FROM collectiveinvoice WHERE id = ".$id;
@@ -88,6 +90,7 @@ class CollectiveInvoice{
                 $this->internContact = new User($r["intern_contactperson"]);
                 $this->custMessage = $r["cust_message"];
                 $this->custSign	= $r["cust_sign"];
+				$this->custContactperson = new ContactPerson($r["custContactperson"]);
 			}
 		}
 	}//Ende vom Konstruktor
@@ -121,6 +124,7 @@ class CollectiveInvoice{
                     intern_contactperson = {$this->internContact->getId()},
                     cust_message = '{$this->custMessage}',  
                     cust_sign = '{$this->custSign}', 
+                    custContactperson = {$this->custContactperson->getId()},
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
 			return $DB->no_result($sql);
@@ -130,13 +134,13 @@ class CollectiveInvoice{
 				(status, title, number, crtdate, crtuser, 
 				 deliverycosts, comment, businesscontact, client,
 				 deliveryterm, paymentterm, deliveryaddress, invoiceaddress,
-				 intern_contactperson, cust_message, cust_sign,
+				 intern_contactperson, cust_message, cust_sign, custContactperson,
 				 intent)
 			VALUES
 				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
 				 {$this->deliveryterm->getId()}, {$this->paymentterm->getId()}, {$this->deliveryaddress->getId()}, {$this->invoiceAddress->getId()},
-				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}',
+				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
 				 '{$this->intent}')";
 			$res = $DB->no_result($sql);
 
@@ -318,9 +322,9 @@ class CollectiveInvoice{
 		switch ($status) {
 			case 1: $retval = "Angelegt";break;
 			case 2: $retval = "Gesendet u. Bestellt";break;
-			case 3: $retval = "In Bearbeitung";break;
-			case 4: $retval = "Fertig u. im Versand";break;
-			case 5: $retval = "Fertig u. Abholbereit";break;
+			case 3: $retval = "angenommen";break;
+			case 4: $retval = "In Produktion";break;
+			case 5: $retval = "Erledigt";break;
 			default: $retval="...";
 		}
 		return $retval;
@@ -535,5 +539,24 @@ class CollectiveInvoice{
     {
         $this->invoiceAddress = $invoiceAddress;
     }
+    
+	/**
+     * @return the $custContactperson
+     */
+    public function getCustContactperson()
+    {
+        return $this->custContactperson;
+    }
+
+	/**
+     * @param ContactPerson $custContactperson
+     */
+    public function setCustContactperson($custContactperson)
+    {
+        $this->custContactperson = $custContactperson;
+    }
+
+    
+    
 }
 ?>

@@ -9,7 +9,9 @@ $filter = BusinessContact::FILTER_SUPP;
 $all_supplier = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, $filter);
 $formats = Paper::getAllPapers();
 $paper_sizes_unique = Paper::getAllUniquePaperSizes();
-$format_sizes_unique = Paper::getAllUniquePaperFormats();
+// $format_sizes_unique = Paper::getAllUniquePaperFormats();
+$perf = new Perferences();
+$format_sizes_unique = $perf->getFormats_raw();
 ?>
 
 <script language="javascript">
@@ -308,6 +310,23 @@ $(function() {
             }
 	});
 });
+
+function angeschnitten(id,ele)
+{
+	var cuts = parseInt($('#mach_cutter_cuts_'+id).val());
+	if (isNaN(cuts))
+	{
+		alert("Bitte zuerst Schnitte angeben!");
+	} else {
+		if ($(ele).prop( "checked" )){
+		    cuts = cuts*2;
+		    $('#mach_cutter_cuts_'+id).val(cuts);
+		} else {
+		    cuts = cuts/2;
+		    $('#mach_cutter_cuts_'+id).val(cuts);
+		}
+	}
+}
 </script>
 
 <style type="text/css">
@@ -835,7 +854,9 @@ foreach($groups as $group)
 
                     <?	} else if ($mach->getMachine()->getType() == Machine::TYPE_CUTTER) { // added by ascherer 22.07.14  // temp remove  && $group->getName() == "Verarbeitung"
                             echo $_LANG->get('Schnitte: ');
-                            echo '<input type="text" name="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" style="width:80px">';
+                            echo '<input type="text" name="mach_cutter_cuts_'.$x.'" id="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" style="width:80px">&nbsp;';
+                            echo $_LANG->get('Angeschnitten: ');
+                            echo '<input type="checkbox" name="mach_cutter_precut_'.$x.'" value="1" onchange="angeschnitten('.$x.',this);">';
 							echo "<tr><td align='top'>";
 							echo $_LANG->get('Laufrichtung: ');
 							echo '<select name="mach_roll_dir_'.$x.'" style="width:80px">';
@@ -855,6 +876,13 @@ foreach($groups as $group)
 						} else {
                     		echo "<tr><td>&nbsp;</td></tr>";
                     	}
+                    	
+                    	// Manueller Aufschlag 19.01.2015
+                    	// (float)sprintf("%.4f", (float)str_replace(".", ",", str_replace(",", "", $mach->getSpecial_margin())))
+                    	echo '<tr><td>Man. Aufschlag: <input type="text" name="mach_special_margin_'.$x.'" value="'.str_replace(".", ",", $mach->getSpecial_margin()).'">&nbsp;%</td></tr>';
+                    	echo '<tr><td>Aufs. Text: <input type="text" name="mach_special_margin_text_'.$x.'" value="'.$mach->getSpecial_margin_text().'">&nbsp;</td></tr>';
+                    	
+                    	// ENDE Manueller Aufschlag
                         echo "</table>";
                         echo "</td>";
                         
@@ -896,30 +924,6 @@ foreach($groups as $group)
                         }
 						else if($mach->getMachine()->getType() == Machine::TYPE_CUTTER) // added by ascherer 22.07.14 // temp remove  && $group->getName() == "Verarbeitung"
                         {
-// 							echo 'IN: <select name="mach_format_in_'.$x.'" style="width:80px">';
-// 							foreach($formats as $paper)
-// 							{
-// 								foreach ($paper->getSizes() as $size)
-// 								{
-// 									echo '<option value="'.$size["width"].'x'.$size["height"].'" ';
-// 									if ($size["width"].'x'.$size["height"] == $mach->getFormat_in_width().'x'.$mach->getFormat_in_height()) echo 'selected';
-// 									echo '>';
-// 									echo $size["width"].' x '.$size["height"].'</option>';
-// 								}
-// 							}
-// 							echo '</select>';
-// 							echo 'OUT: <select name="mach_format_out_'.$x.'" style="width:80px">';
-// 							foreach($formats as $paper)
-// 							{
-// 							    foreach ($paper->getSizes() as $size)
-// 							    {
-// 							        echo '<option value="'.$size["width"].'x'.$size["height"].'" ';
-// 							        if ($size["width"].'x'.$size["height"] == $mach->getFormat_out_width().'x'.$mach->getFormat_out_height()) echo 'selected';
-// 							        echo '>';
-// 							        echo $size["width"].' x '.$size["height"].'</option>';
-// 							    }
-// 							}
-// 							echo '</select>';
                             // NEU NUR NOCH UNIQUE PAPIER FORMATE
                             echo 'IN: <select name="mach_format_in_'.$x.'" style="width:80px">';
                             foreach ($format_sizes_unique as $size)
@@ -927,7 +931,7 @@ foreach($groups as $group)
                                 echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                 if ($size['width'].'x'.$size['height'] == $mach->getFormat_in_width().'x'.$mach->getFormat_in_height()) echo 'selected';
                                 echo '>';
-                                echo $size['width'].'x'.$size['height'].' ( '.$size['name'].' )</option>';
+                                echo $size['width'].'x'.$size['height'].'</option>';
                             }
                             echo '</select>';
                             echo 'OUT: <select name="mach_format_out_'.$x.'" style="width:80px">';
@@ -936,7 +940,7 @@ foreach($groups as $group)
                                 echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                 if ($size['width'].'x'.$size['height'] == $mach->getFormat_out_width().'x'.$mach->getFormat_out_height()) echo 'selected';
                                 echo '>';
-                                echo $size['width'].'x'.$size['height'].' ( '.$size['name'].' )</option>';
+                                echo $size['width'].'x'.$size['height'].'</option>';
                             }
                             echo '</select>';
 						}

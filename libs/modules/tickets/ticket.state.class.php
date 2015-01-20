@@ -83,7 +83,7 @@ class TicketState {
         }
     }
     
-    public function getAllStates()
+    public static function getAllStates()
     {
         global $DB;
         $retval = Array();

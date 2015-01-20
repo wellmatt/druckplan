@@ -86,7 +86,7 @@ class TicketPriority {
         }
     }
     
-    public function getAllPriorities()
+    public static function getAllPriorities()
     {
         global $DB;
         $retval = Array();

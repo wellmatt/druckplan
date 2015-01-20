@@ -840,6 +840,12 @@ if((int)$_REQUEST["step"] == 3){
 					}
 					$entry->setSupplierReceiveDate($tmp_date);
 					
+					$entry->setSpecial_margin((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_special_margin_{$id}"]))));
+					$entry->setSpecial_margin_text($_REQUEST["mach_special_margin_text_{$id}"]);
+
+					$entry->setTime($entry->getMachine()->getRunningTime($entry));
+					$entry->setPrice($entry->getMachine()->getMachinePrice($entry));
+					
 					$entry->save();
 
 					// Falls Druckmaschine -> Papiergroesse setzen

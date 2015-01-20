@@ -95,6 +95,9 @@ class Machine
 	private $DPHeight;
 	private $DPWidth;
 	
+	private $breaks = 0;
+	private $breaks_time = 0;
+	
     function __construct($id = 0)
     {
         $this->group = new MachineGroup();
@@ -695,8 +698,14 @@ class Machine
             $time += $this->timeStacker;
         }
         
+        if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER)
+        {   
+            $time += ($this->breaks * $this->breaks_time);
+        }
+        
         // END Maschinenspezifische Zuschl�ge
         // -------------------------------------------------------------------------
+        
         
         // Grundzeit
         $time += $this->timeBase;
@@ -831,8 +840,7 @@ class Machine
                 $height = $calc->getPaperContentHeight() + $calc->getPaperAddContentHeight() + $calc->getPaperAddContent2Height()
                          + $calc->getPaperAddContent3Height() + $calc->getPaperEnvelopeHeight();
             }
-            $price = (($papers * $width) * $height) / 1000 * $this->price;
-            
+            $price = (($papers * $width) * $height) / 1000000 * $this->price;
         }
         
         // Aufschlag aus Farbigkeit ber�cksichtigen
@@ -880,6 +888,13 @@ class Machine
 // 			echo "getCutter_cuts(): " . $machineEntry->getCutter_cuts() . "</br>";
 // 			echo "getCutPrice(): " . $machineEntry->getMachine()->getCutPrice() . "</br>";
 		}
+		
+
+		// Manueller Aufschlag
+		if($machineEntry->getSpecial_margin() > 0){
+		    $price = $price * (1 + ($machineEntry->getSpecial_margin() / 100));
+		} // Manueller Aufschlag ENDE
+		
         return $price;
     }
     
@@ -1398,7 +1413,41 @@ class Machine
     {
         $this->DPWidth = $DPWidth;
     }
+    
+	/**
+     * @return the $breaks
+     */
+    public function getBreaks()
+    {
+        return $this->breaks;
+    }
 
+	/**
+     * @return the $breaks_time
+     */
+    public function getBreaks_time()
+    {
+        return $this->breaks_time;
+    }
+
+	/**
+     * @param number $breaks
+     */
+    public function setBreaks($breaks)
+    {
+        $this->breaks = $breaks;
+    }
+
+	/**
+     * @param number $breaks_time
+     */
+    public function setBreaks_time($breaks_time)
+    {
+        $this->breaks_time = $breaks_time;
+    }
+
+
+    
     
 }
 ?>

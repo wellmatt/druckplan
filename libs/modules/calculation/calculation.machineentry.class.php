@@ -47,6 +47,9 @@ class Machineentry {
     
     private $color_detail;
     
+    private $special_margin = 0;                // Manueller Aufschlag
+    private $special_margin_text;               // Manueller Aufschlag (Text)
+    
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
         $this->machine = new Machine();
@@ -84,6 +87,8 @@ class Machineentry {
                 $this->format_out_height = $r["format_out_height"];
 				$this->umschlUmst = $r["umschl_umst"]; // gln, umschlagen/umstuelpen
 				$this->color_detail = $r["color_detail"]; // gln, umschlagen/umstuelpen
+				$this->special_margin = $r["special_margin"];
+				$this->special_margin_text = $r["special_margin_text"];
             }
         }
     }
@@ -202,6 +207,8 @@ class Machineentry {
         				format_out_width = {$this->format_out_width},
         				format_out_height = {$this->format_out_height},
         				color_detail = '{$this->color_detail}',
+        				special_margin = {$this->special_margin},
+        				special_margin_text = '{$this->special_margin_text}',
         				umschl_umst = {$this->umschlUmst} 		 ";		//gln, umschlagen/umstuelpen
         if($this->id > 0)
         {
@@ -545,6 +552,39 @@ class Machineentry {
     {
         $this->color_detail = $color_detail;
     }
+    
+	/**
+     * @return the $special_margin
+     */
+    public function getSpecial_margin()
+    {
+        return $this->special_margin;
+    }
+
+	/**
+     * @return the $special_margin_text
+     */
+    public function getSpecial_margin_text()
+    {
+        return $this->special_margin_text;
+    }
+
+	/**
+     * @param number $special_margin
+     */
+    public function setSpecial_margin($special_margin)
+    {
+        $this->special_margin = $special_margin;
+    }
+
+	/**
+     * @param field_type $special_margin_text
+     */
+    public function setSpecial_margin_text($special_margin_text)
+    {
+        $this->special_margin_text = $special_margin_text;
+    }
+    
     
 }
 ?>

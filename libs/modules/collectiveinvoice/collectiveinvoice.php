@@ -101,6 +101,7 @@ case 'save':
 	$collectinv->setCustMessage(trim(addslashes($_REQUEST["cust_message"])));
 	$collectinv->setCustSign(trim(addslashes($_REQUEST["cust_sign"])));
     $collectinv->setInvoiceAddress(new Address((int)$_REQUEST["invoice_address"]));
+    $collectinv->setCustContactperson(new ContactPerson((int)$_REQUEST["custContactperson"]));
 	
 	$savemsg = getSaveMessage($collectinv->save());
 	

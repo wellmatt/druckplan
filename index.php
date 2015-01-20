@@ -50,6 +50,12 @@ if ($_REQUEST["doLogout"] == 1)
     session_start();
     setcookie('vic_login', "", time());
     $_SESSION = Array();
+    
+    $logouttimer = Timer::getLastUsed();
+    if ($logouttimer->getState() != Timer::TIMER_STOP){
+        $logouttimer->delete();
+    }
+    
     ?>
 <script language="JavaScript">location.href='index.php'</script>
 <?
@@ -74,6 +80,16 @@ if ($_REQUEST["doLogout"] == 1)
      
 
     $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+    if ($_USER){
+        $logintimer = new Timer();
+        $logintimer->setObjectid(0);
+        $logintimer->setModule("Login");
+        $now = time();
+        $logintimer->setStarttime($now);
+        $logintimer->setStoptime($now);
+        $logintimer->save();
+    }
+    
 }
 
 if ($_USER == false)
@@ -219,7 +235,7 @@ if ($_USER == false)
 <title>Druckplan - <?=$_USER->getClient()->getName()?></title>
 </head>
 <body>
-<?
+<? // TODO: Apassen für neuen Timer
 if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
 	$active_timer = new Timekeeper($_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"]);
 	echo '<div id="active_timer_ObjectID" style="display:none;">'.$active_timer->getObjectID().'</div>';

@@ -53,7 +53,12 @@ function printChildTree($tree, $i = 1)
 {
     foreach($tree as $t)
     {
-        echo '<a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a>';
+        if ($t->getName() == "Planungstafel"){
+            echo '<a class="" href="'.$t->getPath().'" target="_blank"><img src="'.$t->getIcon().'"> '.$t->getName().'</a>';
+        } else {
+            echo '<a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a>';
+        }
+        
     }
 }
 

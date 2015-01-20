@@ -12,6 +12,7 @@ require_once 'shoppingbasketitem.class.php';
 require_once 'libs/modules/businesscontact/address.class.php';
 require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
+require_once 'libs/modules/businesscontact/contactperson.class.php';
 
 class Shoppingbasket{
 	
@@ -177,6 +178,11 @@ class Shoppingbasket{
 	        $col_inv->setTitle($_LANG->get("Bestellung aus dem Kunden-Portal"));
 	        $col_inv->setPaymentterm($busicon->getPaymentTerms());
 	        $col_inv->setDeliveryaddressById($address);
+	        
+	        if ($_SESSION["login_type"]	== "contactperson"){
+	            $col_inv->setCustContactperson(new ContactPerson((int)$_SESSION["contactperson_id"]));
+	        }
+	        
 	        $tmp_saver = $col_inv->save();
 	        if ($tmp_saver == false) {
 	            return false;

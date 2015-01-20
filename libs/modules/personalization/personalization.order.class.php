@@ -147,7 +147,7 @@ class Personalizationorder{
 		// Damit nur "Bestellte" ( Status > 1 ) anzeigt werden 
 		if ($status_filter){ $status = 1; } else { $status = 0; }
 		
-		$sql = "SELECT id FROM personalization_orders WHERE status = {$status} AND customerid = {$customerID} ORDER BY {$order}";
+		$sql = "SELECT id FROM personalization_orders WHERE status >= {$status} AND customerid = {$customerID} AND orderdate > 0 ORDER BY {$order}";
 
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){ 
