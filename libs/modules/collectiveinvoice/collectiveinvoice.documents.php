@@ -9,19 +9,24 @@ require_once('libs/modules/documents/document.class.php');
 require_once('libs/modules/organizer/nachricht.class.php');
 require_once('libs/modules/warehouse/warehouse.reservation.class.php');
 
+// Prüfung ob eine Reservierung oder eine Rechnung vorhanden sind
+$docsofferconfirm = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
+$docsinvoice = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
+$docsdelivery = Document::getDocuments(Array("type" => Document::TYPE_DELIVERY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
+// ------
+
 if((int)$_REQUEST["deleteDoc"] > 0){
     $doc = new Document((int)$_REQUEST["deleteDoc"]);
     
     if($doc->getType() == Document::TYPE_OFFERCONFIRM)
     {
-        if($status != Document::TYPE_DELIVERY && $status != Document::TYPE_INVOICE)
+        if(empty($docsinvoice) && empty($docsdelivery))
         {
             $opositions = Orderposition::getAllOrderposition($collectinv->getId());
             foreach ($opositions as $op)
             {
                 $rvs = Reservation::getAllReservationByOrderposition($op->getId());
                 foreach ($rvs as $r)
-                    // Reservierung loeschen
                     $r->delete();
             }
             $doc->delete();
@@ -37,7 +42,7 @@ if((int)$_REQUEST["deleteDoc"] > 0){
     }
     else if($doc->getType() == Document::TYPE_INVOICE || $doc->getType() == Document::TYPE_DELIVERY )
     {
-        if($status > 0)
+        if($status)
         {
             $opositions = Orderposition::getAllOrderposition($collectinv->getId());
             foreach ($opositions as $op)
@@ -60,6 +65,13 @@ if((int)$_REQUEST["deleteDoc"] > 0){
                         $w->save();
                     }
             }
+            if($doc->getType() == Document::TYPE_INVOICE)
+                if(!empty($docsdelivery))
+                    $docsdelivery[0]->delete();
+            else
+                if(!empty($docsinvoice))
+                    $docsinvoice[0]->delete();
+                
             $doc->delete();
         }
     } 
@@ -97,9 +109,8 @@ if($_REQUEST["createDoc"]){
                 	   // Es darf aus keinem Warenhouse reserviert werden, welches explizit einem anderen Kunden zugewiesen ist.
                 	   if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$collectinv->getCustomer()->getId())) 
                 	   {
-                	       $rsum = Reservation::getTotalReservationByWarehouse($w->getId());
-                	       $faiwh = $w->getAmount()-$rsum; // $faiwh - free amount in warehouse
-                    	   if($faiwh>=0)
+                	       $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse
+                    	   if($faiwh > 0)
                     	   {
                     	       $tmp = array();
                     	       $tmp["Article"] = $op->getObjectid();
@@ -148,8 +159,8 @@ if($_REQUEST["createDoc"]){
                 $rsv = new Reservation();
                 $rsv->setArticle(new Article((int)$r["Article"]));
                 $rsv->setOrderposition(new Orderposition((int)$r["Orderposition"]));
+                $rsv->setAmount($r["Amount"]);
                 $rsv->setWarehouse(new Warehouse((int)$r["Warehouse"]));
-                $rsv->setAmount($r["Amount"]);   
                 $rsv->setGid($gid);
                 $rsv->save();
             }

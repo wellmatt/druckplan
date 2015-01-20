@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------------
 require_once './libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
+require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 
 class Warehouse{
 	const ORDER_NAME 		= "wa.wh_name";			    // Lagerplatz-Name
@@ -19,7 +20,7 @@ class Warehouse{
 	private $customer;		   // Kunde
 	private $input;			   // Artikel/Material/Dinge , die da stehen
 	private $amount;		   // Menge die dort steht
-	private $amount_reserved;  // Reservierte Menge
+	private $amount_reserved = 0;  // Reservierte Menge
 	private $recall = 0;	   // Lagerabruf: Datum, bis wann eingelagert wird (bzw. bis wann bezahlt ist)
 	private $ordernumber;	   // Auftragsnummer
 	private $status = 1;	   // Status
@@ -358,7 +359,6 @@ class Warehouse{
 	    }
 	}
 	
-	
 	/**
 	 * ... liefert verfügbare NICHT reservierte Menge auf Lager eines Artikels
 	 *
@@ -381,7 +381,7 @@ class Warehouse{
 	    if (is_array($res)){
 	        foreach ($res as $wh){
 	            $tmp_wh = new Warehouse($wh["id"]);
-	            $tmp_count = $tmp_wh->getAmount() - $tmp_wh->getAmount_reserved();
+	            $tmp_count = $tmp_wh->getAmount() - Reservation::getTotalReservationByWarehouse($tmp_wh->getId());
 	            $stock += $tmp_count;
 	        }
 	    }

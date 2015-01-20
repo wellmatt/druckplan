@@ -259,30 +259,48 @@ class Shoppingbasket{
         	                // auch wenn die benoetige Ware vorhanden ist.
         	                $whouses = Warehouse::getAllStocksByArticle($tmp_order_pos->getObjectid());
         	                $opamount = $tmp_order_pos->getQuantity();
+        	                $whlist = array();
         	                foreach ($whouses as $w)
         	                {
         	                    // Es darf aus keinem Warenhouse entnommen werden, welches explizit einem anderen Kunden zugewiesens ist.
         	                    if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$col_inv->getCustomer()->getId())) 
         	                    {
             	                    $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse  
+            	                    $dump = array();
             	                    if($faiwh>=$opamount)
             	                    {
-            	                        $w->setAmount($w->getAmount() - $opamount);
+            	                        $dump["Warehouse"] = $w;
+            	                        $dump["Amount"] = $opamount;
             	                        $opamount = 0;
+            	                        $whlist[] = $dump;
             	                    }
-            	                    else
+            	                    else if ($faiwh > 0)
             	                    {
-            	                        $w->setAmount($w->getAmount() - $faiwh);
+            	                        $dump["Warehouse"] = $w;
+            	                        $dump["Amount"] = $faiwh;
             	                        $opamount = $opamount-$faiwh;
+            	                        $whlist[] = $dump;
             	                    }
             	                    $w->save();
             	                    if($opamount==0)
             	                        break;
         	                    }
         	                }
-        	                if ($opamount > 0)
+        	                if($opamount > 0)
         	                {
-        	                    // MELDUNG NICHT GENUG FREIE WARE
+        	                    echo "<script type='text/javascript' language='javascript'>\n";
+        	                    echo "<!--\n";
+        	                    echo "alert('".$_LANG->get("Nicht genug Waren verfügbar.")."')\n";
+        	                    echo "//-->\n";
+        	                    echo "</script>\n";
+        	                }
+        	                else
+        	                {
+        	                   foreach ($whlist as $w)
+        	                   {
+        	                       $dump["Warehouse"]->setAmount($dump["Warehouse"]->getAmount()-$dump["Amount"]);
+        	                       $dump["Warehouse"]->save();
+        	                   }
         	                }
     	                }
     	            }
