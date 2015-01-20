@@ -67,11 +67,12 @@ if((int)$_REQUEST["deleteDoc"] > 0){
             }
             if($doc->getType() == Document::TYPE_INVOICE)
                 if(!empty($docsdelivery))
-                    $docsdelivery[0]->delete();
+                    foreach ($docsdelivery as $d)
+                        $d->delete();
             else
                 if(!empty($docsinvoice))
-                    $docsinvoice[0]->delete();
-                
+                    foreach ($docsinvoice as $d)
+                        $d->delete();              
             $doc->delete();
         }
     } 
@@ -193,7 +194,7 @@ if($_REQUEST["createDoc"]){
                 $r->delete();
             }
         }
-        if(!empty($rvs))
+        if(!empty($rvs) || !empty($docsinvoice))
             $doc->setType(Document::TYPE_DELIVERY);
         else 
         {
@@ -220,7 +221,7 @@ if($_REQUEST["createDoc"]){
                 $r->delete();
             }
         }
-        if(!empty($rvs))
+        if(!empty($rvs) || !empty($docsdelivery))
             $doc->setType(Document::TYPE_INVOICE);
         else
         {
