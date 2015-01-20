@@ -49,7 +49,7 @@ if((int)$_REQUEST["deleteDoc"] > 0){
             {
                 $rvs = Reservation::getAllReservationByFilter("WHERE status = ".Reservation::Reservation_Delete." AND op_id = {$op->getId()}");
                 $g = 0;
-                var_dump(sizeof($rvs));
+//                 var_dump(sizeof($rvs));
                 foreach ($rvs as $r)
                     if($g < $r->getGid())
                         $g = $r->getGid();   
