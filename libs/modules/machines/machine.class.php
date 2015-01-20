@@ -152,6 +152,8 @@ class Machine
                 $this->baujahr = $r["baujahr"];
                 $this->DPHeight = $r["DPHeight"];
                 $this->DPWidth = $r["DPWidth"];
+                $this->breaks = $r["breaks"];
+                $this->breaks_time = $r["breaks_time"];
                 
                 // Farbigkeiten
                 $sql = "SELECT * FROM machines_chromaticities WHERE machine_id = {$this->id}";
@@ -341,6 +343,8 @@ class Machine
                 baujahr = '{$this->baujahr}',
                 DPHeight = '{$this->DPHeight}',
                 DPWidth = '{$this->DPWidth}',
+                breaks = {$this->breaks},
+                breaks_time = {$this->breaks_time},
                 umschl_umst = {$this->umschlUmst}, ";
         
         if($this->id > 0)
@@ -723,7 +727,7 @@ class Machine
             $price = $this->price * $calc->getPlateCount();
         } else if($this->priceBase == self::PRICE_DPSQUAREMETER)
         {
-            // Preis nach m²
+            // Preis nach mï¿½
             $all_machines = Machineentry::getAllMachineentries($calc->getId());
             
             

@@ -102,6 +102,9 @@ if($_REQUEST["subexec"] == "save")
     $machine->setDPHeight((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["machine_DPHeight"]))));
     $machine->setDPWidth((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["machine_DPWidth"]))));
     
+    $machine->setBreaks((int)$_REQUEST["breaks"]);
+    $machine->setBreaks_time((int)$_REQUEST["breaks_time"]);
+    
     if ($machine->getId() == 0 &&  											// Wenn Maschine noch nicht existiert und eine Druckmaschine ist,
     		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){		// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
     	$printer_counter = Machine::getNumberOfPrintingmachines();
