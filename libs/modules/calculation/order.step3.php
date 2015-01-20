@@ -928,19 +928,19 @@ foreach($groups as $group)
                             echo 'IN: <select name="mach_format_in_'.$x.'" style="width:80px">';
                             foreach ($format_sizes_unique as $size)
                             {
-                                echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
-                                if ($size['width'].'x'.$size['height'] == $mach->getFormat_in_width().'x'.$mach->getFormat_in_height()) echo 'selected';
+                                echo '<option value="'.printPrice($size['width']).'x'.printPrice($size['height']).'" ';
+                                if (printPrice($size['width']).'x'.printPrice($size['height']) == printPrice($mach->getFormat_in_width()).'x'.printPrice($mach->getFormat_in_height())) echo 'selected';
                                 echo '>';
-                                echo $size['width'].'x'.$size['height'].'</option>';
+                                echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                             }
                             echo '</select>';
                             echo 'OUT: <select name="mach_format_out_'.$x.'" style="width:80px">';
                             foreach ($format_sizes_unique as $size)
                             {
-                                echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
-                                if ($size['width'].'x'.$size['height'] == $mach->getFormat_out_width().'x'.$mach->getFormat_out_height()) echo 'selected';
+                                echo '<option value="'.printPrice($size['width']).'x'.printPrice($size['height']).'" ';
+                                if (printPrice($size['width']).'x'.printPrice($size['height']) == printPrice($mach->getFormat_out_width()).'x'.printPrice($mach->getFormat_out_height())) echo 'selected';
                                 echo '>';
-                                echo $size['width'].'x'.$size['height'].'</option>';
+                                echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                             }
                             echo '</select>';
 						}

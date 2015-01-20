@@ -950,12 +950,12 @@ if((int)$_REQUEST["step"] == 3){
 					    if ($_REQUEST["mach_format_in_{$id}"] != "" && $_REQUEST["mach_format_out_{$id}"] != ""){
     					    $tmp_cut_format_in = explode("x", $_REQUEST["mach_format_in_{$id}"]);
     					    $tmp_cut_format_out = explode("x", $_REQUEST["mach_format_out_{$id}"]);
-    					    $entry->setFormat_in_width($tmp_cut_format_in[0]);
-    					    $entry->setFormat_in_height($tmp_cut_format_in[1]);
+    					    $entry->setFormat_in_width((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $tmp_cut_format_in[0]))));
+    					    $entry->setFormat_in_height((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $tmp_cut_format_in[1]))));
 //     					    echo "setFormat_in_width = " . $tmp_cut_format_in[0] . "</br>";
 //     					    echo "setFormat_in_height = " . $tmp_cut_format_in[1] . "</br>";
-    					    $entry->setFormat_out_width($tmp_cut_format_out[0]);
-    					    $entry->setFormat_out_height($tmp_cut_format_out[1]);
+    					    $entry->setFormat_out_width((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $tmp_cut_format_out[0]))));
+    					    $entry->setFormat_out_height((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $tmp_cut_format_out[1]))));
 //     					    echo "setFormat_out_width = " . $tmp_cut_format_out[0] . "</br>";
 //     					    echo "setFormat_out_height = " . $tmp_cut_format_out[1] . "</br>";
 					    }
