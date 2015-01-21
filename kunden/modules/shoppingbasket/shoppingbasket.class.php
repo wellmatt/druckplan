@@ -298,8 +298,8 @@ class Shoppingbasket{
         	                {
         	                   foreach ($whlist as $w)
         	                   {
-        	                       $dump["Warehouse"]->setAmount($dump["Warehouse"]->getAmount()-$dump["Amount"]);
-        	                       $dump["Warehouse"]->save();
+        	                       $w["Warehouse"]->setAmount($w["Warehouse"]->getAmount()-$w["Amount"]);
+        	                       $w["Warehouse"]->save();
         	                   }
         	                }
     	                }
