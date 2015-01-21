@@ -9,6 +9,7 @@
 require_once 'libs/modules/chromaticity/chromaticity.class.php';
 require_once 'libs/modules/machines/machinegroup.class.php';
 require_once 'libs/modules/perferences/perferences.class.php';
+require_once 'libs/modules/machines/machine.lock.class.php';
 
 class Machine
 {
@@ -889,10 +890,12 @@ class Machine
         }
 		if($machineEntry->getMachine()->getType() == Machine::TYPE_CUTTER){
 			$price += $machineEntry->getCutter_cuts() * $machineEntry->getMachine()->getCutPrice();
-// 			echo "getCutter_cuts(): " . $machineEntry->getCutter_cuts() . "</br>";
-// 			echo "getCutPrice(): " . $machineEntry->getMachine()->getCutPrice() . "</br>";
 		}
-		
+		if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER){
+		    if ($machineEntry->getFoldtype()->getId() > 0){
+		      $price = $price * (1 + ($machineEntry->getFoldtype()->getDifficulty() / 100));
+		    }
+		}
 
 		// Manueller Aufschlag
 		if($machineEntry->getSpecial_margin() > 0){

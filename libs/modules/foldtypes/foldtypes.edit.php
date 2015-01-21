@@ -8,7 +8,7 @@
 //----------------------------------------------------------------------------------
 $ft = new Foldtype($_REQUEST["id"]);
 
-// Falls kopieren, ID löschen -> Maschine wird neu angelegt
+// Falls kopieren, ID lï¿½schen -> Maschine wird neu angelegt
 if($_REQUEST["exec"] == "copy")
     $ft->clearId();
 
@@ -19,6 +19,7 @@ if($_REQUEST["subexec"] == "save")
     $ft->setVertical((int)$_REQUEST["foldtype_vertical"]);
     $ft->setHorizontal((int)$_REQUEST["foldtype_horizontal"]);
     $ft->setPicture(trim(addslashes($_REQUEST["picture"])));
+    $ft->setDifficulty((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["foldtype_difficulty"]))));
     $savemsg = getSaveMessage($ft->save());
 }
 
@@ -65,7 +66,7 @@ if($_REQUEST["subexec"] == "save")
 		        </td>
 		        <td class="content_row_header" rowspan="2" valign="top">
 		            <?=$_LANG->get('Beispielbild')?> *<br>
-		            <a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products"><input type="button" class="button" value="<?=$_LANG->get('Ändern')?>"></a>
+		            <a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products"><input type="button" class="button" value="<?=$_LANG->get('Ã¤ndern')?>"></a>
 		            <? if($ft->getPicture() != "") {?>
 		                <input type="button" class="buttonRed" value="<?=$_LANG->get('L&ouml;schen')?>" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$ft->getId()?>&deletePicture=1'">
 		            <? } ?>
@@ -90,6 +91,12 @@ if($_REQUEST["subexec"] == "save")
 		        <td class="content_row_header"><?=$_LANG->get('Falzen horizontal')?></td>
 		        <td class="content_row_clear">
 		            <input name="foldtype_horizontal" value="<?=$ft->getHorizontal()?>" style="width:60px;" class="text">
+		        </td>
+		    </tr>
+		    <tr>
+		        <td class="content_row_header"><?=$_LANG->get('Preis Aufschlag')?></td>
+		        <td class="content_row_clear">
+		            <input name="foldtype_difficulty" value="<?=printPrice($ft->getDifficulty(),2)?>" style="width:60px;" class="text">
 		        </td>
 		    </tr>
 		</table>

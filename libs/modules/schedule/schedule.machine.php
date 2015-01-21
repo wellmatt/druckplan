@@ -297,6 +297,24 @@ function setFinished(smid, idx)
     ?>
 </table>
 <? } ?>
+<? 
+$all_locks = MachineLock::getAllMachineLocksForMachine($mach->getId());?>
+<table class="locksTable" cellspacing="0" cellpadding="0">
+    <tr>
+        <td class="content_row_header" colspan="2" align="right">
+            <font color="red"><u><b><?=$_LANG->get('Sperrzeiten')?></b></u></font>
+        </td>
+    </tr>
+    <?php 
+	foreach ($all_locks as $lock){
+	    if ($lock->getStart() >= time() || $lock->getStop() >= time()){
+	?>
+	<tr>
+		<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
+		<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?></td>
+	</tr>
+	<?php }} ?>
+</table>
 </td></tr>
 </table>
 <br><br>

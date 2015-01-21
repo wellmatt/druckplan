@@ -9,6 +9,7 @@ require_once 'libs/modules/machines/machine.class.php';
 require_once 'libs/modules/machines/machinegroup.class.php';
 require_once 'libs/modules/chromaticity/chromaticity.class.php';
 require_once 'libs/modules/finishings/finishing.class.php';
+require_once 'libs/modules/foldtypes/foldtype.class.php';
 
 class Machineentry {
     const ORDER_ID = "id";
@@ -50,10 +51,13 @@ class Machineentry {
     private $special_margin = 0;                // Manueller Aufschlag
     private $special_margin_text;               // Manueller Aufschlag (Text)
     
+    private $foldtype;
+    
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
         $this->machine = new Machine();
         $this->finishing = new Finishing();
+        $this->foldtype = new Foldtype();
         global $DB;
         if($id > 0)
         {
@@ -89,6 +93,7 @@ class Machineentry {
 				$this->color_detail = $r["color_detail"]; // gln, umschlagen/umstuelpen
 				$this->special_margin = $r["special_margin"];
 				$this->special_margin_text = $r["special_margin_text"];
+				$this->foldtype = new Foldtype((int)$r["foldtype"]);
             }
         }
     }
@@ -209,6 +214,7 @@ class Machineentry {
         				color_detail = '{$this->color_detail}',
         				special_margin = {$this->special_margin},
         				special_margin_text = '{$this->special_margin_text}',
+        				foldtype = {$this->foldtype->getId()},
         				umschl_umst = {$this->umschlUmst} 		 ";		//gln, umschlagen/umstuelpen
         if($this->id > 0)
         {
@@ -584,6 +590,24 @@ class Machineentry {
     {
         $this->special_margin_text = $special_margin_text;
     }
+    
+	/**
+     * @return the $foldtype
+     */
+    public function getFoldtype()
+    {
+        return $this->foldtype;
+    }
+
+	/**
+     * @param Foldtype $foldtype
+     */
+    public function setFoldtype($foldtype)
+    {
+        $this->foldtype = $foldtype;
+    }
+
+    
     
     
 }

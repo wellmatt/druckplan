@@ -18,6 +18,7 @@ class Foldtype
     private $horizontal = 0;
     private $status;
     private $picture;
+    private $difficulty;
 
     function __construct($id = 0)
     {
@@ -37,6 +38,7 @@ class Foldtype
                 $this->horizontal = $res["horizontal"];
                 $this->status = $res["status"];
                 $this->picture = $res["picture"];
+                $this->difficulty = $res["difficulty"];
             }
         }
     }
@@ -87,16 +89,17 @@ class Foldtype
                         status = {$this->status},
                         vertical = {$this->vertical},
                         horizontal = {$this->horizontal},
+                        difficulty = {$this->difficulty},
                         picture = '{$this->picture}'
                     WHERE id = {$this->id}";
             return $DB->no_result($sql);
         } else
         {
             $sql = "INSERT INTO foldtypes
-                        (name, beschreibung, status, vertical, horizontal, picture)
+                        (name, beschreibung, status, vertical, horizontal, picture, difficulty)
                     VALUES
                         ('{$this->name}', '{$this->description}', 1, {$this->vertical},
-                         {$this->horizontal}, '{$this->picture}')";
+                         {$this->horizontal}, '{$this->picture}', {$this->difficulty})";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -191,5 +194,24 @@ class Foldtype
     {
         $this->picture = $picture;
     }
+    
+	/**
+     * @return the $difficulty
+     */
+    public function getDifficulty()
+    {
+        return $this->difficulty;
+    }
+
+	/**
+     * @param field_type $difficulty
+     */
+    public function setDifficulty($difficulty)
+    {
+        $this->difficulty = $difficulty;
+    }
+
+    
+    
 }
 ?>

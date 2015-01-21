@@ -697,6 +697,18 @@ foreach($groups as $group)
 							echo '<input type="checkbox" name="umschl_umst_'.$x. '" value="1"';
 							if($mach->getUmschlagenUmstuelpen()) echo ' checked="checked"';
 							echo '>';
+                      	} elseif ($mach->getMachine()->getType() == Machine::TYPE_FOLDER){
+                      	    $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
+                      	    echo '</br>Falzart: ';
+                      	    echo '<select name="mach_foldtype_'.$x.'" style="width:120px" class="text">';
+                      	    echo '<option value="0">&lt; '.$_LANG->get('Bitte w&auml;hlen').' &gt;</option>';
+                      	    foreach($foldtypes as $ft)
+                      	    {
+                      	        echo '<option value="'.$ft->getId().'" ';
+                      	        if($mach->getFoldtype()->getId() == $ft->getId()) echo "selected";
+                      	        echo '>'.$ft->getName().'</option>';
+                      	    }
+                      	    echo '</select>';
                       	}
                       	
                       	

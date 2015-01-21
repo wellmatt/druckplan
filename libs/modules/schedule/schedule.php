@@ -135,8 +135,20 @@ foreach($groups as $g) {
         <ul>
         <? 
         $machs = Machine::getAllMachines(Machine::ORDER_NAME, $g->getId());
-        foreach ($machs as $m)
-            echo '<li><a href="index.php?page='.$_REQUEST['page'].'&exec=showmachine&id='.$m->getId().'">'.$m->getName().'</a></li>';
+        foreach ($machs as $m){
+            $is_locked = false;
+            $all_locks = MachineLock::getAllMachineLocksForMachine($m->getId());
+            foreach ($all_locks as $lock){
+                if ($lock->getStart() >= time() && $lock->getStop() <= time() || $lock->getStart() <= time() && $lock->getStop() >= time()){
+                    $is_locked = true;
+                }
+            }
+            if ($is_locked){
+                echo '<li><a href="index.php?page='.$_REQUEST['page'].'&exec=showmachine&id='.$m->getId().'"><font color="red">'.$m->getName().'</font></a></li>';
+            } else {
+                echo '<li><a href="index.php?page='.$_REQUEST['page'].'&exec=showmachine&id='.$m->getId().'"><font color="green">'.$m->getName().'</font></a></li>';
+            }
+        }
         ?>
         </ul>
         &nbsp;

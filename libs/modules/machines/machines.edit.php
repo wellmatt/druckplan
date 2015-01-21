@@ -12,10 +12,15 @@ $machine = new Machine($_REQUEST["id"]);
 if($_REQUEST["exec"] == "copy")
     $machine->clearId();
 
+if($_REQUEST["dellock"] && $_REQUEST["dellock"] != ""){
+    $tmp_lock = new MachineLock((int)$_REQUEST["dellock"]);
+    $tmp_lock->delete();
+}
+
 if($_REQUEST["subexec"] == "save")
 {
     $chromas = Array();
-    $clicks = Array(); //gln
+    $clicks = Array();
     $units = Array();
     $difficulties = Array();
     foreach (array_keys($_REQUEST) as $key)
@@ -23,14 +28,10 @@ if($_REQUEST["subexec"] == "save")
         if (preg_match("/chroma_(?P<id>\d+)/", $key, $m))
 		{ 
             $chromas[] = new Chromaticity($m["id"]);
-            //gln
             if ((int)$_REQUEST["machine_type"] == Machine::TYPE_DRUCKMASCHINE_DIGITAL && (int)$_REQUEST["machine_pricebase"] == Machine::PRICE_MINUTE)
    				$clicks[] = (float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["click_{$m["id"]}"])));
    			else
    				$clicks[] = (float)0;
-			//echo "REQUEST ".$_REQUEST["click_{$m["id"]}"]." "."click_{$m["id"]}";
-			//echo "matype ".$_REQUEST["machine_type"]." ".$_REQUEST["machine_pricebase"];
-			//echo "clicks".$clicks[$i]."";$i++;
 		}
     }
 
@@ -117,12 +118,24 @@ if($_REQUEST["subexec"] == "save")
     	$savemsg = getSaveMessage($machine->save()).$DB->getLastError();
     }
     
+    if ($_REQUEST["lock_start"] && $_REQUEST["lock_start"] != "" && $_REQUEST["lock_stop"] && $_REQUEST["lock_stop"] != ""){
+        $mlock = new MachineLock();
+        $mlock->setMachineid($machine->getId());
+        $mlock->setStart(strtotime($_REQUEST["lock_start"]));
+        $mlock->setStop(strtotime($_REQUEST["lock_stop"]));
+        $mlock->save();
+    }
+    
     /***
      ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || 	// und eine Druckmaschine ist,
     		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) ){	// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
      */
 }
 ?>
+
+<link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
+
 <script language="javascript">
 
 <?/*gln*/?>
@@ -383,7 +396,47 @@ if($machine->getId() > 0){
     echo 'showHide('.$machine->getType().');';
 }
 ?>
+</script>
 
+<script language="JavaScript">
+$(function() {
+	$('#lock_start').datetimepicker({
+		 lang:'de',
+		 i18n:{
+		  de:{
+		   months:[
+		    'Januar','Februar','März','April',
+		    'Mai','Juni','Juli','August',
+		    'September','Oktober','November','Dezember',
+		   ],
+		   dayOfWeek:[
+		    "So.", "Mo", "Di", "Mi", 
+		    "Do", "Fr", "Sa.",
+		   ]
+		  }
+		 },
+		 timepicker:true,
+		 format:'d.m.Y H:i'
+	});
+	$('#lock_stop').datetimepicker({
+		 lang:'de',
+		 i18n:{
+		  de:{
+		   months:[
+		    'Januar','Februar','März','April',
+		    'Mai','Juni','Juli','August',
+		    'September','Oktober','November','Dezember',
+		   ],
+		   dayOfWeek:[
+		    "So.", "Mo", "Di", "Mi", 
+		    "Do", "Fr", "Sa.",
+		   ]
+		  }
+		 },
+		 timepicker:true,
+		 format:'d.m.Y H:i'
+	});
+});
 </script>
 
 <table width="100%">
@@ -879,6 +932,40 @@ if ($machine->getId() > 0){
 
 </div>
 <br>
+<?php if ($machine->getId() > 0){?>
+<div class="box1">
+	<table width="500" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td class="content_row_header" valign="top">Sperrzeit Start</td>
+			<td class="content_row_header" valign="top">Sperrzeit Ende</td>
+		</tr>
+		<?php 
+		$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
+		foreach ($all_locks as $lock){
+		    if ($lock->getStart() >= time() || $lock->getStop() >= time()){
+		?>
+		<tr>
+			<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
+			<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?> 
+			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><img src="images/icons/cross-script.png"/></a></td>
+		</tr>
+		<?php }} ?>
+		<tr>
+			<td class="content_row_clear" valign="top">&nbsp;</td>
+			<td class="content_row_clear" valign="top">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="content_row_clear" valign="top">neue Sperrzeit:</td>
+			<td class="content_row_clear" valign="top">
+			     <input type="text" style="width:160px" id="lock_start" name="lock_start"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
+			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/> -> <input type="text" style="width:160px" id="lock_stop" name="lock_stop"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
+			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+			</td>
+		</tr>
+	</table>
+</div>
+</br>
+<?php } ?>
 <table width="100%">
     <colgroup>
         <col width="180">

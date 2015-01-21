@@ -374,7 +374,7 @@ function addEMailRow(){
 			</td>
 		</tr>
 		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kalender->Aufträge');?></td>
+			<td class="content_row_header"><?=$_LANG->get('Kalender->AuftrÃ¤ge');?></td>
 			<td class="content_row_clear"><input name="user_cal_orders"
 				type="checkbox" value="1"
 				<? if ($user->getCalOrders()) echo "checked";?>

@@ -967,6 +967,11 @@ if((int)$_REQUEST["step"] == 3){
 					    $entry->save();
 					}
 					
+					if ($entry->getMachine()->getType() == Machine::TYPE_FOLDER){
+					    $entry->setFoldtype(new Foldtype((int)$_REQUEST["mach_foldtype_{$id}"]));
+					    $entry->save();
+					}
+					
 					if ($entry->getMachine()->getType() == Machine::TYPE_OTHER){
 						// $entry->set
 					}
