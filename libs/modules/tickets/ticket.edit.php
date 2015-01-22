@@ -101,6 +101,20 @@ if($_REQUEST["exec"] == "edit"){
                     $timer->stop();
                     $timer->save();
                     $time_ok = true;
+                    
+                    $perf = new Perferences();
+                    if ($perf->getDefault_ticket_id() > 0){
+                        $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
+                        $tmp_ticket_id = $tmp_def_ticket->getId();
+                    
+                        $logintimer = new Timer();
+                        $logintimer->setObjectid($tmp_ticket_id);
+                        $logintimer->setModule("Ticket");
+                        $now = time();
+                        $logintimer->setStarttime($now);
+                        $logintimer->setState(Timer::TIMER_RUNNING);
+                        $logintimer->save();
+                    }
                 } else {
                     $timer = new Timer();
                     $timer->start(get_class($ticket), $ticket->getId(), (int)$_REQUEST["ticket_timer_timestamp"]);
@@ -562,28 +576,31 @@ $(document).ready(function () {
 		              <?php
 		              $timer = Timer::getLastUsed();
 		              $timer_start = 0;
+		              $reset_disabled = false;
 		              if ($timer->getId() > 0){
 		                  if ($timer->getState() == Timer::TIMER_RUNNING){
 		                      $timer_start = $timer->getStarttime();
 		                      if ($timer->getModule() == "Ticket" && $timer->getObjectid() == $ticket->getId()){ // Timer läuft für dieses Ticket
 		                          ?>
-		                          <span id="ticket_timer" class="timer duration btn btn-warning" data-duration="0"></span>
+		                          <span id="ticket_timer" class="timer duration btn btn-warning" data-duration="0"></span> läuft für dieses Ticket
 		                          <?php
 		                      } else { // Timer läuft für anderes Ticket
+		                          $reset_disabled = true;
+		                          $tmp_ticket = new Ticket($timer->getObjectid());
 		                          ?>
-		                          <span id="ticket_timer" class="timer duration btn btn-error" data-duration="0"></span>
+		                          <span id="ticket_timer" class="timer duration btn btn-error" data-duration="0"></span> läuft für '<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$tmp_ticket->getId()?>"><?php echo $tmp_ticket->getNumber() . " - " . $tmp_ticket->getTitle(); ?></a>'
 		                          <?php
 		                      }
 		                  } else { // Timer läuft nicht
 		                      $timer_start = $timer->getStoptime()+1;
 	                          ?>
-	                          <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span>
+	                          <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span> läuft (noch nicht zugeordnet)
 	                          <?php
 		                  }
 		              } else { // kein Timer gefunden
 		                  $timer_start = time();
                           ?>
-                          <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span>
+                          <span id="ticket_timer" class="timer duration btn" data-duration="0">00:00:00</span> kein Timer gefunden
                           <?php
 		              }
 		              ?>
@@ -592,7 +609,7 @@ $(document).ready(function () {
 		      </tr>
 		      <tr>
 		          <td width="25%">&nbsp;</td>
-		          <td width="75%"><input type="checkbox" name="stop_timer" id="stop_timer" value="1"> Zeit eintragen und zurücksetzen?</td>
+		          <td width="75%"><input type="checkbox" name="stop_timer" id="stop_timer" value="1" <?php if ($reset_disabled == true) echo "disabled";?>> Zeit eintragen und zurücksetzen?</td>
 		      </tr>
 		      <tr>
 		          <td colspan="2">&nbsp;</td>

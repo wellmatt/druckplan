@@ -12,6 +12,7 @@ class TicketState {
     private $id;
     private $title;
     private $protected = 0;
+    private $colorcode;
     
     function __construct($id = 0){
         global $DB;
@@ -25,6 +26,7 @@ class TicketState {
                 $this->id 				= (int)$r["id"];
                 $this->title 			= $r["title"];
                 $this->protected		= $r["protected"];
+                $this->colorcode		= $r["colorcode"];
     
             }
         }
@@ -41,14 +43,15 @@ class TicketState {
         
         if ($this->id > 0) {
             $sql = "UPDATE tickets_states SET
-            title 			= '{$this->title}'
+            title 			= '{$this->title}',
+            colorcode 		= '{$this->colorcode}'
             WHERE id = {$this->id}";
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO tickets_states
-            (title, protected)
+            (title, protected, colorcode)
             VALUES
-            ( '{$this->title}' , {$this->protected} )";
+            ( '{$this->title}' , {$this->protected}, '{$this->colorcode}' )";
             $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM tickets_states WHERE title = '{$this->title}'";
@@ -145,6 +148,21 @@ class TicketState {
         $this->protected = $protected;
     }
     
+	/**
+     * @return the $colorcode
+     */
+    public function getColorcode()
+    {
+        return $this->colorcode;
+    }
+
+	/**
+     * @param field_type $colorcode
+     */
+    public function setColorcode($colorcode)
+    {
+        $this->colorcode = $colorcode;
+    }
 }
 
 

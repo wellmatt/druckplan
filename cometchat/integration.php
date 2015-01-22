@@ -20,9 +20,9 @@ define('FORCE_MAGIC_QUOTES','0');
 
 define('DB_SERVER',				"localhost"				);
 define('DB_PORT',				"3306"					);
-define('DB_USERNAME',			"dev"					);
-define('DB_PASSWORD',			"dev"				);
-define('DB_NAME',				"dev"				);
+define('DB_USERNAME',			"contilas2"					);
+define('DB_PASSWORD',			"contilas2"				);
+define('DB_NAME',				"contilas2"				);
 define('TABLE_PREFIX',			""					);
 define('DB_USERTABLE',			"user"					);
 define('DB_USERTABLE_USERID',		"id"				);
@@ -96,7 +96,7 @@ function chatLogin($userName,$userPass) {
 	return $userid;
 }
 
-function getFriendsList($userid,$time) { // geändert ascherer
+function getFriendsList($userid,$time) { // geï¿½ndert ascherer
 	global $hideOffline;
 	$offlinecondition = '';
 	// $sql = ("select DISTINCT ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." userid, ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_NAME." username, ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." link, ".DB_AVATARFIELD." avatar, cometchat_status.lastactivity lastactivity, cometchat_status.status, cometchat_status.message, cometchat_status.isdevice from ".TABLE_PREFIX."friends join ".TABLE_PREFIX.DB_USERTABLE." on  ".TABLE_PREFIX."friends.toid = ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." left join cometchat_status on ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." = cometchat_status.userid ".DB_AVATARTABLE." where ".TABLE_PREFIX."friends.fromid = '".mysqli_real_escape_string($GLOBALS['dbh'],$userid)."' order by username asc");
@@ -118,7 +118,7 @@ function getFriendsIds($userid) {
 	return $sql;
 }
 
-function getUserDetails($userid) { // geändert ascherer
+function getUserDetails($userid) { // geï¿½ndert ascherer
 	$sql = ("select ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." userid, concat(".TABLE_PREFIX.DB_USERTABLE.".user_firstname,' ',".TABLE_PREFIX.DB_USERTABLE.".user_lastname) username, ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." link, ".DB_AVATARFIELD." avatar, cometchat_status.lastactivity lastactivity, cometchat_status.status, cometchat_status.message, cometchat_status.isdevice from ".TABLE_PREFIX.DB_USERTABLE." left join cometchat_status on ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." = cometchat_status.userid ".DB_AVATARTABLE." where ".TABLE_PREFIX.DB_USERTABLE.".".DB_USERTABLE_USERID." = '".mysqli_real_escape_string($GLOBALS['dbh'],$userid)."'");
 
 	return $sql;

@@ -10,6 +10,7 @@ chdir("../../../");
 require_once 'libs/basic/basic.importer.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/timer/timer.class.php';
+require_once 'libs/modules/perferences/perferences.class.php';
 
 if ($_REQUEST['module'] && $_REQUEST['objectid']){
     if ($_REQUEST["ajax_action"] == "start"){
@@ -24,6 +25,21 @@ if ($_REQUEST['module'] && $_REQUEST['objectid']){
             $timer->stop();
             $timer->save();
             echo $timer->getId();
+            
+            $perf = new Perferences();
+            if ($perf->getDefault_ticket_id() > 0){
+                $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
+                $tmp_ticket_id = $tmp_def_ticket->getId();
+            
+                $logintimer = new Timer();
+                $logintimer->setObjectid($tmp_ticket_id);
+                $logintimer->setModule("Ticket");
+                $now = time();
+                $logintimer->setStarttime($now);
+                $logintimer->setState(Timer::TIMER_RUNNING);
+                $logintimer->save();
+            }
+            
         } else {
             echo "0";
         }

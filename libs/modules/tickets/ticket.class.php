@@ -14,6 +14,7 @@ include 'libs/modules/tickets/ticket.state.class.php';
 include 'libs/modules/comment/comment.class.php';
 include 'libs/modules/notifications/notification.class.php';
 require_once 'libs/modules/timer/timer.class.php';
+require_once 'libs/modules/perferences/perferences.class.php';
 
 class Ticket {
     

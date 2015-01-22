@@ -28,6 +28,7 @@ require_once 'libs/modules/timekeeping/timekeeper.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/organizer/mail/mailModel.class.php';
 require_once 'libs/modules/associations/association.class.php';
+require_once 'libs/modules/timer/timer.class.php';
 
 
 $DB = new DBMysql();
@@ -73,21 +74,27 @@ if ($_REQUEST["doLogout"] == 1)
     {
         $userstring = mcrypt_decrypt(MCRYPT_BLOWFISH, $_CONFIG->cookieSecret, $_COOKIE["vic_login"], MCRYPT_MODE_CBC, $_COOKIE["vic_iv"]);
         $userdata = explode(' ', $userstring);
-        $_REQUEST["login_login"] = $userdata[0];
-        $_REQUEST["login_password"] = $userdata[1];
-        $_REQUEST["login_domain"] = $userdata[2];
+//         $_REQUEST["login_login"] = $userdata[0];
+//         $_REQUEST["login_password"] = $userdata[1];
+//         $_REQUEST["login_domain"] = $userdata[2];
     }
      
 
     $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
-    if ($_USER){
-        $logintimer = new Timer();
-        $logintimer->setObjectid(0);
-        $logintimer->setModule("Login");
-        $now = time();
-        $logintimer->setStarttime($now);
-        $logintimer->setStoptime($now);
-        $logintimer->save();
+    if ($_USER && trim($_REQUEST["login_login"] != "") && trim($_REQUEST["login_password"]) != ""){
+        $perf = new Perferences();
+        if ($perf->getDefault_ticket_id() > 0){
+            $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
+            $tmp_ticket_id = $tmp_def_ticket->getId();
+
+            $logintimer = new Timer();
+            $logintimer->setObjectid($tmp_ticket_id);
+            $logintimer->setModule("Ticket");
+            $now = time();
+            $logintimer->setStarttime($now);
+            $logintimer->setState(Timer::TIMER_RUNNING);
+            $logintimer->save();
+        }
     }
     
 }
@@ -99,7 +106,7 @@ if ($_USER == false)
 {
 
     /* Logindaten merken?
-     * Daten werden f�r 365 Tage gemerkt
+     * Daten werden für 365 Tage gemerkt
     */
     if ($_REQUEST["login_keeplogin"])
     {
@@ -235,16 +242,22 @@ if ($_USER == false)
 <title>Druckplan - <?=$_USER->getClient()->getName()?></title>
 </head>
 <body>
-<? // TODO: Apassen f�r neuen Timer
-if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
-	$active_timer = new Timekeeper($_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"]);
-	echo '<div id="active_timer_ObjectID" style="display:none;">'.$active_timer->getObjectID().'</div>';
-	echo '<div id="active_timer_ModuleID" style="display:none;">'.$active_timer->getModule().'</div>';
-	$active_ticket = new Ticket($active_timer->getObjectID());
-	echo '<div id="active_timer_Title" style="display:none;">'.$active_ticket->getTitle().'</div>';
-}
+<? // TODO: Apassen für neuen Timer
+// if(Timer::getLastUsed()->getId() > 0){
+//     $active_timer = Timer::getLastUsed();
+//     if ($active_timer->getState() == Timer::TIMER_RUNNING){
+//     	echo '<div id="active_timer_ObjectID" style="display:none;">'.$active_timer->getObjectid().'</div>';
+//     	echo '<div id="active_timer_ModuleID" style="display:none;">'.$active_timer->getModule().'</div>';
+//     	$active_ticket = new Ticket($active_timer->getObjectID());
+//     	echo '<div id="active_timer_Title" style="display:none;">'.$active_ticket->getTitle().'</div>';
+//     	echo '<div id="logged_user_ticket" style="display:none;">'.$active_timer->getObjectID().'</div>';
+//     }
+// }
+    	echo '<div id="active_timer_ObjectID" style="display:none;">0</div>';
+    	echo '<div id="active_timer_ModuleID" style="display:none;"></div>';
+    	echo '<div id="active_timer_Title" style="display:none;"></div>';
+    	echo '<div id="logged_user_ticket" style="display:none;">0</div>';
 ?>
-<div id="logged_user_ticket" style="display:none;"><?=(int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"]?></div>
 <div id="hidden_clicker_index" style="display:none">
 <a id="hiddenclicker_index" href="http://www.google.com" >Hidden Clicker</a>
 </div>
@@ -357,6 +370,56 @@ if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
               </div>
             </li>
 
+            <?php 
+            if(Timer::getLastUsed()->getId() > 0){
+                $active_timer = Timer::getLastUsed();
+                if ($active_timer->getState() == Timer::TIMER_RUNNING){
+                    $tmp_ticket_home = new Ticket($active_timer->getObjectid());
+                    ?>
+                        <!-- divider -->
+                        <li class="divider"></li>
+                        <li style="padding-bottom:10px;padding-top:10px;display:block;position:relative;">
+                          <a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?=$tmp_ticket_home->getId()?>" style="padding-bottom:0px;padding-top:5px;display:block;position:relative;">
+                            <span id="ticket_timer_home" class="timer duration btn" data-duration="0" style="padding-bottom:0px;padding-top:0px;display:block;position:relative;"></span>
+                          </a>
+		                  <input id="ticket_timer_timestamp_home" name="ticket_timer_timestamp_home" type="hidden" value="<?php echo $active_timer->getStarttime();?>"/>
+                        </li>
+                        
+                        <script>
+                            $(document).ready(function () {
+                            	var clock;
+                            	var sec = moment().unix();
+                            	var start = parseInt($('#ticket_timer_timestamp_home').val());
+                            	if (start != 0){
+                            		clock = setInterval(stopWatch,1000);
+                            	}
+                                function stopWatch() {
+                                	sec++;
+                                	var timestamp = sec-start;
+                                	$("#ticket_timer_home").html(rectime(timestamp));
+                                }
+                                function rectime(secs) {
+                                	var hr = Math.floor(secs / 3600);
+                                	var min = Math.floor((secs - (hr * 3600))/60);
+                                	var sec = Math.floor(secs - (hr * 3600) - (min * 60));
+                                	
+                                	if (hr < 10) {hr = "0" + hr; }
+                                	if (min < 10) {min = "0" + min;}
+                                	if (sec < 10) {sec = "0" + sec;}
+                                	if (hr) {hr = "00";}
+                                	return hr + ':' + min + ':' + sec;
+                                }
+                                function precise_round(num, decimals) {
+                                	var t=Math.pow(10, decimals);   
+                             	    return (Math.round((num * t) + (decimals>0?1:0)*(Math.sign(num) * (10 / Math.pow(100, decimals)))) / t).toFixed(decimals);
+                               	}
+                            });
+                            </script>
+                    <?php
+                }
+            }
+            ?>
+            
 
             <!-- divider -->
             <li class="divider"></li>
@@ -469,7 +532,18 @@ if((int)$_SESSION["DP_Timekeeper"][$_USER->getId()]["timer_id"] != 0){
                                         <label class="col-sm-12 control-label">
                                             <a href="JavaScript: callBoxFancyIndex('http://dev.mein-druckplan.de/changelog.php');">Changelog</a></br>
 			                                <a href="JavaScript: callBoxFancyIndex('http://support.mein-druckplan.de/open.php');">Support</a></br>
-			                                <a href="JavaScript: document.location='index.php?doLogout=1';">Logout</a></br>
+			                                <?php 
+			                                if(Timer::getLastUsed()->getId() > 0){
+			                                    $active_timer = Timer::getLastUsed();
+			                                    if ($active_timer->getState() == Timer::TIMER_RUNNING){
+			                                        echo 'Logout (Timer läuft!)</br>';
+			                                    } else {
+			                                        echo '<a href="JavaScript: document.location=\'index.php?doLogout=1\';">Logout</a></br>';
+			                                    }
+			                                } else {
+			                                    echo '<a href="JavaScript: document.location=\'index.php?doLogout=1\';">Logout</a></br>';
+			                                }
+			                                ?>
                                         </label>
                                   </div>
                                 </div>

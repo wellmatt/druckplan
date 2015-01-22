@@ -1,6 +1,9 @@
 <?php
 
 require_once 'libs/modules/tickets/ticket.class.php';
+require_once 'libs/modules/perferences/perferences.class.php';
+
+$perf = new Perferences();
 
 if ($_REQUEST["delete_category"]){
     $del_cat = new TicketCategory((int)$_REQUEST["delete_category"]);
@@ -32,8 +35,10 @@ if ($_REQUEST["exec"] == "save")
         if ($_REQUEST["states_title_".$i] != "" && $_REQUEST["states_title_".$i]){
             $sid = (int)$_REQUEST["states_id_".$i];
             $stitle = $_REQUEST["states_title_".$i];
+            $scolor = $_REQUEST["states_color_".$i];
             $state = new TicketState($sid);
             $state->setTitle($stitle);
+            $state->setColorcode($scolor);
             $state->save();
         }
     }
@@ -49,13 +54,32 @@ if ($_REQUEST["exec"] == "save")
             $prio->save();
         }
     }
+    
+    if ($_REQUEST["ticket_id"] > 0){
+        $perf->setDefault_ticket_id((int)$_REQUEST["ticket_id"]);
+        $perf->save();
+    }
 }
 
 ?>
 
 <script>
 $(function() {
-    $( "#tabs" ).tabs({ selected: 0 });
+     $( "#tabs" ).tabs({ selected: 0 });
+
+	 $( "#ticket" ).autocomplete({
+		 source: "libs/modules/associations/association.ajax.php?ajax_action=search_ticket",
+		 minLength: 2,
+		 focus: function( event, ui ) {
+  		 $( "#ticket" ).val( ui.item.label );
+  		 return false;
+		 },
+		 select: function( event, ui ) {
+  		 $( "#ticket" ).val( ui.item.label );
+  		 $( "#ticket_id" ).val( ui.item.value );
+  		 return false;
+		 }
+	 });
 });
 </script>
 <script type="text/javascript">
@@ -81,8 +105,12 @@ function addStateRow()
 
     var insert = '<tr><td class="content_row_clear">'+count+'</td>';
 	insert += '<td class="content_row_clear">';
-	insert += '<input type="hidden" name="states_id_'+count+'" id="states_id_'+count+'" value="0">';
 	insert += '<input name="states_title_'+count+'" class="text" type="text"';
+	insert += 'value ="" style="width: 200px">';
+	insert += '</td>';
+	insert += '<td class="content_row_clear">';
+	insert += '<input type="hidden" name="states_id_'+count+'" id="states_id_'+count+'" value="0">';
+	insert += '<input name="states_color_'+count+'" class="text" type="text"';
 	insert += 'value ="" style="width: 200px">';
 	insert += '</td></tr>';
 
@@ -125,6 +153,7 @@ function addPrioRow()
 			<li><a href="#tabs-0"><? echo $_LANG->get('Kategorien');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Priorit&auml;ten');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('Stati');?></a></li>
+			<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>
 		</ul>
        <div id="tabs-0">
             <?php 
@@ -223,11 +252,13 @@ function addPrioRow()
             <table border="0" cellpadding="0" cellspacing="0" id="table-states">
 				<colgroup>
 		        	<col width="40">
-		        	<col width="300">
+		        	<col width="200">
+		        	<col width="280">
 		    	</colgroup>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Nr')?></td>
 					<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
+					<td class="content_row_header"><?=$_LANG->get('Farbcode')?></td>
 				</tr>
 				<?
 				$x = count($ticket_states);
@@ -240,9 +271,13 @@ function addPrioRow()
 						<?=$ticket_states[$y]->getId()?>
 						</td>
 						<td class="content_row_clear">
-						    <input type="hidden" name="states_id_<?=$y?>" id="states_id_<?=$y?>" value="<?php echo $ticket_states[$y]->getId();?>">
-							<input 	name="states_title_<?=$y?>" class="text" type="text"
+						    <input 	name="states_title_<?=$y?>" class="text" type="text"
 									value ="<?=$ticket_states[$y]->getTitle();?>" style="width: 200px">
+						</td>
+						<td class="content_row_clear">
+						    <input type="hidden" name="states_id_<?=$y?>" id="states_id_<?=$y?>" value="<?php echo $ticket_states[$y]->getId();?>">
+							<input 	name="states_color_<?=$y?>" class="text" type="text"
+									value ="<?=$ticket_states[$y]->getColorcode();?>" style="width: 200px">
 							&nbsp;&nbsp;&nbsp;
 							<?php if ($ticket_states[$y]->getProtected() == 0){?>
 							     <a href="index.php?page=<?=$_REQUEST['page']?>&delete_state=<?=$ticket_states[$y]->getId()?>">
@@ -255,6 +290,28 @@ function addPrioRow()
 					</tr>
 				<? } ?>
 			</table>
+       </div>
+       <div id="tabs-3">
+       <?php 
+       if ($perf->getDefault_ticket_id() > 0){
+           $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
+           $tmp_ticket_label = $tmp_def_ticket->getNumber() . " - " . $tmp_def_ticket->getTitle();
+           $tmp_ticket_id = $tmp_def_ticket->getId();
+       }
+       ?>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+               <colgroup>
+                  <col width="150">
+                  <col>
+               </colgroup>
+               <tr>
+                  <td class="content_row_header" valign="top">Login Timer Ticket:</td>
+                  <td class="content_row_clear">
+                     <input type="text" name="ticket" id="ticket" value="<?php echo $tmp_ticket_label;?>" style="width: 250px"/>
+                     <input type="hidden" name="ticket_id" id="ticket_id" value="<?php echo $tmp_ticket_id;?>"/>
+                  </td>
+               </tr>
+            </table>
        </div>
 
     <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">

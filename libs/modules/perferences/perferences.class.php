@@ -15,6 +15,10 @@ class Perferences {
    // Formats
    
    private $formats_raw = Array();
+   
+   // Ticket
+   
+   private $default_ticket_id = 0;
 
    function __construct()
    {
@@ -31,6 +35,7 @@ class Perferences {
            $this->pdf_margin_left = $r["pdf_margin_left"];
            $this->pdf_margin_right = $r["pdf_margin_right"];
            $this->pdf_margin_bottom = $r["pdf_margin_bottom"];
+           $this->default_ticket_id = $r["default_ticket_id"];
        }
        
        $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -68,6 +73,7 @@ class Perferences {
                pdf_margin_top 	= '{$this->pdf_margin_top}',
                pdf_margin_left 	= '{$this->pdf_margin_left}',
                pdf_margin_right 	= '{$this->pdf_margin_right}',
+               default_ticket_id 	= {$this->default_ticket_id},
                pdf_margin_bottom 	= '{$this->pdf_margin_bottom}'
               ";
        return $DB->no_result($sql);
@@ -184,8 +190,22 @@ class Perferences {
     {
         $this->formats_raw = $formats_raw;
     }
+    
+	/**
+     * @return the $default_ticket_id
+     */
+    public function getDefault_ticket_id()
+    {
+        return $this->default_ticket_id;
+    }
 
-   
+	/**
+     * @param field_type $default_ticket_id
+     */
+    public function setDefault_ticket_id($default_ticket_id)
+    {
+        $this->default_ticket_id = $default_ticket_id;
+    }
     
 }
 ?>
