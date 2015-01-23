@@ -2,6 +2,25 @@
 require_once 'libs/modules/organizer/event.class.php';
 // chdir('../../../');
 
+?>
+<table width="100%">
+<tr>
+<td width="200" class="content_header" valign="top"><i class="fa fa-calendar"></i> <?=$_LANG->get('Kalender')?></td>
+        <td align="right">
+            <table>
+                <tr><td>Legende:</td></tr>
+                <?php 
+                $ticket_states = TicketState::getAllStates();
+                foreach ($ticket_states as $ticket_state){
+                    echo '<tr><td><font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
+                }
+                ?>
+            </table>
+        </td>
+    </tr>
+</table>
+<?php
+
 global $_USER;
 if((int)$_REQUEST["sel_user"] > 0)
     $sel_user = new User((int)$_REQUEST["sel_user"]);
@@ -11,6 +30,7 @@ else
 if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR)) {
 	$users = User::getAllUser(User::ORDER_LOGIN);
 	?>
+	<center>
 	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
 	F&uuml;r Benutzer: <select name="sel_user" id="sel_user" style="width:150px" onchange="document.getElementById('select_cal_user').submit()" class="text">
 		<? foreach ($users as $user) {?>
@@ -25,6 +45,7 @@ if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR)) {
 		<? } ?>
 	</select>
 	</form>
+	</center>
 	<?
 }
 

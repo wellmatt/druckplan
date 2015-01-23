@@ -286,7 +286,6 @@ $(document).ready(function () {
 
 
 <div class="ticket_view">
-
 <table width="100%">
 	<tr>
 		<td width="33%" class="content_header">
@@ -294,6 +293,9 @@ $(document).ready(function () {
 		</td>
 		<td align="right">
 			<?=$savemsg?>
+		</td>
+		<td align="right">
+		    <a name="top" href="#comment"><img height="32" width="32" src="images/icons/arrow-skip-270.png" title="Nach unten springen"/></a>
 		</td>
 	</tr>
 </table>
@@ -548,6 +550,7 @@ $(document).ready(function () {
   }
   ?>
   </br>
+    <p align="right"><a href="#top"><img height="32" width="32" src="images/icons/arrow-skip-090.png" title="Nach oben springen"/></a></p>
 	<div class="ticket_comment">
 		  <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80" required></textarea>
 		  </br>
@@ -733,6 +736,7 @@ $(document).ready(function () {
 	    </tr>
 	</table>
 	</form>
+	<a name="comment"></a>
 </div>
 </body>
 </html>

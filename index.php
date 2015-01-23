@@ -380,7 +380,7 @@ if ($_USER == false)
                         <li class="divider"></li>
                         <li style="padding-bottom:10px;padding-top:10px;display:block;position:relative;">
                           <a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?=$tmp_ticket_home->getId()?>" style="padding-bottom:0px;padding-top:5px;display:block;position:relative;">
-                            <span id="ticket_timer_home" class="timer duration btn" data-duration="0" style="padding-bottom:0px;padding-top:0px;display:block;position:relative;"></span>
+                            <span id="ticket_timer_home" class="timer duration btn btn-warning" data-duration="0" style="padding-bottom:0px;padding-top:0px;display:block;position:relative;"></span>
                           </a>
 		                  <input id="ticket_timer_timestamp_home" name="ticket_timer_timestamp_home" type="hidden" value="<?php echo $active_timer->getStarttime();?>"/>
                         </li>

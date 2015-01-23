@@ -133,7 +133,7 @@
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, article_pictures.url as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
+    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
                FROM article LEFT JOIN article_pictures ON article_pictures.articleid = article.id INNER JOIN tradegroup ON tradegroup.id = article.tradegroup
                LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id
                $sWhere
@@ -178,15 +178,20 @@
      
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
-//         echo "Durchlauf für :" . $aRow[ $aColumns[0] ] . "</br> </br>";
+//         echo "Durchlauf fï¿½r :" . $aRow[ $aColumns[0] ] . "</br> </br>";
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
             if ( $aColumns[$i] == 'art_picture' )
             {
-                if ($aRow[$aColumns[$i]] != ""){
-                    $row[] = '<a href="images/products/'.$aRow[ $aColumns[$i]].'" target="_blank">
-                              <img src="images/products/'.$aRow[ $aColumns[$i]].'" style="max-width: 100px; max-height: 100px;" width="100px"></a>';
+                $pic_sql = "SELECT url FROM article_pictures WHERE articleid = {$aRow[ $aColumns[0] ]} LIMIT 1";
+				
+				$rResultPics = mysql_query( $pic_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+				$aResultPics = mysql_fetch_array($rResultPics);
+				
+                if(count($aResultPics) > 0){
+                    $row[] = '<a href="images/products/'.$aResultPics[0].'" target="_blank">
+                              <img src="images/products/'.$aResultPics[0].'" style="max-width: 100px; max-height: 100px;" width="100px"></a>';
                 } else {
                     $row[] = '<img src="images/icons/image.png" title="Kein Bild hinterlegt">&nbsp;';
                 }

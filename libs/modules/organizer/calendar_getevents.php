@@ -9,8 +9,8 @@
 // Requires PHP 5.2.0 or higher.
 //--------------------------------------------------------------------------------------------------
 
-error_reporting(-1);
-ini_set('display_errors', 1);
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 
 // Require our Event class and datetime utilities
 require_once 'event.class.php';
@@ -55,11 +55,16 @@ if($events) {
 		$end = date("Y-m-d\TH:i:s",$event->getEnd());
 		if(strpos($event->getTitle(),"[TICKET]")!==false) {
 			if ($user->getCalTickets() == 1) {
-				$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end, "url" => "index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$event->getTicket()->getId());
+				$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end, 
+				    "url" => "index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$event->getTicket()->getId(), 
+				    "backgroundColor" => $event->getTicket()->getState()->getColorcode(),
+				    "textColor" => '#fff',
+				    "editable" => false);
 			}
 		} elseif(strpos($event->getTitle(),"[AUFTRAG]")!==false) {
 			if ($user->getCalOrders() == 1) {
-				$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "allDay" => "true", "url" => "index.php?page=libs/modules/calculation/order.php&exec=edit&id=".$event->getOrder()->getId()."&step=4");
+				$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "allDay" => "true", 
+				    "url" => "index.php?page=libs/modules/calculation/order.php&exec=edit&id=".$event->getOrder()->getId()."&step=4", "textColor" => '#fff', "editable" => false);
 			}
 		} else {
 			$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end);
@@ -86,11 +91,17 @@ if ($user->getCalBirthday() == 1) {
 		if ($birth_moth >= date('m',time())) {
 			if ($birth_day >= date('d',time())) {
 				$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time()))), 
-				"allDay" => "true", "editable" => "false", "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId());
+				"allDay" => "true", "editable" => "false", 
+				    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
+				    "textColor" => '#fff',
+				    "editable" => false);
 			}
 		} else {
 			$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time())+1)), 
-			"allDay" => "true", "editable" => "false", "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId());
+			"allDay" => "true", "editable" => "false", 
+			    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
+			    "textColor" => '#fff',
+				"editable" => false);
 		}
 	}
 }
