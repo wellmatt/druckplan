@@ -22,7 +22,7 @@ foreach ($calcs as $calc) {
             
         $paperstr = $_LANG->get('Inhalt') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_CONTENT) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
         $paperstr .= $calc->getPaperContent()->getName() . " " . $calc->getPaperContentWeight();
-        echo $paperstr."<br><br>";
+//         echo $paperstr."<br><br>";
         
         if ($calc->getPaperAddContent()->getId()) {
             $paperstr .= "<br>" . $_LANG->get('zus. Inhalt') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ADDCONTENT) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
@@ -40,7 +40,7 @@ foreach ($calcs as $calc) {
             $paperstr .= "<br>". $_LANG->get('Umschlag') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ENVELOPE) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
             $paperstr .= $calc->getPaperEnvelope()->getName() . " " . $calc->getPaperEnvelopeWeight();
         }      
-        echo $paperstr;
+//         echo $paperstr;
                 
         $chrstr = "Inhalt: " . $calc->getChromaticitiesContent()->getName();
         $fixhtml = strlen($chrstr);

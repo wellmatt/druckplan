@@ -41,7 +41,9 @@ foreach ($editors as $editor) {
         $tmplname = $_REQUEST["templatename_" . $_LANG->get($editor->getName())];
         
         $datei[$_LANG->get($editor->getName())] = $_POST[$_LANG->get($editor->getName())];
-        file_put_contents($tmplfolder . $editor->getFile() . ".tmpl", $datei[$_LANG->get($editor->getName())]);
+        
+        if(trim($datei[$_LANG->get($editor->getName())])!="")
+            file_put_contents($tmplfolder . $editor->getFile() . ".tmpl", $datei[$_LANG->get($editor->getName())]);
         
         // Überprüft vorher, dass Default-Templates nicht überschrieben werden
         if ($tmplname != "" && $tmplname != "default_" . $editor->getName() ) { 
@@ -52,8 +54,11 @@ foreach ($editors as $editor) {
         
     } else {
         $output = implode("", file($tmplfolder . $editor->getFile() . ".tmpl"));
-        if(empty(trim($output)))
-            $output = $agent->Get( "default_" . $editor->getName());
+        if(trim($output)=="")
+        {
+            $output = $agent->Get( "default_".$editor->getName());
+            file_put_contents($tmplfolder . $editor->getFile() . ".tmpl", $datei[$_LANG->get($editor->getName())]);
+        }
         $datei[$_LANG->get($editor->getName())] = $output;
     }
     $i++;
