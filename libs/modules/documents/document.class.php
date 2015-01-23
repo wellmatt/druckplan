@@ -541,17 +541,21 @@ class Document
                 $pdf = new TCPDF('L','mm',$format);
             } else {
                 $pref= new Perferences();
-                $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
+                if ($version == self::VERSION_EMAIL)
+                    $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
+                else 
+                    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+                $pdf->SetHeaderData();
                 $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
             }
         }
 
         if ($this->type != self::TYPE_PERSONALIZATION && $this->type != self::TYPE_PERSONALIZATION_ORDER) {
             if ($withheader) {
-                if ($version == self::VERSION_EMAIL){
-                    $pdf->SetHeaderData();
-                        $pdf->Image("docs/templates/briefbogen.jpg", '', 0, '', '', '', '', 'R');
-                }
+//                 if ($version == self::VERSION_EMAIL){
+//                     $pdf->SetHeaderData();
+// //                         $pdf->Image("docs/templates/briefbogen.jpg", '', 0, '', '', '', '', 'R');
+//                 }
                 $pdf->SetMargins($pref->getPdf_margin_left(), $pref->getPdf_margin_top(), $pref->getPdf_margin_right(), TRUE);
                 $pdf->AddPage();
             }

@@ -1,5 +1,4 @@
 <?php
-use Zend\Form\Element\Date;
 // ----------------------------------------------------------------------------------
 // Author: Klein Druck+Medien GmbH
 // Updated: 23.12.2014
