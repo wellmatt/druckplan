@@ -18,7 +18,7 @@ class Foldtype
     private $horizontal = 0;
     private $status;
     private $picture;
-    private $difficulty;
+    private $breaks;
 
     function __construct($id = 0)
     {
@@ -38,7 +38,7 @@ class Foldtype
                 $this->horizontal = $res["horizontal"];
                 $this->status = $res["status"];
                 $this->picture = $res["picture"];
-                $this->difficulty = $res["difficulty"];
+                $this->breaks = $res["breaks"];
             }
         }
     }
@@ -89,17 +89,17 @@ class Foldtype
                         status = {$this->status},
                         vertical = {$this->vertical},
                         horizontal = {$this->horizontal},
-                        difficulty = {$this->difficulty},
+                        breaks = {$this->breaks},
                         picture = '{$this->picture}'
                     WHERE id = {$this->id}";
             return $DB->no_result($sql);
         } else
         {
             $sql = "INSERT INTO foldtypes
-                        (name, beschreibung, status, vertical, horizontal, picture, difficulty)
+                        (name, beschreibung, status, vertical, horizontal, picture, breaks)
                     VALUES
                         ('{$this->name}', '{$this->description}', 1, {$this->vertical},
-                         {$this->horizontal}, '{$this->picture}', {$this->difficulty})";
+                         {$this->horizontal}, '{$this->picture}', {$this->breaks})";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -196,22 +196,20 @@ class Foldtype
     }
     
 	/**
-     * @return the $difficulty
+     * @return the $breaks
      */
-    public function getDifficulty()
+    public function getBreaks()
     {
-        return $this->difficulty;
+        return $this->breaks;
     }
 
 	/**
-     * @param field_type $difficulty
+     * @param field_type $breaks
      */
-    public function setDifficulty($difficulty)
+    public function setBreaks($breaks)
     {
-        $this->difficulty = $difficulty;
+        $this->breaks = $breaks;
     }
-
-    
     
 }
 ?>

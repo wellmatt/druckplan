@@ -652,7 +652,7 @@ if ($machine->getId() > 0){
         </td>
     </tr>
     <tr id="tr_machine_breaks" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Anzahl Br&uuml;che')?></td>
+        <td class="content_row_header"><?=$_LANG->get('Max. Br&uuml;che')?></td>
         <td class="content_row_clear">
             <input name="breaks" value="<?=$machine->getBreaks()?>" style="width:60px;text-align:center">
         </td>

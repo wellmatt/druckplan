@@ -611,8 +611,13 @@ class Machine
                 }
                 if($difficulty["unit"] == self::DIFFICULTY_BRUECHE)
                 {
-                    $diff = 0;
-                    $time = $time * (1 + ($diff / 100));
+            		if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER){
+            		    if ($machineEntry->getFoldtype()->getId() > 0){
+            		        $diff_breaks = $machineEntry->getFoldtype()->getBreaks();
+            		        $diff = $this->getDifficultyByValue($diff_breaks, $difficulty["id"]);
+            		        $time = $time * (1 + ($diff / 100));
+            		    }
+            		}
                 }
                 if($difficulty["unit"] == self::DIFFICULTY_PAGES)
                 {
@@ -891,11 +896,11 @@ class Machine
 		if($machineEntry->getMachine()->getType() == Machine::TYPE_CUTTER){
 			$price += $machineEntry->getCutter_cuts() * $machineEntry->getMachine()->getCutPrice();
 		}
-		if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER){
-		    if ($machineEntry->getFoldtype()->getId() > 0){
-		      $price = $price * (1 + ($machineEntry->getFoldtype()->getDifficulty() / 100));
-		    }
-		}
+// 		if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER){
+// 		    if ($machineEntry->getFoldtype()->getId() > 0){
+// 		      $price = $price * (1 + ($machineEntry->getFoldtype()->getDifficulty() / 100));
+// 		    }
+// 		} // durch Erschwernis ersetzt
 
 		// Manueller Aufschlag
 		if($machineEntry->getSpecial_margin() > 0){

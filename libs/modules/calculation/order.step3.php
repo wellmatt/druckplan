@@ -704,9 +704,11 @@ foreach($groups as $group)
                       	    echo '<option value="0">&lt; '.$_LANG->get('Bitte w&auml;hlen').' &gt;</option>';
                       	    foreach($foldtypes as $ft)
                       	    {
-                      	        echo '<option value="'.$ft->getId().'" ';
-                      	        if($mach->getFoldtype()->getId() == $ft->getId()) echo "selected";
-                      	        echo '>'.$ft->getName().'</option>';
+                      	        if ($mach->getMachine()->getBreaks() <= $ft->getBreaks()){
+                      	            echo '<option value="'.$ft->getId().'" ';
+                      	            if($mach->getFoldtype()->getId() == $ft->getId()) echo "selected";
+                      	            echo '>'.$ft->getName().'</option>';
+                      	        }
                       	    }
                       	    echo '</select>';
                       	}

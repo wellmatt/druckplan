@@ -19,7 +19,7 @@ if($_REQUEST["subexec"] == "save")
     $ft->setVertical((int)$_REQUEST["foldtype_vertical"]);
     $ft->setHorizontal((int)$_REQUEST["foldtype_horizontal"]);
     $ft->setPicture(trim(addslashes($_REQUEST["picture"])));
-    $ft->setDifficulty((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["foldtype_difficulty"]))));
+    $ft->setDifficulty((int)$_REQUEST["foldtype_breaks"]);
     $savemsg = getSaveMessage($ft->save());
 }
 
@@ -94,9 +94,9 @@ if($_REQUEST["subexec"] == "save")
 		        </td>
 		    </tr>
 		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Preis Aufschlag')?></td>
+		        <td class="content_row_header"><?=$_LANG->get('Anz. Brüche')?></td>
 		        <td class="content_row_clear">
-		            <input name="foldtype_difficulty" value="<?=printPrice($ft->getDifficulty(),2)?>" style="width:60px;" class="text">
+		            <input name="foldtype_breaks" value="<?=$ft->getBreaks();?>" style="width:60px;" class="text">
 		        </td>
 		    </tr>
 		</table>
