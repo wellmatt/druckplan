@@ -615,7 +615,7 @@ class Machine
             		    if ($machineEntry->getFoldtype()->getId() > 0){
             		        $diff_breaks = $machineEntry->getFoldtype()->getBreaks();
             		        $diff = $this->getDifficultyByValue($diff_breaks, $difficulty["id"]);
-            		        $time = $time * (1 + ($diff / 100));
+            		        $time = $time * (1 + ($diff / 100)) + $diff_breaks * ($machineEntry->getMachine()->getBreaks_time());
             		    }
             		}
                 }
