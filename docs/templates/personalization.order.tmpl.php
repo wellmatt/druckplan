@@ -64,8 +64,8 @@ if ($perso->getLineByLine() == 0) {
     
     foreach ($all_items as $oitem){ // linke tabelle fällen
 		$item = new Personalizationitem($oitem->getPersoItemID());
-        foreach(Array(0,1,2) as $justi){
-            if ($item->getJustification() == $justi) {
+        foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
+            if ($item->getGroup() == $group) {
                 if ($item->getDependencyID() == 0) {    // erstes fix object links
                     $xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
                     $ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
@@ -114,7 +114,7 @@ if ($perso->getLineByLine() == 0) {
                     $pos_array = Array();
                     foreach ($all_items as $suboitem){
                         $subitem = new Personalizationitem($suboitem->getPersoItemID());
-                        if ($subitem->getJustification() == $justi && $item->getId() != $subitem->getId()) {
+                        if ($subitem->getGroup() == $group && $item->getId() != $subitem->getId()) {
                             $pos_array[] = Array("xpos" => $subitem->getXpos(), "ypos" => $subitem->getYpos(), "width" => $subitem->getWidth(), "height" => $subitem->getHeight());
                         }
                     }
@@ -122,7 +122,7 @@ if ($perso->getLineByLine() == 0) {
                     $pustekuchen123 = 0;
                     foreach ($all_items as $suboitem){
 					    $subitem = new Personalizationitem($suboitem->getPersoItemID());
-                        if ($subitem->getJustification() == $justi && $suboitem->getValue() != "") {
+                        if ($subitem->getGroup() == $group && $suboitem->getValue() != "") {
                             if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhänigkeit
                                 $subwidth	= $pos_array[$pustekuchen123]["width"];
                                 $subheight	= $pos_array[$pustekuchen123]["height"];
@@ -184,8 +184,8 @@ if ($perso->getLineByLine() == 0) {
     
     foreach ($all_items as $oitem){ // linke tabelle fällen
 		$item = new Personalizationitem($oitem->getPersoItemID());
-        foreach(Array(0,1,2) as $justi){
-            if ($item->getJustification() == $justi) {
+        foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
+            if ($item->getGroup() == $group) {
                 if ($item->getDependencyID() == 0) {    // erstes fix object links
                     $xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
                     $ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
@@ -233,8 +233,8 @@ if ($perso->getLineByLine() == 0) {
                     
                     $pos_array = Array();
                     foreach ($all_items as $suboitem){
-                        $subitem = new Personalizationitem($suboitem->getPersoItemID());
-                        if ($subitem->getJustification() == $justi && $item->getId() != $subitem->getId()) {
+                        $subitem = new Personalizationitem($suboitem->getPersoItemID()); 
+                        if ($subitem->getGroup() == $group && $item->getId() != $subitem->getId()) {
                             $pos_array[] = Array("xpos" => $subitem->getXpos(), "ypos" => $subitem->getYpos(), "width" => $subitem->getWidth(), "height" => $subitem->getHeight());
                         }
                     }
@@ -243,7 +243,7 @@ if ($perso->getLineByLine() == 0) {
                     $pustekuchen123 = 0;
                     foreach ($all_items_reverse as $suboitem){
 					    $subitem = new Personalizationitem($suboitem->getPersoItemID());
-                        if ($subitem->getJustification() == $justi) {
+                        if ($subitem->getGroup() == $group) {
                             if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhänigkeit
                                 $subwidth	= $pos_array[$pustekuchen123]["width"];
                                 $subheight	= $pos_array[$pustekuchen123]["height"];

@@ -63,8 +63,8 @@ if ($perso->getLineByLine() == 0) {
     }
     
     foreach ($all_items as $item){ // linke tabelle faellen
-        foreach(Array(0,1,2) as $justi){
-            if ($item->getJustification() == $justi) {
+        foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
+            if ($item->getGroup() == $group) {
                 if ($item->getDependencyID() == 0) {    // erstes fix object links
                     $xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
                     $ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
@@ -111,7 +111,7 @@ if ($perso->getLineByLine() == 0) {
                     }
                     
                     foreach ($all_items as $subitem){
-                        if ($subitem->getJustification() == $justi) {
+                        if ($subitem->getGroup() == $group) {
                             if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhaenigkeit
                                 $subwidth	= $subitem->getWidth();
                                 $subheight	= $subitem->getHeight();
@@ -174,8 +174,8 @@ if ($perso->getLineByLine() == 0) {
     $all_items_reverse = array_reverse ($all_items);
     
     foreach ($all_items as $item){ // linke tabelle faellen
-        foreach(Array(0,1,2) as $justi){
-            if ($item->getJustification() == $justi) {
+        foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
+            if ($item->getGroup() == $group) {
                 if ($item->getDependencyID() == 0) {    // erstes fix object links
                     $xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
                     $ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
@@ -221,8 +221,8 @@ if ($perso->getLineByLine() == 0) {
                         }
                     }
                     
-                    foreach ($all_items_reverse as $subitem){
-                        if ($subitem->getJustification() == $justi) {
+                    foreach ($all_items_reverse as $subitem){ 
+                        if ($subitem->getGroup() == $group) {
                             if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhaenigkeit
                                 $subwidth	= $subitem->getWidth();
                                 $subheight	= $subitem->getHeight();

@@ -41,6 +41,7 @@ class Personalizationitem {
 	private $position = 0;		// Feld ist für Titel/Position (Dropdown im Frontend)
 	private $readonly = 0;		// Vordefiniertes Feld / nicht editierbar im Frontend
 	private $tab = 0;		    // Abstand in mm für \t
+	private $group;             // Gruppe fuer Zeile fuer Zeile
 
 	/**
 	 * Konstruktor eines Eingabefelds einer Personalisierung
@@ -79,6 +80,7 @@ class Personalizationitem {
 				$this->position = $r["position"];
 				$this->readonly = $r["readonly"];
 				$this->tab = $r["tab"];
+				$this->group = $r["zzgroup"];
 			}
 		}
 	}
@@ -115,6 +117,7 @@ class Personalizationitem {
 					position 			= {$this->position}, 
 					readonly 			= {$this->readonly}, 
 					tab 			    = {$this->tab}, 
+					zzgroup 			    = {$this->group},
 					reverse				= {$this->reverse} 
 					WHERE id = {$this->id}";
 			return $DB->no_result($sql);
@@ -124,13 +127,13 @@ class Personalizationitem {
 					 xpos, ypos, font, spacing, 
 					 width, height, text_size, justification,
 					 color_c, color_m, color_y, color_k, 
-					 dependency_id, reverse, predefined, position, readonly, tab )	
+					 dependency_id, reverse, predefined, position, readonly, tab, zzgroup )	
 					VALUES
 					({$this->status}, {$this->boxtype}, '{$this->title}', {$this->peronalid},
 					 {$this->xpos}, {$this->ypos}, {$this->font}, {$this->spacing},  
 					 {$this->width}, {$this->height}, {$this->textsize}, {$this->justification},  
 					 {$this->color_c}, {$this->color_m}, {$this->color_y}, {$this->color_k}, 
-					 {$this->dependencyID}, {$this->reverse}, {$this->predefined}, {$this->position}, {$this->readonly}, {$this->tab} )";
+					 {$this->dependencyID}, {$this->reverse}, {$this->predefined}, {$this->position}, {$this->readonly}, {$this->tab}, {$this->group} )";
 			$res = $DB->no_result($sql);
 
 			if($res){
@@ -430,6 +433,22 @@ class Personalizationitem {
     public function setTab($tab)
     {
         $this->tab = $tab;
+    }
+    
+	/**
+     * @return the $group
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+	/**
+     * @param field_type $group
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
     }
 }
 ?>

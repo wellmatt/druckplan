@@ -52,6 +52,7 @@ if($_REQUEST["subexec"] == "save"){
 			$item->setJustification((int)$_REQUEST["item_justification_{$i}"]);
 			$item->setFont((int)$_REQUEST["item_font_{$i}"]);
 			$item->setDependencyID((int)$_REQUEST["item_dependency_{$i}"]);
+			$item->setGroup((int)$_REQUEST["item_group_{$i}"]);
 			$item->setColor_c((int)$_REQUEST["item_color_c_{$i}"]);
 			$item->setColor_m((int)$_REQUEST["item_color_m_{$i}"]);
 			$item->setColor_y((int)$_REQUEST["item_color_y_{$i}"]);
@@ -205,6 +206,26 @@ function addItemRow()
 	<?	}?>
 	insert += '</select>';
 	insert += '</td>';
+	
+	insert += '<td class="content_row">';
+	insert += '<select name="item_group_'+count+'" class="text" style="width: 100px">';
+	insert += '<option value="0" selected="selected">A</option>';
+	insert += '<option value="1">B</option>';
+	insert += '<option value="2">C</option>';
+	insert += '<option value="3">D</option>';
+	insert += '<option value="4">E</option>';
+	insert += '<option value="5">F</option>';
+	insert += '<option value="6">G</option>';
+	insert += '<option value="7">H</option>';
+	insert += '<option value="8">I</option>';
+	insert += '<option value="9">J</option>';
+	insert += '<option value="10">K</option>';
+	insert += '<option value="11">L</option>';
+	insert += '<option value="12">M</option>';
+	insert += '<option value="13">N</option>';
+	insert += '<option value="14">O</option>';
+	insert += '</select></td>';
+	
 	insert += '<td class="content_row">';
 	insert += '<input type="checkbox" name="item_site_'+count+'" value="1" />';
 	insert += '</td>';
@@ -548,6 +569,7 @@ function addPriceRow()
 				<td class="content_row_header"><?=$_LANG->get('Zeilenabstand')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Schriftfarbe CMYK')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Abh&auml;ngigkeit')?> &emsp; <?=$_LANG->get('(Y-Pos)')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Gruppe')?></td>
 				<td class="content_row_header"><?=$_LANG->get('R&uuml;ck-S.')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Vordef.')?></td>
 				<td class="content_row_header"><?=$_LANG->get('R.O.')?></td>
@@ -640,6 +662,25 @@ function addPriceRow()
 									> <?=$dep_item->getTitle();?></option> 	
 						<?		}
 							}?>
+						</select>
+					</td>
+					<td class="content_row">
+						<select name="item_group_<?=$y?>" class="text" style="width: 100px">
+							<option value="0" <?if($item->getGroup() == 0) echo 'selected="selected"';?>>A</option>
+							<option value="1" <?if($item->getGroup() == 1) echo 'selected="selected"';?>>B</option>
+							<option value="2" <?if($item->getGroup() == 2) echo 'selected="selected"';?>>C</option>
+							<option value="3" <?if($item->getGroup() == 3) echo 'selected="selected"';?>>D</option>
+							<option value="4" <?if($item->getGroup() == 4) echo 'selected="selected"';?>>E</option>
+							<option value="5" <?if($item->getGroup() == 5) echo 'selected="selected"';?>>F</option>
+							<option value="6" <?if($item->getGroup() == 6) echo 'selected="selected"';?>>G</option>
+							<option value="7" <?if($item->getGroup() == 7) echo 'selected="selected"';?>>H</option>
+							<option value="8" <?if($item->getGroup() == 8) echo 'selected="selected"';?>>I</option>
+							<option value="9" <?if($item->getGroup() == 9) echo 'selected="selected"';?>>J</option>
+							<option value="10" <?if($item->getGroup() == 10) echo 'selected="selected"';?>>K</option>
+							<option value="11" <?if($item->getGroup() == 11) echo 'selected="selected"';?>>L</option>
+							<option value="12" <?if($item->getGroup() == 12) echo 'selected="selected"';?>>M</option>
+							<option value="13" <?if($item->getGroup() == 13) echo 'selected="selected"';?>>N</option>
+							<option value="14" <?if($item->getGroup() == 14) echo 'selected="selected"';?>>O</option>
 						</select>
 					</td>
 					<td class="content_row">
