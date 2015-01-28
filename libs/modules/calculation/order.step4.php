@@ -356,9 +356,36 @@ $(document).ready(function() {
             value="<?=$order->getCustSign()?>">
     </td>
 </tr>
+<?php 
+// Beilagen Export
+if (strlen($order->getBeilagen()) > 0){
+    if (strpos($order->getBeilagen(),"\r\n") === false){
+        $filename1 = './docs/'.$_USER->getId().'-Beilagen.csv';
+        $csv_file = fopen($filename1, "w");
+        $csv_string = $order->getBeilagen();
+        $csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
+        fwrite($csv_file, $csv_string);
+        fclose($csv_file);
+    } else {
+        $filename1 = './docs/'.$_USER->getId().'-Beilagen.csv';
+        $csv_file = fopen($filename1, "w");
+        $csv_string = "";
+        foreach(explode("\r\n", $order->getBeilagen()) as $line) {
+            $csv_string .= $line . ";\n";
+        }
+        $csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
+        fwrite($csv_file, $csv_string);
+        fclose($csv_file);
+    }
+}
+
+
+
+
+?>
 <tr>
     <td class="content_row" valign="top" colspan="2" rowspawn="3"></td>
-    <td class="content_row" valign="top" rowspan="3"><b><?=$_LANG->get('Beilagen-Hinweis')?></b></td>
+    <td class="content_row" valign="top" rowspan="3"><b><?=$_LANG->get('Beilagen-Hinweis')?> (<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv">export</a>)</b></td>
     <td class="content_row" rowspan="3">
         <textarea name="order_beilagen" style="width:330px;height:60px" class="text"><?=$order->getBeilagen()?></textarea>
     </td>

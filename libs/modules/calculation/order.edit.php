@@ -1461,6 +1461,7 @@ if((int)$_REQUEST["step"] == 7){
   </li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li>
+  <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=7'">Detailierte Übersicht</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=5'">Druckbogenvorschau</a></li>
   <?php 
   if ($order->getId() > 0){
@@ -1496,6 +1497,9 @@ if((int)$_REQUEST["step"] == 7){
 			break;
 		case 6:
 			require_once 'order.documents.php';
+			break;
+		case 7:
+			require_once 'order.showDetailed.php';
 			break;
 		default:
 			require_once 'order.step1.php';
