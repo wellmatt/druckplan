@@ -105,7 +105,8 @@ $(document).ready(function() {
         "sAjaxSource": "libs/modules/calculation/calculation.dt.ajax.php",
         "paging": true,
 		"stateSave": true,
-		"dom": 'T<"clear">flrtip',        
+		"dom": 'T<"clear">flrtip',
+		"order": [[ 6, "desc" ]],
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [

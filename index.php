@@ -52,13 +52,16 @@ if ($_REQUEST["doLogout"] == 1)
     setcookie('vic_login', "", time());
     $_SESSION = Array();
     
-    $logouttimer = Timer::getLastUsed();
+    $logouttimer = Timer::getLastUsed((int)$_REQUEST["userid"]);
+    var_dump($logouttimer);
     if ($logouttimer->getState() != Timer::TIMER_STOP){
+//         $logouttimer->setState(Timer::TIMER_DELETED);
         $logouttimer->delete();
+//         $logouttimer->save();
     }
     
     ?>
-<script language="JavaScript">location.href='index.php'</script>
+<!-- <script language="JavaScript">location.href='index.php'</script> -->
 <?
 } else
 {
@@ -83,6 +86,12 @@ if ($_REQUEST["doLogout"] == 1)
     $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
     if ($_USER && trim($_REQUEST["login_login"] != "") && trim($_REQUEST["login_password"]) != ""){
         $perf = new Perferences();
+        
+        $logouttimer = Timer::getLastUsed();
+        if ($logouttimer->getState() != Timer::TIMER_STOP){
+            $logouttimer->delete();
+        }
+        
         if ($perf->getDefault_ticket_id() > 0){
             $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
             $tmp_ticket_id = $tmp_def_ticket->getId();
@@ -536,12 +545,16 @@ if ($_USER == false)
 			                                if(Timer::getLastUsed()->getId() > 0){
 			                                    $active_timer = Timer::getLastUsed();
 			                                    if ($active_timer->getState() == Timer::TIMER_RUNNING){
-			                                        echo 'Logout (Timer läuft!)</br>';
+			                                        if ((time()-300) > $active_timer->getStarttime()){
+			                                            echo 'Logout (Timer läuft!)</br>';
+			                                        } else {
+			                                            echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';">Logout</a></br>';
+			                                        }
 			                                    } else {
-			                                        echo '<a href="JavaScript: document.location=\'index.php?doLogout=1\';">Logout</a></br>';
+			                                        echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';">Logout</a></br>';
 			                                    }
 			                                } else {
-			                                    echo '<a href="JavaScript: document.location=\'index.php?doLogout=1\';">Logout</a></br>';
+			                                    echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';">Logout</a></br>';
 			                                }
 			                                ?>
                                         </label>

@@ -83,9 +83,10 @@ class Timer
     public function delete()
     {
         global $DB;
+        $status = Timer::TIMER_DELETED;
         if ($this->id > 0) {
             $sql = "UPDATE timers SET
-            state = {$this->TIMER_DELETE}
+            state = {$status}  
             WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
                 unset($this);
@@ -133,13 +134,16 @@ class Timer
         $this->state = self::TIMER_STOP;
     }
 
-    public static function getLastUsed()
+    public static function getLastUsed($userid = 0)
     {
         global $DB;
         global $_USER;
         $timer = new Timer();
         
-        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$_USER->getId()};";
+        if ($userid == 0)
+            $userid = $_USER->getId();
+        
+        $sql = "SELECT max(id) id FROM timers WHERE crtuser = {$userid};";
         if($DB->num_rows($sql)){
             $r = $DB->select($sql);
             $timer = new Timer($r[0]["id"]);

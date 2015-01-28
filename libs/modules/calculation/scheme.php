@@ -172,6 +172,22 @@ $product_per_paper   = $product_per_line * $product_rows;
 // echo "</br>";
 // echo "Total Page count: " . $total_pages . "</br>";
 
+// SCHNITTE TEST
+
+if ($tmp_anschnitt > 0){
+    echo '</br>Berechnung mit Zwischenschnitt</br>';
+    echo 'Basis Schnitte: 4 (außen) </br>';
+    echo 'Schnitte Horizontal: ' . ($product_rows_closed-1)*2 . '</br>';
+    echo 'Schnitte Waagerecht: ' . ($product_per_line_closed/2-1)*2 . '</br>';
+    echo 'Schnitte gesamt: ' . (4 + (($product_rows_closed-1)*2) + (($product_per_line_closed/2-1)*2)) . '</br>';
+} else {
+    echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+    echo '</br>Basis Schnitte: 4 (außen) </br>';
+    echo 'Schnitte Horizontal: ' . ($product_rows_closed-1)*2 . '</br>';
+    echo 'Schnitte Waagerecht: ' . ($product_per_line_closed/2-1)*2 . '</br>';
+    echo 'Schnitte gesamt: ' . (4 + (($product_rows_closed-1)*2) + (($product_per_line_closed/2-1)*2)) . '</br>';
+}
+
 $schemes = Array();
 $x = 0;
 $rest = 1;
