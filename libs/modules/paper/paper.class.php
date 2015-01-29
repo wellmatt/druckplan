@@ -81,7 +81,7 @@ class Paper {
                 }
                 
                 $sql = "SELECT weight_from, weight_to, size_width, size_height,
-                            quantity_from, price 
+                            quantity_from, price, weight 
                         FROM papers_prices
                         WHERE paper_id = {$this->id}
                         ORDER BY size_width, size_height, weight_from";
@@ -460,11 +460,11 @@ class Paper {
             {
                 $sql = "INSERT INTO papers_prices
                             (paper_id, weight_from, weight_to, size_width, size_height,
-                             quantity_from, price)
+                             quantity_from, price, weight)
                         VALUES
                             ({$this->id}, {$p["weight_from"]}, {$p["weight_to"]},
                              {$p["size_width"]}, {$p["size_height"]}, {$p["quantity_from"]},
-                             {$p["price"]})";
+                             {$p["price"]}, {$p["weight"]})";
                 $DB->no_result($sql);
             }
             return true;

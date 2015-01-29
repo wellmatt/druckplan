@@ -148,8 +148,17 @@
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      
     /* Data set length after filtering */
+//     $sQuery = "
+//         SELECT FOUND_ROWS()
+//     ";
     $sQuery = "
-        SELECT FOUND_ROWS()
+        SELECT COUNT(".$sIndexColumn.")
+        FROM   
+        (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status` 
+        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
+        SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
+        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        WHERE status > 0
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

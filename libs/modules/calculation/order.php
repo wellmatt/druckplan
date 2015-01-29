@@ -164,13 +164,11 @@ $(document).ready(function() {
     $("#orders tbody td").live('click',function(){
         var aPos = $('#orders').dataTable().fnGetPosition(this);
         var aData = $('#orders').dataTable().fnGetData(aPos[0]);
-//         alert(aData.join('\n'));
         if (aData[1] == 'K'){
             document.location='index.php?page=libs/modules/calculation/order.php&exec=edit&id='+aData[0]+'&step=4';
         } else if (aData[1] == 'V'){
         	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
         }
-        // at this point aData is an array containing all the row info, use it to retrieve what you need.
     });
     
 } );

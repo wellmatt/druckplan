@@ -187,7 +187,8 @@
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT FOUND_ROWS()
+        SELECT COUNT(".$sIndexColumn.")
+        FROM   $sTable WHERE state > 1
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

@@ -80,7 +80,9 @@ if($_REQUEST["subexec"] == "save")
             $t["weight_from"] = (int)$match["weight"];
             $t["weight_to"] = (int)$match["weight"];
             $t["quantity_from"] = (int)$_REQUEST["quantity_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"];
+            $t["weight"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["kgperthousand_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"])));
             $t["price"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST[$key])));
+            var_dump($t);
             if ($t["weight_from"] && $t["weight_to"] && $t["price"])
                 $prices[] = $t;
         }
@@ -206,6 +208,10 @@ function addPriceRow(config, qty)
 	insert += '<td class="content_row_clear"><?=$_LANG->get('Preis pro 1000 Bogen')?> ';
 	insert += ' &nbsp;&nbsp;<input name="priceperthousand_'+config+'_'+count+'" class="text"'; 
     insert += 'style="width:60px;text-align:right;" value=""> <?=$_USER->getClient()->getCurrency()?>';
+	insert += '</td>';
+	insert += '<td class="content_row_clear"><?=$_LANG->get('KG pro 1000 Bogen')?> ';
+	insert += ' &nbsp;&nbsp;<input name="kgperthousand_'+config+'_'+count+'" class="text"'; 
+    insert += 'style="width:60px;text-align:right;" value="">';
 	insert += '</td></tr>';
 	obj.insertAdjacentHTML("AfterEnd", insert);
 }
@@ -262,9 +268,9 @@ function addSupplierRow()
         <td class="content_row_header"><?=$_LANG->get('Preisbasis')?></td>
         <td class="content_row_clear">
             <?=$_LANG->get('Preis')?> 
-            <input name="paper_pricebase" value="<?=Paper::PRICE_PER_100KG?>" type="radio" id="paper_pricebase"
+<?php /*            <input name="paper_pricebase" value="<?=Paper::PRICE_PER_100KG?>" type="radio" id="paper_pricebase"
                 <?if($paper->getPriceBase() == Paper::PRICE_PER_100KG) echo "checked"?> onchange="warnPBChange(<?=Paper::PRICE_PER_100KG?>)"> 
-            <?=$_LANG->get('pro')?> 100kg
+            <?=$_LANG->get('pro')?> 100kg */ ?>
             <input name="paper_pricebase" value="<?=Paper::PRICE_PER_THOUSAND?>" type="radio" id="paper_pricebase"
                 <?if($paper->getPriceBase() == Paper::PRICE_PER_THOUSAND) echo "checked"?> onchange="warnPBChange(<?=Paper::PRICE_PER_THOUSAND?>)"> 
             <?=$_LANG->get('pro')?> 1.000 <?=$_LANG->get('Bogen')?>
@@ -373,9 +379,10 @@ function addSupplierRow()
 <?  } else { ?>
 <table width="100%">
     <colgroup>
-        <col width="100">
-        <col width="100">
-        <col width="160">
+        <col width="80">
+        <col width="80">
+        <col width="230">
+        <col width="230">
         <col>
     </colgroup>
     <? foreach ($paper->getSizes() as $s) { 
@@ -432,9 +439,16 @@ function addSupplierRow()
                 echo $_LANG->get('Preis pro 1000 Bogen')." ";
                 echo '&nbsp;&nbsp;<input name="priceperthousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text" 
                         style="width:60px;text-align:right;" value="'.printPrice($price["price"]).'">
-                        '.$_USER->getClient()->getCurrency().'
-                        &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
-                    </td>';
+                        '.$_USER->getClient()->getCurrency().'</td>';
+
+                echo '</td>
+                    <td class="content_row_clear">';
+                
+                echo $_LANG->get('KG pro 1000 Bogen')." ";
+                echo '&nbsp;&nbsp;<input name="kgperthousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text"
+                                    style="width:60px;text-align:right;" value="'.printPrice($price["weight"]).'">
+                                        &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
+                                        </td>';
                 $firstWeight = false;
                 $x++;
             }
