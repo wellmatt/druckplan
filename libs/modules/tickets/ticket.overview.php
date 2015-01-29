@@ -12,8 +12,13 @@ require_once 'libs/modules/schedule/schedule.class.php';
 <? // echo $DB->getLastError();?>
 
 <!-- DataTables -->
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 <script type="text/javascript">
@@ -130,7 +135,7 @@ $(document).ready(function() {
 
 <br />
 <div class="box1">
-	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
+	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
 		<thead>
 			<tr>
 				<th><?=$_LANG->get('ID')?></th>

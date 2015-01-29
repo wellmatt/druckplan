@@ -69,11 +69,15 @@ if(($_REQUEST["exec"] == "copy" && !$_REQUEST['cust_id']) || ($_REQUEST["exec"] 
 ?>
 <!-- DataTables -->
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
 <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 
+<script type="text/javascript" charset="utf8" src="jscripts/moment/moment-with-locales.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 <script type="text/javascript">
 
 
@@ -122,6 +126,15 @@ $(document).ready(function() {
                      ]
                  },
 		"pageLength": 50,
+		"fnServerData": function ( sSource, aoData, fnCallback ) {
+			var iMin = document.getElementById('ajax_date_min').value;
+			var iMax = document.getElementById('ajax_date_max').value;
+		    aoData.push( { "name": "start", "value": iMin, } );
+		    aoData.push( { "name": "end", "value": iMax, } );
+		    $.getJSON( sSource, aoData, function (json) {
+		        fnCallback(json)
+		    } );
+		},
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"aoColumnDefs": [ { "sType": "uk_date", "aTargets": [ 4 ] } ],
 		"columns": [
@@ -170,10 +183,37 @@ $(document).ready(function() {
         	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
         }
     });
-    
+
+	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
+	$('#date_min').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
+            	$('#orders').dataTable().fnDraw();
+            }
+	});
+	$('#date_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
+            	$('#orders').dataTable().fnDraw();
+            }
+	});
+	
 } );
 </script>
-
 <table width="100%">
    <tr>
       <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorg&auml;nge')?></td>
@@ -191,6 +231,24 @@ $(document).ready(function() {
 
 <div class="box1">
 
+<div class="box2">
+    <table>
+        <tr align="left">
+            <td>Datum Filter:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
+                <input name="date_min" id="date_min" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+            </td>
+            <td valign="left">
+                <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
+                bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+            </td>
+        </tr>
+    </table>
+</div>
+</br>
 <table id="orders" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
 	<thead>
 		<tr>

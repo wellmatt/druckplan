@@ -175,7 +175,7 @@
                LEFT JOIN `user` ON `user`.id = tickets.assigned_user
                LEFT JOIN groups ON groups.id = tickets.assigned_group
                LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
-               WHERE tickets_states.id > 1 
+               WHERE tickets.state > 0 
                $sLimit 
                ) tickets 
                $sWhere
@@ -186,10 +186,29 @@
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      
     /* Data set length after filtering */
+//     $sQuery = "
+//         SELECT COUNT(".$sIndexColumn.")
+//         FROM   $sTable WHERE state > 1
+//     ";
     $sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE state > 1
+        SELECT COUNT(".$sIndexColumn.") FROM (SELECT
+               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+               businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser 
+               FROM tickets
+               LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
+               LEFT JOIN tickets_states ON tickets_states.id = tickets.state
+               LEFT JOIN tickets_priorities ON tickets_priorities.id = tickets.priority
+               LEFT JOIN tickets_categories ON tickets_categories.id = tickets.category
+               LEFT JOIN `user` ON `user`.id = tickets.assigned_user
+               LEFT JOIN groups ON groups.id = tickets.assigned_group
+               LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
+               WHERE tickets.state > 0 
+               ) tickets 
+               $sWhere
     ";
+    
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
     $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
@@ -199,7 +218,7 @@
     /* Total data set length */
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE state > 1
+        FROM   $sTable WHERE state > 0
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

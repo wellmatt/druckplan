@@ -13,8 +13,11 @@ require_once('libs/modules/businesscontact/businesscontact.class.php');
 <script type="text/javascript" src="jscripts/lightbox/lightbox.js"></script>
 <!-- DataTables -->
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {

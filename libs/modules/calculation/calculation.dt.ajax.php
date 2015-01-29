@@ -93,7 +93,7 @@
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "fremdleistung" && $aColumns[$i] != "crtdat" && $aColumns[$i] != "status" )
+            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "fremdleistung" && $aColumns[$i] != "crtdat" && $aColumns[$i] != "status" && $aColumns[$i] != "type" )
             {
                 $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
             }
@@ -128,6 +128,12 @@
         $sWhere .= " AND status > 0 ";
     }
     
+    if ($_GET['start'] != ""){
+        $sWhere .= " AND crtdat >= {$_GET['start']} ";
+    }
+    if ($_GET['end'] != ""){
+        $sWhere .= " AND crtdat <= {$_GET['end']} ";
+    }
     
     /*
      * SQL queries
@@ -158,9 +164,10 @@
         FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
         SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
         FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
-        WHERE status > 0
+        $sWhere
     ";
 //     var_dump($sQuery);
+
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
     $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
     $iFilteredTotal = $aResultFilterTotal[0];

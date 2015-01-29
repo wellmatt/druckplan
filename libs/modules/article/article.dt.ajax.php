@@ -94,7 +94,7 @@
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" )
+            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "art_picture" )
             {
                 $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
             }
@@ -147,8 +147,12 @@
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE status = 1
+        SELECT COUNT(article.id)
+               FROM article 
+               LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
+               INNER JOIN tradegroup ON tradegroup.id = article.tradegroup
+               LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id 
+        $sWhere
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -158,8 +162,12 @@
      
     /* Total data set length */
     $sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE status = 1
+        SELECT COUNT(article.id) 
+        FROM article 
+        LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
+        INNER JOIN tradegroup ON tradegroup.id = article.tradegroup 
+        LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id  
+        WHERE status = 1
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
