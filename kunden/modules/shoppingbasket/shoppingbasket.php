@@ -248,7 +248,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
     		    			<?	foreach($all_deliveryAddresses AS $deliv){ ?>
     		    					<option value="<?=$deliv->getId()?>"
     		    							<?if($deliv->getId() == $entry->getDeliveryAdressID()) echo 'selected="selected"';?>>
-    		    					<?=$deliv->getAddressAsLine()?> (<?=$deliv->getNameAsLine()?>)
+    		    					<?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
     		    					</option>
     						<?	} ?>
     		    		</select>
@@ -259,7 +259,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
     		    			<?	foreach($all_invoiceAddresses AS $invoice){ ?>
     		    					<option value="<?=$invoice->getId()?>"
     		    							<?if($invoice->getId() == $entry->getInvoiceAdressID()) echo 'selected="selected"';?>>
-    		    					<?=$invoice->getAddressAsLine()?> (<?=$invoice->getNameAsLine()?>)
+    		    					<?=$invoice->getNameAsLine()?> (<?=$invoice->getAddressAsLine()?>)
     		    					</option>
     						<?	} ?>
     		    		</select> 

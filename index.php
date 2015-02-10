@@ -10,8 +10,8 @@ ob_start();
 set_time_limit(150);
 
 // error_reporting(E_ERROR | E_WARNING | E_PARSE);
-error_reporting(-1);
-ini_set('display_errors', 1);
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 
 require_once("./config.php");
 require_once("./libs/basic/mysql.php");

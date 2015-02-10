@@ -166,12 +166,14 @@ case 'docs':
 case 'setState':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();
-	require_once('collectiveinvoice.overview.php');
+	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
+// 	require_once('collectiveinvoice.overview.php');
 	break;
 case 'setState2':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();
-	require_once('collectiveinvoice.edit.php');
+	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
+// 	require_once('collectiveinvoice.edit.php');
 	break;
 default:
 	require_once('collectiveinvoice.overview.php');

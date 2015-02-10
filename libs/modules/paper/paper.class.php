@@ -195,6 +195,7 @@ class Paper {
         AND (( width >= {$minWidth} AND height >= {$minHeight})
             OR (width >= {$minHeight} AND height >= {$minWidth}))";
     
+//         echo $sql;
         if($DB->num_rows($sql))
             $sqlsizes = $DB->select($sql);
 

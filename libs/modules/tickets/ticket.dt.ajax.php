@@ -158,15 +158,91 @@
         }
     }
     
+
+
+    if ($_GET['start'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE crtdate >= {$_GET['start']} ";
+        } else {
+            $sWhere .= " AND crtdate >= {$_GET['start']} ";
+        }
+    }
+    if ($_GET['end'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE crtdate <= {$_GET['end']} ";
+        } else {
+            $sWhere .= " AND crtdate <= {$_GET['end']} ";
+        }
+    }
+
+    if ($_GET['start_due'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE duedate >= {$_GET['start_due']} ";
+        } else {
+            $sWhere .= " AND duedate >= {$_GET['start_due']} ";
+        }
+    }
+    if ($_GET['end_due'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE duedate <= {$_GET['end_due']} ";
+        } else {
+            $sWhere .= " AND duedate <= {$_GET['end_due']} ";
+        }
+    }
+    
+    if ($_GET['category'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tcid = {$_GET['category']} ";
+        } else {
+            $sWhere .= " AND tcid = {$_GET['category']} ";
+        }
+    }
+    
+    if ($_GET['state'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tsid = {$_GET['state']} ";
+        } else {
+            $sWhere .= " AND tsid = {$_GET['state']} ";
+        }
+    }
+    
+    if ($_GET['crtuser'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE crtuserid = {$_GET['crtuser']} ";
+        } else {
+            $sWhere .= " AND crtuserid = {$_GET['crtuser']} ";
+        }
+    }
+    
+    if ($_GET['assigned'] != ""){
+        
+        if (substr($_GET['assigned'], 0, 2) == "u_"){
+            $assigned = (int)substr($_GET['assigned'], 2);
+            if ($sWhere == ""){
+                $sWhere .= " WHERE assigned_user = {$assigned} ";
+            } else {
+                $sWhere .= " AND assigned_user = {$assigned} ";
+            }
+        } elseif (substr($_GET['assigned'], 0, 2) == "g_") {
+            $assigned = (int)substr($_GET['assigned'], 2);
+            if ($sWhere == ""){
+                $sWhere .= " WHERE assigned_group = {$assigned} ";
+            } else {
+                $sWhere .= " AND assigned_group = {$assigned} ";
+            }
+        }
+        
+    }
+    
     /*
      * SQL queries
      * Get data to display
      */ 
     $sQuery = "SELECT * FROM (SELECT
                tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
-               businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
-               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser 
+               tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -193,9 +269,9 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.") FROM (SELECT
                tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
-               businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
-               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser 
+               tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state

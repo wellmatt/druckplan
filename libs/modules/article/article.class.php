@@ -533,7 +533,7 @@ class Article {
 		global $DB;
 		$retval=FALSE;
 		
-		$sql = "SELECT * FROM article_pictures WHERE articleid = {$this->id}";
+		$sql = "SELECT * FROM article_pictures WHERE articleid = {$this->id} ORDER BY id ASC ";
 		
 		if($DB->num_rows($sql)){
 			$retval = $DB->select($sql);

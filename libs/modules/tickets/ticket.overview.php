@@ -68,6 +68,27 @@ $(document).ready(function() {
                      ]
                  },
 		"pageLength": 50,
+		"fnServerData": function ( sSource, aoData, fnCallback ) {
+			var iMin = document.getElementById('ajax_date_min').value;
+			var iMax = document.getElementById('ajax_date_max').value;
+			var iMinDue = document.getElementById('ajax_date_due_min').value;
+			var iMaxDue = document.getElementById('ajax_date_due_max').value;
+			var category = document.getElementById('ajax_category').value;
+			var state = document.getElementById('ajax_state').value;
+			var crtuser = document.getElementById('ajax_crtuser').value;
+			var assigned = document.getElementById('ajax_assigned').value;
+		    aoData.push( { "name": "start", "value": iMin, } );
+		    aoData.push( { "name": "end", "value": iMax, } );
+		    aoData.push( { "name": "start_due", "value": iMinDue, } );
+		    aoData.push( { "name": "end_due", "value": iMaxDue, } );
+		    aoData.push( { "name": "category", "value": category, } );
+		    aoData.push( { "name": "state", "value": state, } );
+		    aoData.push( { "name": "crtuser", "value": crtuser, } );
+		    aoData.push( { "name": "assigned", "value": assigned, } );
+		    $.getJSON( sSource, aoData, function (json) {
+		        fnCallback(json)
+		    } );
+		},
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
 		            null,
@@ -113,6 +134,77 @@ $(document).ready(function() {
         var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
         document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0];
     });
+
+	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
+	$('#date_min').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+	$('#date_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+	$('#date_due_min').datepicker(
+			{
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				dateFormat: 'dd.mm.yy',
+	            showOn: "button",
+	            buttonImage: "images/icons/calendar-blue.png",
+	            buttonImageOnly: true,
+	            onSelect: function(selectedDate) {
+	                $('#ajax_date_due_min').val(moment($('#date_due_min').val(), "DD-MM-YYYY").unix());
+	            	$('#ticketstable').dataTable().fnDraw();
+	            }
+		});
+	$('#date_due_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_due_max').val(moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340);
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+
+	$('#category').change(function(){	
+	    $('#ajax_category').val($(this).val()); 
+	    $('#ticketstable').dataTable().fnDraw();
+	})
+	$('#state').change(function(){	
+		$('#ajax_state').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw();  
+	})
+	$('#crtuser').change(function(){	
+		$('#ajax_crtuser').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
+	$('#assigned').change(function(){	
+		$('#ajax_assigned').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
 } );
 </script>
 
@@ -131,9 +223,110 @@ $(document).ready(function() {
 		</td>
 	</tr>
 </table>
-
-
 <br />
+
+<div class="box2">
+    <table>
+        <tr align="left">
+            <td>Datum (erstellt):&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
+                <input name="date_min" id="date_min" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+            </td>
+            <td valign="left">
+                <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
+                bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+            </td>
+        </tr>
+        <tr align="left">
+            <td>Datum (fällig):&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>  
+                <input name="date_due_min" id="date_due_min" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+            </td>
+            <td valign="left">
+                <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>  
+                bis: <input name="date_due_max" id="date_due_max" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+            </td>
+        </tr>
+        <tr align="left">
+            <td>Kategorie:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_category" id="ajax_category" type="hidden"/>  
+                <select name="category" id="category" style="width:160px">
+                    <option value="" selected></option> 
+                    <?php 
+                    $tkt_all_categories = TicketCategory::getAllCategories();
+                    foreach ($tkt_all_categories as $tkt_category){
+                        echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr align="left">
+            <td>Status:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_state" id="ajax_state" type="hidden"/>  
+                <select name="state" id="state" style="width:160px">
+                <option value="" selected></option> 
+                <?php 
+                $tkt_all_states = TicketState::getAllStates();
+                foreach ($tkt_all_states as $tkt_state){
+                    if ($tkt_state->getId() != 1){
+                        echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
+                    }
+                }
+                ?>
+                </select>
+            </td>
+        </tr>
+        <tr align="left">
+            <td>erst. von:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_crtuser" id="ajax_crtuser" type="hidden"/>  
+                <select name="crtuser" id="crtuser" style="width:160px">
+                <option value="" selected></option> 
+                <?php 
+                $all_user = User::getAllUser(User::ORDER_NAME);
+                foreach ($all_user as $tkt_user){
+                    echo '<option value="'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                }
+                ?>
+                </select>
+            </td>
+        </tr>
+        <tr align="left">
+            <td>zugewiesen an:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_assigned" id="ajax_assigned" type="hidden"/>  
+                <select name="assigned" id="assigned" style="width:160px">
+                <option value="" selected></option> 
+                <option disabled>-- Users --</option>
+                <?php 
+                $all_user = User::getAllUser(User::ORDER_NAME);
+                $all_groups = Group::getAllGroups(Group::ORDER_NAME);
+                foreach ($all_user as $tkt_user){
+                    echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                }
+                ?>
+                <option disabled>-- Groups --</option>
+                <?php 
+                foreach ($all_groups as $tkt_groups){
+                    echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
+                }
+                ?>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+</br>
+
 <div class="box1">
 	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
 		<thead>
