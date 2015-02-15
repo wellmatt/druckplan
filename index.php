@@ -10,8 +10,8 @@ ob_start();
 set_time_limit(150);
 
 // error_reporting(E_ERROR | E_WARNING | E_PARSE);
-// error_reporting(-1);
-// ini_set('display_errors', 1);
+error_reporting(-1);
+ini_set('display_errors', 1);
 
 require_once("./config.php");
 require_once("./libs/basic/mysql.php");
@@ -53,15 +53,13 @@ if ($_REQUEST["doLogout"] == 1)
     $_SESSION = Array();
     
     $logouttimer = Timer::getLastUsed((int)$_REQUEST["userid"]);
-    var_dump($logouttimer);
-    if ($logouttimer->getState() != Timer::TIMER_STOP){
-//         $logouttimer->setState(Timer::TIMER_DELETED);
-        $logouttimer->delete();
-//         $logouttimer->save();
-    }
+//     var_dump($logouttimer);
+//     if ($logouttimer->getState() != Timer::TIMER_STOP){
+//         $logouttimer->delete();
+//     }
     
     ?>
-<!-- <script language="JavaScript">location.href='index.php'</script> -->
+<script language="JavaScript">location.href='index.php'</script>
 <?
 } else
 {
@@ -87,23 +85,23 @@ if ($_REQUEST["doLogout"] == 1)
     if ($_USER && trim($_REQUEST["login_login"] != "") && trim($_REQUEST["login_password"]) != ""){
         $perf = new Perferences();
         
-        $logouttimer = Timer::getLastUsed();
-        if ($logouttimer->getState() != Timer::TIMER_STOP){
-            $logouttimer->delete();
-        }
+//         $logouttimer = Timer::getLastUsed();
+//         if ($logouttimer->getState() != Timer::TIMER_STOP){
+//             $logouttimer->delete();
+//         }
         
-        if ($perf->getDefault_ticket_id() > 0){
-            $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
-            $tmp_ticket_id = $tmp_def_ticket->getId();
+//         if ($perf->getDefault_ticket_id() > 0){
+//             $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
+//             $tmp_ticket_id = $tmp_def_ticket->getId();
 
-            $logintimer = new Timer();
-            $logintimer->setObjectid($tmp_ticket_id);
-            $logintimer->setModule("Ticket");
-            $now = time();
-            $logintimer->setStarttime($now);
-            $logintimer->setState(Timer::TIMER_RUNNING);
-            $logintimer->save();
-        }
+//             $logintimer = new Timer();
+//             $logintimer->setObjectid($tmp_ticket_id);
+//             $logintimer->setModule("Ticket");
+//             $now = time();
+//             $logintimer->setStarttime($now);
+//             $logintimer->setState(Timer::TIMER_RUNNING);
+//             $logintimer->save();
+//         }
     }
     
 }
@@ -384,6 +382,7 @@ if ($_USER == false)
                 $active_timer = Timer::getLastUsed();
                 if ($active_timer->getState() == Timer::TIMER_RUNNING){
                     $tmp_ticket_home = new Ticket($active_timer->getObjectid());
+                    $timer_start_home = $active_timer->getStarttime();
                     ?>
                         <!-- divider -->
                         <li class="divider"></li>
@@ -391,20 +390,20 @@ if ($_USER == false)
                           <a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?=$tmp_ticket_home->getId()?>" style="padding-bottom:0px;padding-top:5px;display:block;position:relative;">
                             <span id="ticket_timer_home" class="timer duration btn btn-warning" data-duration="0" style="padding-bottom:0px;padding-top:0px;display:block;position:relative;"></span>
                           </a>
-		                  <input id="ticket_timer_timestamp_home" name="ticket_timer_timestamp_home" type="hidden" value="<?php echo $active_timer->getStarttime();?>"/>
+		                  <input id="ticket_timer_timestamp_home" name="ticket_timer_timestamp_home" type="hidden" value="<?php echo $timer_start_home;?>"/>
                         </li>
                         
                         <script>
                             $(document).ready(function () {
-                            	var clock;
-                            	var sec = moment().unix();
-                            	var start = parseInt($('#ticket_timer_timestamp_home').val());
-                            	if (start != 0){
-                            		clock = setInterval(stopWatch,1000);
+                            	var clock_home;
+                            	var sec_home = moment().unix();
+                            	var start_home = parseInt($('#ticket_timer_timestamp_home').val());
+                            	if (start_home != 0){
+                            		clock_home = setInterval(stopWatch_home,1000);
                             	}
-                                function stopWatch() {
-                                	sec++;
-                                	var timestamp = sec-start;
+                                function stopWatch_home() {
+                                	sec_home++;
+                                	var timestamp = sec_home-start_home;
                                 	$("#ticket_timer_home").html(rectime(timestamp));
                                 }
                                 function rectime(secs) {

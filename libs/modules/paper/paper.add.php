@@ -82,7 +82,7 @@ if($_REQUEST["subexec"] == "save")
             $t["quantity_from"] = (int)$_REQUEST["quantity_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"];
             $t["weight"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["kgperthousand_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"])));
             $t["price"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST[$key])));
-            var_dump($t);
+//             var_dump($t);
             if ($t["weight_from"] && $t["weight_to"] && $t["price"])
                 $prices[] = $t;
         }
@@ -105,6 +105,7 @@ if($_REQUEST["subexec"] == "save")
         $paper->setPrices(Array());
     
     $paper->setName(trim(addslashes($_REQUEST["paper_name"])));
+    $paper->setComment(trim(addslashes($_REQUEST["paper_comment"])));
     $paper->setPriceBase((int)$_REQUEST["paper_pricebase"]);
     
     $paper->setWeights($weights);
@@ -303,6 +304,12 @@ function addSupplierRow()
             <img src="images/icons/plus.png" class="pointer icon-link" onclick="addWeightField()">
         </td>
     </tr>    
+	<tr>
+		<td class="content_row_header" valign="top">Beschreibung</td>
+		<td class="content_row_clear" valign="top">
+			<textarea name="paper_comment" style="width:300px;height:100px" class="text"><?=$paper->getComment()?></textarea>
+		</td>
+	</tr>
 </table>
 </div>
 </br>

@@ -123,6 +123,8 @@ class Timer
                 $this->setStarttime($lasttimer->getStoptime()+1);
             }
         }
+        
+        $this->save();
     }
 
     public function stop($cdate = 0)
@@ -132,6 +134,8 @@ class Timer
         else
             $this->stoptime = time();
         $this->state = self::TIMER_STOP;
+        
+        $this->save();
     }
 
     public static function getLastUsed($userid = 0)

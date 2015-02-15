@@ -153,7 +153,7 @@ function addPrioRow()
 			<li><a href="#tabs-0"><? echo $_LANG->get('Kategorien');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Priorit&auml;ten');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('Stati');?></a></li>
-			<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>
+			<?php /*<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>*/?>
 		</ul>
        <div id="tabs-0">
             <?php 
@@ -291,6 +291,7 @@ function addPrioRow()
 				<? } ?>
 			</table>
        </div>
+       <?php /*
        <div id="tabs-3">
        <?php 
        if ($perf->getDefault_ticket_id() > 0){
@@ -313,6 +314,7 @@ function addPrioRow()
                </tr>
             </table>
        </div>
+       */?>
 
     <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
     <tr>

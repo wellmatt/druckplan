@@ -19,6 +19,7 @@ class Paper {
     
     private $id = 0;
     private $name;
+    private $comment;
     private $status;
     private $priceBase = 0;
     private $selectedSize;
@@ -40,6 +41,7 @@ class Paper {
                 $res = $DB->select($sql);
                 $this->id = $res[0]["id"];
                 $this->name = $res[0]["name"];
+                $this->comment = $res[0]["comment"];
                 $this->priceBase = $res[0]["pricebase"];
                 
                 $sql = "SELECT * FROM papers_weights 
@@ -415,6 +417,7 @@ class Paper {
             
             $sql = "UPDATE papers SET
                         name = '{$this->name}',
+                        comment = '{$this->comment}',
                         pricebase = {$this->priceBase}
                     WHERE
                         id = {$this->id}";
@@ -473,9 +476,9 @@ class Paper {
         } else
         {
             $sql = "INSERT INTO papers 
-                        (name, pricebase)
+                        (name, comment, pricebase)
                     VALUES
-                        ('{$this->name}', {$this->priceBase})";
+                        ('{$this->name}', '{$this->comment}', {$this->priceBase})";
             $res = $DB->no_result($sql);
             if($res)
             {
@@ -628,6 +631,22 @@ class Paper {
     public function setSupplier($supplier)
     {
         $this->supplier = $supplier;
+    }
+    
+	/**
+     * @return the $comment
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+	/**
+     * @param field_type $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
     }
 }
 ?>

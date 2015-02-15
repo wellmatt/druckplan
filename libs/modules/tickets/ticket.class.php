@@ -172,8 +172,8 @@ class Ticket {
     {
         global $DB;
         if ($this->id > 0) {
-            $sql = "UPDATE tickets SET
-                    state = 0
+            $sql = "UPDATE tickets SET 
+                    state = 0 
     				WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
                 unset($this);
