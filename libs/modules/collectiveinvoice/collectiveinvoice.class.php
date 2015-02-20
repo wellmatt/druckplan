@@ -143,7 +143,7 @@ class CollectiveInvoice{
 				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
 				 '{$this->intent}')";
 			$res = $DB->no_result($sql);
-
+//             echo $sql;
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
 				$thisid = $DB->select($sql);

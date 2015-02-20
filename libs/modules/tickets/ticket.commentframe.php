@@ -95,7 +95,7 @@ if($_REQUEST["exec"] == "edit"){
                 }
             }
         }
-        echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$_REQUEST["this_tktid"].'&start_timer=1";</script></script>';
+        echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$_REQUEST["this_tktid"].'&start_timer=1";</script>';
     }
 }
 

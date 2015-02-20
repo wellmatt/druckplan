@@ -39,7 +39,7 @@ if($_REQUEST["exec"] == "edit"){
             $ticket->setAssigned_group(new Group(0));
             $ticket->setAssigned_user(new User((int)substr($_REQUEST["tkt_assigned"], 2)));
             $new_assiged = "Benutzer <b>" . $ticket->getAssigned_user()->getNameAsLine() . "</b>";
-            if ($ticket->getAssigned_user() != $_USER){
+            if ($ticket->getAssigned_user() != $_USER && $ticket->getCrtuser() != $ticket->getAssigned_user()){
                 Notification::generateNotification($ticket->getAssigned_user(), get_class($ticket), "Assign", $ticket->getNumber(), $ticket->getId());
             }
         } elseif (substr($_REQUEST["tkt_assigned"], 0, 2) == "g_") {
@@ -47,8 +47,8 @@ if($_REQUEST["exec"] == "edit"){
             $ticket->setAssigned_user(new User(0));
             $new_assiged = "Gruppe <b>" . $ticket->getAssigned_group()->getName() . "</b>";
             foreach ($ticket->getAssigned_group()->getMembers() as $grmem){
-                if ($grmem != $_USER){
-                    Notification::generateNotification($grmem, get_class($ticket), "AssignGroup", $ticket->getNumber(), $ticket->getId());
+                if ($grmem != $_USER && $ticket->getCrtuser() != $grmem){
+                    Notification::generateNotification($grmem, get_class($ticket), "AssignGroup", $ticket->getNumber(), $ticket->getId(), $ticket->getAssigned_group()->getName());
                 }
             }
         }
@@ -80,16 +80,16 @@ if($_REQUEST["exec"] == "edit"){
             $ticketcomment->setVisability((int)$_REQUEST["tktc_type"]);
             $save_ok = $ticketcomment->save();
             $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
-            if ($save_ok){
-                $participants = Comment::getObjectParticipants(get_class($ticket),$ticket->getId());
-                if (count($participants) > 0){
-                    foreach ($participants as $participant){
-                        if ($participant->getId() != $_USER->getId()){
-                            Notification::generateNotification($participant, get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
-                        }
-                    }
-                }
-            }
+//             if ($save_ok){
+//                 $participants = Comment::getObjectParticipants(get_class($ticket),$ticket->getId());
+//                 if (count($participants) > 0){
+//                     foreach ($participants as $participant){
+//                         if ($participant->getId() != $_USER->getId()){
+//                             Notification::generateNotification($participant, get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
+//                         }
+//                     }
+//                 }
+//             }
             if ($save_ok && $_REQUEST["tktc_article_id"] != "" && $_REQUEST["tktc_article_amount"] != ""){
                 $tc_article = new CommentArticle();
                 $tc_article->setArticle(new Article($_REQUEST["tktc_article_id"]));
@@ -102,7 +102,7 @@ if($_REQUEST["exec"] == "edit"){
                     $ticketcomment->setArticles(Array($tc_article));
                 }
             }
-            if ($save_ok && $_REQUEST["stop_timer"] == 1 && $_REQUEST["ticket_timer_timestamp"]){
+            if ($save_ok && $_REQUEST["stop_timer"] == 1){ //  && $_REQUEST["ticket_timer_timestamp"]
                 $timer = Timer::getLastUsed();
                 if ($timer->getState() == Timer::TIMER_RUNNING){
                     $timer->stop();
@@ -296,6 +296,11 @@ $(document).ready(function () {
 		'helpers'		:   { overlay:null, closeClick:true }
 	});
 });
+function showSummary()
+{
+	newwindow = window.open('libs/modules/tickets/ticket.summary.php?tktid=<?=$ticket->getId()?>', "_blank", "width=1000,height=800,left=0,top=0,scrollbars=yes");
+	newwindow = focus();
+}
 </script>
 
 
@@ -307,7 +312,7 @@ $(document).ready(function () {
 <table width="100%">
 	<tr>
 		<td class="content_header">
-			 <h2><?=$header_title?><a name="top" href="#comment"><img height="32" width="32" src="images/icons/arrow-skip-270.png" title="Nach unten springen"/></a></h2>
+			 <h2><?=$header_title?></h2>
 		</td>
 		<td align="right">
 			<?=$savemsg?>
@@ -332,6 +337,8 @@ $(document).ready(function () {
                 <td width="50%" align="right">
                	  <?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete&tktid=<?=$ticket->getId()?>"><?php } ?><i class="icon-trash"></i> Löschen<?php if ($ticket->getId()>0){?></a><?php } ?>
                   <?php if ($ticket->getId()>0){?><a href="index.php?page=<?=$_REQUEST['page']?>&exec=close&tktid=<?=$ticket->getId()?>"><?php } ?><i class="icon-remove-circle"></i> Schließen<?php if ($ticket->getId()>0){?></a><?php } ?>
+                  <?php if ($ticket->getId()>0){?><a href="JavaScript: showSummary();"><?php } ?> Summary<?php if ($ticket->getId()>0){?></a><?php } ?>
+                  <?php if ($ticket->getId()>0){?><a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=createFromTicket&tktid=<?=$ticket->getId()?>"><?php } ?> Vorgang erstellen<?php if ($ticket->getId()>0){?></a><?php } ?>
                 </td>
         	</tr>
         </tbody>
@@ -341,6 +348,7 @@ $(document).ready(function () {
   <input type="hidden" name="exec" value="edit"> 
   <input type="hidden" name="subexec" value="save"> 
   <input type="hidden" name="tktid" value="<?=$ticket->getId()?>">
+  <input type="hidden" name="returnhome" value="<?=$_REQUEST["returnhome"]?>">
   
   <div class="ticket_header">
   	<table width="100%" border="1">
@@ -566,6 +574,9 @@ $(document).ready(function () {
                          	$( "#tktc_article" ).focus();
                          	$( "#stop_timer" ).val("1");
                         	$( "#tktc_article_amount" ).val(precise_round((sec-start)/60/60,2));
+                        	if ( $( "#tktc_article_amount" ).val() < 0.25){
+                        		$( "#tktc_article_amount" ).val("0.25");
+                        	}
                          	clearInterval(clock);
                          	$( "#ticket_timer" ).removeClass("btn-warning");
                          	clearInterval(clock_home);
@@ -587,25 +598,25 @@ $(document).ready(function () {
                         	*/?>
                         } else {
                         	if (!$( "#ticket_timer" ).hasClass("btn-error")){
-//                             sec = moment().unix();
-//                             start = moment().unix();
-                            	$.ajax({
-                            		type: "POST",
-                            		url: "libs/modules/timer/timer.ajax.php",
-                            		data: { ajax_action: "start", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
-                            		})
-                            		.done(function( msg ) {
-                            			if (start == 0){
-                            			 start = moment().unix();
-                            			}
-                            			sec = moment().unix();
-                                    	clock = setInterval(stopWatch,1000);
-                                    	$( "#ticket_timer" ).addClass("btn-warning");
-                                    	clock_home = setInterval(stopWatch_home,1000);
-                                    	$( "#ticket_timer_home" ).addClass("btn-warning");
-                                    	$('#stop_timer').prop('disabled', false);
-    //                       			  alert( "Data Saved: " + msg );
-                            		});
+                            	if ($( "#stop_timer" ).val() != 1){
+                                	$.ajax({
+                                		type: "POST",
+                                		url: "libs/modules/timer/timer.ajax.php",
+                                		data: { ajax_action: "start", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
+                                		})
+                                		.done(function( msg ) {
+                                			if (start == 0){
+                                			 start = moment().unix();
+                                			}
+                                			sec = moment().unix();
+                                        	clock = setInterval(stopWatch,1000);
+                                        	$( "#ticket_timer" ).addClass("btn-warning");
+                                        	clock_home = setInterval(stopWatch_home,1000);
+                                        	$( "#ticket_timer_home" ).addClass("btn-warning");
+                                        	$('#stop_timer').prop('disabled', false);
+        //                       			  alert( "Data Saved: " + msg );
+                                		});
+                            	}
                         	} else {
                         		$('#hiddenclicker_tkcframe').trigger('click');
                         	}
@@ -623,11 +634,12 @@ $(document).ready(function () {
                     	var hr = Math.floor(secs / 3600);
                     	var min = Math.floor((secs - (hr * 3600))/60);
                     	var sec = Math.floor(secs - (hr * 3600) - (min * 60));
+//                     	alert (hr + ':' + min + ':' + sec);
                     	
                     	if (hr < 10) {hr = "0" + hr; }
                     	if (min < 10) {min = "0" + min;}
                     	if (sec < 10) {sec = "0" + sec;}
-                    	if (hr) {hr = "00";}
+//                     	if (hr) {hr = "00";}
                     	return hr + ':' + min + ':' + sec;
                     }
                     $( "#stop_timer" ).click(function() {
@@ -712,8 +724,14 @@ $(document).ready(function () {
     </colgroup> 
     <tr>
         <td class="content_row_header">
+        <?php 
+        if ($_REQUEST["returnhome"] == 1){?>
+        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
+        			onclick="window.location.href='index.php'">
+        <?} else {?>
         	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
         			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+        <?}?>
         </td>
         <td class="content_row_clear" align="right">
         	<input type="submit" value="<?=$_LANG->get('Speichern')?>">

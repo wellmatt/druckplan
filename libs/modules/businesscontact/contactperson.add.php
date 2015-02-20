@@ -729,7 +729,7 @@ $(function() {
 		<tr>
 			<td class="content_row_header">
 			    <input type="button" class="button" value="<?=$_LANG->get('Zur&uuml;ck')?>"  
-			    		onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=5'">
+			    		onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=4'">
 			</td>
 			<td class="content_row_clear" >
 				<?if($_USER->getId() != 14){ ?>

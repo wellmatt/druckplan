@@ -96,7 +96,7 @@ class Orderposition{
 						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, 
 						{$opos->getTax()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
 						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()} )";
-// 				echo $sql;
+// 				echo $sql . "</br>";
 				$res = $DB->no_result($sql);
 				if($res){
 					$sql = " SELECT max(id) id FROM collectiveinvoice_orderposition";

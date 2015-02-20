@@ -223,7 +223,7 @@
             else
             {
                 /* General output */
-                $row[] = nl2br(htmlentities($aRow[ $aColumns[$i] ]));
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
         $row[] = '<a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$aRow[ $aColumns[0] ].'"><img src="images/icons/pencil.png" title="Bearbeiten"></a>

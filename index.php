@@ -414,7 +414,7 @@ if ($_USER == false)
                                 	if (hr < 10) {hr = "0" + hr; }
                                 	if (min < 10) {min = "0" + min;}
                                 	if (sec < 10) {sec = "0" + sec;}
-                                	if (hr) {hr = "00";}
+//                                 	if (hr) {hr = "00";}
                                 	return hr + ':' + min + ':' + sec;
                                 }
                                 function precise_round(num, decimals) {

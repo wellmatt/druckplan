@@ -48,14 +48,14 @@ if ($_REQUEST["exec"] == "searchPositions") {
 
 	if($type == 1){
 		$all_orders = Order::searchOrderByTitleNumber($str, $customerId);
-		echo '<option value=""> &lt; '.$_LANG->get('Auftrag wählen...').'&gt;</option>';							
+		echo '<option value=""> &lt; '.$_LANG->get('Auftrag wï¿½hlen...').'&gt;</option>';							
 		foreach ($all_orders as $order) {
 			echo '<option value="'. $order->getId() .'">'. $order->getNumber() ." - ". $order->getTitle() .'</option>';
 		}
 	}
 	if($type == 2){
 		$all_article = Article::searchArticleByTitleNumber($str);
-		echo '<option value=""> &lt; '.$_LANG->get('Artikel wählen...').'&gt;</option>';
+		echo '<option value=""> &lt; '.$_LANG->get('Artikel wï¿½hlen...').'&gt;</option>';
 		foreach ($all_article as $article) {
 			echo '<option value="'. $article->getId() .'">'. $article->getNumber()." - ".$article->getTitle() .'</option>';
 		}
@@ -160,7 +160,7 @@ if ($_REQUEST['exec'] == 'getPersonalizationDetails'){
 if ($_REQUEST['exec'] == 'getArticlePrice'){
 	$articleid = (int)$_REQUEST['articleid'];
 	$article = new Article($articleid);
-	$amount = (int) $_REQUEST['amount'];
+	$amount = (float) $_REQUEST['amount'];
 	$price = 0;
 	$price = (float)sprintf("%.2f",$article->getPrice($amount));
 	echo $price;

@@ -666,7 +666,7 @@ function updateDeliveryPrice(){
 					</td>
 					<td valign="top" class="content_row">
 						<input 	name="orderpos[<?=$i?>][quantity]" id="orderpos_quantity_<?=$i?>"
-								value="<?= $position->getQuantity()?>" class="text" style="width: 60px" 
+								value="<?php echo printPrice($position->getQuantity(),2);?>" class="text" style="width: 60px" 
 								onfocus="markfield(this,0)" onblur="markfield(this,1)"">
 						<?=$_LANG->get('Stk.')?> <br/>
 						&ensp;&ensp;&ensp;

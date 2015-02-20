@@ -105,7 +105,7 @@ $(document).ready(function() {
     $("#ticketstable tbody td").live('click',function(){
         var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
         var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
-        document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0];
+        document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='+aData[0];
     });
 } );
 </script>

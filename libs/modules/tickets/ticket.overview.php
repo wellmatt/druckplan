@@ -77,6 +77,7 @@ $(document).ready(function() {
 			var state = document.getElementById('ajax_state').value;
 			var crtuser = document.getElementById('ajax_crtuser').value;
 			var assigned = document.getElementById('ajax_assigned').value;
+			var showclosed = document.getElementById('ajax_showclosed').value;
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "start_due", "value": iMinDue, } );
@@ -85,6 +86,7 @@ $(document).ready(function() {
 		    aoData.push( { "name": "state", "value": state, } );
 		    aoData.push( { "name": "crtuser", "value": crtuser, } );
 		    aoData.push( { "name": "assigned", "value": assigned, } );
+		    aoData.push( { "name": "showclosed", "value": showclosed, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -205,6 +207,14 @@ $(document).ready(function() {
 		$('#ajax_assigned').val($(this).val()); 
 		$('#ticketstable').dataTable().fnDraw(); 
 	})
+	$('#showclosed').change(function(){	
+		if ($('#showclosed').prop('checked')){
+			$('#ajax_showclosed').val(1); 
+		} else {
+			$('#ajax_showclosed').val(0); 
+		}
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
 } );
 </script>
 
@@ -323,6 +333,17 @@ $(document).ready(function() {
                 </select>
             </td>
         </tr>
+        <tr align="left">
+            <td>zeige geschlossene:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
+                <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
+            </td>
+        </tr>
+        <tr align="left">
+            <td><a href="index.php?page=libs/modules/tickets/ticket.php">Reset</a><img src="images/icons/slash.png"/></td>
+        </tr>
+        </br>
     </table>
 </div>
 </br>

@@ -68,7 +68,7 @@ if ($_REQUEST["ajax_action"] == "search_maschine"){
 }
 if ($_REQUEST["ajax_action"] == "search_ticket"){
     $retval = Array();
-    $tickets = Ticket::getAllTickets(" WHERE (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%') ");
+    $tickets = Ticket::getAllTickets(" WHERE state > 0 AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%') ");
     foreach ($tickets as $ticket){
         $retval[] = Array("label" => $ticket->getNumber() . " - " . $ticket->getTitle(), "value" => $ticket->getId());
 	} 

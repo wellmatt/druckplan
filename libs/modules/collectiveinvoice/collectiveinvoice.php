@@ -17,6 +17,8 @@ require_once('orderposition.class.php');
 require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
 require_once('libs/modules/documents/document.class.php');
+require_once 'libs/modules/tickets/ticket.class.php';
+require_once 'libs/modules/associations/association.class.php';
 
 global $_LANG;
 global $_MENU;
@@ -135,7 +137,7 @@ case 'save':
 			
 			$newpos->setPrice($tmp_oprice);
 			$newpos->setComment(trim(addslashes($_REQUEST["orderpos"][$xi]["comment"])));
-			$newpos->setQuantity((int)$_REQUEST["orderpos"][$xi]["quantity"]);
+			$newpos->setQuantity((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["orderpos"][$xi]["quantity"]))));
 			$newpos->setType((int)$_REQUEST["orderpos"][$xi]["type"]);
 			$newpos->setInvrel((int)$_REQUEST["orderpos"][$xi]["inv_rel"]);
 			$newpos->setRevrel((int)$_REQUEST["orderpos"][$xi]["rev_rel"]);
@@ -175,6 +177,99 @@ case 'setState2':
 	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
 // 	require_once('collectiveinvoice.edit.php');
 	break;
+case 'createFromTicket':
+    if ($_REQUEST["tktid"]){
+        $src_ticket = new Ticket((int)$_REQUEST["tktid"]);
+
+        $tmp_number = $collectinv->getClient()->createOrderNumber(1);
+        
+        $collectinv->setClient($_USER->getClient());
+        
+        $collectinv->setBusinesscontact($src_ticket->getCustomer());
+        $collectinv->setNumber($tmp_number);
+        $collectinv->setTitle("Ticket: " . $src_ticket->getNumber());
+        $collectinv->setInternContact($_USER);
+        $collectinv->setCustContactperson($src_ticket->getCustomer_cp());
+        
+        $savemsg = getSaveMessage($collectinv->save());
+        
+        echo mysql_error();
+        
+        if($collectinv->getId()==NULL){
+            $collectinv = CollectiveInvoice::getLastSavedCollectiveInvoice();
+        }
+        
+        // Positionen speichern/ändern/erstellen
+        $orderpositions = Array();
+        $art_array = Array();
+        
+        $all_comments = Comment::getCommentsForObject(get_class($src_ticket),$src_ticket->getId());
+        
+        foreach ($all_comments as $comment){
+            if ($comment->getState() > 0 && count($comment->getArticles()) > 0){
+                foreach ($comment->getArticles() as $c_article){
+                    $tmp_art = $c_article->getArticle();
+                    $newpos = new Orderposition();
+                    $tmp_price = 0;
+                    $tmp_price += $tmp_art->getPrice($c_article->getAmount());
+                    $newpos->setPrice($tmp_price);
+                    $newpos->setComment(strip_tags($comment->getComment()));
+                    $newpos->setQuantity($c_article->getAmount());
+                    $newpos->setType(Orderposition::TYPE_ARTICLE);
+                    $newpos->setInvrel(1);
+                    $newpos->setRevrel(1);
+                    $newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
+                    $newpos->setTax($c_article->getArticle()->getTax());
+                    $newpos->setCollectiveinvoice((int)$collectinv->getId());
+                    
+                    $orderpositions[] = $newpos;
+                    
+                    $art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
+                    $art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
+                    $art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
+                }
+            }
+        }
+        
+        if (count($art_array)>0){
+            $sumpos = new Orderposition();
+            
+            $tmp_price = 0;
+            $newpos->setPrice($tmp_price);
+            
+            $tmp_comment = "Zusammenfassung:\n";
+            foreach ($art_array as $art){
+		        $tmp_art = new Article((int)$art["id"]);
+                $tmp_comment .= $art["count"] . "x " . $art["name"] . ": " . $tmp_art->getPrice($art["count"])*$art["count"] . "€\n";
+            }
+            
+            $newpos->setComment($tmp_comment);
+            $newpos->setQuantity(1);
+            $newpos->setType(Orderposition::TYPE_MANUELL);
+            $newpos->setInvrel(1);
+            $newpos->setRevrel(0);
+            $newpos->setObjectid(0); // Artikelnummer
+            $newpos->setTax(0);
+            $newpos->setCollectiveinvoice((int)$collectinv->getId());
+            
+            $orderpositions[] = $newpos;
+        }
+        
+        //Positionen der Rechnung speichern
+        Orderposition::saveMultipleOrderpositions($orderpositions);
+        
+        $association = new Association();
+        $association->setModule1("Ticket");
+        $association->setObjectid1($src_ticket->getId());
+        $association->setModule2("CollectiveInvoice");
+        $association->setObjectid2($collectinv->getId());
+        $save_ok = $association->save();
+        
+//         echo "<br><br>".$DB->getLastError();
+        
+        require_once 'collectiveinvoice.edit.php';
+    }
+    break;
 default:
 	require_once('collectiveinvoice.overview.php');
 }

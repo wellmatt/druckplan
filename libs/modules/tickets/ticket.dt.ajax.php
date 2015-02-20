@@ -206,6 +206,14 @@
         }
     }
     
+    if ((int)$_GET['showclosed'] == 0){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tsid != 3 ";
+        } else {
+            $sWhere .= " AND tsid != 3 ";
+        }
+    }
+    
     if ($_GET['crtuser'] != ""){
         if ($sWhere == ""){
             $sWhere .= " WHERE crtuserid = {$_GET['crtuser']} ";

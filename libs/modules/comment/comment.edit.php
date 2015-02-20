@@ -52,7 +52,8 @@ if ((int)$_REQUEST["cid"] > 0){
 		    $save_ok = $comment->save();
 		    echo getSaveMessage($save_ok);
 		    if ($save_ok){
-		        echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.reload();</script>';
+		        echo '<script language="JavaScript">parent.$.fancybox.close(); 
+		              parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$comment->getObjectid().'";</script>';
 		    }
 		}
 	}

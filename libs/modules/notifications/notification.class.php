@@ -130,7 +130,7 @@ class Notification {
         return $retval;
     }
      
-    public static function generateNotification($touser, $crtmodule, $type, $reference, $objectid){
+    public static function generateNotification($touser, $crtmodule, $type, $reference, $objectid, $group = ""){
         global $_USER;
         $tmp_notification = new Notification();
         $tmp_notification->setUser($touser);
@@ -150,7 +150,7 @@ class Notification {
                         $tmp_notification->save();
                         break;
                     case "AssignGroup":
-                        $tmp_notification->setTitle("Ticket Zuweisung (Gruppe) durch ".$_USER->getNameAsLine()." von Ticket #".$reference);
+                        $tmp_notification->setTitle("Ticket Zuweisung (".$group.") durch ".$_USER->getNameAsLine()." von Ticket #".$reference);
                         $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
                         $tmp_notification->setCrtmodule($crtmodule);
                         $tmp_notification->save();
