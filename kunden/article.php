@@ -19,13 +19,14 @@
 			$article = new Article((int)$_REQUEST["articleid"]);
 			$all_pictures = $article->getAllPictures();
 			$art_prices = $article->getPrices();
+			$wh_count = Warehouse::getTotalStockByArticle($article->getId());
 			
 			if ($_SESSION["shopping_basket"]){
 				$shopping_basket = $_SESSION["shopping_basket"];
 			} else {
 				$shopping_basket = new Shoppingbasket();
 			}
-			// Verfügbare Menge vorhanden?
+			// Verfï¿½gbare Menge vorhanden?
 			if ($_REQUEST["subexec"]=="add_item"){
 			    $wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
 			    if((int)$_REQUEST["shopping_amount"]<=$wh_count)

@@ -45,6 +45,7 @@ function NotificationsReadAll(){
         },
         complete: function (xhr, status) {
             //$('#showresults').slideDown('slow')
+        	refreshNotificationCount();
         }
     });
 }
@@ -54,7 +55,8 @@ function refreshNotificationCount() {
         type: "GET",
         dataType: "html",
         success: function (data) {
-            $('#notify_count').html(" ("+data+")");
+            if (parseInt(data) > 0)
+                $('#notify_count').html(data);
         }
     });
 }
@@ -80,7 +82,8 @@ refreshNotificationCount();
 	<tr class="tabellenlinie">
 		<td colspan="2">
 		<center>
-			<a href='#' onclick='NotificationsReadAll();'>alle als gelesen markieren</a>
+			<a href='#' onclick='NotificationsReadAll();'>alle als gelesen markieren</a></br>
+			<a href='index.php?page=libs/modules/notifications/notification.overview.php'>alle anzeigen</a>
 		</center>
 		</td>
 	</tr>

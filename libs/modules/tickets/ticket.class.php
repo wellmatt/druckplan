@@ -8,11 +8,11 @@
 // ----------------------------------------------------------------------------------
 // include 'libs/modules/businesscontact/businesscontact.class.php';
 // include 'libs/modules/businesscontact/contactperson.class.php';
-include 'libs/modules/tickets/ticket.category.class.php';
-include 'libs/modules/tickets/ticket.priority.class.php';
-include 'libs/modules/tickets/ticket.state.class.php';
-include 'libs/modules/comment/comment.class.php';
-include 'libs/modules/notifications/notification.class.php';
+require_once 'libs/modules/tickets/ticket.category.class.php';
+require_once 'libs/modules/tickets/ticket.priority.class.php';
+require_once 'libs/modules/tickets/ticket.state.class.php';
+require_once 'libs/modules/comment/comment.class.php';
+require_once 'libs/modules/notifications/notification.class.php';
 require_once 'libs/modules/timer/timer.class.php';
 require_once 'libs/modules/perferences/perferences.class.php';
 
@@ -35,6 +35,8 @@ class Ticket {
     private $category;
     private $priority;
     private $source;
+    
+    private $tourmarker;
     
     private $associations = Array();
     
@@ -80,6 +82,7 @@ class Ticket {
                 $this->category	        = new TicketCategory((int)$r["category"]);
                 $this->priority			= new TicketPriority((int)$r["priority"]);
                 $this->source   	    = $r["source"];
+                $this->tourmarker   	= $r["tourmarker"];
             }
             $sql = "SELECT * FROM tickets_association WHERE ticketid = {$id} ORDER BY module ASC";
             if($DB->num_rows($sql))
@@ -116,21 +119,23 @@ class Ticket {
             assigned_user 	= {$this->assigned_user->getId()},
             assigned_group 	= {$this->assigned_group->getId()},
             state			= {$this->state->getId()},
-            category		= {$this->category->getId()},
-            priority		= {$this->priority->getId()},
-            source		    = {$this->source}
+            category		= {$this->category->getId()}, 
+            priority		= {$this->priority->getId()}, 
+            source		    = {$this->source}, 
+            tourmarker		= '{$this->tourmarker}' 
             WHERE id = {$this->id}";
+//             var_dump($sql);
             return $DB->no_result($sql);
         } else {
             $this->number = $_USER->getClient()->createTicketnumber();
             $sql = "INSERT INTO tickets
             (title, duedate, closedate, closeuser, editdate, number, customer, 
              customer_cp, assigned_user, assigned_group, state, category, priority,
-             source, crtdate, crtuser)
+             source, crtdate, crtuser, tourmarker)
             VALUES
             ( '{$this->title}' , {$this->duedate}, {$this->closedate}, {$this->closeuser->getId()}, {$this->editdate}, '{$this->number}', {$this->customer->getId()},
               {$this->customer_cp->getId()}, {$this->assigned_user->getId()}, {$this->assigned_group->getId()}, {$this->state->getId()}, {$this->category->getId()}, {$this->priority->getId()},
-              {$this->source}, {$now}, {$_USER->getId()})";
+              {$this->source}, {$now}, {$_USER->getId()}, '{$this->tourmarker}')";
             $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM tickets WHERE title = '{$this->title}'";
@@ -518,6 +523,21 @@ class Ticket {
         $this->source = $source;
     }
     
+	/**
+     * @return the $tourmarker
+     */
+    public function getTourmarker()
+    {
+        return $this->tourmarker;
+    }
+
+	/**
+     * @param field_type $tourmarker
+     */
+    public function setTourmarker($tourmarker)
+    {
+        $this->tourmarker = $tourmarker;
+    }
     
 }
 

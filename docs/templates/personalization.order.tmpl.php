@@ -62,7 +62,7 @@ if ($perso->getLineByLine() == 0) {
 		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_FRONT, "t2.id");
 	}
     
-    foreach ($all_items as $oitem){ // linke tabelle fällen
+    foreach ($all_items as $oitem){ // linke tabelle fï¿½llen
 		$item = new Personalizationitem($oitem->getPersoItemID());
         foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
             if ($item->getGroup() == $group) {
@@ -87,11 +87,11 @@ if ($perso->getLineByLine() == 0) {
                      
                     if ($item->getBoxtype() == 1){
                         $pdf->SetXY ($xpos, $ypos, true);
-                        $tabin = strpos($oitem->getValue(), "\t");
+                        $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
                             $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
                         } else {
-                            $tmp_title_arr = explode("\t",$oitem->getValue());
+                            $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
                             $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
@@ -99,11 +99,11 @@ if ($perso->getLineByLine() == 0) {
                         }
                     } else {
                         $pdf->SetXY ($xpos, $ypos, true);
-                        $tabin = strpos($oitem->getValue(), "\t");
+                        $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
                             $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
                         } else {
-                            $tmp_title_arr = explode("\t",$oitem->getValue());
+                            $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
                             $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
@@ -123,7 +123,7 @@ if ($perso->getLineByLine() == 0) {
                     foreach ($all_items as $suboitem){
 					    $subitem = new Personalizationitem($suboitem->getPersoItemID());
                         if ($subitem->getGroup() == $group && $suboitem->getValue() != "") {
-                            if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhänigkeit
+                            if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhï¿½nigkeit
                                 $subwidth	= $pos_array[$pustekuchen123]["width"];
                                 $subheight	= $pos_array[$pustekuchen123]["height"];
                                 $subsize	= $subitem->getTextsize();
@@ -182,7 +182,7 @@ if ($perso->getLineByLine() == 0) {
 	}
     $all_items_reverse = array_reverse ($all_items);
     
-    foreach ($all_items as $oitem){ // linke tabelle fällen
+    foreach ($all_items as $oitem){ // linke tabelle fï¿½llen
 		$item = new Personalizationitem($oitem->getPersoItemID());
         foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
             if ($item->getGroup() == $group) {
@@ -207,11 +207,11 @@ if ($perso->getLineByLine() == 0) {
                      
                     if ($item->getBoxtype() == 1){
                         $pdf->SetXY ($xpos, $ypos, true);
-                        $tabin = strpos($oitem->getValue(), "\t");
+                        $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
                             $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
                         } else {
-                            $tmp_title_arr = explode("\t",$oitem->getValue());
+                            $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
                             $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
@@ -219,11 +219,11 @@ if ($perso->getLineByLine() == 0) {
                         }
                     } else {
                         $pdf->SetXY ($xpos, $ypos, true);
-                        $tabin = strpos($oitem->getValue(), "\t");
+                        $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
                             $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
                         } else {
-                            $tmp_title_arr = explode("\t",$oitem->getValue());
+                            $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
                             $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
@@ -244,7 +244,7 @@ if ($perso->getLineByLine() == 0) {
                     foreach ($all_items_reverse as $suboitem){
 					    $subitem = new Personalizationitem($suboitem->getPersoItemID());
                         if ($subitem->getGroup() == $group) {
-                            if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhänigkeit
+                            if ($subitem->getDependencyID() == $item->getId()) { // alle nicht fix objebte dieser Abhï¿½nigkeit
                                 $subwidth	= $pos_array[$pustekuchen123]["width"];
                                 $subheight	= $pos_array[$pustekuchen123]["height"];
                                 $subsize	= $subitem->getTextsize();

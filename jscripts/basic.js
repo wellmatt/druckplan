@@ -94,3 +94,11 @@ function checkDate(date)
         	    	alert(data);
 	});
 }
+
+function dialNumber(link){
+	$.get('http://'+link, //{exec: 'dial_number', link: link},
+			function(data) {
+				alert('Nummer gesendet.');
+			}
+	);
+}

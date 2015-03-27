@@ -55,7 +55,7 @@ class CollectiveInvoice{
 		global $_USER;
 		
 		$this->businesscontact = new BusinessContact();
-		$this->client = $_USER->getClient();
+		$this->client = new Client();
 		$this->crtuser = new User();
 		$this->uptuser = new User();
 		$this->paymentterm = new PaymentTerms();
@@ -236,8 +236,7 @@ class CollectiveInvoice{
 		$sql = " SELECT t1.id FROM collectiveinvoice t1, collectiveinvoice_orderposition t2
 				WHERE 
 				t1.status > 0 AND t1.status < 11
-				AND t1.crtuser = 1  
-				AND t1.id = t2.collectiveinvoice ";
+				AND t1.id = t2.collectiveinvoice "; // AND t1.crtuser = 1  
 		if($busiconID > 0){ 
 			$sql.= " AND t1.businesscontact = {$busiconID} ";
 		}  

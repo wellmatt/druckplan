@@ -6,6 +6,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
+require_once 'libs/modules/abonnements/abonnement.class.php';
 
 class Notification {
 
@@ -115,7 +116,7 @@ class Notification {
         }
     }
     
-    public function getMyNotifications($limit = 10){
+    public static function getMyNotifications($limit = 10){
         global $DB;
         global $_USER;
         $retval = Array();
@@ -134,11 +135,25 @@ class Notification {
         global $_USER;
         $tmp_notification = new Notification();
         $tmp_notification->setUser($touser);
+        if ($touser == $_USER)
+            return false;
         switch($crtmodule){
             case "Ticket":
                 switch ($type){
                     case "Comment":
                         $tmp_notification->setTitle("Neues Kommentar von ".$_USER->getNameAsLine()." in Ticket #".$reference);
+                        $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
+                    case "CommentCP":
+                        $tmp_notification->setTitle("Neues Kommentar des Kunden in Ticket #".$reference);
+                        $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
+                    case "CommentEdit":
+                        $tmp_notification->setTitle("Ein Kommentar wurde von ".$_USER->getNameAsLine()." in Ticket #".$reference. ' bearbeitet');
                         $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
                         $tmp_notification->setCrtmodule($crtmodule);
                         $tmp_notification->save();
@@ -157,6 +172,20 @@ class Notification {
                         break;
                 }
                 break;
+        }
+        return true;
+    }
+    
+    public static function generateNotificationsFromAbo($crtmodule, $type, $reference, $objectid, $group = "")
+    {
+        global $_USER;
+        $abos = Abonnement::getAbonnementsForObject($crtmodule, $objectid);
+        
+        if (count($abos)>0){
+            foreach ($abos as $abo){
+                if ($abo->getAbouser()->getId() != $_USER->getId())
+                    Notification::generateNotification($abo->getAbouser(), $crtmodule, $type, $reference, $objectid, $group = "");
+            }
         }
     }
     

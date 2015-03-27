@@ -423,10 +423,13 @@ function updateDeliveryPrice(){
 					<option value="0"> &lt; <?=$_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
 				<?	foreach($allpaymentterms as $payterm){
 						echo '<option value="'. $payterm->getId() . '"';
-						if($payterm->getId() == $collectinv->getPaymentTerm()->getId()){ echo ' selected="selected"'; }
-
-
-
+						if($payterm->getId() == $collectinv->getPaymentTerm()->getId())
+						{ 
+						    echo ' selected="selected"'; 
+						} else if ($collectinv->getId() <= 0 && $payterm->getId() == $collectinv->getBusinesscontact()->getPaymentTerms()->getId())
+						{
+						    echo ' selected="selected"'; 
+						}
 
 						echo ">".$payterm->getName1() . "</option>";
 					} ?>
@@ -788,6 +791,12 @@ function updateDeliveryPrice(){
 			<td align="right">
 				<input class="button" type="submit" value="<?=$_LANG->get('Speichern')?>">
 			</td>
+	        <td class="content_row_clear" align="right">
+	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){ ?>
+		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=<?php echo $collectinv->getId();?>')" 
+		        				value="<?=$_LANG->get('L&ouml;schen')?>">
+		        <?}?>
+	        </td>
 		</tr>
 	</table>
 </div>

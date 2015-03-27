@@ -106,6 +106,7 @@ class Attachment {
             $sql = "UPDATE attachments SET
     					state = 0
     					WHERE id = {$this->id}";
+            echo $sql;
             if ($DB->no_result($sql)) {
                 unset($this);
                 return true;

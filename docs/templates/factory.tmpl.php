@@ -147,6 +147,12 @@ require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/factory.tmpl';
 $datei = ckeditor_to_smarty($tmp);
 
+if(trim($datei) == "")
+{
+    $agent = new TmplAgent();
+    $datei = tmpl_to_smarty($agent->Get("default_Kalk_DR"));
+}
+
 $smarty->assign('Calcs', $calcs);
 $smarty->assign('Container', $container);
 

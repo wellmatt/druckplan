@@ -25,8 +25,31 @@ if ($_REQUEST["exec"] == "save")
         if ($_REQUEST["categories_title_".$i] != "" && $_REQUEST["categories_title_".$i]){
             $cid = (int)$_REQUEST["categories_id_".$i];
             $ctitle = $_REQUEST["categories_title_".$i];
+            $csort = $_REQUEST["categories_sort_".$i];
             $cat = new TicketCategory($cid);
             $cat->setTitle($ctitle);
+            $cat->setSort((int)$csort);
+//             $cat->save();
+            
+            $tmp_groups_cansee = Array();
+            $tmp_groups_cancreate = Array();
+            
+            $group_rights = $_REQUEST["categories_rights_".$cid];
+            if ($group_rights["cansee"]){
+                foreach ($group_rights["cansee"] as $gcansee){
+                    $tmp_group = new Group((int)$gcansee);
+                    $tmp_groups_cansee[] = $tmp_group;
+                }
+            }
+            if ($group_rights["cancreate"]){
+                foreach ($group_rights["cancreate"] as $gcancreate){
+                    $tmp_group = new Group((int)$gcancreate);
+                    $tmp_groups_cancreate[] = $tmp_group;
+                }
+            }
+            
+            $cat->setGroups_cansee($tmp_groups_cansee);
+            $cat->setGroups_cancreate($tmp_groups_cancreate);
             $cat->save();
         }
     }
@@ -154,6 +177,7 @@ function addPrioRow()
 			<li><a href="#tabs-1"><? echo $_LANG->get('Priorit&auml;ten');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('Stati');?></a></li>
 			<?php /*<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>*/?>
+			<li><a href="#tabs-4"><? echo $_LANG->get('Gruppenrechte');?></a></li>
 		</ul>
        <div id="tabs-0">
             <?php 
@@ -164,9 +188,11 @@ function addPrioRow()
             <table border="0" cellpadding="0" cellspacing="0" id="table-categories">
 				<colgroup>
 		        	<col width="40">
+		        	<col width="40">
 		        	<col width="300">
 		    	</colgroup>
 				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Reihenfolge')?></td>
 					<td class="content_row_header"><?=$_LANG->get('Nr')?></td>
 					<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
 				</tr>
@@ -177,6 +203,10 @@ function addPrioRow()
 				}
 				for ($y=0; $y < $x ; $y++){ ?>
 					<tr>
+						<td class="content_row_clear">
+							<input 	name="categories_sort_<?=$y?>" class="text" type="text"
+									value ="<?=$ticket_categories[$y]->getSort();?>" style="width: 40px">
+						</td>
 						<td class="content_row_clear">
 						<?=$ticket_categories[$y]->getId()?>
 						</td>
@@ -316,6 +346,37 @@ function addPrioRow()
        </div>
        */?>
 
+       <div id="tabs-4">
+   			<table>
+   			<?php foreach ($ticket_categories as $tc){?>
+   			<tr>
+   			  <td><h4><?php echo $tc->getTitle()?></h4></td>
+   			</tr>
+   			<tr>
+   			  <td>
+   			      <table>
+   			          <thead>
+   			              <tr>
+   			                  <th>Gruppe&nbsp;&nbsp;</th>
+   			                  <th>Einsehen&nbsp;&nbsp;</th>
+   			                  <th>Erstellen</th>
+   			              </tr>
+   			          </thead>
+       			      <?php foreach (Group::getAllGroups() as $group){?>
+   			          <tr>
+   			              <td><?php echo $group->getName();?></td>
+   			              <td><input type="checkbox" name="categories_rights_<?=$tc->getId()?>[cansee][]" id="categories_rights_<?=$tc->getId()?>[cansee][]" 
+   			                   value="<?php echo $group->getId();?>" style="width: 40px" <?php if (in_array($group, $tc->getGroups_cansee())) echo " checked ";?>/></td>
+   			              <td><input type="checkbox" name="categories_rights_<?=$tc->getId()?>[cancreate][]" id="categories_rights_<?=$tc->getId()?>[cancreate][]" 
+   			                   value="<?php echo $group->getId();?>" style="width: 40px" <?php if (in_array($group, $tc->getGroups_cancreate())) echo " checked ";?>/></td>
+   			          </tr>
+       			      <?php }?>
+   			      </table>
+   			  </td>
+   			</tr>
+   			<?php }?>
+   			</table>
+       </div>
     <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
     <tr>
        <td class="content_row_clear">

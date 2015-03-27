@@ -43,15 +43,15 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 };
 
 $(document).ready(function() {
-    var ticketstable = $('#ticketstable').DataTable( {
+    var ticketstable = $('#ticketsabotable').DataTable( {
         // "scrollY": "600px",
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php?forme=<?php echo $_USER->getId();?>",
+        "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php?formeabo=<?php echo $_USER->getId();?>",
         "paging": true,
 		"stateSave": true,
 // 		"dom": 'flrtip',        
-		"dom": 'T<"clear">flrtip',            
+		"dom": 'T<"clear">flrtip',           
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -61,7 +61,7 @@ $(document).ready(function() {
                          {
                              "sExtends": "pdf",
                              "sPdfOrientation": "landscape",
-                             "sPdfMessage": "Contilas - Tickets - Meine Tickets - <?php echo $_USER->getNameAsLine()?>"
+                             "sPdfMessage": "Contilas - Tickets - Abonnements - <?php echo $_USER->getNameAsLine()?>"
                          },
                          "print"
                      ]
@@ -115,12 +115,12 @@ $(document).ready(function() {
 
 
     var DELAY = 500, clicks = 0, timer = null;
-	$("#ticketstable tbody td").live('click', function(e){
+	$("#ticketsabotable tbody td").live('click', function(e){
 
         clicks++;  //count clicks
 
-        var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
-        var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
+        var aPos = $('#ticketsabotable').dataTable().fnGetPosition(this);
+        var aData = $('#ticketsabotable').dataTable().fnGetData(aPos[0]);
         
         if(clicks === 1) {
 
@@ -150,14 +150,10 @@ $(document).ready(function() {
 	<tr>
 		<td width="250" class="content_header">
 			<img src="images/icons/clipboard-task.png"> 
-			<span style="font-size: 13px"><?=$_LANG->get('Meine Tickets')?></span>
+			<span style="font-size: 13px"><?=$_LANG->get('Meine Abonnements')?></span> <small>(nicht direkt beteiligt)</small>
 		</td>
 		<td width="150" class="content_header" align="right">
 		<?=$savemsg?>
-		</td>
-		<td class="content_header" align="right">
-		  <a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> 
-		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
 		</td>
 	</tr>
 </table>
@@ -165,7 +161,7 @@ $(document).ready(function() {
 
 <br/>
 <div class="box1">
-	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+	<table id="ticketsabotable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
         <thead>
             <tr>
                 <th><?=$_LANG->get('ID')?></th>

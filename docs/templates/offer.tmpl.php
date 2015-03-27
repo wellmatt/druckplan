@@ -23,6 +23,7 @@ foreach ($calcs as $calc)
 
 // Einbindung der generellen Variablen im Templatesystem
 
+
 require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/offer.tmpl';
 $datei = ckeditor_to_smarty($tmp);
@@ -32,6 +33,8 @@ $smarty->assign('Calcs',$calcs);
 // var_dump ($datei);
 
 $htmldump = $smarty->fetch('string:'.$datei);
+
+// echo '<pre>'.$htmldump.'</pre>';
 
 // var_dump($htmltemp);
 

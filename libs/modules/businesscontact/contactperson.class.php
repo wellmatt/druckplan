@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------------
 require_once('businesscontact.class.php');
 require_once('libs/basic/translator/translator.class.php');
+require_once('libs/modules/tickets/ticket.category.class.php');
 
 class ContactPerson {
 	
@@ -64,7 +65,10 @@ class ContactPerson {
 	private $enabledPersonalization; 	// Freigabe fuer Personalisierungen im Kundenportal
 	private $enabledArtikel;			// Freigabe fuer Artikel im Kundenportal
 	
-	private $notifymailadr = Array(); // für gesonderte Benachrichtigungs Mails bei Bestellungen
+	private $notifymailadr = Array(); // fï¿½r gesonderte Benachrichtigungs Mails bei Bestellungen
+	
+	private $categories_cansee = Array();
+	private $categories_cancreate = Array();
 	
 	function __construct($id = 0){
         global $DB;
@@ -143,6 +147,23 @@ class ContactPerson {
                 
         	    $this->notifymailadr = unserialize($res[0]["notifymailadr"]);
                 
+        	    $sql = "SELECT * FROM contactperson_categories_perm WHERE cpid = {$id}";
+        	    $tmp_categories_cansee = Array();
+        	    $tmp_categories_cancreate = Array();
+        	    if($DB->num_rows($sql)){
+        	        foreach($DB->select($sql) as $r){
+        	            $tmp_cat = new TicketCategory($r["categoryid"]);
+        	            if ((int)$r["cansee"] == 1){
+        	                $tmp_categories_cansee[] = $tmp_cat;
+        	            }
+        	            if ((int)$r["cancreate"] == 1){
+        	                $tmp_categories_cancreate[] = $tmp_cat;
+        	            }
+        	        }
+        	    }
+        	    $this->categories_cansee = $tmp_categories_cansee;
+        	    $this->categories_cancreate = $tmp_categories_cancreate;
+        	    
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
@@ -154,6 +175,24 @@ class ContactPerson {
         }
     }
 
+    function TC_cansee(TicketCategory $category){
+        foreach ($this->categories_cansee as $see){
+            if ($see == $category){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function TC_cancreate(TicketCategory $category){
+        foreach ($this->categories_cancreate as $see){
+            if ($see == $category){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Liefert den Namen wie folgt: Anrede Nachname, Vorname 
      * 
@@ -233,7 +272,8 @@ class ContactPerson {
 	             businesscontact.id AS bid,
 	             businesscontact.matchcode AS bmatch,
 	             businesscontact.name1 AS bname1,
-	             businesscontact.name2 AS bname2
+	             businesscontact.name2 AS bname2, 
+	             businesscontact.tourmarker as tourmarker 
 	             FROM
 	             contactperson
 	             INNER JOIN businesscontact ON contactperson.businesscontact = businesscontact.id 
@@ -244,7 +284,7 @@ class ContactPerson {
 	    $res = $DB->select($sql);
 	    if($DB->num_rows($sql))
 	        foreach ($res as $r)
-	            $retarray[] = Array("cid" => $r["cid"], "bid" => $r["bid"], "label" => $r["bname1"]." ".$r["bname2"]." - ".$r["cname1"].", ".$r["cname2"] );
+	            $retarray[] = Array("cid" => $r["cid"], "bid" => $r["bid"], "label" => $r["bname1"]." ".$r["bname2"]." - ".$r["cname1"].", ".$r["cname2"], "tourmarker" => $r["tourmarker"] );
 	        return $retarray;
 	}
 	
@@ -393,6 +433,26 @@ class ContactPerson {
                 $this->id = $thisid[0]["id"];
             }
 		}
+		
+
+		$sql = "DELETE FROM contactperson_categories_perm WHERE cpid = {$this->id}";
+		$DB->no_result($sql);
+		
+		foreach (TicketCategory::getAllCategories() as $category){
+		    $cansee = 0;
+		    $cancreate = 0;
+		    if (in_array($category, $this->categories_cansee)){
+		        $cansee = 1;
+		    }
+		    if (in_array($category, $this->categories_cancreate)){
+		        $cancreate = 1;
+		    }
+		    $sql = "INSERT INTO contactperson_categories_perm
+		    (categoryid, cpid, cansee, cancreate)
+		    VALUES ( {$category->getId()}, {$this->id}, {$cansee}, {$cancreate} )";
+		    $DB->no_result($sql);
+		}
+		
 		if($res)
 			return true;
 		else
@@ -1049,5 +1109,40 @@ class ContactPerson {
     {
         $this->notifymailadr = $notifymailadr;
     }
+    
+	/**
+     * @return the $categories_cansee
+     */
+    public function getCategories_cansee()
+    {
+        return $this->categories_cansee;
+    }
+
+	/**
+     * @return the $categories_cancreate
+     */
+    public function getCategories_cancreate()
+    {
+        return $this->categories_cancreate;
+    }
+
+	/**
+     * @param multitype: $categories_cansee
+     */
+    public function setCategories_cansee($categories_cansee)
+    {
+        $this->categories_cansee = $categories_cansee;
+    }
+
+	/**
+     * @param multitype: $categories_cancreate
+     */
+    public function setCategories_cancreate($categories_cancreate)
+    {
+        $this->categories_cancreate = $categories_cancreate;
+    }
+
+    
+    
 }
 ?>

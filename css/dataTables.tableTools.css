@@ -47,6 +47,26 @@ div.DTTT_container {
 	}
 }
 
+div.DTTT {
+	position: relative;
+	float: right;
+	margin-bottom: 1em;
+}
+
+@media screen and (max-width: 640px) {
+	div.DTTT {
+		float: none !important;
+		text-align: center;
+	}
+
+	div.DTTT:after {
+		visibility: hidden;
+		display: block;
+		content: "";
+		clear: both;
+		height: 0;
+	}
+}
 
 button.DTTT_button,
 div.DTTT_button,

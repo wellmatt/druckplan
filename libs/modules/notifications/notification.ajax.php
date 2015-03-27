@@ -33,9 +33,5 @@ if ($_REQUEST["exec"] == "readAll"){
 }
 if ($_REQUEST["exec"] == "getCount"){
     $all_notifications = Notification::getMyNotifications(99999);
-    if (count($all_notifications) > 0){
-        echo "<b>".count($all_notifications)."</b>";
-    } else {
-        echo count($all_notifications);
-    }
+    echo count($all_notifications);
 }

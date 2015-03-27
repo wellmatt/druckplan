@@ -247,7 +247,9 @@ if($_REQUEST["exec"] == "parts")
         <nobr>
         	<?=$_LANG->get('Auftrag')?>:
         	<a class="link" href="index.php?page=<?=$_REQUEST['page']?>&exec=parts&id=<?=$s->getId()?>"><?=$_LANG->get('Bearbeiten')?></a>
-        	<a class="link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$s->getId()?>')"><?=$_LANG->get('L&ouml;schen')?></a>
+	        <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_SCHEDULE) || $_USER->isAdmin()){ ?>
+        	   <a class="link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$s->getId()?>')"><?=$_LANG->get('L&ouml;schen')?></a>
+	        <?}?>
         </nobr>
         <br>
         

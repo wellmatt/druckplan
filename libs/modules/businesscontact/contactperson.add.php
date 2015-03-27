@@ -100,6 +100,25 @@ if ($_REQUEST["exec"] == "save_cp"){
 	}
 	$contactperson->setNotifymailadr($tmp_array_notify_adr);
 	
+	$all_categories = TicketCategory::getAllCategories();
+    $tmp_cansee = Array();
+    $tmp_cancreate = Array();
+        
+	foreach ($all_categories as $category){
+        $cat = $category;
+        $cid = $cat->getId();
+
+        if ($_REQUEST["categories_rights_cansee_".$cid] == 1){
+            $tmp_cansee[] = $cat;
+        }
+        if ($_REQUEST["categories_rights_cancreate_".$cid] == 1){
+            $tmp_cancreate[] = $cat;
+        }
+
+        $contactperson->setCategories_cansee($tmp_cansee);
+        $contactperson->setCategories_cancreate($tmp_cancreate);
+	}
+	
     $savemsg = getSaveMessage($contactperson->save());
     $savemsg .= $DB->getLastError();
     
@@ -378,7 +397,8 @@ $(function() {
 					<td class="content_row_header"><?=$_LANG->get('Benachrichtigungs-Adr.');?></td>
 					<td class="content_row_clear" id="notify_mail_adr"><img src="images/icons/plus.png" class="pointer icon-link" onclick="addMailRow()"></br>
 						<? if (count($contactperson->getNotifymailadr()) > 0) { foreach ($contactperson->getNotifyMailAdr() as $notifymailadr){?>
-						    <input name="notifymailadr[]" type="mail" value="<?=$notifymailadr?>" onfocus="markfield(this,0)" onblur="markfield(this,1)"></br>
+						    <input name="notifymailadr[]" type="mail" value="<?=$notifymailadr?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						    <img src="images/icons/cross.png" onclick="JavaScript: $(this).prev().remove(); $(this).remove();"/></br>
 						<? }}?>
 					</td>
 				</tr>
@@ -720,6 +740,39 @@ $(function() {
 		<?}?>
 	</table>
 	</div>
+	</br>
+	<?php 
+    $ticket_categories = TicketCategory::getAllCategories();
+    ?>
+	<input 	type="hidden" name="count_categories" id="count_categories" 
+		value="<? if(count($ticket_categories) > 0) echo count($ticket_categories); else echo "1";?>">
+    <div class="box2">
+		<table>
+		<?php foreach ($ticket_categories as $tc){?>
+		<tr>
+		  <td><h4><?php echo $tc->getTitle()?></h4></td>
+		</tr>
+		<tr>
+		  <td>
+		      <table>
+		          <thead>
+		              <tr>
+		                  <th>Einsehen&nbsp;&nbsp;</th>
+		                  <th>Erstellen</th>
+		              </tr>
+		          </thead>
+		          <tr>
+		              <td><input type="checkbox" name="categories_rights_cansee_<?=$tc->getId()?>" id="categories_rights_cansee_<?=$tc->getId()?>" 
+		                   value="1" style="width: 40px" <?php if ($contactperson->TC_cansee($tc)) echo " checked ";?>/></td>
+		              <td><input type="checkbox" name="categories_rights_cancreate_<?=$tc->getId()?>" id="categories_rights_cancreate_<?=$tc->getId()?>" 
+		                   value="1" style="width: 40px" <?php if ($contactperson->TC_cancreate($tc)) echo " checked ";?>/></td>
+		          </tr>
+		      </table>
+		  </td>
+		</tr>
+		<?php }?>
+		</table>
+    </div>
 	
 	<table width="1000">
 		<colgroup>
@@ -731,11 +784,22 @@ $(function() {
 			    <input type="button" class="button" value="<?=$_LANG->get('Zur&uuml;ck')?>"  
 			    		onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=4'">
 			</td>
+			<?php if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP) || $_USER->isAdmin()){?>
 			<td class="content_row_clear" >
 				<?if($_USER->getId() != 14){ ?>
 					<input type="submit" value="<?=$_LANG->get('Speichern')?>">
 				<?}?>
 			</td>
+			<?php }?>
+			
+	        <td class="content_row_clear" align="right">
+	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){ ?>
+		        	<?if($_REQUEST["exec"] != "new"){?>
+		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$contactperson->getId()?>&id=<?=$contactperson->getBusinessContact()->getID()?>')" 
+		        				value="<?=$_LANG->get('L&ouml;schen')?>">
+		        	<?}?>
+		        <?}?>
+	        </td>
 		</tr>
 	</table>
 </form>

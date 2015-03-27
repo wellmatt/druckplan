@@ -17,7 +17,8 @@ switch ($_REQUEST["exec"]) {
 		break;
 	case "close":
 	    $close_ticket = new Ticket($_REQUEST["tktid"]);
-	    $close_ticket->setState(3);
+	    $close_state = new TicketState(3);
+	    $close_ticket->setState($close_state);
 	    $close_ticket->save();
 	    require_once 'ticket.overview.php';
 	    break;

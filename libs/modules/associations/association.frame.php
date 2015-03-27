@@ -7,8 +7,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
-error_reporting(-1); 
-ini_set('display_errors', 1);
+// error_reporting(-1); 
+// ini_set('display_errors', 1);
 
 chdir("../../../");
 require_once("config.php");
@@ -46,7 +46,7 @@ if ($_REQUEST["delete"] && $_REQUEST["id"])
     $association = new Association((int)$_REQUEST["id"]);
     $association->delete();
     unset($association);
-    echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.reload;</script>';
+    echo '<script language="JavaScript">parent.$.fancybox.close(); window.opener.location.href = window.opener.location.href;</script>';
 } elseif($_REQUEST["exec"] == "save" && $_REQUEST["module"] && $_REQUEST["objectid"])
 {
     if ($_REQUEST["order_id"] != ""){
@@ -216,7 +216,7 @@ $(function() {
 <table width="100%">
     <tr>
         <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/node-select.png"> <?php echo utf8_decode($_LANG->get('Neue Verknüpfung'));?></h1>
+            <h1><img src="../../../images/icons/node-select.png"> <?php echo 'Neue Verknüpfung';?></h1>
         </td>
     </tr>
 </table>

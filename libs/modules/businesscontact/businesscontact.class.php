@@ -96,9 +96,13 @@ class BusinessContact {
 	
 	private $position_titles = Array(); // fÃ¼r Personalisierung
 	
-	private $notifymailadr = Array(); // für gesonderte Benachrichtigungs Mails bei Bestellungen
+	private $notifymailadr = Array(); // fï¿½r gesonderte Benachrichtigungs Mails bei Bestellungen
 	
 	private $matchcode;
+	
+	private $supervisor;
+	
+	private $tourmarker;
 
 	/* Konstruktor
      * Falls id uebergeben, werden die entsprechenden Daten direkt geladen
@@ -110,6 +114,7 @@ class BusinessContact {
         
         $this->client = new Client(0);
         $this->paymentTerms = new PaymentTerms();
+        $this->supervisor = new User();
         
         if ($_USER != NULL){
 	        $this->country = $_USER->getClient()->getCountry();
@@ -150,6 +155,8 @@ class BusinessContact {
                 $this->discount = $res[0]["discount"];
                 $this->customernumber = $res[0]["cust_number"];
                 $this->matchcode = $res[0]["matchcode"];
+                $this->supervisor = new User((int)$res[0]["supervisor"]);
+                $this->tourmarker = $res[0]["tourmarker"];
                 
                 // Daten nur laden, wenn die Loader-Variable es hergibt
                 if($loader <= self::LOADER_MEDIUM){
@@ -579,7 +586,9 @@ class BusinessContact {
 		            position_titles = '{$positiontitles}', 
 		            notifymailadr = '{$tmp_notify_mail_adr}', 
         			number_at_customer = '{$this->numberatcustomer}',
-        			matchcode = '{$this->matchcode}' 
+        			supervisor = {$this->supervisor->getId()},
+        			matchcode = '{$this->matchcode}', 
+        			tourmarker = '{$this->tourmarker}' 
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql); //Aenderungen speichern
 // 			echo $sql;
@@ -598,7 +607,7 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode )
+		            matchcode, supervisor, tourmarker )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -611,7 +620,7 @@ class BusinessContact {
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},  
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
-		            '{$this->matchcode}' )";
+		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}' )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			echo $DB->getLastError();
 // 			echo "</br>" . $sql . "</br>";
@@ -1440,6 +1449,38 @@ class BusinessContact {
     public function setMatchcode($matchcode)
     {
         $this->matchcode = $matchcode;
+    }
+    
+	/**
+     * @return the $supervisor
+     */
+    public function getSupervisor()
+    {
+        return $this->supervisor;
+    }
+
+	/**
+     * @param User $supervisor
+     */
+    public function setSupervisor($supervisor)
+    {
+        $this->supervisor = $supervisor;
+    }
+    
+	/**
+     * @return the $tourmarker
+     */
+    public function getTourmarker()
+    {
+        return $this->tourmarker;
+    }
+
+	/**
+     * @param field_type $tourmarker
+     */
+    public function setTourmarker($tourmarker)
+    {
+        $this->tourmarker = $tourmarker;
     }
     
 }

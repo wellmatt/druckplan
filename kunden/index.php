@@ -7,8 +7,8 @@
 //----------------------------------------------------------------------------------
 
 chdir("..");
-error_reporting(-1);
-ini_set('display_errors', 1);
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 //----------------------------------------------------------------------------------
 require_once("./config.php");
 require_once("./libs/basic/mysql.php");
@@ -63,11 +63,12 @@ header ('Pragma: no-cache');
 $busicon = new BusinessContact((int)$_SESSION["cust_id"]);
 
 // globale Variablen fuer das gesamte Kunden-Portal
-$_USER = new User(1);
+// $_USER = NULL;
 $_BUSINESSCONTACT = new BusinessContact((int)$_SESSION["cust_id"]);
 $_CONTACTPERSON = new ContactPerson((int)$_SESSION["contactperson_id"]);
+
 // Sprache laden
-$_LANG = $_USER->getLang();
+$_LANG = new Translator(22);
 
 // Buttons-Anzeigen oder nicht fuer Tickets, Personalisierungen, Artikel
 $enabled_tickets = "off";
@@ -131,7 +132,13 @@ if ($_REQUEST["exec"] == "register_tmp"){
 } else {
 	if(!$_SESSION["cust_logontime"])
 	    require_once('kunden/login.php');
-	else {	?>
+	else {	
+	
+	    Global $_USER;
+	    if ($_BUSINESSCONTACT->getSupervisor()){
+	        $_USER = new User($_BUSINESSCONTACT->getSupervisor()->getId());
+	    }
+	    ?>
 		<div id="logout">
 		&emsp;
 		</div>
@@ -229,7 +236,7 @@ if ($_REQUEST["exec"] == "register_tmp"){
 		                case 1: require_once('kunden/files.php'); break;
 		                case 2: require_once('kunden/upload.php'); break;
 		                case 3: require_once('kunden/customerdetails.php'); break;
-		                case 20: require_once('kunden/tickets.php'); break;
+		                case 20: require_once('kunden/modules/tickets/ticket.php'); break;
 		                case 40: require_once('kunden/personalization.php'); break;
 		                case 60: require_once('kunden/article.php'); break;
 		                case 80: require_once('kunden/modules/shoppingbasket/shoppingbasket.php'); break;

@@ -24,6 +24,13 @@ if ($_REQUEST["subexec"] == "save")
    $group->setRight(Group::RIGHT_SEE_TARGETTIME, (int)$_REQUEST["right_targettime"]);
    $group->setRight(Group::RIGHT_PARTS_EDIT, (int)$_REQUEST["right_parts_edit"]);
    $group->setRight(Group::RIGHT_ALL_CALENDAR, (int)$_REQUEST["right_all_calendar"]);
+   $group->setRight(Group::RIGHT_EDIT_BC, (int)$_REQUEST["right_edit_bc"]);
+   $group->setRight(Group::RIGHT_DELETE_BC, (int)$_REQUEST["right_delete_bc"]);
+   $group->setRight(Group::RIGHT_EDIT_CP, (int)$_REQUEST["right_edit_cp"]);
+   $group->setRight(Group::RIGHT_DELETE_CP, (int)$_REQUEST["right_delete_cp"]);
+   $group->setRight(Group::RIGHT_DELETE_SCHEDULE, (int)$_REQUEST["right_delete_schedule"]);
+   $group->setRight(Group::RIGHT_DELETE_ORDER, (int)$_REQUEST["right_delete_order"]);
+   $group->setRight(Group::RIGHT_DELETE_COLINV, (int)$_REQUEST["right_delete_colinv"]);
    $savemsg = getSaveMessage($group->save());
    $savemsg .= $DB->getLastError();  
 }
@@ -102,6 +109,34 @@ $users = User::getAllUser(User::ORDER_LOGIN);
   <tr>
       <td class="content_row_clear"><?=$_LANG->get('Alle Kalender einsehen')?></td>
       <td class="content_row_clear"><input type="checkbox" name="right_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_ALL_CALENDAR)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Geschäftskontakte bearbeiten')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_edit_bc" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_BC)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Geschäftskontakte löschen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_delete_bc" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_BC)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Ansprechpartner bearbeiten')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_edit_cp" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_CP)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Ansprechpartner löschen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_delete_cp" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_CP)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Kalkulationen löschen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_delete_order" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_ORDER)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Vorgänge löschen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_delete_colinv" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_COLINV)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Planung löschen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_delete_schedule" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_SCHEDULE)) echo "checked";?>></td>
    </tr>
    
 </table>

@@ -280,6 +280,12 @@ if (isset($_REQUEST["submit_search"])) {
     	<tr>
     		<td>&nbsp;</td>
     	</tr>
+    	<tr>
+    		<? // ---------------------------- Abos -------------------------------------------------------------?>
+    		<td valign="top">
+    				<?require_once("./libs/modules/tickets/ticket.formeabo.php");?>
+    		</td>
+    	</tr>
     	<!--<tr>
     		<td valign="top">
     				<?//require_once("./libs/modules/tickets/ticket.due.php");?>

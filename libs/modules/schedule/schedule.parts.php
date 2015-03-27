@@ -453,8 +453,10 @@ foreach($parts as $part)
             <td class="content_row" colspan="<?=($cols-1)?>">
             <? if($_USER->hasRightsByGroup(Group::RIGHT_PARTS_EDIT)) { ?>
                 <a href="index.php?page=<?=$_REQUEST['page']?>&exec=editparts&id=<?=$sched->getId()?>&part_id=<?=$part->getId()?>"><img src="images/icons/pencil.png"></a>
-                <img src="images/icons/cross-script.png" class="pointer icon-link"
+	            <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_SCHEDULE) || $_USER->isAdmin()){ ?>
+                    <img src="images/icons/cross-script.png" class="pointer icon-link"
                     onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=parts&id=<?=$sched->getId()?>&subexec=deletepart&part_id=<?=$part->getId()?>')">
+	            <?}?>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?=$_LANG->get('Teilauftrag freigegeben')?>:
                 <a href="javascript: saveStats('jobpartfinish','<?=$part->getId()?>','0','idx_img_jobpartstat_<?=$i?>','red')"

@@ -9,6 +9,7 @@
 require_once 'libs/modules/article/article.class.php';
 include 'comment.article.class.php';
 include 'libs/modules/attachment/attachment.class.php';
+require_once 'libs/modules/businesscontact/contactperson.class.php';
 
 class Comment {
     
@@ -16,6 +17,7 @@ class Comment {
     private $title;
     private $crtdate;
     private $crtuser;
+    private $crtcp;
     private $state = 1;
     private $module;
     private $objectid;
@@ -34,6 +36,7 @@ class Comment {
         global $_USER;
     
         $this->crtuser	= new User(0);
+        $this->crtcp	= new ContactPerson(0);
     
         if($id>0){
             $sql = "SELECT * FROM comments WHERE id = {$id}";
@@ -45,6 +48,7 @@ class Comment {
                 $this->title 			= $r["title"];
                 $this->crtdate		    = $r["crtdate"];
                 $this->crtuser		    = new User($r["crtuser"]);
+                $this->crtcp		    = new ContactPerson($r["crtcp"]);
                 $this->state 			= (int)$r["state"];
                 $this->module	        = $r["module"];
                 $this->objectid			= (int)$r["objectid"];
@@ -73,7 +77,6 @@ class Comment {
     function save()
     {
         global $DB;
-        global $_USER;
         $now = time();
         
         if ($this->id > 0) {
@@ -87,9 +90,9 @@ class Comment {
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO comments
-            (title, crtdate, crtuser, state, module, objectid, comment, visability, mailed )
+            (title, crtdate, crtuser, crtcp, state, module, objectid, comment, visability, mailed )
             VALUES
-            ( '{$this->title}' , {$now}, {$_USER->getId()}, {$this->state}, '{$this->module}',
+            ( '{$this->title}' , {$now}, {$this->crtuser->getId()}, {$this->crtcp->getId()}, {$this->state}, '{$this->module}',
             {$this->objectid}, '{$this->comment}', {$this->visability}, {$this->mailed} )";
             $res = $DB->no_result($sql);
             if ($res) {
@@ -97,7 +100,6 @@ class Comment {
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
                 $this->crtdate = $now;
-                $this->crtuser = $_USER;
                 return true;
             } else {
                 return false;
@@ -347,6 +349,23 @@ class Comment {
     {
         $this->articles = $articles;
     }
+    
+	/**
+     * @return the $crtcp
+     */
+    public function getCrtcp()
+    {
+        return $this->crtcp;
+    }
+
+	/**
+     * @param ContactPerson $crtcp
+     */
+    public function setCrtcp($crtcp)
+    {
+        $this->crtcp = $crtcp;
+    }
+    
 }
 
 

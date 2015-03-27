@@ -103,19 +103,13 @@ if ($_REQUEST["send_shoppingbasket"]){
 		foreach ($busicon->getNotifymailadr() as $tmp_mail_adr){
 		    $to[] = $tmp_mail_adr;
 		}
-
-		$nachricht = new Nachricht();
-		$nachricht->setFrom($_USER);
-		$nachricht->setTo($to);
-		$nachricht->setSubject("Bestellbestätigung");
-		$nachricht->setText($text);
-		$ret = $nachricht->send();
 		
 		$shopping_basket->clear();
 		$shopping_basket_entrys = Array ();
 		$_SESSION["shopping_basket"] = new Shoppingbasket();
 	}
 	$save_msg = getSaveMessage($save_msg);
+	$save_msg .= $DB->getLastError();
 }
 
 $overall_price = 0;
@@ -222,7 +216,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 				    					<option value="<?=$price["sep_max"]?>"
 				    							<?if($price["sep_max"] == $entry->getAmount()) echo "selected";?>>
 				    					<?	echo $price["sep_max"];
-				    						if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." ".$_USER->getClient()->getCurrency().")";	?>
+				    						if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
 				    					</option>
 								<?	} ?>
 				    			</select>

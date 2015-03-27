@@ -178,6 +178,7 @@ class Shoppingbasket{
 	        $col_inv->setTitle($_LANG->get("Bestellung aus dem Kunden-Portal"));
 	        $col_inv->setPaymentterm($busicon->getPaymentTerms());
 	        $col_inv->setDeliveryaddressById($address);
+	        $col_inv->setClient(new Client(1));
 	        
 	        if ($_SESSION["login_type"]	== "contactperson"){
 	            $col_inv->setCustContactperson(new ContactPerson((int)$_SESSION["contactperson_id"]));
@@ -247,61 +248,65 @@ class Shoppingbasket{
         	                    $tmp_perso_order->save();
         	                    $tmp_perso_order->copyPersoOrderForShopOrder();
         	                }
+
         	                $save_items[] = $tmp_order_pos;
-        	                
-        	                // Bestellungen direkt abziehen vom Warenhaus,
-        	                // vorher muss geprueft werden, ob von entsprechenden Warenhaus soviel entnommen werden darf.
-        	                // Beispiel:   W1=50 - (R=50)
-        	                //             W2=150 (Free) 
-        	                //             Total=150 (Free=100) 
-        	                //             Einkauf=50 
-        	                // Diese dürfen nicht vom ersten Lager entnommen werden
-        	                // auch wenn die benoetige Ware vorhanden ist.
-        	                $whouses = Warehouse::getAllStocksByArticle($tmp_order_pos->getObjectid());
-        	                $opamount = $tmp_order_pos->getQuantity();
-        	                $whlist = array();
-        	                foreach ($whouses as $w)
-        	                {
-        	                    // Es darf aus keinem Warenhouse entnommen werden, welches explizit einem anderen Kunden zugewiesens ist.
-        	                    if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$col_inv->getCustomer()->getId())) 
-        	                    {
-            	                    $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse  
-            	                    $dump = array();
-            	                    if($faiwh>=$opamount)
+        	                /*
+        	                if($tmp_order_pos->getObjectid()>0){
+            	                // Bestellungen direkt abziehen vom Warenhaus,
+            	                // vorher muss geprueft werden, ob von entsprechenden Warenhaus soviel entnommen werden darf.
+            	                // Beispiel:   W1=50 - (R=50)
+            	                //             W2=150 (Free)
+            	                //             Total=150 (Free=100)
+            	                //             Einkauf=50
+            	                // Diese dï¿½rfen nicht vom ersten Lager entnommen werden
+            	                // auch wenn die benoetige Ware vorhanden ist.
+            	                $whouses = Warehouse::getAllStocksByArticle($tmp_order_pos->getObjectid());
+            	                $opamount = $tmp_order_pos->getQuantity();
+            	                $whlist = array();
+            	                foreach ($whouses as $w)
+            	                {
+            	                    // Es darf aus keinem Warenhouse entnommen werden, welches explizit einem anderen Kunden zugewiesens ist.
+            	                    if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$col_inv->getCustomer()->getId()))
             	                    {
-            	                        $dump["Warehouse"] = $w;
-            	                        $dump["Amount"] = $opamount;
-            	                        $opamount = 0;
-            	                        $whlist[] = $dump;
+            	                        $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse
+            	                        $dump = array();
+            	                        if($faiwh>=$opamount)
+            	                        {
+            	                            $dump["Warehouse"] = $w;
+            	                            $dump["Amount"] = $opamount;
+            	                            $opamount = 0;
+            	                            $whlist[] = $dump;
+            	                        }
+            	                        else if ($faiwh > 0)
+            	                        {
+            	                            $dump["Warehouse"] = $w;
+            	                            $dump["Amount"] = $faiwh;
+            	                            $opamount = $opamount-$faiwh;
+            	                            $whlist[] = $dump;
+            	                        }
+            	                        $w->save();
+            	                        if($opamount<=0)
+            	                            break;
             	                    }
-            	                    else if ($faiwh > 0)
+            	                }
+            	                if($opamount > 0)
+            	                {
+            	                    echo "<script type='text/javascript' language='javascript'>\n";
+            	                    echo "<!--\n";
+            	                    echo "alert('".$_LANG->get("Nicht genug Waren (Artikel: '".$tmp_article->getTitle()."') verfÃ¼gbar.")."')\n";
+            	                    echo "//-->\n";
+            	                    echo "</script>\n";
+            	                }
+            	                else
+            	                {
+            	                    foreach ($whlist as $w)
             	                    {
-            	                        $dump["Warehouse"] = $w;
-            	                        $dump["Amount"] = $faiwh;
-            	                        $opamount = $opamount-$faiwh;
-            	                        $whlist[] = $dump;
+            	                        $w["Warehouse"]->setAmount($w["Warehouse"]->getAmount()-$w["Amount"]);
+            	                        $w["Warehouse"]->save();
             	                    }
-            	                    $w->save();
-            	                    if($opamount==0)
-            	                        break;
-        	                    }
+            	                }
         	                }
-        	                if($opamount > 0)
-        	                {
-        	                    echo "<script type='text/javascript' language='javascript'>\n";
-        	                    echo "<!--\n";
-        	                    echo "alert('".$_LANG->get("Nicht genug Waren verfügbar.")."')\n";
-        	                    echo "//-->\n";
-        	                    echo "</script>\n";
-        	                }
-        	                else
-        	                {
-        	                   foreach ($whlist as $w)
-        	                   {
-        	                       $w["Warehouse"]->setAmount($w["Warehouse"]->getAmount()-$w["Amount"]);
-        	                       $w["Warehouse"]->save();
-        	                   }
-        	                }
+        	                */
     	                }
     	            }
 	            }

@@ -12,10 +12,17 @@ class Group {
    
    const RIGHT_URLAUB = 1; // Urlaub genehmigen
    const RIGHT_MACHINE_SELECTION = 2; // Maschinenauswahl anzeigen
-   const RIGHT_DETAILED_CALCULATION = 4; // Ausf�hrliche Kalkulation anzeigen
+   const RIGHT_DETAILED_CALCULATION = 4; // Ausführliche Kalkulation anzeigen
    const RIGHT_SEE_TARGETTIME = 8; // Darf Sollzeiten sehen
-   const RIGHT_PARTS_EDIT = 16; // Darf Teilauftr�ge planen
+   const RIGHT_PARTS_EDIT = 16; // Darf Teilauftr#ge planen
    const RIGHT_ALL_CALENDAR = 32; // Darf alle Kalender einsehen
+   const RIGHT_EDIT_BC = 64; // Darf Geschäftskontakte bearbeiten
+   const RIGHT_DELETE_BC = 128; // Darf Geschäftskontakte löschen
+   const RIGHT_EDIT_CP = 256; // Darf Geschäftskontakte bearbeiten
+   const RIGHT_DELETE_CP = 512; // Darf Geschäftskontakte löschen
+   const RIGHT_DELETE_SCHEDULE = 1024;
+   const RIGHT_DELETE_ORDER = 2048;
+   const RIGHT_DELETE_COLINV = 4096;
    
    function __construct($id = 0, $adduser = true)
    {

@@ -36,7 +36,7 @@ if($_REQUEST["subexec"] == "save"){
 	<tr>
 		<td width="200" class="content_header">
 			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzuf�gen')?>
+			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzufügen')?>
 			<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Artikel bearbeiten')?>
 			<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
 		</td>

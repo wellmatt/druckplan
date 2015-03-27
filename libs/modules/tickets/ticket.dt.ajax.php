@@ -1,12 +1,46 @@
 <?php
-//     error_reporting(-1);
-//     ini_set('display_errors', 1);
+    error_reporting(-1);
+    ini_set('display_errors', 1);
 
     chdir("../../../");
     require_once 'config.php';
-    require_once 'libs/basic/basic.importer.php';
+    
+    require_once("config.php");
+    require_once("libs/basic/mysql.php");
+    require_once("libs/basic/globalFunctions.php");
+    require_once("libs/basic/user/user.class.php");
+    require_once("libs/basic/groups/group.class.php");
+    require_once("libs/basic/clients/client.class.php");
+    require_once("libs/basic/translator/translator.class.php");
+    require_once("libs/basic/countries/country.class.php");
+    require_once 'libs/modules/organizer/contact.class.php';
+    require_once 'libs/modules/businesscontact/businesscontact.class.php';
+    require_once 'libs/modules/chat/chat.class.php';
+    require_once 'libs/modules/calculation/order.class.php';
+    require_once 'libs/modules/schedule/schedule.class.php';
     require_once 'libs/modules/tickets/ticket.class.php';
     require_once 'libs/modules/comment/comment.class.php';
+    require_once 'libs/modules/abonnements/abonnement.class.php';
+
+    session_start();
+    
+    $DB = new DBMysql();
+    $DB->connect($_CONFIG->db);
+    global $_LANG;
+    
+    // Login
+    if ($_REQUEST["userid"]){
+        $_USER = new User((int)$_REQUEST["userid"]);
+    } else {
+        $_USER = new User();
+        $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+    }
+    $_LANG = $_USER->getLang();
+    
+    if ($_USER == false){
+        error_log("Login failed (basic-importer.php)");
+        die("Login failed");
+    }
 
     $aColumns = array( 'id', 'number', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
      
@@ -128,6 +162,7 @@
     
     if ($_REQUEST["forme"]){
         $foruser = new User((int)$_REQUEST["forme"]);
+//         var_dump($abonnoments);
         $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
         $forgroups = $foruser->getGroups();
         if (count($forgroups) > 0){
@@ -139,9 +174,31 @@
             $groupsql .= ") ";
         }
         if ($sWhere == ""){
-            $sWhere .= " WHERE (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+            $sWhere .= " WHERE (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "' ) ";
         } else {
-            $sWhere .= " AND (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+            $sWhere .= " AND (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "' ) ";
+        }
+    } elseif ($_REQUEST["formeabo"]){
+        $foruser = new User((int)$_REQUEST["formeabo"]);
+        $abonnoments = Abonnement::getMyTicketAbonnementsForDtList();
+        if ($abonnoments != ""){
+            $abonnoments = " AND id IN (" . $abonnoments . ") ";
+        }
+//         var_dump($abonnoments);
+        $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
+        $forgroups = $foruser->getGroups();
+        if (count($forgroups) > 0){
+            $groupsql = " AND assigned NOT IN (";
+            foreach ($forgroups as $ugroup){
+                $groupsql .= "'".$ugroup->getName() . "',";
+            }
+            $groupsql = substr($groupsql, 0, strlen($groupsql)-1);
+            $groupsql .= ") ";
+        }
+        if ($sWhere == ""){
+            $sWhere .= " WHERE (assigned != '" . $forname . "' " . $groupsql . " AND crtuser != '" . $forname . "' ".$abonnoments.") ";
+        } else {
+            $sWhere .= " AND (assigned != '" . $forname . "' " . $groupsql . " AND crtuser != '" . $forname . "' ".$abonnoments.") ";
         }
     } elseif ($_REQUEST["bcid"]){
         if ($sWhere == ""){
@@ -242,6 +299,14 @@
         
     }
     
+    if ($_GET['tourmarker'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tourmarker LIKE '%{$_GET['tourmarker']}%' ";
+        } else {
+            $sWhere .= " AND tourmarker LIKE '%{$_GET['tourmarker']}%' ";
+        }
+    }
+    
     /*
      * SQL queries
      * Get data to display
@@ -250,7 +315,7 @@
                tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
                tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
                IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, tickets.tourmarker 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -260,10 +325,10 @@
                LEFT JOIN groups ON groups.id = tickets.assigned_group
                LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
                WHERE tickets.state > 0 
-               $sLimit 
                ) tickets 
                $sWhere
-               $sOrder";
+               $sOrder 
+               $sLimit ";
     
 //     var_dump($sQuery);
     
@@ -279,7 +344,7 @@
                tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
                tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
                IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, tickets.tourmarker 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -302,7 +367,21 @@
     /* Total data set length */
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE state > 0
+        FROM (SELECT
+               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+               tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, tickets.tourmarker 
+               FROM tickets
+               LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
+               LEFT JOIN tickets_states ON tickets_states.id = tickets.state
+               LEFT JOIN tickets_priorities ON tickets_priorities.id = tickets.priority
+               LEFT JOIN tickets_categories ON tickets_categories.id = tickets.category
+               LEFT JOIN `user` ON `user`.id = tickets.assigned_user
+               LEFT JOIN groups ON groups.id = tickets.assigned_group
+               LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
+               WHERE tickets.state > 0 
+               ) tickets 
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -322,56 +401,86 @@
      
 //     $aColumns = array( 'id', 'category', 'crtdate', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
     
+    if ($_REQUEST["cpid"]){
+        $contactperson = new ContactPerson((int)$_REQUEST["cpid"]);
+    } else {
+        $contactperson = new ContactPerson();
+    }
+    
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
         $row = array();
-        for ( $i=0 ; $i<count($aColumns) ; $i++ )
-        {
-            if ( $aColumns[$i] == 'crtdate' )
+        $tc = new TicketCategory((int)$aRow['tcid']);
+        if ($tc->cansee() || $_REQUEST["forme"] || ($_REQUEST["cpid"] && $contactperson->TC_cansee($tc))){
+            for ( $i=0 ; $i<count($aColumns) ; $i++ )
             {
-                $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
-            }
-            else if ( $aColumns[$i] == 'duedate' )
-            {
-                if (time() > $aRow[$aColumns[$i]]){
-                    $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<img src='images/icons/exclamation--frame.png'>";
-                } else {
+                if ( $aColumns[$i] == 'crtdate' )
+                {
                     $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
                 }
-            }
-            else if ( $aColumns[$i] == 'state' )
-            {
-                $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
-                $commenthtml = "<img src='images/icons/message_inbox.gif' title='";
-                foreach ($latestcomments as $comment){
-                    if ($_USER->isAdmin()
-                        || $comment->getVisability() == Comment::VISABILITY_PUBLIC
-                        || $comment->getVisability() == Comment::VISABILITY_INTERNAL
-                        || $comment->getCrtuser() == $_USER)
-                    {
-                        $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . $comment->getComment();
+                else if ( $aColumns[$i] == 'duedate' )
+                {
+                    if (time() > $aRow[$aColumns[$i]] && $aRow[$aColumns[$i]] > 0){
+                        if ($_REQUEST["portal"] == 1){
+                            $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<img src='../../../images/icons/exclamation--frame.png'>";
+                        } else {
+                            $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<img src='images/icons/exclamation--frame.png'>";
+                        }
+                    } else if ($aRow[$aColumns[$i]] == 0) {
+                        $row[] = "ohne";
+                    } else {
+                        $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
                     }
                 }
-                $commenthtml .= "'>";
-                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ]))).$commenthtml;
+                else if ( $aColumns[$i] == 'state' )
+                {
+                    if ($_REQUEST["portal"] == 1){
+                        $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
+                        $commenthtml = "<img src='../../../images/icons/message_inbox.gif' title='";
+                        foreach ($latestcomments as $comment){
+                            if ($comment->getVisability() == Comment::VISABILITY_PUBLIC)
+                            {
+                                $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . strip_tags($comment->getComment());
+                            }
+                        }
+                        $commenthtml .= "'>";
+                        $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ]))).$commenthtml;
+                    } else {
+                        $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
+                        $commenthtml = "<img src='images/icons/message_inbox.gif' title='";
+                        foreach ($latestcomments as $comment){
+                            if ($_USER->isAdmin()
+                                || $comment->getVisability() == Comment::VISABILITY_PUBLIC
+                                || $comment->getVisability() == Comment::VISABILITY_INTERNAL
+                                || $comment->getCrtuser() == $_USER)
+                            {
+                                $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . strip_tags($comment->getComment()) . "\n";
+                            }
+                        }
+                        $commenthtml .= "'>";
+                        $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ]))).$commenthtml;
+                    }
+                }
+                else if ( $aColumns[$i] == 'priority' )
+                {
+                    $row[] = nl2br(htmlentities(utf8_encode($aRow['priority_title'])));
+                }
+                else if ( $aColumns[$i] == 'id' )
+                {
+                    $row[] = $aRow[ $aColumns[$i] ];
+                }
+                else if ( $aColumns[$i] == 'tourmarker' )
+                {
+                    /* do not print */
+                }
+                else
+                {
+                    /* General output */
+                    $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
+                }
             }
-            else if ( $aColumns[$i] == 'priority' )
-            {
-                /* do not print the id */
-                $row[] = nl2br(htmlentities(utf8_encode($aRow['priority_title'])));
-            }
-            else if ( $aColumns[$i] == 'id' )
-            {
-                /* do not print the id */
-                $row[] = $aRow[ $aColumns[$i] ];
-            }
-            else
-            {
-                /* General output */
-                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
-            }
+            $output['aaData'][] = $row;
         }
-        $output['aaData'][] = $row;
     }
      
     echo json_encode( $output );

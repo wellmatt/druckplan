@@ -443,7 +443,10 @@ $collective = new CollectiveInvoice($order->getCollectiveinvoiceId());?>
     <td class="content_row_clear value" align="center">
         <img src="images/icons/pencil.png" class="pointer icon-link" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=2'">
         <img src="images/icons/scripts.png" class="pointer icon-link" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&subexec=copy&step=2'">
-        <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$order->getId()?>&subexec=delete&calc_id=<?=$calc->getId()?>&step=4')"><img src="images/icons/cross-script.png"></a>
+        
+    	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
+        		<a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$order->getId()?>&subexec=delete&calc_id=<?=$calc->getId()?>&step=4')"><img src="images/icons/cross-script.png"></a>
+        <?}?>
     </td>
     <? } ?>
 </tr>
@@ -899,7 +902,28 @@ $collective = new CollectiveInvoice($order->getCollectiveinvoiceId());?>
 </div>
 <? echo $savemsg; ?>
 <br>
-<div style="text-align:right">
-    <input type="submit" value="<?=$_LANG->get('Speichern')?>">
+<div>
+	<table width="100%">
+	    <colgroup>
+	        <col width="50%">
+	        <col width="50%">
+	        <col>
+	    </colgroup> 
+	    <tr>
+	        <td class="content_row_header">
+	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
+	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+	        </td>
+	        <td class="content_row_clear" align="center">
+	        		<input type="submit" value="<?=$_LANG->get('Speichern')?>">
+	        </td>
+	        <td class="content_row_clear" align="right">
+	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
+		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=<?php echo $order->getId();?>')" 
+		        				value="<?=$_LANG->get('L&ouml;schen')?>">
+		        <?}?>
+	        </td>
+	    </tr>
+	</table>
 </div>
 </form>

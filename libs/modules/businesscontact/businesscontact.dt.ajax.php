@@ -1,6 +1,18 @@
 <?php
 
-    require_once '../../../config.php';
+//     error_reporting(-1);
+//     ini_set('display_errors', 1);
+    
+    chdir('../../../');
+    require_once("config.php");
+    require_once("libs/basic/mysql.php");
+    require_once("libs/basic/globalFunctions.php");
+    require_once("libs/basic/user/user.class.php");
+    require_once("libs/basic/groups/group.class.php");
+    require_once("libs/basic/clients/client.class.php");
+    require_once("libs/basic/translator/translator.class.php");
+    require_once 'libs/basic/countries/country.class.php';
+    session_start();
 
     $aColumns = array( 'id', 'cust_number', 'matchcode', 'name1', 'city', 'customer', 'supplier', 'attribute' );
      
@@ -16,6 +28,12 @@
     $gaSql['db']         = $_CONFIG->db->name;
     $gaSql['server']     = $_CONFIG->db->host;
      
+    $DB = new DBMysql();
+    $DB->connect($_CONFIG->db);
+    
+    Global $_USER;
+    $_USER = new User();
+    $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
      
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * If you just want to use the basic configuration for DataTables with PHP server-side, there is
@@ -184,7 +202,7 @@
      
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
-//         echo "Durchlauf für :" . $aRow[ $aColumns[0] ] . "</br> </br>";
+//         echo "Durchlauf fï¿½r :" . $aRow[ $aColumns[0] ] . "</br> </br>";
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
@@ -266,8 +284,8 @@
                 $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
-		$row[] = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><img src="../images/icons/pencil.png"></a>
-		          <a class="icon-link" href="#" onclick="askDel(\'index.php?page=libs/modules/businesscontact/businesscontact.php&exec=delete&id='.$aRow[ $aColumns[0] ].'\')"><img	src="images/icons/cross-script.png"> </a>';
+        
+        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><img src="../images/icons/pencil.png"></a>';
 // 		var_dump($row); echo "</br>";
         $output['aaData'][] = $row;
     }

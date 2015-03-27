@@ -19,7 +19,7 @@ if($_REQUEST["subexec"] == "save")
     $ft->setVertical((int)$_REQUEST["foldtype_vertical"]);
     $ft->setHorizontal((int)$_REQUEST["foldtype_horizontal"]);
     $ft->setPicture(trim(addslashes($_REQUEST["picture"])));
-    $ft->setDifficulty((int)$_REQUEST["foldtype_breaks"]);
+    $ft->setBreaks((int)$_REQUEST["foldtype_breaks"]);
     $savemsg = getSaveMessage($ft->save());
 }
 

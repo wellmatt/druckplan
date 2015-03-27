@@ -1,26 +1,22 @@
 <? // -------------------------------------------------------------------------------
 // Author:			iPactor GmbH
-// Updated:			05.01.2015
-// Copyright:		2015 by iPactor GmbH. All Rights Reserved.
+// Updated:			25.06.2013
+// Copyright:		2013 by iPactor GmbH. All Rights Reserved.
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-
-if ($from_busicon){
-    if ($notes_only){
-        $ajax_url = "libs/modules/tickets/ticket.dt.ajax.php?notes_only=1&bcid=".$contactID;
-    } else {
-        $ajax_url = "libs/modules/tickets/ticket.dt.ajax.php?bcid=".$contactID;
-    }
-} elseif ($from_cc){
-    $ajax_url = "libs/modules/tickets/ticket.dt.ajax.php?ccid=".$contactID;
-}
+require_once 'libs/modules/notifications/notification.class.php';
 
 ?>
 
 <!-- DataTables -->
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 <script type="text/javascript">
@@ -46,14 +42,12 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 };
 
 $(document).ready(function() {
-    var ticketsnotestable = $('#ticketsnotestable').DataTable( {
-        // "scrollY": "600px",
+    var notifytable = $('#notifytable').DataTable( {
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": '<?php echo $ajax_url;?>',
+        "sAjaxSource": "libs/modules/notifications/notification.dt.ajax.php?userid=<?php echo $_USER->getId();?>",
         "paging": true,
-		"stateSave": true,
-// 		"dom": 'flrtip',        
+		"stateSave": true,  
 		"dom": 'T<"clear">flrtip',        
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -74,16 +68,18 @@ $(document).ready(function() {
 		"columns": [
 		            null,
 		            null,
-		            null,
-		            null,
-		            null,
-		            null,
-		            null,
-		            null,
-		            null,
-		            null,
 		            null
 		          ],
+        "columnDefs": [
+                       { type: 'date-uk', targets: 2 }
+                      ],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                          if ( aData[4] == "1" )
+                          {
+//                             $('td:eq(1)', nRow).html( '<b>A</b>' );
+                            $(nRow).addClass('highlight');
+                          }
+        },
 		"language": 
 					{
 						"emptyTable":     "Keine Daten vorhanden",
@@ -109,50 +105,41 @@ $(document).ready(function() {
 						}
 					}
     } );
-
-    $("#ticketsnotestable tbody td").live('click',function(){
-        var aPos = $('#ticketsnotestable').dataTable().fnGetPosition(this);
-        var aData = $('#ticketsnotestable').dataTable().fnGetData(aPos[0]);
-        document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0];
+    $("#notifytable tbody td").live('click',function(){
+        var aPos = $('#notifytable').dataTable().fnGetPosition(this);
+        var aData = $('#notifytable').dataTable().fnGetData(aPos[0]);
+        document.location="index.php?page=libs/modules/notifications/notification.redirect.php&exec=redirect&nid="+aData[0];
     });
 } );
 </script>
 
 <table width="100%">
 	<tr>
-		<td width="150" class="content_header">
-			<img src="images/icons/clipboard-task.png"> 
-			<?php $notes_cat_name = new TicketCategory(1); $notes_cat_name = $notes_cat_name->getTitle();?>
-			<span style="font-size: 13px"><?=$_LANG->get('Verknüpfte Tickets')?> (<?php echo $notes_cat_name;?>)</span>
-		</td>
+		<td width="150" class="content_header"><img
+			src="images/icons/exclamation-diamond.png"> <span
+			style="font-size: 13px"><?=$_LANG->get('Benachrichtigungen')?></span></td>
 		<td width="250" class="content_header" align="right">
 		<?=$savemsg?>
 		</td>
-		<td class="content_header" align="right">
-		  <a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> 
-		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
-		</td>
 	</tr>
 </table>
+<br />
 
-
-<br/>
 <div class="box1">
-	<table id="ticketsnotestable" width="100%" cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('#')?></th>
-                <th><?=$_LANG->get('Kategorie')?></th>
-                <th><?=$_LANG->get('Datum')?></th>
-                <th><?=$_LANG->get('erst. von')?></th>
-                <th><?=$_LANG->get('Fällig')?></th>
-                <th><?=$_LANG->get('Betreff')?></th>
-                <th><?=$_LANG->get('Status')?></th>
-                <th><?=$_LANG->get('Von')?></th>
-                <th><?=$_LANG->get('Priorität')?></th>
-                <th><?=$_LANG->get('Zugewiesen an')?></th>
-            </tr>
-        </thead>
+	<table id="notifytable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column pointer">
+		<thead>
+			<tr>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('Titel')?></th>
+				<th><?=$_LANG->get('Datum')?></th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('Titel')?></th>
+				<th><?=$_LANG->get('Datum')?></th>
+			</tr>
+		</tfoot>
 	</table>
 </div>

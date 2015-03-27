@@ -86,11 +86,11 @@ if ($perso->getLineByLine() == 0) {
                      
                     if ($item->getBoxtype() == 1){
                         $pdf->SetXY ($xpos, $ypos, true);
-                        $tabin = strpos($item->getTitle(), "\t");
+                        $tabin = strpos($item->getTitle(), "\\t");
                         if ($tabin === false){
                             $pdf->Cell($width, $height, $item->getTitle(), 0, 0, $justification, false , '', 0, true, 'T');
                         } else {
-                            $tmp_title_arr = explode("\t",$item->getTitle());
+                            $tmp_title_arr = explode("\\t",$item->getTitle());
                             $tmp_tab_space = $item->getTab();
                             $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
@@ -98,11 +98,11 @@ if ($perso->getLineByLine() == 0) {
                         }
                     } else {
                         $pdf->SetXY ($xpos, $ypos, true);
-                        $tabin = strpos($item->getTitle(), "\t");
+                        $tabin = strpos($item->getTitle(), "\\t");
                         if ($tabin === false){
                             $pdf->Cell($width, $height, $item->getTitle(), 0, 0, $justification, false , '', 0, true, 'T');
                         } else {
-                            $tmp_title_arr = explode("\t",$item->getTitle());
+                            $tmp_title_arr = explode("\\t",$item->getTitle());
                             $tmp_tab_space = $item->getTab();
                             $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);

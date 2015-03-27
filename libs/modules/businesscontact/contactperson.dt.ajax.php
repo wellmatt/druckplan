@@ -1,6 +1,35 @@
 <?php
+    error_reporting(-1);
+    ini_set('display_errors', 1);
 
-    require_once '../../../config.php';
+    chdir("../../../");
+    require_once 'config.php';
+    
+    require_once("config.php");
+    require_once("libs/basic/mysql.php");
+    require_once("libs/basic/globalFunctions.php");
+    require_once("libs/basic/user/user.class.php");
+    require_once("libs/basic/groups/group.class.php");
+    require_once("libs/basic/clients/client.class.php");
+    require_once("libs/basic/translator/translator.class.php");
+    require_once("libs/basic/countries/country.class.php");
+    require_once 'libs/modules/organizer/contact.class.php';
+    require_once 'libs/modules/businesscontact/businesscontact.class.php';
+    require_once 'libs/modules/chat/chat.class.php';
+    require_once 'libs/modules/calculation/order.class.php';
+    require_once 'libs/modules/schedule/schedule.class.php';
+    require_once 'libs/modules/tickets/ticket.class.php';
+    require_once 'libs/modules/comment/comment.class.php';
+
+    session_start();
+    
+    $DB = new DBMysql();
+    $DB->connect($_CONFIG->db);
+    global $_LANG;
+    
+    $_USER = new User();
+    $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+    $_LANG = $_USER->getLang();
 
     $aColumns = array( 'id', 'cpname', 'bcname' );
      
@@ -132,6 +161,7 @@
         CONCAT(businesscontact.name1,' ',businesscontact.name2) bcname,
         businesscontact.id as bcid,
         contactperson.phone,
+        contactperson.mobil,
         contactperson.email
         FROM
         contactperson
@@ -147,7 +177,20 @@
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT FOUND_ROWS()
+        SELECT COUNT(".$sIndexColumn.") FROM 
+        (SELECT
+        contactperson.id,
+        CONCAT(contactperson.name1,', ',contactperson.name2) cpname,
+        CONCAT(businesscontact.name1,' ',businesscontact.name2) bcname,
+        businesscontact.id as bcid,
+        contactperson.phone,
+        contactperson.mobil,
+        contactperson.email
+        FROM
+        contactperson
+        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact) cps 
+        $sWhere
+        $sOrder
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -164,6 +207,7 @@
         CONCAT(businesscontact.name1,' ',businesscontact.name2) bcname,
         businesscontact.id as bcid,
         contactperson.phone,
+        contactperson.mobil,
         contactperson.email
         FROM
         contactperson
@@ -197,6 +241,9 @@
             else if ( $aColumns[$i] == 'phone' ){
                 
             }
+            else if ( $aColumns[$i] == 'mobil' ){
+                
+            }
             else if ( $aColumns[$i] == 'email' ){
                 
             }
@@ -209,10 +256,43 @@
                 $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
-		$row[] = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid='.$aRow[ $aColumns[0] ].'&id='.$aRow[ $aColumns[3] ].'"><img title="zum Ansprechpartner" src="../images/icons/user-business-gray-boss.png"></a>
-		          <a href="mailto:'.$aRow[ "email" ].'"><img title="Mail schicken" src="../images/icons/mail.png"></a>
-		          <a class="icon-link" href="phone:'.$aRow[ "phone" ].'"><img title="anrufen" src="../images/icons/telephone.png"></a>
-		          <a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ "bcid" ].'"><img title="zum Geschäftskontakt" src="../images/icons/user-business.png"></a>';
+
+        $tmp_row = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid='.$aRow[ $aColumns[0] ].'&id='.$aRow[ "bcid" ].'"><img title="zum Ansprechpartner" src="../images/icons/user-business-gray-boss.png"></a>
+		            <a href="mailto:'.$aRow[ "email" ].'"><img title="Mail schicken" src="../images/icons/mail.png"></a>';
+        
+        $tmp_phone = $aRow[ "phone" ];
+        if ($tmp_phone != "" || $tmp_phone != NULL){
+            $phone = str_replace(" ", "", $tmp_phone);  	// leerzeichen entfernen
+            $phone = str_replace("+", "", $phone);			// + entfernen
+            $phone = str_replace("/", "", $phone);			// / entfernen
+            $phone = str_replace("-", "", $phone);			// - entfernen
+            if (substr($phone, 0, 2) == "49"){
+                $phone = "0".substr($phone, 2);	 // Landesvorwahl (0049) von Deutschladn durch 0 ersetzen
+            } else {
+                $phone = "00".$phone;							// 00 voransetzen, wenn Ausland
+            }
+            $phonefordial = $phone;
+            $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><img title="'.$aRow[ "phone" ].' anrufen" src="../images/icons/telephone.png"></a>';
+        }
+       
+        $tmp_phone = $aRow[ "mobil" ];
+        if ($tmp_phone != "" || $tmp_phone != NULL){
+            $phone = str_replace(" ", "", $tmp_phone);  	// leerzeichen entfernen
+            $phone = str_replace("+", "", $phone);			// + entfernen
+            $phone = str_replace("/", "", $phone);			// / entfernen
+            $phone = str_replace("-", "", $phone);			// - entfernen
+            if (substr($phone, 0, 2) == "49"){
+                $phone = "0".substr($phone, 2);	 // Landesvorwahl (0049) von Deutschladn durch 0 ersetzen
+            } else {
+                $phone = "00".$phone;							// 00 voransetzen, wenn Ausland
+            }
+            $phonefordial = $phone;
+            $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><img title="'.$aRow[ "mobil" ].' anrufen" src="../images/icons/mobile-phone.png"></a>';
+        }
+		
+        $tmp_row .= '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ "bcid" ].'"><img title="zum Geschäftskontakt" src="../images/icons/user-business.png"></a>';
+        
+		$row[] = $tmp_row;
         $output['aaData'][] = $row;
     }
      

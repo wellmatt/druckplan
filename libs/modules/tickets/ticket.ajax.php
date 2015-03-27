@@ -50,4 +50,34 @@ if ($_REQUEST["ajax_action"] == "search_article"){
     header("Content-Type: application/json");
     echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "setFilter_date_min"){
+    $_SESSION['tkt_date_min'] = $_POST['tkt_date_min'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_date_max"){
+    $_SESSION['tkt_date_max'] = $_POST['tkt_date_max'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_date_due_min"){
+    $_SESSION['tkt_date_due_min'] = $_POST['tkt_date_due_min'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_date_due_max"){
+    $_SESSION['tkt_date_due_max'] = $_POST['tkt_date_due_max'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_category"){
+    $_SESSION['tkt_ajax_category'] = $_POST['tkt_ajax_category'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_state"){
+    $_SESSION['tkt_ajax_state'] = $_POST['tkt_ajax_state'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_crtuser"){
+    $_SESSION['tkt_ajax_crtuser'] = $_POST['tkt_ajax_crtuser'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_assigned"){
+    $_SESSION['tkt_ajax_assigned'] = $_POST['tkt_ajax_assigned'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_showclosed"){
+    $_SESSION['tkt_ajax_showclosed'] = $_POST['tkt_ajax_showclosed'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_tourmarker"){
+    $_SESSION['tkt_ajax_tourmarker'] = $_POST['tkt_ajax_tourmarker'];
+}
 ?>

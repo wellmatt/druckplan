@@ -416,7 +416,7 @@ function addPriceRow()
 				<td class="content_row_header"><?=$_LANG->get('Zeile f&uuml;r Zeile')?></td>
 				<td class="content_row">
 					<select name="perso_linebyline" id="perso_linebyline">
-					  <option value="0" <? if($perso->getLineByLine() == 0) echo 'selected="selected"';?>>Standard</option>
+					  <!-- <option value="0" <? if($perso->getLineByLine() == 0) echo 'selected="selected"';?>>Standard</option> -->
 					  <option value="1" <? if($perso->getLineByLine() == 1) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von oben)</option>
 					  <option value="2" <? if($perso->getLineByLine() == 2) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von unten)</option>
 					</select>
@@ -605,7 +605,7 @@ function addPriceRow()
 					</td>
 					<td class="content_row">
 						<input 	name="item_tab_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getTab(), 3)?>" style="width: 50px">mm
+								value ="<?=printPrice($item->getTab(), 2)?>" style="width: 50px">mm
 					</td>
 					<td class="content_row">
 						<select name="item_boxtype_<?=$y?>" class="text" style="width: 80px">

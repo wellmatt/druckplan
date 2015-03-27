@@ -25,8 +25,11 @@ if ($_REQUEST["exec"] == "delete"){
 	$tmp_del = $del_perso_order->delete();
 	// Wenn Datenbank angepasst ist, muss die Datei auch geloescht werden
 	if($tmp_del){
-		$tmp_filename1 = Personalizationorder::FILE_PATH.$_USER->getClient()->getId().".per_".$hash."_e.pdf";
-		$tmp_filename2 = Personalizationorder::FILE_PATH.$_USER->getClient()->getId().".per_".$hash."_p.pdf";
+        $tmp_client = Client::getAllClients(Client::ORDER_ID, true);
+        $tmp_client = $tmp_client[0];
+		$tmp_id = $tmp_client->getId();
+		$tmp_filename1 = Personalizationorder::FILE_PATH.$tmp_id.".per_".$hash."_e.pdf";
+		$tmp_filename2 = Personalizationorder::FILE_PATH.$tmp_id.".per_".$hash."_p.pdf";
 		unlink($tmp_filename1);
 		unlink($tmp_filename2);
 	}
@@ -248,7 +251,9 @@ if ((int)$_REQUEST["persoid"] > 0){
 						echo "<b>".$_LANG->get('Vorderseite')."</b> <br>"; 
 						// PDF ausgeben
 						if (count($docs) && $docs != false){
-							$tmp_id =$_USER->getClient()->getId();
+	                        $tmp_client = Client::getAllClients(Client::ORDER_ID, true);
+	                        $tmp_client = $tmp_client[0];
+							$tmp_id = $tmp_client->getId();
 							if ($docs[0]->getReverse() == 0) {
 								$hash = $docs[0]->getHash();
 								if (isset($docs[1])){
@@ -551,7 +556,7 @@ if ((int)$_REQUEST["persoid"] > 0){
 				    					<option value="<?=$price["sep_max"]?>"
 				    							<?if($price["sep_max"] == $perso_order->getAmount()) echo "selected";?>>
 				    					<?	echo $price["sep_max"];
-				    						if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." ".$_USER->getClient()->getCurrency().")";	?>
+				    						if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
 				    					</option>
 								<?	} ?>
 				    			</select> Stk.

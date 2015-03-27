@@ -126,6 +126,8 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setPositionTitles($positiontitles);
     
     $businessContact->setMatchcode($_REQUEST["matchcode"]);
+    $businessContact->setSupervisor(new User((int)$_REQUEST["supervisor"]));
+    $businessContact->setTourmarker($_REQUEST["tourmarker"]);
    
     $savemsg = getSaveMessage($businessContact->save());
 	if($DB->getLastError()!=NULL && $DB->getLastError()!=""){
@@ -384,10 +386,17 @@ function commi_checkbox(){
 			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li> 
 			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li> 
 			<li><a href="#tabs-3"><? echo $_LANG->get('Ansprechpartner');?></a></li>
+			<?php /*?>
 			<?if ($_CONFIG->shopActivation){?>
 				<li><a href="#tabs-4"><? echo $_LANG->get('Kundenportal');?></a></li>
 			<?}?>
-			<li><a href="#tabs-6"><? echo $_LANG->get('Notizen');?></a></li>
+			<?php */?>
+			<?php 
+			$security_ticket_cat = new TicketCategory(1);
+			if ($security_ticket_cat->cansee()){
+			?>
+			<li><a href="#tabs-6"><? echo $security_ticket_cat->getTitle();?></a></li>
+			<?php }?>
 			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?></a></li>
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
@@ -402,9 +411,28 @@ function commi_checkbox(){
 		<table width="100%">
 		<tr>
 			<td width="700" class="content_header">
-				<h1><?=$businessContact->getNameAsLine() ?></h1>
+			    <h3><?=$businessContact->getNameAsLine() ?><small><span style="display: inline-block; vertical-align: top;" class="
+			    <?php 
+			    if($businessContact->isExistingCustomer())
+			    {
+			        echo "label label-success";
+			    } else if($businessContact->isPotentialCustomer())
+			    {
+			        echo "label label-info";
+			    }
+			    ?>">
+			    <?php 
+			    if($businessContact->isExistingCustomer())
+			    {
+			        echo $_LANG->get('Bestandskunde');
+			    } else if($businessContact->isPotentialCustomer())
+			    {
+			        echo $_LANG->get('Interessent');
+			    }
+			    ?>
+			    </span></small></h3>
 			</td>
-			<td></td>
+			<td align="left"></td>
 			<td width="200" class="content_header" align="right"><?=$savemsg?></td>
 		</tr>
 		</table>
@@ -453,6 +481,18 @@ function commi_checkbox(){
 							<?	if ($businessContact->getMatchcode() != NULL && $businessContact->getMatchcode() != ""){
 									echo $_LANG->get('Matchcode').": ".$businessContact->getMatchcode(). " <br/>";
 								} ?>
+							<?	if ($businessContact->getSupervisor()->getId()>0){
+									echo $_LANG->get('Betreuer').": ".$businessContact->getSupervisor()->getNameAsLine(). " <br/>";
+								} ?>
+							<?php 
+// 							    if($businessContact->isExistingCustomer())
+// 							    {
+// 							        echo $_LANG->get('Bestandskunde'). " <br/>";
+// 							    } else if($businessContact->isPotentialCustomer())
+// 							    {
+// 							        echo $_LANG->get('Interessent'). " <br/>";
+// 							    }
+							?>
 							</td>
 							<td class="content_row_clear" valign="top">
 								<?=$_LANG->get('Tickets:');?>: 
@@ -827,6 +867,31 @@ function commi_checkbox(){
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Betreuer')?></td>
+					<td class="content_row_clear icon-link">
+                        <select name="supervisor" id="supervisor">
+                        <option value="0"></option>
+                        <?php 
+                        $all_user = User::getAllUser(User::ORDER_NAME);
+                        foreach ($all_user as $sup_user){
+                            if ($businessContact->getSupervisor()->getId() == $sup_user->getId()){
+                                echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
+                            } else {
+                                echo '<option value="'.$sup_user->getId().'">'.$sup_user->getNameAsLine().'</option>';
+                            }
+                        }
+                        ?>
+                        </select>
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Tourenmerkmal')?></td>
+					<td class="content_row_clear icon-link">
+					    <input class="text" style="width:100px" name="tourmarker" id="tourmarker"
+					    		value="<?=$businessContact->getTourmarker()?>">
+					</td>
+				</tr>
 				<? /********** ------------------ Alternativ-Adresse ------------------------------------------ ?>
 				<tr>
 					<td class="content_row_header" colspan="2"><?=$_LANG->get('Alternativadresse');?></td>
@@ -1057,7 +1122,6 @@ function commi_checkbox(){
 				<td><? echo $ai->getZip()." ".$ai->getCity();?></td>
 				<td class="content_row_clear" align="right">
 	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/pencil.png"></a>
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=delete_a&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>" onclick="askDel('index.php?exec=delete_a&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>')"><img src="images/icons/cross-script.png"></a>
 	        	</td>
 	        </tr>
 	        <?php 
@@ -1106,7 +1170,6 @@ function commi_checkbox(){
 						}
 					?>" title="<?=$_LANG->get('Shop-Freigabe')?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/pencil.png"></a>
-	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete_a&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_a&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>')"><img src="images/icons/cross-script.png"></a>
 	        	</td>
 	        </tr>
 	        <?php 
@@ -1177,7 +1240,6 @@ function commi_checkbox(){
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"> &ensp;</td>
 				<td class="content_row" align="right">
 	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/pencil.png"></a>
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>')"><img src="images/icons/cross-script.png"></a>
 	        	 </td>
 	        </tr>
 	        <?
@@ -1187,8 +1249,9 @@ function commi_checkbox(){
 	<?}?>
 	<p></p>
 	
-	<? // ------------------------------------- Kundenportal ----------------------------------------------?>
 	</div>
+	<? // ------------------------------------- Kundenportal ----------------------------------------------?>
+	<?php /* ?>
 	<?if ($_CONFIG->shopActivation){?>
 	
         <script language="javascript">
@@ -1285,7 +1348,7 @@ function commi_checkbox(){
 		
 		</div>
 	<?}?>
-	
+	<?php */?>
 	<? // ------------------------------------- Merkmale ----------------------------------------------?>
 		<div id="tabs-5">
 			<table width="100%">
@@ -1468,17 +1531,7 @@ function commi_checkbox(){
 		<? // ------------------------------------- verbundene Tickets (Notizen) ----------------------------------------------?>
 		
 		<div id="tabs-6">
-		<?if($businessContact->getId()){?>
-			<table width="100%">
-					<tr>
-						<td width="200" class="content_header">
-							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-							<?=$_LANG->get('Notizen');?>
-						</td>
-						<td></td>
-						<td width="200" class="content_header" align="right">&ensp;</td>
-					</tr>
-			</table>
+		<?if($businessContact->getId() && $security_ticket_cat->cansee()){?>
 			
 			<? // Tickets laden, die dem Kunden zugeordnet wurden
 				$from_busicon = true;
@@ -1492,16 +1545,6 @@ function commi_checkbox(){
 		
 		<div id="tabs-7">
 		<?if($businessContact->getId()){?>
-			<table width="100%">
-					<tr>
-						<td width="200" class="content_header">
-							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-							<?=$_LANG->get('Verbundene Tickets');?>
-						</td>
-						<td></td>
-						<td width="200" class="content_header" align="right">&ensp;</td>
-					</tr>
-			</table>
 			
 			<? // Tickets laden, die dem Kunden zugeordnet wurden
 				$from_busicon = true;
@@ -1593,17 +1636,21 @@ function commi_checkbox(){
 	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
 	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
 	        </td>
+	        <?php if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_BC) || $_USER->isAdmin()){?>
 	        <td class="content_row_clear" align="center">
 	        		<input type="submit" onclick='$("#user_form").submit()' value="<?=$_LANG->get('Speichern')?>">
 	        </td>
+	        <?php } ?>
+	        <?php /*
 	        <td class="content_row_clear" align="right">
 		        	<?if($businessContact->getId() != 0){?>
 		        		<input type="Button" value="<?=$_LANG->get('Speichern u. KD-Login versch.')?>" class="button"
 		        			   onclick=" document.getElementById('subexec').value='send'; askSubmit(document.getElementById('user_form'));">
 					<?}?>
 	        </td>
+	        */?>
 	        <td class="content_row_clear" align="right">
-	        	<? if($_USER->isAdmin()){ ?>
+	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){ ?>
 		        	<?if($_REQUEST["exec"] != "new"){?>
 		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$businessContact->getId()?>')" 
 		        				value="<?=$_LANG->get('L&ouml;schen')?>">
