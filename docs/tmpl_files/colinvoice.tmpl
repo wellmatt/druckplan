@@ -50,8 +50,8 @@ hiermit erhalten Sie die Rechnung zum Auftrag {$OrderId}</span></span></p>
 			<td style="text-align:left; width:225px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></td>
 			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getQuantity()}</span></span></td>
 			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getTax()} %</span></span></td>
-			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getPrice()} {$Currency}</span></span></td>
-			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getNetto()} {$Currency}</span></span></td>
+			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{printPrice($Pos-&gt;getPrice(),2)} {$Currency}</span></span></td>
+			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{printPrice($Pos-&gt;getNetto(),2)} {$Currency}</span></span></td>
 		</tr>
 		<!-- {/foreach} -->
 	</tbody>
@@ -63,25 +63,25 @@ hiermit erhalten Sie die Rechnung zum Auftrag {$OrderId}</span></span></p>
 	<tbody><!-- {if $DeliveryCosts gt 0} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Porto und Verpackung</span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$DeliveryCosts} {$Currency}</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{printPrice($DeliveryCosts,2)} {$Currency}</span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 		<!-- {/if} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Netto)</strong></span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{$SumNetto} {$Currency}</strong></span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{printPrice($SumNetto,2)} {$Currency}</strong></span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 		<!-- {foreach $TaxesKey as $Key} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">USt. ({$Key} %)</span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{$Taxes.$Key} {$Currency}</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{printPrice($Taxes.$Key,2)} {$Currency}</span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 		<!-- {/foreach} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Brutto)</strong></span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{$SumBrutto} {$Currency}</strong></span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{printPrice($SumBrutto,2)} {$Currency}</strong></span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 	</tbody>

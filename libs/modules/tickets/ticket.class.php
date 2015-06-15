@@ -15,6 +15,7 @@ require_once 'libs/modules/comment/comment.class.php';
 require_once 'libs/modules/notifications/notification.class.php';
 require_once 'libs/modules/timer/timer.class.php';
 require_once 'libs/modules/perferences/perferences.class.php';
+require_once 'libs/modules/tickets/ticket.log.class.php';
 
 class Ticket {
     
@@ -35,14 +36,15 @@ class Ticket {
     private $category;
     private $priority;
     private $source;
-    
-    private $tourmarker;
+    private $planned_time = 0;
+    private $total_time = 0;
     
     private $associations = Array();
     
     const SOURCE_EMAIL = 1;
     const SOURCE_PHONE = 2;
     const SOURCE_OTHER = 3;
+    const SOURCE_JOB   = 4;
     
     function __construct($id = 0){
         global $DB;
@@ -82,8 +84,18 @@ class Ticket {
                 $this->category	        = new TicketCategory((int)$r["category"]);
                 $this->priority			= new TicketPriority((int)$r["priority"]);
                 $this->source   	    = $r["source"];
-                $this->tourmarker   	= $r["tourmarker"];
+                $this->planned_time   	= (float)$r["planned_time"];
             }
+            
+            $sql = "SELECT SUM(stoptime-starttime) as time FROM timers WHERE module = 'Ticket' AND objectid = {$this->id} AND state = 2";
+            if($DB->num_rows($sql))
+            {
+                $r = $DB->select($sql);
+                $r = $r[0];
+                $this->total_time = $r["time"]/60/60;
+            }
+            
+            
             $sql = "SELECT * FROM tickets_association WHERE ticketid = {$id} ORDER BY module ASC";
             if($DB->num_rows($sql))
             {
@@ -113,6 +125,7 @@ class Ticket {
             duedate 		= {$this->duedate},
             closedate 		= {$this->closedate},
             closeuser 		= {$this->closeuser->getId()},
+            crtuser 		= {$this->crtuser->getId()},
             editdate 		= {$this->editdate},
             customer 		= {$this->customer->getId()},
             customer_cp 	= {$this->customer_cp->getId()},
@@ -121,28 +134,34 @@ class Ticket {
             state			= {$this->state->getId()},
             category		= {$this->category->getId()}, 
             priority		= {$this->priority->getId()}, 
-            source		    = {$this->source}, 
-            tourmarker		= '{$this->tourmarker}' 
+            planned_time	= {$this->planned_time}, 
+            source		    = {$this->source} 
             WHERE id = {$this->id}";
 //             var_dump($sql);
             return $DB->no_result($sql);
         } else {
+            if ($this->crtuser)
+                $tmp_crtuser = $this->crtuser->getId();
+            else
+                $tmp_crtuser = $_USER->getId();
+            
             $this->number = $_USER->getClient()->createTicketnumber();
             $sql = "INSERT INTO tickets
             (title, duedate, closedate, closeuser, editdate, number, customer, 
              customer_cp, assigned_user, assigned_group, state, category, priority,
-             source, crtdate, crtuser, tourmarker)
+             source, crtdate, crtuser, planned_time)
             VALUES
             ( '{$this->title}' , {$this->duedate}, {$this->closedate}, {$this->closeuser->getId()}, {$this->editdate}, '{$this->number}', {$this->customer->getId()},
               {$this->customer_cp->getId()}, {$this->assigned_user->getId()}, {$this->assigned_group->getId()}, {$this->state->getId()}, {$this->category->getId()}, {$this->priority->getId()},
-              {$this->source}, {$now}, {$_USER->getId()}, '{$this->tourmarker}')";
+              {$this->source}, {$now}, $tmp_crtuser, {$this->planned_time})";
             $res = $DB->no_result($sql);
+//             echo $sql . "</br>";
             if ($res) {
                 $sql = "SELECT max(id) id FROM tickets WHERE title = '{$this->title}'";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
                 $this->crtdate = $now;
-                $this->crtuser = $_USER;
+                $this->crtuser = new User($tmp_crtuser);
                 return true;
             } else {
                 return false;
@@ -178,7 +197,7 @@ class Ticket {
         global $DB;
         if ($this->id > 0) {
             $sql = "UPDATE tickets SET 
-                    state = 0 
+                    state = 1 
     				WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
                 unset($this);
@@ -187,6 +206,25 @@ class Ticket {
                 return false;
             }
         }
+    }
+    
+    public static function getUserSpareTime(User $user)
+    {
+        global $DB;
+        $userid = $user->getId();
+        $now = time();
+        $usertickets = Ticket::getAllTickets(" WHERE assigned_user = {$userid} AND duedate > {$now}");
+        $totaltime = $user->getW_month();
+        foreach ($usertickets as $ticket)
+        {
+            if ($ticket->getTotal_time()>0)
+            {
+                $totaltime -= $ticket->getTotal_time();
+            } else {
+                $totaltime -= $ticket->getPlanned_time();
+            }
+        }
+        return $totaltime;
     }
     
     static function getDueTicketsWithinTimeFrame($start, $end, User $user) {
@@ -245,6 +283,22 @@ class Ticket {
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Ticket($r["id"]);
+            }
+        }
+    
+        return $retval;
+    }
+    
+    public static function getAllTicketsCount($filter = '')
+    {
+        global $DB;
+        global $_USER;
+        $retval = 0;
+    
+        $sql = "SELECT count(id) FROM tickets {$filter}";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval = (int)$r["count(id)"];
             }
         }
     
@@ -528,15 +582,39 @@ class Ticket {
      */
     public function getTourmarker()
     {
-        return $this->tourmarker;
+        return $this->customer->getTourmarker();
+    }
+    
+	/**
+     * @return the $planned_time
+     */
+    public function getPlanned_time()
+    {
+        return $this->planned_time;
     }
 
 	/**
-     * @param field_type $tourmarker
+     * @param number $planned_time
      */
-    public function setTourmarker($tourmarker)
+    public function setPlanned_time($planned_time)
     {
-        $this->tourmarker = $tourmarker;
+        $this->planned_time = $planned_time;
+    }
+    
+	/**
+     * @return the $total_time
+     */
+    public function getTotal_time()
+    {
+        return $this->total_time;
+    }
+
+	/**
+     * @param number $total_time
+     */
+    public function setTotal_time($total_time)
+    {
+        $this->total_time = $total_time;
     }
     
 }

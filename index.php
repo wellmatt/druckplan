@@ -7,11 +7,13 @@ ob_start();
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
-set_time_limit(150);
 
 // error_reporting(E_ERROR | E_WARNING | E_PARSE);
-error_reporting(-1);
-ini_set('display_errors', 1);
+if (strstr(__DIR__, "contilas2"))
+{
+    error_reporting(-1);
+    ini_set('display_errors', 1);
+}
 
 require_once("./config.php");
 require_once("./libs/basic/mysql.php");
@@ -24,11 +26,21 @@ require_once("./libs/basic/translator/translator.class.php");
 require_once("./libs/basic/countries/country.class.php");
 require_once("./libs/basic/license/license.class.php");
 require_once("./vendor/autoload.php");
-require_once 'libs/modules/timekeeping/timekeeper.class.php';
+// require_once 'libs/modules/timekeeping/timekeeper.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/organizer/mail/mailModel.class.php';
 require_once 'libs/modules/associations/association.class.php';
 require_once 'libs/modules/timer/timer.class.php';
+require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
+require_once "thirdparty/phpfastcache/phpfastcache.php";
+
+require_once __DIR__.'/vendor/Horde/Autoloader.php';
+require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';
+require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper/Default.php';
+
+$autoloader = new Horde_Autoloader();
+$autoloader->addClassPathMapper(new Horde_Autoloader_ClassPathMapper_Default(__DIR__.'/vendor'));
+$autoloader->registerAutoloader();
 
 
 $DB = new DBMysql();
@@ -53,10 +65,6 @@ if ($_REQUEST["doLogout"] == 1)
     $_SESSION = Array();
     
     $logouttimer = Timer::getLastUsed((int)$_REQUEST["userid"]);
-//     var_dump($logouttimer);
-//     if ($logouttimer->getState() != Timer::TIMER_STOP){
-//         $logouttimer->delete();
-//     }
     
     ?>
 <script language="JavaScript">location.href='index.php'</script>
@@ -75,34 +83,10 @@ if ($_REQUEST["doLogout"] == 1)
     {
         $userstring = mcrypt_decrypt(MCRYPT_BLOWFISH, $_CONFIG->cookieSecret, $_COOKIE["vic_login"], MCRYPT_MODE_CBC, $_COOKIE["vic_iv"]);
         $userdata = explode(' ', $userstring);
-//         $_REQUEST["login_login"] = $userdata[0];
-//         $_REQUEST["login_password"] = $userdata[1];
-//         $_REQUEST["login_domain"] = $userdata[2];
     }
      
 
     $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
-    if ($_USER && trim($_REQUEST["login_login"] != "") && trim($_REQUEST["login_password"]) != ""){
-        $perf = new Perferences();
-        
-//         $logouttimer = Timer::getLastUsed();
-//         if ($logouttimer->getState() != Timer::TIMER_STOP){
-//             $logouttimer->delete();
-//         }
-        
-//         if ($perf->getDefault_ticket_id() > 0){
-//             $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
-//             $tmp_ticket_id = $tmp_def_ticket->getId();
-
-//             $logintimer = new Timer();
-//             $logintimer->setObjectid($tmp_ticket_id);
-//             $logintimer->setModule("Ticket");
-//             $now = time();
-//             $logintimer->setStarttime($now);
-//             $logintimer->setState(Timer::TIMER_RUNNING);
-//             $logintimer->save();
-//         }
-    }
     
 }
 
@@ -132,74 +116,10 @@ if ($_USER == false)
     $_LANG = $_USER->getLang();
 	$_SESSION['userid'] = $_USER->getId();
 	
-    if ($_REQUEST["user_time"])
-    {
-		$exec = $_REQUEST["user_time"];
-		if ($exec == "checkin")
-		{
-			$time_now = time();
-			$sql = "INSERT INTO user_times 
-					(user_id, checkin)
-					VALUES
-					({$_USER->getId()}, {$time_now})";
-			$res = $DB->no_result($sql);
-			
-			$sql = "SELECT max(id) id FROM user_times";
-			$checkinid = $DB->select($sql);
-			$checkinid = $checkinid[0]["id"];
-			
-			setcookie("checkin_id",$checkinid,time()+(3600*60*60*16));
-			header("Location: index.php");
-		}
-		if ($exec == "pause")
-		{
-			if(isset($_COOKIE["checkin_id"]))
-			{
-				$time_now = time();
-				$sql = "INSERT INTO user_times_pause 
-						(user_times_id, start)
-						VALUES
-						({$_COOKIE["checkin_id"]}, {$time_now})";
-				$res = $DB->no_result($sql);
-				
-				$sql = "SELECT max(id) id FROM user_times_pause";
-				$pauseid = $DB->select($sql);
-				$pauseid = $pauseid[0]["id"];
-				
-				setcookie("pause_id",$pauseid,time()+(3600*60*60*16));
-				header("Location: index.php");
-			}
-		}
-		if ($exec == "unpause")
-		{
-			$time_now = time();
-			if(isset($_COOKIE["checkin_id"]) && isset($_COOKIE["pause_id"]))
-			{
-				$sql = "UPDATE user_times_pause SET  
-						end = {$time_now} 
-						WHERE id = {$_COOKIE["pause_id"]}";
-				$res = $DB->no_result($sql);
-				
-				setcookie("pause_id","",time() - 3600);
-				header("Location: index.php");
-			}
-		}
-		if ($exec == "checkout")
-		{
-			if(isset($_COOKIE["checkin_id"]))
-			{
-				$time_now = time();
-				$sql = "UPDATE user_times SET  
-						checkout = {$time_now} 
-						WHERE id = {$_COOKIE["checkin_id"]}";
-				$res = $DB->no_result($sql);
-			}
-			
-			setcookie("checkin_id",$checkinid,time() - 3600);
-			setcookie("pause_id",$checkinid,time() - 3600);
-			header("Location: index.php");
-		}
-	}
+	$perf = new Perferences();
+
+	$_CACHE = phpFastCache("memcache");
+	
 	
     /*******************************************************************/
     /* Print page header                                               */
@@ -246,25 +166,18 @@ if ($_USER == false)
 <script src="thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 <!-- /MegaNavbar -->
 
+<!-- PACE -->
+<script src="jscripts/pace/pace.min.js"></script>
+<link href="jscripts/pace/pace-theme-big-counter.css" rel="stylesheet" />
+<!-- /PACE -->
+
 <title>Druckplan - <?=$_USER->getClient()->getName()?></title>
 </head>
 <body>
-<? // TODO: Apassen für neuen Timer
-// if(Timer::getLastUsed()->getId() > 0){
-//     $active_timer = Timer::getLastUsed();
-//     if ($active_timer->getState() == Timer::TIMER_RUNNING){
-//     	echo '<div id="active_timer_ObjectID" style="display:none;">'.$active_timer->getObjectid().'</div>';
-//     	echo '<div id="active_timer_ModuleID" style="display:none;">'.$active_timer->getModule().'</div>';
-//     	$active_ticket = new Ticket($active_timer->getObjectID());
-//     	echo '<div id="active_timer_Title" style="display:none;">'.$active_ticket->getTitle().'</div>';
-//     	echo '<div id="logged_user_ticket" style="display:none;">'.$active_timer->getObjectID().'</div>';
-//     }
-// }
-    	echo '<div id="active_timer_ObjectID" style="display:none;">0</div>';
-    	echo '<div id="active_timer_ModuleID" style="display:none;"></div>';
-    	echo '<div id="active_timer_Title" style="display:none;"></div>';
-    	echo '<div id="logged_user_ticket" style="display:none;">0</div>';
-?>
+<div id="active_timer_ObjectID" style="display:none;">0</div>
+<div id="active_timer_ModuleID" style="display:none;"></div>
+<div id="active_timer_Title" style="display:none;"></div>
+<div id="logged_user_ticket" style="display:none;">0</div>
 <div id="hidden_clicker_index" style="display:none">
 <a id="hiddenclicker_index" href="http://www.google.com" >Hidden Clicker</a>
 </div>
@@ -299,6 +212,7 @@ if ($_USER == false)
 	}
 </script>
 
+<a name="top"></a> 
 <div id="idx_loadinghide" style="display:none">
 
 <!--   <div class="container"> -->
@@ -330,32 +244,18 @@ if ($_USER == false)
             <!-- search form -->
             
             <script language="javascript">
-                function setValues(submit){
-            
+                function checkSearch(){
                     var search = document.getElementById('mainsearch_string').value;
-            
-                	document.getElementById('hidden_oid').value=search;
-                	document.getElementById('hidden_title').value=search;
-                	document.getElementById('hidden_inv').value=search;
-                	document.getElementById('hidden_cust').value=search;
-            
-                    if (submit = 1){
+                    if (search.length > 0){
                         document.getElementById('mainsearch_form').submit();
+                      	return true;
                     }
-                  	return true;
                 }
             </script>
             
             <form class="navbar-form-expanded navbar-form navbar-left visible-lg-block visible-md-block visible-xs-block" role="search" 
-            action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="mainsearch_form" id="mainsearch_form" onsubmit="return setvalues()">
+            action="index.php?page=libs/modules/search/search.php" method="post" name="mainsearch_form" id="mainsearch_form" onsubmit="return checkSearch()">
               <div class="input-group">
-            	<input type="hidden" name="pid" id="hidden_pid" value="0">
-            	<input type="hidden" name="submit_search" id="hidden_sub" value="true">
-            	<input type="hidden" name="header_search" id="hidden_hs" value="true">
-            	<input type="hidden" name="search_orderId" id="hidden_oid" value ="">
-            	<input type="hidden" name="search_orderTitle" id="hidden_title" value ="">
-            	<input type="hidden" name="search_invoiceId" id="hidden_inv" value ="">
-            	<input type="hidden" name="search_orderCustomer" id="hidden_cust" value ="">
                 <input type="text" id="mainsearch_string" name="mainsearch_string"  class="form-control" data-width="80px" data-width-expanded="170px" 
                 value="<?=$_REQUEST["mainsearch_string"] ?>" placeholder="Search..." name="query">
                 <span class="input-group-btn"><button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;</button></span>
@@ -477,20 +377,25 @@ if ($_USER == false)
                         
                         
             <!-- mails -->
-            <li class="dropdown-grid">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle"><i class="fa fa-inbox"></i>&nbsp;<span class="hidden-sm">Mails</span><span class="caret"></span></a>
-              <div class="dropdown-grid-wrapper" role="menu">
-                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-7">
-                  <li>
-                    
-                  
-							<? 
-								require_once 'libs/modules/organizer/nachrichten.showmails.home.php'; 
-							?>
-                  
-                  </li>
-                </ul>
-              </div>
+            <li>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                	refreshMailCount();
+                	setInterval( refreshMailCount, 2*60*1000 );
+                });
+                function refreshMailCount() {
+                    $.ajax({
+                        url: "libs/modules/mail/mail.ajax.php?exec=getNewCount",
+                        type: "GET",
+                        dataType: "html",
+                        success: function (data) {
+                            if (parseInt(data) > 0)
+                                $('#nav_mail_count').html(data);
+                        }
+                    });
+                }
+            </script>
+              <a href="index.php?page=libs/modules/mail/mail.overview.php"><i class="fa fa-inbox"></i>&nbsp;<span class="hidden-sm">Mails&nbsp;</span><span id="nav_mail_count" class="badge"></span></a>
             </li>
             <!-- /mails -->
 
@@ -511,34 +416,10 @@ if ($_USER == false)
                               <br>
                               <form class="form-horizontal" role="form">
                                 <div class="form-group" style='margin-left: 200px; margin-right: -120px;'>
-                                  <label class="col-sm-3 control-label">Posteingang</label>
-                                  <div class="col-sm-6">
-                                        <?
-                                        $totalCount = 0;
-                                        foreach($_USER->getEmailAddresses() as $emailAddress) {
-                                        
-                                        // 	Create a new MailModel instance.										// TODO: Wieder einkommentieren
-                                        	$mailModel = new MailModel($emailAddress, "INBOX");
-                                        	$totalCount +=$mailModel->getAccount()->countMessages(); 
-                                        }
-                                        	echo '<label class="col-sm-12 control-label">'.$totalCount.'</label>';
-                                        ?>
-                                  </div>
-                                </div>
-                                <div class="form-group" style='margin-left: 200px; margin-right: -120px;'>
-                                  <label class="col-sm-3 control-label">Checkin</label>
-                                  <div class="col-sm-6">
-                    					<? if (!isset($_COOKIE["checkin_id"])) { echo '<label class="col-sm-12 control-label"><a href="index.php?user_time=checkin">Kommen</a></label> '; } ?>
-                    					<? if (!isset($_COOKIE["pause_id"]) && isset($_COOKIE["checkin_id"])) { echo '<label class="col-sm-12 control-label"><a href="index.php?user_time=pause">Pause</a></label>'; } 
-                    						else { if (isset($_COOKIE["checkin_id"])) { echo '<label class="col-sm-12 control-label"><a href="index.php?user_time=unpause">Pause beenden</a></label> '; } } ?>
-                    					<? if (isset($_COOKIE["checkin_id"])) { echo '<label class="col-sm-12 control-label"><a href="index.php?user_time=checkout">Gehen</a></label>'; } ?>
-                                  </div>
-                                </div>
-                                <div class="form-group" style='margin-left: 200px; margin-right: -120px;'>
                                   <label class="col-sm-3 control-label">N&uuml;tzliche Links</label>
                                   <div class="col-sm-6">
                                         <label class="col-sm-12 control-label">
-                                            <a href="JavaScript: callBoxFancyIndex('http://dev.mein-druckplan.de/changelog.php');">Changelog</a></br>
+                                            <a href="JavaScript: callBoxFancyIndex('http://contilas.de/changelog.htm');">Changelog</a></br>
 			                                <a href="JavaScript: callBoxFancyIndex('http://support.mein-druckplan.de/open.php');">Support</a></br>
 			                                <?php 
 			                                if(Timer::getLastUsed()->getId() > 0){

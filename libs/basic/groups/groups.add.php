@@ -31,6 +31,8 @@ if ($_REQUEST["subexec"] == "save")
    $group->setRight(Group::RIGHT_DELETE_SCHEDULE, (int)$_REQUEST["right_delete_schedule"]);
    $group->setRight(Group::RIGHT_DELETE_ORDER, (int)$_REQUEST["right_delete_order"]);
    $group->setRight(Group::RIGHT_DELETE_COLINV, (int)$_REQUEST["right_delete_colinv"]);
+   $group->setRight(Group::RIGHT_COMBINE_COLINV, (int)$_REQUEST["right_combine_colinv"]);
+   $group->setRight(Group::RIGHT_TICKET_CHANGE_OWNER, (int)$_REQUEST["right_ticket_change_owner"]);
    $savemsg = getSaveMessage($group->save());
    $savemsg .= $DB->getLastError();  
 }
@@ -137,6 +139,14 @@ $users = User::getAllUser(User::ORDER_LOGIN);
   <tr>
       <td class="content_row_clear"><?=$_LANG->get('Planung löschen')?></td>
       <td class="content_row_clear"><input type="checkbox" name="right_delete_schedule" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_SCHEDULE)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Vorgänge zusammenführen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_combine_colinv" value="1" <? if($group->hasRight(Group::RIGHT_COMBINE_COLINV)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Ticket Ersteller ändern')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_ticket_change_owner" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_CHANGE_OWNER)) echo "checked";?>></td>
    </tr>
    
 </table>

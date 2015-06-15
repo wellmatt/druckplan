@@ -43,6 +43,7 @@ class Order {
     private $textOfferconfirm;
     private $textInvoice;
     private $crtdat = 0;
+    private $crtusr;
     private $upddat = 0;
     private $collectiveinvoiceId = 0;
     private $internContact;				// Benutzer von KDM, der auf den Dokumenten auftauchen soll
@@ -75,6 +76,7 @@ class Order {
         $this->custContactperson = new ContactPerson();
         $this->customer = new BusinessContact();
         $this->internContact = new User();
+        $this->crtusr = new User;
         
         global $DB;
         if($id > 0)
@@ -126,6 +128,7 @@ class Order {
                 $this->paper_order_price = $res["paper_order_price"];
                 $this->paper_order_supplier = $res["paper_order_supplier"];
                 $this->paper_order_calc = $res["paper_order_calc"];
+                $this->crtusr = new User($res["crtusr"]);
                 $this->beilagen = $res["beilagen"];
             }
         }
@@ -1096,6 +1099,15 @@ static function getCountOrdersPerCustMonth($year)
     {
         $this->beilagen = $beilagen;
     }
+    
+	/**
+     * @return the $crtusr
+     */
+    public function getCrtusr()
+    {
+        return $this->crtusr;
+    }
+
 
 	
 	

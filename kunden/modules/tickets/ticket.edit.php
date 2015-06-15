@@ -51,7 +51,12 @@ if($_REQUEST["exec"] == "edit"){
         if ($ticket->getId() > 0){
             $ticket->setEditdate(time());
         }
+        $ticket->setCrtuser($_USER);
         $save_ok = $ticket->save();
+        if ($_REQUEST["tktid"] == NULL || $_REQUEST["tktid"] == "" || !$_REQUEST["tktid"])
+        {
+            Notification::generateNotification($_USER, "Ticket", "NewFromCP", $ticket->getNumber(), $ticket->getId());
+        }
         $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
         if ($save_ok){
             if ($_REQUEST["tktc_comment"] == ""){
@@ -251,8 +256,8 @@ $(document).ready(function () {
                                                                                     } else {
                                                                                         echo $_BUSINESSCONTACT->getNameAsLine()." - ".$_CONTACTPERSON->getNameAsLine2();
                                                                                     }?>" style="width:160px" disabled/>
-            <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php if ($new_ticket == false) { echo $_BUSINESSCONTACT->getId(); } else { echo $ticket->getCustomer()->getId();}?>"/>
-            <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php if ($new_ticket == false) { echo $_CONTACTPERSON->getId(); } else { echo $ticket->getCustomer_cp()->getId();}?>"/>
+            <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php if ($new_ticket == true) { echo $_BUSINESSCONTACT->getId(); } else { echo $ticket->getCustomer()->getId();}?>"/>
+            <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php if ($new_ticket == true) { echo $_CONTACTPERSON->getId(); } else { echo $ticket->getCustomer_cp()->getId();}?>"/>
         </td>
       </tr>
       <tr>

@@ -37,6 +37,7 @@ class Personalization {
 	private $formatheight;		// Hoehe der Personalisierung
 	private $type = 0;			// Type wird nun fuer ein- bzw. zweiseitig benutzt (ab 10.03.2014)
 	private $linebyline = 0;	// Fix Positions links und rechts, rest wird darunter Zeile für Zeile eingerückt
+	private $hidden = 0;        // Perso im Shop versteckt?
 
 	/**
 	 * Konstruktor einer Personalisierung, falls id > 0 wird die entsprechende Personalisierung aus der DB geholt
@@ -69,6 +70,7 @@ class Personalization {
 				$this->formatheight= $r["format_height"];
 				$this->type= $r["type"];
 				$this->linebyline= $r["linebyline"];
+				$this->hidden= $r["hidden"];
 					
 				if ($r["crtuser"] != 0 && $r["crtuser"] != "" ){
 					$this->crt_user = new User($r["crtuser"]);
@@ -115,20 +117,22 @@ class Personalization {
 					type = {$this->type}, 
 					format_width = {$this->formatwidth}, 
 					format_height = {$this->formatheight},
+					hidden = {$this->hidden},
 					linebyline = {$this->linebyline} 
                     WHERE id = {$this->id}";
+// 			echo $sql . "</br>";
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization 
 					(status, comment, title, type, 
 					crtdate, crtuser, article, format,  
 					customer, picture, direction,
-					format_width, format_height, picture2, linebyline )
+					format_width, format_height, picture2, linebyline, hidden )
 					VALUES
 					({$this->status}, '{$this->comment}', '{$this->title}', {$this->type},  
 					 {$now}, {$_USER->getId()}, {$this->article->getId()}, '{$this->format}', 
 					 {$this->customer->getId()}, '{$this->picture}', {$this->direction},  
-					 {$this->formatwidth}, {$this->formatheight}, '{$this->picture2}', {$this->linebyline} )";
+					 {$this->formatwidth}, {$this->formatheight}, '{$this->picture2}', {$this->linebyline}, {$this->hidden} )";
 			$res = $DB->no_result($sql);
             
             if($res){
@@ -161,6 +165,18 @@ class Personalization {
 				return false;
 			}
 		}
+	}
+	
+	static function getAllCustomerWithPersos(){
+		global $DB;
+		$retval = Array();
+		$sql = "SELECT DISTINCT personalization.customer FROM personalization WHERE status > 0";
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = new BusinessContact($r["customer"]);
+			}
+		}
+		return $retval;
 	}
 	
 	/**
@@ -226,7 +242,7 @@ class Personalization {
 	static function getAllPersonalizationsByCustomerSearch($custId, $order = self::ORDER_TITLE, $search_string){
 		global $DB;
 		$retval = Array();
-		$sql = "SELECT id FROM personalization WHERE status > 0 AND customer = {$custId} AND title LIKE '%{$search_string}%' ORDER BY {$order}";
+		$sql = "SELECT id FROM personalization WHERE status > 0 AND customer = {$custId} AND title LIKE '%{$search_string}%' AND hidden = 0 ORDER BY {$order}";
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Personalization($r["id"]);
@@ -517,5 +533,22 @@ class Personalization {
 	{
 	    $this->picture2 = $picture2;
 	}
+	
+	/**
+     * @return the $hidden
+     */
+    public function getHidden()
+    {
+        return $this->hidden;
+    }
+
+	/**
+     * @param number $hidden
+     */
+    public function setHidden($hidden)
+    {
+        $this->hidden = $hidden;
+    }
+	
 }
 ?>

@@ -134,16 +134,22 @@
     if ($_GET['end'] != ""){
         $sWhere .= " AND crtdat <= {$_GET['end']} ";
     }
+
+    if ($_GET['cust_id'] != ""){
+        $sWhere .= " AND bcid = {$_GET['cust_id']} ";
+    }
+    
     
     /*
      * SQL queries
      * Get data to display
      */
     $sQuery = "SELECT * FROM
-               (SELECT orders.id as id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status`,'1' as type 
+               (SELECT orders.id as id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,
+               orders.crtdat,orders.`status`,'1' as type, businesscontact.id as bcid 
                FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
                SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,
-               collectiveinvoice.crtdate,collectiveinvoice.`status`,'2' as type
+               collectiveinvoice.crtdate,collectiveinvoice.`status`,'2' as type, businesscontact.id as bcid 
                FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a   
                $sWhere
                $sOrder
@@ -160,9 +166,10 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status` 
+        (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status`,'1' as type, businesscontact.id as bcid 
         FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
-        SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
+        SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
+        collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`,'2' as type, businesscontact.id as bcid 
         FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
         $sWhere
     ";

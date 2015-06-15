@@ -39,10 +39,10 @@ $_CONFIG->gidEndverarbeitung = 5;
 // Mandanten?
 $_CONFIG->enableClients = true;
 
-// Schlüssel für Userdaten
+// Schlï¿½ssel fï¿½r Userdaten
 $_CONFIG->cookieSecret = 'cc4c4a5dfgfca54345ddg2343f511399de3c49';
 
-// Pfad zu Übersetungen, / am ende ist wichtig.
+// Pfad zu ï¿½bersetungen, / am ende ist wichtig.
 $_CONFIG->pathTranslations = './lang/';
 
 // Anzahl der erlaubten Druckmaschinen
@@ -69,7 +69,7 @@ $_CONFIG->orderPid = 26;
 // PID des Planungsmoduls
 $_CONFIG->planPid = 33;
 
-// PID des Geschäftskontaktemoduls
+// PID des Geschï¿½ftskontaktemoduls
 $_CONFIG->businesscontactPid = 72; // 20;
 
 // PID des Schedulsmoduls
@@ -96,11 +96,16 @@ $_CONFIG->invoicewarningID = 120;
 // Verzeichnis der Dokumente
 $_CONFIG->docsBaseDir = 'docs/';
 
-// Nicht gefundene Übersetzungen protokollieren
+// Nicht gefundene ï¿½bersetzungen protokollieren
 $_CONFIG->logTranslations = false;
 
 //Aktivitaet des OnlineShops
 $_CONFIG->shopActivation = true;
+
+$_CONFIG->cache = new ConfigContainer();
+$_CONFIG->cache->mail_getNewCount = 60*5; // New Mail Count in Menubar
+$_CONFIG->cache->user_contruct = 60*5; // User Class Data Caching
+$_CONFIG->cache->menu = 60*15; // User Menu Caching
 
 // error_reporting
 error_reporting(E_ALL &~E_NOTICE & ~E_DEPRECATED);

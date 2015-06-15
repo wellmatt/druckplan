@@ -187,7 +187,7 @@ $countries = Country::getAllCountries();
 	        <td class="content_row_clear" align="right">
 	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){ ?>
 		        	<?if($_REQUEST["exec"] != "new"){?>
-		        		<input type="button" class="buttonRed" onclick="askDel('index.php?exec=delete_a&id_a=<?=$address->getId()?>&id=<?=$address->getBusinessContact()->getID()?>')" 
+		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_a&id_a=<?=$address->getId()?>&id=<?=$address->getBusinessContact()->getID()?>')" 
 		        				value="<?=$_LANG->get('L&ouml;schen')?>">
 		        	<?}?>
 		        <?}?>

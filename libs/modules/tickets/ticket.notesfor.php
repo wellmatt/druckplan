@@ -52,7 +52,8 @@ $(document).ready(function() {
         "bServerSide": true,
         "sAjaxSource": '<?php echo $ajax_url;?>',
         "paging": true,
-		"stateSave": true,
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
 // 		"dom": 'flrtip',        
 		"dom": 'T<"clear">flrtip',        
 		"tableTools": {
@@ -69,7 +70,6 @@ $(document).ready(function() {
                          "print"
                      ]
                  },
-		"pageLength": 50,
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
 		            null,

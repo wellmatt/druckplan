@@ -7,7 +7,6 @@
 //----------------------------------------------------------------------------------
 require_once './libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
-require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 
 class Warehouse{
 	const ORDER_NAME 		= "wa.wh_name";			    // Lagerplatz-Name
@@ -312,54 +311,6 @@ class Warehouse{
 	}
 	
 	/**
-	 * ... Reserviert Artikel bzw. hebt Reservierung eines Artikels auf
-	 *
-	 * @param Int $articleid
-	 * @param Int $amount
-	 * @return boolean
-	 */
-	public static function addRemoveReservation($articleid, $amount)
-	{
-	    if (self::getTotalStockByArticle($articleid) < $amount){
-	        return false;
-	    } else {
-	        $whs = self::getAllStocksByArticle($articleid);
-	        if ($amount > 0){
-	            foreach ($whs as $wh){
-	                if (($wh->getAmount() - $wh->getAmount_reserved()) > $amount){
-	                    $wh->setAmount_reserved($wh->getAmount_reserved()+$amount);
-	                } else {
-	                    $tmp_amount = $wh->getAmount() - $wh->getAmount_reserved();
-	                    $wh->setAmount_reserved($wh->getAmount_reserved()+$tmp_amount);
-	                    $amount += $tmp_amount;
-	                }
-	                $wh->save();
-	                if ($amount == 0){
-	                    return true;
-	                    break;
-	                }
-	            }
-	        } else {
-	            $amount = abs($amount);
-	            foreach ($whs as $wh){
-	                if (($wh->getAmount_reserved()) > $amount){
-	                    $wh->setAmount_reserved($wh->getAmount_reserved()-$amount);
-	                } else {
-	                    $tmp_amount = $wh->getAmount_reserved();
-	                    $wh->setAmount_reserved(0);
-	                    $amount += $tmp_amount;
-	                }
-	                $wh->save();
-	                if ($amount == 0){
-	                    return true;
-	                    break;
-	                }
-	            }
-	        }
-	    }
-	}
-	
-	/**
 	 * ... liefert verfügbare NICHT reservierte Menge auf Lager eines Artikels
 	 *
 	 * @param Int $articleid
@@ -381,7 +332,7 @@ class Warehouse{
 	    if (is_array($res)){
 	        foreach ($res as $wh){
 	            $tmp_wh = new Warehouse($wh["id"]);
-	            $tmp_count = $tmp_wh->getAmount() - Reservation::getTotalReservationByWarehouse($tmp_wh->getId());
+	            $tmp_count = $tmp_wh->getAmount();
 	            $stock += $tmp_count;
 	        }
 	    }

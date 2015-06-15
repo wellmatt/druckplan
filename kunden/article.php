@@ -6,6 +6,7 @@
 // or all of the contents in any form is strictly prohibited. 
 // ---------------------------------------------------------------------------------- 
 
+$all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_DELIV_SHOP);
 // Tabelle um den Warenkorb zu plazieren ?>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 	<colgroup>
@@ -31,12 +32,15 @@
 			    $wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
 			    if((int)$_REQUEST["shopping_amount"]<=$wh_count)
     				if ($_REQUEST["shopping_amount"]>0){
+			            $deliv_adr = new Address((int)$_REQUEST["article_deliv"]);
     					$attributes["id"] 		= $article->getId();
     					$attributes["title"] 	= $article->getTitle();
     					$attributes["amount"] 	= (int)$_REQUEST["shopping_amount"];
     					$attributes["price"]	= $article->getPrice($attributes["amount"]);
     					$attributes["type"]		= Shoppingbasketitem::TYPE_ARTICLE;
+    					$attributes["entryid"]	= count($shopping_basket->getEntrys())+1;
     					$item = new Shoppingbasketitem($attributes);
+    					$item->setDeliveryAdressID($deliv_adr->getId());
     			
     					//schauen, ob Artikel schon im Warenkorb ist
     					if($shopping_basket->itemExists($item)){
@@ -54,9 +58,9 @@
     						}
     					}else{
     					    $tmp_def_invc_ad = Address::getDefaultAddress($busicon, Address::FILTER_INVC);
-    					    $tmp_def_deli_ad = Address::getDefaultAddress($busicon, Address::FILTER_DELIV);
+//     					    $tmp_def_deli_ad = Address::getDefaultAddress($busicon, Address::FILTER_DELIV);
     					    $item->setInvoiceAdressID($tmp_def_invc_ad->getId());
-    					    $item->setDeliveryAdressID($tmp_def_deli_ad->getId());
+//     					    $item->setDeliveryAdressID($tmp_def_deli_ad->getId());
     						$shopping_basket->addItem($item);
     					}
     					// Einkaufskorb auch wieder in die Session schreiben
@@ -82,10 +86,15 @@
 							<b><?=$_LANG->get('Artikelnummer')?>: </b><br/><?=$article->getNumber()?>
 						</td>
 						<td align="right" valign="top" rowspan="3">
-							<?	foreach ($all_pictures AS $pic){ ?>
-									<img src="../images/products/<?=$pic["url"]?>" width="130px">
-									&ensp; 
-							<?	}?>
+							<?if ($all_pictures[0]["url"] == NULL || $all_pictures[0]["url"] ==""){?>
+			        			<img src="../images/icons/image.png" title="<?=$_LANG->get('Kein Bild hinterlegt');?>" width="130px">
+								&ensp; 
+			        		<?} else {?>
+    							<?	foreach ($all_pictures AS $pic){ ?>
+    									<a href="../images/products/<?=$pic["url"]?>" target="_blank"><img src="../images/products/<?=$pic["url"]?>" width="130px"></a>
+    				        			&ensp; 
+    			        		<? }?>
+							<? }?>
 						</td>
 					</tr>
 					<tr>
@@ -99,7 +108,20 @@
 					<tr>
 						<td>&ensp;</td>
 						<td class="content_row_header" align="right">
+						        <?php 
+						        if (count($article->getOrderamounts())>0){?>
+						        <select name="shopping_amount" id="shopping_amount" style="width: 60px">
+						           <option value=""></option>
+            					   <?php 
+            					   foreach ($article->getOrderamounts() as $orderamount)
+            					   {
+            					       echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
+            					   }
+            					   ?>
+            					</select> Stk.
+						        <?php } else {?>
 								<input name="shopping_amount" style="width: 25px;" value="0"> Stk.
+								<?php }?>
 								<input	type="image" style="border:none;" title="<?=$_LANG->get('Zum Warenkorb hinzuf&uuml;gen') ?>"
 										src="../images/icons/shopping-basket--plus.png" />
 								&ensp; &ensp; &ensp; 
@@ -109,6 +131,20 @@
 						<td>&ensp;</td>
 						<td class="content_row_header" align="right">
 								Auf Lager: <?=$wh_count?>
+								&ensp; &ensp; &ensp; 
+						</td>
+					</tr>
+					<tr>
+						<td>&ensp;</td>
+						<td class="content_row_header" align="right">
+								Lieferadresse: <select name="article_deliv" class="text" style="width: 200px;">
+    		    			<?	foreach($all_deliveryAddresses AS $deliv){ ?>
+    		    					<option value="<?=$deliv->getId()?>"
+    		    							<?if($deliv->getDefault()){echo 'selected="selected"';}?>>
+    		    					<?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
+    		    					</option>
+    						<?	} ?>
+    		    		</select>
 								&ensp; &ensp; &ensp; 
 						</td>
 					</tr>

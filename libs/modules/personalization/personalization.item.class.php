@@ -38,10 +38,11 @@ class Personalizationitem {
 	private $dependencyID; 		// ID des Objekts (Perso-Item) an dessen y-Stelle dieses Objekt rueckt, wenn das andere leer bleibt
 	private $reverse = 0;		// Zugehoerigkeit: zur Vorder- oder Rueckseite
 	private $predefined = 0;	// Vordefiniertes Feld JA/NEIN
-	private $position = 0;		// Feld ist für Titel/Position (Dropdown im Frontend)
+	private $position = 0;		// Feld ist fï¿½r Titel/Position (Dropdown im Frontend)
 	private $readonly = 0;		// Vordefiniertes Feld / nicht editierbar im Frontend
-	private $tab = 0;		    // Abstand in mm für \t
+	private $tab = 0;		    // Abstand in mm fï¿½r \t
 	private $group;             // Gruppe fuer Zeile fuer Zeile
+	private $sort;
 
 	/**
 	 * Konstruktor eines Eingabefelds einer Personalisierung
@@ -81,6 +82,7 @@ class Personalizationitem {
 				$this->readonly = $r["readonly"];
 				$this->tab = $r["tab"];
 				$this->group = $r["zzgroup"];
+				$this->sort = $r["sort"];
 			}
 		}
 	}
@@ -96,7 +98,7 @@ class Personalizationitem {
 		$now = time();
 
 		if($this->id > 0){
-			$sql = "UPDATE personalization_items SET
+			$sql = "UPDATE personalization_items SET 
 					title 				= '{$this->title}',
 					xpos				= {$this->xpos},
 					ypos 				= {$this->ypos},
@@ -117,9 +119,11 @@ class Personalizationitem {
 					position 			= {$this->position}, 
 					readonly 			= {$this->readonly}, 
 					tab 			    = {$this->tab}, 
-					zzgroup 			    = {$this->group},
+					zzgroup 			= {$this->group},
+					sort 			    = {$this->sort},
 					reverse				= {$this->reverse} 
 					WHERE id = {$this->id}";
+// 			echo $sql . "</br>";
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization_items
@@ -127,13 +131,13 @@ class Personalizationitem {
 					 xpos, ypos, font, spacing, 
 					 width, height, text_size, justification,
 					 color_c, color_m, color_y, color_k, 
-					 dependency_id, reverse, predefined, position, readonly, tab, zzgroup )	
+					 dependency_id, reverse, predefined, position, readonly, tab, zzgroup, sort )	
 					VALUES
 					({$this->status}, {$this->boxtype}, '{$this->title}', {$this->peronalid},
 					 {$this->xpos}, {$this->ypos}, {$this->font}, {$this->spacing},  
 					 {$this->width}, {$this->height}, {$this->textsize}, {$this->justification},  
 					 {$this->color_c}, {$this->color_m}, {$this->color_y}, {$this->color_k}, 
-					 {$this->dependencyID}, {$this->reverse}, {$this->predefined}, {$this->position}, {$this->readonly}, {$this->tab}, {$this->group} )";
+					 {$this->dependencyID}, {$this->reverse}, {$this->predefined}, {$this->position}, {$this->readonly}, {$this->tab}, {$this->group}, {$this->sort} )";
 			$res = $DB->no_result($sql);
 
 			if($res){
@@ -167,7 +171,7 @@ class Personalizationitem {
 			}
 		}
 	}
-
+	
 	/**
 	 * Funktion liefert alle aktiven Eingabefelder einer Personalisierug nach angegebener Reighenfolge
 	 *
@@ -186,7 +190,7 @@ class Personalizationitem {
 			$sql .= " AND reverse = {$site} ";
 		}
 		
-		$sql .= " ORDER BY {$order} ";
+		$sql .= " ORDER BY sort ASC, {$order} ";
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Personalizationitem($r["id"]);
@@ -450,5 +454,22 @@ class Personalizationitem {
     {
         $this->group = $group;
     }
+    
+	/**
+     * @return the $sort
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+
+	/**
+     * @param field_type $sort
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+    }
+    
 }
 ?>

@@ -47,9 +47,42 @@ $object = new $classname((int)$_REQUEST["objectid"]);
 
 if($_REQUEST["subexec"] == "save")
 {
-    var_dump($_POST);
+    $tmp_old_abos = Array();
+    $all_abos = Abonnement::getAbonnementsForObject($classname, $object->getId());
+    foreach ($all_abos as $tmp_abo)
+    {
+        $tmp_old_abos[] = $tmp_abo->getAbouser()->getId();
+        $tmp_abo->delete();
+    }
     
     $tmp_array = $_REQUEST["abo_users"];
+    
+    if ($classname == "Ticket")
+    {
+        $logentry = "";
+        $removed_abos = array_diff($tmp_old_abos, $tmp_array);
+//         print_r($removed_abos);
+        foreach ($removed_abos as $rabo)
+        {
+            $tmp_user = new User($rabo);
+            $logentry .= 'Abonnement entfernt: ' . $tmp_user->getNameAsLine() . '</br>';
+        }
+        $new_abos = array_diff($tmp_array, $tmp_old_abos);
+//         print_r($new_abos);
+        foreach ($new_abos as $nabo)
+        {
+            $tmp_user = new User($nabo);
+            $logentry .= 'Abonnement hinzugefügt: ' . $tmp_user->getNameAsLine() . '</br>';
+        }
+        
+        $tmp_ticket = new Ticket($object->getId());
+        $ticketlog = new TicketLog();
+        $ticketlog->setCrtusr($_USER);
+        $ticketlog->setDate(time());
+        $ticketlog->setTicket($tmp_ticket);
+        $ticketlog->setEntry($logentry);
+        $ticketlog->save();
+    }
     
     foreach ($tmp_array as $abouser){
         $tmp_user = new User($abouser);
@@ -61,7 +94,7 @@ if($_REQUEST["subexec"] == "save")
             $abo->save();
         }
     }
-    echo '<script language="JavaScript">parent.$.fancybox.close();</script>';
+    echo '<script language="JavaScript">parent.Abo_Refresh(); parent.$.fancybox.close();</script>'; // parent.location.href=parent.location.href;
 }
 
 ?>
@@ -98,8 +131,8 @@ $(document).ready(function() {
     var table_users = $('#table_users').DataTable( {
         "paging": true,
 		"stateSave": true,
-		"pageLength": 10,
-		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
+		"pageLength": -1,
+		"lengthMenu": [ [-1], ["Alle"] ],
 		"language": 
 					{
 						"emptyTable":     "Keine Daten vorhanden",
@@ -136,7 +169,7 @@ $(document).ready(function() {
 <table width="100%">
     <tr>
         <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/alarm-clock.png"> <?=$_LANG->get('Abonnement hinzufügen');?></h1>
+            <h1><img src="../../../images/icons/alarm-clock.png"> <?=$_LANG->get('Abonnements bearbeiten');?></h1>
         </td>
         <td class="content_header"><?=$savemsg?></td>
     </tr>

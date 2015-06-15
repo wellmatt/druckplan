@@ -23,6 +23,8 @@ class Group {
    const RIGHT_DELETE_SCHEDULE = 1024;
    const RIGHT_DELETE_ORDER = 2048;
    const RIGHT_DELETE_COLINV = 4096;
+   const RIGHT_COMBINE_COLINV = 8192;
+   const RIGHT_TICKET_CHANGE_OWNER = 16384;
    
    function __construct($id = 0, $adduser = true)
    {
@@ -62,6 +64,23 @@ class Group {
       if ($client > 0)
          $sql .= " AND client = {$client}";
       $sql .= " ORDER BY {$order}";
+
+      if ($DB->num_rows($sql))
+      {
+         $res = $DB->select($sql);
+         foreach ($res as $r)
+         {
+            $groups[] = new Group($r["id"]);
+         }
+      }
+      return $groups;
+   }
+   
+   static function getAllGroupsFiltered($filter = null) {
+      global $DB;
+      $groups = Array();
+      
+      $sql = "SELECT id FROM groups WHERE group_status = 1 " .$filter;
 
       if ($DB->num_rows($sql))
       {

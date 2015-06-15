@@ -24,6 +24,7 @@ require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/businesscontact/contactperson.class.php';
 require_once 'libs/modules/organizer/event.class.php';
 require_once 'libs/modules/associations/association.class.php';
+require_once 'libs/modules/organizer/event.class.php';
 
 session_start();
 
@@ -128,82 +129,41 @@ $objectid = $_REQUEST["objectid"];
 
 <script language="JavaScript" >
 $(function() {
-	 $( "#colinv" ).autocomplete({
-		 source: "association.ajax.php?ajax_action=search_colinv",
-		 minLength: 2,
-		 focus: function( event, ui ) {
-    		 $( "#colinv" ).val( ui.item.label );
-    		 return false;
-		 },
-		 select: function( event, ui ) {
-    		 $( "#colinv" ).val( ui.item.label );
-    		 $( "#colinv_id" ).val( ui.item.value );
-    		 return false;
-		 }
-	 });
-	 $( "#order" ).autocomplete({
-		 source: "association.ajax.php?ajax_action=search_calc",
-		 minLength: 2,
-		 focus: function( event, ui ) {
-    		 $( "#order" ).val( ui.item.label );
-    		 return false;
-		 },
-		 select: function( event, ui ) {
-    		 $( "#order" ).val( ui.item.label );
-    		 $( "#order_id" ).val( ui.item.value );
-    		 return false;
-		 }
-	 });
-	 $( "#event" ).autocomplete({
-		 source: "association.ajax.php?ajax_action=search_event",
-		 minLength: 2,
-		 focus: function( event, ui ) {
-    		 $( "#event" ).val( ui.item.label );
-    		 return false;
-		 },
-		 select: function( event, ui ) {
-    		 $( "#event" ).val( ui.item.label );
-    		 $( "#event_id" ).val( ui.item.value );
-    		 return false;
-		 }
-	 });
-	 $( "#schedule" ).autocomplete({
-		 source: "association.ajax.php?ajax_action=search_schedule",
-		 minLength: 2,
-		 focus: function( event, ui ) {
-    		 $( "#schedule" ).val( ui.item.label );
-    		 return false;
-		 },
-		 select: function( event, ui ) {
-    		 $( "#schedule" ).val( ui.item.label );
-    		 $( "#schedule_id" ).val( ui.item.value );
-    		 return false;
-		 }
-	 });	 
-	 $( "#maschine" ).autocomplete({
-		 source: "association.ajax.php?ajax_action=search_maschine",
-		 minLength: 2,
-		 focus: function( event, ui ) {
-    		 $( "#maschine" ).val( ui.item.label );
-    		 return false;
-		 },
-		 select: function( event, ui ) {
-    		 $( "#maschine" ).val( ui.item.label );
-    		 $( "#maschine_id" ).val( ui.item.value );
-    		 return false;
-		 }
-	 });	 
-	 $( "#ticket" ).autocomplete({
-		 source: "association.ajax.php?ajax_action=search_ticket",
+	 $( "#search" ).autocomplete({
+		 source: "association.ajax.php?ajax_action=search_all",
 		 minLength: 2,
 		 focus: function( event, ui ) {
     		 $( "#ticket" ).val( ui.item.label );
     		 return false;
 		 },
 		 select: function( event, ui ) {
-    		 $( "#ticket" ).val( ui.item.label );
-    		 $( "#ticket_id" ).val( ui.item.value );
-    		 return false;
+			 switch (ui.item.type) {
+			    case "Ticket":
+		    		 $( "#search" ).val( ui.item.label );
+		    		 $( "#ticket_id" ).val( ui.item.value );
+		    		 return false;
+			        break;
+			    case "Machine":
+		    		 $( "#search" ).val( ui.item.label );
+		    		 $( "#maschine_id" ).val( ui.item.value );
+		    		 return false;
+			        break;
+			    case "Event":
+		    		 $( "#search" ).val( ui.item.label );
+		    		 $( "#event_id" ).val( ui.item.value );
+		    		 return false;
+			        break;
+			    case "CollectiveInvoice":
+		    		 $( "#search" ).val( ui.item.label );
+		    		 $( "#colinv_id" ).val( ui.item.value );
+		    		 return false;
+			        break;
+			    case "Order":
+		    		 $( "#search" ).val( ui.item.label );
+		    		 $( "#order_id" ).val( ui.item.value );
+		    		 return false;
+			        break;
+			} 
 		 }
 	 });
 });
@@ -226,45 +186,17 @@ $(function() {
 <div class="box1"> 
 		<table id="association_table" width="500">
     		<tr>
-    		    <td class="content_header"><?php echo $_LANG->get('Ticket');?></td>
+    		    <td class="content_header" valign="top"><?php echo $_LANG->get('Suche');?></td>
     			<td class="content_row_clear">
-    			     <input type="text" id="ticket" name="ticket" value="" style="width:160px"/>
+    			     <input type="text" id="search" name="search" value="" style="width:160px"/>
                      <input type="hidden" id="ticket_id" name="ticket_id" value=""/>
-                </td>
-    		</tr>
-    		<tr>
-    		    <td class="content_header"><?php echo $_LANG->get('Kalkulation');?></td>
-    			<td class="content_row_clear">
-    			     <input type="text" id="order" name="order" value="" style="width:160px"/>
                      <input type="hidden" id="order_id" name="order_id" value=""/>
-                </td>
-    		</tr>
-    		<tr>
-    		    <td class="content_header"><?php echo $_LANG->get('Vorgang');?></td>
-    			<td class="content_row_clear">
-    			     <input type="text" id="colinv" name="colinv" value="" style="width:160px"/>
                      <input type="hidden" id="colinv_id" name="colinv_id" value=""/>
-                </td>
-    		</tr>
-    		<tr>
-    		    <td class="content_header"><?php echo $_LANG->get('Event');?></td>
-    			<td class="content_row_clear">
-    			     <input type="text" id="event" name="event" value="" style="width:160px"/>
                      <input type="hidden" id="event_id" name="event_id" value=""/>
-                </td>
-    		</tr>
-    		<tr>
-    		    <td class="content_header"><?php echo $_LANG->get('Planung');?></td>
-    			<td class="content_row_clear">
-    			     <input type="text" id="schedule" name="schedule" value="" style="width:160px"/>
                      <input type="hidden" id="schedule_id" name="schedule_id" value=""/>
-                </td>
-    		</tr>
-    		<tr>
-    		    <td class="content_header"><?php echo $_LANG->get('Machine');?></td>
-    			<td class="content_row_clear">
-    			     <input type="text" id="maschine" name="maschine" value="" style="width:160px"/>
-                     <input type="hidden" id="maschine_id" name="maschine_id" value=""/>
+                     <input type="hidden" id="maschine_id" name="maschine_id" value=""/></br>
+                     * Suche in Tickets, Kalkulationen, Vorgänge, Events, Planung, Maschinen</br>
+                     ** Suche kann bei vielen Resultaten einige Sekunden dauern!
                 </td>
     		</tr>
 		</table>

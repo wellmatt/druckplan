@@ -47,8 +47,10 @@ $(document).ready(function() {
         "bServerSide": true,
         "sAjaxSource": "libs/modules/notifications/notification.dt.ajax.php?userid=<?php echo $_USER->getId();?>",
         "paging": true,
-		"stateSave": true,  
-		"dom": 'T<"clear">flrtip',        
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
+		"dom": 'T<"clear">flrtip',   
+		"aaSorting": [[ 0, "desc" ]],     
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -63,7 +65,6 @@ $(document).ready(function() {
                          "print"
                      ]
                  },
-		"pageLength": 50,
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
 		            null,

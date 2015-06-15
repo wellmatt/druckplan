@@ -129,7 +129,8 @@ function get_machine_time(source_object, sm_id, cat_id, rowid)
         <td class="content_row_subheader"><?=$_LANG->get('Dauer')?> <?=$_LANG->get('soll')?></td>
         <td class="content_row_subheader"><?=$_LANG->get('Termin')?></td>
         <td class="content_row_subheader"><?=$_LANG->get('Bemerkungen')?></td>
-        <td class="content_row_subheader" align="right" colspan="2"><?=$_LANG->get('Maschinenzeit')?><br><?=$_LANG->get('insgesamt')?></td>
+        <td class="content_row_subheader" align="right"><?=$_LANG->get('Zug. Benutzer')?></td>
+        <td class="content_row_subheader" align="right"><?=$_LANG->get('Maschinenzeit')?><br><?=$_LANG->get('insgesamt')?></td>
     </tr>
     <? 
         $x = 0;
@@ -240,6 +241,23 @@ function get_machine_time(source_object, sm_id, cat_id, rowid)
                         echo '<input name="notes_'.$mg->getId().'_'.$i.'" type="text" class="text" style="width:280px"
                                 value="'.$sm->getNotes().'">';
                     echo '</td>';
+                    echo '<td class="content_row" align="center">';
+                    
+                    if ($sm->getMachine()->getId()>0 && $sm->getTargetTime()>0)
+                    {
+                        unset($sm_users);
+                        $sm_users = ScheduleMachineUsertime::getScheduledUsers($sm);
+                        $img_alt = "";
+                        foreach ($sm_users as $tmp_user)
+                            $img_alt .= $tmp_user->getNameAsLine()."\n";
+                        echo '<img title="'.$img_alt.'" src="images/icons/user-silhouette.png" class="pointer"/>';
+                        if (count($sm_users)>0)
+                            echo count($sm_users);
+                        else
+                            echo "0";
+                    }
+                    
+                    echo '&nbsp;</td>';
                     echo '<td class="content_row" align="right"  id="idx_res_'.$mg->getId().'_'.$i.'">';
                         if($sm->getId())
                         {
@@ -263,134 +281,6 @@ function get_machine_time(source_object, sm_id, cat_id, rowid)
             
         }
     ?>
-
-<!-- 
-<tr>
-      <td class="content_row" colspan="7">
-         <table border="0" cellpadding="2" cellspacing="0">
-         <colgroup>
-            <col width="342">
-         </colgroup>
-         <tr>
-            <td class="content_row_clear">Datum</td>
-                           <td class="content_row_clear">03.04.2012</td>
-                              <td class="content_row_clear">04.04.2012</td>
-                              <td class="content_row_clear">05.04.2012</td>
-                              <td class="content_row_clear">06.04.2012</td>
-                              <td class="content_row_clear">07.04.2012</td>
-                              <td class="content_row_clear">08.04.2012</td>
-                              <td class="content_row_clear">09.04.2012</td>
-                              <td class="content_row_clear">10.04.2012</td>
-                        </tr>
-         <tr>
-            <td class="content_row"><b>Gesamt vergebene Falzstunden</b></td>
-                           <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="3,50">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="2,78">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="6,00">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="4,32">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="4,02">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="5,40">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="5,60">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="2,00">&nbsp;&nbsp;
-               </td>
-                        </tr>
-         <tr>
-            <td class="content_row"><b>Gesamt vergebene Buchdruckstunden</b></td>
-                           <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="3,52">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="2,24">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="8,65">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="10,25">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="6,56">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="8,52">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="9,25">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="8,62">&nbsp;&nbsp;
-               </td>
-                        </tr>
-         <tr>
-            <td class="content_row"><b>Gesamt vergebene Brosch&uuml;renfertigung</b></td>
-                           <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="3,65">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="6,32">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="7,25">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="7,20">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="8,53">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="6,50">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="7,00">&nbsp;&nbsp;
-               </td>
-                              <td class="content_row">
-                  <input type="text" class="text" style="width:55px;background-color:#F0EDDD;font-weight:bold" tabindex="-1" readonly
-                  value="8,50">&nbsp;&nbsp;
-               </td>
-                        </tr>
-         </table>
-      </td>
-  </tr>
-  -->
 </table>
 </div>   
 <br>
@@ -399,14 +289,13 @@ function get_machine_time(source_object, sm_id, cat_id, rowid)
 <tr>
    <td align="right" width="130">
       <ul class="postnav">
-         <a href="index.php?page=<?=$_REQUEST['page']?>&exec=parts&id=<?=$part->getScheduleId()?>"><?=$_LANG->get('Zur&uuml;ck')?></a>
+         <a href="index.php?page=<?=$_REQUEST['page']?>&exec=parts&id=<?=$sched->getId()?>"><?=$_LANG->get('Zur&uuml;ck')?></a>
       </ul>
    </td>
    <td>&nbsp;</td>
    <td align="right" width="130">
       <ul class="postnav_save">
-         <a href="#"
-         onclick="document.parts_form.submit()"><?=$_LANG->get('Speichern')?></a>
+         <a href="#" onclick="document.parts_form.submit()"><?=$_LANG->get('Speichern')?></a>
       </ul>
    </td>
 </tr>

@@ -14,6 +14,13 @@ require_once 'libs/modules/warehouse/warehouse.class.php';
 // error_reporting(-1);
 // ini_set('display_errors', 1);
 
+if ($_REQUEST["exec"]=="reset")
+{
+    unset($_SESSION['porder_date_min']);
+    unset($_SESSION['porder_date_max']);
+    unset($_SESSION['porder_customer']);
+}
+
 if((int)$_REQUEST["setStatus"] != 0){
 	$perso_order = new Personalizationorder($_REQUEST["poid"]);
 	$perso_order->setStatus((int)$_REQUEST["setStatus"]);
@@ -35,47 +42,133 @@ if($_REQUEST["exec"] == "delete"){
 		unlink($tmp_filename1);
 		unlink($tmp_filename2);
 	}
-    
-	/*
-	$_REQUEST["del"] = trim(addslashes($_REQUEST["delete"]));
-    
-    $sql = "SELECT * FROM ftpcustuploads WHERE ftp_hash = '{$_REQUEST["delete"]}'";
-    $download = $DB->select($sql);
-    $download = $download[0];
-    $fileext = explode(".", $download["ftp_orgname"]);
-    $fileext = $fileext[count($fileext) - 1];
-    $filename = "ftp/cust_uploads/".$download["ftp_hash"].".".$fileext;
-
-    if(unlink($filename))
-    {
-        $sql = "DELETE FROM ftpcustuploads WHERE ftp_hash = '{$_REQUEST["delete"]}'";
-        $savemsg = getSaveMessage($res = $DB->no_result($sql));
-    }   */
 }
 
-if($_REQUEST["filter"] == "on" || $_REQUEST["filter"] == ""){		
-	$filter = "on";					// aktueller Zustand der Filterfunktion
-	$filter2 = "off";				// invertierter Zustand der Filterfunktion
-	$filter_msg = $_LANG->get("Alle Kunden einblenden");
-} else {
-	$filter = "off";
-	$filter2 = "on";
-	$filter_msg = $_LANG->get("Inaktive ausblenden");
-}
-
-$customers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME);
+$customers = Personalizationorder::getAllCustomerWithOrders();
 ?>
-<script language="javascript">
-function askDel(myurl)
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    var art_table = $('#persoorder_table').DataTable( {
+        // "scrollY": "600px",
+        "processing": true,
+        "bServerSide": true,
+        "sAjaxSource": "libs/modules/personalization/personalization.order.dt.ajax.php",
+        "paging": true,
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
+		"dom": 'T<"clear">flrtip',  
+		"aaSorting": [[ 5, "desc" ]],      
+		"tableTools": {
+			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
+            "aButtons": [
+                         "copy",
+                         "csv",
+                         "xls",
+                         {
+                             "sExtends": "pdf",
+                             "sPdfOrientation": "landscape",
+                             "sPdfMessage": "Contilas - Articles"
+                         },
+                         "print"
+                     ]
+                 },
+ 		"fnServerData": function ( sSource, aoData, fnCallback ) {
+			var iMin = document.getElementById('ajax_date_min').value;
+			var iMax = document.getElementById('ajax_date_max').value;
+			var customer = document.getElementById('ajax_customer').value;
+		    aoData.push( { "name": "start", "value": iMin, } );
+		    aoData.push( { "name": "end", "value": iMax, } );
+		    aoData.push( { "name": "customer", "value": customer, } );
+		    $.getJSON( sSource, aoData, function (json) {
+		        fnCallback(json)
+		    } );
+		},
+		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+		"columns": [
+		            null,
+		            null,
+		            null,
+		            null,
+		            null,
+		            null,
+		            null,
+// 		            { "sortable": false },
+		            { "sortable": false },
+		            { "sortable": false }
+		          ],
+		"language": 
+					{
+						"emptyTable":     "Keine Daten vorhanden",
+						"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+						"infoEmpty": 	  "Keine Seiten vorhanden",
+						"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+						"infoPostFix":    "",
+						"thousands":      ".",
+						"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+						"loadingRecords": "Lade...",
+						"processing":     "Verarbeite...",
+						"search":         "Suche:",
+						"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+						"paginate": {
+							"first":      "Erste",
+							"last":       "Letzte",
+							"next":       "N&auml;chste",
+							"previous":   "Vorherige"
+						},
+						"aria": {
+							"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+							"sortDescending": ": aktivieren um absteigend zu sortieren"
+						}
+					}
+    } );
+
+	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
+	$('#date_min').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
+                $.post("libs/modules/personalization/personalization.ajax.php", {"ajax_action": "setFilter_date_min", "porder_date_min": moment($('#date_min').val(), "DD-MM-YYYY").unix()});
+            	$('#persoorder_table').dataTable().fnDraw();
+            }
+	});
+	$('#date_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
+                $.post("libs/modules/personalization/personalization.ajax.php", {"ajax_action": "setFilter_date_max", "porder_date_max": moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340});
+            	$('#persoorder_table').dataTable().fnDraw();
+            }
+	});
+	$('#customer').change(function(){	
+		$('#ajax_customer').val($(this).val()); 
+        $.post("libs/modules/personalization/personalization.ajax.php", {"ajax_action": "setFilter_ajax_customer", "porder_ajax_customer": $(this).val()});
+		$('#persoorder_table').dataTable().fnDraw();  
+	})
+} );
+function PersoOrderTableRefresh()
 {
-   if(confirm("Sind Sie sicher?"))
-   {
-      if(myurl != '')
-         location.href = myurl;
-      else
-         return true;
-   }
-   return false;
+	$('#persoorder_table').dataTable().fnDraw(); 
 }
 </script>
 
@@ -91,154 +184,66 @@ function askDel(myurl)
 	</td>
 </tr>
 </table>
-<? 
-foreach($customers as $cust){
 
-	$all_perso_orders = Personalizationorder::getAllPersonalizationorders($cust->getID(), Personalizationorder::ORDER_CRTDATE, true); 
-    
-	// print_r($all_perso_orders);
-	
-    if((count($all_perso_orders) > 0 && $all_perso_orders != false) || $filter == "off" ){  ?>
-        
-        <span style="font-size: 12px"><b><?=$cust->getNameAsLine()?></b></span>
-        <div class="box1">
-        <table cellpadding="2" cellspacing="0" border="0" width="100%">
-            <colgroup>
-                <col>
-                <col width="220">
-                <col width="180">
-                <col width="120">
-                <col width="110">
-                <col width="130">
-                <col width="40">
-                <col width="80">
-            </colgroup>
-            <tr>
-                <td class="content_row_header"><?=$_LANG->get('Titel');?></td>
-                <td class="content_row_header"><?=$_LANG->get('Verkn. Artikel');?></td>
-                <td class="content_row_header"><?=$_LANG->get('Lagerplatz (Menge)');?></td>
-                <td class="content_row_header"><?=$_LANG->get('Bestelldatum');?></td>
-                <td class="content_row_header" align="right"><?=$_LANG->get('Bestellmenge');?></td>
-                <td class="content_row_header" align="center"><?=$_LANG->get('Status');?></td>
-                <td class="content_row_header">&ensp;</td>
-                <td class="content_row_header"><?=$_LANG->get('Optionen');?></td>
+<div class="box1">
+    <div class="box2">
+        <table>
+            <tr align="left">
+                <td>Datum:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_date_min" id="ajax_date_min" type="hidden" <?php if ($_SESSION['porder_date_min']) echo 'value="'.$_SESSION['porder_date_min'].'"';?> />  
+                    <input name="date_min" id="date_min" style="width:70px;" <?php if ($_SESSION['porder_date_min']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_min']).'"';?>  class="text" 
+                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+                </td>
+                <td valign="left">
+                    <input name="ajax_date_max" id="ajax_date_max" type="hidden" <?php if ($_SESSION['porder_date_max']) echo 'value="'.$_SESSION['porder_date_max'].'"';?> />  
+                    bis: <input name="date_max" id="date_max" style="width:70px;" <?php if ($_SESSION['porder_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_max']).'"';?> class="text" 
+                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+                </td>
             </tr>
-            <? 
-            $y=0;
-            foreach($all_perso_orders as $perso_order){
-				$perso = new Personalization($perso_order->getPersoID());
-				// echo "Perso Order: " . $perso_order->getId() . "</br>";
-				$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER, 
-											 "requestId" => $perso_order->getId(), 
-											 "module" => Document::REQ_MODULE_PERSONALIZATION));
-				if (count($docs) > 0)
-				    $hash = $docs[0]->getHash();
-				if (count($docs) > 1)
-				    $hash2 = $docs[1]->getHash();
-				$tmp_id =$cust->getClient()->getId();
-				
-				// echo "hash: " . $hash . "</br>";
-				?>
-				 
-	            <tr class="<?=getRowColor($y)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-	                <td class="content_row"><?=$perso_order->getTitle()?></td>
-	                <td class="content_row">
-	                	<?=$perso->getArticle()->getTitle();?> &ensp;
-	                </td>
-	                <td class="content_row">
-	                <? 	if ($perso->getArticle()->getId() > 0){
-		                	$all_stocks = Warehouse::getAllStocksByArticle($perso->getArticle()->getId());
-		                	foreach ($all_stocks AS $stock){
-								echo $stock->getName()." (".$stock->getAmount().") ";
-							}
-	                	} ?> &ensp;
-	                </td>
-		        	<td class="content_row"><?if ($perso_order->getOrderdate() > 0) echo date("d.m.Y - H:i",$perso_order->getOrderdate())?> &ensp;</td>
-		        	<td class="content_row"  align="right"><?=$perso_order->getAmount()?> <?=$_LANG->get('Stk.');?></td>
-		        	<td class="content_row"  align="center">
-		        		<table border="0" cellpadding="1" cellspacing="0">
-                		<tr>
-		                    <td width="25">
-		                        <a href="index.php?page=<?=$_REQUEST['page']?>&poid=<?=$perso_order->getId()?>&setStatus=2">
-		                            <? 
-		                            echo '<img class="select" src="./images/status/';
-		                            if($perso_order->getStatus() == 2)
-		                                echo 'orange.gif';
-		                            else
-		                                echo 'gray.gif';
-		                            echo '" title="'.$perso_order->getStatusDescription(2).'">';
-		                            ?>
-		                        </a>
-		                    </td>
-		                    <td width="25">
-		                        <a href="index.php?page=<?=$_REQUEST['page']?>&poid=<?=$perso_order->getId()?>&setStatus=3">
-		                            <? 
-		                            echo '<img class="select" src="./images/status/';
-		                            if($perso_order->getStatus() == 3)
-		                                echo 'yellow.gif';
-		                            else
-		                                echo 'gray.gif';
-		                            echo '" title="'.$perso_order->getStatusDescription(3).'">';
-		                            ?>
-		                        </a>
-		                    </td>
-		                    <td width="25">
-		                        <a href="index.php?page=<?=$_REQUEST['page']?>&poid=<?=$perso_order->getId()?>&setStatus=4">
-		                            <? 
-		                            echo '<img class="select" src="./images/status/';
-		                            if($perso_order->getStatus() == 4)
-		                                echo 'lila.gif';
-		                            else
-		                                echo 'gray.gif';
-		                            echo '" title="'.$perso_order->getStatusDescription(4).'">';
-		                            ?>
-		                        </a>
-		                    </td>
-		                    <td width="25">
-		                        <a href="index.php?page=<?=$_REQUEST['page']?>&poid=<?=$perso_order->getId()?>&setStatus=5">
-		                            <? 
-		                            echo '<img class="select" src="./images/status/';
-		                            if($perso_order->getStatus() == 5)
-		                                echo 'green.gif';
-		                            else
-		                                echo 'gray.gif';
-		                            echo '" title="'.$perso_order->getStatusDescription(5).'">';
-		                            ?>
-		                        </a>
-		                    </td>
-		                </tr>
-		                </table>
-			        	<!-- img src="./images/status/<?=$perso_order->getStatusImage()?>" 
-			        		 title="<?=$perso_order->getStatusDescription()?>" 
-			        		 alt="<?=$perso_order->getStatusDescription()?>"-->
-			        </td>
-			        <td class="content_row">
-			       	<?	if($perso_order->getComment() != NULL && $perso_order->getComment() != ""){?>
-							<img src="./images/icons/balloon-ellipsis.png" alt="Kommentar" 
-						 		 title="<?=$perso_order->getComment()?>" />	 
-					<?	} else {
-							echo "&emsp;";
-						} ?>
-			        </td>
-	                <td class="content_row">
-	                	<a class="icon-link" target="_blank" href="./docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf"
-	                		><img src="images/icons/application-browser.png" title="Download Vorderseite mit Hintergrund" alt="Download"></a> 
-	                	<a href="./docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_p.pdf" class="icon-link" target="_blank" 
-	                		><img src="images/icons/application.png" title="Download Vorderseite ohne Hintergrund" alt="Download"></a></br>
-	                	<? if (count($docs) > 1){?>
-	                	<a class="icon-link" target="_blank" href="./docs/personalization/<?=$tmp_id?>.per_<?=$hash2?>_e.pdf"
-	                		><img src="images/icons/application-browser.png" title="Download R&uuml;ckseite mit Hintergrund" alt="Download"></a> 
-	                	<a href="./docs/personalization/<?=$tmp_id?>.per_<?=$hash2?>_p.pdf" class="icon-link" target="_blank" 
-	                		><img src="images/icons/application.png" title="Download R&uuml;ckseite ohne Hintergrund" alt="Download"></a>
-	                	<? }?>
-						&ensp;
-						<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$perso_order->getId()?>')"><img src="images/icons/cross-script.png"> </a>
-	                </td>
-	            </tr>
-            <? $y++; } ?>
+            <tr align="left">
+                <td>Kunde:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['porder_customer']) echo ' value="'.$_SESSION['porder_customer'].'" ';?>/>  
+                    <select name="customer" id="customer" style="width:160px">
+                    <option value="" <?php if (!$_SESSION['porder_customer']) echo ' selected ';?>></option> 
+                    <?php 
+                    foreach ($customers as $customer){
+                        echo '<option value="'.$customer->getId().'"';
+                        if ($_SESSION['porder_customer'] == $customer->getId())
+                        {
+                            echo ' selected ';
+                        }
+                        echo '>'.$customer->getNameAsLine().'</option>';
+                    }
+                    ?>
+                    </select>
+                </td>
+            </tr>
+            <tr align="left">
+                <td><a onclick="PersoOrderTableRefresh();" href="Javascript:"><img src="images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
+            </tr>
+            <tr align="left">
+                <td><a href="index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset"><img src="images/icons/slash.png"/> Reset</a></td>
+            </tr>
         </table>
-        </div>
-        <br>
-        <? 
-    } 
-}?>
+    </div>
+    </br>
+
+    <table id="persoorder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+        <thead>
+            <tr>
+                <th width="20"><?=$_LANG->get('ID')?></th>
+                <th width="220"><?=$_LANG->get('Titel')?></th>
+                <th width="180"><?=$_LANG->get('Verkn. Artikel')?></th>
+                <th width="180"><?=$_LANG->get('Kunde')?></th>
+                <th width="120"><?=$_LANG->get('Lagermenge')?></th>
+                <th width="110"><?=$_LANG->get('Bestelldatum')?></th>
+                <th width="110" align="right"><?=$_LANG->get('Bestellmenge')?></th>
+                <?php /*<th width="130" align="center"><?=$_LANG->get('Status')?></th>*/?>
+                <th width="40"><?=$_LANG->get('Kommentar')?></th>
+                <th width="80"><?=$_LANG->get('Optionen')?></th>
+            </tr>
+        </thead>
+    </table>
+</div>

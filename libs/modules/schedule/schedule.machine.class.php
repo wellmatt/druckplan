@@ -153,6 +153,25 @@ class ScheduleMachine {
         }
         return false;
     }
+    
+    public static function getAllForTimeFrame($start,$end)
+    {
+        global $DB;
+        $retval = Array();
+        $sql = "SELECT id FROM schedules_machines
+                WHERE deadline > {$start} 
+                AND deadline < {$end} 
+                ORDER BY id"; 
+        if($DB->num_rows($sql))
+        {
+            foreach($DB->select($sql) as $r)
+            {
+                $retval[] = new ScheduleMachine($r["id"]);
+            }
+            return $retval;
+        }
+        return false;
+    }
 
     public static function getMachineTimeForDay($day, $machineId, $filterStatus = null)
     {

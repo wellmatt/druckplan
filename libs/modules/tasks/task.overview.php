@@ -23,8 +23,13 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 	?>
 	
     <!-- DataTables -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
     <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
     <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
     
     <script type="text/javascript">
@@ -52,8 +57,8 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
     $(document).ready(function() {
         var tasks = $('#tasks').DataTable( {
             "paging": true,
-    		"stateSave": true,
-    		"pageLength": 50,
+    		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+    		"pageLength": <?php echo $perf->getDt_show_default();?>,
     		"dom": 'flrtip',
     		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
     		"aoColumnDefs": [ { "sType": "uk_date", "aTargets": [ 4, 5 ] } ],
@@ -104,9 +109,9 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
     				<td width="40" class="content_row_header"><?=$_LANG->get('ID')?></td>
     				<td width="100" class="content_row_header"><?=$_LANG->get('Titel')?></td>
     				<td class="content_row_header"><?=$_LANG->get('Text')?></td>
-                    <td width="80" class="content_row_header"><?=$_LANG->get('Priorität')?></td>
+                    <td width="80" class="content_row_header"><?=$_LANG->get('PrioritÃ¤t')?></td>
                     <td width="80" class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
-                    <td width="80" class="content_row_header"><?=$_LANG->get('Fällig am')?></td>
+                    <td width="80" class="content_row_header"><?=$_LANG->get('FÃ¤llig am')?></td>
                     <td width="45" class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
     				<td width="45" class="content_row_header"><?=$_LANG->get('Optionen')?></td>
     

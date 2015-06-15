@@ -11,7 +11,7 @@ require_once('libs/modules/tickets/ticket.category.class.php');
 
 class ContactPerson {
 	
-	const ORDER_ID = 1;
+	const ORDER_ID = " id";
 	const ORDER_NAME = " name1 , name2 ";
 	
 	private $id = 0;
@@ -70,7 +70,10 @@ class ContactPerson {
 	private $categories_cansee = Array();
 	private $categories_cancreate = Array();
 	
-	function __construct($id = 0){
+	const LOADER_BASIC = 0;
+	const LOADER_FULL = 1;
+	
+	function __construct($id = 0, $loader = ContactPerson::LOADER_FULL){
         global $DB;
         global $_USER;
         global $_LANG;
@@ -113,56 +116,63 @@ class ContactPerson {
                 $this->comment = $res[0]["comment"];
                 $this->isMainContact = $res[0]["main_contact"];
                 $this->activeAdress = $res[0]["active_adress"];
-                $this->shopLogin = $res[0]["shop_login"];
-                $this->shopPassword = $res[0]["shop_pass"];
-                $this->enabledArtikel = $res[0]["enabled_article"];
-                $this->enabledTickets = $res[0]["enabled_ticket"];
-                $this->enabledPersonalization = $res[0]["enabled_personalization"];
-                
-                $this->alt_name1 = $res[0]["alt_name1"];
-                $this->alt_name2 = $res[0]["alt_name2"];
-                $this->alt_address1 = $res[0]["alt_address1"];
-                $this->alt_address2 = $res[0]["alt_address2"];
-                $this->alt_zip = $res[0]["alt_zip"];
-                $this->alt_city = $res[0]["alt_city"];
-                $this->alt_country = new Country ($res[0]["alt_country"]);
-                $this->alt_phone = $res[0]["alt_phone"];
-                $this->alt_fax = $res[0]["alt_fax"];
-                $this->alt_mobil = $res[0]["alt_mobil"];
-                $this->alt_email = $res[0]["alt_email"];
-                
-                $this->priv_name1 = $res[0]["priv_name1"];
-                $this->priv_name2 = $res[0]["priv_name2"];
-                $this->priv_address1 = $res[0]["priv_address1"];
-                $this->priv_address2 = $res[0]["priv_address2"];
-                $this->priv_zip = $res[0]["priv_zip"];
-                $this->priv_city = $res[0]["priv_city"];
-                $this->priv_country = new Country ($res[0]["priv_country"]);
-                $this->priv_phone = $res[0]["priv_phone"];
-                $this->priv_fax = $res[0]["priv_fax"];
-                $this->priv_mobil = $res[0]["priv_mobil"];
-                $this->priv_email = $res[0]["priv_email"];
-				
                 $this->birthdate = $res[0]["birthdate"];
                 
-        	    $this->notifymailadr = unserialize($res[0]["notifymailadr"]);
+                if ($loader == ContactPerson::LOADER_FULL)
+                {
+        	        $this->notifymailadr = unserialize($res[0]["notifymailadr"]);
+                    $this->shopLogin = $res[0]["shop_login"];
+                    $this->shopPassword = $res[0]["shop_pass"];
+                    $this->enabledArtikel = $res[0]["enabled_article"];
+                    $this->enabledTickets = $res[0]["enabled_ticket"];
+                    $this->enabledPersonalization = $res[0]["enabled_personalization"];
                 
-        	    $sql = "SELECT * FROM contactperson_categories_perm WHERE cpid = {$id}";
-        	    $tmp_categories_cansee = Array();
-        	    $tmp_categories_cancreate = Array();
-        	    if($DB->num_rows($sql)){
-        	        foreach($DB->select($sql) as $r){
-        	            $tmp_cat = new TicketCategory($r["categoryid"]);
-        	            if ((int)$r["cansee"] == 1){
-        	                $tmp_categories_cansee[] = $tmp_cat;
-        	            }
-        	            if ((int)$r["cancreate"] == 1){
-        	                $tmp_categories_cancreate[] = $tmp_cat;
-        	            }
-        	        }
-        	    }
-        	    $this->categories_cansee = $tmp_categories_cansee;
-        	    $this->categories_cancreate = $tmp_categories_cancreate;
+                    $this->alt_name1 = $res[0]["alt_name1"];
+                    $this->alt_name2 = $res[0]["alt_name2"];
+                    $this->alt_address1 = $res[0]["alt_address1"];
+                    $this->alt_address2 = $res[0]["alt_address2"];
+                    $this->alt_zip = $res[0]["alt_zip"];
+                    $this->alt_city = $res[0]["alt_city"];
+                    $this->alt_country = new Country ($res[0]["alt_country"]);
+                    $this->alt_phone = $res[0]["alt_phone"];
+                    $this->alt_fax = $res[0]["alt_fax"];
+                    $this->alt_mobil = $res[0]["alt_mobil"];
+                    $this->alt_email = $res[0]["alt_email"];
+                    
+                    $this->priv_name1 = $res[0]["priv_name1"];
+                    $this->priv_name2 = $res[0]["priv_name2"];
+                    $this->priv_address1 = $res[0]["priv_address1"];
+                    $this->priv_address2 = $res[0]["priv_address2"];
+                    $this->priv_zip = $res[0]["priv_zip"];
+                    $this->priv_city = $res[0]["priv_city"];
+                    $this->priv_country = new Country ($res[0]["priv_country"]);
+                    $this->priv_phone = $res[0]["priv_phone"];
+                    $this->priv_fax = $res[0]["priv_fax"];
+                    $this->priv_mobil = $res[0]["priv_mobil"];
+                    $this->priv_email = $res[0]["priv_email"];
+                    
+
+                    $sql = "SELECT * FROM contactperson_categories_perm WHERE cpid = {$id}";
+                    $tmp_categories_cansee = Array();
+                    $tmp_categories_cancreate = Array();
+                    if($DB->num_rows($sql)){
+                        foreach($DB->select($sql) as $r){
+                            if ((int)$r["cansee"] == 1){
+                                $tmp_cat = new TicketCategory($r["categoryid"]);
+                                $tmp_categories_cansee[] = $tmp_cat;
+                            }
+                            if ((int)$r["cancreate"] == 1){
+                                $tmp_cat = new TicketCategory($r["categoryid"]);
+                                $tmp_categories_cancreate[] = $tmp_cat;
+                            }
+                        }
+                    }
+                    $this->categories_cansee = $tmp_categories_cansee;
+                    $this->categories_cancreate = $tmp_categories_cancreate;
+                }
+				
+                
+                
         	    
                 return true;
                 // sql returns more than one record, should not happen!
@@ -246,7 +256,7 @@ class ContactPerson {
         return $retval;		
 	}
 	
-	public static function getAllContactPersons($businessContact = NULL, $order = self::ORDER_ID, $filter = "")
+	public static function getAllContactPersons($businessContact = NULL, $order = self::ORDER_ID, $filter = "", $loader = ContactPerson::LOADER_FULL)
 	{
 		global $DB;
 		$contactPersons = Array();
@@ -254,7 +264,7 @@ class ContactPerson {
     	$res = $DB->select($sql);
     	if($DB->num_rows($sql))
 	    	foreach ($res as $r)
-	    		$contactPersons[] = new ContactPerson($r["id"]);
+	    		$contactPersons[] = new ContactPerson($r["id"], $loader);
     	
     	return $contactPersons;
 	}
@@ -396,7 +406,7 @@ class ContactPerson {
             enabled_article = {$this->enabledArtikel}, 
             enabled_ticket = {$this->enabledTickets}, 
             enabled_personalization = {$this->enabledPersonalization},  
-        	birthdate = {$this->birthdate}, 
+        	birthdate = '{$this->birthdate}', 
 		    notifymailadr = '{$tmp_notify_mail_adr}', 
             comment = '{$this->comment}' 
 			WHERE id = {$this->id}";
@@ -423,7 +433,7 @@ class ContactPerson {
             '{$this->priv_city}', '{$this->priv_country->getId()}', '{$this->priv_phone}', '{$this->priv_fax}', '{$this->priv_mobil}', 
 			'{$this->priv_email}', '{$this->comment}', {$this->isMainContact}, {$this->activeAdress}, 
 			'{$this->shopLogin}', '{$this->shopPassword}', 
-			 {$this->enabledArtikel}, {$this->enabledTickets}, {$this->enabledPersonalization}, {$this->birthdate}, '{$tmp_notify_mail_adr}' )";
+			 {$this->enabledArtikel}, {$this->enabledTickets}, {$this->enabledPersonalization}, '{$this->birthdate}', '{$tmp_notify_mail_adr}' )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			
 			if ($res)
@@ -494,6 +504,29 @@ class ContactPerson {
 	}
 	
 	/**
+	 * ... liefert Alle aktivierten Optionen inkl. Input von Merkmalen zu einem Geschaeftskontakt
+	 * 
+	 * @return boolean|Array
+	 */
+	public function getActiveAttributeItemsInput(){
+		global $DB;
+		$sql = "SELECT * FROM contactperson_attributes 
+				WHERE 
+				contactperson_id = {$this->id}";
+		
+		if($DB->num_rows($sql)){
+			$res = $DB->select($sql);
+			foreach ($res AS $r){
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["value"] = $r["value"];
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["inputvalue"] = $r["inputvalue"];
+			}
+		} else {
+			return false;
+		}
+		return $retval;
+	}
+	
+	/**
 	* Speichert alle aktivierten Merkmals-Optionen des Ansprechpartners
 	*
 	* @param Array $active_items
@@ -504,14 +537,15 @@ class ContactPerson {
 		foreach($active_items as $item){
 			if((int)$item["id"] > 0){
 				$sql = "UPDATE contactperson_attributes SET
-						value = '{$item["value"]}'
+						value = '{$item["value"]}', 
+						inputvalue = '{$item["inputvalue"]}' 
 						WHERE id = {$item["id"]}";
 				$DB->no_result($sql);
 			} else {
 				$sql = "INSERT INTO contactperson_attributes
-						(value, item_id, attribute_id, contactperson_id )
+						(value, item_id, attribute_id, contactperson_id, inputvalue )
 						VALUES
-						({$item["value"]}, {$item["item_id"]}, {$item["attribute_id"]}, {$this->id} )";
+						({$item["value"]}, {$item["item_id"]}, {$item["attribute_id"]}, {$this->id}, '{$item["inputvalue"]}' )";
 				$DB->no_result($sql);
 			}
 		}

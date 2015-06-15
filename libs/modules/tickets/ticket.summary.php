@@ -92,6 +92,12 @@ $ticket = new Ticket($_REQUEST["tktid"]);
             ?>
         </td>
     </tr>
+    <tr>
+        <td valign="top"><b>Soll Zeit:</b></td>
+        <td valign="top"><?php echo printPrice($ticket->getPlanned_time(),2);?></td>
+        <td valign="top"><b>Ist Zeit:</b></td>
+        <td valign="top"><?php echo printPrice($ticket->getTotal_time(),2);?></td>
+    </tr>
 </table>
 </div>
 <br>

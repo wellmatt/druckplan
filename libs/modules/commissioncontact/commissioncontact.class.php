@@ -68,11 +68,14 @@ class CommissionContact {
 	private $customernumber = 0 ;			// Kundennummer
 	private $provision = 10;
 
+	const LOADER_BASIC = 1;
+	const LOADER_FULL = 0;
+	
 	
 	/* Konstruktor
      * Falls id uebergeben, werden die entsprechenden Daten direkt geladen
     */
-	function __construct($id = 0)
+	function __construct($id = 0, $loader = CommissionContact::LOADER_FULL)
     {
         global $DB;
         global $_USER;
@@ -117,11 +120,6 @@ class CommissionContact {
                 $this->comment = $res[0]["comment"];
                 $this->lectorId = $res[0]["lector_id"];
                 $this->discount = $res[0]["discount"];
-                $this->paymentTerms = new PaymentTerms($res[0]["payment_terms"]);
-                $this->language = new Translator($res[0]["language"]);
-        		$this->contactPersons = ContactPerson::getAllContactPersons($this);
-        		$this->deliveryAddresses = Address::getAllAddresses($this,Address::ORDER_NAME,Address::FILTER_DELIV);
-        		$this->invoiceAddresses = Address::getAllAddresses($this,Address::ORDER_NAME,Address::FILTER_INVC);
         		$this->loginexpire = $res[0]["login_expire"];
         		$this->ticketenabled = $res[0]["ticket_enabled"];
         		$this->debitor = $res[0]["debitor_number"];
@@ -133,19 +131,28 @@ class CommissionContact {
         		$this->taxnumber = $res[0]["tax_number"];
         		$this->branche = $res[0]["branche"];
         		$this->provision = $res[0]["provision"];
+        		
+        		if ($loader == CommissionContact::LOADER_FULL)
+        		{
+        		    $this->paymentTerms = new PaymentTerms($res[0]["payment_terms"]);
+        		    $this->language = new Translator($res[0]["language"]);
+        		    $this->contactPersons = ContactPerson::getAllContactPersons($this);
+        		    $this->deliveryAddresses = Address::getAllAddresses($this,Address::ORDER_NAME,Address::FILTER_DELIV);
+        		    $this->invoiceAddresses = Address::getAllAddresses($this,Address::ORDER_NAME,Address::FILTER_INVC);
+        		}
 
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
             {
-                $this->strError = "Mehr als einen Gesch�ftskontakt gefunden";
+                $this->strError = "Mehr als einen Geschäftskontakt gefunden";
                 return false;
                 // sql returns 0 rows -> login isn't valid
             }
         }
     }
     
-    public static function getAllCommissionContacts($order = self::ORDER_ID, $filter = self::FILTER_ALL)
+    public static function getAllCommissionContacts($order = self::ORDER_ID, $filter = self::FILTER_ALL, $loader = CommissionContact::LOADER_FULL)
     {
     	global $_USER;
     	global $DB;
@@ -157,7 +164,7 @@ class CommissionContact {
 	    	$res = $DB->select($sql);
 	    	
 	    	foreach ($res as $r)	    	
-	    		$commissionContacts[] = new CommissionContact($r["id"]);	    	
+	    		$commissionContacts[] = new CommissionContact($r["id"], $loader);	    	
     	}
     	
     	return $commissionContacts;

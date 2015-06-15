@@ -85,7 +85,7 @@ if ($_REQUEST["exec"] == "save_cp"){
 	if($_REQUEST["birthdate"] != ""){
 		$tmp_date = explode('.', trim(addslashes($_REQUEST["birthdate"])));
 		$tmp_date = mktime(2,0,0,$tmp_date[1],$tmp_date[0],$tmp_date[2]);
-		// echo $tmp_date;
+// 		echo $tmp_date;
 	} else {
 		$tmp_date = 0;
 	}
@@ -145,12 +145,16 @@ if ($_REQUEST["exec"] == "save_cp"){
     	$allitems = $attribute->getItems();
     	foreach ($allitems AS $item){
     		if((int)$_REQUEST["attribute_item_check_{$attribute->getId()}_{$item["id"]}"] == 1){
-    			$tmp_attribute["id"] = 0;
-    			$tmp_attribute["value"] = 1;
-    			$tmp_attribute["attribute_id"] = $attribute->getId();
-    			$tmp_attribute["item_id"] = $item["id"];
-    			$save_attributes[] = $tmp_attribute;
-    			$i++;
+			    if($item["input"] == 1 && $_REQUEST["attribute_item_input_{$attribute->getId()}_{$item["id"]}"] != "" || $item["input"] == 0)
+			    {
+        			$tmp_attribute["id"] = 0;
+        			$tmp_attribute["value"] = 1;
+        			$tmp_attribute["attribute_id"] = $attribute->getId();
+        			$tmp_attribute["item_id"] = $item["id"];
+    				$tmp_attribute["inputvalue"] = $_REQUEST["attribute_item_input_{$attribute->getId()}_{$item["id"]}"];
+        			$save_attributes[] = $tmp_attribute;
+        			$i++;
+			    }
     		}
     	}
     }
@@ -159,7 +163,7 @@ if ($_REQUEST["exec"] == "save_cp"){
 $countries = Country::getAllCountries();
 //$all_attributes = Attribute::getAllAttributesByObject(Attribute::ORDER_TITLE, Attribute::MODULE_CONTACTPERSON, $contactperson->getId());
 $all_attributes = Attribute::getAllAttributesForContactperson();
-$all_active_attributes = $contactperson->getActiveAttributeItems();
+$all_active_attributes = $contactperson->getActiveAttributeItemsInput();
 ?>
 <script language="javascript">
     function addMailRow()
@@ -728,9 +732,17 @@ $(function() {
 							echo '<td width="200px">';
 							echo '<input name="attribute_item_check_'.$attribute->getId().'_'.$item["id"].'" ';
 							echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
-									if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"] == 1) echo "checked";
+									if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
 							echo ">";
-							echo $item["title"]."</td>";
+							echo $item["title"];
+							if ($item["input"] == 1)
+							{
+							    echo ' <input name="attribute_item_input_'.$attribute->getId().'_'.$item["id"].'" ';
+							    echo ' value="';
+							    echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
+							    echo '" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+							}
+							echo "</td>";
 							if ($x%5 == 4) echo "</tr>";
 					 		$x++;
 						}?>

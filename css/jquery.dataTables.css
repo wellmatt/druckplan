@@ -478,3 +478,23 @@ table.dataTable td {
     margin-top: 0.5em;
   }
 }
+
+td.details-control {
+    background: url('../images/icons/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/icons/details_close.png') no-repeat center center;
+}
+
+td.details-control {
+    background: url('../images/icons/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.details td.details-control {
+    background: url('../images/icons/details_close.png') no-repeat center center;
+}
+
+tr.details td.details-control-loading {
+    background: url('../images/status/loading2.gif') no-repeat center center;
+}

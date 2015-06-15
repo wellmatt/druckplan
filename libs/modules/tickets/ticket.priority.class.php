@@ -91,7 +91,7 @@ class TicketPriority {
         global $DB;
         $retval = Array();
     
-        $sql = "SELECT id FROM tickets_priorities ORDER BY value DESC";
+        $sql = "SELECT id FROM tickets_priorities ORDER BY value ASC";
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new TicketPriority($r["id"]);

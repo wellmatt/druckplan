@@ -18,7 +18,10 @@ if ($_REQUEST["exec"]=="reset")
     unset($_SESSION['tkt_ajax_crtuser']);
     unset($_SESSION['tkt_ajax_assigned']);
     unset($_SESSION['tkt_ajax_showclosed']);
+    unset($_SESSION['tkt_ajax_showdeleted']);
     unset($_SESSION['tkt_ajax_tourmarker']);
+    unset($_SESSION['tkt_cl_date_min']);
+    unset($_SESSION['tkt_cl_date_max']);
 }
 
 ?>
@@ -63,9 +66,9 @@ $(document).ready(function() {
         "processing": true,
         "bServerSide": true,
         "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php",
-        "paging": true,
-		"stateSave": true,
-// 		"dom": 'flrtip',        
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
+		"aaSorting": [[ 5, "desc" ]],
 		"dom": 'T<"clear">flrtip',        
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -81,7 +84,6 @@ $(document).ready(function() {
                          "print"
                      ]
                  },
-		"pageLength": 50,
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var iMin = document.getElementById('ajax_date_min').value;
 			var iMax = document.getElementById('ajax_date_max').value;
@@ -92,7 +94,10 @@ $(document).ready(function() {
 			var crtuser = document.getElementById('ajax_crtuser').value;
 			var assigned = document.getElementById('ajax_assigned').value;
 			var showclosed = document.getElementById('ajax_showclosed').value;
+			var showdeleted = document.getElementById('ajax_showdeleted').value;
 			var tourmarker = document.getElementById('ajax_tourmarker').value;
+			var iMin_cl = document.getElementById('ajax_cl_date_min').value;
+			var iMax_cl = document.getElementById('ajax_cl_date_max').value;
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "start_due", "value": iMinDue, } );
@@ -102,7 +107,10 @@ $(document).ready(function() {
 		    aoData.push( { "name": "crtuser", "value": crtuser, } );
 		    aoData.push( { "name": "assigned", "value": assigned, } );
 		    aoData.push( { "name": "showclosed", "value": showclosed, } );
+		    aoData.push( { "name": "showdeleted", "value": showdeleted, } );
 		    aoData.push( { "name": "tourmarker", "value": tourmarker, } );
+		    aoData.push( { "name": "cl_start", "value": iMin_cl, } );
+		    aoData.push( { "name": "cl_end", "value": iMax_cl, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -176,6 +184,35 @@ $(document).ready(function() {
             	$('#ticketstable').dataTable().fnDraw();
             }
 	});
+	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
+	$('#date_cl_min').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_cl_date_min').val(moment($('#date_cl_min').val(), "DD-MM-YYYY").unix());
+                $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_cl_date_min", "tkt_cl_date_min": moment($('#date_cl_min').val(), "DD-MM-YYYY").unix()});
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+	$('#date_cl_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_cl_date_max').val(moment($('#date_cl_max').val(), "DD-MM-YYYY").unix()+86340);
+                $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_cl_date_max", "tkt_cl_date_max": moment($('#date_cl_max').val(), "DD-MM-YYYY").unix()+86340});
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
 	$('#date_due_min').datepicker(
 			{
 				showOtherMonths: true,
@@ -228,10 +265,34 @@ $(document).ready(function() {
 	$('#showclosed').change(function(){	
 		if ($('#showclosed').prop('checked')){
 			$('#ajax_showclosed').val(1); 
+			$('#ajax_showdeleted').val(0); 
+			$('#showdeleted').prop('checked', false);
 	        $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_showclosed", "tkt_ajax_showclosed": "1"});
 		} else {
 			$('#ajax_showclosed').val(0); 
+			$('#date_cl_min').val('');
+			$('#date_cl_max').val('');
+			$('#ajax_date_cl_min').val('');
+			$('#ajax_date_cl_max').val('');
 	        $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_showclosed", "tkt_ajax_showclosed": "0"});
+		}
+		$('#tr_cl_dates').toggle();
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
+	$('#showdeleted').change(function(){	
+		if ($('#showdeleted').prop('checked')){
+			$('#tr_cl_dates').hide();
+			$('#date_cl_min').val('');
+			$('#date_cl_max').val('');
+			$('#ajax_date_cl_min').val('');
+			$('#ajax_date_cl_max').val('');
+			$('#ajax_showclosed').val(0); 
+			$('#ajax_showdeleted').val(1); 
+			$('#showclosed').prop('checked', false);
+	        $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_showdeleted", "tkt_ajax_showdeleted": "1"});
+		} else {
+			$('#ajax_showdeleted').val(0); 
+	        $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_showdeleted", "tkt_ajax_showdeleted": "0"});
 		}
 		$('#ticketstable').dataTable().fnDraw(); 
 	})
@@ -430,6 +491,19 @@ function TicketTableRefresh()
                 <input name="ajax_tourmarker" id="ajax_tourmarker" type="text" <?php if ($_SESSION['tkt_ajax_tourmarker']) echo ' value="'.$_SESSION['tkt_ajax_tourmarker'].'" ';?>/>
             </td>
         </tr>
+        <tr align="left" id="tr_cl_dates" <?php if (!$_SESSION['tkt_ajax_showclosed']) echo ' style="display: none" ';?>>
+            <td>Datum (geschlossen):&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_cl_date_min" id="ajax_cl_date_min" type="hidden" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="'.$_SESSION['tkt_cl_date_min'].'"';?> />  
+                <input name="date_cl_min" id="date_cl_min" style="width:70px;" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="'.date('d.m.Y',$_SESSION['tkt_cl_date_min']).'"';?>  class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+            </td>
+            <td valign="left">
+                <input name="ajax_cl_date_max" id="ajax_cl_date_max" type="hidden" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="'.$_SESSION['tkt_cl_date_max'].'"';?> />  
+                bis: <input name="date_cl_max" id="date_cl_max" style="width:70px;" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['tkt_cl_date_max']).'"';?> class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+            </td>
+        </tr>
         <tr align="left">
             <td>zeige geschlossene:&nbsp;&nbsp;</td>
             <td valign="left">
@@ -437,6 +511,18 @@ function TicketTableRefresh()
                 <input name="showclosed" id="showclosed" type="checkbox" value="1" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' checked ';?>/>
             </td>
         </tr>
+        <?php if ($_USER->isAdmin()){?>
+        <tr align="left">
+            <td>zeige gelöschte:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_showdeleted" id="ajax_showdeleted" type="hidden" <?php if ($_SESSION['tkt_ajax_showdeleted']) echo ' value="'.$_SESSION['tkt_ajax_showdeleted'].'" ';?>/>
+                <input name="showdeleted" id="showdeleted" type="checkbox" value="1" <?php if ($_SESSION['tkt_ajax_showdeleted']) echo ' checked ';?>/>
+            </td>
+        </tr>
+        <?php } else {?>
+                <input name="ajax_showdeleted" id="ajax_showdeleted" type="hidden" value="0"/>
+                <input name="showdeleted" id="showdeleted" type="hidden" value="0"/>
+        <?php }?>
         <tr align="left">
             <td><a onclick="TicketTableRefresh();" href="Javascript:"><img src="images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
         </tr>

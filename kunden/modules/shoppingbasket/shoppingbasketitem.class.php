@@ -17,6 +17,8 @@ class Shoppingbasketitem{
 	private $amount;	// Menge des Artikels/Produkts/Personalisierung
 	private $price;		// Einzelpreis pro Stueck
 	private $type;		// Typ des Eintrags  -> siehe Konstanten
+	private $entryid;   // Entry ID
+	private $file;      // Artikel Dateiupload
 	
 	private $delivery_address_id;
 	private $invoice_address_id;
@@ -28,6 +30,7 @@ class Shoppingbasketitem{
 			$this->amount 	= $attribute["amount"];
 			$this->price	= $attribute["price"];
 			$this->type 	= (int)$attribute["type"];
+			$this->entryid 	= (int)$attribute["entryid"];
 		}
 	}
 	
@@ -117,6 +120,36 @@ class Shoppingbasketitem{
 		$this->delivery_address_id = $delivery_address_id;
 	}
 	
-	
+	/**
+     * @return the $entryid
+     */
+    public function getEntryid()
+    {
+        return $this->entryid;
+    }
+
+	/**
+     * @param number $entryid
+     */
+    public function setEntryid($entryid)
+    {
+        $this->entryid = $entryid;
+    }
+    
+	/**
+     * @return the $file
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+	/**
+     * @param field_type $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    }
 }
 ?>

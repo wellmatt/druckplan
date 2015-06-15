@@ -27,6 +27,7 @@ class Schedule
     private $finished = 0;
     private $number = '';
     private $customer;
+    private $customer_cp;
     private $object = '';
     private $amount = 0;
     private $colors = '';
@@ -47,6 +48,7 @@ class Schedule
         global $DB;
         
         $this->customer = new BusinessContact();
+        $this->customer_cp = new ContactPerson();
         $this->finishing = new Finishing();
         $this->deliveryterms = new DeliveryTerms();
         
@@ -64,6 +66,7 @@ class Schedule
                 $this->finished = $r["finished"];
                 $this->number = $r["number"];
                 $this->customer = new BusinessContact($r["customer_id"]);
+                $this->customer_cp = new ContactPerson($r["customer_cp_id"]);
                 $this->object = $r["object"];
                 $this->amount = $r["amount"];
                 $this->colors = $r["colors"];
@@ -258,6 +261,7 @@ class Schedule
                         finished = {$this->finished},
                         number = '{$this->number}',
                         customer_id = {$this->customer->getId()},
+                        customer_cp_id = {$this->customer_cp->getId()},
                         object = '{$this->object}',
                         amount = {$this->amount},
                         colors = '{$this->colors}',
@@ -505,6 +509,22 @@ class Schedule
     public function setDruckplanId($druckplanId)
     {
         $this->druckplanId = $druckplanId;
+    }
+    
+	/**
+     * @return the $customer_cp
+     */
+    public function getCustomer_cp()
+    {
+        return $this->customer_cp;
+    }
+
+	/**
+     * @param ContactPerson $customer_cp
+     */
+    public function setCustomer_cp($customer_cp)
+    {
+        $this->customer_cp = $customer_cp;
     }
 }
 ?>

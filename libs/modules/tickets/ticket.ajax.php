@@ -76,8 +76,28 @@ if ($_REQUEST["ajax_action"] == "setFilter_ajax_assigned"){
 }
 if ($_REQUEST["ajax_action"] == "setFilter_ajax_showclosed"){
     $_SESSION['tkt_ajax_showclosed'] = $_POST['tkt_ajax_showclosed'];
+    if ($_POST['tkt_ajax_showclosed'] == 0)
+    {
+        unset($_SESSION['tkt_cl_date_min']);
+        unset($_SESSION['tkt_cl_date_max']);
+    }
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_showdeleted"){
+    $_SESSION['tkt_ajax_showdeleted'] = $_POST['tkt_ajax_showdeleted'];
+    if ($_POST['tkt_ajax_showdeleted'] == 1)
+    {
+        unset($_SESSION['tkt_cl_date_min']);
+        unset($_SESSION['tkt_cl_date_max']);
+        unset($_SESSION['tkt_ajax_showclosed']);
+    }
 }
 if ($_REQUEST["ajax_action"] == "setFilter_ajax_tourmarker"){
     $_SESSION['tkt_ajax_tourmarker'] = $_POST['tkt_ajax_tourmarker'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_cl_date_min"){
+    $_SESSION['tkt_cl_date_min'] = $_POST['tkt_cl_date_min'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_cl_date_max"){
+    $_SESSION['tkt_cl_date_max'] = $_POST['tkt_cl_date_max'];
 }
 ?>

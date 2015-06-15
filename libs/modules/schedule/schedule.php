@@ -11,6 +11,7 @@ require_once 'schedule.machine.class.php';
 require_once 'schedule.part.class.php';
 require_once 'libs/modules/machines/machine.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
+require_once 'libs/modules/schedule/schedule.machine.usertime.class.php';
 
 if($_REQUEST["schedule_filter"] != "")
     $_SESSION["schedule_filter"] = $_REQUEST["schedule_filter"];
@@ -80,8 +81,8 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 $(document).ready(function() {
     var schedule = $('#schedule').DataTable( {
         "paging": true,
-		"stateSave": true,
-		"pageLength": 50,
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"aoColumnDefs": [ { "sType": "uk_date", "aTargets": [ 6 ] } ],
 		"language": 

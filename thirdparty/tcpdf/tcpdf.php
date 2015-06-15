@@ -4950,7 +4950,7 @@ class TCPDF {
 				$this->selectColumn($this->current_column + 1);
 			} elseif ($this->AutoPageBreak) {
 				// add a new page
-				$this->AddPage();
+				$this->AddPage($this->CurOrientation); // ,'',true
 				// set first column
 				$this->selectColumn(0);
 			}
@@ -4978,7 +4978,7 @@ class TCPDF {
 			if ($addpage) {
 				//Automatic page break
 				$x = $this->x;
-				$this->AddPage($this->CurOrientation);
+				$this->AddPage($this->CurOrientation); // ,'',true
 				$this->y = $this->tMargin;
 				$oldpage = $this->page - 1;
 				if ($this->rtl) {

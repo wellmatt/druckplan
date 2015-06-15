@@ -19,6 +19,15 @@ class Perferences {
    // Ticket
    
    private $default_ticket_id = 0;
+   
+   // Datatables
+   
+   private $dt_show_default;
+   private $dt_state_save;
+   
+   // Mail
+   
+   private $mail_domain;
 
    function __construct()
    {
@@ -36,6 +45,9 @@ class Perferences {
            $this->pdf_margin_right = $r["pdf_margin_right"];
            $this->pdf_margin_bottom = $r["pdf_margin_bottom"];
            $this->default_ticket_id = $r["default_ticket_id"];
+           $this->dt_show_default = (int)$r["dt_show_default"];
+           $this->dt_state_save = (bool)$r["dt_state_save"];
+           $this->mail_domain = $r["mail_domain"];
        }
        
        $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -67,6 +79,8 @@ class Perferences {
            $DB->no_result($sql);
        }
        
+       $tmp_dt_state_save = (int)$this->dt_state_save;
+       
        $sql = "UPDATE perferences SET
                zuschussprodp 	= '{$this->ZuschussProDP}',
                calc_detailed_printpreview 	= '{$this->calc_detailed_printpreview}',
@@ -74,6 +88,9 @@ class Perferences {
                pdf_margin_left 	= '{$this->pdf_margin_left}',
                pdf_margin_right 	= '{$this->pdf_margin_right}',
                default_ticket_id 	= {$this->default_ticket_id},
+               dt_show_default 	= {$this->dt_show_default},
+               dt_state_save 	= {$tmp_dt_state_save},
+               mail_domain 	= '{$this->mail_domain}',
                pdf_margin_bottom 	= '{$this->pdf_margin_bottom}'
               ";
        return $DB->no_result($sql);
@@ -207,5 +224,52 @@ class Perferences {
         $this->default_ticket_id = $default_ticket_id;
     }
     
+	/**
+     * @return the $dt_show_default
+     */
+    public function getDt_show_default()
+    {
+        return $this->dt_show_default;
+    }
+
+	/**
+     * @return the $dt_state_save
+     */
+    public function getDt_state_save()
+    {
+        return $this->dt_state_save;
+    }
+
+	/**
+     * @param number $dt_show_default
+     */
+    public function setDt_show_default($dt_show_default)
+    {
+        $this->dt_show_default = $dt_show_default;
+    }
+
+	/**
+     * @param boolean $dt_state_save
+     */
+    public function setDt_state_save($dt_state_save)
+    {
+        $this->dt_state_save = $dt_state_save;
+    }
+    
+	/**
+     * @return the $mail_domain
+     */
+    public function getMail_domain()
+    {
+        return $this->mail_domain;
+    }
+
+	/**
+     * @param field_type $mail_domain
+     */
+    public function setMail_domain($mail_domain)
+    {
+        $this->mail_domain = $mail_domain;
+    }
 }
 ?>

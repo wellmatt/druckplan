@@ -5,7 +5,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
-
+require_once 'libs/modules/attachment/attachment.class.php';
 
 
 
@@ -83,9 +83,31 @@ if (!empty($_REQUEST['subexec']) && $_REQUEST['subexec']){
 
 
 //----------------------------------- Javascript---------------------------------------?>
-
+<link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 
 <script type="text/javascript">
+$(function() {
+	$('#colinv_deliverydate').datetimepicker({
+		 lang:'de',
+		 i18n:{
+		  de:{
+		   months:[
+		    'Januar','Februar','März','April',
+		    'Mai','Juni','Juli','August',
+		    'September','Oktober','November','Dezember',
+		   ],
+		   dayOfWeek:[
+		    "So.", "Mo", "Di", "Mi", 
+		    "Do", "Fr", "Sa.",
+		   ]
+		  }
+		 },
+		 timepicker:false,
+		 format:'d.m.Y'
+	});
+});
+
 
 function printPriceJs(zahl){
     //var ret = (Math.round(zahl * 100) / 100).toString(); //100 = 2 Nachkommastellen
@@ -197,6 +219,43 @@ function updateDeliveryPrice(){
 		 function(data) {
 			document.getElementById('colinv_deliverycosts').value = data;
 	}); 
+}
+
+function addPositionRow(){
+	var count = parseInt($('#poscount').val())+1;
+    var newrow = "";
+    newrow += '<tr class="">';
+    newrow += '<td valign="top" class="content_row">';
+    newrow += '<select name="orderpos['+count+'][type]" class="text" id="orderpos_type_'+count+'" onchange="updatePos('+count+')">';
+    newrow += '<option value="0" >Manuell</option>';
+    newrow += '<option value="1" >Auftrag</option>';
+    newrow += '<option value="2" >Artikel</option>';
+    newrow += '<option value="3" >Personalisierung</option></select>';
+    newrow += '<input type="hidden" name="orderpos['+count+'][id]" value="0">';
+	newrow += '<input type="hidden" name="orderpos['+count+'][obj_id]" id="orderpos_objid_'+count+'"value=""></td>';
+	newrow += '<td valign="top" class="content_row" ><input type="text" value="" id="orderpos_search_'+count+'"';
+	newrow += 'style="width: 50px; display:none;" class="text"><br/>&ensp;&ensp;';
+	newrow += '<img src="images/icons/magnifier-left.png" class="pointer" style="border:0; display:none;" title="Suchen" onclick="clickSearch('+count+')"'; 
+	newrow += 'id="orderpos_searchbutton_'+count+'"></td><td valign="top" class="content_row">';
+	newrow += '<select style="width: 440px; display:none;" class="text" id="orderpos_searchlist_'+count+'" onchange="updatePosDetails('+count+')" name="orderpos['+count+'][obj_id]">'; 
+	newrow += '<option value="0"> &lt; Suchergebnisse... &gt;</option></select>';
+	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" style="width: 440px; height: 100px" ></textarea>';
+	newrow += '</td><td valign="top" class="content_row">';
+	newrow += '<input 	name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+    newrow += 'Stk.<br/> &ensp;&ensp;&ensp;';
+    newrow += '<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_'+count+'"';
+	newrow += 'onclick="updateArticlePrice('+count+')" style="display:none" title="Staffelpreis aktualisieren">';
+	newrow += '</td><td valign="top" class="content_row"><input 	name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""'; 
+	newrow += 'style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+    newrow += '<?= $_USER->getClient()->getCurrency()?></td><td valign="top" class="content_row">';
+	newrow += '<input 	name="orderpos['+count+'][tax]" id="orderpos_tax_'+count+'" value="19,00" style="width: 60px"'; 
+	newrow += 'onfocus="markfield(this,0)" onblur="markfield(this,1)"> %</td>';
+	newrow += '<td valign="top" class="content_row" id="td_totalprice_'+count+'">&ensp;</td>';
+	newrow += '<td valign="top" class="content_row">';
+	newrow += '<input type="checkbox" checked value="1" name="orderpos['+count+'][inv_rel]">';				
+	newrow += '</td><td class="content_row">&ensp;</td></tr>';
+    $('#poscount').val(count);
+    $('#sort').append(newrow);
 }
 </script>
 
@@ -344,25 +403,13 @@ function updateDeliveryPrice(){
 			</td>
 		</tr>
 		<tr>
-			<? /***?>
-			<td class="content_header"><?= $_LANG->get('Mandant')?></td>
-			<td class="content_row_clear"><?= $collectinv->getClient()->getName()?></td>
-
-
-
-
-
-
-
-
-			***/?>
 			<td class="content_row"><?= $_LANG->get('Status')?></td>
 			<td class="content_row">
 				<table>
 					<tr>
 						<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?= $collectinv->getId() ?>&exec=setState2&state=1">
-	            				<img class="select" src="./images/status/<?
+	            				<img class="select" title="Vorgang angelegt" src="./images/status/<?
 	            				if($collectinv->getStatus() == 1)
 	            	    				echo 'red.gif';
 					            	else
@@ -371,7 +418,7 @@ function updateDeliveryPrice(){
 	                	</td>
 	                	<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=2">
-	            				<img class="select" src="./images/status/<?
+	            				<img class="select" title="Vorgang gesendet" src="./images/status/<?
 	            					if($collectinv->getStatus() == 2)
 					                	echo 'orange.gif';
 					                else
@@ -380,7 +427,7 @@ function updateDeliveryPrice(){
 						</td>
 						<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=3">
-								<img class="select" src="./images/status/<?
+								<img class="select" title="Vorgang angenommen" src="./images/status/<?
 									if($collectinv->getStatus() == 3)
 					                	echo 'yellow.gif';
 					                else
@@ -389,7 +436,7 @@ function updateDeliveryPrice(){
 						</td>
 						<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=4">
-	            				<img class="select" src="./images/status/<?
+	            				<img class="select" title="Erledigt" src="./images/status/<?
 	            					if($collectinv->getStatus() == 4)
 	            						echo 'lila.gif';
 									else
@@ -455,12 +502,13 @@ function updateDeliveryPrice(){
 					} ?>
 				</select>
 			</td> 
-			<td class="content_row" valign="top" rowspan="4">
-				<?= $_LANG->get('Bemerkungen (intern)')?>
+			<td class="content_row" valign="top">
+				<?=$_LANG->get('Lieferdatum')?>
 			</td>
-			<td class="content_row"  rowspan="4">
-				<textarea name="colinv_comment" style="width: 300px; height: 80px"
-						  onfocus="markfield(this,0)" onblur="markfield(this,1)"><?= $collectinv->getComment()?></textarea>
+			<td class="content_row"  valign="top">
+				<input 	name="colinv_deliverydate" id="colinv_deliverydate" style="width: 80px" class="text" 
+						value="<?=date('d.m.Y',$collectinv->getDeliverydate())?>" 
+						onfocus="markfield(this,0)" onblur="markfield(this,1)">
 			</td>
 		</tr>
 		<tr>
@@ -478,6 +526,13 @@ function updateDeliveryPrice(){
                    ?>
                </select>
             </td>
+			<td class="content_row" valign="top" rowspan="4">
+				<?= $_LANG->get('Bemerkungen (intern)')?>
+			</td>
+			<td class="content_row"  rowspan="4">
+				<textarea name="colinv_comment" style="width: 300px; height: 80px"
+						  onfocus="markfield(this,0)" onblur="markfield(this,1)"><?= $collectinv->getComment()?></textarea>
+			</td>
 		</tr>
 		<tr>
 			<td class="content_row"><?=$_LANG->get('Versandart')?></td>
@@ -504,18 +559,9 @@ function updateDeliveryPrice(){
 			</td>
 		</tr>
 		<tr>
-
-
-
-
-
 			<td class="content_row" valign="top">
 				<?= $_LANG->get('Zweck')?> / <?= $_LANG->get('Kostenstelle')?> <br/> <?= $_LANG->get('des Kunden')?>
 			</td>
-
-
-
-
 			<td class="content_row"  valign="top">
 				<input 	name="colinv_intent" id="colinv_intent" style="width: 300px" class="text" 
 
@@ -528,6 +574,12 @@ function updateDeliveryPrice(){
                 <input name="cust_message" id="cust_message" style="width:300px"
                     value="<?=$collectinv->getCustMessage()?>">
             </td>
+			<td class="content_row" valign="top">
+				<?=$_LANG->get('Benötigt Planung')?>
+			</td>
+			<td class="content_row"  valign="top">
+				<?php if ($collectinv->getNeeds_planning()) { echo 'Ja'; } else { echo 'Nein'; }?>
+			</td>
         </tr>
         <tr>
         	<td class="content_row" valign="top"><b><?=$_LANG->get('Dokumente')?> - <?=$_LANG->get('Ihr Zeichen')?></b></td>
@@ -576,7 +628,7 @@ function updateDeliveryPrice(){
 	<table width="100%">
 		<tr>
 			<td class="content_row_header">
-			<?= $_LANG->get('Auftragspositionen') ?>
+			<?= $_LANG->get('Auftragspositionen') ?> <img class="pointer" src="images/icons/plus.png" onclick="addPositionRow();"/>
 			</td>
 		</tr>
 	</table>
@@ -707,12 +759,32 @@ function updateDeliveryPrice(){
                                   <img src="images/icons/arrow-270.png" title="nach unten bewegen"></a>';
 						} else if ($i+1 >= count($collectinv->getPositions())){
 						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=moveup&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-                                  <img src="images/icons/arrow-090.png" title="nach oben bewegen">';
+                                  <img src="images/icons/arrow-090.png" title="nach oben bewegen"></a>';
 			            } else {
 						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=movedown&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
                                   <img src="images/icons/arrow-270.png" title="nach unten bewegen"></a>';
 						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=moveup&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-                                  <img src="images/icons/arrow-090.png" title="nach oben bewegen">';
+                                  <img src="images/icons/arrow-090.png" title="nach oben bewegen"></a>';
+			            }
+			            if ($position->getFile_attach()>0){
+			                $tmp_attach = new Attachment($position->getFile_attach());
+			                echo '<a href="'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
+                                  <img src="images/icons/disk--arrow.png" title="Angehängte Datei herunterladen"></a>';
+			            } elseif ($position->getPerso_order()>0){
+			                echo '</br>';
+			                $perso_order = new Personalizationorder($position->getPerso_order());
+			                $docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER,
+			                                                     "requestId" => $perso_order->getId(),
+			                                                     "module" => Document::REQ_MODULE_PERSONALIZATION));
+			                if (count($docs) > 0)
+			                {
+			                    $tmp_id = $_USER->getClient()->getId();
+			                    $hash = $docs[0]->getHash();
+    			                echo '<a class="icon-link" target="_blank" href="./docs/personalization/'.$tmp_id.'.per_'.$hash.'_e.pdf">
+                                      <img src="images/icons/application-browser.png" title="Download mit Hintergrund" alt="Download"></a>
+    			                      <a href="./docs/personalization/'.$tmp_id.'.per_'.$hash.'_p.pdf" class="icon-link" target="_blank">
+    			                      <img src="images/icons/application.png" title="Download ohne Hintergrund" alt="Download"></a></br>';
+			                }
 			            }
 						    
 						?>
@@ -781,6 +853,8 @@ function updateDeliveryPrice(){
 	</table>
 </div>	
 <br/>
+
+<input type="hidden" id="poscount" value="<?php echo $i;?>"/>
 
 <div  class="box1">
 	<table width="100%">

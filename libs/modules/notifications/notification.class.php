@@ -135,9 +135,19 @@ class Notification {
         global $_USER;
         $tmp_notification = new Notification();
         $tmp_notification->setUser($touser);
-        if ($touser == $_USER)
-            return false;
+//         if ($touser == $_USER)
+//             return false;
         switch($crtmodule){
+            case "CollectiveInvoice":
+                switch ($type){
+                    case "NewOrderShop":
+                        $tmp_notification->setTitle("Neue Bestellung von \"".$reference."\"");
+                        $tmp_notification->setPath("index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
+                }
+                break;
             case "Ticket":
                 switch ($type){
                     case "Comment":
@@ -148,6 +158,12 @@ class Notification {
                         break;
                     case "CommentCP":
                         $tmp_notification->setTitle("Neues Kommentar des Kunden in Ticket #".$reference);
+                        $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
+                    case "NewFromCP":
+                        $tmp_notification->setTitle("Neues Ticket vom Kunden #".$reference);
                         $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
                         $tmp_notification->setCrtmodule($crtmodule);
                         $tmp_notification->save();

@@ -7,9 +7,8 @@
 //----------------------------------------------------------------------------------
 require_once('libs/modules/documents/document.class.php');
 require_once('libs/modules/organizer/nachricht.class.php');
-require_once('libs/modules/warehouse/warehouse.reservation.class.php');
 
-// Prüfung ob eine Reservierung oder eine Rechnung vorhanden sind
+// Prï¿½fung ob eine Reservierung oder eine Rechnung vorhanden sind
 $docsofferconfirm = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
 $docsinvoice = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
 $docsdelivery = Document::getDocuments(Array("type" => Document::TYPE_DELIVERY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
@@ -17,64 +16,7 @@ $docsdelivery = Document::getDocuments(Array("type" => Document::TYPE_DELIVERY, 
 
 if((int)$_REQUEST["deleteDoc"] > 0){
     $doc = new Document((int)$_REQUEST["deleteDoc"]);
-    
-    if($doc->getType() == Document::TYPE_OFFERCONFIRM)
-    {
-        if(empty($docsinvoice) && empty($docsdelivery))
-        {
-            $opositions = Orderposition::getAllOrderposition($collectinv->getId());
-            foreach ($opositions as $op)
-            {
-                $rvs = Reservation::getAllReservationByOrderposition($op->getId());
-                foreach ($rvs as $r)
-                    $r->delete();
-            }
-            $doc->delete();
-        }
-        else
-        {
-            echo "<script type='text/javascript' language='javascript'>\n";
-            echo "<!--\n";
-            echo "alert('".$_LANG->get("Dokument kann nicht gelöscht werden, da Rechnung und/oder Lieferschein vorhanden sind.")."')\n";
-            echo "//-->\n";
-            echo "</script>\n";
-        }
-    }
-    else if($doc->getType() == Document::TYPE_INVOICE || $doc->getType() == Document::TYPE_DELIVERY )
-    {
-            $opositions = Orderposition::getAllOrderposition($collectinv->getId());
-            foreach ($opositions as $op)
-            {
-                $rvs = Reservation::getAllReservationByFilter("WHERE status = ".Reservation::Reservation_Delete." AND op_id = {$op->getId()}");
-                $g = 0;
-//                 var_dump(sizeof($rvs));
-                foreach ($rvs as $r)
-                    if($g < $r->getGid())
-                        $g = $r->getGid();   
-                    
-                foreach ($rvs as $r)
-                    if($g == $r->getGid())
-                    {
-                        $w = $r->getWarehouse();
-                        $w->setAmount($w->getAmount() + $r->getAmount());
-                        // Nicht ganz sauber, aber erstmal ausreichend.
-                        $r->setStatus(Reservation::Reservation_Active);
-                        $r->save();
-                        $w->save();
-                    }
-            }
-            if($doc->getType() == Document::TYPE_INVOICE)
-                if(!empty($docsdelivery))
-                    foreach ($docsdelivery as $d)
-                        $d->delete();
-            else
-                if(!empty($docsinvoice))
-                    foreach ($docsinvoice as $d)
-                        $d->delete();              
-            $doc->delete();
-    } 
-    else  
-        $doc->delete();
+    $doc->delete();
 }
 
 if($_REQUEST["createDoc"]){
@@ -85,150 +27,13 @@ if($_REQUEST["createDoc"]){
     if($_REQUEST["createDoc"] == "offer")
         $doc->setType(Document::TYPE_OFFER);
     if($_REQUEST["createDoc"] == "offerconfirm")
-    {
-        // Reservierung anlegen WICHTIG das Löschen der Reservierung bei Dokumentenlöschung nicht vergessen
-        $check = TRUE;
-        $msg = "Nicht genug Ware verfügbar.";
-        $opositions = Orderposition::getAllOrderposition($collectinv->getId());
-        $rsvlist = array();
-        
-        foreach ($opositions as $op)
-        {        
-            if($op->getType() == Orderposition::TYPE_ARTICLE)
-            {
-                // Wird überprüft, ob genug Ware verfügbar ist für eine Reservierungs
-                if(Warehouse::getTotalStockByArticle($op->getObjectid())>=$op->getQuantity())
-                {
-                    $whouses = Warehouse::getAllStocksByArticle($op->getObjectid());
-                	$opamount = $op->getQuantity();
-                	// Durchgehen aller Warenhaeuser mit Produkt x und die entsprechenden Mengen reservieren
-                	foreach ($whouses as $w)
-                    {     
-                	   // Es darf aus keinem Warenhouse reserviert werden, welches explizit einem anderen Kunden zugewiesen ist.
-                	   if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$collectinv->getCustomer()->getId())) 
-                	   {
-                	       $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse
-                    	   if($faiwh > 0)
-                    	   {
-                    	       $tmp = array();
-                    	       $tmp["Article"] = $op->getObjectid();
-                    	       $tmp["Orderposition"] = $op->getId();
-                    	       $tmp["Warehouse"] = $w->getId();
-                        	   if($faiwh>=$opamount)
-                        	   {
-                    	           $tmp["Amount"] = $opamount;
-                                   $opamount = 0;
-                        	   }
-                               else
-                               {
-                                   $tmp["Amount"] = $faiwh;
-                                   $opamount = $opamount-$faiwh;
-                               }
-                               $rsvlist[] = $tmp;
-                    	   }
-                           if($opamount==0)
-                               break;
-                	   }
-                	}
-                	if($opamount>0)
-                	{
-                	    $msg .= " ID={$op->getObjectid()}"; 
-                	    $check = FALSE;
-                	}
-                }
-                else
-                {
-                    $msg .= " ID={$op->getObjectid()}"; 
-                    $check = FALSE;
-                }     
-            }
-        }
-        if($check)
-        {
-            // Ware Reservieren
-            $rsv = null;
-            $gid = (int)Reservation::getMaxReservationGroupId() + 1;
-            foreach ($rsvlist as $r)
-            {              
-                if(!empty($rsv))
-                    if($r["Orderposition"]->getId()!=$rsv->getOrderposition()->getId())
-                        $gid = (int)Reservation::getMaxReservationGroupId() + 1;
-                    
-                $rsv = new Reservation();
-                $rsv->setArticle(new Article((int)$r["Article"]));
-                $rsv->setOrderposition(new Orderposition((int)$r["Orderposition"]));
-                $rsv->setAmount($r["Amount"]);
-                $rsv->setWarehouse(new Warehouse((int)$r["Warehouse"]));
-                $rsv->setGid($gid);
-                $rsv->save();
-            }
-            $doc->setType(Document::TYPE_OFFERCONFIRM);
-        }
-        else
-        {
-            echo "<script type='text/javascript' language='javascript'>\n";
-            echo "<!--\n";
-            echo "alert('".$_LANG->get($msg)."')\n";
-            echo "//-->\n";
-            echo "</script>\n";
-        }
-    }
+        $doc->setType(Document::TYPE_OFFERCONFIRM);
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
     if($_REQUEST["createDoc"] == "delivery")
-    {
-        $opositions = Orderposition::getAllOrderposition($collectinv->getId());
-        foreach ($opositions as $op)
-        {
-            $rvs = Reservation::getAllReservationByOrderposition($op->getId());
-            foreach ($rvs as $r)
-            {   
-                // Ware entnehmen
-                $w = $r->getWarehouse();
-                $w->setAmount($w->getAmount()-$r->getAmount());
-                $w->save();
-                // Reservierung loeschen
-                $r->delete();
-            }
-        }
-        if(!empty($rvs) || !empty($docsinvoice))
             $doc->setType(Document::TYPE_DELIVERY);
-        else 
-        {
-          echo "<script type='text/javascript' language='javascript'>\n";
-          echo "<!--\n";
-          echo "alert('".$_LANG->get("Es fehlt eine Angebotsbest&auml;tigung f&uuml;r diesen Vorgang.")."')\n";
-          echo "//-->\n";
-          echo "</script>\n";
-        }    
-    }
     if($_REQUEST["createDoc"] == "invoice")
-    {
-        $opositions = Orderposition::getAllOrderposition($collectinv->getId());
-        foreach ($opositions as $op)
-        {
-            $rvs = Reservation::getAllReservationByOrderposition($op->getId());
-            foreach ($rvs as $r)
-            {   
-                // Ware entnehmen
-                $w = $r->getWarehouse();
-                $w->setAmount($w->getAmount()-$r->getAmount());
-                $w->save();
-                // Reservierung loeschen
-                $r->delete();
-            }
-        }
-        if(!empty($rvs) || !empty($docsdelivery))
             $doc->setType(Document::TYPE_INVOICE);
-        else
-        {
-          echo "<script type='text/javascript' language='javascript'>\n";
-          echo "<!--\n";
-          echo "alert('".$_LANG->get("Es fehlt eine Angebotsbest&auml;tigung f&uuml;r diesen Vorgang.")."')\n";
-          echo "//-->\n";
-          echo "</script>\n";
-        }
-    }
     if($_REQUEST["createDoc"] == "revert")
     	$doc->setType(Document::TYPE_REVERT);
     
@@ -248,7 +53,7 @@ $nachricht = new Nachricht();
 if ($_REQUEST["subexec"] == "send")
 {
 
-    // Nachricht mit werten Füllen
+    // Nachricht mit werten Fï¿½llen
     $nachricht->setFrom($_USER);
     $nachricht->setSubject($_REQUEST["mail_subject"]);
     $nachricht->setText($_REQUEST["mail_body"]);
@@ -301,7 +106,7 @@ if ($_REQUEST["subexec"] == "send")
 <link rel="stylesheet" href="css/documents.css" type="text/css">
 <div class="box1 menuorder">
     <span class="menu_order" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>'">
-    	<?=$_LANG->get('Zurück')?>
+    	<?=$_LANG->get('Zurï¿½ck')?>
     </span>
 </div>
 <div class="box1" style="margin-top:50px;">
@@ -415,7 +220,7 @@ if ($_REQUEST["subexec"] == "send")
 
 
 //---------------------------------------------------------------------------
-// Angebotsbetsätigung
+// Angebotsbetsï¿½tigung
 //---------------------------------------------------------------------------
 $docs = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
 <tr class="<?=getRowColor(0)?>">
@@ -781,7 +586,7 @@ function removeAttach(id)
 				<td id="td_mail_to" name="td_mail_to"><?
 				foreach($nachricht->getTo() as $to)
 				{
-				    // Falls Empfänger Benutzer -> anzeigen
+				    // Falls Empfï¿½nger Benutzer -> anzeigen
 				    if (is_a($to, "User"))
 				    {
 				        $addStr = '<span class="newmailToField" id="touserfield_'.$to->getId().'"><img src="images/icons/user.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
@@ -790,7 +595,7 @@ function removeAttach(id)
 				        echo $addStr;
 				    }
 
-				    // Falls Empfänger Gruppe -> anzeigen
+				    // Falls Empfï¿½nger Gruppe -> anzeigen
 				    if (is_a($to, "Group"))
 				    {
 				        $addStr = '<span class="newmailToField" id="togroupfield_'.$to->getId().'"><img src="images/icons/users.png" />&nbsp;'.$to->getName().'&nbsp;&nbsp;';
@@ -799,7 +604,7 @@ function removeAttach(id)
 				        echo $addStr;
 				    }
 
-				    // Falls Empfänger UserContact -> anzeigen
+				    // Falls Empfï¿½nger UserContact -> anzeigen
 				    if (is_a($to, "UserContact"))
 				    {
 				        $addStr = '<span class="newmailToField" id="tousercontactfield_'.$to->getId().'"><img src="images/icons/card-address.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
@@ -808,7 +613,7 @@ function removeAttach(id)
 				        echo $addStr;
 				    }
 
-				    // Falls Empfänger BusinessContact -> anzeigen
+				    // Falls Empfï¿½nger BusinessContact -> anzeigen
 				    if (is_a($to, "BusinessContact"))
 				    {
 				        $addStr = '<span class="newmailToField" id="tobusinesscontactfield_'.$to->getId().'"><img src="images/icons/building.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
@@ -817,7 +622,7 @@ function removeAttach(id)
 				        echo $addStr;
 				    }
 
-				    // Falls Empfänger BusinessContact -> anzeigen
+				    // Falls Empfï¿½nger BusinessContact -> anzeigen
 				    if (is_a($to, "ContactPerson"))
 				    {
 				        $addStr = '<span class="newmailToField" id="tocontactpersonfield_'.$to->getId().'"><img src="images/icons/user-business.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';

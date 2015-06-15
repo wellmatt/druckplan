@@ -232,15 +232,16 @@ class Attribute{
 		foreach($items as $item){
 			if((int)$item["id"] > 0){
 	            $sql = "UPDATE attributes_items SET
-	                    title = '{$item["title"]}'
+	                    title = '{$item["title"]}', 
+	                    input = {$item["input"]} 
 	                    WHERE id = {$item["id"]}";
 	            
 	            $DB->no_result($sql);
 	        } else {
 	            $sql = "INSERT INTO attributes_items
-	                        (status, title, attribute_id )
+	                        (status, title, attribute_id, input )
 	                    VALUES
-	                        (1, '{$item["title"]}', {$this->id} )";
+	                        (1, '{$item["title"]}', {$this->id}, {$item["input"]} )";
 	            $DB->no_result($sql);
 			}
 		}

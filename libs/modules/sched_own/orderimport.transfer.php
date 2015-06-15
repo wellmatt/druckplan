@@ -9,7 +9,7 @@
 
 $_REQUEST["order_number"] = trim(addslashes($_REQUEST["order_number"]));
 
-// Alten Auftrag löschen?
+// Alten Auftrag lï¿½schen?
 if($_REQUEST["lector_overwrite"] == "new")
 {
     $scheds = Schedule::searchByJobNumber(trim(addslashes($_REQUEST["order_number"])));
@@ -143,6 +143,7 @@ if (count(Schedule::searchByJobNumber(trim(addslashes($_REQUEST["order_number"])
             $sched = new Schedule();
             $sched->setNumber($ord->getNumber());
             $sched->setCustomer($ord->getCustomer());
+            $sched->setCustomer_cp($ord->getCustContactperson());
             $sched->setObject($ord->getTitle());
             $sched->setDeliveryLocation($delivaddr);
             $sched->setDeliveryterms($ord->getDeliveryTerms());
@@ -158,7 +159,7 @@ if (count(Schedule::searchByJobNumber(trim(addslashes($_REQUEST["order_number"])
                 if($calc->getState() > 0)
                 {
                     //-------------------------------------------------------------------
-                    // Teilaufträge anlegen
+                    // Teilauftrï¿½ge anlegen
                     //-------------------------------------------------------------------
                     $schedPart = new SchedulePart();
                     $schedPart->setFinished(0);

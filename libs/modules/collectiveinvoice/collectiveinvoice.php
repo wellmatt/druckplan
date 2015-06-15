@@ -14,7 +14,6 @@ require_once('libs/modules/calculation/order.class.php');
 require_once 'libs/modules/personalization/personalization.order.class.php';
 require_once('collectiveinvoice.class.php');
 require_once('orderposition.class.php');
-require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
 require_once('libs/modules/documents/document.class.php');
 require_once 'libs/modules/tickets/ticket.class.php';
@@ -39,14 +38,6 @@ case 'delete':
 	$del_title = $delete_invoice->getTitle(); 
 	
 	$del_positions = Orderposition::getAllOrderposition($delete_invoice->getId());
-	foreach ($del_positions as $del_position){
-	    if ($del_position->getType() == Orderposition::TYPE_ARTICLE){
-	       // Loeschen jeder Reservierung der momentanen Position
-	       $rvs = Reservation::getAllReservationByOrderposition($del_position->getId());
-	       foreach ($rvs as $r)
-	           $r->delete();
-	    }
-	}
 	
 	$delete_invoice->delete();
 	
@@ -70,32 +61,26 @@ case 'deletepos':
 	$tmp_del_type = $delpos->getType();
 	
 	$savemsg = getSaveMessage($delpos->delete());
-	if ($savemsg && $tmp_del_type == Orderposition::TYPE_ARTICLE){
-	    // Reserverungen einer Position loeschen
-	    $rvs = Reservation::getAllReservationByOrderposition($delpos->getId());
-	    foreach ($rvs as $r)
-	        $r->delete();
-	}
 	
 	require_once('collectiveinvoice.edit.php');
 	break;
 case 'save':
 	//Number berechnen bei neuer Rechnung
-	if($_REQUEST["ciid"] == NULL || $collectinv->getId() == 0 ){
-		$tmp_number = $collectinv->getClient()->createOrderNumber(1);
-	} else {					//wenn Bearbeiten oder Position hinzugef�gt, wieder �ffnen
-		$tmp_number=$_REQUEST["colinv_number"];
-	}
+// 	if($_REQUEST["ciid"] == NULL || $collectinv->getId() == 0 ){
+// 		$tmp_number = $collectinv->getClient()->createOrderNumber(1);
+// 	} else {					//wenn Bearbeiten oder Position hinzugef�gt, wieder �ffnen
+// 		$tmp_number=$_REQUEST["colinv_number"];
+// 	}
 	
 	$tmp_deliv = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["colinv_deliverycosts"])));
-	
+
+	$needs_planning = false;
 	$collectinv->setClient($_USER->getClient());
 	// $collectinv->setStatus((int)$_REQUEST["colinv_status"]);
 	$collectinv->setBusinesscontact(new BusinessContact((int)$_REQUEST["colinv_businesscontact"]));
 	$collectinv->setDeliveryterm(new DeliveryTerms((int)$_REQUEST["colinv_deliveryterm"]));
 	$collectinv->setDeliverycosts($tmp_deliv);
 	$collectinv->setPaymentterm(new PaymentTerms((int)$_REQUEST["colinv_paymentterm"]));
-	$collectinv->setNumber($tmp_number);
 	$collectinv->setTitle(trim(addslashes($_REQUEST["colinv_title"])));
 	$collectinv->setIntent(trim(addslashes($_REQUEST["colinv_intent"])));
 	$collectinv->setComment(trim(addslashes($_REQUEST["colinv_comment"])));
@@ -105,6 +90,7 @@ case 'save':
 	$collectinv->setCustSign(trim(addslashes($_REQUEST["cust_sign"])));
     $collectinv->setInvoiceAddress(new Address((int)$_REQUEST["invoice_address"]));
     $collectinv->setCustContactperson(new ContactPerson((int)$_REQUEST["custContactperson"]));
+    $collectinv->setDeliverydate(strtotime($_REQUEST["colinv_deliverydate"]));
 	
 	$savemsg = getSaveMessage($collectinv->save());
 	
@@ -144,6 +130,11 @@ case 'save':
 			$newpos->setObjectid((int)$_REQUEST["orderpos"][$xi]["obj_id"]); // Artikelnummer
 			$newpos->setTax((int)$_REQUEST["orderpos"][$xi]["tax"]);
 			$newpos->setCollectiveinvoice((int)$collectinv->getId());
+			
+			$tmp_art = new Article($newpos->getObjectid());
+			if ($tmp_art->getIsWorkHourArt())
+			    $needs_planning = true;
+			
 			//AUftragsnummer anpassen (mit Suffix versehen)
 			if ($newpos->getType() == 1){
 				$tmp_order = new Order($newpos->getObjectid());
@@ -156,7 +147,13 @@ case 'save':
 		}
 	}
 	//Positionen der Rechnung speichern
+// 	var_dump($orderpositions);
 	Orderposition::saveMultipleOrderpositions($orderpositions);
+    if ($needs_planning)
+    {
+        $collectinv->setNeeds_planning(1);
+        $collectinv->save();
+    }
 	
 	//echo "<br><br>".$DB->getLastError();
 	

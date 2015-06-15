@@ -9,7 +9,7 @@ require_once 'libs/modules/notifications/notification.class.php';
 global $_USER;
 
 if ($_REQUEST["exec"] == "getNotifications"){
-    $mynotifications = Notification::getMyNotifications();
+    $mynotifications = Notification::getMyNotifications(10);
     // var_dump($mynotifications);
     if (count($mynotifications) > 0){
         $html = "<table border='0' width='100%'>";

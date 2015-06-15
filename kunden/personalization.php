@@ -6,6 +6,7 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 
+$_USER = new User($_BUSINESSCONTACT->getSupervisor()->getId());
 
 // error_reporting(-1); 
 // ini_set('display_errors', 1);
@@ -18,20 +19,11 @@ require_once './libs/modules/personalization/personalization.orderitem.class.php
 
 if ($_REQUEST["exec"] == "delete"){
 	$del_perso_order = new Personalizationorder($_REQUEST["deleteid"]);
-	$tmp_docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER, 
+	$del_docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER, 
 										"requestId" => $del_perso_order->getId(), 
 										 "module" => Document::REQ_MODULE_PERSONALIZATION));
-	$hash = $tmp_docs[0]->getHash();
-	$tmp_del = $del_perso_order->delete();
-	// Wenn Datenbank angepasst ist, muss die Datei auch geloescht werden
-	if($tmp_del){
-        $tmp_client = Client::getAllClients(Client::ORDER_ID, true);
-        $tmp_client = $tmp_client[0];
-		$tmp_id = $tmp_client->getId();
-		$tmp_filename1 = Personalizationorder::FILE_PATH.$tmp_id.".per_".$hash."_e.pdf";
-		$tmp_filename2 = Personalizationorder::FILE_PATH.$tmp_id.".per_".$hash."_p.pdf";
-		unlink($tmp_filename1);
-		unlink($tmp_filename2);
+    foreach ($del_docs as $del_doc){
+		$del_doc->delete();
 	}
 } 
 
@@ -92,22 +84,10 @@ function savePersonalization() {
     $doc->setType(Document::TYPE_PERSONALIZATION_ORDER);
     $doc->setReverse(0);
     $hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
-    $doc->createDoc(Document::VERSION_PRINT, $hash);
+    $doc->setReverse(0);
+    $doc->createDoc(Document::VERSION_PRINT, $hash, false);
     $doc->setName("PERSO_ORDER");
     $doc->save();
-
-    if ($tmp_perso->getType() == Personalization::TYPE_HAS_REVERT){
-        // Dokument fuer die Rueckseite erstellen
-        $doc = new Document();
-        $doc->setRequestId($perso_order->getId());
-        $doc->setRequestModule(Document::REQ_MODULE_PERSONALIZATION);
-        $doc->setType(Document::TYPE_PERSONALIZATION_ORDER);
-        $doc->setReverse(1);
-        $hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
-        $doc->createDoc(Document::VERSION_PRINT, $hash);
-        $doc->setName("PERSO_ORDER");
-        $doc->save();
-    }
 
     $_REQUEST["persoid"] = 0; // Damit die Bestellung aufgerufen wird und nicht die Personalisierung
     $_REQUEST["persoorderid"] = $perso_order->getId(); // Damit die korrekte Personalisierungsbestellung aufgerufen wird
@@ -151,6 +131,7 @@ if ($_REQUEST["exec"] == "edit" && $_REQUEST["subexec"] == "addToSchoppingbasket
 		$attributes["amount"] 	= (int)$_REQUEST["persoorder_amount"];
 		$attributes["price"]	= $tmp_price;
 		$attributes["type"]		= Shoppingbasketitem::TYPE_PERSONALIZATION ;
+		$attributes["entryid"]	= count($shopping_basket->getEntrys())+1;
 		$item = new Shoppingbasketitem($attributes);
 		
 		//schauen, ob Artikel schon im Warenkorb ist
@@ -247,46 +228,19 @@ if ((int)$_REQUEST["persoid"] > 0){
 				<table>
 				<tr>
 					<td align="center">
-						<?
-						echo "<b>".$_LANG->get('Vorderseite')."</b> <br>"; 
-						// PDF ausgeben
-						if (count($docs) && $docs != false){
-	                        $tmp_client = Client::getAllClients(Client::ORDER_ID, true);
-	                        $tmp_client = $tmp_client[0];
-							$tmp_id = $tmp_client->getId();
-							if ($docs[0]->getReverse() == 0) {
-								$hash = $docs[0]->getHash();
-								if (isset($docs[1])){
-									$hash2 = $docs[1]->getHash();
-								} else {
-									$hash2 = "";
-								}	
-							} else {
-								$hash = $docs[1]->getHash();
-								$hash2 = $docs[0]->getHash();
-							}
-							
-							//if ($perso->getDirection() == 0){
-							if ($perso->getFormatwidth() < $perso->getFormatheight()){
-								$obj_width = 350;
-								$obj_height = 400;
-							} else {
-								$obj_width = 400;
-								$obj_height = 350;
-							}
-							?>			 
-							<object data="../docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf" type="application/pdf" 
-									width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
-						<? } ?>
+    					<?
+        				// PDF ausgeben
+        				if (count($docs) && $docs != false){
+        					$tmp_id =$_USER->getClient()->getId();
+        					$hash = $docs[0]->getHash();
+        					
+        					$obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
+        					$obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
+        					?>			 
+        					<object data="../docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf" type="application/pdf" 
+        							width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
+        				<? } ?>
 					</td>
-					<?if($perso->getType() == 1){ // Perso hat eine Rueckseite ?>
-					<td width="5px;">&ensp;</td>
-					<td align="center">
-						<b><?=$_LANG->get('R&uuml;ckseite');?></b><br>
-						<object data="../docs/personalization/<?=$tmp_id?>.per_<?=$hash2?>_e.pdf" type="application/pdf" 
-								width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
-					</td>
-					<?}?>
 				</tr>
 				</table>
 			</div>
@@ -380,16 +334,16 @@ if ((int)$_REQUEST["persoid"] > 0){
 												<? if ($perso_order->getStatus() > 1) echo "disabled "; ?>
 												<? if ($persoitem->getReadOnly() == 1) echo "readonly ";
 												if ($tmp_label == "spacer") { 
-													echo 'value ="' . $tmp_label . '" '; 
+													echo 'value ="' . htmlspecialchars($tmp_label) . '" '; 
 												} else { 
 													if($page_type == "perso"){
 														if ($item->getPreDefined() == 1) {
-															echo 'value ="' . $tmp_label . '" '; 
+															echo 'value ="' . htmlspecialchars($tmp_label) . '" '; 
 														} else {
-															echo 'value ="' . $tmp_titel . '" '; 
+															echo 'value ="' . htmlspecialchars($tmp_titel) . '" '; 
 														}
 													} else {
-														echo 'value ="' . $tmp_titel . '" '; 
+														echo 'value ="' . htmlspecialchars($tmp_titel) . '" '; 
 													}
 												} 
 												?> 
@@ -752,7 +706,7 @@ if ((int)$_REQUEST["persoid"] > 0){
 			        <td class="filerow_header" align="center"><?=$_LANG->get('Erstelldatum');?></td>
 			        <td class="filerow_header" align="center"><?=$_LANG->get('Bestelldatum');?></td>
 			        <td class="filerow_header" align="right"><?=$_LANG->get('Menge');?></td>
-			        <td class="filerow_header" align="center"><?=$_LANG->get('Status');?></td>
+			        <?php /*<td class="filerow_header" align="center"><?=$_LANG->get('Status');?></td>*/?>
 			        <td class="filerow_header"><?=$_LANG->get('Optionen');?></td>
 			    </tr>
 			    <?foreach ($all_persoorders AS $perso_order){ 
@@ -767,14 +721,16 @@ if ((int)$_REQUEST["persoid"] > 0){
 			        	<?if ($perso_order->getOrderdate() > 0) echo date("d.m.Y",$perso_order->getOrderdate()) // - H:i?>
 			        </td>
 			        <td class="filerow" align="right"><?=$perso_order->getAmount()?> Stk.</td>
+			        <?php /*
 			        <td class="filerow" align="center">
 			        	<img src="../images/status/<?=$perso_order->getStatusImage()?>" 
 			        		 title="<?=$perso_order->getStatusDescription()?>" 
 			        		 alt="<?=$perso_order->getStatusDescription()?>">
 			        </td>
+			        */?>
 			        <td class="filerow">
 			        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&persoorderid=<?=$perso_order->getId()?>&exec=edit" class="button">Ansehen</a>
-			        <? 	if($perso_order->getStatus() == 1){ ?>
+			        <? 	if($perso_order->getStatus() >= 1){ ?>
 			        	&ensp;
 			        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&deleteid=<?=$perso_order->getId()?>&exec=delete" 
 			        		class="button" onclick="return confirm('<?=$_LANG->get('Personalisierung wirklich l&ouml;schen?') ?>')"

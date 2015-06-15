@@ -6,7 +6,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
-require_once('libs/modules/organizer/nachricht.class.php');
+// require_once('libs/modules/organizer/nachricht.class.php');
 require_once ('libs/modules/tickets/ticket.class.php');
 require_once ('libs/modules/commissioncontact/commissioncontact.class.php');
 
@@ -128,6 +128,7 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setMatchcode($_REQUEST["matchcode"]);
     $businessContact->setSupervisor(new User((int)$_REQUEST["supervisor"]));
     $businessContact->setTourmarker($_REQUEST["tourmarker"]);
+    $businessContact->setNotes($_REQUEST["notes"]);
    
     $savemsg = getSaveMessage($businessContact->save());
 	if($DB->getLastError()!=NULL && $DB->getLastError()!=""){
@@ -178,12 +179,16 @@ if ($_REQUEST["subexec"] == "save")
 		$allitems = $attribute->getItems();
 		foreach ($allitems AS $item){
 			if((int)$_REQUEST["attribute_item_check_{$attribute->getId()}_{$item["id"]}"] == 1){
-				$tmp_attribute["id"] = 0;
-				$tmp_attribute["value"] = 1;
-				$tmp_attribute["attribute_id"] = $attribute->getId();
-				$tmp_attribute["item_id"] = $item["id"];
-				$save_attributes[] = $tmp_attribute;
-				$i++;
+			    if($item["input"] == 1 && $_REQUEST["attribute_item_input_{$attribute->getId()}_{$item["id"]}"] != "" || $item["input"] == 0)
+			    {
+    				$tmp_attribute["id"] = 0;
+    				$tmp_attribute["value"] = 1;
+    				$tmp_attribute["attribute_id"] = $attribute->getId();
+    				$tmp_attribute["item_id"] = $item["id"];
+    				$tmp_attribute["inputvalue"] = $_REQUEST["attribute_item_input_{$attribute->getId()}_{$item["id"]}"];
+    				$save_attributes[] = $tmp_attribute;
+    				$i++;
+			    }
 			}
 		}
 	}
@@ -191,35 +196,16 @@ if ($_REQUEST["subexec"] == "save")
 }
 
 if($businessContact->getId()){
-	$contactPersons = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
+	$contactPersons = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME, "", ContactPerson::LOADER_BASIC);
 	$deliveryAddresses = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_DELIV);
 	$invoiceAddresses = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
-}
-
-if($send_mail){
-	if($_REQUEST["email"] != "" && $_REQUEST["email"] != NULL){
-		$text = 'Sehr geehrte Damen und Herren, <br><br> ';
-		$text .= 'mit diesen Logindaten melden Sie sich im Kunden-Portal an:<br>';
-		$text .= 'Benutzer:'.$_REQUEST["shop_login"].'<br>';
-		$text .= 'Passwort:'.$_REQUEST["shop_pass"].'<br><br>';
-		$text .= 'Mit freundlichem Gru&szlig; aus Steeden...';
-		$to = Array();
-		$to[] = $businessContact;
-	
-		$nachricht = new Nachricht();
-		$nachricht->setFrom($_USER);
-		$nachricht->setTo($to);
-		$nachricht->setSubject("Kundenportal-Login");
-		$nachricht->setText($text);
-		$ret = $nachricht->send();
-	}
+    $ticketcount = Ticket::getAllTicketsCount(" WHERE customer = {$businessContact->getId()} AND state > 1 ");
 }
 
 $show_tab=(int)$_REQUEST["tabshow"];
 $languages = Translator::getAllLangs(Translator::ORDER_NAME);
 $countries = Country::getAllCountries();
-$all_active_attributes = $businessContact->getActiveAttributeItems();
-
+$all_active_attributes = $businessContact->getActiveAttributeItemsInput();
 
 
 /**************************************************************************
@@ -237,16 +223,6 @@ $all_active_attributes = $businessContact->getActiveAttributeItems();
 
 <script language="javascript">
 function checkpass(obj){
-	
-	// war mal angedacht als Sicherung fuer die Eingabe von 2 Passworten zum Vergleich auf Gleichheit
-	
-	// var shop_pass1 = document.getElementById('shop_pass1').value;
-	// var shop_pass2 = document.getElementById('shop_pass2').value;
-	// if (shop_pass1 != shop_pass2){
-	// 	alert('<? // =$_LANG->get('Passw&ouml;rter stimmen nicht &uuml;berein')?>');
-	// 	document.getElementById('shop_pass1').focus();
-	// 	return false;
-	// }
 	return checkform(obj);
 }
 
@@ -391,13 +367,13 @@ function commi_checkbox(){
 				<li><a href="#tabs-4"><? echo $_LANG->get('Kundenportal');?></a></li>
 			<?}?>
 			<?php */?>
-			<?php 
+			<?php  /*
 			$security_ticket_cat = new TicketCategory(1);
 			if ($security_ticket_cat->cansee()){
 			?>
 			<li><a href="#tabs-6"><? echo $security_ticket_cat->getTitle();?></a></li>
-			<?php }?>
-			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?></a></li>
+			<?php } */?>
+			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.$ticketcount.'</span>';?></a></li>
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
 			<li><a href="#tabs-10"><? echo $_LANG->get('Rechnungseingang');?></a></li>
@@ -407,6 +383,9 @@ function commi_checkbox(){
 		<? // ---------------------------- Uebesicht ueber den Geschaeftskontakt --------------------------?>
 		
 	<div id="tabs-0">
+	<?php if ($businessContact->getId()>0){?>
+    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><img src="images/icons/printer.png"/></a></div>
+    <?php }?>
 		<br>
 		<table width="100%">
 		<tr>
@@ -484,15 +463,9 @@ function commi_checkbox(){
 							<?	if ($businessContact->getSupervisor()->getId()>0){
 									echo $_LANG->get('Betreuer').": ".$businessContact->getSupervisor()->getNameAsLine(). " <br/>";
 								} ?>
-							<?php 
-// 							    if($businessContact->isExistingCustomer())
-// 							    {
-// 							        echo $_LANG->get('Bestandskunde'). " <br/>";
-// 							    } else if($businessContact->isPotentialCustomer())
-// 							    {
-// 							        echo $_LANG->get('Interessent'). " <br/>";
-// 							    }
-							?>
+							<?	if ($businessContact->getTourmarker()){
+									echo $_LANG->get('Tourenmerkmal').": ".$businessContact->getTourmarker(). " <br/>";
+								} ?>
 							</td>
 							<td class="content_row_clear" valign="top">
 								<?=$_LANG->get('Tickets:');?>: 
@@ -501,6 +474,8 @@ function commi_checkbox(){
 								<?if ($businessContact->getPersonalizationenabled() == 1) echo $_LANG->get('AN'); else echo $_LANG->get('AUS'); ?> <br/>
 								<?=$_LANG->get('Artikel:');?>: 
 								<?if ($businessContact->getArticleenabled() == 1) echo $_LANG->get('AN'); else echo $_LANG->get('AUS'); ?> <br/>
+								</br>
+								<?if ($businessContact->getNotes()!="") echo "Bemerkung:</br>".$businessContact->getNotes();?></br>
 							</td>
 						</tr>
 						<tr>
@@ -510,8 +485,12 @@ function commi_checkbox(){
 									$allitems = $attribute->getItems();
 									$j=0;
 									foreach ($allitems AS $item){
-										if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"] == 1){
-											$tmp_output .= $item["title"].", ";
+										if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1){
+											$tmp_output .= $item["title"];
+											if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"] != ""){
+											    $tmp_output .= ": '".$all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"]."'";
+											}
+											$tmp_output .= ", ";
 											$j++;
 										}
 									}
@@ -541,13 +520,17 @@ function commi_checkbox(){
 						</td>
 						<td class="content_row_clear">
 							<?	$contact_attributes = Attribute::getAllAttributesForContactperson();
-								$active_cust_attributes= $cp->getActiveAttributeItems();
+								$active_cust_attributes= $cp->getActiveAttributeItemsInput();
 								foreach ($contact_attributes AS $attribute){
 									$allitems = $attribute->getItems();
 									$j=0; $tmp_output = "";
 									foreach ($allitems AS $item){
-										if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"] == 1){
-											$tmp_output .= $item["title"].", ";
+										if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1){
+											$tmp_output .= $item["title"];
+											if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"] != ""){
+											    $tmp_output .= ": '".$active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"]."'";
+											}
+											$tmp_output .= ", ";
 											$j++;
 										}
 									}
@@ -713,7 +696,13 @@ function commi_checkbox(){
 						onfocus="markfield(this,0)" onblur="markfield(this,1)">
 					</td>
 				</tr>
-				<tr><td>&emsp;</td></tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Bemerkung');?>
+					</td>
+					<td class="content_row_clear"><textarea name="notes" rows="2" 
+					style="width: 250px" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$businessContact->getNotes()?></textarea> 
+					</td>
+				</tr>
 				<tr><td>&emsp;</td></tr>
 			</table>
 		</td>
@@ -857,7 +846,7 @@ function commi_checkbox(){
 					<td>
 						<select name="commissionpartner" style="display: <? if (!$businessContact->getCommissionpartner()>0) echo 'none';?>" class="text" id="commissionpartner">
 							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-							<? $commissioncontacts = CommissionContact::getAllCommissionContacts();
+							<? $commissioncontacts = CommissionContact::getAllCommissionContacts(CommissionContact::ORDER_ID, CommissionContact::FILTER_ALL, CommissionContact::LOADER_BASIC);
 							foreach($commissioncontacts as $comcon)
 							{ 
 								echo '<option value="'.$comcon->getId().'" ';
@@ -892,199 +881,9 @@ function commi_checkbox(){
 					    		value="<?=$businessContact->getTourmarker()?>">
 					</td>
 				</tr>
-				<? /********** ------------------ Alternativ-Adresse ------------------------------------------ ?>
-				<tr>
-					<td class="content_row_header" colspan="2"><?=$_LANG->get('Alternativadresse');?></td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-					<td class="content_row_clear">
-						<input name="alt_name1" style="width: 250px" value="<?=$businessContact->getAlt_name1()?>"
-								class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-					<td class="content_row_clear"><input name="alt_name2"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_name2()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Adressfeld 1');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_address1"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_address1()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Adressfeld 2');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_address2"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_address2()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Postleitzahl');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_zip"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_zip()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Stadt');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_city"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_city()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-					<td class="content_row_clear"><select name="alt_country" style="width: 250px"
-						class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<?
-							foreach($countries as $c)
-							{?>
-							<option value="<?=$c->getId()?>"
-							<?if ($businessContact->getAlt_country()->getId() == $c->getId()) echo "selected";?>>
-								<?=$c->getName()?>
-							</option>
-							<?}
-		
-							?>
-					</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_phone"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_phone()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Fax');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_fax"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_fax()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('E-Mail');?>
-					</td>
-					<td class="content_row_clear"><input name="alt_email"
-						style="width: 250px" class="text" value="<?=$businessContact->getAlt_email()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr> <? ******/?>
 			</table>
 		</td>
 		<td>&emsp;</td>
-		<? /******* ?>
-		<td valign="top" width="400px"> <? // ------------------ Privat-Adresse ---------------------------------------------- ?>
-			<table width="100%">
-				<colgroup>
-					<col width="170">
-					<col>
-				</colgroup>
-				<tr>
-					<td class="content_row_header" colspan="2"><?=$_LANG->get('Privatadresse');?></td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-					<td class="content_row_clear"><input name="priv_name1" style="width: 250px"
-						class="text" value="<?=$businessContact->getPriv_name1()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-					<td class="content_row_clear"><input name="priv_name2"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_name2()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Adressfeld 1');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_address1"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_address1()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Adressfeld 2');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_address2"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_address2()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Postleitzahl');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_zip"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_zip()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Stadt');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_city"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_city()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-					<td class="content_row_clear"><select name="priv_country" style="width: 250px"
-						class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<?
-							foreach($countries as $c)
-							{?>
-							<option value="<?=$c->getId()?>"
-							<?if ($businessContact->getPriv_country()->getId() == $c->getId()) echo "selected";?>>
-								<?=$c->getName()?>
-							</option>
-							<?}
-		
-							?>
-					</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_phone"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_phone()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Fax');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_fax"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_fax()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('E-Mail');?>
-					</td>
-					<td class="content_row_clear"><input name="priv_email"
-						style="width: 250px" class="text" value="<?=$businessContact->getPriv_email()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-			</table>
-		</td> **/?>
 		</tr>
 	</table>
 	</div>
@@ -1200,27 +999,31 @@ function commi_checkbox(){
 						><img src="images/icons/plus.png"> <?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></a>
 				</td>
 			</tr>
-			<? $contactPerson = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
-			foreach($contactPerson as $cp){
+			<? //$contactPerson = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
+			foreach($contactPersons as $cp){
 			?>
 			<tr <?if($cp->isMainContact())echo 'style="font-weight:bold;"'?>>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
 					valign="top">
 					<?php echo $cp->getNameAsLine(); ?> &ensp; </br>
-					<? if ($cp->getBirthDate() > 0 ) echo '<img src="images/icons/cake.png"/>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
+					<? if ($cp->getBirthDate()) echo '<img src="images/icons/cake.png"/>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
 					valign="top">
 					<?
 					$contact_attributes = Attribute::getAllAttributesForContactperson();
-					$active_cust_attributes= $cp->getActiveAttributeItems();
+					$active_cust_attributes= $cp->getActiveAttributeItemsInput();
 					foreach ($contact_attributes AS $attribute){
 						$tmp_output = "<i>".$attribute->getTitle().":</i> ";
 						$allitems = $attribute->getItems();
 						$j=0;
 						foreach ($allitems AS $item){
-							if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"] == 1){
-								$tmp_output .= $item["title"].", ";
+							if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1){
+								$tmp_output .= $item["title"];
+								if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"] != ""){
+								    $tmp_output .= ": '".$active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"]."'";
+								}
+								$tmp_output .= ", ";
 								$j++;
 							}
 						}
@@ -1250,105 +1053,6 @@ function commi_checkbox(){
 	<p></p>
 	
 	</div>
-	<? // ------------------------------------- Kundenportal ----------------------------------------------?>
-	<?php /* ?>
-	<?if ($_CONFIG->shopActivation){?>
-	
-        <script language="javascript">
-            function addMailRow()
-            {
-            	var obj = document.getElementById('notify_mail_adr');
-            	var insert = '<input name="notifymailadr[]" type="mail" value="" onfocus="markfield(this,0)" onblur="markfield(this,1)"></br>';
-            	obj.insertAdjacentHTML("BeforeEnd", insert);
-            }
-        </script>
-	
-	
-		<div id="tabs-4"><p>
-		
-		<table width="100%">
-			<tr>
-				<td width="200" class="content_header">
-					<img src="<?$_MENU->getIcon($_REQUEST['page'])?>"> 
-					<?=$_LANG->get('Kunden-Login &auml;ndern');?>
-				</td>
-				<td></td>
-				<td width="200" class="content_header" align="right"><?=$savemsg?></td>
-			</tr>
-		</table>
-		
-		<?if($businessContact->getId()){?>
-		  <? if(Address::getDefaultAddress($businessContact,Address::FILTER_INVC) && Address::getDefaultAddress($businessContact,Address::FILTER_DELIV)){?>
-			<table width="100%">
-				<colgroup>
-					<col width="180">
-					<col>
-				</colgroup>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Benutzername')?> *</td>
-					<td class="content_row_clear">
-						<input 	name="shop_login" style="width: 300px"
-								class="text" value="<?=$businessContact->getShoplogin()?>"
-								onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Passwort')?></td>
-					<td class="content_row_clear">
-						<input 	name="shop_pass" id="shop_pass" style="width: 300px" class="text" 
-								value="<?=$businessContact->getShoppass()?>" 
-								type="text"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('G&uuml;ltigkeit')?></td>
-					<td class="content_row_clear">
-						<input type="text" style="width:80px" id="login_expire" name="login_expire"
-								class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-								onfocus="markfield(this,0)" onblur="markfield(this,1)"
-								value="<?if($businessContact->getLoginexpire() != 0){ echo date('d.m.Y', $businessContact->getLoginexpire());}?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Ticket-Freigabe');?></td>
-					<td class="content_row_clear">
-						<input name="ticket_enabled" type="checkbox" value="1" <? if ($businessContact->getTicketenabled()) echo "checked";?>
-							   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Personalisierung-Freigabe');?></td>
-					<td class="content_row_clear">
-						<input name="personalization_enabled" type="checkbox" value="1" <? if ($businessContact->getPersonalizationenabled()) echo "checked";?>
-							   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Artikel-Freigabe');?></td>
-					<td class="content_row_clear">
-						<input name="article_enabled" type="checkbox" value="1" <? if ($businessContact->getArticleenabled()) echo "checked";?>
-							   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Benachrichtigungs-Adr.');?></td>
-					<td class="content_row_clear" id="notify_mail_adr"><img src="images/icons/plus.png" class="pointer icon-link" onclick="addMailRow()"></br>
-						<? foreach ($businessContact->getNotifyMailAdr() as $notifymailadr){?>
-						    <input name="notifymailadr[]" type="mail" value="<?=$notifymailadr?>" onfocus="markfield(this,0)" onblur="markfield(this,1)"></br>
-						<? }?>
-					</td>
-				</tr>
-			</table>
-			<?}else{?>
-			</br>
-			<span class="error">Sie m&uuml;ssen zuerst eine Standard Liefer- und Rechnungsadresse anlegen</br>bevor Sie dem Kunden Zugriff auf das Online Portal geben k&ouml;nnen</span>
-			<?}?>
-		<?}?>
-		
-		</div>
-	<?}?>
-	<?php */?>
 	<? // ------------------------------------- Merkmale ----------------------------------------------?>
 		<div id="tabs-5">
 			<table width="100%">
@@ -1367,110 +1071,6 @@ function commi_checkbox(){
 						<col width="180">
 						<col>
 					</colgroup>
-					<!-- tr>
-						<td class="content_row_header"><?=$_LANG->get('Typen')?></td>
-						<td class="content_row_clear">
-							<select name="cust_type" style="width: 200px" class="text" 
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<option value="0" >&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-									<option value="1" <?if($businessContact->getType()==1) echo "selected";?> ><?=$_LANG->get('diverse Adresse');?></option>
-									<option value="2" <?if($businessContact->getType()==2) echo "selected";?> ><?=$_LANG->get('Intressenten');?></option>
-									<option value="3" <?if($businessContact->getType()==3) echo "selected";?> ><?=$_LANG->get('Kunde');?></option>
-									<option value="4" <?if($businessContact->getType()==4) echo "selected";?> ><?=$_LANG->get('Lieferant');?></option>
-									<option value="5" <?if($businessContact->getType()==5) echo "selected";?> ><?=$_LANG->get('Partner');?></option>
-									<option value="6" <?if($businessContact->getType()==6) echo "selected";?> ><?=$_LANG->get('Projektpartner');?></option>
-									<option value="7" <?if($businessContact->getType()==7) echo "selected";?> ><?=$_LANG->get('Referenz');?></option>
-									<option value="8" <?if($businessContact->getType()==8) echo "selected";?> ><?=$_LANG->get('Wettbewerber');?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Branche')?></td>
-						<td class="content_row_clear">
-							<select name="cust_branche" style="width: 200px" class="text" 
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<option value="0" >&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-									<option value="1" <?if($businessContact->getBranche()==1) echo "selected";?> ><?=$_LANG->get('Automobil');?></option>
-									<option value="2" <?if($businessContact->getBranche()==2) echo "selected";?> ><?=$_LANG->get('Buchbindereien');?></option>
-									<option value="3" <?if($businessContact->getBranche()==3) echo "selected";?> ><?=$_LANG->get('Dienstleistungen');?></option>
-									<option value="4" <?if($businessContact->getBranche()==4) echo "selected";?> ><?=$_LANG->get('Digital');?></option>
-									<option value="5" <?if($businessContact->getBranche()==5) echo "selected";?> ><?=$_LANG->get('Druckereien');?></option>
-									<option value="6" <?if($businessContact->getBranche()==6) echo "selected";?> ><?=$_LANG->get('Einzelhandel');?></option>
-									<option value="7" <?if($businessContact->getBranche()==7) echo "selected";?> ><?=$_LANG->get('Energie');?></option>
-									<option value="8" <?if($businessContact->getBranche()==8) echo "selected";?> ><?=$_LANG->get('Etiketten');?></option>
-									<option value="9" <?if($businessContact->getBranche()==9) echo "selected";?> ><?=$_LANG->get('Financial Service');?></option>
-									<option value="10" <?if($businessContact->getBranche()==10) echo "selected";?> ><?=$_LANG->get('Gastronomie');?></option>
-									<option value="11" <?if($businessContact->getBranche()==11) echo "selected";?> ><?=$_LANG->get('Handel');?></option>
-									<option value="12" <?if($businessContact->getBranche()==12) echo "selected";?> ><?=$_LANG->get('Handwerk');?></option>
-									<option value="13" <?if($businessContact->getBranche()==13) echo "selected";?> ><?=$_LANG->get('Industrie');?></option>
-									<option value="14" <?if($businessContact->getBranche()==14) echo "selected";?> ><?=$_LANG->get('Lettershop');?></option>
-									<option value="15" <?if($businessContact->getBranche()==15) echo "selected";?> ><?=$_LANG->get('Logistik');?></option>
-									<option value="16" <?if($businessContact->getBranche()==16) echo "selected";?> ><?=$_LANG->get('Non-Profit');?></option>
-									<option value="17" <?if($businessContact->getBranche()==17) echo "selected";?> ><?=$_LANG->get('Papier');?></option>
-									<option value="18" <?if($businessContact->getBranche()==18) echo "selected";?> ><?=$_LANG->get('Privatkunden');?></option>
-									<option value="19" <?if($businessContact->getBranche()==19) echo "selected";?> ><?=$_LANG->get('Rechtsanw&auml;lte');?></option>
-									<option value="20" <?if($businessContact->getBranche()==20) echo "selected";?> ><?=$_LANG->get('Reise + Transport');?></option>
-									<option value="21" <?if($businessContact->getBranche()==21) echo "selected";?> ><?=$_LANG->get('Software');?></option>
-									<option value="22" <?if($businessContact->getBranche()==22) echo "selected";?> ><?=$_LANG->get('Telekommunikation');?></option>
-									<option value="23" <?if($businessContact->getBranche()==23) echo "selected";?> ><?=$_LANG->get('Transport');?></option>
-									<option value="24" <?if($businessContact->getBranche()==24) echo "selected";?> ><?=$_LANG->get('Trauer');?></option>
-									<option value="25" <?if($businessContact->getBranche()==25) echo "selected";?> ><?=$_LANG->get('Verband');?></option>
-									<option value="26" <?if($businessContact->getBranche()==26) echo "selected";?> ><?=$_LANG->get('Veredler');?></option>
-									<option value="27" <?if($businessContact->getBranche()==27) echo "selected";?> ><?=$_LANG->get('Vereine');?></option>
-									<option value="28" <?if($businessContact->getBranche()==28) echo "selected";?> ><?=$_LANG->get('Verlag');?></option>
-									<option value="29" <?if($businessContact->getBranche()==29) echo "selected";?> ><?=$_LANG->get('Versicherung');?></option>
-									<option value="30" <?if($businessContact->getBranche()==30) echo "selected";?> ><?=$_LANG->get('Werbemittelhersteller');?></option>
-									<option value="31" <?if($businessContact->getBranche()==31) echo "selected";?> ><?=$_LANG->get('Werbung/Agentur');?></option>
-									<option value="32" <?if($businessContact->getBranche()==32) echo "selected";?> ><?=$_LANG->get('Zubeh&ouml;r');?></option>
-									<option value="33" <?if($businessContact->getBranche()==33) echo "selected";?> ><?=$_LANG->get('&Auml;rzte/Gesundheit');?></option>
-									<option value="34" <?if($businessContact->getBranche()==34) echo "selected";?> ><?=$_LANG->get('&Ouml;ffentliche Einrichtungen');?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Produkte')?></td>
-						<td class="content_row_clear">
-							<select name="cust_produkte" style="width: 200px" class="text" 
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<option value="0" >&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-									<option value="1" <?if($businessContact->getProdukte()==1) echo "selected";?> ><?=$_LANG->get('BB');?></option>
-									<option value="2" <?if($businessContact->getProdukte()==2) echo "selected";?> ><?=$_LANG->get('Blocks-S&auml;tze');?></option>
-									<option value="3" <?if($businessContact->getProdukte()==3) echo "selected";?> ><?=$_LANG->get('Cou-H&uuml;-Kuv');?></option>
-									<option value="4" <?if($businessContact->getProdukte()==4) echo "selected";?> ><?=$_LANG->get('Fly-Kar-PL');?></option>
-									<option value="5" <?if($businessContact->getProdukte()==5) echo "selected";?> ><?=$_LANG->get('Kalender');?></option>
-									<option value="6" <?if($businessContact->getProdukte()==6) echo "selected";?> ><?=$_LANG->get('Mailings');?></option>
-									<option value="7" <?if($businessContact->getProdukte()==7) echo "selected";?> ><?=$_LANG->get('MedFlat');?></option>
-									<option value="8" <?if($businessContact->getProdukte()==8) echo "selected";?> ><?=$_LANG->get('POS');?></option>
-									<option value="9" <?if($businessContact->getProdukte()==9) echo "selected";?> ><?=$_LANG->get('Pros-Map');?></option>
-									<option value="10" <?if($businessContact->getProdukte()==10) echo "selected";?> ><?=$_LANG->get('Verp-Aufk');?></option>
-									<option value="11" <?if($businessContact->getProdukte()==11) echo "selected";?> ><?=$_LANG->get('Visi');?></option>
-									<option value="11" <?if($businessContact->getProdukte()==11) echo "selected";?> ><?=$_LANG->get('Website');?></option>
-									<option value="11" <?if($businessContact->getProdukte()==11) echo "selected";?> ><?=$_LANG->get('WtoP');?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Bedarf');?></td>
-						<td class="content_row_clear">
-							<select name="cust_bedarf" style="width: 200px" class="text" 
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<option value="0" >&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-									<option value="1" <?if($businessContact->getBedarf()==1) echo "selected";?> ><?=$_LANG->get('BB');?></option>
-									<option value="2" <?if($businessContact->getBedarf()==2) echo "selected";?> ><?=$_LANG->get('Blocks-S&auml;tze');?></option>
-									<option value="3" <?if($businessContact->getBedarf()==3) echo "selected";?> ><?=$_LANG->get('Cou-H&uuml;-Kuv');?></option>
-									<option value="4" <?if($businessContact->getBedarf()==4) echo "selected";?> ><?=$_LANG->get('Fly-Kar-PL');?></option>
-									<option value="5" <?if($businessContact->getBedarf()==5) echo "selected";?> ><?=$_LANG->get('Kalender');?></option>
-									<option value="6" <?if($businessContact->getBedarf()==6) echo "selected";?> ><?=$_LANG->get('Mailings');?></option>
-									<option value="7" <?if($businessContact->getBedarf()==7) echo "selected";?> ><?=$_LANG->get('MedFlat');?></option>
-									<option value="8" <?if($businessContact->getBedarf()==8) echo "selected";?> ><?=$_LANG->get('POS');?></option>
-									<option value="9" <?if($businessContact->getBedarf()==9) echo "selected";?> ><?=$_LANG->get('Pros-Map');?></option>
-									<option value="10" <?if($businessContact->getBedarf()==10) echo "selected";?> ><?=$_LANG->get('Verp-Aufk');?></option>
-									<option value="11" <?if($businessContact->getBedarf()==11) echo "selected";?> ><?=$_LANG->get('Visi');?></option>
-									<option value="11" <?if($businessContact->getBedarf()==11) echo "selected";?> ><?=$_LANG->get('Website');?></option>
-									<option value="11" <?if($businessContact->getBedarf()==11) echo "selected";?> ><?=$_LANG->get('WtoP');?></option>
-							</select>
-						</td>
-					</tr -->
 					
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
@@ -1514,9 +1114,17 @@ function commi_checkbox(){
 										echo '<td width="200px">';
 										echo '<input name="attribute_item_check_'.$attribute->getId().'_'.$item["id"].'" ';
 										echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
-												if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"] == 1) echo "checked";
+												if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
 										echo ">";
-										echo $item["title"]."</td>";
+										echo $item["title"];
+										if ($item["input"] == 1)
+										{
+										    echo ' <input name="attribute_item_input_'.$attribute->getId().'_'.$item["id"].'" ';
+										    echo ' value="';
+										    echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
+										    echo '" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+										}
+										echo "</td>";
 										if ($x%5 == 4) echo "</tr>";
 								 		$x++;
 									}?>
@@ -1529,7 +1137,7 @@ function commi_checkbox(){
 		</div>
 	
 		<? // ------------------------------------- verbundene Tickets (Notizen) ----------------------------------------------?>
-		
+		<?php /* ?>
 		<div id="tabs-6">
 		<?if($businessContact->getId() && $security_ticket_cat->cansee()){?>
 			
@@ -1540,7 +1148,7 @@ function commi_checkbox(){
 				require_once 'libs/modules/tickets/ticket.notesfor.php';?>
 		<? } ?>
 		</div>
-
+        <?php */ ?>
 		<? // ------------------------------------- verbundene Tickets ----------------------------------------------?>
 		
 		<div id="tabs-7">

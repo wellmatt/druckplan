@@ -7,8 +7,8 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 require_once 'libs/modules/article/article.class.php';
-include 'comment.article.class.php';
-include 'libs/modules/attachment/attachment.class.php';
+require_once 'comment.article.class.php';
+require_once 'libs/modules/attachment/attachment.class.php';
 require_once 'libs/modules/businesscontact/contactperson.class.php';
 
 class Comment {
@@ -126,6 +126,23 @@ class Comment {
             } else {
                 return false;
             }
+        }
+    }
+    
+    public static function showComment($id)
+    {
+        $comment = new Comment($id);
+        $classname = $comment->getModule();
+        
+        switch ($classname)
+        {
+            case "Ticket":
+                return 'libs/modules/tickets/ticket.php&exec=edit&tktid='.$comment->getObjectid();
+                break;
+            case "Comment":
+                $tmp_comment = new Comment($comment->getObjectid());
+                Comment::showComment($tmp_comment->getModule());
+                break;
         }
     }
     

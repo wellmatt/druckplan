@@ -13,13 +13,27 @@ switch ($_REQUEST["exec"]) {
 	case "delete":
 		$del_ticket = new Ticket($_REQUEST["tktid"]);
 		$del_ticket->delete();
+		$ticketlog = new TicketLog();
+		$ticketlog->setCrtusr($_USER);
+		$ticketlog->setDate(time());
+		$ticketlog->setTicket($del_ticket);
+		$ticketlog->setEntry('Ticket gelöscht</br>');
+		$ticketlog->save();
 		require_once 'ticket.overview.php';
 		break;
 	case "close":
 	    $close_ticket = new Ticket($_REQUEST["tktid"]);
 	    $close_state = new TicketState(3);
+	    $close_ticket->setClosedate(time());
+	    $close_ticket->setCloseuser($_USER);
 	    $close_ticket->setState($close_state);
 	    $close_ticket->save();
+		$ticketlog = new TicketLog();
+		$ticketlog->setCrtusr($_USER);
+		$ticketlog->setDate(time());
+		$ticketlog->setTicket($close_ticket);
+		$ticketlog->setEntry('Ticket geschlossen</br>');
+		$ticketlog->save();
 	    require_once 'ticket.overview.php';
 	    break;
 	case "edit":

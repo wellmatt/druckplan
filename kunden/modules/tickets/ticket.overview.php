@@ -6,7 +6,6 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 require_once './libs/modules/schedule/schedule.class.php';
-
 ?>
 
 <? // echo $DB->getLastError();?>
@@ -74,14 +73,12 @@ $(document).ready(function() {
 			var iMinDue = document.getElementById('ajax_date_due_min').value;
 			var iMaxDue = document.getElementById('ajax_date_due_max').value;
 			var category = document.getElementById('ajax_category').value;
-			var state = document.getElementById('ajax_state').value;
 			var showclosed = document.getElementById('ajax_showclosed').value;
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "start_due", "value": iMinDue, } );
 		    aoData.push( { "name": "end_due", "value": iMaxDue, } );
 		    aoData.push( { "name": "category", "value": category, } );
-		    aoData.push( { "name": "state", "value": state, } );
 		    aoData.push( { "name": "showclosed", "value": showclosed, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
@@ -259,27 +256,10 @@ $(document).ready(function() {
                     <?php 
                     $tkt_all_categories = TicketCategory::getAllCategories();
                     foreach ($tkt_all_categories as $tkt_category){
-                        if ($tkt_category->cansee())
+                        if ($_CONTACTPERSON->TC_cansee($tkt_category))
                             echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
                     }
                     ?>
-                </select>
-            </td>
-        </tr>
-        <tr align="left">
-            <td>Status:&nbsp;&nbsp;</td>
-            <td valign="left">
-                <input name="ajax_state" id="ajax_state" type="hidden"/>  
-                <select name="state" id="state" style="width:160px">
-                <option value="" selected></option> 
-                <?php 
-                $tkt_all_states = TicketState::getAllStates();
-                foreach ($tkt_all_states as $tkt_state){
-                    if ($tkt_state->getId() != 1){
-                        echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
-                    }
-                }
-                ?>
                 </select>
             </td>
         </tr>

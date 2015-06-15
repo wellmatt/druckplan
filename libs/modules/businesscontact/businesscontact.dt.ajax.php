@@ -262,14 +262,19 @@
             else if ( $aColumns[$i] == 'attribute' )
             {
                 $tmp_row = '';
-                $sQueryAttributes = 'SELECT businesscontact_attributes.attribute_id, businesscontact_attributes.item_id, attributes.title, attributes_items.title
+                $sQueryAttributes = 'SELECT businesscontact_attributes.attribute_id, businesscontact_attributes.item_id, attributes.title, attributes_items.title, businesscontact_attributes.inputvalue 
                                      FROM businesscontact_attributes INNER JOIN attributes ON businesscontact_attributes.attribute_id = attributes.id
                                      INNER JOIN attributes_items ON businesscontact_attributes.item_id = attributes_items.id AND businesscontact_attributes.attribute_id = attributes_items.attribute_id
                                      WHERE businesscontact_attributes.businesscontact_id = '.$aRow[ $aColumns[0] ];
 //                 var_dump($sQueryAttributes); echo "</br>";
                 $rAttributes = mysql_query( $sQueryAttributes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
                 while ($data = mysql_fetch_row($rAttributes)){
-                    $tmp_row .= $data[2] . " - " . $data[3] . "\n";
+                    if ($data[4] != "")
+                    {
+                        $tmp_row .= $data[2] . " - " . $data[3] . ": " . $data[4] . "\n";
+                    } else {
+                        $tmp_row .= $data[2] . " - " . $data[3] . "\n";
+                    }
                 }
                 if ($tmp_row == ''){
                     $tmp_row = 'keine';

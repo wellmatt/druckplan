@@ -80,7 +80,7 @@ class Document
 
     private $stornoDate = 0;
 
-    private $paper_order_pid = 0; // nur für Papier Bestellungen
+    private $paper_order_pid = 0; // nur fï¿½r Papier Bestellungen
 
     function __construct($id = 0)
     {
@@ -258,8 +258,8 @@ class Document
         if ($filter["date_from"] > 0 && $filter["date_to"]) {
             $sql .= " AND t1.doc_crtdat > {$filter["date_from"]} AND t1.doc_crtdat < {$filter["date_to"]} ";
         }
-        // echo $sql."<br>";
         $sql .= "GROUP BY t1.id";
+//         echo $sql."<br>";
         
         if ($DB->num_rows($sql)) {
             foreach ($DB->select($sql) as $res) {
@@ -490,20 +490,13 @@ class Document
         
         // Init pdffile
         if ($this->type == self::TYPE_PERSONALIZATION || $this->type == self::TYPE_PERSONALIZATION_ORDER) {
-            // Personalisierungs-Dokumente
             
-            // Ausrichung anpassen : 'portrait'=hochformat , 'landscape'=Querformat
             if ($order->getFormatwidth() > $order->getFormatheight()) {
                 $direction = 'L';
             } else {
                 $direction = 'P';
             }
             Global $_BASEDIR;
-            if ($this->getReverse() == 1) {
-                $img_path = "images/products/" . $order->getPicture2();
-            } else {
-                $img_path = "images/products/" . $order->getPicture();
-            }
             
             $format = Array(
                 $order->getFormatwidth(),
@@ -513,25 +506,52 @@ class Document
             $pdf = new TCPDF($direction, 'mm', $format, true, 'UTF-8', false);
             $pdf->AddPage();
             
-            // get the current page break margin
-            $bMargin = $pdf->getBreakMargin();
-            // get current auto-page-break mode
-            $auto_page_break = $pdf->getAutoPageBreak();
-            // disable auto-page-break
-            $pdf->SetAutoPageBreak(false, 0);
-            // set bacground image
-            Global $_BASEDIR;
             if ($version == self::VERSION_EMAIL){
+                $bMargin = $pdf->getBreakMargin();
+                $auto_page_break = $pdf->getAutoPageBreak();
+                $pdf->SetAutoPageBreak(false, 0);
+                $img_path = "images/products/" . $order->getPicture();
                 $img_file = $_BASEDIR . $img_path;
                 $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
+                $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
+                $pdf->setPageMark();
             }
-            // restore auto-page-break status
-            $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
-            // set the starting point for the page content
-            $pdf->setPageMark();
             
-            // $pdf->Image($img_path, 0, 0, 50, 50, '', '', '', 2, 300, '', false, false, 0);
-            // $pdf = new Cezpdf($format, $direction, 'image', array('img' => $img_path));
+            if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
+                if ($this->type == self::TYPE_PERSONALIZATION) {
+                    require 'docs/templates/personalization.tmpl.php';
+                }
+                if ($this->type == self::TYPE_PERSONALIZATION_ORDER) {
+                    require 'docs/templates/personalization.order.tmpl.php';
+                }
+            }
+            
+            if ($order->getType() == 1)
+            {
+                $this->setReverse(1);
+                $pdf->AddPage();
+                
+                if ($version == self::VERSION_EMAIL){
+                    $bMargin = $pdf->getBreakMargin();
+                    $auto_page_break = $pdf->getAutoPageBreak();
+                    $pdf->SetAutoPageBreak(false, 0);
+                    $img_path = "images/products/" . $order->getPicture();
+                    $img_file = $_BASEDIR . $img_path;
+                    $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
+                    $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
+                    $pdf->setPageMark();
+                }
+                
+                if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
+                    if ($this->type == self::TYPE_PERSONALIZATION) {
+                        require 'docs/templates/personalization.tmpl.php';
+                    }
+                    if ($this->type == self::TYPE_PERSONALIZATION_ORDER) {
+                        require 'docs/templates/personalization.order.tmpl.php';
+                    }
+                }
+            }
+            
         } else {
             
             // Normale Dokumente oder Label
@@ -549,20 +569,10 @@ class Document
                     $pdf->setPrintHeader(false);
                 }
                 $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
-            }
-        }
-
-        if ($this->type != self::TYPE_PERSONALIZATION && $this->type != self::TYPE_PERSONALIZATION_ORDER) {
-            if ($withheader) {
-//                 if ($version == self::VERSION_EMAIL){
-//                     $pdf->SetHeaderData();
-//                         $pdf->Image("docs/templates/briefbogen.jpg", '', 0, '', '', '', '', 'R');
-//                 }
-                $pdf->SetMargins($pref->getPdf_margin_left(), $pref->getPdf_margin_top(), $pref->getPdf_margin_right(), TRUE);
+                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
                 $pdf->AddPage();
             }
         }
-        
         
         // apply specific template
         if ($this->requestModule == self::REQ_MODULE_ORDER) {
@@ -596,15 +606,6 @@ class Document
                     require 'docs/templates/invoicewarning.tmpl.php';
                 if ($this->type == self::TYPE_REVERT)
                     require 'docs/templates/revert.tmpl.php';
-            } else {
-                if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
-                    if ($this->type == self::TYPE_PERSONALIZATION) {
-                        require 'docs/templates/personalization.tmpl.php';
-                    }
-                    if ($this->type == self::TYPE_PERSONALIZATION_ORDER) {
-                        require 'docs/templates/personalization.order.tmpl.php';
-                    }
-                }
             }
         }
         
@@ -840,6 +841,22 @@ class Document
     public function setPaperOrderPid($paper_order_pid)
     {
         $this->paper_order_pid = $paper_order_pid;
+    }
+    
+    function tofloat($num) {
+        $dotPos = strrpos($num, '.');
+        $commaPos = strrpos($num, ',');
+        $sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+        ((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+    
+        if (!$sep) {
+            return floatval(preg_replace("/[^0-9]/", "", $num));
+        }
+    
+        return floatval(
+            preg_replace("/[^0-9]/", "", substr($num, 0, $sep)) . '.' .
+            preg_replace("/[^0-9]/", "", substr($num, $sep+1, strlen($num)))
+        );
     }
 }
 ?>

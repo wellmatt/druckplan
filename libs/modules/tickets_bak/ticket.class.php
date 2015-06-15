@@ -110,9 +110,11 @@ class Ticket {
 	 *
 	 * @return boolean
 	 */
-	function save(){
+	function save($user = null){
 		global $DB;
 		global $_USER;
+		if ($user == null)
+		    $user = $_USER;
 		$now = time();
 									// gln tkt_privat eingef�gt
 		if($this->id > 0){
@@ -137,7 +139,7 @@ class Ticket {
 					WHERE id = {$this->id}";
 			return $DB->no_result($sql);
 		} else {									// gln tkt_privat eingef�gt
-			$this->ticketnumber = $_USER->getClient()->createTicketnumber();
+			$this->ticketnumber = $user->getClient()->createTicketnumber();
 			$sql = "INSERT INTO tickets
 					(tkt_state, tkt_state1, tkt_state2, tkt_state3, tkt_state4, 
 					tkt_title, tkt_ticketnumber, tkt_contactperson, 
@@ -148,7 +150,7 @@ class Ticket {
 					VALUES
 					( 1 , {$this->state1}, {$this->state2}, {$this->state3}, {$this->state4}, 
 					'{$this->title}', '{$this->ticketnumber}', {$this->contactperson->getId()},  
-					{$this->contactperson2->getId()}, {$this->contactperson3->getId()}, {$_USER->getId()}, 
+					{$this->contactperson2->getId()}, {$this->contactperson3->getId()}, {$user->getId()}, 
 					'{$this->commentintern}', '{$this->commentextern}', {$now}, {$this->due}, {$this->privat}, 
 					{$this->getCustomer()->getId()}, {$this->customerContactPerson->getId()},
 					{$this->order->getId()}, {$this->planning->getId()} )";
@@ -159,7 +161,7 @@ class Ticket {
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
 				$this->crtdate = $now;
-				$this->crtuser = $_USER;
+				$this->crtuser = $user;
 				return true;
 			} else {
 				return false;

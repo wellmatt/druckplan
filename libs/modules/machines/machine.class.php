@@ -99,6 +99,10 @@ class Machine
 	private $breaks = 0;
 	private $breaks_time = 0;
 	
+	private $qualified_users = Array();
+	
+	private $color = "3a87ad";
+	
     function __construct($id = 0)
     {
         $this->group = new MachineGroup();
@@ -155,6 +159,19 @@ class Machine
                 $this->DPWidth = $r["DPWidth"];
                 $this->breaks = $r["breaks"];
                 $this->breaks_time = $r["breaks_time"];
+                $this->color = $r["color"];
+                
+                // Arbeiter
+                $tmp_qusrs = Array();
+                $sql = "SELECT * FROM machines_qualified_users WHERE machine = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $tmp_qusrs[] = new User((int)$r["user"]);	//gln
+                    }
+                }
+                $this->qualified_users = $tmp_qusrs;
                 
                 // Farbigkeiten
                 $sql = "SELECT * FROM machines_chromaticities WHERE machine_id = {$this->id}";
@@ -346,7 +363,8 @@ class Machine
                 DPWidth = '{$this->DPWidth}',
                 breaks = {$this->breaks},
                 breaks_time = {$this->breaks_time},
-                umschl_umst = {$this->umschlUmst}, ";
+                umschl_umst = {$this->umschlUmst},
+                color = '{$this->color}', ";
         
         if($this->id > 0)
         {
@@ -360,16 +378,21 @@ class Machine
             
             if($res)
             {
+                $sql = "DELETE FROM machines_qualified_users WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+                
+                foreach($this->qualified_users as $qusr)
+                {
+                    $sql = "INSERT INTO machines_qualified_users
+                    (machine, user)
+                    VALUES
+                    ({$this->id}, {$qusr->getId()})";
+                    $DB->no_result($sql);
+                }
+                
                 $sql = "DELETE FROM machines_chromaticities WHERE machine_id = {$this->id}";
                 $DB->no_result($sql);
-                //foreach($this->chromaticities as $chr)
-                //{
-                //    $sql = "INSERT INTO machines_chromaticities
-                //                (machine_id, chroma_id)
-                //            VALUES
-                //                ({$this->id}, {$chr->getId()})";
-                //    $DB->no_result($sql);
-                //}
+                
                 foreach($this->chromaticities as $chr) //gln
                 {
                     $sql = "INSERT INTO machines_chromaticities
@@ -420,14 +443,15 @@ class Machine
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
                 
-                //foreach($this->chromaticities as $chr)
-                //{
-                //    $sql = "INSERT INTO machines_chromaticities
-                //    (machine_id, chroma_id)
-                //    VALUES
-                //    ({$this->id}, {$chr->getId()})";
-                //    $DB->no_result($sql);
-                //}
+                foreach($this->qualified_users as $qusr)
+                {
+                    $sql = "INSERT INTO machines_qualified_users
+                    (machine, user)
+                    VALUES
+                    ({$this->id}, {$qusr->getId()})";
+                    $DB->no_result($sql);
+                }
+                
                 foreach($this->chromaticities as $chr) //gln
                 {
                     $sql = "INSERT INTO machines_chromaticities
@@ -1457,9 +1481,37 @@ class Machine
     {
         $this->breaks_time = $breaks_time;
     }
-
-
     
+	/**
+     * @return the $qualified_users
+     */
+    public function getQualified_users()
+    {
+        return $this->qualified_users;
+    }
+
+	/**
+     * @param multitype: $qualified_users
+     */
+    public function setQualified_users($qualified_users)
+    {
+        $this->qualified_users = $qualified_users;
+    }
     
+	/**
+     * @return the $color
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+	/**
+     * @param string $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
 }
 ?>

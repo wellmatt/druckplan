@@ -95,14 +95,11 @@ class BusinessContact {
 	private $priv_email;
 	
 	private $position_titles = Array(); // für Personalisierung
-	
 	private $notifymailadr = Array(); // f�r gesonderte Benachrichtigungs Mails bei Bestellungen
-	
 	private $matchcode;
-	
 	private $supervisor;
-	
 	private $tourmarker;
+	private $notes;
 
 	/* Konstruktor
      * Falls id uebergeben, werden die entsprechenden Daten direkt geladen
@@ -204,6 +201,7 @@ class BusinessContact {
         			$this->kreditor = $res[0]["kreditor_number"];
         			$this->position_titles = unserialize($res[0]["position_titles"]);
         			$this->notifymailadr = unserialize($res[0]["notifymailadr"]);
+                    $this->notes = $res[0]["notes"];
                 }
         		
         		$this->branche = $res[0]["branche"];
@@ -369,25 +367,6 @@ class BusinessContact {
         
         return $retval;
     }
-    
-//    static function searchById($id, $order = self::ORDER_ID)
-//    {
-//        $retval = Array();
-//        global $DB;
-//        $sql = "SELECT id, name1, name2, address1,zip, city FROM businesscontact
-//                WHERE active > 0
-//                    AND id like '%{$id}%'
-//                ORDER BY {$order}";
-//        if($DB->num_rows($sql))
-//        {
-//            foreach($DB->select($sql) as $r)
-//            {
-//                $retval[] = new BusinessContact($r["id"]);
-//            }
-//        }
-//    
-//        return $retval;
-//    }
     
     static function getAllBusinessContactsByName1($loader = self::LOADER_BASICS)
     {
@@ -588,6 +567,7 @@ class BusinessContact {
         			number_at_customer = '{$this->numberatcustomer}',
         			supervisor = {$this->supervisor->getId()},
         			matchcode = '{$this->matchcode}', 
+        			notes = '{$this->notes}', 
         			tourmarker = '{$this->tourmarker}' 
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql); //Aenderungen speichern
@@ -607,7 +587,7 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode, supervisor, tourmarker )
+		            matchcode, supervisor, tourmarker, notes )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -620,7 +600,7 @@ class BusinessContact {
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},  
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
-		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}' )";
+		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}' )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			echo $DB->getLastError();
 // 			echo "</br>" . $sql . "</br>";
@@ -652,6 +632,29 @@ class BusinessContact {
 			$res = $DB->select($sql);
 			foreach ($res AS $r){
 				$retval["{$r["attribute_id"]}_{$r["item_id"]}"] = $r["value"];
+			}
+		} else {
+			return false;
+		}
+		return $retval;
+	}
+	
+	/**
+	 * ... liefert Alle aktivierten Optionen inkl. Input von Merkmalen zu einem Geschaeftskontakt
+	 * 
+	 * @return boolean|Array
+	 */
+	public function getActiveAttributeItemsInput(){
+		global $DB;
+		$sql = "SELECT * FROM businesscontact_attributes 
+				WHERE 
+				businesscontact_id = {$this->id}";
+		
+		if($DB->num_rows($sql)){
+			$res = $DB->select($sql);
+			foreach ($res AS $r){
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["value"] = $r["value"];
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["inputvalue"] = $r["inputvalue"];
 			}
 		} else {
 			return false;
@@ -694,14 +697,15 @@ class BusinessContact {
 		foreach($active_items as $item){
 			if((int)$item["id"] > 0){
 	            $sql = "UPDATE businesscontact_attributes SET
-	                    value = '{$item["value"]}'
+	                    value = '{$item["value"]}', 
+	                    inputvalue = '{$item["inputvalue"]}' 
 	                    WHERE id = {$item["id"]}";
 	            $DB->no_result($sql);
 	        } else {
 	            $sql = "INSERT INTO businesscontact_attributes
-	                        (value, item_id, attribute_id, businesscontact_id )
+	                        (value, item_id, attribute_id, businesscontact_id, inputvalue )
 	                    VALUES
-	                        ({$item["value"]}, {$item["item_id"]}, {$item["attribute_id"]}, {$this->id} )";
+	                        ({$item["value"]}, {$item["item_id"]}, {$item["attribute_id"]}, {$this->id}, '{$item["inputvalue"]}' )";
 	            $DB->no_result($sql);
 	        }
 		}
@@ -1482,6 +1486,23 @@ class BusinessContact {
     {
         $this->tourmarker = $tourmarker;
     }
+    
+	/**
+     * @return the $notes
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+	/**
+     * @param field_type $notes
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+    }
+    
     
 }
 ?>

@@ -30,6 +30,9 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setPdf_margin_left(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_left"])));
 	$perf->setPdf_margin_right(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_right"])));
 	$perf->setPdf_margin_bottom(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_bottom"])));
+	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
+	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
+	$perf->setMail_domain($_REQUEST["mail_domain"]);
 	$savemsg = getSaveMessage($perf->save());
 }
 
@@ -104,6 +107,8 @@ function deleteFormatRawRow(obj)
 			<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('PDF');?></a></li>
 			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
+			<li><a href="#tabs-4"><? echo $_LANG->get('Datatables');?></a></li>
+			<li><a href="#tabs-5"><? echo $_LANG->get('Mail');?></a></li>
 		</ul>
 
 		<div id="tabs-0">
@@ -218,6 +223,40 @@ function deleteFormatRawRow(obj)
 					</tr>
 				<? } ?>
 			</table>
+       </div>
+       <div id="tabs-4">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+               <colgroup>
+                  <col width="180">
+                  <col>
+               </colgroup>
+               <tr>
+                  <td class="content_row_header" valign="top">Def. Anzahl Elemente:</td>
+                  <td class="content_row_clear">
+                     <input type="text" name="datatables_showelements" id="datatables_showelements" value="<?php echo $perf->getDt_show_default();?>"/></br>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="content_row_header" valign="top">Speichere Status</td>
+                  <td class="content_row_clear">
+                     <input type="checkbox" name="datatables_statesave" id="datatables_statesave" <?php if($perf->getDt_state_save()) echo " checked ";?> /></br>
+                  </td>
+               </tr>
+            </table>
+       </div>
+       <div id="tabs-5">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+               <colgroup>
+                  <col width="180">
+                  <col>
+               </colgroup>
+               <tr>
+                  <td class="content_row_header" valign="top">Mail Domain:</td>
+                  <td class="content_row_clear">
+                     <input type="text" name="mail_domain" id="mail_domain" value="<?php echo $perf->getMail_domain();?>"/></br>
+                  </td>
+               </tr>
+            </table>
        </div>
 
 <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">

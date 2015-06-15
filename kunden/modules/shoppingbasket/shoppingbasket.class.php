@@ -10,9 +10,10 @@ require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/personalization/personalization.order.class.php';
 require_once 'shoppingbasketitem.class.php';
 require_once 'libs/modules/businesscontact/address.class.php';
-require_once 'libs/modules/warehouse/warehouse.reservation.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
 require_once 'libs/modules/businesscontact/contactperson.class.php';
+require_once 'libs/modules/notifications/notification.class.php';
+require_once 'libs/modules/attachment/attachment.class.php';
 
 class Shoppingbasket{
 	
@@ -78,6 +79,27 @@ class Shoppingbasket{
 		$this->entrys = $newitemlist;
 		return $ret_item;
 	}
+
+	/**
+	 * Loescht einen Eintrag aus dem Warenkorb und liefert das geloeschte Item zurueck
+	 *
+	 * @param int $id
+	 * @param int $type
+	 * @return Shopppingbasketitem
+	 */
+	public function deleteItemByEntryId($entryid){
+	    $newitemlist = Array();
+	    $ret_item = NULL;
+	    foreach($this->entrys as $entry){
+	        if (($entry->getEntryid()==$entryid)){
+	            $ret_item = $entry;
+	        } else {
+	            $newitemlist[] = $entry;
+	        }
+	    }
+	    $this->entrys = $newitemlist;
+	    return $ret_item;
+	}
 	
 	/**
 	 * Ueberpruefen, ob ein Eintrag schon im Warenkorb ist, oder nicht
@@ -87,7 +109,7 @@ class Shoppingbasket{
 	 */
 	public function itemExists($item){
 		foreach($this->entrys as $entry){
-			if (($entry->getId() == $item->getId()) && ($entry->getType() == $item->getType())){
+			if (($entry->getId() == $item->getId()) && ($entry->getType() == $item->getType()) && ($entry->getDeliveryAdressID() == $item->getDeliveryAdressID())){
 				return true;
 			}
 		}
@@ -189,6 +211,9 @@ class Shoppingbasket{
 	            return false;
 	        }
 	        
+	        $colid = $col_inv->getId();
+	        Notification::generateNotification($busicon->getSupervisor(), "CollectiveInvoice", "NewOrderShop", $busicon->getNameAsLine(), $colid);
+	        
 	        // Wenn Sammelrechnung gespeichert/angelegt, dann Positionen hinzufuegen
 	        if($tmp_saver){
 	            $deli_ad = Array();
@@ -229,6 +254,11 @@ class Shoppingbasket{
         	                    $tmp_order_pos->setTax($tax);
         	                    $tmp_order_pos->setComment($tmp_article->getDesc());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
+        	                    if ($tmp_article->getShop_needs_upload()==1 && (int)$entry->getFile()>0)
+        	                    {
+        	                        $tmp_attach = new Attachment((int)$entry->getFile());
+        	                        $tmp_order_pos->setFile_attach($tmp_attach->getId());
+        	                    }
         	                }
         	                if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
         	                    $tmp_perso_order = new Personalizationorder($entry->getId());
@@ -241,6 +271,7 @@ class Shoppingbasket{
         	                    $tmp_order_pos->setTax(CollectiveInvoice::TAX_PEROSALIZATION);
         	                    $tmp_order_pos->setComment($tmp_perso_order->getTitle());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
+        	                    $tmp_order_pos->setPerso_order($tmp_perso_order->getId());
         	                    
         	                    // Bestellung aktualisieren, damit sie im Backend auftaucht
         	                    // $tmp_perso->setStatus(2);	// nicht mehr den Status umsetzen, damit diese als Vorlage bleibt
@@ -250,63 +281,6 @@ class Shoppingbasket{
         	                }
 
         	                $save_items[] = $tmp_order_pos;
-        	                /*
-        	                if($tmp_order_pos->getObjectid()>0){
-            	                // Bestellungen direkt abziehen vom Warenhaus,
-            	                // vorher muss geprueft werden, ob von entsprechenden Warenhaus soviel entnommen werden darf.
-            	                // Beispiel:   W1=50 - (R=50)
-            	                //             W2=150 (Free)
-            	                //             Total=150 (Free=100)
-            	                //             Einkauf=50
-            	                // Diese d�rfen nicht vom ersten Lager entnommen werden
-            	                // auch wenn die benoetige Ware vorhanden ist.
-            	                $whouses = Warehouse::getAllStocksByArticle($tmp_order_pos->getObjectid());
-            	                $opamount = $tmp_order_pos->getQuantity();
-            	                $whlist = array();
-            	                foreach ($whouses as $w)
-            	                {
-            	                    // Es darf aus keinem Warenhouse entnommen werden, welches explizit einem anderen Kunden zugewiesens ist.
-            	                    if(($w->getCustomer()->getId()==0) || ($w->getCustomer()->getId()==$col_inv->getCustomer()->getId()))
-            	                    {
-            	                        $faiwh = $w->getAmount() - Reservation::getTotalReservationByWarehouse($w->getId()); // $faiwh - free amount in warehouse
-            	                        $dump = array();
-            	                        if($faiwh>=$opamount)
-            	                        {
-            	                            $dump["Warehouse"] = $w;
-            	                            $dump["Amount"] = $opamount;
-            	                            $opamount = 0;
-            	                            $whlist[] = $dump;
-            	                        }
-            	                        else if ($faiwh > 0)
-            	                        {
-            	                            $dump["Warehouse"] = $w;
-            	                            $dump["Amount"] = $faiwh;
-            	                            $opamount = $opamount-$faiwh;
-            	                            $whlist[] = $dump;
-            	                        }
-            	                        $w->save();
-            	                        if($opamount<=0)
-            	                            break;
-            	                    }
-            	                }
-            	                if($opamount > 0)
-            	                {
-            	                    echo "<script type='text/javascript' language='javascript'>\n";
-            	                    echo "<!--\n";
-            	                    echo "alert('".$_LANG->get("Nicht genug Waren (Artikel: '".$tmp_article->getTitle()."') verfügbar.")."')\n";
-            	                    echo "//-->\n";
-            	                    echo "</script>\n";
-            	                }
-            	                else
-            	                {
-            	                    foreach ($whlist as $w)
-            	                    {
-            	                        $w["Warehouse"]->setAmount($w["Warehouse"]->getAmount()-$w["Amount"]);
-            	                        $w["Warehouse"]->save();
-            	                    }
-            	                }
-        	                }
-        	                */
     	                }
     	            }
 	            }

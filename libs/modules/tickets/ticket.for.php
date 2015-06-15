@@ -18,9 +18,15 @@ if ($from_busicon){
 
 ?>
 
+
 <!-- DataTables -->
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 <script type="text/javascript">
@@ -51,7 +57,8 @@ $(document).ready(function() {
         "processing": true,
         "bServerSide": true,
         "sAjaxSource": '<?php echo $ajax_url;?>',
-        "paging": true,
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"stateSave": true,
 // 		"dom": 'flrtip',        
 		"dom": 'T<"clear">flrtip',        
@@ -69,7 +76,29 @@ $(document).ready(function() {
                          "print"
                      ]
                  },
-		"pageLength": 50,
+  		"fnServerData": function ( sSource, aoData, fnCallback ) {
+			var iMin = document.getElementById('ajax_date_min').value;
+			var iMax = document.getElementById('ajax_date_max').value;
+			var iMinDue = document.getElementById('ajax_date_due_min').value;
+			var iMaxDue = document.getElementById('ajax_date_due_max').value;
+			var category = document.getElementById('ajax_category').value;
+			var state = document.getElementById('ajax_state').value;
+			var crtuser = document.getElementById('ajax_crtuser').value;
+			var assigned = document.getElementById('ajax_assigned').value;
+			var showclosed = document.getElementById('ajax_showclosed').value;
+		    aoData.push( { "name": "start", "value": iMin, } );
+		    aoData.push( { "name": "end", "value": iMax, } );
+		    aoData.push( { "name": "start_due", "value": iMinDue, } );
+		    aoData.push( { "name": "end_due", "value": iMaxDue, } );
+		    aoData.push( { "name": "category", "value": category, } );
+		    aoData.push( { "name": "state", "value": state, } );
+		    aoData.push( { "name": "crtuser", "value": crtuser, } );
+		    aoData.push( { "name": "assigned", "value": assigned, } );
+		    aoData.push( { "name": "showclosed", "value": showclosed, } );
+		    $.getJSON( sSource, aoData, function (json) {
+		        fnCallback(json)
+		    } );
+		},
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
 		            null,
@@ -110,11 +139,120 @@ $(document).ready(function() {
 					}
     } );
 
-    $("#ticketstable tbody td").live('click',function(){
+	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
+	$('#date_min').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+	$('#date_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+	$('#date_due_min').datepicker(
+			{
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				dateFormat: 'dd.mm.yy',
+	            showOn: "button",
+	            buttonImage: "images/icons/calendar-blue.png",
+	            buttonImageOnly: true,
+	            onSelect: function(selectedDate) {
+	                $('#ajax_date_due_min').val(moment($('#date_due_min').val(), "DD-MM-YYYY").unix());
+	            	$('#ticketstable').dataTable().fnDraw();
+	            }
+		});
+	$('#date_due_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_due_max').val(moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340);
+            	$('#ticketstable').dataTable().fnDraw();
+            }
+	});
+
+	$('#category').change(function(){	
+	    $('#ajax_category').val($(this).val()); 
+	    $('#ticketstable').dataTable().fnDraw();
+	})
+	$('#state').change(function(){	
+		$('#ajax_state').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw();  
+	})
+	$('#crtuser').change(function(){	
+		$('#ajax_crtuser').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
+	$('#assigned').change(function(){	
+		$('#ajax_assigned').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
+	$('#showclosed').change(function(){	
+		if ($('#showclosed').prop('checked')){
+			$('#ajax_showclosed').val(1); 
+		} else {
+			$('#ajax_showclosed').val(0); 
+		}
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
+	$('#ajax_tourmarker').change(function(){	
+		$('#ajax_tourmarker').val($(this).val()); 
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
+
+
+    var DELAY = 500, clicks = 0, timer = null;
+    $("#ticketstable tbody td").live('click', function(e){
+
+        clicks++;  //count clicks
+
         var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
         var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
-        document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0];
+        
+        if(clicks === 1) {
+
+            timer = setTimeout(function() {
+                clicks = 0;             //after action performed, reset counter
+                timer = null;
+                window.location = 'index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0]; 
+            }, DELAY);
+
+        } else {
+
+            clearTimeout(timer);    //prevent single-click action
+            clicks = 0;             //after action performed, reset counter
+            timer = null;
+            var win = window.open('index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0], '_blank');
+            win.focus();
+        }
+
+    })
+    .on("dblclick", function(e){
+        e.preventDefault();  //cancel system double-click event
     });
+	
 } );
 </script>
 
@@ -137,6 +275,125 @@ $(document).ready(function() {
 
 <br/>
 <div class="box1">
+
+    <div class="box2">
+        <table>
+            <tr align="left">
+                <td>Datum (erstellt):&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
+                    <input name="date_min" id="date_min" style="width:70px;" class="text" 
+                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+                </td>
+                <td valign="left">
+                    <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
+                    bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
+                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+                </td>
+            </tr>
+            <tr align="left">
+                <td>Datum (fällig):&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>  
+                    <input name="date_due_min" id="date_due_min" style="width:70px;" class="text" 
+                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+                </td>
+                <td valign="left">
+                    <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>  
+                    bis: <input name="date_due_max" id="date_due_max" style="width:70px;" class="text" 
+                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+                </td>
+            </tr>
+            <tr align="left">
+                <td>Kategorie:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_category" id="ajax_category" type="hidden"/>  
+                    <select name="category" id="category" style="width:160px">
+                        <option value=""></option> 
+                        <?php 
+                        $tkt_all_categories = TicketCategory::getAllCategories();
+                        foreach ($tkt_all_categories as $tkt_category){
+                            if ($tkt_category->cansee())
+                            {
+                                echo '<option value="'.$tkt_category->getId().'"';
+                                echo '>'.$tkt_category->getTitle().'</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr align="left">
+                <td>Status:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_state" id="ajax_state" type="hidden"/>  
+                    <select name="state" id="state" style="width:160px">
+                    <option value="" selected></option> 
+                    <?php 
+                    $tkt_all_states = TicketState::getAllStates();
+                    foreach ($tkt_all_states as $tkt_state){
+                        if ($tkt_state->getId() != 1){
+                            echo '<option value="'.$tkt_state->getId().'"';
+                            echo '>'.$tkt_state->getTitle().'</option>';
+                        }
+                    }
+                    ?>
+                    </select>
+                </td>
+            </tr>
+            <tr align="left">
+                <td>erst. von:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_crtuser" id="ajax_crtuser" type="hidden"/>  
+                    <select name="crtuser" id="crtuser" style="width:160px">
+                    <option value="" selected></option> 
+                    <?php 
+                    $all_user = User::getAllUser(User::ORDER_NAME);
+                    foreach ($all_user as $tkt_user){
+                        echo '<option value="'.$tkt_user->getId().'"';
+                        echo '>'.$tkt_user->getNameAsLine().'</option>';
+                    }
+                    ?>
+                    </select>
+                </td>
+            </tr>
+            <tr align="left">
+                <td>zugewiesen an:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_assigned" id="ajax_assigned" type="hidden"/>  
+                    <select name="assigned" id="assigned" style="width:160px">
+                    <option value="" selected></option> 
+                    <option disabled>-- Users --</option>
+                    <?php 
+                    $all_user = User::getAllUser(User::ORDER_NAME);
+                    $all_groups = Group::getAllGroups(Group::ORDER_NAME);
+                    foreach ($all_user as $tkt_user){
+                        echo '<option value="u_'.$tkt_user->getId().'"';
+                        echo '>'.$tkt_user->getNameAsLine().'</option>';
+                    }
+                    ?>
+                    <option disabled>-- Groups --</option>
+                    <?php 
+                    foreach ($all_groups as $tkt_groups){
+                        echo '<option value="g_'.$tkt_groups->getId().'"';
+                        echo '>'.$tkt_groups->getName().'</option>';
+                    }
+                    ?>
+                    </select>
+                </td>
+            </tr>
+            <tr align="left">
+                <td>zeige geschlossene:&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
+                    <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
+                </td>
+            </tr>
+            </br>
+        </table>
+    </div>
+    </br>
+
 	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>

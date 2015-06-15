@@ -27,7 +27,7 @@ if($_REQUEST["subexec"] == "save"){
 	$perso->setCustomer(new BusinessContact($_REQUEST["perso_customer"]));
 	$perso->setType((int)$_REQUEST["perso_type"]);
 	$perso->setLineByLine((int)$_REQUEST["perso_linebyline"]);
-	
+	$perso->setHidden((int)$_REQUEST["perso_hidden"]);
 	
 	$perso->setFormatheight((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["perso_format_height"]))));
 	$perso->setFormatwidth((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["perso_format_width"]))));
@@ -61,6 +61,7 @@ if($_REQUEST["subexec"] == "save"){
 			$item->setPreDefined((int)$_REQUEST["item_predefined_{$i}"]);
 			$item->setPosition((int)$_REQUEST["item_position_{$i}"]);
 			$item->setReadOnly((int)$_REQUEST["item_readonly_{$i}"]);
+			$item->setSort((int)$_REQUEST["item_sort_{$i}"]);
 			if ($item->getWidth() > 0 && $item->getHeight() > 0){
 				$item_save = $item->save();
 				if($item_save){
@@ -106,21 +107,19 @@ if($_REQUEST["subexec"] == "save"){
 	$doc->setType(Document::TYPE_PERSONALIZATION);
 	$doc->setReverse(0);
 	$hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
-	//$doc->createDoc(Document::VERSION_PRINT, $hash);
 	$doc->setName("PERSO");
 	$doc->save();
 	
-	if ($perso->getType() == 1){
-		$doc = new Document();
-		$doc->setRequestId($perso->getId());
-		$doc->setRequestModule(Document::REQ_MODULE_PERSONALIZATION);
-		$doc->setType(Document::TYPE_PERSONALIZATION);
-		$doc->setReverse(1);
-		$hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
-		//$doc->createDoc(Document::VERSION_PRINT, $hash);
-		$doc->setName("PERSO");
-		$doc->save();
-	}
+// 	if ($perso->getType() == 1){
+// 		$doc = new Document();
+// 		$doc->setRequestId($perso->getId());
+// 		$doc->setRequestModule(Document::REQ_MODULE_PERSONALIZATION);
+// 		$doc->setType(Document::TYPE_PERSONALIZATION);
+// 		$doc->setReverse(1);
+// 		$hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
+// 		$doc->setName("PERSO");
+// 		$doc->save();
+// 	}
 }
 
 $all_article = Article::getAllArticle(Article::ORDER_TITLE);
@@ -136,6 +135,7 @@ function addItemRow()
 	var obj = document.getElementById('table-items');
 	var count = parseInt(document.getElementById('count_quantity').value) + 1;
 	var insert = '<tr>';
+	insert += '<td class="content_row"><input type="number" name="item_sort_'+count+'" value="'+count+'" style="width: 30px"/></td>';
 	insert += '<td class="content_row">';
 	insert += '<input name="item_id_'+count+'" value="0" type="hidden">';
 	insert += '<input name="item_title_'+count+'" class="text" type="text"';
@@ -422,6 +422,12 @@ function addPriceRow()
 					</select>
 				</td>
 			</tr>
+			<tr>
+				<td class="content_row_header"><?=$_LANG->get('Im Shop versteckt?')?></td>
+				<td class="content_row">
+					<input type="checkbox" name="perso_hidden" value="1" <?php if ($perso->getHidden() == "1"){echo " checked ";}?> />
+				</td>
+			</tr>
 			<?if ($perso->getId() != 0 && $perso->getCrtuser() != 0){// Ersteller nur beim Bearbeiten ausgeben?>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Angelegt von')?></td>
@@ -486,43 +492,18 @@ function addPriceRow()
 		<tr>
 			<td align="center">
 				<?
-				echo "<b>".$_LANG->get('Vorderseite')."</b> <br>"; 
 				// PDF ausgeben
 				if (count($docs) && $docs != false){
 					$tmp_id =$_USER->getClient()->getId();
-					if ($docs[0]->getReverse() == 0) {
-						$hash = $docs[0]->getHash();
-						if (isset($docs[1])){
-							$hash2 = $docs[1]->getHash();
-						} else {
-							$hash2 = "";
-						}	
-					} else {
-						$hash = $docs[1]->getHash();
-						$hash2 = $docs[0]->getHash();
-					}
+					$hash = $docs[0]->getHash();
 					
-					//if ($perso->getDirection() == 0){
-					if ($perso->getFormatwidth() < $perso->getFormatheight()){
-						$obj_width = 450;
-						$obj_height = 520;
-					} else {
-						$obj_width = 520;
-						$obj_height = 450;
-					}
+					$obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
+					$obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
 					?>			 
 					<object data="./docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf" type="application/pdf" 
 							width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
 				<? } ?>
 			</td>
-			<?if($perso->getType() == 1){ // Perso hat eine Rueckseite ?>
-			<td width="15px;">&emsp;</td>
-			<td align="center">
-				<b><?=$_LANG->get('R&uuml;ckseite');?></b><br>
-				<object data="./docs/personalization/<?=$tmp_id?>.per_<?=$hash2?>_e.pdf" type="application/pdf" 
-						width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
-			</td>
-			<?}?>
 		</tr>
 		</table>
 	</div>
@@ -543,6 +524,7 @@ function addPriceRow()
 	<div class="box1">
 		<table id="table-items">
 			<colgroup>
+			    <col width="32">
 	        	<col width="220">
 	        	<col width="60">
 	        	<col width="150">		<? // x/y-Position ?>
@@ -558,6 +540,7 @@ function addPriceRow()
 	        	<col>
 	    	</colgroup>
 			<tr>
+			    <td class="content_row_header">&nbsp;</td>
 				<td class="content_row_header"><?=$_LANG->get('Titel')?> / <?=$_LANG->get('Platzhalter')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Schrift- gr&ouml;&szlig;e')?></td>
 				<td class="content_row_header"><?=$_LANG->get('x-Position')?>** / <?=$_LANG->get('y-Position')?>**</td>
@@ -580,6 +563,9 @@ function addPriceRow()
 			$y=1;
 			foreach ($all_items as $item){?>
 				<tr>
+					<td class="content_row">
+					    <input type="number" name="item_sort_<?=$y?>" value="<?=$item->getSort()?>" style="width: 30px"/>
+					</td>
 					<td class="content_row">
 						<input type="hidden" name="item_id_<?=$y?>" value="<?=$item->getId()?>">
 						<input 	name="item_title_<?=$y?>" class="text" type="text"
@@ -772,6 +758,7 @@ function addPriceRow()
 	<table width="100%">
 	    <colgroup>
 	        <col width="180">
+	        <col width="180">
 	        <col>
 	    </colgroup> 
 	    <tr>
@@ -781,6 +768,10 @@ function addPriceRow()
 	        </td>
 	        <td class="content_row_clear" align="right">
 	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
+	        </td>
+	        <td class="content_row_clear" align="right">
+        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=libs/modules/personalization/personalization.php&exec=delete&id=<?php echo $perso->getId();?>')" 
+        				value="<?=$_LANG->get('L&ouml;schen')?>">
 	        </td>
 	    </tr>
 	</table>

@@ -42,7 +42,28 @@ class User {
 	private $calendar_tickets;
 	private $calendar_orders;
 	private $calendar_birthdays;
-     
+	
+	// Workhours
+	
+	private $w_mo = 0;
+	private $w_tu = 0;
+	private $w_we = 0;
+	private $w_th = 0;
+	private $w_fr = 0;
+	private $w_sa = 0;
+	private $w_su = 0;
+	private $w_month = 0;
+
+	const WEEKDAY_SUNDAY = 0;
+	const WEEKDAY_MONDAY = 1;
+	const WEEKDAY_TUESDAY = 2;
+	const WEEKDAY_WEDNESDAY = 3;
+	const WEEKDAY_THURSDAY = 4;
+	const WEEKDAY_FRIDAY = 5;
+	const WEEKDAY_SATURDAY = 6;
+
+	private $workinghours = Array();
+	
     /* Konstruktor
      * Falls id �bergeben, werden die entsprechenden Daten direkt geladen
     */
@@ -83,6 +104,27 @@ class User {
                 $this->calendar_tickets = $res[0]["cal_tickets"];
                 $this->calendar_orders = $res[0]["cal_orders"];
 
+                $this->w_mo = $res[0]["w_mo"];
+                $this->w_tu = $res[0]["w_tu"];
+                $this->w_we = $res[0]["w_we"];
+                $this->w_th = $res[0]["w_th"];
+                $this->w_fr = $res[0]["w_fr"];
+                $this->w_sa = $res[0]["w_sa"];
+                $this->w_su = $res[0]["w_su"];
+                $this->w_month = $res[0]["w_month"];
+
+                // Arbeiter
+                $tmp_worktimes = Array();
+                $sql = "SELECT * FROM user_worktimes WHERE user = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $tmp_worktimes[(int)$r["weekday"]][] = Array("start"=>$r["start"],"end"=>$r["end"]);
+                    }
+                }
+                $this->workinghours = $tmp_worktimes;
+                
                 if ($addgroups)
                 {
                     $sql = " SELECT * FROM user_groups WHERE user_id = {$this->id}";
@@ -120,6 +162,53 @@ class User {
         if ($client > 0)
             $sql .= " AND client = {$client}";
         $sql .= " ORDER BY {$order}";
+        
+        $res = $DB->select($sql);
+        foreach ($res as $r){
+            $users[] = new User($r["id"]);
+        }
+        return $users;
+    }
+     
+    static function getAllUserWithPlanningTime($start,$end)
+    {
+        global $DB;
+        $users = Array();
+        
+        $sql = "SELECT `user`.id, IFNULL((`user`.w_month-t1.time),`user`.w_month) as time_left
+                FROM (
+                SELECT
+                `user`.id, IFNULL(Sum(IF(ticket_time>0,ticket_time,target_time))/60/60,0) AS time
+                FROM `user` 
+                LEFT JOIN schedules_machines_usertime ON schedules_machines_usertime.`user` = `user`.id
+                LEFT JOIN schedules_machines ON schedules_machines_usertime.sched_machine = schedules_machines.id
+                WHERE schedules_machines.deadline>{$start} AND schedules_machines.deadline<{$end} 
+                GROUP BY `user`.id
+                ) AS t1
+                RIGHT JOIN `user` ON `user`.id = t1.id";
+        
+        $res = $DB->select($sql);
+        foreach ($res as $r){
+            $users[] = $r;
+        }
+        return $users;
+    }
+    
+    /**
+     * Gibt gefiltertes array aller Benutzer aus
+     * @param String $order
+     * @param String $filter
+     * @return Array:User
+     */
+    static function getAllUserFiltered($order = self::ORDER_ID, $filter = null)
+    {
+        global $DB;
+        $users = Array();
+
+        $sql = " SELECT id FROM user 
+        		 WHERE user_level > 0 
+        		 ".$filter."
+                 ORDER BY {$order}";
         
         $res = $DB->select($sql);
         foreach ($res as $r){
@@ -251,6 +340,10 @@ class User {
     function getNameAsLine() {
         return $this->getFirstname()." ".$this->getLastname();
     }
+    
+    function getNameAsLine2() {
+        return $this->getLastname().", ".$this->getFirstname();
+    }
      
     // Ist benutzer in Gruppe?
     // Erwartet Gruppenobjekt
@@ -374,10 +467,20 @@ class User {
             client = {$this->client->getId()},
             login = '{$this->login}',
             password = '{$this->password}',  
+            w_mo = '{$this->w_mo}',  
+            w_tu = '{$this->w_tu}',  
+            w_we = '{$this->w_we}',  
+            w_th = '{$this->w_th}',  
+            w_fr = '{$this->w_fr}',  
+            w_sa = '{$this->w_sa}',  
+            w_su = '{$this->w_su}',   
+            w_month = '{$this->w_month}',
             telefon_ip = '{$this->telefonIP}' 
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
 
+//             echo $sql . "</br>";
+            
             $sql = " DELETE FROM user_groups WHERE user_id = {$this->id}";
             $DB->no_result($sql);
              
@@ -395,12 +498,13 @@ class User {
             $sql = " INSERT INTO user
             (user_firstname, user_lastname, user_email, user_phone, user_signature,
             user_active, user_level, login, password, client, user_forwardmail, user_lang, 
-            telefon_ip, cal_birthdays, cal_tickets, cal_orders )
+            telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa, w_su, w_month )
             VALUES
             ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
             '{$this->signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
             '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()}, 
-            '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders} )";
+            '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
+            '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}', '{$this->w_su}', '{$this->w_month}' )";
             $res = $DB->no_result($sql);
 
             if ($res)
@@ -411,7 +515,31 @@ class User {
             }
         }
         if ($res)
+        {
+            $sql = "DELETE FROM user_worktimes WHERE user = {$this->id}";
+            $DB->no_result($sql);
+            
+            for($i=0;$i<7;$i++)
+            {
+                if (count($this->workinghours[$i])>0)
+                {
+                    foreach($this->workinghours[$i] as $whours)
+                    {
+                        if ($whours["start"] && $whours["end"])
+                        {
+                            $sql = "INSERT INTO user_worktimes
+                            (user, weekday, start, end)
+                            VALUES
+                            ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
+//                             echo $sql . "</br>";
+                            $DB->no_result($sql);
+                        }
+                    }
+                }
+            }
+            
             return true;
+        }
         else
             return false;
     }
@@ -493,5 +621,157 @@ class User {
 	{
 	    $this->calendar_orders = $calendar_orders;
 	}
+	
+	/**
+     * @return the $w_mo
+     */
+    public function getW_mo()
+    {
+        return $this->w_mo;
+    }
+
+	/**
+     * @return the $w_tu
+     */
+    public function getW_tu()
+    {
+        return $this->w_tu;
+    }
+
+	/**
+     * @return the $w_we
+     */
+    public function getW_we()
+    {
+        return $this->w_we;
+    }
+
+	/**
+     * @return the $w_th
+     */
+    public function getW_th()
+    {
+        return $this->w_th;
+    }
+
+	/**
+     * @return the $w_fr
+     */
+    public function getW_fr()
+    {
+        return $this->w_fr;
+    }
+
+	/**
+     * @return the $w_sa
+     */
+    public function getW_sa()
+    {
+        return $this->w_sa;
+    }
+
+	/**
+     * @return the $w_su
+     */
+    public function getW_su()
+    {
+        return $this->w_su;
+    }
+
+	/**
+     * @param number $w_mo
+     */
+    public function setW_mo($w_mo)
+    {
+        $this->w_mo = $w_mo;
+    }
+
+	/**
+     * @param number $w_tu
+     */
+    public function setW_tu($w_tu)
+    {
+        $this->w_tu = $w_tu;
+    }
+
+	/**
+     * @param number $w_we
+     */
+    public function setW_we($w_we)
+    {
+        $this->w_we = $w_we;
+    }
+
+	/**
+     * @param number $w_th
+     */
+    public function setW_th($w_th)
+    {
+        $this->w_th = $w_th;
+    }
+
+	/**
+     * @param number $w_fr
+     */
+    public function setW_fr($w_fr)
+    {
+        $this->w_fr = $w_fr;
+    }
+
+	/**
+     * @param number $w_sa
+     */
+    public function setW_sa($w_sa)
+    {
+        $this->w_sa = $w_sa;
+    }
+
+	/**
+     * @param number $w_su
+     */
+    public function setW_su($w_su)
+    {
+        $this->w_su = $w_su;
+    }
+    
+	/**
+     * @return the $w_month
+     */
+    public function getW_month()
+    {
+        return $this->w_month;
+    }
+
+	/**
+     * @param number $w_month
+     */
+    public function setW_month($w_month)
+    {
+        $this->w_month = $w_month;
+    }
+    
+	/**
+     * @return the $password
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+    
+	/**
+     * @return the $workinghours
+     */
+    public function getWorkinghours()
+    {
+        return $this->workinghours;
+    }
+
+	/**
+     * @param multitype: $workinghours
+     */
+    public function setWorkinghours($workinghours)
+    {
+        $this->workinghours = $workinghours;
+    }
 }
 ?>

@@ -6,7 +6,8 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
- 
+require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
+require_once 'libs/modules/calculation/order.class.php';
 
 class Association {
     

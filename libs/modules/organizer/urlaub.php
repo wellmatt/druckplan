@@ -6,6 +6,9 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
+error_reporting(0);
+ini_set('display_errors', 0);
+
 require_once 'urlaub.class.php';
 require_once 'Calendar/Month/Weekdays.php';
 require_once 'Date/Holidays.php';

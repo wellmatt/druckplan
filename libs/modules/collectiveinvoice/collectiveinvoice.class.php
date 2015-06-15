@@ -10,6 +10,8 @@ require_once('libs/modules/paymentterms/paymentterms.class.php');
 require_once('libs/modules/deliveryterms/deliveryterms.class.php');
 require_once('libs/modules/businesscontact/businesscontact.class.php');
 require_once('libs/modules/businesscontact/address.class.php');
+require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
+require_once 'libs/modules/associations/association.class.php';
 
 global $_USER;
 
@@ -44,6 +46,9 @@ class CollectiveInvoice{
     private $internContact;				// Benutzer von KDM, der auf den Dokumenten auftauchen soll
     private $custMessage;				// Auf den Dokumenten "Ihre Nachricht"
     private $custSign;					// Auf den Dokumenten "Ihr Zeichen"
+    
+    private $needs_planning = 0;
+    private $deliverydate = 0;
 
 	/**
 	 * Konstruktor f�r die Sammelrechnungen
@@ -91,6 +96,8 @@ class CollectiveInvoice{
                 $this->custMessage = $r["cust_message"];
                 $this->custSign	= $r["cust_sign"];
 				$this->custContactperson = new ContactPerson($r["custContactperson"]);
+                $this->needs_planning = $r["needs_planning"];
+                $this->deliverydate = $r["deliverydate"];
 			}
 		}
 	}//Ende vom Konstruktor
@@ -104,13 +111,10 @@ class CollectiveInvoice{
 		global $DB;
 		global $_USER;
 		$now = time();
-		$tmp_number= "'".$this->number."'";
-		if($this->id > 0){	//number, crtdate, crtuser und id d�rfen/sollen nicht ver�ndert werden
+		if($this->id > 0){	//number, crtdate, crtuser und id d�rfen/sollen nicht ver�ndert werden // number = '{$this->number}',
 			$sql = "UPDATE collectiveinvoice SET
 					status = {$this->status},
 					title = '{$this->title}',
-					comment = '{$this->comment}',
-					number = '{$this->number}',
 					comment = '{$this->comment}',
 					uptuser = {$_USER->getId()},
 					uptdate = {$now},
@@ -124,9 +128,12 @@ class CollectiveInvoice{
                     intern_contactperson = {$this->internContact->getId()},
                     cust_message = '{$this->custMessage}',  
                     cust_sign = '{$this->custSign}', 
+                    needs_planning = {$this->needs_planning}, 
+                    deliverydate = {$this->deliverydate}, 
                     custContactperson = {$this->custContactperson->getId()},
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
+//             echo $sql . "</br>";
 			return $DB->no_result($sql);
 		} else {
 			$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_ORDER);
@@ -135,15 +142,15 @@ class CollectiveInvoice{
 				 deliverycosts, comment, businesscontact, client,
 				 deliveryterm, paymentterm, deliveryaddress, invoiceaddress,
 				 intern_contactperson, cust_message, cust_sign, custContactperson,
-				 intent)
+				 intent, needs_planning, deliverydate)
 			VALUES
 				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
 				 {$this->deliveryterm->getId()}, {$this->paymentterm->getId()}, {$this->deliveryaddress->getId()}, {$this->invoiceAddress->getId()},
 				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
-				 '{$this->intent}')";
+				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate})";
 			$res = $DB->no_result($sql);
-//             echo $sql;
+//             echo $sql . "</br>";
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
 				$thisid = $DB->select($sql);
@@ -171,6 +178,94 @@ class CollectiveInvoice{
 				return false;
 			}
 		}
+	}
+	
+	static function getAllCustomerWithColInvs(){
+	    global $DB;
+	    $retval = Array();
+	    $sql = "SELECT DISTINCT collectiveinvoice.businesscontact FROM collectiveinvoice WHERE status > 0";
+	    if($DB->num_rows($sql)){
+	        foreach($DB->select($sql) as $r){
+	            $retval[] = new BusinessContact($r["businesscontact"]);
+	        }
+	    }
+	    return $retval;
+	}
+	
+	public static function combineColInvs(Array $ids){
+		global $_USER;
+	    $maininv = new CollectiveInvoice($ids[0]);
+		$needs_planning = false;
+	    
+	    $newinv = new CollectiveInvoice();
+	    $newinv->setNumber($maininv->getClient()->createOrderNumber(1));
+	    $newinv->setClient($_USER->getClient());
+	    $newinv->setBusinesscontact($maininv->getBusinesscontact());
+	    $newinv->setDeliveryterm($maininv->getDeliveryterm());
+	    $newinv->setDeliverycosts($maininv->getDeliverycosts());
+	    $newinv->setPaymentterm($maininv->getPaymentterm());
+	    $newinv->setTitle("K: " . $maininv->getTitle());
+	    $newinv->setIntent($maininv->getIntent());
+	    $newinv->setComment($maininv->getComment());
+	    $newinv->setDeliveryaddress($maininv->getDeliveryaddress());
+	    $newinv->setInternContact($maininv->getInternContact());
+	    $newinv->setCustMessage($maininv->getCustMessage());
+	    $newinv->setCustSign($maininv->getCustSign());
+	    $newinv->setInvoiceAddress($maininv->getInvoiceAddress());
+	    $newinv->setCustContactperson($maininv->getCustContactperson());
+	    $newinv->setDeliverydate($maininv->getDeliverydate());
+	    
+	    $savemsg = getSaveMessage($newinv->save());
+	    
+	    if ($savemsg){
+	       $collectinv = CollectiveInvoice::getLastSavedCollectiveInvoice();
+	    
+
+	       $orderpositions = Array();
+	       $xi=0;
+	       foreach ($ids as $id){
+	           $tmp_colinv = new CollectiveInvoice($id);
+               $tmp_positions = Orderposition::getAllOrderposition($tmp_colinv->getId());
+	           
+               foreach ($tmp_positions as $position){
+    	           $newpos = new Orderposition();
+                   	
+                   $newpos->setPrice($position->getPrice());
+                   $newpos->setComment($position->getComment());
+                   $newpos->setQuantity($position->getQuantity());
+                   $newpos->setType($position->getType());
+                   $newpos->setInvrel($position->getInvrel());
+                   $newpos->setRevrel($position->getRevrel());
+                   $newpos->setObjectid($position->getObjectid()); // Artikelnummer
+                   $tmp_art = new Article($position->getObjectid());
+                   if ($tmp_art->getIsWorkHourArt())
+                       $needs_planning = true;
+                   $newpos->setTax($position->getTax());
+                   $newpos->setCollectiveinvoice($collectinv->getId());
+                   if ($newpos->getType() == 1){
+                       $tmp_order = new Order($newpos->getObjectid());
+                       $tmp_order->setCollectiveinvoiceId($collectinv->getId());
+                       $tmp_order->save();
+                   }
+                   $orderpositions[] = $newpos;
+               }
+               $association = new Association();
+               $association->setModule1(get_class($collectinv));
+               $association->setObjectid1((int)$collectinv->getId());
+               $association->setModule2(get_class($collectinv));
+               $association->setObjectid2((int)$tmp_colinv->getId());
+               $save_ok = $association->save();
+               unset($association);
+	       }
+	       Orderposition::saveMultipleOrderpositions($orderpositions);
+	       if ($needs_planning)
+	       {
+	           $newinv->setNeeds_planning(1);
+	           $newinv->save();
+	       }
+	       return $collectinv;
+	    }
+	    return false;
 	}
 	
 	/**
@@ -382,6 +477,11 @@ class CollectiveInvoice{
 	    return $this->crtdate;
 	}
 
+	public function getCrtdat()
+	{
+	    return $this->crtdate;
+	}
+
 	public function setCrtdate($crtdate)
 	{
 	    $this->crtdate = $crtdate;
@@ -554,8 +654,37 @@ class CollectiveInvoice{
     {
         $this->custContactperson = $custContactperson;
     }
+    
+	/**
+     * @return the $needs_planning
+     */
+    public function getNeeds_planning()
+    {
+        return $this->needs_planning;
+    }
 
+	/**
+     * @param field_type $needs_planning
+     */
+    public function setNeeds_planning($needs_planning)
+    {
+        $this->needs_planning = $needs_planning;
+    }
     
-    
+	/**
+     * @return the $deliverydate
+     */
+    public function getDeliverydate()
+    {
+        return $this->deliverydate;
+    }
+
+	/**
+     * @param number $deliverydate
+     */
+    public function setDeliverydate($deliverydate)
+    {
+        $this->deliverydate = $deliverydate;
+    }
 }
 ?>

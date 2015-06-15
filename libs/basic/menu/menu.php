@@ -7,6 +7,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 require_once("menu.class.php");
+global $_USER;
+global $_CACHE;
 
 function printSubTree($tree, $i = 1)
 {
@@ -42,7 +44,7 @@ function printSubTree($tree, $i = 1)
 
 function print2ndLevel($tree, $i = 1)
 {
-    print_r($t);
+//     print_r($t);
     foreach($tree as $t)
     {
         echo '<li><a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a></li>';
@@ -61,9 +63,13 @@ function printChildTree($tree, $i = 1)
         
     }
 }
-
-$_MENU = new Menu();
+$usermenustr = "menu_getcached_".$_USER->getId();
+$_MENU = $_CACHE->get($usermenustr);
+if ($_MENU === null)
+{
+    $_MENU = new Menu();
+    $_CACHE->set($usermenustr,$_MENU, $_CONFIG->cache->menu);
+}
 
 printSubTree($_MENU->getElements());
-
 ?>

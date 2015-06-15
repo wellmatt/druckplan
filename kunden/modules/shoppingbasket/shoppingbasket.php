@@ -6,6 +6,23 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 require_once 'libs/modules/article/article.class.php';
+require_once 'libs/modules/attachment/attachment.class.php';
+
+function reArrayFiles(&$file_post) {
+
+    $file_ary = array();
+    $file_count = count($file_post['name']);
+    $file_keys = array_keys($file_post);
+
+    for ($i=0; $i<$file_count; $i++) {
+        foreach ($file_keys as $key) {
+            $file_ary[$i][$key] = $file_post[$key][$i];
+        }
+    }
+
+    return $file_ary;
+}
+
 $shopping_basket = new Shoppingbasket();
 $shopping_basket_entrys = Array ();
 
@@ -23,7 +40,7 @@ if ($_REQUEST["edit_items"]){
 	$shopping_basket->clear();
 	foreach($tmp_entrys as $tmp_item){
 		//Menge aktualisieren
-		$amount = (int)$_REQUEST["amount_{$tmp_item->getType()}_{$tmp_item->getId()}"];	
+		$amount = (int)$_REQUEST["amount_{$tmp_item->getEntryid()}"];	
 		$tmp_item->setAmount($amount);
     	if($tmp_item->getType() == Shoppingbasketitem::TYPE_ARTICLE){
     		$tmp_article = new Article($tmp_item->getId());
@@ -31,8 +48,8 @@ if ($_REQUEST["edit_items"]){
 		    $tmp_item->setPrice($tmp_article->getPrice($amount));
     	}
 		// liefer und rechnungsadresse setzen
-		$tmp_item->setDeliveryAdressID((int)$_REQUEST["entry_deliv_{$tmp_item->getId()}"]);
-		$tmp_item->setInvoiceAdressID((int)$_REQUEST["entry_invoice_{$tmp_item->getId()}"]);
+		$tmp_item->setDeliveryAdressID((int)$_REQUEST["entry_deliv_{$tmp_item->getEntryid()}"]);
+		$tmp_item->setInvoiceAdressID((int)$_REQUEST["entry_invoice_{$tmp_item->getEntryid()}"]);
 	// Eintrag zum Warenkorb hinzufuegen
 	$shopping_basket->addItem($tmp_item);
 	}
@@ -40,9 +57,9 @@ if ($_REQUEST["edit_items"]){
 
 // Einen Eintrag loeschen
 if ($_REQUEST["delete_item"]){ 
+//     var_dump($_REQUEST);
 	$del_id = (int)$_REQUEST["del_id"];
-	$del_type = (int)$_REQUEST["del_type"];
-	$shopping_basket->deleteItem($del_id, $del_type);
+	$shopping_basket->deleteItemByEntryId($del_id);
 	$shopping_basket_entrys = $shopping_basket->getEntrys();
 }
 
@@ -61,16 +78,33 @@ if ($_REQUEST["send_shoppingbasket"]){
 	$shopping_basket->clear();
 	foreach($tmp_entrys as $tmp_item){
 	    //Menge aktualisieren
-	    $amount = (int)$_REQUEST["amount_{$tmp_item->getType()}_{$tmp_item->getId()}"];
+	    $amount = (int)$_REQUEST["amount_{$tmp_item->getEntryid()}"];
 	    $tmp_item->setAmount($amount);
 	    if($tmp_item->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 	        $tmp_article = new Article($tmp_item->getId());
 	        //ggf Preis anpassen
 	        $tmp_item->setPrice($tmp_article->getPrice($amount));
+	        if ($tmp_article->getShop_needs_upload()==1)
+	        {
+                $file = $_FILES["myfile_".$tmp_item->getEntryid()];
+                if ($file["name"] != ""){
+                    $tmp_attachment = new Attachment();
+                    $tmp_attachment->setCrtdate(time());
+                    $tmp_attachment->setCrtuser($_USER);
+                    $tmp_attachment->setModule("Orderposition");
+                    $tmp_attachment->setObjectid(0);
+                    $tmp_attachment->move_save_file($file);
+                    $save_ok = $tmp_attachment->save();
+                    $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
+                    if ($save_ok === true){
+                        $tmp_item->setFile($tmp_attachment->getId());
+                    }
+                }
+	        }
 	    }
 	    // liefer und rechnungsadresse setzen
-	    $tmp_item->setDeliveryAdressID((int)$_REQUEST["entry_deliv_{$tmp_item->getId()}"]);
-	    $tmp_item->setInvoiceAdressID((int)$_REQUEST["entry_invoice_{$tmp_item->getId()}"]);
+	    $tmp_item->setDeliveryAdressID((int)$_REQUEST["entry_deliv_{$tmp_item->getEntryid()}"]);
+	    $tmp_item->setInvoiceAdressID((int)$_REQUEST["entry_invoice_{$tmp_item->getEntryid()}"]);
 	    // Eintrag zum Warenkorb hinzufuegen
 	    $shopping_basket->addItem($tmp_item);
 	}
@@ -117,10 +151,34 @@ $overall_price = 0;
 $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_DELIV_SHOP);
 $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_INVC);
 ?>
-<form method="post" action="index.php" name="form_shopbasket">
+<script>
+// $(document).ready(function(event) {
+//     $("#form_shopbasket").submit(function(){
+function BasketSubmit()
+{
+        var isFormValid = true;
+    
+        $(".artfile").each(function(){
+            if ($.trim($(this).val()).length == 0){
+                isFormValid = false;
+            }
+        });
+    
+        if (!isFormValid) 
+        {
+        	alert("Bitte die zugehörigen Dateiuploads auswählen!");
+        	return isFormValid;
+        }
+        if (confirm('Warenkorb wirklich absenden ?'))
+            return isFormValid;
+}
+//     });
+// });
+</script>
+
+<form method="post" action="index.php" name="form_shopbasket" enctype="multipart/form-data">
 <input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
 <input type="hidden" name="del_id" id="del_id" value="">
-<input type="hidden" name="del_type" id="del_type" value="">
 <input type="hidden" name="exec" value="save";>
 
 <div class="box1">
@@ -139,11 +197,11 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 				<col width="20">
 				<col width="120">
 				<col>
-				<col width="70">
+				<col width="50">
 				<col width="130">
 				<col width="130">
-				<col width="130">
-				<col width="130">
+				<col width="120">
+				<col width="120">
 				<col width="50">
 			</colgroup>
 			<tr>
@@ -184,6 +242,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 						&ensp;
 					</td>
 					<td class="filerow">
+					    <table><tr><td>
 						<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 							$tmp_pid = 60;	
 							$tmp_obj = "articleid=".$entry->getId();
@@ -198,18 +257,23 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 							 $tmp_exec= "exec=edit";
 						}?>
 						<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
-								<?=substr($entry->getTitle(),0,21)?></a>
+								<?=substr($entry->getTitle(),0,21)?></a></td>
+								<?php if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){if($artic->getShop_needs_upload()==1){?>
+								<td><label class="filebutton"><img src="../images/icons/disk--plus.png"/>
+								<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label></td>
+								<?php }}?>
+						</tr></table>
 					</td> 
 					<td class="filerow"  align="right">
 					<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 							$tmp_amount = $entry->getAmount();	
 							$tmp_readonly = "";
 							?>
-							<input 	style="width:50px;" name="amount_<?=$entry->getType()?>_<?=$entry->getId()?>" 
+							<input 	style="width:50px;" name="amount_<?=$entry->getEntryid()?>" 
 									value="<?=$entry->getAmount()?>" <?=$tmp_readonly?>> 
 							<?
 						} else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){?>
-				    			<select name="amount_<?=$entry->getType()?>_<?=$entry->getId()?>" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
+				    			<select name="amount_<?=$entry->getEntryid()?>" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
 				    					style="width: 150px;">
 				    				<?
 				    				foreach($allprices AS $price){ ?>
@@ -237,22 +301,20 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 							echo printPrice($ges_price);?>&euro;
 					</td>
 					<td class="filerow" align="right">
-    		    		<select name="entry_deliv_<?=$entry->getId()?>" class="text"	style="width: 200px;">
-    		    			<option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;hlen');?> &gt;</option>
+    		    		<select name="entry_deliv_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
     		    			<?	foreach($all_deliveryAddresses AS $deliv){ ?>
     		    					<option value="<?=$deliv->getId()?>"
-    		    							<?if($deliv->getId() == $entry->getDeliveryAdressID()) echo 'selected="selected"';?>>
+    		    							<?if($deliv->getId() == $entry->getDeliveryAdressID()){echo 'selected="selected"';} else if ($deliv->getDefault()){echo 'selected="selected"';}?>>
     		    					<?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
     		    					</option>
     						<?	} ?>
     		    		</select>
 		    	    </td>
 					<td class="filerow" align="right">
-    		    		<select name="entry_invoice_<?=$entry->getId()?>" class="text"	style="width: 200px;">
-    		    			<option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;hlen');?> &gt;</option>
+    		    		<select name="entry_invoice_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
     		    			<?	foreach($all_invoiceAddresses AS $invoice){ ?>
     		    					<option value="<?=$invoice->getId()?>"
-    		    							<?if($invoice->getId() == $entry->getInvoiceAdressID()) echo 'selected="selected"';?>>
+    		    							<?if($invoice->getId() == $entry->getInvoiceAdressID()){echo 'selected="selected"';} else if ($invoice->getDefault()){echo 'selected="selected"';}?>>
     		    					<?=$invoice->getNameAsLine()?> (<?=$invoice->getAddressAsLine()?>)
     		    					</option>
     						<?	} ?>
@@ -261,8 +323,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 					<td class="filerow" align="center">
 						<input 	type="submit" style="border: solid 1px red; color: red;";
 							value="X" name="delete_item"
-							onClick="document.getElementById('del_id').value = <?=$entry->getId()?>;
-									 document.getElementById('del_type').value = <?=$entry->getType()?>;">
+							onClick="document.getElementById('del_id').value = <?=$entry->getEntryid()?>;">
 					</td>
 				</tr>
 			<?$x++;
@@ -313,7 +374,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 					<?//TODO AGBs zustimmen und kalkulierte Produkte explizit bestaetigen?>
 					<input 	type="submit" class="submit" name="send_shoppingbasket" 
 							value="<?=$_LANG->get('senden')?>"
-							onclick="return confirm('<?=$_LANG->get('Warenkorb wirklich absenden ?') ?>')">
+							onclick="return BasketSubmit();">
 				</td>
 			</tr>
 		</table>

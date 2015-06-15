@@ -26,6 +26,8 @@ class Orderposition{
 	private $objectid;					// ObjectID, fall mit artikel oder Auftrag verknuepft
 	private $invrel = 1;				// Rechnungs-Relevanz
 	private $revrel = 0;				// Gutschein-Relevanz
+	private $file_attach = 0;           // Artikle File
+	private $perso_order = 0;           // Falls Perso Order Bestellung
 	
 	/**
 	 * Konstruktor fuer Eintraege (Auftragspositionen) in Sammelrechungen
@@ -49,6 +51,8 @@ class Orderposition{
 				$this->objectid = $r["object_id"];
 				$this->invrel = $r["inv_rel"];
 				$this->revrel = $r["rev_rel"];
+				$this->file_attach = $r["file_attach"];
+				$this->perso_order = $r["perso_order"];
 			}
 		}
 	}
@@ -91,11 +95,11 @@ class Orderposition{
 				$sql = "INSERT INTO collectiveinvoice_orderposition
 						(quantity, comment, price, 
 						tax, status, collectiveinvoice, type, 
-						object_id, inv_rel, rev_rel )
+						object_id, inv_rel, rev_rel, file_attach, perso_order )
 						VALUES
 						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, 
 						{$opos->getTax()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
-						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()} )";
+						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()}, {$opos->getFile_attach()}, {$opos->getPerso_order()} )";
 // 				echo $sql . "</br>";
 				$res = $DB->no_result($sql);
 				if($res){
@@ -118,8 +122,11 @@ class Orderposition{
 						object_id = {$opos->getObjectid()},
 						inv_rel = {$opos->getInvrel()},
 						rev_rel = {$opos->getRevrel()},  
-						collectiveinvoice = {$opos->getCollectiveinvoice()}
+						file_attach = {$opos->getFile_attach()},  
+						collectiveinvoice = {$opos->getCollectiveinvoice()},
+						perso_order = {$opos->getPerso_order()} 
 						WHERE id = {$opos->getId()}";
+// 				echo $sql . "</br>";
 				$res = $DB->no_result($sql);
 				if($res){
 					$result = true;
@@ -286,4 +293,36 @@ class Orderposition{
 	{
 	    $this->revrel = $revrel;
 	}
+	
+	/**
+     * @return the $file_attach
+     */
+    public function getFile_attach()
+    {
+        return $this->file_attach;
+    }
+
+	/**
+     * @param field_type $file_attach
+     */
+    public function setFile_attach($file_attach)
+    {
+        $this->file_attach = $file_attach;
+    }
+    
+	/**
+     * @return the $perso_order
+     */
+    public function getPerso_order()
+    {
+        return $this->perso_order;
+    }
+
+	/**
+     * @param number $perso_order
+     */
+    public function setPerso_order($perso_order)
+    {
+        $this->perso_order = $perso_order;
+    }
 }

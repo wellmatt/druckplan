@@ -269,6 +269,12 @@
         } else {
             $sWhere .= " AND tsid != 3 ";
         }
+    } else {
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tsid = 3 ";
+        } else {
+            $sWhere .= " AND tsid = 3 ";
+        }
     }
     
     if ($_GET['crtuser'] != ""){
@@ -307,15 +313,45 @@
         }
     }
     
+    if ($_GET['cl_start'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE closedate >= {$_GET['cl_start']} ";
+        } else {
+            $sWhere .= " AND closedate >= {$_GET['cl_start']} ";
+        }
+    }
+    if ($_GET['cl_end'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE closedate <= {$_GET['cl_end']} ";
+        } else {
+            $sWhere .= " AND closedate <= {$_GET['cl_end']} ";
+        }
+    }
+    
+    if ((int)$_GET['showdeleted'] == 1){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tsid = 1 ";
+        } else {
+            $sWhere .= " AND tsid = 1 ";
+        }
+    } else {
+        $nodeleted = " WHERE tickets_states.id > 1 ";
+        if ($sWhere == ""){
+            $sWhere .= " WHERE tsid > 1 ";
+        } else {
+            $sWhere .= " AND tsid > 1 ";
+        }
+    }
+    
     /*
      * SQL queries
      * Get data to display
      */ 
     $sQuery = "SELECT * FROM (SELECT
-               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
-               tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.closedate, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+               tickets.state as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
                IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, tickets.tourmarker 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, businesscontact.tourmarker 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -324,7 +360,7 @@
                LEFT JOIN `user` ON `user`.id = tickets.assigned_user
                LEFT JOIN groups ON groups.id = tickets.assigned_group
                LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
-               WHERE tickets.state > 0 
+               $nodeleted
                ) tickets 
                $sWhere
                $sOrder 
@@ -341,10 +377,10 @@
 //     ";
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.") FROM (SELECT
-               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
-               tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.closedate, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+               tickets.state as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
                IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, tickets.tourmarker 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, businesscontact.tourmarker 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -353,7 +389,7 @@
                LEFT JOIN `user` ON `user`.id = tickets.assigned_user
                LEFT JOIN groups ON groups.id = tickets.assigned_group
                LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
-               WHERE tickets.state > 0 
+               $nodeleted
                ) tickets 
                $sWhere
     ";
@@ -368,10 +404,10 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM (SELECT
-               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
-               tickets_states.id as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
+               tickets.id, tickets.number, tickets_categories.title as category, tickets_categories.id as tcid, tickets.closedate, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+               tickets.state as tsid, businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title, 
                IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned, assigned_user, assigned_group, 
-               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, tickets.tourmarker 
+               CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser, tickets.crtuser as crtuserid, businesscontact.tourmarker 
                FROM tickets
                LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
                LEFT JOIN tickets_states ON tickets_states.id = tickets.state
@@ -380,7 +416,7 @@
                LEFT JOIN `user` ON `user`.id = tickets.assigned_user
                LEFT JOIN groups ON groups.id = tickets.assigned_group
                LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser 
-               WHERE tickets.state > 0 
+               $nodeleted
                ) tickets 
     ";
 //     var_dump($sQuery);
@@ -411,7 +447,7 @@
     {
         $row = array();
         $tc = new TicketCategory((int)$aRow['tcid']);
-        if ($tc->cansee() || $_REQUEST["forme"] || ($_REQUEST["cpid"] && $contactperson->TC_cansee($tc))){
+        if (($tc->cansee() && $contactperson->getId()==0) || $_REQUEST["forme"] || ($contactperson->getId()>0 && $contactperson->TC_cansee($tc))){
             for ( $i=0 ; $i<count($aColumns) ; $i++ )
             {
                 if ( $aColumns[$i] == 'crtdate' )
@@ -468,6 +504,10 @@
                 else if ( $aColumns[$i] == 'id' )
                 {
                     $row[] = $aRow[ $aColumns[$i] ];
+                }
+                else if ( $aColumns[$i] == 'closedate' )
+                {
+                    /* do not print */
                 }
                 else if ( $aColumns[$i] == 'tourmarker' )
                 {

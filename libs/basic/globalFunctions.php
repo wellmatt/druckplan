@@ -270,6 +270,22 @@ function utf7_decode($str){
 	return $str;
 }
 
+function tofloat($num) {
+    $dotPos = strrpos($num, '.');
+    $commaPos = strrpos($num, ',');
+    $sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+    ((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+
+    if (!$sep) {
+        return floatval(preg_replace("/[^0-9]/", "", $num));
+    }
+
+    return floatval(
+        preg_replace("/[^0-9]/", "", substr($num, 0, $sep)) . '.' .
+        preg_replace("/[^0-9]/", "", substr($num, $sep+1, strlen($num)))
+    );
+}
+
 /**
  * Formatierung fuer die Ausgabe eines Strings in XML-Dokumenten (Umlaute und Sonderzeichen)
  *
@@ -296,4 +312,19 @@ function formatStringForXML($string){
 	return $string;
 }
 
+function percentage($val1, $val2, $precision)
+{
+    $division = $val1 / $val2;
+
+    $res = $division * 100;
+
+    $res = round($res, $precision);
+
+    return $res;
+}
+
+function round_up ( $value, $precision ) { 
+    $pow = pow ( 10, $precision ); 
+    return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow; 
+} 
 ?>

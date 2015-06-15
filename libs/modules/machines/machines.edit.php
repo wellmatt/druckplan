@@ -106,6 +106,17 @@ if($_REQUEST["subexec"] == "save")
     $machine->setBreaks((int)$_REQUEST["breaks"]);
     $machine->setBreaks_time((int)$_REQUEST["breaks_time"]);
     
+    $machine->setColor($_REQUEST["machine_color"]);
+
+    $quser_list = Array();
+    if ($_REQUEST["qusr"]){
+        foreach ($_REQUEST["qusr"] as $qusr)
+        {
+            $quser_list[] = new User((int)$qusr);
+        }
+    }
+    $machine->setQualified_users($quser_list);
+    
     if ($machine->getId() == 0 &&  											// Wenn Maschine noch nicht existiert und eine Druckmaschine ist,
     		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){		// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
     	$printer_counter = Machine::getNumberOfPrintingmachines();
@@ -135,6 +146,8 @@ if($_REQUEST["subexec"] == "save")
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="jscripts/colorpicker/colorpicker.css" />
+<script type="text/javascript" src="jscripts/colorpicker/colorpicker.js"></script>
 
 <script language="javascript">
 
@@ -436,6 +449,18 @@ $(function() {
 		 timepicker:true,
 		 format:'d.m.Y H:i'
 	});
+	$('#machine_color').ColorPicker({
+		onSubmit: function(hsb, hex, rgb, el) {
+			$(el).val(hex);
+			$(el).ColorPickerHide();
+		},
+		onBeforeShow: function () {
+			$(this).ColorPickerSetColor(this.value);
+		}
+	})
+	.bind('keyup', function(){
+		$(this).ColorPickerSetColor(this.value);
+	});
 });
 </script>
 
@@ -464,6 +489,7 @@ if ($machine->getId() > 0){
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" name="id" value="<?=$machine->getId()?>">
 <div class="box1">
+<b>Kopfdaten</b>
 <table cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td valign="top">
@@ -548,6 +574,12 @@ if ($machine->getId() > 0){
 					</td>
 				</tr>
 				<? } ?>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Farbe (Planung)')?></td>
+					<td class="content_row_clear">
+						<input id="machine_color" name="machine_color" value="<?=$machine->getColor()?>" class="text" size="6" maxlength="6">
+					</td>
+				</tr>
 			</table>
 		</td>
 		<td valign="top">
@@ -588,6 +620,7 @@ if ($machine->getId() > 0){
 </div>
 <br>
 <div class="box2">
+<b>Maschinendaten</b>
 <table cellpadding="0" cellspacing="0" border="0"><tr><td valign="top">
 <table width="500">
     <colgroup>
@@ -932,8 +965,31 @@ if ($machine->getId() > 0){
 
 </div>
 <br>
+<div class="box1">
+    <b>Arbeiter</b>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	    <?php 
+	    $all_users = User::getAllUser();
+	    $qid_arr = Array();
+	    foreach ($machine->getQualified_users() as $qid)
+	    {
+	        $qid_arr[] = $qid->getId();
+	    }
+	    $qi = 0;
+	    foreach ($all_users as $qusr){
+	       if ($qi==0) echo '<tr>';
+	       ?>
+		   <td class="content_row_header" valign="top" width="20%">
+		   <input type="checkbox" name="qusr[]" <?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?> value="<?php echo $qusr->getId();?>"/> 
+		   <?php echo $qusr->getNameAsLine();?></td>
+		   <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
+		<?php $qi++;}?>
+	</table>
+</div>
+</br>
 <?php if ($machine->getId() > 0){?>
 <div class="box1">
+    <b>Sperrzeiten</b>
 	<table width="500" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td class="content_row_header" valign="top">Sperrzeit Start</td>

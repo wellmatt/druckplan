@@ -69,8 +69,34 @@ if ((int)$_REQUEST["cid"] > 0){
 		    $comment->setVisability($_REQUEST["tktc_type"]);
 		    $comment->setComment($_REQUEST["tktc_comment"]);
 		    $save_ok = $comment->save();
-// 		    echo getSaveMessage($save_ok);
             if ($save_ok && $_FILES['tktc_attachments']){
+                
+                if ($comment->getModule() == "Ticket")
+                {
+                    $tmp_ticket = new Ticket($comment->getObjectid());
+                    $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $comment->getCrtuser()->getNameAsLine() . ' bearbeitet</br>';
+                    $ticketlog = new TicketLog();
+                    $ticketlog->setCrtusr($_USER);
+                    $ticketlog->setDate(time());
+                    $ticketlog->setTicket($tmp_ticket);
+                    $ticketlog->setEntry($logentry);
+                    $ticketlog->save();
+                } else if ($comment->getModule() == "Comment")
+                {
+                    $tmp_comment = new Comment($comment->getObjectid());
+                    if ($tmp_comment->getModule() == "Ticket")
+                    {
+                        $tmp_ticket = new Ticket($tmp_comment->getObjectid());
+                        $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $comment->getCrtuser()->getNameAsLine() . ' bearbeitet</br>';
+                        $ticketlog = new TicketLog();
+                        $ticketlog->setCrtusr($_USER);
+                        $ticketlog->setDate(time());
+                        $ticketlog->setTicket($tmp_ticket);
+                        $ticketlog->setEntry($logentry);
+                        $ticketlog->save();
+                    }
+                }
+                
                 $file_ary = reArrayFiles($_FILES['tktc_attachments']);
             
                 foreach ($file_ary as $file) {
@@ -203,7 +229,7 @@ if ((int)$_REQUEST["cid"] > 0){
 	    <tr>
 	        <td class="content_row_header">
 	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+	        			onclick="parent.$.fancybox.close();">
 	        </td>
 	        <td class="content_row_clear" align="right">
 	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">

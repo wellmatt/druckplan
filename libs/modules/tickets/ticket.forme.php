@@ -49,8 +49,9 @@ $(document).ready(function() {
         "bServerSide": true,
         "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php?forme=<?php echo $_USER->getId();?>",
         "paging": true,
-		"stateSave": true,
-// 		"dom": 'flrtip',        
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
+		"aaSorting": [[ 5, "asc" ]],
 		"dom": 'T<"clear">flrtip',            
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -66,7 +67,6 @@ $(document).ready(function() {
                          "print"
                      ]
                  },
-		"pageLength": 50,
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
 		            null,

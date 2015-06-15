@@ -28,6 +28,7 @@ if ($_REQUEST["subexec"] == "deletemail")
 
 if ($_REQUEST["subexec"] == "save")
 {
+    
     $user->setLogin(trim(addslashes($_REQUEST["user_login"])));
     $user->setFirstname(trim(addslashes($_REQUEST["user_firstname"])));
     $user->setLastname(trim(addslashes($_REQUEST["user_lastname"])));
@@ -49,8 +50,55 @@ if ($_REQUEST["subexec"] == "save")
     else
         $user->setAdmin(false);
 
-    if ($_REQUEST["user_password"] && $_REQUEST["user_password_repeat"] == $_REQUEST["user_password"])
-        $user->setPassword(trim(addslashes($_REQUEST["user_password"])));
+    if ($user->getId()==0){
+        if ($_REQUEST["user_password"] && $_REQUEST["user_password_repeat"] == $_REQUEST["user_password"])
+            $user->setPassword(trim(addslashes($_REQUEST["user_password"])));
+    }
+    
+    $tmp_wtime_arr = Array();
+    if ($_REQUEST["wotime"])
+    {
+        for($i=0;$i<7;$i++)
+        {
+            $day_total = 0;
+            if (count($_REQUEST["wotime"][$i])>0)
+            {
+                foreach ($_REQUEST["wotime"][$i] as $wtime)
+                {
+                    $tmp_wtime_arr[$i][] = Array("start"=>strtotime($wtime["start"]),"end"=>strtotime($wtime["end"]));
+                    $day_total += (strtotime($wtime["end"])-strtotime($wtime["start"]));
+                }
+            }
+            if ($day_total>0)
+                $day_total = $day_total/60/60;
+            switch ($i)
+            {
+                case 0:
+                    $user->setW_su(tofloat($day_total));
+                    break;
+                case 1:
+                    $user->setW_mo(tofloat($day_total));
+                    break;
+                case 2:
+                    $user->setW_tu(tofloat($day_total));
+                    break;
+                case 3:
+                    $user->setW_we(tofloat($day_total));
+                    break;
+                case 4:
+                    $user->setW_th(tofloat($day_total));
+                    break;
+                case 5:
+                    $user->setW_fr(tofloat($day_total));
+                    break;
+                case 6:
+                    $user->setW_sa(tofloat($day_total));
+                    break;
+            }
+        }
+    }
+    $user->setWorkinghours($tmp_wtime_arr);
+    $user->setW_month(tofloat($_REQUEST["w_month"]));
     
     $saver = $user->save();
     
@@ -92,15 +140,21 @@ if ($_REQUEST["subexec"] == "save")
     $savemsg .= " ".$DB->getLastError();
      
 }
+
+$user = new User($_REQUEST["id"]);
+
 $groups = Group::getAllGroups(Group::ORDER_NAME);
 $clients = Client::getAllClients(Client::ORDER_NAME);
 $languages = Translator::getAllLangs(Translator::ORDER_NAME);
 $all_emails = Emailaddress::getAllEmailaddress(Emailaddress::ORDER_ADDRESS, $user->getId());
 ?>
 
+<script	type="text/javascript" src="jscripts/timepicker/jquery-ui-timepicker-addon.js"></script>
+<link href='jscripts/timepicker/jquery-ui-timepicker-addon.css' rel='stylesheet'/>
 <!-- TinyMCE -->
-<script
-	type="text/javascript" src="jscripts/tiny_mce/tiny_mce.js"></script>
+<script	type="text/javascript" src="jscripts/tiny_mce/tiny_mce.js"></script>
+<script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
+<script src="jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
 <script type="text/javascript">
 	tinyMCE.init({
 		// General options
@@ -205,6 +259,11 @@ function addEMailRow(){
 	document.getElementById('email_quantity').value = count;
 }
 </script>
+<script language="JavaScript">
+$(document).ready(function () {
+    $('#user_form').validate({});
+});
+</script>
 
 <table width="100%">
 	<tr>
@@ -215,187 +274,272 @@ function addEMailRow(){
 		<td width="200" class="content_header" align="right"><?=$savemsg?></td>
 	</tr>
 </table>
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form"
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form"
 	onsubmit="return checkpass(new Array(this.user_login, this.user_firstname, this.user_lastname, this.user_email))">
 <div class="box1">
-	<?// Objekte werden an die checkform() durchgereicht?>
+    
 	<input type="hidden" name="exec" value="edit"> <input type="hidden"
 		name="subexec" value="save"> <input type="hidden" name="id"
 		value="<?=$user->getId()?>">
-	<table width="500px" border="0" cellpadding="0" cellspacing="0">
-		<colgroup>
-			<col width="180">
-			<col>
-		</colgroup>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Benutzername');?> *</td>
-			<td class="content_row_clear">
-				<input name="user_login" style="width: 300px" class="text" 
-				value="<?=$user->getLogin()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Passwort');?></td>
-			<td class="content_row_clear">
-				<input name="user_password" id="user_password" style="width: 300px" class="text" 
-				type="password" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Passwort wiederholen');?></td>
-			<td class="content_row_clear">
-				<input name="user_password_repeat" id="user_password_repeat" style="width: 300px" class="text" 
-				type="password"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Benutzertyp');?></td>
-			<td class="content_row_clear"><select name="user_type" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<option value="normal">
-						<?=$_LANG->get('Benutzer')?>
-					</option>
-					<option value="admin" <? if($user->isAdmin()) echo "selected";?>>
-						<?=$_LANG->get('Administrator')?>
-					</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
-			<td class="content_row_clear"><select name="user_client"
-				style="width: 300px" class="text" onfocus="markfield(this,0)"
-				onblur="markfield(this,1)">
-					<?
-					foreach($clients as $c)
-					{?>
-					<option value="<?=$c->getId()?>"
-					<?if ($user->getClient()->getId() == $c->getId()) echo "selected";?>>
-						<?if(!$c->isActive()) echo '<span color="red">';?>
-						<?=$c->getName()?>
-						<?if(!$c->isActive()) echo '</span>';?>
-					</option>
-					<?}
+		
+	<table>
+	   <tr>
+	       <td>
+	            <b>Nutzerdaten:</b>
+            	<table width="500px" border="0" cellpadding="0" cellspacing="0">
+            		<colgroup>
+            			<col width="180">
+            			<col>
+            		</colgroup>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Benutzername');?> *</td>
+            			<td class="content_row_clear">
+            				<input name="user_login" style="width: 300px" class="text" required
+            				value="<?=$user->getLogin()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Passwort');?> *</td>
+            			<td class="content_row_clear">
+            				<input name="user_password" id="user_password" style="width: 300px" class="text"  
+            				type="password" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Passwort wiederholen');?> *</td>
+            			<td class="content_row_clear">
+            				<input name="user_password_repeat" id="user_password_repeat" style="width: 300px" class="text"  
+            				type="password"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Benutzertyp');?></td>
+            			<td class="content_row_clear"><select name="user_type" style="width: 300px"
+            				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            					<option value="normal">
+            						<?=$_LANG->get('Benutzer')?>
+            					</option>
+            					<option value="admin" <? if($user->isAdmin()) echo "selected";?>>
+            						<?=$_LANG->get('Administrator')?>
+            					</option>
+            			</select>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
+            			<td class="content_row_clear"><select name="user_client"
+            				style="width: 300px" class="text" onfocus="markfield(this,0)"
+            				onblur="markfield(this,1)">
+            					<?
+            					foreach($clients as $c)
+            					{?>
+            					<option value="<?=$c->getId()?>"
+            					<?if ($user->getClient()->getId() == $c->getId()) echo "selected";?>>
+            						<?if(!$c->isActive()) echo '<span color="red">';?>
+            						<?=$c->getName()?>
+            						<?if(!$c->isActive()) echo '</span>';?>
+            					</option>
+            					<?}
+            
+            					?>
+            			</select>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
+            			<td class="content_row_clear"><select name="user_lang" style="width: 300px"
+            				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            					<?
+            					foreach($languages as $l)
+            					{?>
+            					<option value="<?=$l->getId()?>"
+            					<?if ($user->getLang()->getId() == $l->getId()) echo "selected";?>>
+            						<?=$l->getName()?>
+            					</option>
+            					<?}
+            
+            					?>
+            			</select>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Benutzer aktiv')?></td>
+            			<td class="content_row_clear"><input name="user_active" type="checkbox"
+            				value="1"
+            				<? if ($user->isActive() || $_REQUEST["id"] == "") echo "checked";?>
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header">&nbsp;</td>
+            			<td class="content_row_clear">&nbsp;</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Telefon-IP');?> *</td>
+            			<td class="content_row_clear">
+            				<input name="user_telefonip" style="width: 300px" class="text" value="<?=$user->getTelefonIP()?>"
+            						onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header">&nbsp;</td>
+            			<td class="content_row_clear">&nbsp;</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Vorname');?> *</td>
+            			<td class="content_row_clear"><input name="user_firstname"
+            				style="width: 300px" class="text" value="<?=$user->getFirstname()?>" required 
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Nachname');?> *</td>
+            			<td class="content_row_clear"><input name="user_lastname"
+            				style="width: 300px" class="text" value="<?=$user->getLastname()?>" required 
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Telefon');?></td>
+            			<td class="content_row_clear"><input name="user_phone" style="width: 300px"
+            				class="text" value="<?=$user->getPhone()?>"
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('E-Mail Adresse');?> *</td>
+            			<td class="content_row_clear"><input name="user_email" style="width: 300px" required 
+            				class="text" value="<?=$user->getEmail()?>"
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Mails weiterleiten');?></td>
+            			<td class="content_row_clear"><input name="user_forwardmail"
+            				type="checkbox" value="1"
+            				<? if ($user->getForwardMail() || $_REQUEST["id"] == "") echo "checked";?>
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Kalender->Geburtstage');?></td>
+            			<td class="content_row_clear"><input name="user_cal_birthday"
+            				type="checkbox" value="1"
+            				<? if ($user->getCalBirthday()) echo "checked";?>
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Kalender->Tickets');?></td>
+            			<td class="content_row_clear"><input name="user_cal_tickets"
+            				type="checkbox" value="1"
+            				<? if ($user->getCalTickets()) echo "checked";?>
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Kalender->Aufträge');?></td>
+            			<td class="content_row_clear"><input name="user_cal_orders"
+            				type="checkbox" value="1"
+            				<? if ($user->getCalOrders()) echo "checked";?>
+            				onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Signatur');?></td>
+            			<td class="content_row_clear">&nbsp;</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_clear" colspan="2"><textarea name="user_signature"
+            					style="width: 450px; height: 200px">
+            					<?=$user->getSignature()?>
+            				</textarea>
+            			</td>
+            		</tr>
+            		<tr>
+            			<td class="content_row_header">&nbsp;</td>
+            			<td class="content_row_clear">&nbsp;</td>
+            		</tr>
+            	</table>
+	       </td>
+	       <td valign="top">
+	           <b>Arbeitsstunden:</b>
+	           <?php 
+	           unset($whours);
+	           unset($times);
+	           $times = $user->getWorkinghours();
+	           $daynames = Array("Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag");
+	           ?>
+	           <table>
+	           <?php 
+	           for($i=0;$i<7;$i++)
+	           {
+	               ?>
+            		<tr>
+            			<td class="content_row_header" valign="top"><?=$_LANG->get($daynames[$i]);?></td>
+            			<td class="content_row_clear">
+	               <?php
+	               $count = 0;
+    	           if (count($times[$i])>0)
+    	           {
+    	               foreach($times[$i] as $whours)
+    	               {
+                            ?>
+            			    <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="<?php echo date("H:i",$whours["start"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis 
+                            <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="<?php echo date("H:i",$whours["end"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
+                            <script language="JavaScript">
+                                $(document).ready(function () {
+                                	var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+                                	var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
 
-					?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
-			<td class="content_row_clear"><select name="user_lang" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<?
-					foreach($languages as $l)
-					{?>
-					<option value="<?=$l->getId()?>"
-					<?if ($user->getLang()->getId() == $l->getId()) echo "selected";?>>
-						<?=$l->getName()?>
-					</option>
-					<?}
+                                	$.timepicker.timeRange(
+                                		startTimeTextBox,
+                                		endTimeTextBox,
+                                		{
+                                			minInterval: (1000*900), // 0,25hr
+                                			timeFormat: 'HH:mm',
+                                			start: {}, // start picker options
+                                			end: {} // end picker options
+                                		}
+                                	);
+                                });
+                            </script>
+                            <?php
+	                       $count++;
+                       }
+    	           }
+    	           ?>
+            			    <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis 
+                            <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
+                            <script language="JavaScript">
+                                $(document).ready(function () {
+                                	var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+                                	var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
 
-					?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Benutzer aktiv')?></td>
-			<td class="content_row_clear"><input name="user_active" type="checkbox"
-				value="1"
-				<? if ($user->isActive() || $_REQUEST["id"] == "") echo "checked";?>
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">&nbsp;</td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Telefon-IP');?> *</td>
-			<td class="content_row_clear">
-				<input name="user_telefonip" style="width: 300px" class="text" value="<?=$user->getTelefonIP()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">&nbsp;</td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Vorname');?> *</td>
-			<td class="content_row_clear"><input name="user_firstname"
-				style="width: 300px" class="text" value="<?=$user->getFirstname()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Nachname');?> *</td>
-			<td class="content_row_clear"><input name="user_lastname"
-				style="width: 300px" class="text" value="<?=$user->getLastname()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Telefon');?></td>
-			<td class="content_row_clear"><input name="user_phone" style="width: 300px"
-				class="text" value="<?=$user->getPhone()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('E-Mail Adresse');?> *</td>
-			<td class="content_row_clear"><input name="user_email" style="width: 300px"
-				class="text" value="<?=$user->getEmail()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Mails weiterleiten');?></td>
-			<td class="content_row_clear"><input name="user_forwardmail"
-				type="checkbox" value="1"
-				<? if ($user->getForwardMail() || $_REQUEST["id"] == "") echo "checked";?>
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kalender->Geburtstage');?></td>
-			<td class="content_row_clear"><input name="user_cal_birthday"
-				type="checkbox" value="1"
-				<? if ($user->getCalBirthday()) echo "checked";?>
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kalender->Tickets');?></td>
-			<td class="content_row_clear"><input name="user_cal_tickets"
-				type="checkbox" value="1"
-				<? if ($user->getCalTickets()) echo "checked";?>
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kalender->Aufträge');?></td>
-			<td class="content_row_clear"><input name="user_cal_orders"
-				type="checkbox" value="1"
-				<? if ($user->getCalOrders()) echo "checked";?>
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Signatur');?></td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
-		<tr>
-			<td class="content_row_clear" colspan="2"><textarea name="user_signature"
-					style="width: 450px; height: 200px">
-					<?=$user->getSignature()?>
-				</textarea>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">&nbsp;</td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
+                                	$.timepicker.timeRange(
+                                		startTimeTextBox,
+                                		endTimeTextBox,
+                                		{
+                                			minInterval: (1000*900), // 0,25hr
+                                			timeFormat: 'HH:mm',
+                                			start: {}, // start picker options
+                                			end: {} // end picker options
+                                		}
+                                	);
+                                });
+                            </script>
+            			</td>
+            		</tr>
+    	           <?php
+	           }
+	           ?>
+            		<tr>
+            			<td class="content_row_header"><?=$_LANG->get('Ges. Monat *');?></td>
+            			<td class="content_row_clear"><input style="width: 40px;" type="text" id="w_month" name="w_month" value="<?php echo printPrice($user->getW_month(),2);?>"/> </td>
+            		</tr>
+	           </table>
+	       </td>
+	   </tr>
 	</table>
 </div>
 <br/>
@@ -511,7 +655,7 @@ function addEMailRow(){
 						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 220px">
 				</td>
 				<td class="content_row">
-					<input type="text" class="text" name="mail_password_<?=$x?>" value="<?=$emailaddress->getPassword()?>"
+					<input type="password" class="text" name="mail_password_<?=$x?>" value="<?=$emailaddress->getPassword()?>"
 						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 120px">
 				</td>
 				<td class="content_row">
@@ -589,71 +733,6 @@ function addEMailRow(){
 </table>
 </div>
 </br>
-
-<div class="box2">
-<table width="100%" id="table_user_times">
-	<colgroup>
-		<col width="150">
-		<col width="150">
-		<col width="150">
-		<col width="70">
-		<col>
-	</colgroup>
-	<tr>
-		<td class="content_header" colspan="2"><h1><?=$_LANG->get('Arbeitszeiten')?></h1></td>
-	</tr>
-
-
-	<tr>
-		<td class="content_row_header"><?=$_LANG->get('Checkin')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Pause (H:M:S)')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Checkout')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Gesamt (H:M:S)')?></td>
-	</tr>
-<? 	
-	
-	$user_id = $user->getId();
-
-	$user_time = array();
-	$sql = "SELECT * FROM user_times WHERE user_id = {$user_id}";
-	$res = $DB->select($sql);
-	
-	foreach ($res as $r){
-		$tmp_pause = 0;
-		$sql2 = "SELECT * FROM user_times_pause WHERE user_times_id = {$r["id"]}";
-		$res2 = $DB->select($sql2);
-		foreach ($res2 as $r2){
-			if ((!empty($r2["end"])) && (!empty($r2["start"])))
-			{			
-				$tmp_pause = $tmp_pause + ($r2["end"] - $r2["start"]);
-			}
-		}
-		$user_time[] = array($r["id"],$r["checkin"],$r["checkout"],$tmp_pause);
-	}
-	
-	// print_r($user_time);
-	
-	$x = 0;
-		foreach($user_time as $ut) {?>
-			<tr>
-				<td class="content_row"><? echo date("d.m.Y H:i", $ut[1]); ?></td>
-				<?
-					$hours = floor($ut[3] / 3600);
-					$mins = floor(($ut[3] - ($hours*3600)) / 60);
-					$secs = floor($ut[3] % 60);
-				?>
-				<td class="content_row"><? echo $hours.":".$mins.":".$secs ; ?></td>
-				<td class="content_row"><? echo date("d.m.Y H:i", $ut[2]); ?></td>
-				<?
-					$hours = floor((($ut[2] - $ut[1]) - $ut[3]) / 3600);
-					$mins = floor(((($ut[2] - $ut[1]) - $ut[3]) - ($hours*3600)) / 60);
-					$secs = floor((($ut[2] - $ut[1]) - $ut[3]) % 60);
-				?>
-				<td class="content_row"><? echo $hours.":".$mins.":".$secs ; ?></td>
-			</tr>
-		<? } ?>
-</table>
-</div>
 
 
 <br/>

@@ -106,10 +106,12 @@ $(document).ready(function() {
         // "scrollY": "1000px",
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "libs/modules/calculation/calculation.dt.ajax.php",
+        "sAjaxSource": "libs/modules/calculation/calculation.dt.ajax.php<?php if ($_REQUEST['cust_id']) echo '?cust_id='.$_REQUEST["cust_id"];?>",
         "paging": true,
-		"stateSave": true,
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"dom": 'T<"clear">flrtip',
+		"aaSorting": [[ 6, "desc" ]],
 		"order": [[ 6, "desc" ]],
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -125,7 +127,6 @@ $(document).ready(function() {
                          "print"
                      ]
                  },
-		"pageLength": 50,
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var iMin = document.getElementById('ajax_date_min').value;
 			var iMax = document.getElementById('ajax_date_max').value;
@@ -218,6 +219,12 @@ $(document).ready(function() {
    <tr>
       <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorg&auml;nge')?></td>
       <td><?=$savemsg?></td>
+      <?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
+      <td width="200" class="content_header" align="right">
+      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php"><img src="images/icons/arrow-join.png">
+      	<span style="font-size:13px"><?=$_LANG->get('Vorgänge Zusammenführen')?></span></a>
+      </td>
+      <?php }?>
       <td width="200" class="content_header" align="right">
       	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user"><img src="images/icons/calculator--plus.png">
       	<span style="font-size:13px"><?=$_LANG->get('Vorgang hinzuf&uuml;gen')?></span></a>

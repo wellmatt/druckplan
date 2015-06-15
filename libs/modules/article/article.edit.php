@@ -52,6 +52,21 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShopCustomerRel((int)$_REQUEST["article_shop_cust_rel"]);
 	$article->setIsWorkHourArt((int)$_REQUEST["article_isworkhourart"]);
 	$article->setShowShopPrice((int)$_REQUEST["article_show_shop_price"]);
+	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
+	
+	$quser_list = Array();
+	foreach ($_REQUEST["qusr"] as $qusr)
+	{
+	    $quser_list[] = new User((int)$qusr);
+	}
+	$article->setQualified_users($quser_list);
+	
+	$tmp_orderamounts = Array();
+	foreach ($_REQUEST["article_orderamounts"] as $tmp_orderamount)
+	{
+	    $tmp_orderamounts[] = $tmp_orderamount;
+	}
+	$article->setOrderamounts($tmp_orderamounts);
 		
 	$article->setTradegroup(new Tradegroup((int)$_REQUEST["article_tradegroup"]));
 	$savemsg = getSaveMessage($article->save()).$DB->getLastError();
@@ -120,6 +135,13 @@ function printSubTradegroupsForSelect($parentId, $depth){
 
 //var_dump($article);
 ?>
+<script language="javascript">
+$(document).ready(function(){
+	$('#article_isworkhourart').change(function() {
+	        $('#qusers').toggle();  
+	    });
+	});
+</script>
 <script language="javascript">
 function addPriceRow()
 {
@@ -192,6 +214,15 @@ function checkArticleNumber(obj){
 	}
 	return false;
 }
+
+function addOrderAmount()
+{
+    var amount = prompt("Bitte Bestellmenge angeben", "");
+    
+    if (amount != null) {
+    	$("#article_orderamounts").append('<option selected="selected" value="'+amount+'">'+amount+'</option>');
+    }
+}
 </script>
 
 <!-- FancyBox -->
@@ -218,340 +249,370 @@ function checkArticleNumber(obj){
 		<td align="right"><?=$savemsg?></td>
 	</tr>
 </table>
+</br>
 <form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="article_edit" id="article_edit"   
 		onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))">
-<table>	
-	<colgroup>
-		<col width="600">
-		<col width="5">
-		<col width="700">
-	</colgroup>	
-	<tr>
-	<? // -------------------- Atikeldetails --------------------------------------------------- ?>
-	<td>
-	<div class="box1" style="min-height: 380px;">
-		<input type="hidden" name="exec" value="edit"> 
-		<input type="hidden" name="subexec" value="save"> 
-		<input type="hidden" name="aid" value="<?=$article->getId()?>">
-		
-		<? // Fuer die ein neues Bild ?>
-		<input type="hidden" name="new_picture" id="new_picture" value="">
-		<input type="hidden" name="new_picture_origname" id="new_picture_origname" value="">
-		
-		<table width="100%">
-			<colgroup>
-				<col width="180">
-				<col>
-			</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-				<td class="content_row_clear">
-				<input id="article_title" name="article_title" type="text" class="text" 
-					value="<?=$article->getTitle()?>" style="width: 370px">
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Artikelnummer')?> *</td>
-				<td class="content_row_clear">
-				<input id="article_number" name="article_number" type="text" class="text" 
-					value="<?=$article->getNumber()?>" style="width: 180px">
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-				<td class="content_row_clear">
-					<textarea id="article_desc" name="article_desc" rows="4" cols="50" class="text"><?=stripslashes($article->getDesc())?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Warengruppe')?></td>
-				<td class="content_row_clear">
-				<select id="article_tradegroup" name="article_tradegroup" style="width: 170px">
-					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<?if ($article->getTradegroup() == NULL){
-						foreach ($all_tradegroups as $tg){
-							echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
-						} 
-					} else {
-						foreach ($all_tradegroups as $tg){?>
-							<option value="<?=$tg->getId()?>"
-							<?if ($article->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
-						<?	printSubTradegroupsForSelect($tg->getId(), 0);
-						} //Ende foreach($all_tradegroups)
-					}//Ende else?>
-				</select>
-				</td>
-			</tr>
-			<tr><td colspan="2">&emsp;</td></tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td>
-				<td class="content_row_clear">
-					<input 	id="article_shoprel" name="article_shoprel" class="text" type="checkbox" 
-							value="1" <?if ($article->getShoprel() == 1) echo "checked"; ?>>
-						<?=$_LANG->get('Alle');?>
-					&emsp;&emsp;&emsp;
-					<input 	id="article_shop_cust_rel" name="article_shop_cust_rel" class="text" type="checkbox" 
-							value="1" <?if ($article->getShopCustomerRel() == 1) echo "checked"; ?>>
-					<select id="article_shop_cust_id" name="article_shop_cust_id" style="width:150px"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text" >
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<? 	foreach ($allcustomer as $cust){?>
-							<option value="<?=$cust->getId()?>"
-								<?if ($article->getShopCustomerID() == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine()?></option>
-					<?	} //Ende ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Shop: Preis anzeigen')?></td>
-				<td class="content_row_clear">
-					<input 	id="article_show_shop_price" name="article_show_shop_price" class="text" type="checkbox" 
-							value="1" <?if ($article->getShowShopPrice() == 1) echo "checked"; ?>>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Arbeitszeit Artikel')?></td>
-				<td class="content_row_clear">
-					<input 	id="article_isworkhourart" name="article_isworkhourart" class="text" type="checkbox" 
-							value="1" <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Bestellmengen')?> (Min/Max)</td>
-				<td class="content_row_clear">
-					<input id="article_minorder" name="article_minorder" type="text" class="text" 
-							value="<?=$article->getMinorder()?>" style="width: 80px">
-					<?=$_LANG->get('Stk.');?> 
-					<input id="article_maxorder" name="article_maxorder" type="text" class="text" 
-							value="<?=$article->getMaxorder()?>" style="width: 80px">
-					<?=$_LANG->get('Stk.');?> 
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Verpackungseinheit/-gewicht')?></td>
-				<td class="content_row_clear">
-					<input id="article_orderunit" name="article_orderunit" type="text" class="text" 
-							value="<?=$article->getOrderunit()?>" style="width: 80px">
-					<?=$_LANG->get('Stk.');?>  
-					<input id="article_orderunitweight" name="article_orderunitweight" type="text" class="text" 
-							value="<?=printPrice($article->getOrderunitweight(), 4)?>" style="text-align:right;width: 80px">
-					<?=$_LANG->get('Kg.');?> 
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Umsatzsteuer')?> *</td>
-				<td class="content_row_clear">
-					<input id="article_tax" name="article_tax" type="text" class="text" 
-							value="<?=printPrice($article->getTax())?>" style="width: 184px"> %
-				</td>
-			</tr>
-			<tr><td colspan="2">&emsp;</td></tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Lagerplatz')?></td>
-				<td class="content_row_clear">
-				<? 	$output = "";
-					foreach ($warehouses as $stock){
-						$output .= $stock->getName()."(".$stock->getAmount()." Stk.)".", ";
-					} 
-					$output = substr( $output , 0, -2);
-					echo $output;
-					?>
-				</td>
-			</tr>
-			<tr><td colspan="2">&emsp;</td></tr>
-			<?if ($article->getId() != 0 && $article->getCrt_user() != 0){// Ersteller nur beim Bearbeiten ausgeben?>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Angelegt')?></td>
-					<td class="content_row_clear">
-						<?=date('d.m.Y - H:i', $article->getCrt_date())?> <?=$_LANG->get('Uhr')?>
-						<?=$_LANG->get('von')?>
-						<?// var_dump($article->getCrt_user()); ?>
-						<?=$article->getCrt_user()->getFirstname()?> <?=$article->getCrt_user()->getLastname()?>
-					</td>
-					
-				</tr>
-				<?if ($article->getUpt_user() != 0 && $article->getUpt_date() != 0){
-						// Ge�ndert von/am nur bei bearbeiteten Artikeln ausgeben?>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert von')?></td>
-					<td class="content_row_clear">
-						<?=date('d.m.Y - H:i', $article->getUpt_date())?> <?=$_LANG->get('Uhr')?>
-						<?=$_LANG->get('von')?>
-						<?=$article->getUpt_user()->getFirstname()?> <?=$article->getUpt_user()->getLastname()?>
-					</td>
-				</tr>
-				<?} // Ende if(geaendert gesetzt) ?>
-			<?} // Ende if(neuer Artikel) ?>
-		</table>
-	</div>
-	</td>
-	<td>&emsp;</td>
-	</tr>
-	<? // -------------------- Artikelbilder --------------------------------------------------- ?>
-	<tr>
-	<td valign="top">
-		<div class="box1" style="min-height: 380px;">
-		<table width="100%">
-			<colgroup>
-				<col width="200">
-				<col width="200">
-			</colgroup>
-			<tr>
-				<td class="content_row_header" colspan="2" id="td_picture_show">
-					<?=$_LANG->get('Artikelbilder')?>  &emsp; &emsp;
-					<a  href="libs/modules/article/picture.iframe.php" id="picture_select" class="products"
-							><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></a>
-				</td>	
-			</tr>
-			<tr>
-				<td id="td_newpicture" colspan="2">&ensp;</td>
-			</tr>
-			<?/****?>
-			<tr>
-				<td align="left">
-					<?if ($article->getPicture()!= NULL && $article->getPicture() !=""){?>
-						<img src="images/products/<?=$article->getPicture()?>" width="130px">
-						
-						<a onclick="askDel('index.php?exec=edit&subexec=deletepic&aid=<?=$article->getId()?>&picid=<?$picture[$x]["id"]?>')"
-							href="#"><img src="images/icons/cross-script.png" title="<?=$_LANG->get(' Bild l&ouml;schen')?>"></a>
-	        		<?} else {?>
-	        			&nbsp; ...
-	        		<? } ?>	
-				</td>
-				<td align="right">&ensp;</td>
-			</tr><?****/?>
-		</table>
-		<br/>
-		
-		<? $x=0;
-		foreach ($all_pictures AS $pic){
-			?>
-			<img src="images/products/<?=$pic["url"]?>" width="130px">
-			<a onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=deletepic&aid=<?=$article->getId()?>&picid=<?=$pic["id"]?>')"  class="icon-link"
-							href="#"><img src="images/icons/cross-script.png" title="<?=$_LANG->get(' Bild l&ouml;schen')?>"></a>
-			&ensp; 
-		<?	$x++;
-		}?>
-		</div>
-	</td>
-	</tr>
-	<tr><td>&emsp;</td></tr>
-	<tr>
-		<td>
-			<?// Ab hier Preisstaffeln ein geben ?>
-			<input 	type="hidden" name="count_quantity" id="count_quantity" 
-					value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
-			<h1><?=$_LANG->get('VK-Preisstaffeln')?></h1>
-			<div class="box2" style="min-height: 180px;">
-				<table id="table-prices">
-					<colgroup>
-			        	<col width="40">
-			        	<col width="80">
-			        	<col width="120">
-			        	<col width="120">
-			    	</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Von')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-					</tr>
-					<?
-					$x = count($allprices);
-					if ($x < 1){
-						//$allprices[] = new Array
-						$x++;
-					}
-					for ($y=0; $y < $x ; $y++){ ?>
-						<tr>
-							<td class="content_row_clear">
-							<?=$y+1?>
-							</td>
-							<td class="content_row_clear">
-								<input 	name="article_price_min_<?=$y?>" class="text" type="text"
-										value ="<?=$allprices[$y][sep_min]?>" style="width: 50px">
-								<?=$_LANG->get('Stk.')?>
-							</td>
-							<td class="content_row_clear">
-								<input 	name="article_price_max_<?=$y?>" class="text" type="text"
-										value ="<?=$allprices[$y][sep_max]?>" style="width: 50px">
-								<?=$_LANG->get('Stk.')?>
-							</td>
-							<td class="content_row_clear">
-								<input 	name="article_price_price_<?=$y?>" class="text" type="text"
-										value ="<?=printPrice($allprices[$y][sep_price])?>" style="width: 50px">
-								<?=$_USER->getClient()->getCurrency()?>
-								&nbsp;&nbsp;&nbsp;
-								<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-									echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()">';
-								}?> 
-							</td>
-						</tr>
-					<? } //Ende alle Preis-Staffeln?>
-				</table>
-				<br/>* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
-			</div>
-		</td>
-		<td>&emsp;</td>
-	</tr>
-	<tr>
-		<td>
-			<?// Ab hier Preisstaffeln (EK) ein geben ?>
-			<input 	type="hidden" name="count_quantity_cost" id="count_quantity_cost" 
-					value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
-			<h1><?=$_LANG->get('EK-Preisstaffeln')?></h1>
-			<div class="box2" style="min-height: 180px;">
-				<table id="table_prices_cost">
-					<colgroup>
-			        	<col width="40">
-			        	<col width="80">
-			        	<col width="120">
-			        	<col width="120">
-			    	</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Von')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-					</tr>
-					<?
-					$x = count($allcostprices);
-					if ($x < 1){
-						//$allprices[] = new Array
-						$x++;
-					}
-					for ($y=0; $y < $x ; $y++){ ?>
-						<tr>
-							<td class="content_row_clear">
-							<?=$y+1?>
-							</td>
-							<td class="content_row_clear">
-								<input 	name="article_costprice_min_<?=$y?>" class="text" type="text"
-										value ="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
-								<?=$_LANG->get('Stk.')?>
-							</td>
-							<td class="content_row_clear">
-								<input 	name="article_costprice_max_<?=$y?>" class="text" type="text"
-										value ="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
-								<?=$_LANG->get('Stk.')?>
-							</td>
-							<td class="content_row_clear">
-								<input 	name="article_costprice_price_<?=$y?>" class="text" type="text"
-										value ="<?=printPrice($allcostprices[$y][sep_price])?>" style="width: 50px">
-								<?=$_USER->getClient()->getCurrency()?>
-								&nbsp;&nbsp;&nbsp;
-								<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-									echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
-								}?> 
-							</td>
-						</tr>
-					<? } //Ende alle Preis-Staffeln?>
-				</table>
-				<br/>* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
-			</div>
-		</td>
-	</tr>
-	</table>
+<div style="overflow: hidden;">
+    <div style="width: 50%; float: left;">
+    	<? // -------------------- Atikeldetails --------------------------------------------------- ?>
+    	<div class="box1" style="min-height: 380px;">
+    	    <b>Kopfdaten</b>
+    		<input type="hidden" name="exec" value="edit"> 
+    		<input type="hidden" name="subexec" value="save"> 
+    		<input type="hidden" name="aid" value="<?=$article->getId()?>">
+    		
+    		<? // Fuer die ein neues Bild ?>
+    		<input type="hidden" name="new_picture" id="new_picture" value="">
+    		<input type="hidden" name="new_picture_origname" id="new_picture_origname" value="">
+    		
+    		<table width="100%">
+    			<colgroup>
+    				<col width="180">
+    				<col>
+    			</colgroup>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
+    				<td class="content_row_clear">
+    				<input id="article_title" name="article_title" type="text" class="text" 
+    					value="<?=$article->getTitle()?>" style="width: 370px">
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Artikelnummer')?> *</td>
+    				<td class="content_row_clear">
+    				<input id="article_number" name="article_number" type="text" class="text" 
+    					value="<?=$article->getNumber()?>" style="width: 180px">
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
+    				<td class="content_row_clear">
+    					<textarea id="article_desc" name="article_desc" rows="4" cols="50" class="text"><?=stripslashes($article->getDesc())?></textarea>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Warengruppe')?></td>
+    				<td class="content_row_clear">
+    				<select id="article_tradegroup" name="article_tradegroup" style="width: 170px">
+    					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+    					<?if ($article->getTradegroup() == NULL){
+    						foreach ($all_tradegroups as $tg){
+    							echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
+    						} 
+    					} else {
+    						foreach ($all_tradegroups as $tg){?>
+    							<option value="<?=$tg->getId()?>"
+    							<?if ($article->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
+    						<?	printSubTradegroupsForSelect($tg->getId(), 0);
+    						} //Ende foreach($all_tradegroups)
+    					}//Ende else?>
+    				</select>
+    				</td>
+    			</tr>
+    			<tr><td colspan="2">&emsp;</td></tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td>
+    				<td class="content_row_clear">
+    					<input 	id="article_shoprel" name="article_shoprel" class="text" type="checkbox" 
+    							value="1" <?if ($article->getShoprel() == 1) echo "checked"; ?>>
+    						<?=$_LANG->get('Alle');?>
+    					&emsp;&emsp;&emsp;
+    					<input 	id="article_shop_cust_rel" name="article_shop_cust_rel" class="text" type="checkbox" 
+    							value="1" <?if ($article->getShopCustomerRel() == 1) echo "checked"; ?>>
+    					<select id="article_shop_cust_id" name="article_shop_cust_id" style="width:150px"
+    							onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text" >
+    						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+    					<? 	foreach ($allcustomer as $cust){?>
+    							<option value="<?=$cust->getId()?>"
+    								<?if ($article->getShopCustomerID() == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine()?></option>
+    					<?	} //Ende ?>
+    					</select>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Shop: Preis anzeigen')?></td>
+    				<td class="content_row_clear">
+    					<input 	id="article_show_shop_price" name="article_show_shop_price" class="text" type="checkbox" 
+    							value="1" <?if ($article->getShowShopPrice() == 1) echo "checked"; ?>>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Shop: Datei Upload')?></td>
+    				<td class="content_row_clear">
+    					<input 	id="article_shop_needs_upload" name="article_shop_needs_upload" class="text" type="checkbox" 
+    							value="1" <?if ($article->getShop_needs_upload() == 1) echo "checked"; ?>>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Arbeitszeit Artikel')?></td>
+    				<td class="content_row_clear">
+    					<input 	id="article_isworkhourart" name="article_isworkhourart" class="text" type="checkbox" 
+    							value="1" <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Bestellmengen')?> (Min/Max)</td>
+    				<td class="content_row_clear">
+    					<input id="article_minorder" name="article_minorder" type="text" class="text" 
+    							value="<?=$article->getMinorder()?>" style="width: 80px">
+    					<?=$_LANG->get('Stk.');?> 
+    					<input id="article_maxorder" name="article_maxorder" type="text" class="text" 
+    							value="<?=$article->getMaxorder()?>" style="width: 80px">
+    					<?=$_LANG->get('Stk.');?> 
+    				</td>
+    			</tr>
+    			<tr valign="top">
+    				<td class="content_row_header"><?=$_LANG->get('Mögl. Bestellmengen (Shop)')?></td>
+    				<td class="content_row_clear">
+    					<select name="article_orderamounts[]" id="article_orderamounts" multiple="" size="6" style="width: 184px">
+    					   <?php 
+    					   foreach ($article->getOrderamounts() as $orderamount)
+    					   {
+    					       echo '<option selected value="'.$orderamount.'">'.$orderamount.'</option>';
+    					   }
+    					   ?>
+    					</select><img src="images/icons/plus.png" class="pointer icon-link" title="Bestellmenge hinzufügen" onclick="addOrderAmount();">
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Verpackungseinheit/-gewicht')?></td>
+    				<td class="content_row_clear">
+    					<input id="article_orderunit" name="article_orderunit" type="text" class="text" 
+    							value="<?=$article->getOrderunit()?>" style="width: 80px">
+    					<?=$_LANG->get('Stk.');?>  
+    					<input id="article_orderunitweight" name="article_orderunitweight" type="text" class="text" 
+    							value="<?=printPrice($article->getOrderunitweight(), 4)?>" style="text-align:right;width: 80px">
+    					<?=$_LANG->get('Kg.');?> 
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Umsatzsteuer')?> *</td>
+    				<td class="content_row_clear">
+    					<input id="article_tax" name="article_tax" type="text" class="text" 
+    							value="<?=printPrice($article->getTax())?>" style="width: 184px"> %
+    				</td>
+    			</tr>
+    			<tr><td colspan="2">&emsp;</td></tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Lagerplatz')?></td>
+    				<td class="content_row_clear">
+    				<? 	$output = "";
+    					foreach ($warehouses as $stock){
+    						$output .= $stock->getName()."(".$stock->getAmount()." Stk.)".", ";
+    					} 
+    					$output = substr( $output , 0, -2);
+    					echo $output;
+    					?>
+    				</td>
+    			</tr>
+    			<tr><td colspan="2">&emsp;</td></tr>
+    			<?if ($article->getId() != 0 && $article->getCrt_user() != 0){// Ersteller nur beim Bearbeiten ausgeben?>
+    				<tr>
+    					<td class="content_row_header"><?=$_LANG->get('Angelegt')?></td>
+    					<td class="content_row_clear">
+    						<?=date('d.m.Y - H:i', $article->getCrt_date())?> <?=$_LANG->get('Uhr')?>
+    						<?=$_LANG->get('von')?>
+    						<?// var_dump($article->getCrt_user()); ?>
+    						<?=$article->getCrt_user()->getFirstname()?> <?=$article->getCrt_user()->getLastname()?>
+    					</td>
+    					
+    				</tr>
+    				<?if ($article->getUpt_user() != 0 && $article->getUpt_date() != 0){
+    						// Ge�ndert von/am nur bei bearbeiteten Artikeln ausgeben?>
+    				<tr>
+    					<td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert von')?></td>
+    					<td class="content_row_clear">
+    						<?=date('d.m.Y - H:i', $article->getUpt_date())?> <?=$_LANG->get('Uhr')?>
+    						<?=$_LANG->get('von')?>
+    						<?=$article->getUpt_user()->getFirstname()?> <?=$article->getUpt_user()->getLastname()?>
+    					</td>
+    				</tr>
+    				<?} // Ende if(geaendert gesetzt) ?>
+    			<?} // Ende if(neuer Artikel) ?>
+    		</table>
+    	</div>
+    	</br>
+        <? // -------------------- Artikelbilder --------------------------------------------------- ?>
+    	<div class="box1" style="min-height: 380px;">
+    	<b>Artikelbilder</b>
+    	<table width="100%">
+    		<colgroup>
+    			<col width="200">
+    			<col width="200">
+    		</colgroup>
+    		<tr>
+    			<td class="content_row_header" colspan="2" id="td_picture_show">
+    				<?=$_LANG->get('Artikelbilder')?>  &emsp; &emsp;
+    				<a  href="libs/modules/article/picture.iframe.php" id="picture_select" class="products"
+    						><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></a>
+    			</td>	
+    		</tr>
+    		<tr>
+    			<td id="td_newpicture" colspan="2">&ensp;</td>
+    		</tr>
+    		<?/****?>
+    		<tr>
+    			<td align="left">
+    				<?if ($article->getPicture()!= NULL && $article->getPicture() !=""){?>
+    					<img src="images/products/<?=$article->getPicture()?>" width="130px">
+    					
+    					<a onclick="askDel('index.php?exec=edit&subexec=deletepic&aid=<?=$article->getId()?>&picid=<?$picture[$x]["id"]?>')"
+    						href="#"><img src="images/icons/cross-script.png" title="<?=$_LANG->get(' Bild l&ouml;schen')?>"></a>
+            		<?} else {?>
+            			&nbsp; ...
+            		<? } ?>	
+    			</td>
+    			<td align="right">&ensp;</td>
+    		</tr><?****/?>
+    	</table>
+    	<br/>
+    	
+    	<? $x=0;
+    	if ($all_pictures>0){
+    	foreach ($all_pictures AS $pic){
+    		?>
+    		<img src="images/products/<?=$pic["url"]?>" width="130px">
+    		<a onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=deletepic&aid=<?=$article->getId()?>&picid=<?=$pic["id"]?>')"  class="icon-link"
+    						href="#"><img src="images/icons/cross-script.png" title="<?=$_LANG->get(' Bild l&ouml;schen')?>"></a>
+    		&ensp; 
+    	<?	$x++;
+    	}}?>
+    	</div>
+    	</br>
+    </div>
+    <div style="width: 50%; float: right;">
+    	<?// Ab hier Preisstaffeln ein geben ?>
+    	<input 	type="hidden" name="count_quantity" id="count_quantity" 
+    			value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
+    	<div class="box1" style="min-height: 180px;">
+    	    <b>VK-Preisstaffeln</b>
+    		<table id="table-prices">
+    			<colgroup>
+    	        	<col width="40">
+    	        	<col width="80">
+    	        	<col width="120">
+    	        	<col width="120">
+    	    	</colgroup>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
+    				<td class="content_row_header"><?=$_LANG->get('Von')?></td>
+    				<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+    				<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
+    			</tr>
+    			<?
+    			$x = count($allprices);
+    			if ($x < 1){
+    				//$allprices[] = new Array
+    				$x++;
+    			}
+    			for ($y=0; $y < $x ; $y++){ ?>
+    				<tr>
+    					<td class="content_row_clear">
+    					<?=$y+1?>
+    					</td>
+    					<td class="content_row_clear">
+    						<input 	name="article_price_min_<?=$y?>" class="text" type="text"
+    								value ="<?=$allprices[$y][sep_min]?>" style="width: 50px">
+    						<?=$_LANG->get('Stk.')?>
+    					</td>
+    					<td class="content_row_clear">
+    						<input 	name="article_price_max_<?=$y?>" class="text" type="text"
+    								value ="<?=$allprices[$y][sep_max]?>" style="width: 50px">
+    						<?=$_LANG->get('Stk.')?>
+    					</td>
+    					<td class="content_row_clear">
+    						<input 	name="article_price_price_<?=$y?>" class="text" type="text"
+    								value ="<?=printPrice($allprices[$y][sep_price])?>" style="width: 50px">
+    						<?=$_USER->getClient()->getCurrency()?>
+    						&nbsp;&nbsp;&nbsp;
+    						<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+    							echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()">';
+    						}?> 
+    					</td>
+    				</tr>
+    			<? } //Ende alle Preis-Staffeln?>
+    		</table>
+    		<br/>* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
+    	</div>
+    	</br>
+    	<?// Ab hier Preisstaffeln (EK) ein geben ?>
+    	<input 	type="hidden" name="count_quantity_cost" id="count_quantity_cost" 
+    			value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
+    	<div class="box1" style="min-height: 180px;">
+    	    <b>EK-Preisstaffeln</b>
+    		<table id="table_prices_cost">
+    			<colgroup>
+    	        	<col width="40">
+    	        	<col width="80">
+    	        	<col width="120">
+    	        	<col width="120">
+    	    	</colgroup>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
+    				<td class="content_row_header"><?=$_LANG->get('Von')?></td>
+    				<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+    				<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
+    			</tr>
+    			<?
+    			$x = count($allcostprices);
+    			if ($x < 1){
+    				//$allprices[] = new Array
+    				$x++;
+    			}
+    			for ($y=0; $y < $x ; $y++){ ?>
+    				<tr>
+    					<td class="content_row_clear">
+    					<?=$y+1?>
+    					</td>
+    					<td class="content_row_clear">
+    						<input 	name="article_costprice_min_<?=$y?>" class="text" type="text"
+    								value ="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
+    						<?=$_LANG->get('Stk.')?>
+    					</td>
+    					<td class="content_row_clear">
+    						<input 	name="article_costprice_max_<?=$y?>" class="text" type="text"
+    								value ="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
+    						<?=$_LANG->get('Stk.')?>
+    					</td>
+    					<td class="content_row_clear">
+    						<input 	name="article_costprice_price_<?=$y?>" class="text" type="text"
+    								value ="<?=printPrice($allcostprices[$y][sep_price])?>" style="width: 50px">
+    						<?=$_USER->getClient()->getCurrency()?>
+    						&nbsp;&nbsp;&nbsp;
+    						<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+    							echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
+    						}?> 
+    					</td>
+    				</tr>
+    			<? } //Ende alle Preis-Staffeln?>
+    		</table>
+    		<br/>* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
+    	</div>
+    	</br>
+    	<div id="qusers" class="box1" style="min-height: 180px; <?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
+            <b>Arbeiter</b>
+        	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+        	    <?php 
+        	    $all_users = User::getAllUser();
+        	    $qid_arr = Array();
+        	    foreach ($article->getQualified_users() as $qid)
+        	    {
+        	        $qid_arr[] = $qid->getId();
+        	    }
+        	    $qi = 0;
+        	    foreach ($all_users as $qusr){
+        	       if ($qi==0) echo '<tr>';
+        	       ?>
+        		   <td class="content_row_header" valign="top" width="20%">
+        		   <input type="checkbox" name="qusr[]" <?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?> value="<?php echo $qusr->getId();?>"/> 
+        		   <?php echo $qusr->getNameAsLine();?></td>
+        		   <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
+        		<?php $qi++;}?>
+        	</table>
+    	</div>
+    	</br>
+    </div>
+</div>
 	<br/>
 	<?// Speicher & Navigations-Button ?>
 	<table width="100%">

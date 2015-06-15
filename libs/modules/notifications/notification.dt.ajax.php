@@ -120,11 +120,17 @@
         }
     }
     
+    if ($sWhere == ""){
+        $sWhere .= " WHERE user = ".$_REQUEST["userid"]." ";
+    } else {
+        $sWhere .= " AND user = ".$_REQUEST["userid"]." ";
+    }
+    
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT * FROM notifications WHERE user = ".$_REQUEST["userid"]." 
+    $sQuery = "SELECT * FROM notifications 
                $sWhere
                $sOrder
                $sLimit
@@ -136,7 +142,7 @@
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT COUNT(id) FROM notifications WHERE user = ".$_REQUEST["userid"]." 
+        SELECT COUNT(id) FROM notifications 
         $sWhere
     ";
 //     var_dump($sQuery);

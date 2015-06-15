@@ -140,6 +140,27 @@ class Personalizationorder{
 	 * @param String $order
 	 * @return Array:Personalizationorder
 	 */
+	static function getAllCustomerWithOrders(){
+		global $DB;
+		$retval = Array();
+		
+		$sql = "SELECT DISTINCT personalization_orders.customerid FROM personalization_orders WHERE `status` >= 1 AND orderdate > 0";
+
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){ 
+				$retval[] = new BusinessContact($r["customerid"]);
+			}
+		}
+		return $retval;
+	}
+	
+	/**
+	 * Funktion liefert alle aktiven Bestellungen von Personalisierungen nach angegebener Reighenfolge
+	 * 
+	 * @param int $customerID
+	 * @param String $order
+	 * @return Array:Personalizationorder
+	 */
 	static function getAllPersonalizationorders($customerID, $order = self::ORDER_CRTDATE, $status_filter=false){
 		global $DB;
 		$retval = Array();
@@ -170,7 +191,7 @@ class Personalizationorder{
 	
 		$sql = "SELECT id FROM personalization_orders 
 				WHERE 
-				status = 1 
+				status >= 1 
 				AND customerid = {$customerID} ";
 		
 		if ($search_string != NULL && $search_string != ""){
@@ -261,31 +282,31 @@ class Personalizationorder{
 	 * @return Personalizationorder
 	 */
 	public function copyPersoOrderForShopOrder(){
-		$new_persosorder = new Personalizationorder();
-		$new_persosorder->setAmount($this->amount);
-		$new_persosorder->setComment($this->comment);
-		$new_persosorder->setContactPersonID($this->contactPersonID);
-		$new_persosorder->setCrtdate($this->crtdate);
-		$new_persosorder->setCrtuser($this->crtuser);
-		$new_persosorder->setCustomerID($this->customerID);
-		$new_persosorder->setOrderdate(time());
-		$new_persosorder->setPersoID($this->persoID);
-		$new_persosorder->setStatus(2);
-		$new_persosorder->setTitle($this->title);
-		$new_persosorder->save();
+// 		$new_persosorder = new Personalizationorder();
+// 		$new_persosorder->setAmount($this->amount);
+// 		$new_persosorder->setComment($this->comment);
+// 		$new_persosorder->setContactPersonID($this->contactPersonID);
+// 		$new_persosorder->setCrtdate($this->crtdate);
+// 		$new_persosorder->setCrtuser($this->crtuser);
+// 		$new_persosorder->setCustomerID($this->customerID);
+// 		$new_persosorder->setOrderdate(time());
+// 		$new_persosorder->setPersoID($this->persoID);
+// 		$new_persosorder->setStatus(2);
+// 		$new_persosorder->setTitle($this->title);
+// 		$new_persosorder->save();
 		
-		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($this->id);
-		foreach ($all_items AS $item){
-			$new_item = new Personalizationorderitem();
-			$new_item->setPersoID($item->getPersoID());
-			$new_item->setPersoItemID($item->getPersoItemID());
-			$new_item->setPersoorderID($new_persosorder->getId());
-			$new_item->setValue($item->getValue());
-			$new_item->save();
-		}
+// 		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($this->id);
+// 		foreach ($all_items AS $item){
+// 			$new_item = new Personalizationorderitem();
+// 			$new_item->setPersoID($item->getPersoID());
+// 			$new_item->setPersoItemID($item->getPersoItemID());
+// 			$new_item->setPersoorderID($new_persosorder->getId());
+// 			$new_item->setValue($item->getValue());
+// 			$new_item->save();
+// 		}
 		// PDF Dokument erstellen
 		$new_doc = new Document();
-		$new_doc->setRequestId($new_persosorder->getId());
+		$new_doc->setRequestId($this->getId()); // $new_persosorder->getId()
 		$new_doc->setRequestModule(Document::REQ_MODULE_PERSONALIZATION);
 		$new_doc->setType(Document::TYPE_PERSONALIZATION_ORDER);
 		$new_doc->setReverse(0);

@@ -42,6 +42,11 @@ class Article {
 	private $shopCustomerID;		// ID des freigegebenen Kunden
 	private $isworkhourart;			// Ist es ein Arbeits-Stunden Artikel
 	private $show_shop_price = 1;	// Freigabe fuer den Shop
+	private $shop_needs_upload;     // Datei upload im Warenkorb
+	
+	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
+	
+	private $qualified_users = Array();
 
 	/**
 	 * Konstruktor eines Artikels, falls id>0 wird der entsprechende Artikel aus der DB geholt
@@ -76,6 +81,7 @@ class Article {
 				$this->shopCustomerRel = $r["shop_customer_rel"];
 				$this->isworkhourart = $r["isworkhourart"];
 				$this->show_shop_price = $r["show_shop_price"];
+				$this->shop_needs_upload = $r["shop_needs_upload"];
 				
 				if ($r["tradegroup"] == 0){
 					$this->tradegroup->setTitle(" &ensp; ");
@@ -95,6 +101,27 @@ class Article {
 				} else {
 					$this->upt_user = 0;
 					$this->upt_date = 0;
+				}
+				
+				// Arbeiter
+				$tmp_qusrs = Array();
+				$sql = "SELECT * FROM article_qualified_users WHERE article = {$this->id}";
+				if($DB->num_rows($sql))
+				{
+				    foreach($DB->select($sql) as $r)
+				    {
+				        $tmp_qusrs[] = new User((int)$r["user"]);	//gln
+				    }
+				}
+				$this->qualified_users = $tmp_qusrs;
+				
+				$sql = "SELECT * FROM article_orderamounts WHERE article_id = {$id}";
+				if($DB->num_rows($sql)){
+				    $retval = Array();
+				    foreach($DB->select($sql) as $r){
+				    	$retval[] = $r["amount"];
+				    }
+				    $this->orderamounts = $retval;
 				}
 			}
 		}
@@ -129,33 +156,67 @@ class Article {
 					shop_customer_rel	= {$this->shopCustomerRel}, 
 					shop_customer_id	= {$this->shopCustomerID},
 					show_shop_price		= {$this->show_shop_price},
+					shop_needs_upload	= {$this->shop_needs_upload},
 					isworkhourart		= {$this->isworkhourart}
                     WHERE id = {$this->id}";
-			return $DB->no_result($sql);
+			$res = $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO article 
 					(status, description, title, 
 					tradegroup, crtdate, crtuser, 
 					shoprel, picture, number, tax, 
 					minorder, maxorder, orderunit,  
-					orderunitweight, shop_customer_rel, shop_customer_id, isworkhourart, show_shop_price )
+					orderunitweight, shop_customer_rel, shop_customer_id, isworkhourart, show_shop_price, shop_needs_upload )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',  
 					{$groupid}, {$now}, {$_USER->getId()}, 
 					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax}, 
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
-					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, {$this->isworkhourart}, {$this->show_shop_price} )";
+					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
+					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload} )";
 			$res = $DB->no_result($sql);
             
             if($res){
                 $sql = "SELECT max(id) id FROM article WHERE title = '{$this->title}'";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
-                return true;
+                $res = true;
             } else {
-                return false;
+                $res = false;
             }
-		} 
+		}
+
+		$sql = "DELETE FROM article_qualified_users WHERE article = {$this->id}";
+		$DB->no_result($sql);
+		
+		foreach($this->qualified_users as $qusr)
+		{
+		    $sql = "INSERT INTO article_qualified_users
+		    (article, user)
+		    VALUES
+		    ({$this->id}, {$qusr->getId()})";
+		    $DB->no_result($sql);
+		}
+		
+		$sql = "DELETE FROM article_orderamounts 
+		        WHERE article_id = {$this->id}";
+		$DB->no_result($sql);
+		
+		if (count($this->orderamounts)>0)
+		{
+		    foreach ($this->orderamounts as $orderamount)
+		    {
+		        $sql = "INSERT INTO article_orderamounts
+		        (article_id, amount)
+		        VALUES
+		        ({$this->id}, {$orderamount})";
+		        $res = $DB->no_result($sql);
+// 		        echo $sql;
+		    }
+		}
+		
+		return $res;
+		
 	}
 	
 	/**
@@ -813,5 +874,54 @@ class Article {
     {
         $this->show_shop_price = $show_shop_price;
     }
+    
+	/**
+     * @return the $orderamounts
+     */
+    public function getOrderamounts()
+    {
+        return $this->orderamounts;
+    }
+
+	/**
+     * @param multitype: $orderamounts
+     */
+    public function setOrderamounts($orderamounts)
+    {
+        $this->orderamounts = $orderamounts;
+    }
+    
+	/**
+     * @return the $qualified_users
+     */
+    public function getQualified_users()
+    {
+        return $this->qualified_users;
+    }
+
+	/**
+     * @param multitype: $qualified_users
+     */
+    public function setQualified_users($qualified_users)
+    {
+        $this->qualified_users = $qualified_users;
+    }
+    
+	/**
+     * @return the $shop_needs_upload
+     */
+    public function getShop_needs_upload()
+    {
+        return $this->shop_needs_upload;
+    }
+
+	/**
+     * @param field_type $shop_needs_upload
+     */
+    public function setShop_needs_upload($shop_needs_upload)
+    {
+        $this->shop_needs_upload = $shop_needs_upload;
+    }
+    
 }
 ?>

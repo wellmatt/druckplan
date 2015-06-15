@@ -76,7 +76,7 @@ if (is_a($_USER, "User")) {
     }
 }
 
-if (is_a($order, "Order")) {
+if (1 == 1) { // is_a($order, "Order")
     
     // Header
     

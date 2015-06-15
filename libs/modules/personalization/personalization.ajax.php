@@ -49,6 +49,18 @@ if ($_REQUEST["exec"] == "checkArticleNumber") {
 		echo "NO";
 	}
 }
+if ($_REQUEST["ajax_action"] == "setFilter_date_min"){
+    $_SESSION['porder_date_min'] = $_POST['porder_date_min'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_date_max"){
+    $_SESSION['porder_date_max'] = $_POST['porder_date_max'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_customer"){
+    $_SESSION['porder_ajax_customer'] = $_POST['porder_ajax_customer'];
+}
+if ($_REQUEST["ajax_action"] == "setFilter_perso_ajax_customer"){
+    $_SESSION['perso_ajax_customer'] = $_POST['perso_ajax_customer'];
+}
 
 ?>
 

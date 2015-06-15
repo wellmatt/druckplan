@@ -33,12 +33,12 @@ global $_LANG;
 // Login
 $_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
-$_LANG = $_USER->getLang();
 
 
 if ($_USER == false){
 	error_log("Login failed (basic-importer.php)");
 	die("Login failed");
 }
+$_LANG = $_USER->getLang();
 
 ?>

@@ -134,7 +134,7 @@
      * Get data to display
      */
     $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
-               FROM article LEFT JOIN article_pictures ON article_pictures.articleid = article.id INNER JOIN tradegroup ON tradegroup.id = article.tradegroup
+               FROM article LEFT JOIN article_pictures ON article_pictures.articleid = article.id LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
                LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id
                $sWhere
                $sOrder
@@ -150,7 +150,7 @@
         SELECT COUNT(article.id)
                FROM article 
                LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
-               INNER JOIN tradegroup ON tradegroup.id = article.tradegroup
+               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
                LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id 
         $sWhere
     ";
@@ -165,7 +165,7 @@
         SELECT COUNT(article.id) 
         FROM article 
         LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
-        INNER JOIN tradegroup ON tradegroup.id = article.tradegroup 
+        LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
         LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id  
         WHERE status = 1
     ";
