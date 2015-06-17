@@ -74,7 +74,7 @@ if ((int)$_REQUEST["cid"] > 0){
                 if ($comment->getModule() == "Ticket")
                 {
                     $tmp_ticket = new Ticket($comment->getObjectid());
-                    $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $comment->getCrtuser()->getNameAsLine() . ' bearbeitet</br>';
+                    $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $_USER->getNameAsLine() . ' bearbeitet</br>';
                     $ticketlog = new TicketLog();
                     $ticketlog->setCrtusr($_USER);
                     $ticketlog->setDate(time());
@@ -87,7 +87,7 @@ if ((int)$_REQUEST["cid"] > 0){
                     if ($tmp_comment->getModule() == "Ticket")
                     {
                         $tmp_ticket = new Ticket($tmp_comment->getObjectid());
-                        $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $comment->getCrtuser()->getNameAsLine() . ' bearbeitet</br>';
+                        $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $_USER->getNameAsLine() . ' bearbeitet</br>';
                         $ticketlog = new TicketLog();
                         $ticketlog->setCrtusr($_USER);
                         $ticketlog->setDate(time());

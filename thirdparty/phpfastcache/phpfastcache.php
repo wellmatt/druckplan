@@ -19,7 +19,7 @@ phpFastCache::$config = array(
 
     // path to cache folder, leave it blank for auto detect
 	"path"      =>  "",
-    "securityKey"   =>  "contilas", // auto will use domain name, set it to 1 string if you use alias domain name
+    "securityKey"   =>  "auto", // auto will use domain name, set it to 1 string if you use alias domain name
 
     // MEMCACHE
 

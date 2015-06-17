@@ -84,6 +84,7 @@ case 'save':
 	$collectinv->setTitle(trim(addslashes($_REQUEST["colinv_title"])));
 	$collectinv->setIntent(trim(addslashes($_REQUEST["colinv_intent"])));
 	$collectinv->setComment(trim(addslashes($_REQUEST["colinv_comment"])));
+	$collectinv->setExt_comment(trim(addslashes($_REQUEST["colinv_extcomment"])));
 	$collectinv->setDeliveryaddress(new Address((int)$_REQUEST["colinv_deliveryadress"]));
 	$collectinv->setInternContact(new User((int)$_REQUEST["intern_contactperson"]));
 	$collectinv->setCustMessage(trim(addslashes($_REQUEST["cust_message"])));

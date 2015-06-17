@@ -27,6 +27,7 @@ class Shoppingbasket{
 	private $status = "buying";		// Status des Warenkorbs
 	private $entrys = Array();		// Eintraege im Warenkorb
 	private $intent;				// Zweck / Kostenstelle / ...
+	private $note;
 	private $deliveryAdressID;		// Lieferadresse
 	
 	/**
@@ -197,6 +198,7 @@ class Shoppingbasket{
 	        $col_inv = new CollectiveInvoice();
 	        $col_inv->setBusinesscontact($busicon);
 	        $col_inv->setIntent($this->intent);
+	        $col_inv->setExt_comment($this->note);
 	        $col_inv->setTitle($_LANG->get("Bestellung aus dem Kunden-Portal"));
 	        $col_inv->setPaymentterm($busicon->getPaymentTerms());
 	        $col_inv->setDeliveryaddressById($address);
@@ -356,5 +358,23 @@ class Shoppingbasket{
     {
         $this->deliveryAdressID = $deliveryAdressID;
     }
+    
+	/**
+     * @return the $note
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+	/**
+     * @param field_type $note
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    }
+    
+    
 }
 ?>

@@ -249,7 +249,7 @@ if($_REQUEST["exec"] == "edit"){
 					 } ?> &emsp;
 				</td>
 				<td class="content_row"><?=$stock->getOrdernumber()?>&ensp;</td>
-				<td class="content_row"><?=$stock->getAmount()?> (<?=$stock->getAmount_reserved()?>)&ensp;</td>
+				<td class="content_row"><?=$stock->getAmount()?>&ensp;</td>
 				<td class="content_row">
 					<?if($stock->getRecall() != 0){ echo date('d.m.Y', $stock->getRecall());}?>&ensp;
 				</td>

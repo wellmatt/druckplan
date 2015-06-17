@@ -9,7 +9,7 @@ $user = 'demo';
 $password = 'demo';
 
 // Set the path to the FormCraft directory on your site
-$path = $_DOMAIN.'thirdparty/formcraft';
+$path = $_BASEDIR.'/thirdparty/formcraft';
 
 
 

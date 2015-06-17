@@ -34,6 +34,7 @@ class CollectiveInvoice{
 	private $uptuser;
 	private $deliverycosts = 0;
 	private $comment = "";				// interner Kommentar
+	private $ext_comment = "";			// externer Kommentar
 	private $businesscontact = 0;		// zugehoeriger Geschaeftskontakt
     private $custContactperson;			// Anspr. des Kunden
 	private $client = 0;
@@ -98,6 +99,7 @@ class CollectiveInvoice{
 				$this->custContactperson = new ContactPerson($r["custContactperson"]);
                 $this->needs_planning = $r["needs_planning"];
                 $this->deliverydate = $r["deliverydate"];
+				$this->ext_comment = $r["ext_comment"];
 			}
 		}
 	}//Ende vom Konstruktor
@@ -116,6 +118,7 @@ class CollectiveInvoice{
 					status = {$this->status},
 					title = '{$this->title}',
 					comment = '{$this->comment}',
+					ext_comment = '{$this->ext_comment}',
 					uptuser = {$_USER->getId()},
 					uptdate = {$now},
 					deliverycosts = {$this->deliverycosts},
@@ -142,13 +145,13 @@ class CollectiveInvoice{
 				 deliverycosts, comment, businesscontact, client,
 				 deliveryterm, paymentterm, deliveryaddress, invoiceaddress,
 				 intern_contactperson, cust_message, cust_sign, custContactperson,
-				 intent, needs_planning, deliverydate)
+				 intent, needs_planning, deliverydate, ext_comment)
 			VALUES
 				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
 				 {$this->deliveryterm->getId()}, {$this->paymentterm->getId()}, {$this->deliveryaddress->getId()}, {$this->invoiceAddress->getId()},
 				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
-				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate})";
+				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate}, '{$this->ext_comment}')";
 			$res = $DB->no_result($sql);
 //             echo $sql . "</br>";
 			if($res){
@@ -207,6 +210,7 @@ class CollectiveInvoice{
 	    $newinv->setTitle("K: " . $maininv->getTitle());
 	    $newinv->setIntent($maininv->getIntent());
 	    $newinv->setComment($maininv->getComment());
+	    $newinv->setExt_comment($maininv->getExt_comment());
 	    $newinv->setDeliveryaddress($maininv->getDeliveryaddress());
 	    $newinv->setInternContact($maininv->getInternContact());
 	    $newinv->setCustMessage($maininv->getCustMessage());
@@ -685,6 +689,22 @@ class CollectiveInvoice{
     public function setDeliverydate($deliverydate)
     {
         $this->deliverydate = $deliverydate;
+    }
+    
+	/**
+     * @return the $ext_comment
+     */
+    public function getExt_comment()
+    {
+        return $this->ext_comment;
+    }
+
+	/**
+     * @param string $ext_comment
+     */
+    public function setExt_comment($ext_comment)
+    {
+        $this->ext_comment = $ext_comment;
     }
 }
 ?>

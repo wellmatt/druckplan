@@ -526,11 +526,11 @@ function addPositionRow(){
                    ?>
                </select>
             </td>
-			<td class="content_row" valign="top" rowspan="4">
+			<td class="content_row" valign="top" rowspan="2">
 				<?= $_LANG->get('Bemerkungen (intern)')?>
 			</td>
-			<td class="content_row"  rowspan="4">
-				<textarea name="colinv_comment" style="width: 300px; height: 80px"
+			<td class="content_row"  rowspan="2">
+				<textarea name="colinv_comment" style="width: 300px; height: 40px"
 						  onfocus="markfield(this,0)" onblur="markfield(this,1)"><?= $collectinv->getComment()?></textarea>
 			</td>
 		</tr>
@@ -556,6 +556,13 @@ function addPositionRow(){
 						value="<?= printPrice($collectinv->getDeliveryCosts())?>" 
 						onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<?= $_USER->getClient()->getCurrency()?>
+			</td>
+			<td class="content_row" valign="top" rowspan="2">
+				<?= $_LANG->get('Bemerkungen (extern)')?>
+			</td>
+			<td class="content_row"  rowspan="2">
+				<textarea name="colinv_extcomment" style="width: 300px; height: 40px"
+						  onfocus="markfield(this,0)" onblur="markfield(this,1)"><?= $collectinv->getExt_comment()?></textarea>
 			</td>
 		</tr>
 		<tr>

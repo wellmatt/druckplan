@@ -34,6 +34,7 @@ if ($_SESSION["shopping_basket"]){ // Warenkorb aus der Session holen
 // Einen Eintrag bearbeiten
 if ($_REQUEST["edit_items"]){ 
 	$shopping_basket->setIntent(trim(addslashes($_REQUEST["shopping_intent"])));
+	$shopping_basket->setNote(trim(addslashes($_REQUEST["shopping_note"])));
 	$shopping_basket->setDeliveryAdressID((int)$_REQUEST["shopping_deliv_id"]);
 	
 	$tmp_entrys = $shopping_basket->getEntrys();
@@ -72,6 +73,7 @@ if ($_REQUEST["clear_shoppingbasket"]){
 // Warenkorb
 if ($_REQUEST["send_shoppingbasket"]){
 	$shopping_basket->setIntent(trim(addslashes($_REQUEST["shopping_intent"])));
+	$shopping_basket->setNote(trim(addslashes($_REQUEST["shopping_note"])));
 	$shopping_basket->setDeliveryAdressID((int)$_REQUEST["shopping_deliv_id"]);
 	
 	$tmp_entrys = $shopping_basket->getEntrys();
@@ -125,6 +127,8 @@ if ($_REQUEST["send_shoppingbasket"]){
 			$x++;
 		}
 		$text .= "</table> <br> <br>";
+		$text .= "Kostenstelle: '" . $shopping_basket->getIntent() . "'<br>";
+		$text .= "Hinweis: '" . $shopping_basket->getNote() . "'<br>";
 		// $text .= 'Mit freundlichem Gru&szlig; aus Steeden...';
 		
 		if ($_SESSION["login_type"] == "businesscontact"){
@@ -134,9 +138,16 @@ if ($_REQUEST["send_shoppingbasket"]){
 			$to[] = $_CONTACTPERSON;
 		}
 		
-		foreach ($busicon->getNotifymailadr() as $tmp_mail_adr){
+		foreach ($_CONTACTPERSON->getNotifymailadr() as $tmp_mail_adr){
 		    $to[] = $tmp_mail_adr;
 		}
+		
+		$nachricht = new Nachricht();
+		$nachricht->setFrom($_USER);
+		$nachricht->setTo($to);
+		$nachricht->setSubject("Bestellbestätigung");
+		$nachricht->setText($text);
+		$ret = $nachricht->send();
 		
 		$shopping_basket->clear();
 		$shopping_basket_entrys = Array ();
@@ -334,8 +345,8 @@ function BasketSubmit()
 			<colgroup>
 				<col width="150">
 				<col>
-				<col width="250">
-				<col width="70">
+				<col width="220">
+				<col width="90">
 				<col width="50">
 			</colgroup>
 			<tr>
@@ -351,6 +362,15 @@ function BasketSubmit()
 					<b><?=printPrice($overall_price)?> </b> &euro; 
 				</td>
 				<td> &ensp; </td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?=$_LANG->get('Hinweis');?> / <?=$_LANG->get('Bemerkung');?></b>
+				</td>
+				<td>
+					<input type="text" id="shopping_note" name="shopping_note" style="width: 200px;"
+							value="<?=$shopping_basket->getNote()?>">
+				</td>
 			</tr>
 		</table>
 		<br/><br/>
