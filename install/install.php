@@ -37,7 +37,7 @@ $app_path = str_replace("/install", "", __DIR__);
 
 // Check folder perms
 
-echo "Checking if the application path '{$app_path}' is writable...";
+echo "Checking if the application path is writable...</br>";
 if (is_writable($app_path)) {
     echo 'Application path is writable.</br>';
 } else {
@@ -64,6 +64,19 @@ if (!$conn->select_db($db_name)) {
         die('Error creating database: ' . mysql_error());
     }
 }
+
+echo 'Deleting all existing tables...</br>';
+$conn->query('SET foreign_key_checks = 0');
+if ($result = $conn->query("SHOW TABLES"))
+{
+    while($row = $result->fetch_array(MYSQLI_NUM))
+    {
+        $conn->query('DROP TABLE IF EXISTS '.$row[0]);
+    }
+}
+
+$conn->query('SET foreign_key_checks = 1');
+echo 'Cleanup done.</br>';
 
 echo 'Importing contilas table structure...</br>';
 $filename = 'contilas.sql';
@@ -125,13 +138,13 @@ if ($updater->installLatestVersion($app_path,$tmp_path))
     
     $myfile = fopen("../config.setup.php", "w") or die("Unable to write config!");
     $secret = md5($cl_name.$db_user.$db_pass.$usr_username.time());
-    $txt = "<?php\n
-            $_CONFIG->db = new ConfigContainer();\n
-            $_CONFIG->db->host = '{$db_host}';\n
-            $_CONFIG->db->name = '{$db_name}';\n
-            $_CONFIG->db->user = '{$db_user}';\n
-            $_CONFIG->db->pass = '{$db_pass}';\n
-            $_CONFIG->cookieSecret = 'cc4c4a5dfgfca54345ddg2343f511399de3c49';\n";
+    $txt = '<?php
+$_CONFIG->db = new ConfigContainer();
+$_CONFIG->db->host = "'.$db_host.'";
+$_CONFIG->db->name = "'.$db_name.'";
+$_CONFIG->db->user = "'.$db_user.'";
+$_CONFIG->db->pass = "'.$db_pass.'";
+$_CONFIG->cookieSecret = "'.$secret.'";';
     fwrite($myfile, $txt);
     fclose($myfile);
     

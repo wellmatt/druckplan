@@ -1,4 +1,6 @@
 <?php
+$mainpath = str_replace("cometchat", "", __DIR__);
+require_once($mainpath."/config.php");
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -18,11 +20,11 @@ define('FORCE_MAGIC_QUOTES','0');
 // DO NOT EDIT DATABASE VALUES BELOW
 // DO NOT EDIT DATABASE VALUES BELOW
 
-define('DB_SERVER',				"localhost"				);
+define('DB_SERVER',				$_CONFIG->db->host				);
 define('DB_PORT',				"3306"					);
-define('DB_USERNAME',			"contilas2"					);
-define('DB_PASSWORD',			"contilas2"				);
-define('DB_NAME',				"contilas2"				);
+define('DB_USERNAME',			$_CONFIG->db->user					);
+define('DB_PASSWORD',			$_CONFIG->db->pass				);
+define('DB_NAME',				$_CONFIG->db->name				);
 define('TABLE_PREFIX',			""					);
 define('DB_USERTABLE',			"user"					);
 define('DB_USERTABLE_USERID',		"id"				);
