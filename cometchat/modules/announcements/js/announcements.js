@@ -1,5 +1,5 @@
 /*
- * CometChat 
+ * CometChat
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -32,10 +32,10 @@ function getTimeDisplay(ts) {
 	}
 }
 
-$(document).ready(function() {
+$(function() {
 	if (jQuery().slimScroll) {
 		$('.announcements').slimScroll({height: '310px',allowPageScroll: false});
-		$(".announcements").css("height","310px");			
+		$(".announcements").css("height","310px");
 	}
 	jqcc('.chattime').each(function(key,value){
 		var ts = new Date(jqcc(this).attr('timestamp') * 1000);

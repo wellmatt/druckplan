@@ -54,7 +54,7 @@ THE SOFTWARE.
 */
 include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
 
-if(BAR_DISABLED==1){
+if(BAR_DISABLED==1 && empty($_REQUEST['admin'])){
 	exit();
 }
 
@@ -66,7 +66,7 @@ $mtime = explode(" ",microtime());
 $starttime = $mtime[1]+$mtime[0];
 
 $HTTP_USER_AGENT = '';
-$useragent = (isset($_SERVER["HTTP_USER_AGENT"])) ? $_SERVER["HTTP_USER_AGENT"] : $HTTP_USER_AGENT;
+$useragent = (!empty($_SERVER["HTTP_USER_AGENT"])) ? $_SERVER["HTTP_USER_AGENT"] : $HTTP_USER_AGENT;
 
 if(empty($theme)){
 	$theme = 'standard';
@@ -101,7 +101,7 @@ if(!empty($_REQUEST['callbackfn'])){
 
 if(!empty($_REQUEST['admin'])){
 	if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'admin.css')&&DEV_MODE!=1){
-		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])&&strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])==filemtime(dirname(__FILE__).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.$theme.$type.$name.$cbfn.$color.'.css')){
+		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])&&strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])==filemtime(dirname(__FILE__).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'admin.css')){
 			header("HTTP/1.1 304 Not Modified");
 			exit();
 		}
@@ -158,10 +158,10 @@ if(!empty($_REQUEST['admin'])){
 		if($type!='core'||$name!='default'){
 			if(!empty($name)&&$cbfn!='desktop'){
 				if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css")){
-                    include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css");
-                }elseif(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR."standard".DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css")){
-                    include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR."standard".DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css");
-                }
+					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css");
+				}elseif(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR."standard".DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css")){
+					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR."standard".DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR.$name.".css");
+				}
 			}else{
 				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.$type."s".DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR."cometchat.css");
 			}

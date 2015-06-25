@@ -15,7 +15,7 @@ function addLanguageCode() {
 	}
 }
 
-jqcc(document).ready(function() {
+jqcc(function() {
 	if (jqcc.cookie('mstto')) {
 		addLanguageCode();
 	}

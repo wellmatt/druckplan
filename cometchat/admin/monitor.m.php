@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -64,42 +64,12 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
+if(!empty($guestnamePrefix)){ $guestnamePrefix .= '-'; }
+
 function index() {
 	global $body;
 	global $navigation;
 	$overlay = '';
-
-	if(USE_COMET == 1 && SAVE_LOGS == 0) {
-		$overlay = <<<EOD
-			<script>
-			jQuery('#content').before('<div id="overlaymain" style="position:relative"></div>');
-					var overlay = $('<div></div>')
-						.attr('id','overlay')
-						.css({
-							'position':'absolute',
-							'height':$('#content').innerHeight(),
-							'width':$('#content').innerWidth(),
-							'background-color':'#FFFFFF',
-							'opacity':'0.9',
-							'z-index':'99',
-							'margin-left':'1px'
-						})
-						.appendTo('#overlaymain');
-						$('<span>This feature is currently disabled. To activate this feature, please enable "Save Logs" setting in "Settings" &#8594; "CometService.</span>')
-							.css({'z-index':' 9999',
-							'color':'#000000',
-							'font-size':'15px',
-							'font-weight':'bold',
-							'display':'block',
-							'text-align':'center',
-							'margin':'auto',
-							'position':'absolute',
-							'width':'100%',
-							'top':'50px'
-						}).appendTo('#overlaymain');
-		</script>
-EOD;
-	}
 
 	$body = <<<EOD
 	$navigation
@@ -111,7 +81,7 @@ EOD;
 		<div>
 			<div id="centernav" style="width:700px">
 				<script>
-					jQuery(document).ready(function () {					
+					jQuery(function () {
 						jQuery.cometchatmonitor();
 					});
 				</script>
@@ -124,7 +94,7 @@ EOD;
 	</div>
 
 	<div style="clear:both"></div>
-	{$overlay}						
+	{$overlay}
 EOD;
 
 	template();
@@ -133,67 +103,61 @@ EOD;
 
 function data() {
 
-	if(USE_COMET == 1 && SAVE_LOGS == 0) {
-		echo 0;
-	} else {
+	global $guestsMode;
+	global $guestnamePrefix;
 
-		global $guestsMode;
-		global $guestnamePrefix;
-		
-		if(!empty($guestnamePrefix)){ $guestnamePrefix .= '-'; }
-	
-		$usertable = TABLE_PREFIX.DB_USERTABLE;
-		$usertable_username = DB_USERTABLE_NAME;
-		$usertable_userid = DB_USERTABLE_USERID;	
-		$guestpart = "";
-		
-		$criteria = "cometchat.id > '".mysqli_real_escape_string($GLOBALS['dbh'],$_POST['timestamp'])."' and ";
-		$criteria2 = 'desc';
-		
-		if($guestsMode) {	
-			$guestpart = "UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read,CONCAT('$guestnamePrefix',f.name) fromu, CONCAT('$guestnamePrefix',t.name) tou from cometchat, cometchat_guests f, cometchat_guests t where $criteria f.id = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.".$usertable_username." fromu, CONCAT('$guestnamePrefix',t.name) tou from cometchat, ".$usertable." f, cometchat_guests t where $criteria f.".$usertable_userid." = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, CONCAT('$guestnamePrefix',f.name) fromu, t.".$usertable_username." tou from cometchat, cometchat_guests f, ".$usertable." t where $criteria f.id = cometchat.from and t.".$usertable_userid." = cometchat.to) ";
-		}
-	
-		$response = array();
-		$messages = array();
-		
-		if (empty($_POST['timestamp'])) {
-			$criteria = '';
-			$criteria2 = 'desc limit 20';
-			
-		}
+	$usertable = TABLE_PREFIX.DB_USERTABLE;
+	$usertable_username = DB_USERTABLE_NAME;
+	$usertable_userid = DB_USERTABLE_USERID;
+	$guestpart = "";
 
-		$sql = ("(select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.$usertable_username fromu, t.$usertable_username tou from cometchat, $usertable f, $usertable t where $criteria f.$usertable_userid = cometchat.from and t.$usertable_userid = cometchat.to ) ".$guestpart." order by id $criteria2");
+	$criteria = "cometchat.id > '".mysqli_real_escape_string($GLOBALS['dbh'],$_POST['timestamp'])."' and ";
+	$criteria2 = 'desc';
 
-		$query = mysqli_query($GLOBALS['dbh'],$sql); 
-	 
-		$timestamp = $_POST['timestamp'];
-		
-		while ($chat = mysqli_fetch_assoc($query)) {
+	if($guestsMode) {
+		$guestpart = "UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read,CONCAT('$guestnamePrefix',f.name) fromu, CONCAT('$guestnamePrefix',t.name) tou from cometchat, cometchat_guests f, cometchat_guests t where $criteria f.id = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.".$usertable_username." fromu, CONCAT('$guestnamePrefix',t.name) tou from cometchat, ".$usertable." f, cometchat_guests t where $criteria f.".$usertable_userid." = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, CONCAT('$guestnamePrefix',f.name) fromu, t.".$usertable_username." tou from cometchat, cometchat_guests f, ".$usertable." t where $criteria f.id = cometchat.from and t.".$usertable_userid." = cometchat.to) ";
+	}
 
-			if (function_exists('processName')) {
-				$chat['fromu'] = processName($chat['fromu']);
-				$chat['tou'] = processName($chat['tou']);
-			}
-		
-			$time = date('g:iA M dS', $chat['sent']);
+	$response = array();
+	$messages = array();
 
-			array_unshift($messages,  array('id' => $chat['id'], 'from' => $chat['from'], 'to' => $chat['to'], 'fromu' => $chat['fromu'], 'tou' => $chat['tou'], 'message' => $chat['message'], 'time' => $time));
-			
-			if ($chat['id'] > $timestamp) {
-				$timestamp = $chat['id'];
-			}
+	if (empty($_POST['timestamp'])) {
+		$criteria = '';
+		$criteria2 = 'desc limit 20';
+
+	}
+
+	$sql = ("(select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.$usertable_username fromu, t.$usertable_username tou from cometchat, $usertable f, $usertable t where $criteria f.$usertable_userid = cometchat.from and t.$usertable_userid = cometchat.to ) ".$guestpart." order by id $criteria2");
+
+	$query = mysqli_query($GLOBALS['dbh'],$sql);
+
+	$timestamp = $_POST['timestamp'];
+
+	while ($chat = mysqli_fetch_assoc($query)) {
+
+		if (function_exists('processName')) {
+			$chat['fromu'] = processName($chat['fromu']);
+			$chat['tou'] = processName($chat['tou']);
 		}
 
-		$response['timestamp'] = $timestamp;		
-		$response['online'] = onlineusers();
+		$time=$chat['sent']*1000;
 
-		if (!empty($messages)) {
-			$response['messages'] = $messages;
+		if(strpos($chat['message'], 'CC^CONTROL_') === false)
+		array_unshift($messages,  array('id' => $chat['id'], 'from' => $chat['from'], 'to' => $chat['to'], 'fromu' => $chat['fromu'], 'tou' => $chat['tou'], 'message' => $chat['message'], 'time' => $time));
+
+		if ($chat['id'] > $timestamp) {
+			$timestamp = $chat['id'];
 		}
-		
-		header('Content-type: application/json; charset=utf-8');
-		echo json_encode($response);
-	}	
-	exit;
+	}
+
+	$response['timestamp'] = $timestamp;
+	$response['online'] = onlineusers();
+
+	if (!empty($messages)) {
+		$response['messages'] = $messages;
+	}
+
+	header('Content-type: application/json; charset=utf-8');
+	echo json_encode($response);
+exit;
 }

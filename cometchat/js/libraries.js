@@ -1,10 +1,9 @@
 /*
- * CometChat 
+ * CometChat
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
-
  <?php if ($windowFavicon == 1) { ?>
-                
+
 /**
  * @license MIT
  * @fileOverview Favico animations
@@ -48,91 +47,456 @@ jqcc(document).bind(g,function(){jqcc(document).trigger(new jqcc.Event("fullscre
 
 var cc_zindex = 0;
 
+if('<?php echo $name;?>' == 'embedcode'){
+    jqcc.cometchat = jqcc.cometchat || function(){};
+    jqcc.cometchat.chatWith = jqcc.cometchat.chatWith || function(id){
+        var controlparameters = {"type":"modules", "name":"cometchat", "method":"chatWith", "params":{"uid":id, "synergy":"1"}};
+        controlparameters = JSON.stringify(controlparameters);
+        if(typeof(jqcc('#cometchat_synergy_iframe')[0]) != 'undefined'){
+        	jqcc('#cometchat_synergy_iframe')[0].contentWindow.postMessage('CC^CONTROL_'+controlparameters,'*');
+    	}
+    };
+}
+
+if(typeof closeCCPopup === "undefined") {
+	var type = "<?php echo $type; ?>";
+	var name = "<?php echo $name; ?>";
+	var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+	var eventer = window[eventMethod];
+	var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+/* Listen to message from child window */
+	switch(type){
+	    case "extension":
+	    	eventer(messageEvent,function(e) {
+	    		if(typeof(e.data) != 'undefined') {
+	    			if(e.data.indexOf('CC^CONTROL_')!== -1){
+		            	var controlparameters = e.data.slice(11);
+		                controlparameters = JSON.parse(controlparameters);
+		                if(controlparameters.type == 'extensions' && controlparameters.method == 'checkResponse'){
+		                	var controlparameters = {"type":"extensions", "name":"mobilewebapp", "method":"clearTimeout", "params":{"timeOut":controlparameters.params.timeOut}};
+                            controlparameters = JSON.stringify(controlparameters);
+                            e.source.postMessage('CC^CONTROL_'+controlparameters,'*');
+		                }
+		            }
+	    		}
+	    	},false);
+	    break;
+	    case "module":
+	    	switch(name){
+	    		case "chatrooms":
+	    			eventer(messageEvent,function(e) {
+				        if(typeof(e.data) != 'undefined'){
+				        	if(e.data.indexOf('CC^CONTROL_')!== -1){
+				        		var controlparameters = e.data.split('CC^CONTROL_')[1];
+				                controlparameters = JSON.parse(controlparameters);
+				                if(controlparameters.name == 'cometchat' && controlparameters.method == 'processcontrolmessage'){
+				                	/* Chatroom ProcessControlMessage Call */
+				                	var message = jqcc[controlparameters.name][controlparameters.method](controlparameters.item);
+				                	/* Return post Message incase of Chat History plugin */
+								    var returnparameters = {"message":message, "item":controlparameters.item, "processcontrolmessageResponse":1};
+								    e.source.postMessage(returnparameters,'*');
+				                } else if(controlparameters.name == "cometchat" && controlparameters.method == "setInternalVariable"){
+				                	/* This will send setInternalVariable  call from Chatroom to main CometChat to set a variable for A/V Chat calls..  */
+				                	var controlparameters = {"type":"plugins", "name":"cometchat", "method":"setInternalVariable", "params":{"type":controlparameters.params.type, "grp":controlparameters.params.grp, "value":controlparameters.params.value}};
+			                            controlparameters = JSON.stringify(controlparameters);
+				                	if(typeof(parent) != 'undefined'){
+			                            parent.postMessage('CC^CONTROL_'+controlparameters,'*');
+				                	}else{
+				                		window.opener.postMessage('CC^CONTROL_'+controlparameters,'*');
+				                	}
+				                } else if(controlparameters.name == "cometchat" && controlparameters.method == "chatWith") {
+				                	/* chatWith call of Chatroom loadChatroomPro option to main CometChat. */
+				                	var controlparameters = {"type":"modules", "name":"cometchat", "method":"chatWith", "params":{"uid":controlparameters.params.uid,"chatroommode":"0"}};
+		        					controlparameters = JSON.stringify(controlparameters);
+		        					window.opener.postMessage('CC^CONTROL_'+controlparameters,'*');
+				                } else if(controlparameters.name == "cometchat" && (controlparameters.method == "kickChatroomUser" || controlparameters.method == "banChatroomUser")){
+				                	/* Chatroom Kick/Ban API calls. */
+				                		jqcc[controlparameters.name][controlparameters.method](controlparameters.params.uid,0);
+				                } else if(controlparameters.method == "checkChatroomPass") {
+				                	/* Call to checkChatroomPass API of chatroom incase of password protected chatrooms. */
+				                	jqcc[controlparameters.name][controlparameters.method](controlparameters.params.id, controlparameters.params.name, controlparameters.params.silent, controlparameters.params.password);
+				                } else if(controlparameters.type == "plugins" && controlparameters.method == "closeCCPopup"){
+				                	/* Chatroom plugins closeCCPopup call. */
+				                	closeCCPopup(controlparameters.name);
+		                		} else if(controlparameters.method == "checkCometChat"){
+		                			/* This will set checkBarEnabled=1 if CometChat bar is present with embedded chatroom. */
+		                			jqcc.cometchat.setChatroomVars('checkBarEnabled',controlparameters.params.enabled);
+		                		} else if(controlparameters.type == "module" && controlparameters.name == "chatrooms" && controlparameters.method == "resizeCCPopup") {
+		                			/* ResizeCCPopup call for all popups in Chatrooms */
+				                	window[controlparameters.method](controlparameters.params.id, controlparameters.params.height, controlparameters.params.width);
+				                } else if(controlparameters.type == "themes" && controlparameters.method == "loggedout") {
+				                	/* Run chatroom heartbeat after logout from Social Login. This will also Logout user from Chatrooms. */
+				                	jqcc.cometchat.chatroomHeartbeat();
+				                } else {
+				                	/* All remaining calls of Chatrooms API's. */
+				                	jqcc[controlparameters.name][controlparameters.method](controlparameters.params);
+				                }
+				            }
+				        }
+				    },false);
+	    		break;
+	    	}
+		break;
+	    case "plugin":
+	    	switch(name){
+	    		case "chathistory":
+	    			eventer(messageEvent,function(e) {
+					    if(typeof(e.data)!= 'undefined' && e.data.processcontrolmessageResponse == 1){
+					    	/* This will append Processed messages on Chathistory plugin popup. */
+					    	jqcc("#"+e.data.item.id).find('.chatmessage.chatmessage_short').html(e.data.message);
+					        jqcc("#"+e.data.item.id).find('.chatmessage.chatnowrap').html(e.data.message);
+					    }
+					},false);
+	    		break;
+	    	}
+	    break;
+	    default:
+	    	eventer(messageEvent,function(e) {
+		        if(typeof(e.data) != 'undefined'){
+		        	if(e.data.indexOf('ccmobile_reinitializeauth')!== -1){
+		                jqcc.ccmobiletab.reinitialize();
+		            }else if(e.data.indexOf('cc_reinitializeauth')!== -1){
+		            	if(typeof(jqcc.cometchat.ping) != 'undefined') {
+			                jqcc.cometchat.reinitialize();
+			                jqcc('#cometchat_userstab').click();
+			                jqcc('#cometchat_auth_popup').removeClass('cometchat_tabopen');
+			                jqcc('#cometchat_optionsbutton').removeClass('cometchat_tabclick');
+			                if(jqcc('#cometchat_trayicon_chatrooms_iframe').length > 0){
+			                	jqcc('#cometchat_trayicon_chatrooms_iframe').attr('src', jqcc('#cometchat_trayicon_chatrooms_iframe').attr('src'));
+			                }
+			            }
+			            if(jqcc('#cometchat_chatrooms_iframe').length > 0){
+		                	jqcc('#cometchat_chatrooms_iframe').attr('src', jqcc('#cometchat_chatrooms_iframe').attr('src'));
+		                }
+		            }else if(e.data.indexOf('alert')!== -1 && e.data.indexOf('CC^CONTROL_') === -1){
+		                if(typeof(e.data.split('^')[1]) != 'undefined'){
+		                    alert(e.data.split('^')[1]);
+		                }
+		            }else if(e.data.indexOf('webrtcNoti')!== -1){
+		                if(typeof(e.data.split('^')[1]) != 'undefined' && e.data.split('^')[1] == 'add'){
+		                    if(typeof(e.data.split('^')[2]) != 'undefined' && e.data.split('^')[2] == 'chrome'){
+		                        jqcc(document).find('body').prepend('<div id="webrtcArrow" onclick="this.remove();" style="position:fixed;width:100%;height: 100%;margin: 0px;top: 0;left: 0;background: rgba(0,0,0,0.6);z-index: 90000000;text-align: center;"><img src="'+baseUrl+'images/notifyarrow.png"></div>');
+		                    }else{
+		                        jqcc(document).find('body').prepend('<div id="webrtcArrow" onclick="this.remove();" style="position:fixed;width:100%;height: 100%;margin: 0px;top: 0;left: 0;background: rgba(0,0,0,0.6);z-index: 90000000;text-align: center;"></div>');
+		                    }
+		                }
+		                if(typeof(e.data.split('^')[1]) != 'undefined' && e.data.split('^')[1] == 'remove'){
+		                    jqcc(document).find("#webrtcArrow").remove();
+		                }
+		            }else if(e.data.indexOf('CC^CONTROL_')!== -1){
+		            	var controlparameters = e.data.slice(11);
+		                controlparameters = JSON.parse(controlparameters);
+		                if(controlparameters.type == "extensions" && controlparameters.name == "mobilewebapp" && controlparameters.method == "clearTimeout"){
+		                	clearTimeout(controlparameters.params.timeOut);
+		                	mobiletabwindow.focus();
+		                }else if(controlparameters.type == "module" && controlparameters.name == "chatrooms" && controlparameters.method == "resizeCCPopup") {
+		                	/* resizeCCPopup call for all CometChat popups */
+		                	window[controlparameters.method](controlparameters.params.id, controlparameters.params.height, controlparameters.params.width);
+		                } else if(controlparameters.method == "closeCCPopup"){
+		                	/* closeCCPopup call for all CometChat popups */
+		                	closeCCPopup(controlparameters.name);
+		                } else if(controlparameters.type == "plugins" && controlparameters.name == "cometchat" && controlparameters.method == "processcontrolmessage"){
+		                	/* call to Chathistory processControlMessage function. */
+		                	var message = jqcc[controlparameters.name][controlparameters.method](controlparameters.item);
+		                	/* Processed messages will be sent back to ChatHistory plugin window. */
+		                	var returnparameters = {"message":message, "item":controlparameters.item, "processcontrolmessageResponse":1};
+						    e.source.postMessage(returnparameters,'*');
+		                } else if(controlparameters.type == "plugins" && controlparameters.name == "cometchat" && controlparameters.method == "setInternalVariable"){
+		                	/* CometChat setInternalVariable call to set A/V chat, Broadcast plugins variables. */
+		                	jqcc[controlparameters.name][controlparameters.method](controlparameters.params.type+'_'+controlparameters.params.grp,controlparameters.params.value);
+		                } else if(controlparameters.type == "modules" && controlparameters.name == "cometchat" && controlparameters.method == "addMessage") {
+		                	/* Broadcast message module addMessage API call. */
+		                	jqcc[controlparameters.name][controlparameters.method](controlparameters.params.from, controlparameters.params.message, controlparameters.params.messageId, controlparameters.params.nopopup);
+		                } else if(controlparameters.type == "modules" && controlparameters.name == "share" && controlparameters.method == "setTitle") {
+		                	/* setTitle API call of Transliterate plugin and Share Module. */
+		                	var parenttitle = document.title;
+					        var parenturl = document.location.href;
+					        var addthis_share =
+					        {
+					            url:parenturl,
+					            title:parenttitle,
+					            templates: {
+					                twitter: '{{title}}: {{url}}'
+					            }
+					        }
+		                } else if(controlparameters.type == "modules" && controlparameters.method == "closeModule") {
+		                	/* closeModule calls for Theme Changer and Translate Page modules. */
+		                	if(controlparameters.name == "themechanger"){
+		                		location.reload();
+							} else if(controlparameters.name == "translate2") {
+								jqcc('#MSTTExitLink').click();
+							}
+		                	jqcc.cometchat.closeModule(controlparameters.name);
+		                } else if(controlparameters.type == "modules" && controlparameters.name == "translatepage") {
+		                	/* Translate Page module function calls */
+		                	if(typeof(controlparameters.params.lang) == 'undefined'){
+		                		/* Call to addLanguageCode function */
+		                		window[controlparameters.method]();
+		                	} else {
+		                		/* Call to changeLanguage function */
+		                		window[controlparameters.method](controlparameters.params.lang);
+		                	}
+		                } else if(controlparameters.method == "checkChatroomPass") {
+		                	/* Call to checkChatroomPass API of chatroom incase of password protected chatrooms for Synergy theme. */
+		                	jqcc[controlparameters.name][controlparameters.method](controlparameters.params.id, controlparameters.params.name, controlparameters.params.silent, controlparameters.params.password,controlparameters.params.clicked);
+		                } else if(controlparameters.name == "core") {
+		                	/* LoadCCPopup function call */
+		                	if(typeof(jqcc.cometchat.ping) == "undefined"){
+		                		/* In case of embedded Synergy theme without CometChat bar, return postMessage will be sent to Synergy iFrame which will open all plugins and modules in window mode. */
+		                		var returnparameters = {"type":"modules", "name":"core", "method":"loadCCPopup", "params":{"url": controlparameters.params.url, "name":controlparameters.params.name, "properties":controlparameters.params.properties, "width":controlparameters.params.width, "height":controlparameters.params.height, "title":controlparameters.params.title, "force":null, "allowmaximize":null, "allowresize":null, "allowpopout":null, "windowMode":1}};
+		                        returnparameters = JSON.stringify(returnparameters);
+		                        jqcc('#cometchat_synergy_iframe')[0].contentWindow.postMessage('CC^CONTROL_'+returnparameters,'*');
+		                	} else {
+		                		/* LoadCCPopup function call for Synergy theme. */
+		                		loadCCPopup(controlparameters.params.url, controlparameters.params.name, controlparameters.params.properties, controlparameters.params.width, controlparameters.params.height, controlparameters.params.title, controlparameters.params.force, controlparameters.params.allowmaximize, controlparameters.params.allowresize, controlparameters.params.allowpopout, controlparameters.params.windowMode);
+		                	}
+		                } else if(controlparameters.type == "modules" && controlparameters.name == "cometchat" && controlparameters.method == "lightbox") {
+		                	/* jqcc.cometchat.lightbox API call in Embedded Synergy theme for all Modules. */
+		                	if(typeof(jqcc.cometchat.ping) == "undefined"){
+		                		/* In case of embedded Synergy theme without CometChat bar, return postMessage will be sent to Synergy iFrame which will open lightbox in window mode. */
+		                		/* This call is handled below in else block. */
+		                		var controlparameters = {"type":"modules", "name":"cometchat", "method":"lightbox", "params":{"moduleName":controlparameters.params.moduleName, "windowMode":"1"}};
+		                        controlparameters = JSON.stringify(controlparameters);
+		                        jqcc('#cometchat_synergy_iframe')[0].contentWindow.postMessage('CC^CONTROL_'+controlparameters,'*');
+		                	} else {
+		                		if(typeof(controlparameters.params.windowMode)=="undefined"){
+		                			/* Call to lightbox API call if CometChat bar is present with embedded synergy. */
+		                			jqcc[controlparameters.name][controlparameters.method](controlparameters.params.moduleName);
+		                		}else{
+		                			/* Call to lightbox API call if CometChat bar is not present with embedded synergy. */
+		                			/* This will open all modules in window mode. */
+		                			jqcc[controlparameters.name][controlparameters.method](controlparameters.params.moduleName,controlparameters.params.windowMode);
+		                		}
+		                	}
+		                } else if(controlparameters.type == "modules" && controlparameters.name == "cometchat" && typeof(controlparameters.params.allowed) == 'undefined') {
+		                	/* controlparameters.params.allowed is used for Kick/Ban chatroom calls. */
+		                		if(controlparameters.method == "chatWith"){
+		                			/* ChatWith (Private Chat) Call in Chatrooms */
+		                			if(typeof(jqcc.cometchat.ping) == 'undefined'){
+		                				/* Incase of Embedded chatrooms with CometChat disabled return post message will be sent to chatroom window with extra parameter i.e; enabled=0. */
+		                				var returnparameters = {"type":"modules", "name":"cometchat", "method":"checkCometChat", "params":{"enabled":"0"}};
+	                   					returnparameters = JSON.stringify(returnparameters);
+	                   					e.source.postMessage('CC^CONTROL_'+returnparameters,'*');
+		                			} else {
+		                				/* Incase of Embedded chatrooms with CometChat disabled return post message will be sent to chatroom window with extra parameter i.e; enabled=1. */
+		                				if(typeof(controlparameters.params.synergy) == 'undefined'){
+			                				var returnparameters = {"type":"modules", "name":"cometchat", "method":"checkCometChat", "params":{"enabled":"1"}};
+		                   					returnparameters = JSON.stringify(returnparameters);
+		                   					e.source.postMessage('CC^CONTROL_'+returnparameters,'*');
+	                   					}
+	                   					if(typeof(jqcc[controlparameters.name][controlparameters.method])!="undefined")
+	                   					/* Call to ChatWith Function is CometChat bar is enabled. */
+		                				jqcc[controlparameters.name][controlparameters.method](controlparameters.params.uid);
+		                			}
+		                		} else {
+		                			/* LoadCCPopup calls for Chatrooms. */
+		                			if(typeof(jqcc.cometchat.ping) == 'undefined' || typeof(controlparameters.params.windowMode) != "undefined"){
+                                        if(typeof(controlparameters.params.synergy) != "undefined"){
+                                        	/* Incase of Embedded Synergy without CometChat Bar, it will send postmessage to synergy iFrame with windowMode=1 to open loadChatroomPro in windowMode.*/
+                                        	/* This is handled in below else block.*/
+                                            var returnparameters = {"type":"modules", "name":"cometchat", "method":"unbanChatroomUser", "params":{"url":controlparameters.params.url, "action":controlparameters.params.action, "lang":controlparameters.params.lang, "windowMode":1}};
+                                            returnparameters = JSON.stringify(returnparameters);
+                                            jqcc('#cometchat_synergy_iframe')[0].contentWindow.postMessage('CC^CONTROL_'+returnparameters,'*');
+                                        } else {
+                                        	/* Above postMessage Call to synergy theme to open loadChatroomPro in window mode. */
+                                            loadCCPopup(controlparameters.params.url, controlparameters.params.action,"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=1, width=400,height=200",400,200,controlparameters.params.lang,null,null,null,null,1);
+                                        }
+                                    } else {
+                                    	/* LoadCCPopup call of Chatrooms with CometChat bar enabled. */
+                                        loadCCPopup(controlparameters.params.url, controlparameters.params.action,"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=1, width=400,height=200",400,200,controlparameters.params.lang);
+                                    }
+		                		}
+		                } else if(controlparameters.type == "functions" && controlparameters.name == "socialauth") {
+		                	/* Social Login call for Embedded Chatroom */
+	                		if(jqcc('#cometchat_optionsbutton').length == 1){
+	                			/* If CometChat bar is present, Social auth login popup of the bar will be opened. */
+	                			jqcc('#cometchat_optionsbutton').click();
+	                		} else if (jqcc('.cometchat_optionsimages_ccauth').length == 1) {
+	                			jqcc('.cometchat_optionsimages_ccauth').click();
+	                		} else {
+	                			/* If CometChat bar is not present, Social Login popup will be opened in Window Mode to login to Embedded chatroom. */
+	                			loadCCPopup(controlparameters.params.url, controlparameters.name,"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=420,height=250",300,200,'<?php echo $language[77];?>',null,null,null,null,1);
+							}
+		                } else if(controlparameters.name == "cometchat" && (controlparameters.method == "kickChatroomUser" || controlparameters.method == "banChatroomUser")){
+		                	/* Chatroom Kick/Ban users call. */
+				            if(typeof(jqcc[controlparameters.name][controlparameters.method])=="undefined"){
+				            	/* In case of embedded chatroom with CometChat bar disabled, a return post message will be sent to Chatroom iFrame which will call the API. */
+                                var returnparameters = {"type":controlparameters.type, "name":controlparameters.name, "method":controlparameters.method, "params":controlparameters.params};
+                                returnparameters = JSON.stringify(returnparameters);
+                                jqcc('#cometchat_trayicon_chatrooms_iframe, #cometchat_chatrooms_iframe, #cometchat_synergy_iframe')[0].contentWindow.postMessage('CC^CONTROL_'+returnparameters,'*');
+                            }else{
+                            	/* Direct Kick/Ban API call for Synergy theme. */
+                                jqcc[controlparameters.name][controlparameters.method](controlparameters.params.uid,1);
+                            }
+				        } else if(controlparameters.type == "themes" && controlparameters.method == "loggedout") {
+				        	/* Logout from Embedded Chatroom incase of Social Login. */
+		                	if(typeof(jqcc.cometchat.ping)!='undefined'){
+		                		/* If CometChat bar is not enabled, it will only logout from embedded chatroom iFrame. */
+		                		jqcc[jqcc.cometchat.getSettings().theme].loggedOut();
+                                jqcc.cometchat.setThemeVariable('loggedout', 1);
+                                clearTimeout(jqcc.cometchat.getCcvariable().heartbeatTimer);
+		                	} else {
+		                		/* If CometChat bar is enabled, it will send postMessage to Chatroom as Chatroom methods are not present in main CometChat. */
+		                		var returnparameters = {"type":controlparameters.type, "name":controlparameters.name, "method":controlparameters.method, "params":controlparameters.params};
+	                   			returnparameters = JSON.stringify(returnparameters);
+                        		e.source.postMessage('CC^CONTROL_'+returnparameters,'*');
+		                	}
+						} else {
+		                    if(controlparameters.params.chatroommode == 1 && controlparameters.method != "init" && typeof(jqcc.cometchat.ping) != 'undefined' && jqcc.cometchat.getSettings().theme != 'synergy'){
+		                    	/* All themes chatroom calls except init calls and CometChat bar is enabled.*/
+		                    	if(controlparameters.method == "addtext" && typeof(controlparameters.params.caller) != "undefined" && controlparameters.params.caller != ""){
+		                    		/* If Smilies init is opened from Synergy theme chatrooms. Then selected smiley will be added in Synergy chatroom text area. */
+	                   				var returnparameters = {"type":controlparameters.type, "name":controlparameters.name, "method":controlparameters.method, "params":controlparameters.params};
+	                   				var caller = returnparameters.params.caller;
+	                   				delete returnparameters.params.caller;
+	                   				returnparameters = JSON.stringify(returnparameters);
+	                   				jqcc('#'+caller)[0].contentWindow.postMessage('CC^CONTROL_'+returnparameters,'*');
+	                   			} else if(typeof(jqcc('#cometchat_trayicon_chatrooms_iframe, #cometchat_chatrooms_iframe, #cometchat_synergy_iframe')[0].contentWindow) != 'undefined'){
+	                    			jqcc('#cometchat_trayicon_chatrooms_iframe, #cometchat_chatrooms_iframe, #cometchat_synergy_iframe')[0].contentWindow.postMessage(e.data,'*');
+		                        }
+		                   	} else {
+		                   		if(typeof(jqcc[controlparameters.name]) == 'undefined'){
+		                   			/* If CometChat bar is disabled it will ask Chatroom to open Popups in window mode.*/
+		                   			if(controlparameters.name != 'mobilewebapp'){
+			                   			var returnparameters = {"type":"plugins", "name":controlparameters.name, "method":controlparameters.method, "params":controlparameters.params};
+			                   			returnparameters.params.windowMode = "1";
+	                            		returnparameters = JSON.stringify(returnparameters);
+	                            		e.source.postMessage('CC^CONTROL_'+returnparameters,'*');
+	                            	}
+		                   		} else {
+		                   			/* All direct API calls of CometChat.*/
+		                   			if(controlparameters.method == "addtext" && typeof(controlparameters.params.caller) != "undefined" && controlparameters.params.caller != ""){
+		                   				/* If Smilies init is opened from Synergy theme. Then selected smiley will be added in Synergy chatroom text area. */
+		                   				var returnparameters = {"type":controlparameters.type, "name":controlparameters.name, "method":controlparameters.method, "params":controlparameters.params};
+		                   				var caller = returnparameters.params.caller;
+		                   				delete returnparameters.params.caller;
+		                   				returnparameters = JSON.stringify(returnparameters);
+		                   				if(typeof(jqcc('#'+caller)[0]) == 'undefined'){
+		                   					jqcc[controlparameters.name][controlparameters.method](controlparameters.params);
+		                   				}else{
+		                   					jqcc('#'+caller)[0].contentWindow.postMessage('CC^CONTROL_'+returnparameters,'*');
+		                   				}
+
+		                   			} else {
+		                   				jqcc[controlparameters.name][controlparameters.method](controlparameters.params);
+		                   			}
+		                   		}
+		                    }
+		                }
+		            }
+		        }
+		    },false);
+		break;
+	}
+}
+
 <?php if ($lightboxWindows == 1): ?>
 
 var cc_dragobj = new Object();
 
-function loadCCPopup(url,name,properties,width,height,title,force,allowmaximize,allowresize,allowpopout) {
-	if (jqcc('#cometchat_container_'+name).length > 0) {
-		alert ('<?php echo $language[38];?>');
-	
+function loadCCPopup(url,name,properties,width,height,title,force,allowmaximize,allowresize,allowpopout,windowmode) {
+
+	if(typeof(windowmode) != "undefined" && windowmode == 1) {
+		var queryStringSeparator='&';
+		if(url.indexOf('?')<0){
+			queryStringSeparator='?';
+		}
+		if(url.indexOf('basedata') <= 0){
+			var basedata = '';
+			if(typeof(jqcc.cometchat.ping) != 'undefined' && typeof(jqcc.cometchat.getBaseData) != 'undefined'){
+				basedata = jqcc.cometchat.getBaseData();
+			}
+			url += queryStringSeparator+'basedata='+basedata+'&popoutmode=1';
+		} else {
+			url += queryStringSeparator+'&popoutmode=1';
+		}
+		var w = window.open(url,name,properties);
+		w.focus();
+	} else {
+		theme = '<?php echo $theme; ?>';
+		url += '&cc_theme='+theme;
+		if (jqcc('#cometchat_container_'+name).length > 0) {
+			alert ('<?php echo $language[38];?>');
+
+			setTimeout(function() {
+				cc_zindex += 1;
+				jqcc('#cometchat_container_'+name).css('z-index',100001+cc_zindex);
+			}, 100);
+			return;
+		}
+
+		var top = ((jqcc(window).height() - height) / 2) ;
+		var left = ((jqcc(window).width() - width) / 2) + jqcc(window).scrollLeft();
+
+		if (top < 0) { top = 0; }
+		if (left < 0) { left = 0; }
+
+		var queryStringSeparator='&';
+		if(url.indexOf('?')<0){
+			queryStringSeparator='?';
+		}
+		url += queryStringSeparator+'basedata='+jqcc.cometchat.getBaseData()+'&embed=web&popoutmode=null';
+		if (jqcc(document).fullScreen() !== null && allowmaximize == 1) {
+			displaymaxicon='style="display:inline-block;"';
+		} else {
+			displaymaxicon='style="display:none;"';
+		}
+
+		if (allowpopout == 1) {
+			displaypopicon='style="display:inline-block;"';
+		} else {
+			displaypopicon='style="display:none;"';
+		}
+
+        jqcc("body").append('<div id="cometchat_container_'+name+'" class="cometchat_container" style="left:'+left+'px;top:'+top+'px;width:'+width+'px;"><div class="cometchat_container_title"  onmousedown="dragStart(event, \'cometchat_container_'+name+'\')"><span>'+title+'</span><div class="cometchat_closebox cometchat_tooltip" title="<?php echo $language[76];?>" id="cometchat_closebox_'+name+'" style="font-weight: normal;">×</div><div '+displaymaxicon+' class="cometchat_maxwindow cometchat_tooltip" title="Maximize Popup" id="cometchat_maxwindow_'+name+'"></div><div '+displaypopicon+' class="cometchat_popwindow cometchat_tooltip" title="Popout" id="cometchat_popwindow_'+name+'"></div><div style="clear:both"></div></div><div class="cometchat_container_body" style="height:'+(height)+'px;width:'+(width-2)+'px;"><div class="cometchat_loading"></div><iframe class="cometchat_iframe" id="cometchat_trayicon_'+name+'_iframe" width="'+(width-2)+'" height="'+(height)+'"  allowtransparency="true" frameborder="0"  scrolling="no" src="'+url+'" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe><div class="cometchat_overlay" style="width:'+(width-2)+'px;height:'+(height)+'px;"></div><div style="clear:both"></div></div></div>');
 		setTimeout(function() {
 			cc_zindex += 1;
 			jqcc('#cometchat_container_'+name).css('z-index',100001+cc_zindex);
 		}, 100);
 
-		return;
-	}
-	
-	var top = ((jqcc(window).height() - height) / 2) + jqcc(window).scrollTop();
-        	var left = ((jqcc(window).width() - width) / 2) + jqcc(window).scrollLeft();
-
-	if (top < 0) { top = 0; }
-	if (left < 0) { left = 0; }
-	
-	var queryStringSeparator='&';
-	if(url.indexOf('?')<0){
-		var queryStringSeparator='?';
-	}
-	
-	if (jqcc(document).fullScreen() !== null && allowmaximize == 1) {
-		displaymaxicon='style="display:inline-block;"';
-	} else {
-		displaymaxicon='style="display:none;"';
-	}
-	
-	if (allowpopout == 1) {
-		displaypopicon='style="display:inline-block;"';
-	} else {
-		displaypopicon='style="display:none;"';
-	}
-        
-        jqcc("body").append('<div id="cometchat_container_'+name+'" class="cometchat_container" style="left:'+left+'px;top:'+top+'px;width:'+width+'px;"><div class="cometchat_container_title"  onmousedown="dragStart(event, \'cometchat_container_'+name+'\')"><span>'+title+'</span><div class="cometchat_closebox cometchat_tooltip" data-title="Close Popup" id="cometchat_closebox_'+name+'" style="font-weight: normal;">×</div><div '+displaymaxicon+' class="cometchat_maxwindow cometchat_tooltip" data-title="Maximize Popup" id="cometchat_maxwindow_'+name+'"></div><div '+displaypopicon+' class="cometchat_popwindow cometchat_tooltip" data-title="Popout" id="cometchat_popwindow_'+name+'"></div><div style="clear:both"></div></div><div class="cometchat_container_body" style="height:'+(height)+'px;width:'+(width-2)+'px;"><div class="cometchat_loading"></div><iframe class="cometchat_iframe" id="cometchat_trayicon_'+name+'_iframe" width="'+(width-2)+'" height="'+(height)+'"  allowtransparency="true" frameborder="0"  scrolling="no" src="'+url+queryStringSeparator+'embed=web" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe><div class="cometchat_overlay" style="width:'+(width-2)+'px;height:'+(height)+'px;"></div><div style="clear:both"></div></div></div>');
-	setTimeout(function() {
-		cc_zindex += 1;
-		jqcc('#cometchat_container_'+name).css('z-index',100001+cc_zindex);
-	}, 100);
-
-	if (force == true) {
-		if (navigator.appVersion.indexOf("MSIE") == -1) {
-			window.onbeforeunload = function() {return '<?php echo $language[39];?>'};
-		}
-	}
-        
-        var cometchat_container = jqcc('#cometchat_container_'+name); 
-	cometchat_container.find('.cometchat_closebox').click(function() {
-		cometchat_container.remove();
-                jqcc("#cometchat_tooltip").css('display', 'none');
-		window.onbeforeunload = null;
-	});
-
-	if (jqcc(document).fullScreen() !== null && allowmaximize ==1) {
-		cometchat_container.find('.cometchat_iframe').addClass('cometchat_iframe_'+name);
-			cometchat_container.find('.cometchat_maxwindow').click(function() {
-			jqcc('.cometchat_iframe_'+name).toggleFullScreen(true);
-			if (name =='whiteboard') {
-				jqcc('#cometchat_container_whiteboard').find('.cometchat_iframe').contents().find('#whiteboard').width(screen.width);
-				jqcc('#cometchat_container_whiteboard').find('.cometchat_iframe').contents().find('#whiteboard').height(screen.height);
+		if (force == true) {
+			if (navigator.appVersion.indexOf("MSIE") == -1) {
+				window.onbeforeunload = function() {return '<?php echo $language[39];?>'};
 			}
-                        jqcc("#cometchat_tooltip").css('display', 'none');
-		});
-	}
-	
-	if (allowpopout == 1) {
-		cometchat_container.find('.cometchat_popwindow').click(function() {
-			window.open(url,name,'width='+width+',height='+height+' scrollbars=yes, resizable=yes');
+		}
+
+	    var cometchat_container = jqcc('#cometchat_container_'+name);
+		cometchat_container.find('.cometchat_closebox').click(function() {
 			cometchat_container.remove();
-                        jqcc("#cometchat_tooltip").css('display', 'none');
+	        jqcc("#cometchat_tooltip").css('display', 'none');
+			window.onbeforeunload = null;
+		});
+
+		if (jqcc(document).fullScreen() !== null && allowmaximize ==1) {
+			cometchat_container.find('.cometchat_iframe').addClass('cometchat_iframe_'+name);
+				cometchat_container.find('.cometchat_maxwindow').click(function() {
+				jqcc('.cometchat_iframe_'+name).toggleFullScreen(true);
+				if (name =='whiteboard') {
+					jqcc('#cometchat_container_whiteboard').find('.cometchat_iframe').contents().find('#whiteboard').width(screen.width);
+					jqcc('#cometchat_container_whiteboard').find('.cometchat_iframe').contents().find('#whiteboard').height(screen.height);
+				}
+				jqcc("#cometchat_tooltip").css('display', 'none');
+			});
+		}
+
+		if (allowpopout == 1) {
+			cometchat_container.find('.cometchat_popwindow').click(function() {
+				window.open(url+"&popoutmode=1",'_blank','width='+width+',height='+height+' scrollbars=yes, resizable=yes');
+				jqcc.cometchat.setInternalVariable('avchatpopoutcalled','1');
+				cometchat_container.remove();
+	            jqcc("#cometchat_tooltip").css('display', 'none');
+			});
+		}
+
+		cometchat_container.click(function() {
+			cc_zindex += 1;
+			jqcc(this).css('z-index',100001+cc_zindex);
 		});
 	}
-	 
-	cometchat_container.click(function() {
-		cc_zindex += 1;
-		jqcc(this).css('z-index',100001+cc_zindex);
-	});
 }
 
-function closeCCPopup(id) {
+var closeCCPopup = closeCCPopup || function (id) {
 	jqcc('#cometchat_container_'+id).remove();
 }
 
@@ -154,8 +518,85 @@ function dragStop(event){jqcc('.cometchat_overlay').css('display','none');try{do
 <?php else:?>
 
 function loadCCPopup(url,name,properties,width,height,title,force,allowmaximize,allowresize,allowpopout) {
+	var queryStringSeparator='&';
+	if(url.indexOf('?')<0){
+		queryStringSeparator='?';
+	}
+	url += queryStringSeparator+'&popoutmode=1';
+	theme = '<?php echo $theme; ?>';
+	url += '&cc_theme='+theme;
+
+	if(url.indexOf('basedata') <= 0){
+		var basedata = '';
+		if(typeof(jqcc.cometchat.ping) != 'undefined' && typeof(jqcc.cometchat.getBaseData) != 'undefined'){
+			basedata = jqcc.cometchat.getBaseData();
+		}
+		url += queryStringSeparator+'basedata='+basedata+'&popoutmode=1';
+	}
+
 	var w = window.open(url,name,properties);
 	w.focus();
 }
 
 <?php endif;?>
+
+function getTimeDisplay(ts) {
+	if((ts+"").length == 10){
+		ts = ts*1000;
+	}
+	var time = new Date(ts);
+	var ap = "";
+	var hour = time.getHours();
+	var minute = time.getMinutes();
+	var date = time.getDate();
+	var month = time.getMonth();
+	var year = time.getFullYear();
+	var armyTime = 0;
+	if(typeof(jqcc.cometchat.getSettings) == 'undefined'){
+		armyTime = jqcc.cometchat.getChatroomVars('armyTime');
+	} else {
+		armyTime = jqcc.cometchat.getSettings()['armyTime'];
+	}
+	if(armyTime!=1){
+		ap = hour>11 ? "PM" : "AM";
+		hour = hour==0 ? 12 : hour>12 ? hour-12 : hour;
+	}else{
+		hour = hour<10 ? "0"+hour : hour;
+	}
+	minute = minute<10 ? "0"+minute : minute;
+	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	var type = 'th';
+	if(date==1||date==21||date==31){
+		type = 'st';
+	}else if(date==2||date==22){
+		type = 'nd';
+	}else if(date==3||date==23){
+		type = 'rd';
+	}
+	return {ap:ap,hour:hour,minute:minute,date:date,month:months[month],year:year,type:type};
+}
+
+function attachPlaceholder(element){
+    jqcc(element).find('[placeholder]').focus(function() {
+        var input = jqcc(this);
+        if (input.val() == input.attr('placeholder')) {
+            input.val('');
+            input.removeClass('placeholder');
+        }
+        }).blur(function() {
+        var input = jqcc(this);
+        if (input.val() == '') {
+            input.addClass('placeholder');
+            input.val(input.attr('placeholder'));
+        }
+    }).blur();
+
+    jqcc(element).find('[placeholder]').parents('form').submit(function() {
+        jqcc(this).find('[placeholder]').each(function() {
+            var input = jqcc(this);
+            if (input.val() == input.attr('placeholder')) {
+                input.val('');
+            }
+        });
+    });
+}

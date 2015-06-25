@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -64,48 +64,38 @@ function index() {
 	global $body;
 	global $currentversion;
 	$stats = '';
-	
-	if(USE_COMET == 1 && SAVE_LOGS == 0) {
+
+	$onlineusers = onlineusers();
+
+	$sql = ("select count(id) totalmessages from cometchat");
+	$query = mysqli_query($GLOBALS['dbh'],$sql);
+	$r = mysqli_fetch_assoc($query);
+	$totalmessages = $r['totalmessages'];
+            if(empty($totalmessages)){$totalmessages='0';}
+	$now = getTimeStamp()-60*60*24;
+
+		$sql = ("select count(id) totalmessages from cometchat where sent >= '".mysqli_real_escape_string($GLOBALS['dbh'],$now)."'");
+	$query = mysqli_query($GLOBALS['dbh'],$sql);
+	$r = mysqli_fetch_assoc($query);
+	$totalmessagest = $r['totalmessages'];
 	$stats = <<<EOD
 
-		 <div style="float: left; padding-right: 20px; border-right: 1px dotted rgb(204, 204, 204); margin-right: 20px; width: 400px;">
-			<h1 style="font-size: 50px; font-weight: bold;"></h1>
-		</div>
+	<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;">
+		<h1 style="font-size: 50px; font-weight: bold;">$onlineusers</h1>
+		<span style="font-size: 10px;">USERS CHATTING</span>
+	</div>
+
+	<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;">
+		<h1 style="font-size: 50px; font-weight: bold;">$totalmessages</h1>
+		<span style="font-size: 10px;">TOTAL MESSAGES</span>
+	</div>
+
+	<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;width:100px;">
+		<h1 style="font-size: 50px; font-weight: bold;">$totalmessagest</h1>
+		<span style="font-size: 10px;">MESSAGES SENT IN THE LAST 24 HOURS</span>
+	</div>
 
 EOD;
-	} else {
-		$onlineusers = onlineusers();
-
-		$sql = ("select max(id) totalmessages from cometchat");
-		$query = mysqli_query($GLOBALS['dbh'],$sql); 
-		$r = mysqli_fetch_assoc($query);
-		$totalmessages = $r['totalmessages'];
-                if(empty($totalmessages)){$totalmessages='0';}
-		$now = getTimeStamp()-60*60*24;
-
-		$sql = ("select count(id) totalmessages from cometchat where sent >= $now");
-		$query = mysqli_query($GLOBALS['dbh'],$sql); 
-		$r = mysqli_fetch_assoc($query);
-		$totalmessagest = $r['totalmessages'];
-		$stats = <<<EOD
-
-		<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;">
-			<h1 style="font-size: 50px; font-weight: bold;">$onlineusers</h1>
-			<span style="font-size: 10px;">USERS CHATTING</span>
-		</div>
-
-		<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;">
-			<h1 style="font-size: 50px; font-weight: bold;">$totalmessages</h1>
-			<span style="font-size: 10px;">TOTAL MESSAGES</span>
-		</div>
-
-		<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;width:100px;">
-			<h1 style="font-size: 50px; font-weight: bold;">$totalmessagest</h1>
-			<span style="font-size: 10px;">MESSAGES SENT IN THE LAST 24 HOURS</span>
-		</div>
-
-EOD;
-	}
 
 	$detectchangepass = 'Below are quick statistics of your site. Be sure to frequently change your administrator password.';
 
@@ -123,8 +113,8 @@ EOD;
 
 
 	<div style="float:left">
-		
-		{$stats}	
+
+		{$stats}
 		<div style="clear:both;padding:10px;"></div>
 
 		<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;">
@@ -137,7 +127,7 @@ EOD;
 		<div style="width:450px;font-family:helvetica;line-height:1.4em;font-size:14px;">
 			<span style="font-weight:bold;">Love CometChat?</span><br/>Take a minute to <a href="http://bit.ly/9cgHKS" target="_blank">write us a testimonial</a> :)
 		</div>
-		
+
 
 	</div>
 	<div style="float:right">
@@ -146,7 +136,7 @@ EOD;
 
 
 <div style="clear:both"></div>
-	
+
 EOD;
 	template();
 }

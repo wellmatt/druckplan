@@ -58,7 +58,7 @@ if(phpversion()>='5'){
 	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'jsmin.php');
 }
 
-if(BAR_DISABLED==1){
+if(BAR_DISABLED==1 && empty($_REQUEST['admin'])){
 	exit();
 }
 
@@ -70,7 +70,7 @@ $mtime = explode(" ",microtime());
 $starttime = $mtime[1]+$mtime[0];
 
 $HTTP_USER_AGENT = '';
-$useragent = (isset($_SERVER["HTTP_USER_AGENT"])) ? $_SERVER["HTTP_USER_AGENT"] : $HTTP_USER_AGENT;
+$useragent = (!empty($_SERVER["HTTP_USER_AGENT"])) ? $_SERVER["HTTP_USER_AGENT"] : $HTTP_USER_AGENT;
 
 ob_start();
 
@@ -84,6 +84,11 @@ if(!empty($_REQUEST['type'])&&!empty($_REQUEST['name'])){
 $subtype = '';
 if(!empty($_REQUEST['subtype'])){
 	$subtype = cleanInput($_REQUEST['subtype']);
+}
+
+$cbfn = '';
+if(!empty($_REQUEST['callbackfn'])){
+	$cbfn = cleanInput($_REQUEST['callbackfn']);
 }
 
 if(!empty($_REQUEST['admin'])){
@@ -113,9 +118,7 @@ if(!empty($_REQUEST['admin'])){
 	}
 	$lastModified = filemtime(dirname(__FILE__).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'admin.js');
 }else{
-	$cbfn = '';
-	if(!empty($_REQUEST['callbackfn'])){
-		$cbfn = $_REQUEST['callbackfn'];
+	if(!empty($cbfn)){
 		$_SESSION['noguestmode'] = '1';
 	}
 
@@ -136,9 +139,15 @@ if(!empty($_REQUEST['admin'])){
 		$js = ob_get_clean();
 	}else{
 		if(($type!='core'||$name!='default')&&($type!='extension'||($type=='extension'&&$name=='jabber'))&&($type!='external')){
+			if($type =='core' && $name=='embedcode'){
+				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."jquery.js");
+				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."libraries.js");
+
+			}
 			if($type=='core'){
 				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR.$name.".js");
 			}else{
+				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."libraries.js");
 				if(empty($subtype)){
 					$subtype = $name;
 				}
@@ -177,10 +186,19 @@ if(!empty($_REQUEST['admin'])){
 
 			$settings .= "var language = ".json_encode($cometchat['language']).";";
 			$cometchat['trayicon'] = array();
+
 			for($i = 0;$i<count($trayicon);$i++){
 				$id = $trayicon[$i];
 				if(!empty($trayicon[$i][7])&&$trayicon[$i][7]==1){
 					$trayicon[$i][2] = BASE_URL.$trayicon[$i][2];
+				}
+
+				if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."modules".DIRECTORY_SEPARATOR.$trayicon[$i][0].DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php")){
+					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."modules".DIRECTORY_SEPARATOR.$trayicon[$i][0].DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php");
+					$traylanguage = $trayicon[$i][0].'_language';
+					if(!empty(${$traylanguage}[100])){
+						$trayicon[$i][1] = ${$traylanguage}[100];
+					}
 				}
 
 				if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."modules".DIRECTORY_SEPARATOR.$trayicon[$i][0].DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")){
@@ -199,6 +217,8 @@ if(!empty($_REQUEST['admin'])){
 				$hideBar = 0;
 			}
 
+			$ccauth = array('enabled' => USE_CCAUTH, 'active' => $ccactiveauth);
+
 			if($theme=='standard'){
 				$cometchat['settings']['barWidth'] = intval($barWidth); // If set to fixed, enter the width of the bar in pixels
 				$cometchat['settings']['barAlign'] = $barAlign; // If set to fixed, enter alignment of the bar
@@ -209,7 +229,6 @@ if(!empty($_REQUEST['admin'])){
 				$cometchat['settings']['showOnlineTab'] = $showOnlineTab; //Show Who's Online tab
 				$cometchat['settings']['showModules'] = $showModules; //Show Modules in Who\'s Online tab
 			}
-
 			$cometchat['settings']['plugins'] = $plugins;
 			$cometchat['settings']['extensions'] = $extensions;
 			$cometchat['settings']['hideOffline'] = intval($hideOffline); // Hide offline users in Whos Online list?
@@ -246,6 +265,14 @@ if(!empty($_REQUEST['admin'])){
 			$cometchat['settings']['floodControl'] = intval($floodControl);
 			$cometchat['settings']['windowFavicon'] = intval($windowFavicon);
 			$cometchat['settings']['theme'] = $theme;
+			$cometchat['settings']['ccauth'] = $ccauth;
+			$cometchat['settings']['prependLimit'] = !empty($prependLimit)?$prependLimit:'0';
+
+			if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR.'config.php')){
+				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR.'config.php');
+			}
+
+			$cometchat['settings']['enableMobileTab'] = !empty($enableMobileTab)?$enableMobileTab:'0';
 
 			$settings .= "var settings = ".json_encode($cometchat['settings']).";";
 
@@ -267,14 +294,16 @@ if(!empty($_REQUEST['admin'])){
 				$jsfn = 'c6';
 			}
 			include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."cometchat.js");
+			if($theme=='synergy' && !empty($cometchat['trayicon']['chatrooms'])){
+				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."modules".DIRECTORY_SEPARATOR."chatrooms".DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."chatrooms.js");
+			}
 			if(empty($cbfn)){
 				if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR.$theme.".js")){
 					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR.$theme.".js");
 				}else{
 					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."standard.js");
 				}
-				if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR.'config.php')){
-					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR.'config.php');
+				if($p_>2 && file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR.'config.php')){
 					if($enableMobileTab&&file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."mobile.js")){
 						include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.'mobile'.DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."mobile.js");
 					}
@@ -299,11 +328,25 @@ if(!empty($_REQUEST['admin'])){
 			}
 
 			$include = 'init';
+			$allplugins = array();
 
-			foreach($plugins as $plugin){
+			if ($handle = opendir(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugins')) {
+				while (false !== ($file = readdir($handle))) {
+					if ($file != "." && $file != ".." && is_dir(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'init.js') && $file != 'style') {
+						$allplugins[] = $file;
+					}
+				}
+				closedir($handle);
+			}
+
+			foreach($allplugins as $plugin){
 				if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."plugins".DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR."init.js")){
 					include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."plugins".DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR."init.js");
 				}
+			}
+
+			if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."plugins".DIRECTORY_SEPARATOR."style".DIRECTORY_SEPARATOR."init.js")){
+				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."plugins".DIRECTORY_SEPARATOR."style".DIRECTORY_SEPARATOR."init.js");
 			}
 
 			foreach($extensions as $extension){

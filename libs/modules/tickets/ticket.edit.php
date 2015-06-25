@@ -164,10 +164,12 @@ if($_REQUEST["exec"] == "edit"){
             $logentry .= "Priorität: " . $ticket->getPriority()->getTitle() . " >> " . $tmp_newprio->getTitle() . "</br>";
         if ($ticket->getPlanned_time() != tofloat($_REQUEST["tkt_planned_time"]))
             $logentry .= "Gepl. Zeit: " . printPrice($ticket->getPlanned_time(),2) . " >> " . printPrice(tofloat($_REQUEST["tkt_planned_time"]),2) . "</br>";
-        $tmp_newcrtusr = new User($_REQUEST["tkt_crtusr"]);
-        if ($ticket->getCrtuser()->getId() != $tmp_newcrtusr->getId())
-            $logentry .= "Tkt-Ersteller: " . $ticket->getCrtuser()->getNameAsLine() . " >> " . $tmp_newcrtusr->getNameAsLine() . "</br>";
-        
+        if ($_REQUEST["tkt_crtusr"])
+        {
+            $tmp_newcrtusr = new User($_REQUEST["tkt_crtusr"]);
+            if ($ticket->getCrtuser()->getId() != $tmp_newcrtusr->getId())
+                $logentry .= "Tkt-Ersteller: " . $ticket->getCrtuser()->getNameAsLine() . " >> " . $tmp_newcrtusr->getNameAsLine() . "</br>";
+        }
         
         $ticket->setTitle($_REQUEST["tkt_title"]);
         if ($_REQUEST["tkt_due"] != "" && $_REQUEST["tkt_due"] != 0){
@@ -175,7 +177,8 @@ if($_REQUEST["exec"] == "edit"){
         } else {
             $ticket->setDuedate(0);
         }
-        $ticket->setCrtuser(new User($_REQUEST["tkt_crtusr"]));
+        if ($_REQUEST["tkt_crtusr"])
+            $ticket->setCrtuser(new User($_REQUEST["tkt_crtusr"]));
         $ticket->setCustomer(new BusinessContact($_REQUEST["tkt_customer_id"]));
         $ticket->setCustomer_cp(new ContactPerson($_REQUEST["tkt_customer_cp_id"]));
         $assigned = "";
@@ -271,7 +274,7 @@ if($_REQUEST["exec"] == "edit"){
                     $logentry .= 'Neues <a href="#comment_'.$ticketcomment->getId().'">Kommentar (#'.$ticketcomment->getId().')</a> von ' . $ticketcomment->getCrtuser()->getNameAsLine() . '</br>';
                     
                     Notification::generateNotificationsFromAbo(get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
-                    if ($ticketcomment->getVisability() == Comment::VISABILITY_PUBLIC)
+                    if ($ticketcomment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
                     {
                         $mailer = new Horde_Mail_Transport_Mail();
                         $mail = new Horde_Mime_Mail();
@@ -583,6 +586,11 @@ function showSummary()
 	newwindow = window.open('libs/modules/tickets/ticket.summary.php?tktid=<?=$ticket->getId()?>', "_blank", "width=1000,height=800,left=0,top=0,scrollbars=yes");
 	newwindow = focus();
 }
+function showSummaryExt()
+{
+	newwindow = window.open('libs/modules/tickets/ticket.summary.external.php?tktid=<?=$ticket->getId()?>', "_blank", "width=1000,height=800,left=0,top=0,scrollbars=yes");
+	newwindow = focus();
+}
 function callBoxFancytktc(my_href) {
 	var j1 = document.getElementById("tktc_hiddenclicker");
 	j1.href = my_href;
@@ -703,7 +711,17 @@ function callBoxFancyAbo(my_href) {
                 <td width="100%" align="right">
                     <?php if ($ticket->getId()>0){?>
                     <div class="btn-group" role="group">
-                      <button type="button" onclick="showSummary();" class="btn btn-sm btn-default">Summary</button>
+                      <div class="btn-group dropdown">
+                      <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+                        Summary <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="#" onclick="showSummary();">Summary internal</a>
+                                <a href="#" onclick="showSummaryExt();">Summary external</a>
+                            </li>
+                      </ul>
+                      </div>
                       <?php 
                       $association_object = $ticket;
                       $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
@@ -792,9 +810,9 @@ function callBoxFancyAbo(my_href) {
         <td width="25%">
             <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $ticket->getTitle();?>" style="width:160px" required/>
         </td>
-        <td width="25%">Kunde:</td>
-        <td width="25%">
-            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2(); } ?>" style="width:160px" required/>
+        <td width="15%">Kunde:</td>
+        <td width="35%">
+            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2(); } ?>" style="width:300px" required/>
             <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php echo $ticket->getCustomer()->getId();?>" required/>
             <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php echo $ticket->getCustomer_cp()->getId();?>" required/>
         </td>
@@ -917,8 +935,13 @@ function callBoxFancyAbo(my_href) {
                 </select>
                 <?php
             } else
+            {
                 if ($ticket->getId()>0)
-                    echo date("d.m.Y H:i",$ticket->getCrtdate()) . " von ".$ticket->getCrtuser()->getNameAsLine();?>&nbsp;
+                    echo date("d.m.Y H:i",$ticket->getCrtdate()) . " von ".$ticket->getCrtuser()->getNameAsLine()."&nbsp";
+                else if ($ticket->getId()==0)
+                    echo '<input type="hidden" name="tkt_crtusr" id="tkt_crtusr" value="'.$_USER->getId().'"/>';
+            }
+            ?>
         </td>
         <td width="25%">Tourenmerkmal:</td>
         <td width="25%"><span id="tkt_tourmarker"><?php if ($ticket->getId()>0) echo $ticket->getTourmarker();?></span></td>
@@ -1179,7 +1202,8 @@ function callBoxFancyAbo(my_href) {
 		          <td width="25%">Kommentar Typ:</td>
 		          <td width="25%">
                     <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar<br>
-                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Antwort<br>
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)<br>
                     <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
 		          </td>
 		     </tr>
@@ -1233,6 +1257,7 @@ function callBoxFancyAbo(my_href) {
         if ($_USER->isAdmin() 
             || $comment->getVisability() == Comment::VISABILITY_PUBLIC 
             || $comment->getVisability() == Comment::VISABILITY_INTERNAL 
+            || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL 
             || $comment->getCrtuser() == $_USER)
         {
             ?>
@@ -1253,6 +1278,9 @@ function callBoxFancyAbo(my_href) {
                 {
                     case Comment::VISABILITY_PUBLIC:
                         echo '<span class="label" style="background-color: #449d44;">[PUBLIC]</span>';
+                        break;
+                    case Comment::VISABILITY_PUBLICMAIL:
+                        echo '<span class="label" style="background-color: #449d44;">[PUBLIC-MAIL]</span>';
                         break;
                     case Comment::VISABILITY_INTERNAL:
                         echo '<span class="label" style="background-color: #31b0d5;">[INTERN]</span>';
@@ -1319,6 +1347,7 @@ function callBoxFancyAbo(my_href) {
                     foreach ($all_comments_sub as $subcom){
                         if ($_USER->isAdmin() 
                             || $subcom->getVisability() == Comment::VISABILITY_PUBLIC 
+                            || $subcom->getVisability() == Comment::VISABILITY_PUBLICMAIL 
                             || $subcom->getVisability() == Comment::VISABILITY_INTERNAL 
                             || $subcom->getCrtuser() == $_USER)
                         {
@@ -1343,6 +1372,9 @@ function callBoxFancyAbo(my_href) {
                                 {
                                     case Comment::VISABILITY_PUBLIC:
                                         echo "[PUBLIC]";
+                                        break;
+                                    case Comment::VISABILITY_PUBLICMAIL:
+                                        echo '[PUBLIC-MAIL]';
                                         break;
                                     case Comment::VISABILITY_INTERNAL:
                                         echo "[INTERN]";

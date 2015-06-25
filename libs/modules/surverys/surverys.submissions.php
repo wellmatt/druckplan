@@ -9,6 +9,6 @@
 
 <div class="box1">
 
-<iframe width="100%" height="100%" frameborder="0" scrolling="auto" src="thirdparty/formcraft/submissions.php"></iframe>
+<iframe style="width: 100%; height: 800px;" frameborder="0" scrolling="auto" src="thirdparty/formcraft/submissions.php"></iframe>
 
 </div>

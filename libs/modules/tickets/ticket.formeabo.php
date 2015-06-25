@@ -51,6 +51,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
+		"aaSorting": [[ 5, "desc" ]],
 // 		"dom": 'flrtip',        
 		"dom": 'T<"clear">flrtip',           
 		"tableTools": {

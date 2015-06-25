@@ -37,8 +37,26 @@ class Address {
         global $DB;
         global $_USER;
         $this->country = new Country(22);
+        
+        $cached = Cachehandler::fromCache("obj_addr_" . $id);
+        if (!is_null($cached))
+        {
+            $vars = array_keys(get_class_vars(get_class($this)));
+            foreach ($vars as $var)
+            {
+                $method = "get".ucfirst($var);
+                if (method_exists($this,$method))
+                {
+                    $this->$var = $cached->$method();
+                } else {
+                    echo "method: {$method}() not found!</br>";
+                }
+            }
+//             echo "loaded from cache!</br>";
+            return true;
+        }
 
-        if ($id > 0)
+        if ($id > 0 && is_null($cached))
         {
             $sql = " SELECT * FROM address WHERE id = {$id}";
 
@@ -60,6 +78,7 @@ class Address {
                 $this->shoprel = $res[0]["shoprel"];
                 $this->default = $res[0]["is_default"];
                 $this->country = new Country ($res[0]["country"]);
+                Cachehandler::toCache("obj_addr_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
@@ -183,7 +202,10 @@ class Address {
             }
 		}
 		if($res)
+		{
+            Cachehandler::toCache("obj_addr_".$this->id, $this);
 			return true;
+		}
 		else
 			return false;
 	}

@@ -115,6 +115,8 @@ class Menuentry {
                 $DB->no_result($sql);
             }
         echo $DB->getLastError();
+        foreach (User::getAllUser() as $user)
+            Cachehandler::removeCache("menu_getcached_".$user->getId());
         return $retval;
     }
 

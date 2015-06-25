@@ -23,5 +23,11 @@ $broadcast_language[15] = 'Click here to join';
 $broadcast_language[16] = 'Click here to join the conversation.';
 $broadcast_language[17] = 'has started a video conversation.';
 $broadcast_language[18] = 'Sorry, there are no users available at the moment to invite.';
+$broadcast_language[19] = 'End Call';
+$broadcast_language[20] = 'Turn On Video';
+$broadcast_language[21] = 'Turn Off Video';
+$broadcast_language[22] = 'Turn On Mic';
+$broadcast_language[23] = 'Turn Off Mic';
+$broadcast_language[24] = 'This broadcast has ended';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

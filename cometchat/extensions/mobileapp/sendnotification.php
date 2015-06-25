@@ -5,9 +5,9 @@
 	CometChat
 	Copyright (c) 2013 Inscripts
 
-	CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-	retains ownership of the Software and any copies of it, regardless of the 
-	form in which the copies may exist. This license is not a sale of the 
+	CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+	retains ownership of the Software and any copies of it, regardless of the
+	form in which the copies may exist. This license is not a sale of the
 	original Software or any copies.
 
 	By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@
 
 	CometChat license grants you the right to run one instance (a single installation)
 	of the Software on one web server and one web site for each license purchased.
-	Each license may power one instance of the Software on one domain. For each 
-	installed instance of the Software, a separate license is required. 
+	Each license may power one instance of the Software on one domain. For each
+	installed instance of the Software, a separate license is required.
 	The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 	assign, pledge, transfer or otherwise dispose of the Software in any form, on
-	a temporary or permanent basis, without the prior written consent of Inscripts. 
+	a temporary or permanent basis, without the prior written consent of Inscripts.
 
 	The license is effective until terminated. You may terminate it
-	at any time by uninstalling the Software and destroying any copies in any form. 
+	at any time by uninstalling the Software and destroying any copies in any form.
 
-	The Software source code may be altered (at your risk) 
+	The Software source code may be altered (at your risk)
 
-	All Software copyright notices within the scripts must remain unchanged (and visible). 
+	All Software copyright notices within the scripts must remain unchanged (and visible).
 
 	The Software may not be used for anything that would represent or is associated
-	with an Intellectual Property violation, including, but not limited to, 
+	with an Intellectual Property violation, including, but not limited to,
 	engaging in any activity that infringes or misappropriates the intellectual property
-	rights of others, including copyrights, trademarks, service marks, trade secrets, 
-	software piracy, and patents held by individuals, corporations, or other entities. 
+	rights of others, including copyrights, trademarks, service marks, trade secrets,
+	software piracy, and patents held by individuals, corporations, or other entities.
 
-	If any of the terms of this Agreement are violated, Inscripts reserves the right 
-	to revoke the Software license at any time. 
+	If any of the terms of this Agreement are violated, Inscripts reserves the right
+	to revoke the Software license at any time.
 
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
@@ -52,29 +52,23 @@
 	THE SOFTWARE.
 
 	*/
-        if (!empty($_REQUEST['channel'])) { 
-            ob_end_clean();
-            header("Connection: close");
-            ignore_user_abort();
-            $size = ob_get_length();
-            header("Content-Length: $size");
-            ob_end_flush();
-            flush();
-        }
 	include_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."cometchat_init.php");
+    if (!empty($_REQUEST['channel'])) {
+		sendCCResponse(1);
+	}
 	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
-        include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."emoji.php");
-        
-        $cookiefile = dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'cookie.txt';
-        $pushUsername = 'chat-'.$_SERVER['HTTP_HOST'];
-        $pushPassword = md5($pushUsername);
-        
-        if (empty($pushAPIKey)) {
-            $pushAPIKey = 'BGJbP31xBhGvXzt4fQsxtfmzMb5eYxcb';
-        }
-        if (empty($notificationName)) {
-            $notificationName = 'CometChat';
-        }
+	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."emoji.php");
+
+	$cookiefile = dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'cookie.txt';
+	$pushUsername = 'cometchat-admin';
+	$pushPassword = 'cometchat-admin';
+
+	if (empty($pushAPIKey)) {
+		$pushAPIKey = 'MCr80tBuCel7ffIYNwOMSmOxkb0DZvui';
+	}
+	if (empty($notificationName)) {
+		$notificationName = 'CometChat';
+	}
 
 	if (isset($_REQUEST['chatroommode']) && isset($_REQUEST['displayname'])) {
 		pushMobileNotification($_REQUEST['message'], $_REQUEST['displayname'], $_REQUEST['channel'], $_REQUEST['channel']);
@@ -83,11 +77,11 @@
 			pushMobileNotification($_REQUEST['message'], $_REQUEST['displayname'], $_REQUEST['channel'], $userid);
 		}
 	}
-	
+
 	function pushMobileNotification($msg, $displayname, $channel, $senderid) {
             global $pushAPIKey;
             global $notificationName;
-			global $cookiefile;
+            global $cookiefile;
 
             $msg = checkEmoji($msg);
 
@@ -97,7 +91,7 @@
             } else {
                     $hostname = $_SERVER['HTTP_HOST'];
             }
-
+            $hostname = str_replace('www.', '', $hostname);
             /********************************** SETUP **********************************/
 
             $key        = $pushAPIKey;
@@ -115,45 +109,45 @@
             }
 
             /********************************** SEND PUSH **********************************/
-            
+
             $url = "https://api.cloud.appcelerator.com/v1/push_notification/notify.json?key=".$key;
             $params = "channel=".$channel."&payload=".$json."&to_ids=$to_ids";
             $response  = checkcURL(0,$url,$params,1,$cookiefile);
 	}
-        
-        function loginPushNotification() {
-            global $pushAPIKey;
-            global $cookiefile;
-            global $pushUsername;
-            global $pushPassword;
 
-            /********************************** LOGIN FOR PUSH **********************************/
-            
-            $url = 'https://api.cloud.appcelerator.com/v1/users/login.json?key='.$pushAPIKey;
-            $params = "login=".$pushUsername."&password=".$pushPassword;
-            $response  = checkcURL(0,$url,$params,1,$cookiefile);
+	function loginPushNotification() {
+		global $pushAPIKey;
+		global $cookiefile;
+		global $pushUsername;
+		global $pushPassword;
 
-            $response = json_decode($response);
-            if (!isset($response->meta->message) && isset($response->meta->session_id)) {
-                $_SESSION['cometchat']['pushNotificationSessionid'] = $response->meta->session_id;
-            } else {
-                registerPushUser();
-            }            
-        }
-        
-        function registerPushUser() {
-            global $pushAPIKey;
-            global $cookiefile;
-            global $pushUsername;
-            global $pushPassword;
-            
-            /********************************** REGISTER NEW USER FOR PUSH **********************************/
-            
-            $url = 'https://api.cloud.appcelerator.com/v1/users/create.json?key='.$pushAPIKey;
-            $params = "username=".$pushUsername."&first_name=".$pushUsername."&last_name=".$pushUsername."&password=".$pushPassword."&password_confirmation=".$pushPassword;
-            $response  = checkcURL(0,$url,$params,1,$cookiefile);
-            loginPushNotification();
-        }
+		/********************************** LOGIN FOR PUSH **********************************/
+
+		$url = 'https://api.cloud.appcelerator.com/v1/users/login.json?key='.$pushAPIKey;
+		$params = "login=".$pushUsername."&password=".$pushPassword;
+		$response  = checkcURL(0,$url,$params,1,$cookiefile);
+
+		$response = json_decode($response);
+		if (!isset($response->meta->message) && isset($response->meta->session_id)) {
+			$_SESSION['cometchat']['pushNotificationSessionid'] = $response->meta->session_id;
+		} else {
+			registerPushUser();
+		}
+	}
+
+	function registerPushUser() {
+		global $pushAPIKey;
+		global $cookiefile;
+		global $pushUsername;
+		global $pushPassword;
+
+		/********************************** REGISTER NEW USER FOR PUSH **********************************/
+
+		$url = 'https://api.cloud.appcelerator.com/v1/users/create.json?key='.$pushAPIKey;
+		$params = "username=".$pushUsername."&first_name=".$pushUsername."&last_name=".$pushUsername."&password=".$pushPassword."&password_confirmation=".$pushPassword;
+		$response  = checkcURL(0,$url,$params,1,$cookiefile);
+		loginPushNotification();
+	}
 
 	function checkEmoji($msg) {
 		global $customsmileyUnicode;
@@ -162,7 +156,7 @@
 			foreach($value as $key => $item) {
 				if (strstr($msg, $key)) {
 					$msg = str_replace($key, $item, $msg);
-				}		
+				}
 			}
 		}
 		return $msg;

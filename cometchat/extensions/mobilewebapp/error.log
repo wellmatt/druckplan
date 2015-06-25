@@ -1,4 +1,0 @@
-[26-Sep-2014 08:27:35] PHP Notice:  Undefined index: HTTP_REFERER in /srv/www/vhosts/dev.mein-druckplan.de/htdocs/cometchat/extensions/mobilewebapp/index.php on line 387
-[06-Oct-2014 05:19:31] PHP Notice:  Undefined index: HTTP_REFERER in /srv/www/vhosts/dev.mein-druckplan.de/htdocs/cometchat/extensions/mobilewebapp/index.php on line 387
-[08-Oct-2014 13:47:08] PHP Notice:  Undefined index: HTTP_REFERER in /srv/www/vhosts/dev.mein-druckplan.de/htdocs/cometchat/extensions/mobilewebapp/index.php on line 387
-[08-Oct-2014 13:48:11] PHP Notice:  Undefined index: HTTP_REFERER in /srv/www/vhosts/dev.mein-druckplan.de/htdocs/cometchat/extensions/mobilewebapp/index.php on line 387

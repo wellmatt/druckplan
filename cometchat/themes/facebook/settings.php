@@ -9,20 +9,20 @@ $options = array(
     "showSettingsTab"               => array('choice','Show Settings tab'),
     "showModules"                   =>array('choice','Show Modules in Who\'s Online tab'),
     "chatboxHeight"                 => array('textbox','Set the Height of the Chatbox (Minimum Height can be 200)'),
-    "chatboxWidth"                 => array('textbox','Set the Width of the Chatbox (Minimum Width can be 230)'), 
+    "chatboxWidth"                 => array('textbox','Set the Width of the Chatbox (Minimum Width can be 230)'),
     );
 
 if (empty($_GET['process'])) {
     include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
-    
+
     $form = '';
-    
+
     foreach ($options as $option => $result) {
         $req = '';
         if($option == 'chatboxHeight' OR $option == 'chatboxWidth') {
             $req = 'required';
         }
-        $form .= '<div id="'.$option.'"><div class="titlelong" >'.$result[1].'</div><div class="element">'; 
+        $form .= '<div id="'.$option.'"><div class="titlelong" >'.$result[1].'</div><div class="element">';
         if ($result[0] == 'textbox') {
             $form .= '<input type="text" class="inputbox" name="'.$option.'" value="'.${$option}.'" '.$req.'>';
         }
@@ -46,20 +46,22 @@ if (empty($_GET['process'])) {
         }
         $form .= '</div><div style="clear:both;padding:7px;"></div></div>';
     }
-    
+
     echo <<<EOD
                 <!DOCTYPE html>
                 <html>
                     <head>
                         <script type="text/javascript" src="../js.php?admin=1"></script>
                         <script type="text/javascript" language="javascript">
-                            $(document).ready(function() {
+                            $(function() {
                                 if($('#showOnlineTab').find('input:checked').val() == "1") {
                                     $('#showSettingsTab').show();
                                 } else {
                                     $('#showSettingsTab').hide();
                                 }
-                                resizeWindow();
+                                setTimeout(function(){
+                                    resizeWindow();
+                                },200);
                                 $('#showOnlineTab input:radio').change(function(){
                                     if($(this).val() == '1'){
                                         $('#showSettingsTab').slideDown(500,function(){
@@ -71,18 +73,18 @@ if (empty($_GET['process'])) {
                                         });
                                     }
                                 });
-    
+
                             });
-                            
+
                             function resizeWindow() {
-                                window.resizeTo(($("form").width()+30), ($("form").height()+85));
+                                window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
                             }
                         </script>
                         $getstylesheet
                     </head>
-                <body>             
-                    <form action="?module=dashboard&action=loadthemetype&type=theme&name=facebook&process=true" onsubmit="return validate();" method="post">
-                    <div id="content">
+                <body>
+                    <form style="height:100%" action="?module=dashboard&action=loadthemetype&type=theme&name=facebook&process=true" onsubmit="return validate();" method="post">
+                    <div id="content" style="width:auto">
                             <h2>Settings</h2>
                             <h3>If you are unsure about any value, please skip them</h3>
                             <div>
@@ -93,8 +95,8 @@ if (empty($_GET['process'])) {
                             <div style="clear:both;padding:7.5px;"></div>
                             <input type="submit" value="Update Settings" class="button">&nbsp;&nbsp;or <a href="javascript:window.close();">cancel or close</a>
                          <div style="clear:both"></div>
-                           </div>    
-                        </form>                         
+                           </div>
+                        </form>
                 </body>
                 <script>
                     function validate(){

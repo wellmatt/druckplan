@@ -4,7 +4,7 @@
 
 /* LANGUAGE */
 
-$jabber_language[0] = 'Connect to Facebook/';
+$jabber_language[0] = 'Chat with';
 $jabber_language[1] = 'Who would you like to chat with?';
 $jabber_language[2] = 'Email:';
 $jabber_language[3] = 'Password:';
@@ -20,6 +20,6 @@ $jabber_language[12] = ' Friends';
 $jabber_language[13] = 'Logout from ';
 $jabber_language[14] = 'No users online at the moment.';
 $jabber_language[15] = ' Chat';
-$jabber_language[16] = 'Gtalk';
+$jabber_language[16] = ' Gtalk';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

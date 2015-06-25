@@ -462,7 +462,7 @@ var PDIV          = $('comet') || {}
     ,   SUBSCRIBE_KEY = setup['subscribe_key'] || ''
     ,   SSL           = setup['ssl'] ? 's' : ''
     ,   UUID          = setup['uuid'] || db.get(SUBSCRIBE_KEY+'uuid') || ''
-    ,   ORIGIN        = setup['ssl'] ? 'http'+SSL+'://'+(setup['origin']||'pubsub.pubnub.com') : 'http://'+(setup['origin']||'x3.chatforyoursite.com')
+    ,   ORIGIN        = (window.location.protocol=='https:') ? 'https://pubsub.pubnub.com': 'http://'+(setup['origin']||'x3.chatforyoursite.com')
     ,   SELF          = {
 
         'history' : function( args, callback ) {

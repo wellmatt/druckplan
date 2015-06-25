@@ -64,12 +64,13 @@ if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."lang".DIRECTORY_
 foreach ($broadcast_language as $i => $l) {
 	$broadcast_language[$i] = str_replace("'", "\'", $l);
 }
-
+$vidHeight = intval($vidHeight) - 30;
 ?>
 
 var baseUrl = "<?php echo BASE_URL;?>";
 var vidWidth = <?php echo $vidWidth;?>;
 var vidHeight = <?php echo $vidHeight;?>;
+
 var camWidth = <?php echo $camWidth;?>;
 var camHeight = <?php echo $camHeight;?>;
 
@@ -170,7 +171,6 @@ function resizeWindow() {
 }
 
 function resizeVideo() {
-
 	var rows, cols;
 	rows = Math.round(Math.sqrt(totalStreams+1));
 	cols = Math.ceil(Math.sqrt(totalStreams+1));
@@ -222,7 +222,7 @@ function togglesize() {
 	ch = <?php echo $vidHeight;?>;
 	if(window.innerWidth > cw && window.innerHeight > ch){
 		vidWidth = window.innerWidth;
-		vidHeight = window.innerHeight;
+		vidHeight = window.innerHeight - 30;
 	} else {
 		vidWidth = <?php echo $vidWidth;?>;
 		vidHeight = <?php echo $vidHeight;?>;
@@ -238,7 +238,6 @@ function unpublish() {
 	if (publisher) {
 		session.unpublish(publisher);
 	}
-	
 	publisher = null;
 	hide('loadinggif');
 	show('noImg');

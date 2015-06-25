@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -58,7 +58,7 @@ if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 if (empty($_GET['process'])) {
 	global $getstylesheet;
 	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
-	
+
 	$alchkd = '';
 	$rchkd = '';
 	$zchkd = '';
@@ -78,10 +78,9 @@ echo <<<EOD
 $getstylesheet
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script type="text/javascript" language="javascript">
-	
-		$(document).ready(function(){
 
-			resizeWindow();
+		$(function(){
+
 			var selected = $("#pluginTypeSelector :selected").val();
 			if(selected=="0") {
 				$('.red5').show();
@@ -98,12 +97,12 @@ $getstylesheet
 				$('.addlive').show();
 				$('.zoom').hide();
 				$('.default').show();
-				
+
 			}
 
 			$('#pluginTypeSelector').change(function() {
 				var selected = $("#pluginTypeSelector :selected").val();
-				if(selected=="1") {					
+				if(selected=="1") {
 					$('.red5').hide();
 					$('.addlive').show();
 					$('.zoom').hide();
@@ -121,18 +120,20 @@ $getstylesheet
 				}
 				resizeWindow();
 			});
-			
-			resizeWindow();
+
+			setTimeout(function(){
+				resizeWindow();
+			},200);
 		});
 
-		function resizeWindow()	{ 
-				window.resizeTo(($("form").width()+35), ($("form").height()+85));
+		function resizeWindow()	{
+				window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
 		}
 </script>
 </head>
 <body>
-<form action="?module=dashboard&action=loadexternal&type=plugin&name=screenshare&process=true" method="post">
-<div id="content">
+<form style="height:100%" action="?module=dashboard&action=loadexternal&type=plugin&name=screenshare&process=true" method="post">
+<div id="content" style="width:auto">
 		<h2>ScreenShare Settings</h2>
 		<h3 class="red5">Provide red5 server details</h3>
 		<h3 class="addlive">Provide Height Width details for window size. Make sure that the width and height are in the ratio 16:9. Default width is 852 and height is 480.</h3>
@@ -175,7 +176,7 @@ $getstylesheet
 				<div style="clear:both;padding:5px;"></div></div>
 			</div>
 		</div>
-				
+
 		<input type="submit" value="Update Settings" class="button">&nbsp;&nbsp;or <a href="javascript:window.close();">cancel or close</a>
 </div>
 </form>
@@ -183,12 +184,12 @@ $getstylesheet
 <script>resizeWindow();</script>
 EOD;
 } else {
-	
+
 	$data = '';
 	foreach ($_POST as $field => $value) {
 		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
 	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 	header("Location:?module=dashboard&action=loadexternal&type=plugin&name=screenshare");
 }

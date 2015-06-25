@@ -1,5 +1,5 @@
 /*
- * CometChat 
+ * CometChat
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -88,8 +88,15 @@ html, body {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	height: 26px;
-	width: 16.6666%;
 	border-bottom: 1px solid #CCCCCC;
+}
+
+.tab_length6 {
+	width: 16.6666%;
+}
+
+.tab_length5 {
+	width: 20%;
 }
 
 .tab h2 {
@@ -118,13 +125,13 @@ html, body {
 .emojis {
 	display: none;
 	<?php if($rtl) :?>
-        padding: 5px 0 0 15px; 
+        padding: 5px 0 0 15px;
         <?php else :?>
 	padding: 5px 0 0 5px;
         <?php endif;?>
 }
 
-.emoji_selected {		
+.emoji_selected {
 	display: block !important;
 }
 

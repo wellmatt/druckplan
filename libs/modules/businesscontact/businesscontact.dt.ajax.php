@@ -12,6 +12,8 @@
     require_once("libs/basic/clients/client.class.php");
     require_once("libs/basic/translator/translator.class.php");
     require_once 'libs/basic/countries/country.class.php';
+    require_once 'libs/basic/cachehandler/cachehandler.class.php';
+    require_once 'thirdparty/phpfastcache/phpfastcache.php';
     session_start();
 
     $aColumns = array( 'id', 'cust_number', 'matchcode', 'name1', 'city', 'customer', 'supplier', 'attribute' );

@@ -13,6 +13,8 @@
     require_once("libs/basic/clients/client.class.php");
     require_once("libs/basic/translator/translator.class.php");
     require_once("libs/basic/countries/country.class.php");
+    require_once 'libs/basic/cachehandler/cachehandler.class.php';
+    require_once 'thirdparty/phpfastcache/phpfastcache.php';
     require_once 'libs/modules/organizer/contact.class.php';
     require_once 'libs/modules/businesscontact/businesscontact.class.php';
     require_once 'libs/modules/chat/chat.class.php';
@@ -474,7 +476,7 @@
                         $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
                         $commenthtml = "<img src='../../../images/icons/message_inbox.gif' title='";
                         foreach ($latestcomments as $comment){
-                            if ($comment->getVisability() == Comment::VISABILITY_PUBLIC)
+                            if ($comment->getVisability() == Comment::VISABILITY_PUBLIC || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
                             {
                                 $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . strip_tags($comment->getComment());
                             }
@@ -487,6 +489,7 @@
                         foreach ($latestcomments as $comment){
                             if ($_USER->isAdmin()
                                 || $comment->getVisability() == Comment::VISABILITY_PUBLIC
+                                || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL
                                 || $comment->getVisability() == Comment::VISABILITY_INTERNAL
                                 || $comment->getCrtuser() == $_USER)
                             {

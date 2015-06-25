@@ -5,7 +5,7 @@
 /* SETTINGS START */
 
 $smlWidth = '420';
-$smlHeight = '285';
+$smlHeight = '250';
 
 
 /* SETTINGS END */
@@ -13,7 +13,6 @@ $smlHeight = '285';
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $people = array (
-  ':bowtie:' => 'bowtie.png',
   ':smile:' => 'smile.png',
   ':laughing:' => 'laughing.png',
   ':blush:' => 'blush.png',
@@ -28,6 +27,7 @@ $people = array (
   ':satisfied:' => 'satisfied.png',
   ':grin:' => 'grin.png',
   ':wink:' => 'wink.png',
+  ':bowtie:' => 'bowtie.png',
   ':stuck_out_tongue_winking_eye:' => 'stuck_out_tongue_winking_eye.png',
   ':stuck_out_tongue_closed_eyes:' => 'stuck_out_tongue_closed_eyes.png',
   ':grinning:' => 'grinning.png',
@@ -125,7 +125,6 @@ $people = array (
   ':clap:' => 'clap.png',
   ':muscle:' => 'muscle.png',
   ':metal:' => 'metal.png',
-  ':fu:' => 'fu.png',
   ':walking:' => 'walking.png',
   ':runner:' => 'runner.png',
   ':running:' => 'running.png',
@@ -680,6 +679,7 @@ $places = array (
   ':performing_arts:' => 'performing_arts.png',
   ':round_pushpin:' => 'round_pushpin.png',
   ':triangular_flag_on_post:' => 'triangular_flag_on_post.png',
+  ':in:' => 'in.png',
   ':jp:' => 'jp.png',
   ':kr:' => 'kr.png',
   ':cn:' => 'cn.png',

@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -71,15 +71,15 @@ if (isset($_SESSION['cometchat']['error']) && !empty($_SESSION['cometchat']['err
 		color: #fff;
 		font: 15px/30px arial, sans-serif;
 		opacity: .9;
-	}	
+	}
 </style>
 <script>
-	$(document).ready(function() {
+	$(function() {
 		$.fancyalert('{$_SESSION['cometchat']['error']}');
 	});
-	
-	(function($){   
-	  
+
+	(function($){
+
 		$.fancyalert = function(message){
 			if ($("#alert").length > 0) {
 				removeElement("alert");
@@ -106,8 +106,8 @@ if (isset($_SESSION['cometchat']['error']) && !empty($_SESSION['cometchat']['err
 EOD;
 	unset($_SESSION['cometchat']['error']);
 }
-	
-	
+
+
 if (empty($_GET['process'])) {
 	global $getstylesheet;
 	global $smileys_default;
@@ -127,9 +127,9 @@ if (empty($_GET['process'])) {
 		} else {
 			$pattern2 = str_replace("'","\\'",$pattern);
 			$title = str_replace("-"," ",ucwords(preg_replace("/\.(.*)/","",$result)));
-		
+
 			$customSmilies .= '<div class="smilies"><div class="sm-img"><img class="custom_smiley" width="100%" height="100%" src="'.BASE_URL.'images/smileys/'.$result.'" /><input type="file" class="imgUpload" accept="image/x-png, image/gif, image/jpeg" onchange="imgUpload(this,\''.$pattern.'\');" /></div><div class="sm-code"><input type="text" value="'.$pattern.'" readonly orignal="'.$pattern.'" rel="'.$result.'"/></div><div class="sm-delete" rel="'.$pattern.'" imgUrl="'.$result.'"></div></div>';
-			
+
 			$used[$result] = 1;
 		}
 	}
@@ -140,8 +140,8 @@ echo <<<EOD
 
 {$getstylesheet}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script> function resizeWindow() {window.resizeTo(($("form").width()+35), ($("form").height()+85)); }</script>
-<style>	
+<script> function resizeWindow() {window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight)); }</script>
+<style>
 	fieldset {
 		border: 1px solid #ccc;
 		padding: 10px 5px;
@@ -170,7 +170,7 @@ echo <<<EOD
 		display: inline-block;
 		height: 20px;
 		width: 20px;
-		margin: 5px; 
+		margin: 5px;
 		position: relative;
 		overflow: hidden;
 	}
@@ -189,7 +189,7 @@ echo <<<EOD
 		padding: 0;
 		text-align: center;
 	}
-	.sm-delete { 
+	.sm-delete {
 		position: absolute;
 		background: url('http://www.aleks.com/aleks/gif/x_icon.gif') no-repeat;
 		height:15px;
@@ -218,7 +218,7 @@ echo <<<EOD
 	.enable {
 		background: white !important;
 		border: 1px solid #c6c6c6 !important;
-	}	
+	}
 	.invalid {
 		border: 1px solid red !important;
 	}
@@ -231,8 +231,8 @@ echo <<<EOD
 	}
 </style>
 
-<form action="?module=dashboard&action=loadexternal&type=plugin&name=smilies&process=true" method="post" id="smilies" enctype="multipart/form-data">
-	<div id="content">
+<form style="height:100%" action="?module=dashboard&action=loadexternal&type=plugin&name=smilies&process=true" method="post" id="smilies" enctype="multipart/form-data">
+	<div id="content" style="width:auto">
 		<h2>Settings</h2><br/>
 		<div style="overflow: hidden;">
 			<div id="centernav" style="width:380px">
@@ -241,12 +241,12 @@ echo <<<EOD
 				<div class="title">Height:</div><div class="element"><input type="text" class="inputbox" name="smlHeight" value="{$smlHeight}" /></div>
 
 			</div>
-		</div>		
+		</div>
 		<br/>
 		<div id="centernav" style="width:380px;display:none;">
 			<div class="title">Add New Smiley:</div><div class="element"><input type="checkbox" class="inputbox" name="addSm" id="addSm"  style="width: auto;"></div>
 			<div style="clear:both;padding:5px;"></div>
-		</div>		
+		</div>
 		<div style="overflow: hidden; display:none;" id="newSm">
 			<div id="centernav" style="width:380px">
 				<div class="title">Code:</div><div class="element"><input type="text" class="inputbox" name="smCode" ></div>
@@ -265,21 +265,25 @@ echo <<<EOD
 		</div>
 		<div style="clear:both;padding:7.5px;"></div>
 		<input type="submit" value="Update Settings" class="button">&nbsp;&nbsp;or <a href="javascript:window.close();">cancel or close</a>
-		
+
 	</div>
 </form>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script>resizeWindow();</script>
+<script type="text/javascript" language="javascript">
+	$(function() {
+		setTimeout(function(){
+				resizeWindow();
+			},200);
+	});
+</script>
 <script>jqcc=jQuery;</script><script src="../js.php?type=core&name=scroll"></script>
 {$extrajs}
 <script>
 	$(function(){
 		var addSmileyCode = '<div class="smilies" id="addedSm"><div class="sm-img sm-newImg"><img class="custom_smiley" width="100%" height="100%" src="images/plus.png" title="Upload New Smiley"/><input type="file" class="imgUpload newSmImg" accept="image/x-png, image/gif, image/jpeg" onchange="imgUpload(this,\'\',1);" title="Upload New Smiley" /></div><div class="sm-code"><input type="text" value="" readonly="" orignal="CC_SMILIES" rel="" class="newSmCode" /></div><div class="sm-delete newSmDelete" rel="" imgurl=""></div></div>';
-		
+
 		$('#allSm').append(addSmileyCode).slimScroll({'width': '320px'});
-		
-		resizeWindow(405,480);
-		
+
 		$('.sm-code input').live('focus',function() {
 			if ($(this).hasClass('newSmCode')) {
 				var newSmiley = $(this).parents('#addedSm').find('.imgUpload').get()[0].files.length;
@@ -290,7 +294,7 @@ echo <<<EOD
 				$(this).addClass('enable').removeAttr('readonly').removeClass('invalid');
 			}
 		});
-		
+
 		$('.sm-code input').live('keyup',function(e) {
 			if (e.keyCode == 13) {
 				e.preventDefault();
@@ -303,7 +307,7 @@ echo <<<EOD
 				$(this).removeClass('invalid').addClass('valid');
 			}
 		});
-		
+
 		$('.sm-code input').live('blur',function() {
 			var element = $(this);
 			var newSmiley = 0;
@@ -314,7 +318,7 @@ echo <<<EOD
 			var newCode = $.trim(element.val());
 			var currCode = element.attr('orignal');
 			var currImg = element.attr('rel');
-			
+
 			if (newCode == '' && newSmiley > 0) {
 				element.addClass('invalid').focus();
 			} else if (newCode != currCode && newCode != '') {
@@ -341,7 +345,7 @@ echo <<<EOD
 				}
 			}
 		});
-		
+
 		$('.sm-delete').live('click',function() {
 			if (confirm("Are you sure you want to remove this smiley?")) {
 				var element = $(this);
@@ -361,10 +365,7 @@ echo <<<EOD
 			}
 		});
 	});
-	
-	function resizeWindow(width,height) {
-		window.resizeTo(width, height);
-	}
+
 	function imgUpload(elem,code,newSmiley) {
 		var fd = new FormData();
 		fd.append("newImg", elem.files[0]);
@@ -388,7 +389,7 @@ echo <<<EOD
 		var input = evt.target.elem;
 		imgPreview(input);
 	}
-	
+
 	function imgPreview(input) {
 		if (input.files && input.files[0]) {
 			var reader = new FileReader();
@@ -399,27 +400,27 @@ echo <<<EOD
 			reader.readAsDataURL(input.files[0]);
 		}
 	}
-		
+
 	setTimeout(function () {
-		var myform = document.getElementById('smilies');				
+		var myform = document.getElementById('smilies');
 		myform.addEventListener('submit', function(e) {
 			e.preventDefault();
 			var smCode = $.trim(document.getElementsByName('smCode')[0].value);
 			var smImg = $.trim(document.getElementsByName('smImg')[0].value);
 			var addSm = $("#addSm").is(":checked");
-			
+
 			if (addSm && (smCode == '')) {
-				alert('Please enter valid code for new smiley.');					  
+				alert('Please enter valid code for new smiley.');
 				return false;
 			} else if (addSm && smileys.hasOwnProperty(smCode)) {
-				alert('The smiley code is already exist. Please try with different code.');					  
+				alert('The smiley code is already exist. Please try with different code.');
 				return false;
 			} else if (addSm && smImg == '' ) {
-				alert('Please upload image for new smiley.');	
-				return false;				
+				alert('Please upload image for new smiley.');
+				return false;
 			} else {
 				myform.submit();
-			} 
+			}
 		});
 	}, 500);
 </script>
@@ -428,7 +429,7 @@ EOD;
 	global $smileys_default;
 	global $smileys;
 	$error = 1;
-	
+
 	if (!empty($_POST['ajaxAction']) && $_POST['ajaxAction'] == 'code') {
 		$error = 0;
 		if ($_POST['currCode'] != 'CC_SMILIES') {
@@ -452,9 +453,9 @@ EOD;
 		$error = 0;
 		echo 1;
 	}
-	
+
 	if (!$error) {
-		$smData = "\$smileys_default = ";
+		$smData = '\$smileys_default = ';
 		$smData .= var_export($smileys_default,true);
 		$smData = substr_replace($smData, '', strrpos($smData, ','), strlen(','));
 		$smData .= ";";
@@ -463,7 +464,7 @@ EOD;
 			$_SESSION['cometchat']['error'] = 'Smiley added successfully';
 		}
 	}
-	
+
 	$data = '';
 	foreach ($_POST as $field => $value) {
 		if ($field == 'smlWidth' || $field == 'smlHeight') {
@@ -471,7 +472,7 @@ EOD;
 		}
 	}
 	if ($data != '') {
-		configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+		configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 	}
 	if (empty($_POST['ajaxAction'])) {
 		header("Location:?module=dashboard&action=loadexternal&type=plugin&name=smilies");

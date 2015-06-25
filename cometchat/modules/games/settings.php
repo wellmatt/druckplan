@@ -9,11 +9,11 @@ if (empty($_GET['process'])) {
 	echo <<<EOD
 	<!DOCTYPE html>
 	{$getstylesheet}
-	<form action="?module=dashboard&action=loadexternal&type=module&name=games&process=true" method="post">
-	<div id="content">
+	<form style="height:100%" action="?module=dashboard&action=loadexternal&type=module&name=games&process=true" method="post">
+	<div id="content" style="width:auto">
 		<h2>Settings</h2>
 		<h3>Banned keywords will hide games which contain those keywords. Separate each word by comma e.g. adult, 18+, spiders</h3>
-		
+
 		<div>
 			<div id="centernav" style="width:380px">
 				<div class="title">Banned keywords:</div>
@@ -23,16 +23,20 @@ if (empty($_GET['process'])) {
 				<div style="clear:both;padding:5px;"></div>
 			</div>
 		</div>
-		
+
 		<div style="clear:both;padding:7.5px;"></div>
 		<input type="submit" value="Update Settings" class="button" />&nbsp;&nbsp;or <a href="javascript:window.close();">cancel or close</a>
 	</div>
 	</form>
             <script type="text/javascript" src="../js.php?admin=1"></script>
             <script type="text/javascript" language="javascript">
-                resizeWindow();
-                function resizeWindow() {
-                    window.resizeTo(($("form").width()+30), ($("form").height()+85));
+                $(function() {
+					setTimeout(function(){
+							resizeWindow();
+						},200);
+				});
+				function resizeWindow() {
+                    window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
                 }
             </script>
 EOD;
@@ -41,7 +45,7 @@ EOD;
 	foreach ($_POST as $field => $value) {
 		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
 	}
-	
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 	header("Location:?module=dashboard&action=loadexternal&type=module&name=games");
 }

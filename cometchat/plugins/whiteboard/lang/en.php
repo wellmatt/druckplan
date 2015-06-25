@@ -14,5 +14,6 @@ $whiteboard_language[6] = 'is now viewing your whiteboard.';
 $whiteboard_language[7] = 'has shared a whiteboard.';
 $whiteboard_language[8] = 'Click here to view';
 $whiteboard_language[9] = 'Whiteboard';
+$whiteboard_language[10] = 'Text exceeds boundary limit';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

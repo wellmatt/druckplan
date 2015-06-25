@@ -1,13 +1,13 @@
 <?php
- 
+
 /*
 
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -73,7 +73,7 @@ if (!empty($_REQUEST['userid'])) {
 $fetchid = intval($fetchid);
 $time = getTimeStamp();
 $sql = getUserDetails($fetchid);
-	
+
 if ($guestsMode && $fetchid >= 10000000) {
 	$sql = getGuestDetails($fetchid);
 }
@@ -84,7 +84,7 @@ if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysqli_error($GLOBALS['dbh'])
 
 $chat = mysqli_fetch_assoc($query);
 
-if ((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
+if ((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT || $chat['isdevice'] == 1) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
 	if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
 		$chat['status'] = 'available';
 	}
@@ -103,7 +103,7 @@ if (function_exists('processName')) {
 	$chat['username'] = processName($chat['username']);
 }
 
-$response =  array('id' => $chat['userid'], 'n' => $chat['username'], 'l' => $link, 'a' => $avatar, 's' => $chat['status'], 'm' => $chat['message']);
+$response =  array('id' => $chat['userid'], 'n' => $chat['username'], 'l' => $link, 'd' => $chat['isdevice'],'a' => $avatar, 's' => $chat['status'], 'm' => $chat['message']);
 
 header('Content-type: application/json; charset=utf-8');
 if (!empty($_GET['callback'])) {

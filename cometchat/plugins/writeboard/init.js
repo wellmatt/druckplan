@@ -16,28 +16,31 @@
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
-(function($){   
-  
+(function($){
+
 	$.ccwriteboard = (function () {
 
 		var title = '<?php echo $writeboard_language[0];?>';
 		var lastcall = 0;
 		var height = <?php echo $writebHeight;?>;
 		var width = <?php echo $writebWidth;?>;
-		var chatroommode = 0;
 
         return {
 
 			getTitle: function() {
-				return title;	
+				return title;
 			},
 
-			init: function (id, mode) {
-				if(typeof(mode) !== "undefined") {
-					chatroommode = mode;
+			init: function (params) {
+				var id = params.to;
+				var chatroommode = params.chatroommode;
+				var windowMode = 0;
+				if(typeof(params.windowMode) == "undefined") {
+					windowMode = 0;
+				} else {
+					windowMode = 1;
 				}
-
-				if (chatroommode != 0) {
+				if(chatroommode == 1) {
 					var currenttime = new Date();
 					currenttime = parseInt(currenttime.getTime()/1000);
 					if (currenttime-lastcall > 10) {
@@ -45,7 +48,7 @@
 						basedata = $.cometchat.getBaseData();
 						var random = currenttime;
 						lastcall = currenttime;
-						$[$.cometchat.getChatroomVars('calleeAPI')].loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=1&chatroommode=1&roomid='+id+'&id='+random+'&basedata='+basedata, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width=<?php echo $writebWidth;?>,height=<?php echo $writebHeight;?>",width,height-50,'<?php echo $writeboard_language[7];?>',1,1,1,1);
+						loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=1&chatroommode=1&roomid='+id+'&id='+random+'&basedata='+basedata, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width=<?php echo $writebWidth;?>,height=<?php echo $writebHeight;?>",width,height-50,'<?php echo $writeboard_language[7];?>',1,1,1,1,windowMode);
 					} else {
 						alert('<?php echo $writeboard_language[1];?>');
 					}
@@ -60,9 +63,9 @@
 						$.getJSON(baseUrl+'plugins/writeboard/index.php?action=request&callback=?', {to: id, id: random, basedata: baseData});
 						lastcall = currenttime;
 
-						loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=1&id='+random+'&basedata='+baseData, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height-50,'<?php echo $writeboard_language[7];?>',0,1,1,1);
-						if (jqcc.cometchat.getThemeArray('buddylistIsDevice',id) == 1) { 
-							jqcc.ccmobilenativeapp.sendnotification('<?php echo $writeboard_language[2];?>', id, jqcc.cometchat.getName(jqcc.cometchat.getThemeVariable('userid')));	
+						loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=1&id='+random+'&basedata='+baseData, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height-50,'<?php echo $writeboard_language[7];?>',0,1,1,1,windowMode);
+						if (jqcc.cometchat.getThemeArray('buddylistIsDevice',id) == 1) {
+							jqcc.ccmobilenativeapp.sendnotification('<?php echo $writeboard_language[2];?>', id, jqcc.cometchat.getName(jqcc.cometchat.getThemeVariable('userid')));
 						}
 
 					} else {
@@ -71,25 +74,46 @@
 				}
 			},
 
-			accept: function (id,random,mode) {
-				if(typeof(mode) !== "undefined") {
-					chatroommode = mode;
-				}
-
-				if (chatroommode != 0) {
-				   baseUrl =$.cometchat.getBaseUrl();
-				   basedata = $.cometchat.getBaseData();
-				   $[$.cometchat.getChatroomVars('calleeAPI')].loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=0&id='+random+'&basedata='+basedata, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width=<?php echo $writebWidth;?>,height=<?php echo $writebHeight;?>",width,height-50,'<?php echo $writeboard_language[7];?>',1,1,1,1); 
-				
+			accept: function (params) {
+				var id = params.to;
+				var random = params.random;
+				var chatroommode = params.chatroommode;
+				windowMode = 0;
+				if(typeof(params.windowMode) == "undefined") {
+					windowMode = 0;
 				} else {
-
+					windowMode = 1;
+				}
+				if(chatroommode == 1) {
+				   	baseUrl = $.cometchat.getBaseUrl();
+				   	basedata = $.cometchat.getBaseData();
+				   	var controlparameters = {"type":"plugins", "name":"core", "method":"loadCCPopup", "params":{"url": baseUrl+"plugins/writeboard/index.php?action=writeboard&type=0&id="+random+"&basedata="+basedata, "name":"writeboard", "properties":"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width=<?php echo $writebWidth;?>,height=<?php echo $writebHeight;?>", "width":width, "height":height-50, "title":'<?php echo $writeboard_language[7];?>', "force":"1", "allowmaximize":"1", "allowresize":"1", "allowpopout":"1", "windowMode":windowMode}};
+                    controlparameters = JSON.stringify(controlparameters);
+                    parent.postMessage('CC^CONTROL_'+controlparameters,'*');
+                } else {
 					baseUrl = $.cometchat.getBaseUrl();
 					baseData = $.cometchat.getBaseData();
 					$.getJSON(baseUrl+'plugins/writeboard/index.php?action=accept&callback=?', {to: id, basedata: baseData});
-					loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=0&id='+random+'&basedata='+baseData, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height-50,'<?php echo $writeboard_language[7];?>',0,1,1,1);
+					loadCCPopup(baseUrl+'plugins/writeboard/index.php?action=writeboard&type=0&id='+random+'&basedata='+baseData, 'writeboard',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height-50,'<?php echo $writeboard_language[7];?>',0,1,1,1,windowMode);
 				}
 			}
         };
     })();
- 
+
 })(jqcc);
+
+jqcc(document).ready(function(){
+	jqcc('.accept_Write').live('click',function(){
+		var to = jqcc(this).attr('to');
+		var random = jqcc(this).attr('random');
+		var chatroommode = jqcc(this).attr('chatroommode');
+		if(typeof(parent) != 'undefined' && parent != null && parent != self){
+			var controlparameters = {"type":"plugins", "name":"ccwriteboard", "method":"accept", "params":{"to":to, "random":random, "chatroommode":chatroommode}};
+			controlparameters = JSON.stringify(controlparameters);
+			parent.postMessage('CC^CONTROL_'+controlparameters,'*');
+		} else {
+			var controlparameters = {"to":to, "random":random, "chatroommode":chatroommode};
+            jqcc.ccwriteboard.accept(controlparameters);
+		}
+	});
+});

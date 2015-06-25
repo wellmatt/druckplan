@@ -1,5 +1,5 @@
 /*
- * CometChat 
+ * CometChat
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -26,6 +26,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	outline: 0;
 }
 body {
+	width: 100%;
 	line-height: 1;
 	color: black;
 	background: #ffffff;
@@ -56,15 +57,15 @@ html {
 	 overflow-y:scroll;
 
 }
- 
+
 
 a {
 	color: #0f5d7e;
 }
 
 ol.tabs {
-	float: left; 
-	width: 100%;  
+	float: left;
+	width: 100%;
 	border-bottom:1px solid #ccc;
 
 }
@@ -74,16 +75,16 @@ ol.tabs {
 }
 
 .tabs li a {
-	display: block; 
-	margin-top: 5px; 
-	padding: 5px 7px; 
-	font-weight: normal; 
-	font-size: 110%; 
-	text-transform: lowercase; 
-	background-color: #eee; 
-	font-weight: bold; 
-	margin-bottom: 0px; 
-	outline: none; 
+	display: block;
+	margin-top: 5px;
+	padding: 5px 7px;
+	font-weight: normal;
+	font-size: 110%;
+	text-transform: lowercase;
+	background-color: #eee;
+	font-weight: bold;
+	margin-bottom: 0px;
+	outline: none;
 	text-decoration: none;
 	color: #3ea4d0;
 }
@@ -93,24 +94,24 @@ ol.tabs {
 }
 
 .tabs li a:hover {
-	color: #fff; 
+	color: #fff;
 	background-color: #3ea4d0;
 }
 
-.tabs li a:hover em { 
-	color: #fff; 
+.tabs li a:hover em {
+	color: #fff;
 	background-color: #3ea4d0;
 }
 
 .tabs li.current a {
-	padding: 5px 10px 5px 10px; 
-	color: #333; 
-	border: solid 1px #ccc; 
-	border-bottom: none; 
-	background-color: #fff; 
+	padding: 5px 10px 5px 10px;
+	color: #333;
+	border: solid 1px #ccc;
+	border-bottom: none;
+	background-color: #fff;
 	font-size: 160%;
-	margin-top: 0; 
-	margin-bottom: -1px; 
+	margin-top: 0;
+	margin-bottom: -1px;
 	font-weight: bold;
 }
 
@@ -133,10 +134,10 @@ ol.tabs {
 	width: 400px;
 	font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
 	font-size:11px;
- 	background-color: #eeeeee;  
+ 	background-color: #eeeeee;
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 5px;
- 
+
 	-moz-border-radius-topleft:7px;
 	-moz-border-radius-topright:7px;
 }
@@ -255,28 +256,28 @@ ol.tabs {
 }
 
 body {
-	font-size: 10px; 
+	font-size: 10px;
 	font-family: arial, san-serif;
 }
 
 em.count {
-	background-color: #ddd; 
-	padding: 0 2px; 
-	color: #666; 
-	display: inline-block; 
-	font-weight: bold; 
+	background-color: #ddd;
+	padding: 0 2px;
+	color: #666;
+	display: inline-block;
+	font-weight: bold;
 	font-size: 11px;
 }
 
 strong.count {
-	background-color: #f00; 
-	color: #fff; 
-	display: inline-block; 
-	padding: 0 3px; 
-	font-size: 11px; 
-	font-weight: bold; 
-	text-decoration: none; 
-	-webkit-border-radius: 0.5em; 
+	background-color: #f00;
+	color: #fff;
+	display: inline-block;
+	padding: 0 3px;
+	font-size: 11px;
+	font-weight: bold;
+	text-decoration: none;
+	-webkit-border-radius: 0.5em;
 	-moz-border-radius: 0.5em;
 }
 
@@ -399,6 +400,24 @@ h4 {
         cursor: pointer;
 }
 
+#suggestions{
+	position: absolute;
+}
+
+#suggestions .suggestion_list{
+	border: 1px solid #ccc;
+	padding: 4px;
+	background: #fff;
+	color: #333;
+	font-weight: bold;
+	font-size: 10px;
+	font-family: arial;
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 200px;
+	list-style-type: none;
+}
+
 .button:hover {
         opacity: 0.5;
 }
@@ -502,7 +521,34 @@ h4 {
 	float:left;
 }
 
-#modules_livemodules { 
+/*auth*/
+
+.auth_container{
+	overflow: hidden;
+	padding-bottom: 10px;
+	margin-bottom: 17px;
+}
+
+#site_auth{
+	border-bottom: 1px solid #ccc;
+}
+
+#cc_auth_options{
+	overflow: hidden;
+	float: left;
+}
+
+.auth_select{
+	float: left;
+}
+
+.auth_select_text{
+	float: left;
+	padding-top: 3px;
+	margin: 0px 0px 10px 4px;
+}
+
+#auth_livemodes {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -512,7 +558,42 @@ h4 {
 	width: 500px;
 }
 
-#modules_livemodules li { 
+#auth_livemodes li {
+	margin: 5px;
+	padding: 5px;
+	margin-left:0px;
+	font-size: 1.2em;
+	width: 480px;
+	background: #fff;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+}
+
+#auth_availableauthmodes li {
+	margin: 5px;
+	padding: 5px;
+	margin-left:0px;
+	font-size: 1.2em;
+	width: 173px;
+	background: #fff;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	margin-left:7px;
+}
+
+/*modules*/
+
+#modules_livemodules {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	margin-right: 10px;
+	background: #fff;
+	width: 500px;
+}
+
+#modules_livemodules li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -535,11 +616,10 @@ h4 {
 	margin-left:7px;
 }
 
-
 /* Plugins */
 
 
-#modules_liveplugins { 
+#modules_liveplugins {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -549,7 +629,7 @@ h4 {
 	width: 500px;
 }
 
-#modules_liveplugins li { 
+#modules_liveplugins li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -575,7 +655,7 @@ h4 {
 /* Extensions */
 
 
-#modules_liveextensions { 
+#modules_liveextensions {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -585,7 +665,7 @@ h4 {
 	width: 500px;
 }
 
-#modules_liveextensions li { 
+#modules_liveextensions li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -611,7 +691,7 @@ h4 {
 /* Themes */
 
 
-#modules_livethemes { 
+#modules_livethemes {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -620,7 +700,7 @@ h4 {
 	width: 700px;
 }
 
-#modules_livethemes li { 
+#modules_livethemes li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -644,13 +724,13 @@ h4 {
 }
 
 .margin-top {
-   margin-top:25px; 
+   margin-top:25px;
 }
 
 /* Announcements */
 
 
-#modules_announcements { 
+#modules_announcements {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -660,7 +740,7 @@ h4 {
 	width: 480px;
 }
 
-#modules_announcements li { 
+#modules_announcements li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -686,7 +766,7 @@ h4 {
 /* Chatrooms */
 
 
-#modules_chatrooms { 
+#modules_chatrooms {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -696,7 +776,7 @@ h4 {
 	width: 480px;
 }
 
-#modules_chatrooms li { 
+#modules_chatrooms li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -723,7 +803,7 @@ h4 {
 /* Logs */
 
 
-#modules_logs { 
+#modules_logs {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -733,7 +813,7 @@ h4 {
 	width: 200px;
 }
 
-#modules_logs li { 
+#modules_logs li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -745,7 +825,7 @@ h4 {
 	cursor: pointer;
 }
 
-#modules_logslong { 
+#modules_logslong {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -755,7 +835,7 @@ h4 {
 	width: 700px;
 }
 
-#modules_logslong li { 
+#modules_logslong li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -793,7 +873,7 @@ h4 {
 	margin-left:7px;
 }
 
-.modules_languagetabs { 
+.modules_languagetabs {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -817,7 +897,7 @@ h4 {
 	margin-top:2px;
 }
 
-#modules_livelanguage { 
+#modules_livelanguage {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -827,7 +907,7 @@ h4 {
 	width: 700px;
 }
 
-#modules_livelanguage li { 
+#modules_livelanguage li {
 	margin: 5px;
 	padding: 5px;
 	margin-left:0px;
@@ -877,12 +957,12 @@ pre {
 }
 
 .title_class {
-	vertical-align: middle; 
-	float: left; 
+	vertical-align: middle;
+	float: left;
 	margin: -1px 3px 0px 35px;
 }
 
-.cometchat_smiley {	
+.cometchat_smiley {
 	vertical-align: -6px;
 	display:inline-block;
 }
@@ -891,22 +971,22 @@ pre {
 	background: url(admin/images/cometchat_plugin_icon.png) no-repeat top left;
 }
 
-.cometchat_avchat{ background-position: 0 0; width: 16px; height: 16px; } 
-.cometchat_block{ background-position: 0 -66px; width: 16px; height: 16px; } 
-.cometchat_broadcast{ background-position: 0 -132px; width: 16px; height: 16px; } 
-.cometchat_chathistory{ background-position: 0 -198px; width: 16px; height: 16px; } 
-.cometchat_chattime{ background-position: 0 -264px; width: 16px; height: 16px; } 
-.cometchat_clearconversation{ background-position: 0 -330px; width: 16px; height: 16px; } 
-.cometchat_style{ background-position: 0 -396px; width: 16px; height: 16px; } 
-.cometchat_filetransfer{ background-position: 0 -462px; width: 16px; height: 16px; } 
-.cometchat_games{ background-position: 0 -528px; width: 16px; height: 16px; } 
-.cometchat_handwrite{ background-position: 0 -594px; width: 16px; height: 16px; } 
-.cometchat_report{ background-position: 0 -660px; width: 16px; height: 16px; } 
-.cometchat_save{ background-position: 0 -726px; width: 16px; height: 16px; } 
-.cometchat_screenshare{ background-position: 0 -792px; width: 16px; height: 16px; } 
-.cometchat_smilies{ background-position: 0 -858px; width: 16px; height: 16px; } 
-.cometchat_transliterate{ background-position: 0 -924px; width: 16px; height: 16px; } 
-.cometchat_whiteboard{ background-position: 0 -990px; width: 16px; height: 16px; } 
+.cometchat_avchat{ background-position: 0 0; width: 16px; height: 16px; }
+.cometchat_block{ background-position: 0 -66px; width: 16px; height: 16px; }
+.cometchat_broadcast{ background-position: 0 -132px; width: 16px; height: 16px; }
+.cometchat_chathistory{ background-position: 0 -198px; width: 16px; height: 16px; }
+.cometchat_chattime{ background-position: 0 -264px; width: 16px; height: 16px; }
+.cometchat_clearconversation{ background-position: 0 -330px; width: 16px; height: 16px; }
+.cometchat_style{ background-position: 0 -396px; width: 16px; height: 16px; }
+.cometchat_filetransfer{ background-position: 0 -462px; width: 16px; height: 16px; }
+.cometchat_games{ background-position: 0 -528px; width: 16px; height: 16px; }
+.cometchat_handwrite{ background-position: 0 -594px; width: 16px; height: 16px; }
+.cometchat_report{ background-position: 0 -660px; width: 16px; height: 16px; }
+.cometchat_save{ background-position: 0 -726px; width: 16px; height: 16px; }
+.cometchat_screenshare{ background-position: 0 -792px; width: 16px; height: 16px; }
+.cometchat_smilies{ background-position: 0 -858px; width: 16px; height: 16px; }
+.cometchat_transliterate{ background-position: 0 -924px; width: 16px; height: 16px; }
+.cometchat_whiteboard{ background-position: 0 -990px; width: 16px; height: 16px; }
 .cometchat_writeboard{ background-position: 0 -1056px; width: 16px; height: 16px; }
 
 #rightcontent {
@@ -931,4 +1011,9 @@ pre {
 
 .cursor_default {
         cursor:default !important;
+}
+.cometchat_audiochat {
+    background: url(plugins/audiochat/icon.png) no-repeat top left;
+    width: 16px;
+    height: 16px;
 }

@@ -100,7 +100,6 @@ html, body {
 #navigation {
 	position: fixed;
 	bottom: 0px;
-	background: #333;
 	width: 100%;
 	left: 0px;
 	padding: 0px;
@@ -109,13 +108,15 @@ html, body {
 
 #navigation img {
 	border: 0;
-	float: right;
+	float: left;
 	margin-left: 5px;
 }
 
 #navigation_elements {
-	margin: 5px;
+	margin: 0 auto;
 	height: 20px;
+	padding:5px 0px;
+	background:#1e1e1e;
 }
 
 #unpublishLink {
@@ -149,4 +150,8 @@ html, body {
 	margin: 0 auto;
 	text-align: center;
 	display: none;
+}
+
+#inviteLink , #inviteLink img{
+float:right;
 }

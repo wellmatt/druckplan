@@ -1,5 +1,5 @@
 /*
- * CometChat 
+ * CometChat
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 var ts = parseInt(new Date().getTime()/1000);
@@ -8,10 +8,10 @@ var ts = parseInt(new Date().getTime()/1000);
 	$.cometchatmonitor = function(){
 
 		var heartbeatTimer;
-		var timeStamp = '0';		
+		var timeStamp = '0';
 
-		function chatHeartbeat(){	
-			
+		function chatHeartbeat(){
+
 			$.ajax({
 				url: "index.php?module=monitor&action=data&ts="+ts,
 				data: {timestamp: timeStamp},
@@ -38,7 +38,7 @@ var ts = parseInt(new Date().getTime()/1000);
 
 							if (type == 'messages') {
 								$.each(item, function(i,incoming) {
-									htmlappend = '<div class="chat"><div class="chatrequest2">'+incoming.fromu+' -> '+incoming.tou+'</div><div class="chatmessage2" >'+incoming.message+'</div><div class="chattime" >'+incoming.time+'</div><div style="clear:both"></div></div>' + htmlappend;
+									htmlappend = '<div class="chat"><div class="chatrequest2">'+incoming.fromu+' -> '+incoming.tou+'</div><div class="chatmessage2" >'+incoming.message+'</div><div class="chattime" >'+getTimeDisplay(new Date(incoming.time))+'</div><div style="clear:both"></div></div>' + htmlappend;
 
 								});
 							}
@@ -47,26 +47,26 @@ var ts = parseInt(new Date().getTime()/1000);
 						if (htmlappend != '') {
 							$("#data").prepend(htmlappend);
 							$('div.message').fadeIn(2000);
-							$('div.message:gt(19)').remove(); 
+							$('div.message:gt(19)').remove();
 						}
 					}
-					
+
 				clearTimeout(heartbeatTimer);
 				heartbeatTimer = setTimeout( function() { chatHeartbeat(); },3000);
-				
+
 			}});
 
 		}
 
 		chatHeartbeat();
 
-	} 
-  
+	}
+
 })(jQuery);
 
 
-(function($){   
-  
+(function($){
+
 	$.fancyalert = function(message){
 		if ($("#alert").length > 0) {
 			removeElement("alert");
@@ -87,17 +87,56 @@ var ts = parseInt(new Date().getTime()/1000);
 					$alert.css('border-bottom','0px solid #333333');
 				});
 			}
-	};   
-  
+	};
+
 })(jQuery);
+
+/* CCAUTH */
+
+function ccauth_updateorder(authmode) {
+	order = '';
+	$('#auth_livemodes').children('li').each(function(idx, elm) {
+		order += "'"+$(elm).attr('d1')+"',";
+	});
+	$('#cc_auth_order').val(order);
+	var conf;
+	if(!(authmode==1 && $('#cc_auth_radio:checked').length > 0) && !(authmode==0 && $('#site_auth_radio:checked').length > 0) && order != ''){
+		conf = confirm("This action will remove all CometChat tables and re-create them. Any existing data (e.g. status messages) will be cleared. Are you sure?");
+	}else{
+		conf = true;
+	}
+	if (conf == true) {
+		if($('#cc_auth_radio:checked').length > 0 && order == ''){
+			$.fancyalert('Please select atleast 1 of the Social Authentication options or use Site\'s Authentication');
+			return false;
+		}
+		return true;
+	}
+	return false;
+}
+
+function ccauth_removeauthmode(id) {
+	var rel = $('#'+id).attr('rel');
+	removeElement(id);
+	$('#'+rel).removeAttr('style').attr('onClick','ccauth_addauthmode('+id+',\''+rel+'\')').attr('style','cursor:pointer');
+	if($('#auth_livemodes li').length==0){
+		$('#auth_livemodes').prepend('<div id="no_auth" style="width: 480px;float: left;color: #333333;">You have no Authentication Mode activated at the moment. To activate an Authentication Mode, please add them from the list of available Authentication Modes.</div>');
+	}
+}
+
+function ccauth_addauthmode(id,name) {
+	$('#no_auth').remove();
+	$('#auth_livemodes').append('<li class="ui-state-default" id="'+id+'" d1="'+name+'" rel="'+name+'"><img height="16" width="16" src="images/'+name+'.png" style="margin:0;float:left;"></img><div class="cometchat_ccauthicon cometchat_'+name+'" style="margin:0;margin-right:5px;margin-top:2px;float:left;"></div><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'+name+'_title">'+name+'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" onclick="javascript:auth_configauth(\''+name+'\')" style="margin-right:5px"><img src="images/config.png" title="Configure"></a><a href="javascript:void(0)" onclick="javascript:ccauth_removeauthmode(\''+id+'\')"><img src="images/remove.png" title="Remove Authentication Mode"></a></span><div style="clear:both"></div></li>');
+	$('#'+name).attr('onClick','').css({'opacity': '0.5','cursor': 'default'});
+}
 
 /* Modules */
 
 function modules_updateorder(del,ren,showhide,lightbox) {
 	order = [];
 	$('#modules_livemodules').children('li').each(function(idx, elm) {
-		order.push("\$trayicon[] = array('"+elm.id+"','"+$(elm).attr('d1')+"','"+$(elm).attr('d2')+"','"+$(elm).attr('d3')+"','"+$(elm).attr('d4')+"','"+$(elm).attr('d5')+"','"+$(elm).attr('d6')+"','"+$(elm).attr('d7')+"','"+$(elm).attr('d8')+"');")		 
-	});  
+		order.push("\$trayicon[] = array('"+elm.id+"','"+$(elm).attr('d1')+"','"+$(elm).attr('d2')+"','"+$(elm).attr('d3')+"','"+$(elm).attr('d4')+"','"+$(elm).attr('d5')+"','"+$(elm).attr('d6')+"','"+$(elm).attr('d7')+"','"+$(elm).attr('d8')+"');")
+	});
 
 	$.post('?module=modules&action=updateorder&ts='+ts, {'order[]': order}, function(data) {
 		if (lightbox) {
@@ -132,14 +171,14 @@ function modules_removemodule(id,custom) {
 		if (custom == 1){
 			$.post('?module=modules&action=removecustommodules&ts='+ts, {'module': id}, function(data) {});
 		}
-		$('#modules_availablemodules').find('a').click(function() { return false; }); 
+		$('#modules_availablemodules').find('a').click(function() { return false; });
 		setTimeout(function () { location.reload();}, 1500);
 	}
 }
 
 function modules_renamemodule(id) {
-	if (document.getElementById(id+'_title').innerHTML.indexOf('<a href="?module=modules&ts='+ts+'">cancel</a>') == -1) {
-		document.getElementById(id+'_title').innerHTML = '<input type="textbox" id="'+id+'_newtitle" class="inputboxsmall" style="margin-bottom:3px" value="'+document.getElementById(id+'_title').innerHTML+'"/><br/><input type="button" onclick="javascript:modules_renamemoduleprocess(\''+id+'\');" value="Rename" class="buttonsmall">&nbsp;&nbsp;or <a href="?module=modules&ts='+ts+'">cancel</a>';
+	if (document.getElementById(id+'_title').innerHTML.indexOf('<a href="?module=modules&amp;ts='+ts+'">cancel</a>') == -1) {
+		document.getElementById(id+'_title').innerHTML = '<input type="textbox" id="'+id+'_newtitle" class="inputboxsmall" style="margin-bottom:3px" value="'+document.getElementById(id+'_title').innerHTML+'"/><br/><input type="button" onclick="javascript:modules_renamemoduleprocess(\''+id+'\');" value="Rename" class="buttonsmall">&nbsp;&nbsp;or <a href="?module=modules&amp;ts='+ts+'">cancel</a>';
 	}
 }
 
@@ -199,8 +238,8 @@ function removeElement(id) {
 function plugins_updateorder(del) {
 	order = '';
 	$('#modules_liveplugins').children('li').each(function(idx, elm) {
-		order += "'"+$(elm).attr('d1')+"',"; 
-	});  
+		order += "'"+$(elm).attr('d1')+"',";
+	});
 
 	$.post('?module=plugins&action=updateorder&ts='+ts, {'order': order}, function(data) {
 		if (del) {
@@ -220,7 +259,7 @@ function plugins_removeplugin(id) {
 		plugins_updateorder(true);
 		$('#'+rel).removeAttr('style').attr('href','?module=plugins&action=addplugin&data='+rel+'&ts='+ts);
 		if($('#modules_liveplugins li').length==0){
-			$('#modules_liveplugins').prepend('<div id="no_plugin" style="width: 480px;float: left;color: #333333;">Youdo not have any Plugins activated at the moment. To activate a plugin, please add the plugin from the list of available plugins.</div>');
+			$('#modules_liveplugins').prepend('<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You do not have any Plugins activated at the moment. To activate a plugin, please add the plugin from the list of available plugins.</div>');
 		}
 	}
 }
@@ -228,8 +267,8 @@ function plugins_removeplugin(id) {
 function plugins_updatechatroomorder(del) {
 	order = '';
 	$('#modules_liveplugins').children('li').each(function(idx, elm) {
-		order += "'"+$(elm).attr('d1')+"',"; 
-	});  
+		order += "'"+$(elm).attr('d1')+"',";
+	});
 
 	$.post('?module=plugins&action=updatechatroomorder&ts='+ts, {'order': order}, function(data) {
 		if (del) {
@@ -264,7 +303,7 @@ function extensions_removeextension(id) {
 	if (answer) {
 		removeElement(id);
 		extensions_updateorder(true);
-		$('#'+rel).removeAttr('style').attr('href','?module=extensions&action=addextension&data='+rel+'&ts='+ts);		
+		$('#'+rel).removeAttr('style').attr('href','?module=extensions&action=addextension&data='+rel+'&ts='+ts);
 	}
         if($('#modules_liveextensions').html() == ""){
             $('#modules_liveextensions').remove();
@@ -275,7 +314,7 @@ function extensions_removeextension(id) {
 function extensions_updateorder(del) {
 	order = '';
 	$('#modules_liveextensions').children('li').each(function(idx, elm) {
-		order += "'"+$(elm).attr('d1')+"',"; 
+		order += "'"+$(elm).attr('d1')+"',";
 	});
 	$.post('?module=extensions&action=updateorder&ts='+ts, {'order': order}, function(data) {
 		$.fancyalert('Extension successfully deactivated.');
@@ -326,6 +365,10 @@ function logs_gotouserb(id,id2) {
 	location.href = '?module=logs&action=viewuserconversation&data='+id+'&data2='+id2+'&ts='+ts;
 }
 
+function auth_configauth(id) {
+	window.open('?module=dashboard&action=loadexternal&type=function&name=login&option='+id+'&ts='+ts,'external','width=400,height=300,resizable=1,scrollbars=1');
+}
+
 function modules_configmodule(id) {
 	window.open('?module=dashboard&action=loadexternal&type=module&name='+id+'&ts='+ts,'external','width=400,height=300,resizable=1,scrollbars=1');
 }
@@ -362,6 +405,13 @@ function themes_updatevariables(theme) {
 	return false;
 }
 
+function themes_restorecolors(){
+	$.post('?module=themes&action=restorecolorprocess&ts='+ts, {}, function(data) {
+		window.location.reload();
+	});
+	return false;
+}
+
 function language_updatelanguage(md5,id,file,lang) {
 	var language = {};
 	var rtl = '';
@@ -371,7 +421,7 @@ function language_updatelanguage(md5,id,file,lang) {
 	}
 
 	$('#'+md5).find("textarea").each(function(index,value) {
-		language[$(value).attr('name')] = $(value).attr('value');	
+		language[$(value).attr('name')] = $(value).attr('value');
 	})
 	$.post('?module=language&action=editlanguageprocess&ts='+ts, {'id': id, 'lang': lang, 'file': file, 'language': language, rtl: rtl}, function(data) {
 		$.fancyalert('Language has been successfully modified.');
@@ -388,7 +438,7 @@ function language_makedefault(id) {
 function language_restorelanguage(md5,id,file,lang) {
 	var language = {};
 	$('#'+md5).find("textarea").each(function(index,value) {
-		language[index] = $(value).attr('value');	
+		language[index] = $(value).attr('value');
 	})
 	$.post('?module=language&action=restorelanguageprocess&ts='+ts, {'id': id, 'lang': lang, 'file': file, 'language': language}, function(data) {
 		window.location.reload();
@@ -401,7 +451,7 @@ function language_importlanguage(id) {
 	var answer = confirm ('Are you sure you want to import this language?');
 	if (answer) {
 
-		$.getJSON('http://www.cometchat.com/software/getlanguage/?callback=?', {id: id}, function(data) {
+		$.getJSON('//www.cometchat.com/software/getlanguage/?callback=?', {id: id}, function(data) {
 			if (data) {
 				$.post('?module=language&action=importlanguage&ts='+ts+'&callback=?', {data: data}, function(data) {
 					if (data) {
@@ -415,7 +465,7 @@ function language_importlanguage(id) {
 }
 
 function language_previewlanguage(id) {
-	$.getJSON('http://www.cometchat.com/software/getlanguage/?callback=?', {id: id}, function(data) {
+	$.getJSON('//www.cometchat.com/software/getlanguage/?callback=?', {id: id}, function(data) {
 		if (data) {
 			$.post('?module=language&action=previewlanguage&ts='+ts+'&callback=?', {data: data}, function(data) {
 				if (data) {
@@ -429,7 +479,7 @@ function language_previewlanguage(id) {
 }
 
 function language_getlanguages() {
-	$.getJSON('http://www.cometchat.com/software/getlanguages/?callback=?', {}, function(data) {
+	$.getJSON('//www.cometchat.com/software/getlanguages/?callback=?', {}, function(data) {
 		if (data) {
 
 			html = '';
@@ -464,13 +514,43 @@ function language_sharelanguage(id) {
 }
 
 function embed_link(url,width,height) {
-	var mod = url.split('/modules/');  
+	var mod = url.split('/modules/');
 	var module = mod[1].split('/');
-	embedlink = window.open('','embedlink','width=400,height=100,resizable=0,scrollbars=0');
+	var baseUrl = mod[0]+'/';
+	var style ="";
+	embedlink = window.open('','embedlink','width=520,height=150,resizable=0,scrollbars=0');
 	embedlink.document.write("<title>Embed Link</title><style>textarea { border:1px solid #ccc; color: #333; font-family:verdana; font-size:12px; }</style>");
-	embedlink.document.write('<textarea style="width:380px;height:80px"><iframe src="'+url+'" width="'+width+'" height="'+height+'" frameborder="1" class="cometchat_embed_'+module[0]+'" name="cometchat_chatrooms_iframe"></iframe></textarea>');
+	var embedscript = '<script src="'+baseUrl+'js.php?type=core&amp;name=embedcode" type="text/javascript"></script>\n<script>var iframeObj = {};iframeObj.module="'+module[0]+'";iframeObj.src="'+url+'";iframeObj.width="'+width+'";iframeObj.height="'+height+'";if(typeof(addEmbedIframe)=="function"){addEmbedIframe(iframeObj);}</script>';
+	if(module[0]=='chatrooms'){
+		embedlink.document.write('<textarea readonly style="width:500px;height:130px"><div id="cometchat_embed_chatrooms_container"></div>\n'+embedscript+'</textarea>');
+	}else if(module[0]=='broadcastmessage'){
+		embedlink.document.write('<textarea readonly style="width:500px;height:130px"><div id="cometchat_embed_broadcastmessage_container"></div>'+embedscript+'</textarea>');
+	}else{
+		embedlink.document.write('<textarea readonly style="width:500px;height:70px"><iframe src="'+url+'" width="'+width+'" height="'+height+'" frameborder="1" class="cometchat_embed_'+module[0]+'" name="cometchat_'+module[0]+'_iframe"></iframe></textarea><script>window.resizeTo(520,125);</script>');
+	}
 	embedlink.document.close();
 	embedlink.focus();
+}
+
+function embed_code(url) {
+	var mod = url.split('/cometchat_popout');
+	var baseUrl = mod[0]+'/';
+	embedcode = window.open('','embedcode','width=520,height=200,resizable=0,scrollbars=0');
+	embedcode.document.write("<title>Embed Code</title><style>.input{padding:10px;} .input input{padding:5px;border-radius:2px;border:1px solid #aeaeae;width:100%;},textarea { border:1px solid #ccc; color: #333; font-family:verdana; font-size:12px; }button{border: 1px solid #76b6d2;padding: 4px;background: #76b6d2;color: #fff;font-weight: bold;font-size: 10px;font-family: arial;text-transform: uppercase;-moz-border-radius: 5px;-webkit-border-radius: 5px;padding-left: 10px;padding-right: 10px;cursor: pointer;}</style>");
+	var script1 = '<script>function generateCode(){ var height = document.getElementById("height").value;	var width = document.getElementById("width").value;if(width < 300){	alert("Width should be greater than 300");		return;	} if(height < 420){	alert("Height should be greater than 420");		return;	} var ips = document.getElementsByClassName("input");	for(var i = 0; i<ips.length;i++){		ips[i].style.display = "none";	}';
+
+	var script2 = "var embedscript = '&lt;script src=\""+baseUrl+"js.php?type=core&amp;name=embedcode\" type=\"text/javascript\"&gt;&lt;/script&gt;&lt;script&gt;var iframeObj = {};iframeObj.module=\"synergy\";iframeObj.style=\"min-height:420px;min-width:300px;\";iframeObj.src=\""+url+"\"; if(typeof(addEmbedIframe)==\"function\"){addEmbedIframe(iframeObj);}&lt;/script&gt;';";
+
+	var script3 = "document.write('<textarea readonly style=\"width:500px;height:130px\"><div id=\"cometchat_embed_synergy_container\" style=\"width:'+width+'px;height:'+height+'px;\" ></div>'+embedscript+'</textarea>');}</script>";
+
+	var scripts = script1+script2+script3;
+
+	var width = '<div class="input"><label>Width of the Chat (Minimum Width=300)  <input type="text" id="width"/></label></div>';
+	var height = '<div class="input"><label>Height of the Chat (Minimum Height=420)<input type="text" id="height"/></label></div>';
+	var button = '<div class="input"><button onclick="javascript:generateCode()">Generate URL</button></div>';
+	embedcode.document.write(scripts+width+height+button);
+	embedcode.document.close();
+	embedcode.focus();
 }
 
 function rgbtohsl(r, g, b){
@@ -571,7 +651,7 @@ function cron_submit() {
 				$('#error').show();
 				return false;
 			}
-			
+
 		}
 	} else {
 		var r = confirm("Are you sure?");

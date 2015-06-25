@@ -68,6 +68,11 @@ if ($userid == 0 || in_array($userid,$bannedUserIDs) || in_array($_SERVER['REMOT
 	if (in_array($userid,$bannedUserIDs)) {
 		$chatrooms_language[0] = $bannedMessage;
 	}
+	$baseUrl = BASE_URL;
+	$loggedOut = $chatrooms_language[0];
+	if(USE_CCAUTH == 1){
+		$loggedOut .= ' <a href="javascript:void(0);" class="socialLogin">'.$chatrooms_language[65].'</a> '.$chatrooms_language[66];
+	}
 	echo <<<EOD
 	<!DOCTYPE html>
 	<html>
@@ -77,10 +82,22 @@ if ($userid == 0 || in_array($userid,$bannedUserIDs) || in_array($_SERVER['REMOT
 			<meta http-equiv="expires" content="-1">
 			<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 			<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=module&name=chatrooms" />
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+			<script type="text/javascript">
+				$('.socialLogin').live('click',function(){
+					if(typeof(parent) != 'undefined' && parent != null && parent != self){
+						var controlparameters = {"type":"functions", "name":"socialauth", "method":"login", "params":{"url":"{$baseUrl}functions/login/loginOptions.php"}};
+						controlparameters = JSON.stringify(controlparameters);
+						parent.postMessage('CC^CONTROL_'+controlparameters,'*');
+					} else {
+
+					}
+			    });
+			</script>
 		</head>
 		<body>
 			<div class="containermessage">
-			{$chatrooms_language[0]}
+			{$loggedOut}
 			</div>
 		</body>
 	</html>
@@ -92,7 +109,7 @@ EOD;
 	if((!empty($_REQUEST['action']) && $_REQUEST['action']='dynamicChatroom') && (!empty($_REQUEST['name']))){
 		global $userid;
 		global $cookiePrefix;
-		$name = $_REQUEST['name'];
+		$name = mysqli_real_escape_string($GLOBALS['dbh'],$_REQUEST['name']);
 		$type = '3';
 		$sql = ("select id,name,type from cometchat_chatrooms where name = '".mysqli_real_escape_string($GLOBALS['dbh'],sanitize_core($name))."'");
 		$query = mysqli_query($GLOBALS['dbh'],$sql);
@@ -133,7 +150,7 @@ EOD;
 			$joinroom = "jqcc.cometchat.silentroom('{$_GET['id']}','','{$roomname}');";
 		}
 	}
-	$loadjs = "$(document).ready(function() {
+	$loadjs = "$(function() {
 					".$joinroom."
 					".$leaveroom."
 				});";
@@ -143,19 +160,23 @@ EOD;
 					".$loadjs."
 				   }";
 	}
+	$ccauthlogout = '';
+	if(USE_CCAUTH == "1"){
+    	$ccauthlogout = '<div class="cometchat_tooltip" id="cometchat_authlogout" title="'.$language[80].'"></div>';
+	}
 
 	$listItems = "";
 	if ($dynamicChatroom == 0) {
 		$listItems .= <<<EOD
-							<li id="lobbytab" class="tab_selected">
-								<a href="javascript:void(0);" onclick="jqcc[jqcc.cometchat.getChatroomVars('calleeAPI')].loadLobby()">{$chatrooms_language[3]}</a>
-							</li>
+				<li id="lobbytab" class="tab_selected">
+					<a href="javascript:void(0);" onclick="jqcc[jqcc.cometchat.getChatroomVars('calleeAPI')].loadLobby()">{$chatrooms_language[3]}</a>
+				</li>
 EOD;
 		if ($allowUsers == 1 ) {
 			$listItems .= <<<EOD
-							<li id="createtab">
-								<a href="javascript:void(0);" onclick="javascript:jqcc[jqcc.cometchat.getChatroomVars('calleeAPI')].createChatroom()">{$chatrooms_language[2]}</a>
-							</li>
+				<li id="createtab">
+					<a href="javascript:void(0);" onclick="javascript:jqcc[jqcc.cometchat.getChatroomVars('calleeAPI')].createChatroom()">{$chatrooms_language[2]}</a>
+				</li>
 EOD;
 		}
 	}
@@ -168,13 +189,65 @@ EOD;
 				<meta http-equiv="cache-control" content="no-cache">
 				<meta http-equiv="pragma" content="no-cache">
 				<meta http-equiv="expires" content="-1">
+				<meta charset="UTF-8">
 				<meta http-equiv="content-type" content="text/html; charset="utf-8"/>
 				<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=module&name=chatrooms" />
 				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-				<script src="../../js.php?type=module&name=chatrooms"></script>
+				<script src="../../js.php?type=module&name=chatrooms&basedata={$_REQUEST['basedata']}"></script>
 				<script src="../../js.php?type=core&name=scroll"></script>
 				<script type="text/javascript">
 					{$loadjs}
+				</script>
+				<script type="text/javascript">
+					var controlparameters = {"type":"modules", "name":"cometchat", "method":"chatWith", "params":{}};
+		            controlparameters = JSON.stringify(controlparameters);
+		            if(typeof(parent) != 'undefined' && parent != null && parent != self){
+		                parent.postMessage('CC^CONTROL_'+controlparameters,'*');
+		            } else {
+		                window.opener.postMessage('CC^CONTROL_'+controlparameters,'*');
+		            }
+		            var cookiePrefix = '<?php echo $cookiePrefix; ?>';
+		            $(document).ready(function(){
+			            var auth_logout = $("div#cometchat_authlogout");
+			            var baseUrl = jqcc.cometchat.getBaseUrl();
+			            auth_logout.mouseenter(function(){
+		                    auth_logout.css('opacity','1');
+		                });
+		                auth_logout.mouseleave(function(){
+		                    auth_logout.css('opacity','0.5');
+		                });
+	                    auth_logout.click(function(event){
+	                    	auth_logout.unbind('click');
+	                        event.stopPropagation();
+	                        auth_logout.css('background','url('+baseUrl+'themes/standard/images/loading.gif) no-repeat top left');
+	                        jqcc.ajax({
+	                            url: baseUrl+'functions/login/logout.php',
+	                            dataType: 'jsonp',
+	                            success: function(){
+	                            	auth_logout.css('background','url('+baseUrl+'themes/standard/images/logout.png) no-repeat top left');
+	                            	if(typeof(jqcc.cometchat.getThemeVariable) != 'undefined') {
+		                                $("#cometchat_user_"+jqcc.cometchat.getThemeVariable('openChatboxId')).find('.cometchat_closebox_bottom').click();
+		                                jqcc.cometchat.setSessionVariable('openChatboxId', '');
+		                            }
+	                                jqcc.cookie(cookiePrefix+"loggedin", null, {path: '/'});
+	                                jqcc.cookie(cookiePrefix+"state", null, {path: '/'});
+	                                jqcc.cookie(cookiePrefix+"jabber", null, {path: '/'});
+	                                jqcc.cookie(cookiePrefix+"jabber_type", null, {path: '/'});
+	                                jqcc.cookie(cookiePrefix+"hidebar", null, {path: '/'});
+	                                var controlparameters = {"type":"themes", "name":"cometchat", "method":"loggedout", "params":{}};
+						            controlparameters = JSON.stringify(controlparameters);
+						            if(typeof(parent) != 'undefined' && parent != null && parent != self){
+						            	parent.postMessage('CC^CONTROL_'+controlparameters,'*');
+						            } else {
+						                window.opener.postMessage('CC^CONTROL_'+controlparameters,'*');
+						            }
+	                            },
+	                            error: function(){
+	                            	alert(language[81]);
+	                            }
+	                        });
+	                    });
+					});
 				</script>
 			</head>
 			<body>
@@ -185,10 +258,11 @@ EOD;
 							<li id="currentroomtab" style="display:none">
 							</li>
 					    </ol>
+					    {$ccauthlogout}
 						<div style="clear:both"></div>
 						<div class="topbar_text">
-							<div id="plugins"></div>
 							<div class="welcomemessage">{$chatrooms_language[1]}</div>
+							<div id="plugins"></div>
 						</div>
 						<div style="clear:both"></div>
 					</div>
@@ -203,7 +277,7 @@ EOD;
 							</div>
 							<div style="clear:both"></div>
 							<div class="cometchat_tabcontentinput">
-								<textarea class="cometchat_textarea"></textarea>
+								<textarea class="cometchat_textarea" placeholder='$chatrooms_language[64]'></textarea>
 								<div class="cometchat_tabcontentsubmit" style="display:none"></div>
 							</div>
 						</div>
@@ -217,7 +291,7 @@ EOD;
 								<div style="clear:both;padding-top:10px"></div>
 								<div class="create_name">{$chatrooms_language[27]}</div>
 								<div class="create_value">
-									<input type="text" id="name" class="create_input" />
+									<input type="text" id="name" class="create_input" placeholder="{$chatrooms_language[63]}" />
 								</div>
 								<div style="clear:both;padding-top:10px"></div>
 								<div class="create_name">{$chatrooms_language[28]}</div>

@@ -5,7 +5,7 @@
 /* SETTINGS START */
 
 $screensharePluginType = '0';
-$hostAddress = 'dev.mein-druckplan.de';
+$hostAddress = '';
 $port = '1935';
 $application = 'screenshare';
 $scrWidth = '640';

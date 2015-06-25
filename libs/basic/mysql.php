@@ -1,4 +1,7 @@
 <?php
+require_once 'libs/basic/cachehandler/cachehandler.class.php';
+require_once 'thirdparty/phpfastcache/phpfastcache.php';
+
 class DBMysql {
    private $conn = FALSE;
    private $dbhost = "";

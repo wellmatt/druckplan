@@ -103,6 +103,8 @@ class Machine
 	
 	private $color = "3a87ad";
 	
+	private $runninghours = Array();
+	
     function __construct($id = 0)
     {
         $this->group = new MachineGroup();
@@ -172,6 +174,19 @@ class Machine
                     }
                 }
                 $this->qualified_users = $tmp_qusrs;
+                
+                // Laufzeiten
+                
+                $tmp_runninghours = Array();
+                $sql = "SELECT * FROM machines_worktimes WHERE machine = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $tmp_runninghours[(int)$r["weekday"]][] = Array("start"=>$r["start"],"end"=>$r["end"]);
+                    }
+                }
+                $this->runninghours = $tmp_runninghours;
                 
                 // Farbigkeiten
                 $sql = "SELECT * FROM machines_chromaticities WHERE machine_id = {$this->id}";
@@ -247,6 +262,17 @@ class Machine
             }
         }
         return $retval;
+    }
+    
+    public function getRunningtimeForDay($date) // $date unixtimestamp
+    {
+        $day = date("w",$date);
+        $ret = 0;
+        foreach ($this->runninghours[$day] as $time)
+        {
+            $ret += $time["end"]-$time["start"];
+        }
+        return $ret;
     }
     
     /**
@@ -426,6 +452,26 @@ class Machine
                         $x++;
                     }
                 }
+                $sql = "DELETE FROM machines_worktimes WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+                
+                for($i=0;$i<7;$i++)
+                {
+                    if (count($this->runninghours[$i])>0)
+                    {
+                        foreach($this->runninghours[$i] as $whours)
+                        {
+                            if ($whours["start"] && $whours["end"])
+                            {
+                                $sql = "INSERT INTO machines_worktimes
+                                        (machine, weekday, start, end)
+                                        VALUES
+                                        ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
+                                $DB->no_result($sql);
+                            }
+                        }
+                    }
+                }
                 return true;
             } else 
                 return false;
@@ -483,6 +529,26 @@ class Machine
                         $DB->no_result($sql);
 //                         echo $sql."</br>";
                         $x++;
+                    }
+                }
+                $sql = "DELETE FROM machines_worktimes WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+                
+                for($i=0;$i<7;$i++)
+                {
+                    if (count($this->runninghours[$i])>0)
+                    {
+                        foreach($this->runninghours[$i] as $whours)
+                        {
+                            if ($whours["start"] && $whours["end"])
+                            {
+                                $sql = "INSERT INTO machines_worktimes
+                                        (machine, weekday, start, end)
+                                        VALUES
+                                        ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
+                                $DB->no_result($sql);
+                            }
+                        }
                     }
                 }
                 return true;
@@ -1513,5 +1579,24 @@ class Machine
     {
         $this->color = $color;
     }
+    
+	/**
+     * @return the $runninghours
+     */
+    public function getRunninghours()
+    {
+        return $this->runninghours;
+    }
+
+	/**
+     * @param multitype: $runninghours
+     */
+    public function setRunninghours($runninghours)
+    {
+        $this->runninghours = $runninghours;
+    }
+
+    
+    
 }
 ?>

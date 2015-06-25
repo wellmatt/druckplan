@@ -1,5 +1,5 @@
 /*
- * CometChat 
+ * CometChat
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -30,33 +30,28 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 }
 
 .container_title {
-	background-color: <?php echo $themeSettings['tab_title_background'];?> !important;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='<?php echo $themeSettings['tab_title_gradient_start'];?>', endColorstr='<?php echo $themeSettings['tab_title_gradient_end'];?>');
-	background: -webkit-gradient(linear, left top, left bottom, from(<?php echo $themeSettings['tab_title_gradient_start'];?>), to(<?php echo $themeSettings['tab_title_gradient_end'];?>));
-	background: -moz-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
-	background: -ms-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
-	background: -o-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
-	border-left: 1px solid <?php echo $themeSettings['tab_title_border'];?>;
-	border-right: 1px solid <?php echo $themeSettings['tab_title_border'];?>;
-	border-top: 1px solid <?php echo $themeSettings['tab_title_border'];?>;
-	color: <?php echo $themeSettings['tab_title_color'];?>;
-	font-family: <?php echo $themeSettings['tab_title_font_family'];?>;
-	font-size: <?php echo $themeSettings['tab_title_font_size_large'];?>;
+	background-color: <?php echo $themeSettings['left_header_background'];?>;
+	color: <?php echo $themeSettings['left_header_color'];?>;
+	font-family: <?php echo $themeSettings['left_header_font_family'];?>;
+	font-size: <?php echo $themeSettings['left_header_font_size_small'];?>;
+	border-left: 1px solid <?php echo $themeSettings['left_content_border_light'];?>;
+	border-right: 1px solid <?php echo $themeSettings['left_content_border_light'];?>;
+	border-top: 1px solid <?php echo $themeSettings['left_content_border_light'];?>;
 	padding: 5px;
 	font-weight: bold;
 	padding-left: 10px;
 	padding-bottom: 6px;
-	text-shadow: 1px 1px 0 <?php echo $themeSettings['tab_title_text_background'];?>;
+
 }
 
 .container_body {
-	border-left: 1px solid <?php echo $themeSettings['tab_border'];?>;
-	border-bottom: 1px solid <?php echo $themeSettings['tab_border_light'];?>;
-	border-right: 1px solid <?php echo $themeSettings['tab_border'];?>;
-	background-color: <?php echo $themeSettings['tab_background'];?>;
-	color: <?php echo $themeSettings['tab_color'];?>;
-	font-family: <?php echo $themeSettings['tab_font_family'];?>;
-	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	border-left: 1px solid <?php echo $themeSettings['left_content_border_light'];?>;
+	border-bottom: 1px solid <?php echo $themeSettings['left_content_border_light'];?>;
+	border-right: 1px solid <?php echo $themeSettings['left_content_border_light'];?>;
+	background-color: <?php echo $themeSettings['left_content_background'];?>;
+	color: <?php echo $themeSettings['left_content_color'];?>;
+	font-family: <?php echo $themeSettings['left_content_font_family'];?>;
+	font-size: <?php echo $themeSettings['left_header_font_size_small'];?>;
 	padding: 10px 10px;
 	height: 130px;
 	overflow-x: hidden;
@@ -78,7 +73,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	height: 30px;
 	float: left;
 	width: 159px;
-	border: 1px dotted <?php echo $themeSettings['tab_border_light'];?>;
+	border:1px solid <?php echo $themeSettings['left_content_border_light'];?>;
 	padding: 3px;
 	margin: 4px;
 }
@@ -115,22 +110,17 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 }
 
 .invitebutton {
-	background-color: <?php echo $themeSettings['tab_title_background'];?> !important;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='<?php echo $themeSettings['tab_title_gradient_start'];?>', endColorstr='<?php echo $themeSettings['tab_title_gradient_end'];?>');
-	background: -webkit-gradient(linear, left top, left bottom, from(<?php echo $themeSettings['tab_title_gradient_start'];?>), to(<?php echo $themeSettings['tab_title_gradient_end'];?>));
-	background: -moz-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
-	background: -ms-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
-	background: -o-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
-	border: 1px solid <?php echo $themeSettings['tab_title_border'];?>;
-	color: <?php echo $themeSettings['tab_title_color'];?>;
-	cursor: pointer;
-	font-family: <?php echo $themeSettings['tab_title_font_family'];?>;
-	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	background-color: <?php echo $themeSettings['left_header_background'];?>;
+	color: <?php echo $themeSettings['left_header_color'];?>;
+	font-family: <?php echo $themeSettings['left_header_font_family'];?>;
+	font-size: <?php echo $themeSettings['left_header_font_size_small'];?>;
 	font-weight: bold;
-	text-shadow: 1px 1px 0 <?php echo $themeSettings['tab_title_text_background'];?>;
-	padding: 3px;
+	cursor: pointer;
+	padding: 5px;
+	cursor: pointer;
+	font-weight: bold;
 	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-topright: 3px;	
+	-moz-border-radius-topright: 3px;
 	-moz-border-radius-bottomleft: 3px;
 	-moz-border-radius-bottomright: 3px;
 	-webkit-border-top-left-radius: 3px;
@@ -150,7 +140,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	background-position: 4px -973px;
 	float: right;
 	height: 12px;
-	
+
 	width: 21px;
 	cursor: pointer;
 
@@ -173,16 +163,16 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	background: url(themes<?php echo $theme;?>images/cometchat.png) no-repeat top left;
 	background-position: 1px -1010px;
 	float: right;
-	height: 12px;	
+	height: 12px;
 	width: 16px;
 }
 
 .cometchat_closebox_bottom_click {
 	background-position: 0px -1010px !important;
-	
+
 }
 
 .cometchat_closebox_bottomhover {
 	background-position: 1px -1047px !important;
-	
+
 }

@@ -413,7 +413,7 @@ $(document).ready(function () {
     
     <?php 
     foreach ($all_comments as $comment){
-        if ($comment->getVisability() == Comment::VISABILITY_PUBLIC)
+        if ($comment->getVisability() == Comment::VISABILITY_PUBLIC || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
         {
             ?>
           	<table width="100%" border="1">

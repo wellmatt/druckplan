@@ -3,13 +3,13 @@ var languageAdded = 0;
 
 function fireEventCC(element,event){
 	try {
-		if (document.createEventObject){	
+		if (document.createEventObject){
 			var evt = document.createEventObject();
 			element.fireEvent('on'+event,evt);
 		} else {
 			var evt = document.createEvent("HTMLEvents");
 			evt.initEvent(event, true, true );
-			element.dispatchEvent(evt);	
+			element.dispatchEvent(evt);
 		}
 	} catch (e) {
 	}
@@ -34,7 +34,7 @@ function addLanguageCode() {
 	}
 }
 
-jqcc(document).ready(function() {
+jqcc(function() {
 	if (jqcc.cookie('googtrans')) {
 		addLanguageCode();
 	}

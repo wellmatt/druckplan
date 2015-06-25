@@ -129,7 +129,11 @@ if ($_REQUEST["send_shoppingbasket"]){
 		$text .= "</table> <br> <br>";
 		$text .= "Kostenstelle: '" . $shopping_basket->getIntent() . "'<br>";
 		$text .= "Hinweis: '" . $shopping_basket->getNote() . "'<br>";
-		// $text .= 'Mit freundlichem Gru&szlig; aus Steeden...';
+		
+		if ($tmp_attachment)
+		{
+		    $text .= "Dateiname: " . $tmp_attachment->getOrig_filename() . "<br>";
+		}
 		
 		if ($_SESSION["login_type"] == "businesscontact"){
 			$to[] = $_BUSINESSCONTACT;

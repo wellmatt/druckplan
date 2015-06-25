@@ -145,8 +145,9 @@ if(typeof(jqcc) === 'undefined'){jqcc = jQuery;};
                                     shortname = user.n;
                                 }
                             }
+                            user.a = (user.a).replace('http://',window.location.protocol+'//').replace('https://',window.location.protocol+'//');
                             buddylisttemp += '<div id="cometchat_userlist_' + user.id + '" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentname">' + shortname + '</span><span class="cometchat_userscontentdot cometchat_' + user.s + '"></span></div>';
-                            buddylisttempavatar += '<div id="cometchat_userlist_' + user.id + '" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentavatar"><img class="cometchat_userscontentavatarimage" original="' + (user.a).replace('http://','https://') + '"></span><span class="cometchat_userscontentname">' + shortname + '</span><span class="cometchat_userscontentdot cometchat_' + user.s + '"></span></div>';
+                            buddylisttempavatar += '<div id="cometchat_userlist_' + user.id + '" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentavatar"><img class="cometchat_userscontentavatarimage" original="' + user.a + '"></span><span class="cometchat_userscontentname">' + shortname + '</span><span class="cometchat_userscontentdot cometchat_' + user.s + '"></span></div>';
                             $.cometchat.userAdd(user.id, user.s, user.m, user.n, user.a, '');
                         }
                         if (user.md5) {

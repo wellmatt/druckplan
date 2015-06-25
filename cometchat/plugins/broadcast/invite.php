@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -63,7 +63,14 @@ if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR
 
 $embed = '';
 $close = "setTimeout('window.close()',2000);";
-
+$basedata=0;
+if(!empty($_REQUEST['basedata'])){
+	$basedata = $_REQUEST['basedata'];
+}
+$cc_theme = '';
+if(!empty($_REQUEST['cc_theme'])){
+	$cc_theme = $_REQUEST['cc_theme'];
+}
 function invite() {
 	global $userid;
 	global $broadcast_language;
@@ -71,12 +78,19 @@ function invite() {
 	global $embed;
 	global $embedcss;
 	global $lightboxWindows;
+	global $guestsMode;
+	global $cookiePrefix;
+	global $chromeReorderFix;
+	global $hideOffline;
+	global $basedata;
+	global $plugins;
+	global $cc_theme;
 
 	if($lightboxWindows == '1') {
 		$embed = 'web';
 		$embedcss = 'embed';
 	}
-	
+
 	$status['available'] = $language[30];
 	$status['busy'] = $language[31];
 	$status['offline'] = $language[32];
@@ -88,37 +102,84 @@ function invite() {
 	if (empty($id)) { exit; }
 
 	$time = getTimeStamp();
-	$buddyList = array();
-	$sql = getFriendsList($userid,$time);
 
-	$query = mysqli_query($GLOBALS['dbh'],$sql);
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysqli_error($GLOBALS['dbh']); }
+	$onlineCacheKey = 'all_online';
+	if($userid > 10000000){
+		$onlineCacheKey .= 'guest';
+	}
 
-	while ($chat = mysqli_fetch_assoc($query)) {
-
-		if ((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
-			if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
-				$chat['status'] = 'available';
-			}
-		} else {
-			$chat['status'] = 'offline';
+	if (!is_array($buddyList = getCache($onlineCacheKey))) {
+		$buddyList = array();
+		$sql = getFriendsList($userid,$time);
+		if($guestsMode){
+	    	$sql = getGuestsList($userid,$time,$sql);
 		}
-	
-		$avatar = getAvatar($chat['avatar']);
-
-		if (!empty($chat['username'])) {
-			if (function_exists('processName')) {
-				$chat['username'] = processName($chat['username']);
+		$query = mysqli_query($GLOBALS['dbh'],$sql);
+		if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysqli_error($GLOBALS['dbh']); }
+		while ($chat = mysqli_fetch_assoc($query)) {
+			if (((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') || $chat['isdevice'] == 1) {
+				if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
+					$chat['status'] = 'available';
+				}
+			} else {
+				$chat['status'] = 'offline';
 			}
-			
-			if($chat['userid'] != $userid) {
-				$buddyList[] = array('id' => $chat['userid'], 'n' => $chat['username'], 's' => $chat['status'], 'a' => $avatar);
+
+			$avatar = getAvatar($chat['avatar']);
+
+			if (!empty($chat['username'])) {
+				if (function_exists('processName')) {
+					$chat['username'] = processName($chat['username']);
+				}
+				if ($chat['userid'] != $userid && ($hideOffline == 0||($hideOffline == 1 && $chat['status']!='offline'))) {
+					$buddyList[$chromeReorderFix.$chat['userid']] = array('id' => $chat['userid'], 'n' => $chat['username'], 'a' => $avatar, 's' => $chat['status']);
+				}
 			}
 		}
 	}
 
+	if (DISPLAY_ALL_USERS == 0 && MEMCACHE <> 0 && USE_CCAUTH == 0) {
+		$tempBuddyList = array();
+		if (!is_array($friendIds = getCache('friend_ids_of_'.$userid))) {
+			$friendIds=array();
+			$sql = getFriendsIds($userid);
+			$query = mysqli_query($GLOBALS['dbh'],$sql);
+			if(mysqli_num_rows($query) == 1 ){
+				$buddy = mysqli_fetch_assoc($query);
+				$friendIds = explode(',',$buddy['friendid']);
+			}else{
+				while($buddy = mysqli_fetch_assoc($query)){
+					$friendIds[]=$buddy['friendid'];
+				}
+			}
+			setCache('friend_ids_of_'.$userid,$friendIds, 30);
+		}
+		foreach($friendIds as $friendId) {
+			$friendId = $chromeReorderFix.$friendId;
+			if (!empty($buddyList[$friendId])) {
+				$tempBuddyList[$friendId] = $buddyList[$friendId];
+			}
+		}
+		$buddyList = $tempBuddyList;
+	}
+
 	if (function_exists('hooks_forcefriends') && is_array(hooks_forcefriends())) {
 		$buddyList = array_merge(hooks_forcefriends(),$buddyList);
+	}
+
+	$blockList = array();
+	if (in_array('block',$plugins)) {
+		$blockedIds = getBlockedUserIDs();
+		foreach ($blockedIds as $bid) {
+			array_push($blockList,$bid);
+			if (isset($buddyList[$chromeReorderFix.$bid])) {
+				unset($buddyList[$chromeReorderFix.$bid]);
+			}
+		}
+	}
+
+	if (isset($buddyList[$chromeReorderFix.$userid])) {
+		unset($buddyList[$chromeReorderFix.$userid]);
 	}
 
 	$s['available'] = '';
@@ -127,10 +188,9 @@ function invite() {
 	$s['offline'] = '';
 
 	foreach ($buddyList as $buddy) {
-
 		$s[$buddy['s']] .= '<div class="invite_1"><div class="invite_2" onclick="javascript:document.getElementById(\'check_'.$buddy['id'].'\').checked = document.getElementById(\'check_'.$buddy['id'].'\').checked?false:true;"><img height=30 width=30 src="'.$buddy['a'].'"></div><div class="invite_3" onclick="javascript:document.getElementById(\'check_'.$buddy['id'].'\').checked = document.getElementById(\'check_'.$buddy['id'].'\').checked?false:true;">'.$buddy['n'].'<br/><span class="invite_5">'.$status[$buddy['s']].'</span></div><input type="checkbox" name="invite[]" value="'.$buddy['id'].'" id="check_'.$buddy['id'].'" class="invite_4"></div>';
 	}
-	
+
 	$inviteContent = '';
 	$invitehide = '';
 	$inviteContent = $s['available']."".$s['away']."".$s['offline'];
@@ -140,29 +200,29 @@ function invite() {
 	}
 
 	echo <<<EOD
-<!DOCTYPE html>
-<html>
-<head>
-<title>{$broadcast_language[13]}</title> 
-<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
-<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=broadcast" /> 
-</head>
-<body>
-<form method="post" action="invite.php?action=inviteusers&embed={$embed}">
-<div class="container">
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>{$broadcast_language[13]}</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=broadcast&cc_theme={$cc_theme}" />
+	</head>
+	<body>
+	<form method="post" action="invite.php?action=inviteusers&basedata={$basedata}&embed={$embed}">
+	<div class="container">
 	<div class="container_title {$embedcss}">{$broadcast_language[11]}</div>
 	<div class="container_body {$embedcss}">
-		{$inviteContent}
-		<div style="clear:both"></div>
+	{$inviteContent}
+	<div style="clear:both"></div>
 	</div>
 	<div class="container_sub" {$invitehide}>
-		<input type=submit value="{$broadcast_language[12]}" class="invitebutton">
+	<input type=submit value="{$broadcast_language[12]}" class="invitebutton">
 	</div>
-</div>	
-<input type="hidden" name="roomid" value="$id">
-</form>
-</body>
-</html>
+	</div>
+	<input type="hidden" name="roomid" value="$id">
+	</form>
+	</body>
+	</html>
 EOD;
 
 }
@@ -173,33 +233,34 @@ function inviteusers() {
 	global $close;
 	global $embedcss;
 	global $lightboxWindows;
+	global $cc_theme;
 
 	if($lightboxWindows == '1') {
 		$embedcss = 'embed';
 	}
-	
+
 	foreach ($_POST['invite'] as $user) {
-		sendMessageTo($user,"{$broadcast_language[14]}<a href=\"javascript:jqcc.ccbroadcast.accept('{$userid}','{$_POST['roomid']}')\">{$broadcast_language[15]}</a>");
+		$response = sendMessage($user,"{$broadcast_language[14]}<a href=\"javascript:jqcc.ccbroadcast.accept('{$userid}','{$_POST['roomid']}')\">{$broadcast_language[15]}</a>",1);
 	}
 
 	echo <<<EOD
-<!DOCTYPE html>
-<html>
-<head>
-<title>{$broadcast_language[13]}</title> 
-<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
-<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=broadcast" /> 
-</head>
-<body onload="{$close}">
-<div class="container">
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>{$broadcast_language[13]}</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=broadcast&cc_theme={$cc_theme}" />
+	</head>
+	<body onload="{$close}">
+	<div class="container">
 	<div class="container_title {$embedcss}">{$broadcast_language[11]}</div>
 	<div class="container_body {$embedcss}">
-		{$broadcast_language[13]}</span>
-		<div style="clear:both"></div>
+	{$broadcast_language[13]}</span>
+	<div style="clear:both"></div>
 	</div>
-</div>	
-</body>
-</html>
+	</div>
+	</body>
+	</html>
 EOD;
 
 }
@@ -208,6 +269,6 @@ $allowedActions = array('invite','inviteusers');
 $action = 'invite';
 
 if (!empty($_GET['action']) && function_exists($_GET['action']) && in_array($_GET['action'],$allowedActions)) {
-       $action = $_GET['action'];
+	$action = mysqli_real_escape_string($GLOBALS['dbh'],$_GET['action']);
 }
 call_user_func($action);

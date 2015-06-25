@@ -63,11 +63,27 @@ echo <<<EOD
 		<meta http-equiv="cache-control" content="no-cache">
 		<meta http-equiv="pragma" content="no-cache">
 		<meta http-equiv="expires" content="-1">
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
-		<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=module&name=facebook" /> 
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<script src="../../js.php?type=core&name=jquery"></script>
+		<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=module&name=facebook" />
 	</head>
 	<body>
-		<iframe src="http://www.facebook.com/plugins/likebox.php?href={$pageUrl}&width=500&height=500&show_faces=true&colorscheme=light&stream=true&show_border=false&header=false" width="100%" height="100%" scrolling="no" frameborder="0"></iframe>
+		<div id="fb-root"></div>
+		<script>
+			(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
+			fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+		<div class="fb-page" data-href="{$pageUrl}" data-width="5000px" data-hide-cover="false" data-show-facepile="true" data-show-posts="true"></div>
+		<script>
+			if(jqcc('.fb-page').outerWidth(false) < jqcc('body').outerWidth(false)){
+				location.reload();
+			}
+		</script>
 	</body>
 </html>
 EOD;

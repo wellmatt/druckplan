@@ -184,7 +184,7 @@ var Zepto = (function() {
     // If nothing given, return an empty Zepto collection
     if (!selector) return zepto.Z()
     // If a function is given, call it when the DOM is ready
-    else if (isFunction(selector)) return $(document).ready(selector)
+    else if (isFunction(selector)) return $(selector)
     // If a Zepto collection is given, juts return it
     else if (zepto.isZ(selector)) return selector
     else {
@@ -1871,7 +1871,7 @@ window.Zepto = Zepto
     touch = {}
   }
 
-  $(document).ready(function(){
+  $(function(){
     var now, delta
 
     $(document.body)

@@ -16,46 +16,52 @@
  * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
-(function($){   
-  
+(function($){
+
 	$.ccsmilies = (function () {
-	
+
 		var title = '<?php echo $smilies_language[0];?>';
 		var height = <?php echo $smlHeight;?>;
 		var width = <?php echo $smlWidth;?>;
-		var chatroommode = 0;
 
         return {
 
 			getTitle: function() {
-				return title;	
+				return title;
 			},
 
-			init: function (id,mode) {
-				if(typeof(mode) !== "undefined") {
-					chatroommode = mode;
+			init: function (params) {
+				var id = params.to;
+				var chatroommode = params.chatroommode;
+				var caller = '';
+				var windowMode = 0;
+				if(typeof(params.windowMode) == "undefined") {
+					windowMode = 0;
+				} else {
+					windowMode = 1;
 				}
-
-				if (chatroommode != 0) {
+				if(typeof(params.caller) != "undefined") {
+					caller = params.caller;
+				}
+				if(chatroommode == 1){
 					baseUrl = $.cometchat.getBaseUrl();
 					basedata = $.cometchat.getBaseData();
-					$[$.cometchat.getChatroomVars('calleeAPI')].loadCCPopup(baseUrl+'plugins/smilies/index.php?chatroommode=1&id='+id+'&basedata='+basedata, 'smilies',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=<?php echo $smlWidth;?>,height=<?php echo $smlHeight;?>",width,height-50,'<?php echo $smilies_language[1];?>');  
-
+					loadCCPopup(baseUrl+'plugins/smilies/index.php?chatroommode=1&id='+id+'&basedata='+basedata+'&caller='+caller, 'smilies',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0,width="+width+",height="+height,width,height,'<?php echo $smilies_language[1];?>',null,null,null,null,windowMode);
 				} else {
 					baseUrl = $.cometchat.getBaseUrl();
 					baseData = $.cometchat.getBaseData();
-					loadCCPopup(baseUrl+'plugins/smilies/index.php?id='+id+'&basedata='+baseData, 'smilies',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height-50,'<?php echo $smilies_language[1];?>'); 
+					loadCCPopup(baseUrl+'plugins/smilies/index.php?id='+id+'&basedata='+baseData+'&caller='+caller, 'smilies',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height,'<?php echo $smilies_language[1];?>',null,null,null,null,windowMode);
 				}
 			},
 
-			addtext: function (id,text,mode) {
-				if(typeof(mode) !== "undefined") {
-					chatroommode = mode;
-				}
+			addtext: function (params) {
 				var string = '';
-
-				if (chatroommode != 0) {
-                                        var currentroom_textarea = $('#currentroom').find('textarea.cometchat_textarea');
+				var id = params.to;
+				var text = params.pattern;
+				var chatroommode = params.chatroommode;
+				if(chatroommode == 1) {
+					var currentroom_textarea = $('#currentroom').find('textarea.cometchat_textarea');
+                    currentroom_textarea.focus();
 					string = currentroom_textarea.val();
 					if (string.charAt(string.length-1) == ' ') {
 						currentroom_textarea.val(currentroom_textarea.val()+text);
@@ -66,31 +72,41 @@
 							currentroom_textarea.val(currentroom_textarea.val()+' '+text);
 						}
 					}
-					
-					currentroom_textarea.focus();
-				
 				} else {
-                                        var cometchat_user_textarea = $('#cometchat_user_'+id+'_popup').find('textarea.cometchat_textarea');
-					jqcc.cometchat.chatWith(id);
-					string = cometchat_user_textarea.val();
-					
-					if (string.charAt(string.length-1) == ' ') {
-						cometchat_user_textarea.val(string+text);
-					} else {
-						if (string.length == 0) {
-							cometchat_user_textarea.val(text);
+					if($('#cometchat_user_'+id+'_popup').length > 0) {
+						var cometchat_user_textarea = $('#cometchat_user_'+id+'_popup').find('textarea.cometchat_textarea');
+						cometchat_user_textarea.focus();
+						jqcc.cometchat.chatWith(id);
+						string = cometchat_user_textarea.val();
+
+						if (string.charAt(string.length-1) == ' ') {
+							cometchat_user_textarea.val(string+text);
 						} else {
-							cometchat_user_textarea.val(string+' '+text);
+							if (string.length == 0) {
+								cometchat_user_textarea.val(text);
+							} else {
+								cometchat_user_textarea.val(string+' '+text);
+							}
+						}
+					} else {
+						jqcc.cometchat.chatWith(id);
+						var cometchat_user_textarea = $('#cometchat_user_'+id+'_popup').find('textarea.cometchat_textarea');
+						cometchat_user_textarea.focus();
+						string = cometchat_user_textarea.val();
+
+						if (string.charAt(string.length-1) == ' ') {
+							cometchat_user_textarea.val(string+text);
+						} else {
+							if (string.length == 0) {
+								cometchat_user_textarea.val(text);
+							} else {
+								cometchat_user_textarea.val(string+' '+text);
+							}
 						}
 					}
-					
-					cometchat_user_textarea.focus();
-
 				}
-				
 			}
-
         };
     })();
- 
+
 })(jqcc);

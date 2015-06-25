@@ -59,8 +59,26 @@ class Client {
         global $DB;
         global $_USER;
         $this->country = new Country(22);
+        
+        $cached = Cachehandler::fromCache("obj_client_" . $id);
+        if (!is_null($cached))
+        {
+            $vars = array_keys(get_class_vars(get_class($this)));
+            foreach ($vars as $var)
+            {
+                $method = "get".ucfirst($var);
+                $method = str_replace("_", "", $method);
+                if (method_exists($this,$method))
+                {
+                    $this->$var = $cached->$method();
+                } else {
+                    echo "method: {$method}() not found!</br>";
+                }
+            }
+            return true;
+        }
 
-        if ($id > 0){
+        if ($id > 0 && is_null($cached)){
             $sql = " SELECT * FROM clients WHERE id = {$id} AND client_status = 1";
             if ($DB->num_rows($sql)){
                 $res = $DB->select($sql);
@@ -96,6 +114,7 @@ class Client {
                 $this->bankName3 = $res[0]["client_bank3"];
                 $this->bankBic3 = $res[0]["client_bic3"];
                 $this->bankIban3 = $res[0]["client_iban3"];
+        		Cachehandler::toCache("obj_client_".$id, $this);
             }
         }
     }
@@ -188,7 +207,10 @@ class Client {
             }
         }
         if ($res)
+        {
+    		Cachehandler::toCache("obj_client_".$this->id, $this);
             return true;
+        }
         else
             return false;
     }
@@ -688,5 +710,31 @@ class Client {
 	{
 	    $this->bankBic3 = $bankBic3;
 	}
+	
+	/**
+     * @return the $street2
+     */
+    public function getStreet2()
+    {
+        return $this->street2;
+    }
+
+	/**
+     * @return the $street3
+     */
+    public function getStreet3()
+    {
+        return $this->street3;
+    }
+
+	/**
+     * @return the $active
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+	
 }
 ?>

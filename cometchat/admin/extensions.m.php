@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -57,20 +57,20 @@ if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $navigation = <<<EOD
 	<div id="leftnav">
-		<a href="?module=extensions&ts={$ts}">Live extensions</a>
+		<a href="?module=extensions&amp;ts={$ts}">Live extensions</a>
 	</div>
 EOD;
 
 function index() {
-	global $body;	
+	global $body;
 	global $extensions;
 	global $navigation;
-        global $ts;
-        global $extensioninfo;
+    global $ts;
+    global $extensioninfo;
 
 
-        $aextensions = array();
-	
+    $aextensions = array();
+
 	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
 		while (false !== ($file = readdir($handle))) {
 			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
@@ -85,8 +85,8 @@ function index() {
 
 	foreach ($aextensions as $extension) {
 		include_once(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$extension.DIRECTORY_SEPARATOR.'code.php');
-        $titles[$extension] = $extensioninfo;        				
-		$extensionhref = 'href="?module=extensions&action=addextension&data='.$extensioninfo[0].'&ts='.$ts.'"';		
+        $titles[$extension] = $extensioninfo;
+		$extensionhref = 'href="?module=extensions&amp;action=addextension&amp;data='.$extensioninfo[0].'&amp;ts='.$ts.'"';
 		if (in_array($extension, $extensions)) {
 			$extensionhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
 		}
@@ -94,7 +94,7 @@ function index() {
                 if($extensioninfo[0] == 'mobileapp_title') {
                     $extensiondata = '';
                 }
-		
+
 		$extensionslist .= '<li class="ui-state-default"><img src="../extensions/'.$extensioninfo[0].'/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:100px">'.$extensioninfo[1].'</span>'.$extensiondata.'<div style="clear:both"></div></li>';
 	}
 
@@ -114,12 +114,10 @@ function index() {
 		}
 
 		++$no;
-		$activeextensionsdata .= '<a href="javascript:void(0)" onclick="javascript:extensions_removeextension(\''.$no.'\')"><img src="images/remove.png" title="Remove Extension" rel="'.$extensioninfo[0].'"></a>';
-                
-		if($title == 'Mobileapp'){
-			$activeextensionsdata = '';
-		}
-		
+		if($title != 'Mobileapp'){
+			$activeextensionsdata .= '<a href="javascript:void(0)" onclick="javascript:extensions_removeextension(\''.$no.'\')"><img src="images/remove.png" title="Remove Extension" rel="'.$extensioninfo[0].'"></a>';
+        }
+
 		$activeextensions .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ti.'" rel="'.$ti.'"><img src="../extensions/'.$ti.'/icon.png" style="margin:0;margin-top:2px;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ti.'_title">'.stripslashes($title).'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;">'.$activeextensionsdata.'</span><div style="clear:both"></div></li>';
 	}
 
@@ -165,17 +163,21 @@ function addextension() {
 	global $extensions;
 
 	if (!empty($_GET['data'])) {
-	
+
 		$extensiondata = '$extensions = array(';
 
 		foreach ($extensions as $extension) {
 			$extensiondata .= "'$extension',";
 		}
 
-		$extensiondata .= "'{$_GET['data']}',";		
+		$extensiondata .= "'{$_GET['data']}',";
+
+		if($_GET['data'] === 'jabber'){
+			$_SESSION['cometchat']['error'] = "You need to update the domain at www.cometchat.com/my otherwise Facebook/Gtalk won\'t work.";
+		}
 
 		$extensiondata = substr($extensiondata,0,-1).');';
-	
+
 		configeditor('EXTENSIONS',$extensiondata);
 	}
 
@@ -190,11 +192,11 @@ function updateorder() {
 		$extensiondata .= $_POST['order'];
 
 		$extensiondata = substr($extensiondata,0,-1).');';
-	
+
 		configeditor('EXTENSIONS',$extensiondata);
 	} else {
-		
-		$extensiondata = '$extensions = array();';	
+
+		$extensiondata = '$extensions = array();';
 		configeditor('EXTENSIONS',$extensiondata);
 
 	}

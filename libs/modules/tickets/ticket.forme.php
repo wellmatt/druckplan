@@ -51,7 +51,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"aaSorting": [[ 5, "asc" ]],
+		"aaSorting": [[ 5, "desc" ]],
 		"dom": 'T<"clear">flrtip',            
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",

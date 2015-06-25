@@ -55,7 +55,7 @@ THE SOFTWARE.
 
 include_once((dirname(__FILE__)).DIRECTORY_SEPARATOR.'cometchat_init.php');
 
-$files = array('config.php','cache/','modules/','plugins/','temp/','lang/','themes/','plugins/handwrite/uploads/','plugins/filetransfer/uploads/');
+$files = array('config.php','colors/synergy.php','cache/','modules/','plugins/','temp/','lang/','themes/','plugins/handwrite/uploads/','plugins/filetransfer/uploads/');
 $extra = '';
 
 $unwritable = '';
@@ -106,7 +106,7 @@ if($sql == TRUE) {
         $cometchat_chatrooms_users = "ALTER TABLE cometchat_chatrooms_users ADD COLUMN isbanned int(1) default 0;";
     }
 } else {
-    $cometchat_chatrooms_users = "CREATE TABLE  `cometchat_chatrooms_users` (
+    $cometchat_chatrooms_users = "CREATE TABLE IF NOT EXISTS `cometchat_chatrooms_users` (
   `userid` int(10) unsigned NOT NULL,
   `chatroomid` int(10) unsigned NOT NULL,
   `lastactivity` int(10) unsigned NOT NULL,
@@ -118,9 +118,9 @@ if($sql == TRUE) {
   KEY `userid_chatroomid` (`chatroomid`,`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 }
-
-	$content = <<<EOD
-RENAME TABLE `cometchat` to `cometchat_messages_old`;
+$cometchat_messages_old = "cometchat_messages_old_".time();
+$content = <<<EOD
+RENAME TABLE `cometchat` to `{$cometchat_messages_old}`;
 
 CREATE TABLE  `cometchat` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -138,7 +138,7 @@ CREATE TABLE  `cometchat` (
   KEY `sent` (`sent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_announcements` (
+CREATE TABLE IF NOT EXISTS `cometchat_announcements` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `announcement` text NOT NULL,
   `time` int(10) unsigned NOT NULL,
@@ -151,18 +151,8 @@ CREATE TABLE  `cometchat_announcements` (
   KEY `to_id` (`to`,`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT = 5000 DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_comethistory` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `channel` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `sent` int(10) unsigned NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `channel` (`channel`),
-  KEY `sent` (`sent`),
-  KEY `channel_sent` (`channel`,`sent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_chatroommessages` (
+CREATE TABLE IF NOT EXISTS `cometchat_chatroommessages` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `userid` int(10) unsigned NOT NULL,
   `chatroomid` int(10) unsigned NOT NULL,
@@ -174,7 +164,7 @@ CREATE TABLE  `cometchat_chatroommessages` (
   KEY `sent` (`sent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_chatrooms` (
+CREATE TABLE IF NOT EXISTS `cometchat_chatrooms` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `lastactivity` int(10) unsigned NOT NULL,
@@ -187,8 +177,8 @@ CREATE TABLE  `cometchat_chatrooms` (
   KEY `createdby` (`createdby`),
   KEY `type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-RENAME TABLE `cometchat_status` to `cometchat_status_old`;
-CREATE TABLE  `cometchat_status` (
+
+CREATE TABLE IF NOT EXISTS `cometchat_status` (
   `userid` int(10) unsigned NOT NULL,
   `message` text,
   `status` enum('available','away','busy','invisible','offline') default NULL,
@@ -198,11 +188,16 @@ CREATE TABLE  `cometchat_status` (
   `lastactivity` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`userid`),
   KEY `typingto` (`typingto`),
-  KEY `typingtime` (`typingtime`),
-  KEY `cometchat_status_lastactivity` (`lastactivity`)
+  KEY `typingtime` (`typingtime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_videochatsessions` (
+ALTER TABLE `cometchat_status`
+add column(
+`isdevice` int(1) unsigned NOT NULL default '0',
+`lastactivity` int(10) unsigned NOT NULL default '0'
+)
+
+CREATE TABLE IF NOT EXISTS `cometchat_videochatsessions` (
   `username` varchar(255) NOT NULL,
   `identity` varchar(255) NOT NULL,
   `timestamp` int(10) unsigned default 0,
@@ -212,7 +207,7 @@ CREATE TABLE  `cometchat_videochatsessions` (
   KEY `timestamp` (`timestamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_block` (
+CREATE TABLE IF NOT EXISTS `cometchat_block` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `fromid` int(10) unsigned NOT NULL,
   `toid` int(10) unsigned NOT NULL,
@@ -222,7 +217,7 @@ CREATE TABLE  `cometchat_block` (
   KEY `fromid_toid` (`fromid`,`toid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `cometchat_guests` (
+CREATE TABLE IF NOT EXISTS `cometchat_guests` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `lastactivity` int(10) unsigned NOT NULL,
@@ -231,6 +226,24 @@ CREATE TABLE  `cometchat_guests` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000001 DEFAULT CHARSET=utf8;
 
 INSERT INTO `cometchat_guests` (`id`, `name`, `lastactivity`) VALUES ('10000000', 'guest-10000000', '0');
+
+CREATE TABLE IF NOT EXISTS `cometchat_session` (
+  `session_id` char(32) NOT NULL,
+  `session_data` text NOT NULL,
+  `session_lastaccesstime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `cometchat_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `displayname` varchar(100) NOT NULL,
+  `avatar` varchar(200) NOT NULL,
+  `link` varchar(200) NOT NULL,
+  `grp` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 {$cometchat_chatrooms_users}
 
@@ -286,7 +299,7 @@ EOD;
             $sql = ("RENAME TABLE `cometchat_status` to `cometchat_status_old`");
             $query = mysqli_query($GLOBALS['dbh'],$sql);
 
-            $sql = ("CREATE TABLE  `cometchat_status` (
+            $sql = ("CREATE TABLE  IF NOT EXISTS `cometchat_status` (
                 `userid` int(10) unsigned NOT NULL,
                 `message` text,
                 `status` enum('available','away','busy','invisible','offline') default NULL,
@@ -433,8 +446,7 @@ EOD;
 			</div>
 		</div>
 		<!-- License void if removed -->
-		<?php 
-			$currentversion = file_get_contents('VERSION.txt');
+		<?php
 			echo '<img src="//my.cometchat.com/track?k='.$licensekey.'&v='.$currentversion.'" width="1" height="1" />';
 		?>
 

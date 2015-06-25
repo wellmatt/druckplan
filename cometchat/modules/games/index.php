@@ -69,10 +69,18 @@ if(!empty($_GET['gameLink'])){
         <meta http-equiv = "expires" content = "-1">
         <meta http-equiv = "content-type" content = "text/html; charset=UTF-8"/> 
         <title>CometChat:{$_GET['name']}</title>
+        <style>
+        html,body,iframe{
+        	overflow:hidden;
+        	width:100%;
+        	height:100%;
+        	margin:0;
+        }                  
+        </style>
     </head>
-	<body style = "margin:-5px;">
-	<iframe src = "//www.miniclip.com/games/{$_GET['gameLink']}/en/webgame.php?bodybg=1&width={$_GET['width']}&height={$_GET['height']}&forcecredits=null" height = {$iframeHeight} width = {$iframeWidth} frameborder = 0></iframe>
-	</body>
+	<body>
+	<iframe src = "//www.miniclip.com/games/{$_GET['gameLink']}/en/webgame.php?bodybg=1&width={$_GET['width']}&height={$_GET['height']}&forcecredits=null" frameborder = 0></iframe>
+    </body>
 </html>
 EOD;
 	exit;

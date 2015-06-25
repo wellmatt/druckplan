@@ -94,12 +94,13 @@ class BusinessContact {
 	private $priv_fax;
 	private $priv_email;
 	
-	private $position_titles = Array(); // für Personalisierung
+	private $positiontitles = Array(); // für Personalisierung
 	private $notifymailadr = Array(); // f�r gesonderte Benachrichtigungs Mails bei Bestellungen
 	private $matchcode;
 	private $supervisor;
 	private $tourmarker;
 	private $notes;
+	private $salesperson;
 
 	/* Konstruktor
      * Falls id uebergeben, werden die entsprechenden Daten direkt geladen
@@ -112,6 +113,7 @@ class BusinessContact {
         $this->client = new Client(0);
         $this->paymentTerms = new PaymentTerms();
         $this->supervisor = new User();
+        $this->salesperson = new User();
         
         if ($_USER != NULL){
 	        $this->country = $_USER->getClient()->getCountry();
@@ -125,7 +127,25 @@ class BusinessContact {
         	$this->language = new Translator(22); // Auf Deutsch setzen
         }
         
-        if ($id > 0)
+
+        $cached = Cachehandler::fromCache("obj_bc_" . $id);
+        if (!is_null($cached))
+        {
+            $vars = array_keys(get_class_vars(get_class($this)));
+            foreach ($vars as $var)
+            {
+                $method = "get".ucfirst($var);
+                if (method_exists($this,$method))
+                {
+                    $this->$var = $cached->$method();
+                } else {
+                    echo "method: {$method}() not found!</br>";
+                }
+            }
+            return true;
+        }
+        
+        if ($id > 0 && is_null($cached))
         {
             $sql = " SELECT * FROM businesscontact WHERE id = {$id}";
 
@@ -153,6 +173,7 @@ class BusinessContact {
                 $this->customernumber = $res[0]["cust_number"];
                 $this->matchcode = $res[0]["matchcode"];
                 $this->supervisor = new User((int)$res[0]["supervisor"]);
+                $this->salesperson = new User((int)$res[0]["salesperson"]);
                 $this->tourmarker = $res[0]["tourmarker"];
                 
                 // Daten nur laden, wenn die Loader-Variable es hergibt
@@ -199,7 +220,7 @@ class BusinessContact {
         			
         			$this->debitor = $res[0]["debitor_number"];
         			$this->kreditor = $res[0]["kreditor_number"];
-        			$this->position_titles = unserialize($res[0]["position_titles"]);
+        			$this->positiontitles = unserialize($res[0]["position_titles"]);
         			$this->notifymailadr = unserialize($res[0]["notifymailadr"]);
                     $this->notes = $res[0]["notes"];
                 }
@@ -208,7 +229,8 @@ class BusinessContact {
         		$this->type = $res[0]["type"];
         		$this->produkte = $res[0]["produkte"];
         		$this->bedarf = $res[0]["bedarf"];
-        		
+
+        		Cachehandler::toCache("obj_bc_".$id, $this);
         	    return true;
                 // sql returns more than one record, should not happen!
             //} 
@@ -501,7 +523,7 @@ class BusinessContact {
 	public function save()
 	{
 		global $DB;
-		$positiontitles = serialize($this->position_titles);
+		$positiontitles = serialize($this->positiontitles);
 		$tmp_notify_mail_adr = serialize($this->notifymailadr);
 		if ($this->id > 0)
 		{
@@ -566,6 +588,7 @@ class BusinessContact {
 		            notifymailadr = '{$tmp_notify_mail_adr}', 
         			number_at_customer = '{$this->numberatcustomer}',
         			supervisor = {$this->supervisor->getId()},
+        			salesperson = {$this->salesperson->getId()},
         			matchcode = '{$this->matchcode}', 
         			notes = '{$this->notes}', 
         			tourmarker = '{$this->tourmarker}' 
@@ -587,7 +610,7 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode, supervisor, tourmarker, notes )
+		            matchcode, supervisor, tourmarker, notes, salesperson )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -600,7 +623,7 @@ class BusinessContact {
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},  
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
-		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}' )";
+		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()} )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			echo $DB->getLastError();
 // 			echo "</br>" . $sql . "</br>";
@@ -612,7 +635,10 @@ class BusinessContact {
             }
 		}
 		if($res)
+		{
+    		Cachehandler::toCache("obj_bc_".$this->id, $this);
 			return true;
+		}
 		else
 			return false;
 	}
@@ -1416,12 +1442,12 @@ class BusinessContact {
 	
     public function getPositionTitles()
     {
-        return $this->position_titles;
+        return $this->positiontitles;
     }
 
     public function setPositionTitles($position_titles)
     {
-        $this->position_titles = $position_titles;
+        $this->positiontitles = $position_titles;
     }
     
     /**
@@ -1501,6 +1527,22 @@ class BusinessContact {
     public function setNotes($notes)
     {
         $this->notes = $notes;
+    }
+    
+	/**
+     * @return the $salesperson
+     */
+    public function getSalesperson()
+    {
+        return $this->salesperson;
+    }
+
+	/**
+     * @param User $salesperson
+     */
+    public function setSalesperson($salesperson)
+    {
+        $this->salesperson = $salesperson;
     }
     
     

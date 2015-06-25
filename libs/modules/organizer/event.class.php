@@ -27,7 +27,26 @@ class Event {
 
     function __construct($id = 0) {
         global $DB;
-        if ($id > 0)
+        
+        $cached = Cachehandler::fromCache("obj_event_" . $id);
+        if (!is_null($cached))
+        {
+            $vars = array_keys(get_class_vars(get_class($this)));
+            foreach ($vars as $var)
+            {
+                $method = "get".ucfirst($var);
+                if (method_exists($this,$method))
+                {
+                    $this->$var = $cached->$method();
+                } else {
+                    echo "method: {$method}() not found!</br>";
+                }
+            }
+//             echo "loaded from cache!</br>";
+            return true;
+        }
+        
+        if ($id > 0 && is_null($cached))
         {
             $sql = "SELECT * FROM events WHERE id = {$id}";
             if ($DB->num_rows($sql))
@@ -43,6 +62,7 @@ class Event {
                 $this->participants_int = unserialize($res[0]["participants_int"]);
                 $this->participants_ext = unserialize($res[0]["participants_ext"]);
                 $this->adress = $res[0]["adress"];
+                Cachehandler::toCache("obj_event_".$id, $this);
             }
         }
     }
@@ -367,7 +387,8 @@ class Event {
 						adress = '{$this->adress}',
 						participants_ext = '{$participants_ext}' 
                     WHERE id = {$this->id}";
-			echo $sql . "</br>";
+// 			echo $sql . "</br>";
+            Cachehandler::toCache("obj_event_".$this->id, $this);
             return $DB->no_result($sql); 
         } else
         {
@@ -383,6 +404,7 @@ class Event {
                 $sql = "SELECT max(id) id FROM events WHERE user_id = {$this->user->getId()}";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
+                Cachehandler::toCache("obj_event_".$this->id, $this);
                 return true;
             } else
                 return false;

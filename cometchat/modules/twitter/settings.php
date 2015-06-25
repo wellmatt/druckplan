@@ -5,12 +5,12 @@ if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 if (isset($_SESSION['cometchat']['error']) && !empty($_SESSION['cometchat']['error'])) {
 		$errorjs = <<<EOD
 <script>
-	$(document).ready(function() {
+	$(function() {
 		$.fancyalert('{$_SESSION['cometchat']['error']}');
 	});
 
-	(function($){   
-	  
+	(function($){
+
 		$.fancyalert = function(message){
 			if ($("#alert").length > 0) {
 				removeElement("alert");
@@ -37,14 +37,14 @@ if (isset($_SESSION['cometchat']['error']) && !empty($_SESSION['cometchat']['err
 EOD;
 	unset($_SESSION['cometchat']['error']);
 }
-	
+
 if (empty($_GET['process'])) {
 	global $getstylesheet;
 	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
-	
+
 	$errorMsg = '';
 	$innercontent = '"';
-	
+
 	if (!checkcURL()) {
 		$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for Translate Conversations.</h2>";
 		$innercontent = 'display:none;"';
@@ -70,8 +70,8 @@ $getstylesheet
 	}
 </style>
 <script src="../js.php?admin=1"></script>
-<form action="?module=dashboard&action=loadexternal&type=module&name=twitter&process=true" method="post">
-	<div id="content">
+<form style="height:100%" action="?module=dashboard&action=loadexternal&type=module&name=twitter&process=true" method="post">
+	<div id="content" style="width:auto">
 			<h2>Settings</h2>
 			<h3>If you are unsure about any value, please skip them</h3>
 			<div>
@@ -103,11 +103,15 @@ $getstylesheet
 	</div>
 </form>
 <script type="text/javascript" language="javascript">
-    resizeWindow();
-    function resizeWindow() {
-        window.resizeTo(($("form").width()+30), ($("form").height()+85));
+    $(function() {
+		setTimeout(function(){
+				resizeWindow();
+			},200);
+	});
+	function resizeWindow() {
+        window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
     }
-</script>                       
+</script>
 $errorjs
 EOD;
 } else {
@@ -120,19 +124,19 @@ EOD;
 			$dataerror = 1;
 		}
 	}
-	
+
 	if($dataerror) {
-		$_SESSION['cometchat']['error'] = 'Please enter all the configuration details.';		
+		$_SESSION['cometchat']['error'] = 'Please enter all the configuration details.';
 	} else {
 		include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'twitteroauth'.DIRECTORY_SEPARATOR.'twitteroauth.php');
 		$connection = new TwitterOAuth($_POST['consumerkey'], $_POST['consumersecret'], $_POST['accesstoken'], $_POST['accesstokensecret']);
 		$followers = $connection->get("https://api.twitter.com/1.1/followers/list.json?cursor=-1&screen_name=".$_POST['twitteruser']."&count=1");
 		if(isset($followers->errors)) {
-			$_SESSION['cometchat']['error'] = 'Twitter authentication failed.';		
+			$_SESSION['cometchat']['error'] = 'Twitter authentication failed.';
 		} else {
 			$_SESSION['cometchat']['error'] = 'Twitter details updated successfully.';
-			configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');				
-		}		
+			configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
+		}
 	}
 	header("Location:?module=dashboard&action=loadexternal&type=module&name=twitter");
 }

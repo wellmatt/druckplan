@@ -61,16 +61,15 @@ if ($_REQUEST['action'] == 'clear' && !empty($_REQUEST['clearid'])) {
 
 	if(!empty($_REQUEST['chatroommode'])) {
 		$_SESSION['cometchat']['chatrooms_'.$id.'_clearId'] = getTimeStamp().rand(100,999);
-	} elseif (!empty($_SESSION['cometchat']['cometchat_user_'.$id])) {
+	} else {
 		$lastentry = 0;
 
 		if (!empty($_SESSION['cometchat']['cometchat_user_'.$id]) && is_array($_SESSION['cometchat']['cometchat_user_'.$id])) {
 			$lastentry = end($_SESSION['cometchat']['cometchat_user_'.$id]);
 			$lastentry = $lastentry['id'];
+			unset($_SESSION['cometchat']['cometchat_user_'.$id]);
 		}
-
-		unset($_SESSION['cometchat']['cometchat_user_'.$id]);
-
+		
 		$_SESSION['cometchat']['cometchat_user_'.$id.'_clear'] = array('timestamp' => getTimeStamp().'999', 'lastentry' => array('id' => $lastentry));
 	}
 }

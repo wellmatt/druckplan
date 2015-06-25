@@ -5,7 +5,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-require_once 'thirdparty/ezpdf/new/src/Cezpdf.php';
+require_once 'thirdparty/tcpdf/tcpdf.php';
 
 /**
  * Klasse fuer die Serienbriefen bzw. Massenanschreiben
@@ -138,6 +138,7 @@ class Bulkletter{
 	 */
 	public function createDocument($version= self::DOCTYPE_PRINT){
 		global $_CONFIG;
+		global $_USER;
 		
 		$filename = $this->getPdfLink($version);
 		$img_path = "./docs/templates/briefbogen.jpg";

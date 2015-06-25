@@ -3,12 +3,13 @@ include_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.ph
 include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
 ?>
 var chatScroll, lobbyScroll, chatroomScroll, woScroll, cruserScroll, baseurl = "<?php echo BASE_URL; ?>";
-var cookie_prefix = '<?php echo $cookiePrefix; ?>';
+var cookiePrefix = '<?php echo $cookiePrefix; ?>';
 <?php
     include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."jquery.nicescroll.js");
 ?>
 var enableType = '<?php echo $enableType ?>';
 var winheight = '';
+var cross_domain = '<?php echo CROSS_DOMAIN; ?>';
 (function($){
     $.mobilewebapp = (function(){
         return {
@@ -46,10 +47,10 @@ var winheight = '';
                 var headerHeight;
                 var baseHeight = window.innerHeight;
                 var footerbtnHeight = 0;
-                var footerHeight = $("#chatfooter").outerHeight();
+                var footerHeight = $("#chatfooter").outerHeight(false);
                 var cheaderHeight = $('#cheader').height();
                 var crheaderHeight = $('#crheadertop').height();
-                var footerCRHeight = $("#chatroomfooter").outerHeight();
+                var footerCRHeight = $("#chatroomfooter").outerHeight(false);
                 var headerHeight = $('#header').height();
                 if($('#footer').length==0){
                     footerbtnHeight = 0;
@@ -139,7 +140,7 @@ var winheight = '';
             buddyList: function(data){
                 if(typeof (jqcc.chatmobilewebapp)!=='undefined'){
                     jqcc.chatmobilewebapp.chatbuddyList(data);
-                }                
+                }
             },
             userStatus: function(item){
                 jqcc.cometchat.setThemeVariable('userid', item.id);
@@ -189,7 +190,15 @@ var winheight = '';
             },
             loggedOut: function(){
                 alert(jqcc.cometchat.getLanguage(56));
-                location.href = jqcc.cometchat.getBaseUrl()+'../';
+                var window_opener = window.opener;
+                if(typeof (window_opener)!=='undefined' && window_opener !== null){
+                    if(cross_domain==1){
+                        window_opener.postMessage('ccmobile_reinitializeauth','*');
+                    }else if(typeof (window_opener.jqcc.ccmobiletab.reinitialize)!=='undefined'){
+                        window_opener.jqcc.ccmobiletab.reinitialize();
+                    }
+                }
+                location.href = '/';
             },
             scrollToBottom: function(){
                 if($('#cwlist').length > 0 && $('#cwlist').find("li").length > 0)
@@ -202,8 +211,8 @@ var winheight = '';
             refreshLists: function(id){
                 $('#'+id).listview("refresh");
             },
-            addChatroomMessage: function(id, incomingmessage, self, old, incomingid, selfadded, sent){
-                jqcc.mobilewebapp.ChatroomMessage(id, incomingmessage, self, old, incomingid, selfadded, sent);
+            addChatroomMessage: function(fromid, incomingmessage, incomingid, selfadded, sent, fromname){
+                jqcc.mobilewebapp.ChatroomMessage(fromid, incomingmessage, incomingid, selfadded, sent, fromname);
             },
             loadChatbox: function(){
                 jqcc.mobilewebapp.pathRedirect('#chat');
@@ -455,6 +464,7 @@ var winheight = '';
                 message = message.replace('\ud83c\udfee', ' :izakaya_lantern: ');
                 message = message.replace('\ud83d\uddfe', ' :japan: ');
                 message = message.replace('\ud83c\udfef', ' :japanese_castle: ');
+                message = message.replace('\ud83c\uddee\ud83c\uddf3', ' :in: ');
                 message = message.replace('\ud83c\uddef\ud83c\uddf5', ' :jp: ');
                 message = message.replace('\ud83c\uddf0\ud83c\uddf7', ' :kr: ');
                 message = message.replace('\ud83d\ude88', ' :light_rail: ');
@@ -562,7 +572,6 @@ var winheight = '';
                 message = message.replace('\u270a', ' :fist: ');
                 message = message.replace('\ud83d\ude33', ' :flushed: ');
                 message = message.replace('\ud83d\ude26', ' :frowning: ');
-                message = message.replace(':fu:', ' :fu: ');
                 message = message.replace('\ud83d\udc67', ' :girl: ');
                 message = message.replace(':goberserk:', ' :goberserk: ');
                 message = message.replace(':godmode:', ' :godmode: ');
@@ -1075,7 +1084,7 @@ var winheight = '';
         };
     })();
 })(jqcc);
-$(document).ready(function(){
+$(function(){
     $.extend($.expr[":"], {
         "containsIgnoreCase": function(elem, i, match, array) {
             return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;

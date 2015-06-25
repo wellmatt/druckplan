@@ -30,6 +30,7 @@ class Comment {
     const VISABILITY_PUBLIC = 1;
     const VISABILITY_INTERNAL = 2;
     const VISABILITY_PRIVATE = 3;
+    const VISABILITY_PUBLICMAIL = 4;
     
     function __construct($id = 0){
         global $DB;

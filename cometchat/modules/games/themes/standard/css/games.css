@@ -1,5 +1,5 @@
 /*
-* CometChat 
+* CometChat
 * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -51,7 +51,7 @@ html, body {
 
 .gamecontainer {
     float:left;
-    width: 100%;    
+    width: 100%;
 }
 
 #games {
@@ -60,7 +60,7 @@ html, body {
     float: left;
     overflow-y:auto;
     overflow-x:hidden;
-    position:relative;    
+    position:relative;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -72,14 +72,14 @@ html, body {
     height: 80px;
     margin-bottom: 2px;
     border-radius:5px;
-    -webkit-border-radius: 5px; 
-    -moz-border-radius: 5px;   
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
-.gamelist {	
-    <?php if ($sleekScroller):?>	
+.gamelist {
+    <?php if ($sleekScroller):?>
         padding:2px;
-    <?php endif;?>	
+    <?php endif;?>
     margin:5px 2px 0px 8px;
     text-align: center;
     overflow:hidden;
@@ -142,7 +142,7 @@ html, body {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 .carat {
@@ -176,7 +176,7 @@ html, body {
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
     -ms-transform: rotate(180deg);
-    transform: rotate(180deg);    
+    transform: rotate(180deg);
 }
 
 .custom-dropdown ul {

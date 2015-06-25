@@ -117,6 +117,23 @@ if($_REQUEST["subexec"] == "save")
     }
     $machine->setQualified_users($quser_list);
     
+
+    $tmp_wtime_arr = Array();
+    if ($_REQUEST["wotime"])
+    {
+        for($i=0;$i<7;$i++)
+        {
+            if (count($_REQUEST["wotime"][$i])>0)
+            {
+                foreach ($_REQUEST["wotime"][$i] as $wtime)
+                {
+                    $tmp_wtime_arr[$i][] = Array("start"=>strtotime($wtime["start"]),"end"=>strtotime($wtime["end"]));
+                }
+            }
+        }
+    }
+    $machine->setRunninghours($tmp_wtime_arr);
+    
     if ($machine->getId() == 0 &&  											// Wenn Maschine noch nicht existiert und eine Druckmaschine ist,
     		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){		// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
     	$printer_counter = Machine::getNumberOfPrintingmachines();
@@ -149,6 +166,8 @@ if($_REQUEST["subexec"] == "save")
 <link rel="stylesheet" media="screen" type="text/css" href="jscripts/colorpicker/colorpicker.css" />
 <script type="text/javascript" src="jscripts/colorpicker/colorpicker.js"></script>
 
+<script	type="text/javascript" src="jscripts/timepicker/jquery-ui-timepicker-addon.js"></script>
+<link href='jscripts/timepicker/jquery-ui-timepicker-addon.css' rel='stylesheet'/>
 <script language="javascript">
 
 <?/*gln*/?>
@@ -985,6 +1004,80 @@ if ($machine->getId() > 0){
 		   <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
 		<?php $qi++;}?>
 	</table>
+</div>
+</br>
+<div class="box1">
+   <b>Laufzeiten:</b>
+   <?php 
+   unset($whours);
+   unset($times);
+   $times = $machine->getRunninghours();
+   $daynames = Array("Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag");
+   ?>
+   <table>
+   <?php 
+   for($i=0;$i<7;$i++)
+   {
+       ?>
+		<tr>
+			<td class="content_row_header" valign="top"><?=$_LANG->get($daynames[$i]);?></td>
+			<td class="content_row_clear">
+       <?php
+       $count = 0;
+       if (count($times[$i])>0)
+       {
+           foreach($times[$i] as $whours)
+           {
+                ?>
+			    <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="<?php echo date("H:i",$whours["start"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis 
+                <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="<?php echo date("H:i",$whours["end"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
+                <script language="JavaScript">
+                    $(document).ready(function () {
+                    	var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+                    	var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+
+                    	$.timepicker.timeRange(
+                    		startTimeTextBox,
+                    		endTimeTextBox,
+                    		{
+                    			minInterval: (1000*900), // 0,25hr
+                    			timeFormat: 'HH:mm',
+                    			start: {}, // start picker options
+                    			end: {} // end picker options
+                    		}
+                    	);
+                    });
+                </script>
+                <?php
+               $count++;
+           }
+       }
+       ?>
+			    <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis 
+                <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
+                <script language="JavaScript">
+                    $(document).ready(function () {
+                    	var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+                    	var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+
+                    	$.timepicker.timeRange(
+                    		startTimeTextBox,
+                    		endTimeTextBox,
+                    		{
+                    			minInterval: (1000*900), // 0,25hr
+                    			timeFormat: 'HH:mm',
+                    			start: {}, // start picker options
+                    			end: {} // end picker options
+                    		}
+                    	);
+                    });
+                </script>
+			</td>
+		</tr>
+       <?php
+   }
+   ?>
+   </table>
 </div>
 </br>
 <?php if ($machine->getId() > 0){?>

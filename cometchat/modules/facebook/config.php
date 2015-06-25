@@ -4,7 +4,7 @@
 
 /* SETTINGS START */
 
-$pageUrl = 'http://www.facebook.com/CometChat';
+$pageUrl = 'https://www.facebook.com/CometChat';
 
 
 /* SETTINGS END */

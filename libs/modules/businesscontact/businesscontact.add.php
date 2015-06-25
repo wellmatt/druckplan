@@ -127,6 +127,7 @@ if ($_REQUEST["subexec"] == "save")
     
     $businessContact->setMatchcode($_REQUEST["matchcode"]);
     $businessContact->setSupervisor(new User((int)$_REQUEST["supervisor"]));
+    $businessContact->setSalesperson(new User((int)$_REQUEST["salesperson"]));
     $businessContact->setTourmarker($_REQUEST["tourmarker"]);
     $businessContact->setNotes($_REQUEST["notes"]);
    
@@ -206,6 +207,7 @@ $show_tab=(int)$_REQUEST["tabshow"];
 $languages = Translator::getAllLangs(Translator::ORDER_NAME);
 $countries = Country::getAllCountries();
 $all_active_attributes = $businessContact->getActiveAttributeItemsInput();
+$all_user = User::getAllUser(User::ORDER_NAME);
 
 
 /**************************************************************************
@@ -461,7 +463,10 @@ function commi_checkbox(){
 									echo $_LANG->get('Matchcode').": ".$businessContact->getMatchcode(). " <br/>";
 								} ?>
 							<?	if ($businessContact->getSupervisor()->getId()>0){
-									echo $_LANG->get('Betreuer').": ".$businessContact->getSupervisor()->getNameAsLine(). " <br/>";
+									echo $_LANG->get('Betreuer Web').": ".$businessContact->getSupervisor()->getNameAsLine(). " <br/>";
+								} ?>
+							<?	if ($businessContact->getSalesperson()->getId()>0){
+									echo $_LANG->get('Betreuer Vertrieb').": ".$businessContact->getSalesperson()->getNameAsLine(). " <br/>";
 								} ?>
 							<?	if ($businessContact->getTourmarker()){
 									echo $_LANG->get('Tourenmerkmal').": ".$businessContact->getTourmarker(). " <br/>";
@@ -726,6 +731,23 @@ function commi_checkbox(){
 					</td>
 				</tr>
 				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Betreuer Vertrieb')?></td>
+					<td class="content_row_clear icon-link">
+                        <select name="salesperson" id="salesperson">
+                        <option value="0"></option>
+                        <?php 
+                        foreach ($all_user as $sup_user){
+                            if ($businessContact->getSalesperson()->getId() == $sup_user->getId()){
+                                echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
+                            } else {
+                                echo '<option value="'.$sup_user->getId().'">'.$sup_user->getNameAsLine().'</option>';
+                            }
+                        }
+                        ?>
+                        </select>
+					</td>
+				</tr>
+				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Matchcode')?></td>
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="matchcode" id="matchcode" 
@@ -857,12 +879,11 @@ function commi_checkbox(){
 					</td>
 				</tr>
 				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Betreuer')?></td>
+					<td class="content_row_header"><?=$_LANG->get('Betreuer Web')?></td>
 					<td class="content_row_clear icon-link">
                         <select name="supervisor" id="supervisor">
                         <option value="0"></option>
                         <?php 
-                        $all_user = User::getAllUser(User::ORDER_NAME);
                         foreach ($all_user as $sup_user){
                             if ($businessContact->getSupervisor()->getId() == $sup_user->getId()){
                                 echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';

@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -144,29 +144,32 @@ $embedcss = '';
 $webapp = '';
 $close = "setTimeout('window.close()',2000);";
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
 	$embed = 'web';
 	$embedcss = 'embed';
 	$close = "parent.closeCCPopup('report');";
-}	
+}
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
 	$embed = 'desktop';
 	$embedcss = 'embed';
 	$close = "parentSandboxBridge.closeCCPopup('report');";
 }
 
-if (isset($_REQUEST['callback']) && $_REQUEST['callback'] == 'mobilewebapp') {
+if (!empty($_REQUEST['callback']) && $_REQUEST['callback'] == 'mobilewebapp') {
 	$webapp = 'webapp';
 }
-
+$cc_theme = '';
+if(!empty($_REQUEST['cc_theme'])){
+	$cc_theme = $_REQUEST['cc_theme'];
+}
 echo <<<EOD
 <!DOCTYPE html>
 <html>
 <head>
-<title>{$report_language[0]} (closing)</title> 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=report" /> 
+<title>{$report_language[0]} (closing)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=report&cc_theme={$cc_theme}" />
 
 </head>
 <body onload="{$close}">
@@ -188,6 +191,9 @@ echo <<<EOD
 EOD;
 
 } else {
+	if(!empty($_REQUEST['cc_theme'])){
+		$cc_theme = $_REQUEST['cc_theme'];
+	}
 
 	$toId = $_GET['id'];
 	$baseData = $_GET['basedata'];
@@ -198,34 +204,34 @@ EOD;
 	$embedcss = '';
 	$webapp = '';
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+	if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
 		$embed = 'web';
 		$embedcss = 'embed';
-	}	
+	}
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+	if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
 		$embed = 'desktop';
 		$embedcss = 'embed';
 	}
-	
-	if (isset($_REQUEST['callback']) && $_REQUEST['callback'] == 'mobilewebapp') {
+
+	if (!empty($_REQUEST['callback']) && $_REQUEST['callback'] == 'mobilewebapp') {
 		$webapp = 'webapp';
 	}
-	
-	if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
-		echo $_SESSION['cometchat']['report_rand'];	
+
+	if (!empty($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
+		echo $_SESSION['cometchat']['report_rand'];
 	} else {
-	
+
 		echo <<<EOD
 		<!DOCTYPE html>
 		<html>
 			<head>
-				<title>{$report_language[0]}</title> 
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-				<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=report" /> 
+				<title>{$report_language[0]}</title>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+				<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=plugin&name=report&cc_theme={$cc_theme}" />
 			</head>
 			<body>
-				<form method="post" action="index.php?action=report&id={$toId}&basedata={$baseData}&embed={$embed}&callback={$callback}">
+				<form method="post" action="index.php?action=report&id={$toId}&basedata={$baseData}&embed={$embed}&callback={$callback}&cc_theme={$cc_theme}">
 					<div class="container {$webapp}">
 						<div class="container_title {$embedcss} {$webapp}">{$report_language[1]}</div>
 

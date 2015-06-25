@@ -33,6 +33,7 @@ require_once 'libs/modules/associations/association.class.php';
 require_once 'libs/modules/timer/timer.class.php';
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once "thirdparty/phpfastcache/phpfastcache.php";
+require_once 'libs/basic/cachehandler/cachehandler.class.php';
 
 require_once __DIR__.'/vendor/Horde/Autoloader.php';
 require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';

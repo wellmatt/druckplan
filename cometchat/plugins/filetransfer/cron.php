@@ -54,25 +54,15 @@ THE SOFTWARE.
 */
 
 if (!defined('CC_CRON')) { echo "NO DICE"; exit; }
+$days = 1;
+$seconds = ($days*24*60*60);
+$dir = dirname(__FILE__).DIRECTORY_SEPARATOR."uploads";
+$files = scandir($dir);
 
-if(isset($_REQUEST['url'])){
-	include_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php");
-	$auth = md5(md5(ADMIN_USER).md5(ADMIN_PASS));
-}
-
-if($_REQUEST['auth'] == $auth ) {
-	$days = 1;
-	$seconds = ($days*24*60*60);
-	$dir = dirname(__FILE__).DIRECTORY_SEPARATOR."uploads";
-	$files = scandir($dir);
-	
-	foreach ($files as $num => $fname){
-		if (file_exists("$dir/$fname") && ((time() - filemtime("$dir/$fname")) > $seconds)) {
-			if ($fname != 'index.html' && $fname != '.htaccess') {
-				@unlink("$dir/$fname");
-			}
+foreach ($files as $num => $fname){
+	if (file_exists("$dir/$fname") && ((time() - filemtime("$dir/$fname")) > $seconds)) {
+		if ($fname != 'index.html' && $fname != '.htaccess') {
+			@unlink("$dir/$fname");
 		}
 	}
-} else {
-	echo 'Sorry you don`t have permissions.';
 }

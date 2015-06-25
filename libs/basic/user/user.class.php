@@ -76,7 +76,26 @@ class User {
             $this->lang = $_USER->getLang();
             $this->client = $_USER->getClient();
         }
-        if ($id > 0)
+        
+        $cached = Cachehandler::fromCache("obj_usr_" . $id);
+        if (!is_null($cached))
+        {
+            $vars = array_keys(get_class_vars(get_class($this)));
+            foreach ($vars as $var)
+            {
+                $method = "get".ucfirst($var);
+                $method = str_replace("_", "", $method);
+                if (method_exists($this,$method))
+                {
+                    $this->$var = $cached->$method();
+                } else {
+                    echo "method: {$method}() not found!</br>";
+                }
+            }
+            return true;
+        }
+        
+        if ($id > 0 && is_null($cached))
         {
             $sql = " SELECT * FROM user
             WHERE id = {$id}";
@@ -135,6 +154,7 @@ class User {
                             $this->groups[] = new Group($r["group_id"], false);
                     }
                 }
+        		Cachehandler::toCache("obj_usr_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
@@ -537,7 +557,8 @@ class User {
                     }
                 }
             }
-            
+
+            Cachehandler::toCache("obj_usr_".$this->id, $this);
             return true;
         }
         else
@@ -677,6 +698,62 @@ class User {
     {
         return $this->w_su;
     }
+	
+	/**
+     * @return the $w_mo
+     */
+    public function getWmo()
+    {
+        return $this->w_mo;
+    }
+
+	/**
+     * @return the $w_tu
+     */
+    public function getWtu()
+    {
+        return $this->w_tu;
+    }
+
+	/**
+     * @return the $w_we
+     */
+    public function getWwe()
+    {
+        return $this->w_we;
+    }
+
+	/**
+     * @return the $w_th
+     */
+    public function getWth()
+    {
+        return $this->w_th;
+    }
+
+	/**
+     * @return the $w_fr
+     */
+    public function getWfr()
+    {
+        return $this->w_fr;
+    }
+
+	/**
+     * @return the $w_sa
+     */
+    public function getWsa()
+    {
+        return $this->w_sa;
+    }
+
+	/**
+     * @return the $w_su
+     */
+    public function getWsu()
+    {
+        return $this->w_su;
+    }
 
 	/**
      * @param number $w_mo
@@ -741,6 +818,14 @@ class User {
     {
         return $this->w_month;
     }
+    
+	/**
+     * @return the $w_month
+     */
+    public function getWmonth()
+    {
+        return $this->w_month;
+    }
 
 	/**
      * @param number $w_month
@@ -773,5 +858,98 @@ class User {
     {
         $this->workinghours = $workinghours;
     }
+    
+	/**
+     * @return the $userlevel
+     */
+    public function getUserlevel()
+    {
+        return $this->userlevel;
+    }
+    
+	/**
+     * @return the $active
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+    
+	/**
+     * @return the $emailAdresses
+     */
+    public function getEmailAdresses()
+    {
+        return $this->emailAdresses;
+    }
+    
+	/**
+     * @return the $loggedIn
+     */
+    public function getLoggedIn()
+    {
+        return $this->loggedIn;
+    }
+    
+	/**
+     * @return the $strError
+     */
+    public function getStrError()
+    {
+        return $this->strError;
+    }
+    
+	/**
+     * @return the $calendar_tickets
+     */
+    public function getCalendar_tickets()
+    {
+        return $this->calendar_tickets;
+    }
+
+	/**
+     * @return the $calendar_orders
+     */
+    public function getCalendar_orders()
+    {
+        return $this->calendar_orders;
+    }
+
+	/**
+     * @return the $calendar_birthdays
+     */
+    public function getCalendar_birthdays()
+    {
+        return $this->calendar_birthdays;
+    }
+    
+	/**
+     * @return the $calendar_tickets
+     */
+    public function getCalendartickets()
+    {
+        return $this->calendar_tickets;
+    }
+
+	/**
+     * @return the $calendar_orders
+     */
+    public function getCalendarorders()
+    {
+        return $this->calendar_orders;
+    }
+
+	/**
+     * @return the $calendar_birthdays
+     */
+    public function getCalendarbirthdays()
+    {
+        return $this->calendar_birthdays;
+    }
+
+
+
+    
+    
 }
 ?>

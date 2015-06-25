@@ -88,7 +88,25 @@ class ContactPerson {
         	$this->priv_country = new Country(55); 
         }
         
-        if ($id > 0)
+        $cached = Cachehandler::fromCache("obj_cp_" . $id);
+        if (!is_null($cached))
+        {
+            $vars = array_keys(get_class_vars(get_class($this)));
+            foreach ($vars as $var)
+            {
+                $method = "get".ucfirst($var);
+                if (method_exists($this,$method))
+                {
+                    $this->$var = $cached->$method();
+                } else {
+                    echo "method: {$method}() not found!</br>";
+                }
+            }
+//             echo "loaded from cache!</br>";
+            return true;
+        }
+        
+        if ($id > 0 && is_null($cached))
         {
             $sql = " SELECT * FROM contactperson WHERE id = {$id}";
 
@@ -171,9 +189,7 @@ class ContactPerson {
                     $this->categories_cancreate = $tmp_categories_cancreate;
                 }
 				
-                
-                
-        	    
+                Cachehandler::toCache("obj_cp_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
@@ -464,7 +480,10 @@ class ContactPerson {
 		}
 		
 		if($res)
+		{
+            Cachehandler::toCache("obj_cp_".$this->id, $this);
 			return true;
+		}
 		else
 			return false;
 		

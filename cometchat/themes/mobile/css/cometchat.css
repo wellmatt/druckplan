@@ -1,5 +1,5 @@
 /*
-* CometChat 
+* CometChat
 * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -16,10 +16,7 @@
 	position:fixed;
 	bottom:0;
 	right: 10%;
-	width: 25%;
-	font-size: 65%;
-	height: 5%;
-	line-height: 250%;
+	padding: 15px;
 	text-align: center;
 	color: <?php echo $themeSettings['bar_color'];?>;
 	cursor: pointer;
@@ -29,6 +26,7 @@
 	-webkit-border-radius: 10px 10px 0 0;
 	-moz-border-radius: 10px 10px 0 0;
 	text-shadow: 1px 1px 0px <?php echo $themeSettings['bar_text_background'];?>;
+    z-index: 99999;
 }
 
 .cometchat_ccmobiletab_tabalert {
@@ -45,7 +43,7 @@
 	bottom : 90%;
 	padding: 0 10px;
 	line-height: normal;
-	border-width: 3px 5px 3px;
+	border-width: 4px;
 	border-style: solid;
 	border-color: #D11559;
 }
@@ -53,9 +51,49 @@
 .cometchat_ccmobiletab_tabalert:before {
 	border-color: #D11559 transparent transparent;
 	border-style: solid;
-	border-width: 9px;
-	bottom: -18px;
+	border-width: 10px;
+	bottom: -22px;
 	content: "";
 	position: absolute;
-	right: 20%;
+	right: 24%;
+}
+
+.cc_overlay{
+	height: 100%;
+	width: 100%;
+	background: #000;
+	opacity: 0.3;
+	position: absolute;
+	top: 0;
+	z-index: 10000;
+}
+
+#mobile_social_login{
+	position: absolute;
+	width: 100%;
+}
+
+#mobile_social_login img.auth_options{
+	position: static;
+	margin: 4% auto;
+}
+
+#mobile_social_login .login_container{
+	position: relative;
+	z-index: 10000;
+	margin: 0px auto;
+	background: #FFF;
+	padding: 5%;
+	border-radius: 3%;
+	box-shadow: 10px 10px 5px #888;
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+}
+
+#mobile_social_login img.auth_options:first-child{
+	margin-top: 0px;
+}
+
+#mobile_social_login img.auth_options:last-child{
+	margin-bottom: 0px;
 }

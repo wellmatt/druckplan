@@ -1,5 +1,5 @@
 /*
-* CometChat 
+* CometChat
 * Copyright (c) 2014 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
@@ -69,12 +69,12 @@ html, body {
 .container_body_1 {
 	width: 183px;
 	float: left;
-	border-right: 1px dashed <?php echo $themeSettings['tab_border_light'];?>;        
+	border-right: 1px dashed <?php echo $themeSettings['tab_border_light'];?>;
 }
 
 .container_body_2 {
 	width: 182px;
-	float:right;
+	margin: 0px auto;
 }
 
 h1 {
@@ -109,7 +109,7 @@ table td {
 	padding: 3px;
 	margin-top: 10px;
 	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-topright: 3px;	
+	-moz-border-radius-topright: 3px;
 	-moz-border-radius-bottomleft: 3px;
 	-moz-border-radius-bottomright: 3px;
 	-webkit-border-top-left-radius: 3px;
@@ -119,7 +119,7 @@ table td {
 }
 
 #loader {
-	margin-left: 5px;	
+	margin-left: 5px;
 	background-image: url(themes/standard/images/loader.gif);
 	width: 16px;
 	height: 16px;

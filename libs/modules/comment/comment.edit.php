@@ -181,7 +181,8 @@ if ((int)$_REQUEST["cid"] > 0){
       <tr>
           <td width="25%">Typ:</td>
           <td width="75%">
-                <input type="radio" name="tktc_type" <?php if ($comment->getVisability() == Comment::VISABILITY_PUBLIC) echo "checked"; ?> value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Antwort<br>
+                <input type="radio" name="tktc_type" <?php if ($comment->getVisability() == Comment::VISABILITY_PUBLIC) echo "checked"; ?> value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
+                <input type="radio" name="tktc_type" <?php if ($comment->getVisability() == Comment::VISABILITY_PUBLICMAIL) echo "checked"; ?> value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)<br>
                 <input type="radio" name="tktc_type" <?php if ($comment->getVisability() == Comment::VISABILITY_INTERNAL) echo "checked"; ?> value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar<br>
                 <input type="radio" name="tktc_type" <?php if ($comment->getVisability() == Comment::VISABILITY_PRIVATE) echo "checked"; ?> value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
           </td>

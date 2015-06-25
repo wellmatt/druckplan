@@ -18,6 +18,8 @@ require_once("libs/basic/groups/group.class.php");
 require_once("libs/basic/clients/client.class.php");
 require_once("libs/basic/translator/translator.class.php");
 require_once("libs/basic/countries/country.class.php");
+require_once 'libs/basic/cachehandler/cachehandler.class.php';
+require_once 'thirdparty/phpfastcache/phpfastcache.php';
 require_once 'libs/modules/organizer/contact.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/chat/chat.class.php';

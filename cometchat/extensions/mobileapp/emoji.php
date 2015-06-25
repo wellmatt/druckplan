@@ -195,7 +195,7 @@
 		':x:' => '\u274c',
 		':zero:' => '\u0030\u20e3'
 	);
-    
+
 	$places = array(
 		':airplane:' => '\u2708',
 		':ambulance:' => '\ud83d\ude91',
@@ -246,6 +246,7 @@
 		':izakaya_lantern:' => '\ud83c\udfee',
 		':japan:' => '\ud83d\uddfe',
 		':japanese_castle:' => '\ud83c\udfef',
+		':in:' => '\ud83c\uddee\ud83c\uddf3',
 		':jp:' => '\ud83c\uddef\ud83c\uddf5',
 		':kr:' => '\ud83c\uddf0\ud83c\uddf7',
 		':light_rail:' => '\ud83d\ude88',
@@ -356,7 +357,6 @@
 		':fist:' => '\u270a',
 		':flushed:' => '\ud83d\ude33',
 		':frowning:' => '\ud83d\ude26',
-		':fu:' => ':fu:',
 		':girl:' => '\ud83d\udc67',
 		':goberserk:' => ':goberserk:',
 		':godmode:' => ':godmode:',
@@ -874,7 +874,7 @@
 		':wolf:' => '\ud83d\udc3a',
 		':zap:' => '\u26a1'
 	);
-    
+
     $customsmileyUnicode = array(
 		'people' => $people,
 		'places' => $places,

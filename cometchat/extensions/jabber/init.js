@@ -7,7 +7,7 @@ if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.
     $jabber_language[$i] = str_replace("'", "\'", $l);
  }
  include_once(dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
- $connectPhrase = $jabber_language[0].''.$jabber_language[16];
+ $connectPhrase = $jabber_language[0].''.$jabber_language[16].''.$jabber_language[12];
  ?>
 /*
  * CometChat
@@ -18,7 +18,6 @@ if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.
     $.ccjabber = (function(){
         var session = '';
         var logout = {};
-        logout['facebook'] = '<?php echo $jabber_language[8];?>';
         logout['gtalk'] = '<?php echo $jabber_language[13];?><?php echo $jabber_language[16];?>';
         var ccjabber = [];
         ccjabber.title = 'Jabber Extension';
@@ -45,7 +44,9 @@ if(file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.
                 baseUrl = $.cometchat.getBaseUrl();
                 baseData = $.cometchat.getBaseData();
                 baseDomain = document.domain;
-                loadCCPopup(baseUrl+'extensions/jabber/index.php?basedata='+baseData+'&basedomain='+baseDomain, 'jabber', "status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=410,height=100", 410, 100, '<?php echo $connectPhrase;?> <?php echo $jabber_language[15];?>');
+                var controlparameters = {"type":"extensions", "name":"core", "method":"loadCCPopup", "params":{"url": baseUrl+"extensions/jabber/index.php?basedata="+baseData+"&basedomain="+baseDomain, "name":"jabber", "properties":"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=210,height=100", "width":"210", "height":"100", "title":"<?php echo $connectPhrase;?>", "force":null, "allowmaximize":null, "allowresize":null, "allowpopout":null, "windowMode":null}};
+                controlparameters = JSON.stringify(controlparameters);
+                parent.postMessage('CC^CONTROL_'+controlparameters,'*');
             },
             logout: function(){
                 $[ccjabber.theme].jabberLogout();

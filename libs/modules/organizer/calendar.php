@@ -1,6 +1,7 @@
 <?
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 require_once 'libs/modules/organizer/event.class.php';
-// chdir('../../../');
 
 ?>
 <table width="100%">
@@ -22,12 +23,22 @@ require_once 'libs/modules/organizer/event.class.php';
 <?php
 
 global $_USER;
-if((int)$_REQUEST["sel_user"] > 0)
-    $sel_user = new User((int)$_REQUEST["sel_user"]);
-else
+if ($_REQUEST["sel_user"])
+{
+    if((int)$_REQUEST["sel_user"] > 0)
+        $sel_user = new User((int)$_REQUEST["sel_user"]);
+    else
+    {
+    	$sel_user = $_USER;
+    	echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
+    }
+} else
+{
 	$sel_user = $_USER;
+	echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
+}
 
-if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR)) {
+if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
 	$users = User::getAllUser(User::ORDER_LOGIN);
 	?>
 	<center>
@@ -49,12 +60,15 @@ if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR)) {
 	<?
 }
 
-if ($_REQUEST["exec"] == "delevent")
+if ($_REQUEST["exec"])
 {
-    $_REQUEST["id"] = (int)$_REQUEST["id"];
-    $event = new Event($_REQUEST["id"]);
-    $savemsg = getSaveMessage($event->delete());
-    $_REQUEST["exec"] = "";
+    if ($_REQUEST["exec"] == "delevent")
+    {
+        $_REQUEST["id"] = (int)$_REQUEST["id"];
+        $event = new Event($_REQUEST["id"]);
+        $savemsg = getSaveMessage($event->delete());
+        $_REQUEST["exec"] = "";
+    }
 }
 	
 ?>
@@ -96,7 +110,6 @@ if ($_REQUEST["exec"] == "delevent")
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
-			//defaultDate: '2014-08-12',
 			selectable: true,
 			selectHelper: true,
 			select: function(start, end) {
@@ -108,13 +121,7 @@ if ($_REQUEST["exec"] == "delevent")
 				};
 			},
 			editable: true,
-			eventLimit: true, // allow "more" link when too many events
-			// events: {
-				// url: '/libs/modules/organizer/calendar_getevents.php',
-				// error: function() {
-					// $('#script-warning').show();
-				// }
-			// },
+			eventLimit: true,
 			events: {
 				url: 'libs/modules/organizer/calendar_getevents.php',
 				type: 'GET',
@@ -124,9 +131,7 @@ if ($_REQUEST["exec"] == "delevent")
 				},
 				error: function() {
 					alert('there was an error while fetching events!');
-				},
-				// color: 'yellow',   // a non-ajax option
-				// textColor: 'black' // a non-ajax option
+				}
 			},
 			loading: function(bool) {
 				$('#loading').toggle(bool);

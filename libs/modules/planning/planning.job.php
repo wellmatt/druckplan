@@ -68,10 +68,7 @@ if ($_REQUEST["type"] == "V")
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
-<link href='jscripts/calendar/fullcalendar.css' rel='stylesheet' />
-<link href='jscripts/calendar/fullcalendar.print.css' rel='stylesheet' media='print' />
 <script src='jscripts/calendar/moment.min.js'></script>
-<script src='jscripts/calendar/fullcalendar.min.js'></script>
 <script src='jscripts/calendar/twix.min.js'></script>
 <script src='jscripts/calendar/de.js'></script>
 <script src='jscripts/qtip/jquery.qtip.min.js'></script>
@@ -125,76 +122,125 @@ if ($_REQUEST["type"] == "V")
 		<tr>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Bemerkung')?></td>
 			<td class="content_row" valign="top"><?php echo $header_comment;?></td>
+			<td class="content_row" valign="top">&nbsp;</td>
+			<td class="content_row" valign="top">&nbsp;</td>
 		</tr>
 	</table>
 </div>
 <br/>
 <div class="box1">
     <b>Aufgaben</b>
+    <form action="index.php?page=<?=$_REQUEST['page']?>&step=1" method="post" name="job_create_<?=$job['objectid']?>" id="job_create_<?=$job['objectid']?>">
+    <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"> 
+    <input type="hidden" name="type" value="<?=$_REQUEST["type"]?>"> 
 	<table width="100%">
 	   <thead>
     		<tr>
     			<td class="content_row content_row_header" valign="top">Artikel/Maschine</td>
     			<td class="content_row content_row_header" valign="top">Soll Zeit (Std.)</td>
-    			<td class="content_row content_row_header" valign="top">&nbsp;</td>
+    			<td class="content_row content_row_header" valign="top">Simultan?</td>
+    			<td class="content_row content_row_header" valign="top">Anz. Arbeiter/Jobs</td>
     		</tr>
 	   </thead>
-	   <?php if (count($jobs)>0){
-	       $time_total = 0;
-    	   foreach ($jobs as $job){
-    	   if($job["amount"]>0){?>
-    		<tr>
-    		    <form action="index.php?page=<?=$_REQUEST['page']?>&step=1" method="post" name="job_create_<?=$job['objectid']?>" id="job_create_<?=$job['objectid']?>">
-    		    <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"> 
-    		    <input type="hidden" name="type" value="<?=$_REQUEST["type"]?>"> 
-    		    <input type="hidden" name="jtype" value="<?=$job['type']?>"> 
-    		    <input type="hidden" name="jobjectid" value="<?=$job['objectid']?>"> 
-    			<td class="content_row" valign="top"><?php echo $job["title"];?></td>
-    			<td class="content_row" valign="top"><?php echo printPrice($job["amount"],2);?></td>
-    			<td class="content_row" valign="top"><input type="number" value="1" name="workers" style="width: 60px;"/><button type="submit" class="btn btn-primary btn-xs">Job(s) erstellen</button></td>
-    			<?php /* Zuweisung muss erfolgen für Typ "MachineEntry" oder "Orderposition" */?>
-    			</form>
-    		</tr>
-	       <?php $time_total += $job["amount"];}}?>
-    		<tr>
-    			<td class="content_row content_row_header" valign="top">Gesamt</td>
-    			<td class="content_row content_row_header" valign="top"><?php echo printPrice($time_total,2);?></td>
-    			<td class="content_row content_row_header" valign="top">&nbsp;</td>
-    		</tr>
+	   <?php 
+	       if (count($jobs)>0){
+    	       $time_total = 0;
+    	       $x = 0;
+        	   foreach ($jobs as $job){
+            	   if($job["amount"]>0){?>
+                		<tr>
+                            <input type="hidden" name="job[<?php echo $x;?>][type]" value="<?=$job['type']?>"/> 
+                            <input type="hidden" name="job[<?php echo $x;?>][object]" value="<?=$job['objectid']?>"/> 
+                			<td class="content_row" valign="top"><?php echo $job["title"];?></td>
+                			<td class="content_row" valign="top"><?php echo printPrice($job["amount"],2);?></td>
+                			<td class="content_row" valign="top"><input type="checkbox" value="1" name="job[<?php echo $x;?>][simultaneous]" <?php if ($_REQUEST["job"][$x]["simultaneous"]) echo "checked";?>/></td>
+                			<td class="content_row" valign="top"><input type="number" value="<?php if ($_REQUEST["job"][$x]["workers"]) echo $_REQUEST["job"][$x]["workers"]; else echo "1";?>" name="job[<?php echo $x;?>][workers]" style="width: 60px;"/>
+                		</tr>
+            	       <?php $time_total += $job["amount"];
+            	   }
+            	   $x++;
+        	   }?>
+        		<tr>
+        			<td class="content_row content_row_header" valign="top">Gesamt</td>
+        			<td class="content_row content_row_header" valign="top"><?php echo printPrice($time_total,2);?></td>
+        			<td class="content_row content_row_header" valign="top">&nbsp;</td>
+        			<td class="content_row content_row_header" valign="top"><?php if (count($jobs)>0) echo '<button type="submit" class="btn btn-primary btn-xs">Job(s) erstellen</button></td>';?></td>
+        		</tr>
 	   <?php }?>
 	</table>
+	</form>
 </div>
 </br>
 <?php if ($_REQUEST["step"]==1){
     ?>
-    <script type="text/javascript">
-//         function workerSelected(i)
-//         {
-//             if ($("#worker_"+i).val()!="")
-//             {
-//                 $("#jobevent_"+i).show();
-//             } else {
-//             	$("#jobevent_"+i).hide();
-//             }
-//         }
+    <script language="JavaScript">
+    	function recalc(id,job,iterator)
+    	{
+    	    var total = $('#total_jtime').html();
+    	    total = parseFloat(total.replace(",", "."));
+    	    var total_left = $('#total_jtime_open').html();
+    	    total_left = parseFloat(total_left.replace(",", "."));
+    	    var total_fixed = $('#total_jtime_fixed').html();
+    	    total_fixed = parseFloat(total_fixed.replace(",", "."));
+    	    var old_value = $('#job_amount_old_'+job+'_'+id).val();
+    	    old_value = parseFloat(old_value.replace(",", "."));
+    	    var new_value = $('#job_amount_'+job+'_'+id).val();
+    	    $('#job_amount_old_'+job+'_'+id).val(new_value);
+    	    new_value = parseFloat(new_value.replace(",", "."));
+    	    if (old_value > new_value)
+    	    {
+    	       var diff = old_value-new_value;
+    	       total = total-diff;
+    	    }
+    	    else
+    	    {
+ 	    	   var diff = new_value-old_value;
+ 	    	   total = total+diff;
+    	    }
+    	    for (i=1;i<=iterator;i++)
+    	    {
+    	    	var amount = $('#job_amount_'+job+'_'+i).val();
+    	    	amount = parseFloat(amount.replace(",", "."));
+    	    	var perc = (amount / total) * 100;
+    	    	perc = perc.toFixed(2);
+    	    	perc = perc.toString().replace(".", ",");
+    	    	$('#perc_'+job+'_'+i).html(perc+"%");
+    	    }
+    	    total = total.toFixed(2);
+    	    total_left = total_fixed - total;
+    	    if (total_left != 0)
+    	    {
+        	    total_left = total_left.toFixed(2).toString().replace(".", ",");
+        	    $('#total_jtime_open').html(total_left);
+        	    $('#total_jtime_open').addClass('error');
+    	    } else
+    	    {
+        	    total_left = total_left.toFixed(2).toString().replace(".", ",");
+        	    $('#total_jtime_open').html(total_left);
+        	    $('#total_jtime_open').removeClass('error');
+    	    }
+    	    total = total.toString().replace(".", ",");
+    	    $('#total_jtime').html(total);
+    	}
     </script>
-    
-    <div style="overflow: hidden;">
-        <div style="width: 40%; float: left;">
-        <?php
-        if ($_REQUEST["jtype"] == "ME")
+    <div>
+    <?php
+    $jobx = 0;
+    foreach ($_REQUEST["job"] as $req_job)
+    {
+        if ($req_job["type"] == "ME")
         {
-            $me = new Machineentry($_REQUEST["jobjectid"]);
+            $me = new Machineentry($req_job["object"]);
             $workamount = $me->getTime()/60;
-            $eachamount = round_up($workamount/$_REQUEST["workers"],2);
+            $eachamount = round_up($workamount/$req_job["workers"],2);
             $jobname = $me->getMachine()->getName();
             $color = $me->getMachine()->getColor();
             $qual_users = $me->getMachine()->getQualified_users();
         } else
         {
-            $op = new Orderposition($_REQUEST["jobjectid"]);
+            $op = new Orderposition($req_job["object"]);
             $workamount = $op->getQuantity();
-            $eachamount = round_up($workamount/$_REQUEST["workers"],2);
+            $eachamount = round_up($workamount/$req_job["workers"],2);
             $jobart = new Article($op->getObjectid());
             $jobname = $jobart->getTitle();
             $color = "3a87ad";
@@ -204,168 +250,137 @@ if ($_REQUEST["type"] == "V")
         $t_total = 0;
         $t_total_perc = 0;
         
-//         $userselect_opt = '<option value=""> Bitte wählen </option>';
-        $userselect_opt = '';
-        foreach ($qual_users as $job_usr)
-        {
-            $user_time = Ticket::getUserSpareTime($job_usr);
-            if ($user_time>0 && $user_time>$eachamount)
-            {
-                $userselect_opt .= '<option value="'.$job_usr->getId().'">'.$job_usr->getNameAsLine2().' ('.printPrice($user_time,2).')</option>';
-            }
-        }
         ?>
         <div class="box2">
-            <b>Job(s) - <?php echo $jobname;?></b>
-        	<table>
+            <form action="index.php?page=<?=$_REQUEST['page']?>&step=2&subexec=save" method="post">
+            <input type="hidden" name="job[<?php echo $jobx;?>][type]" value="<?=$job['type']?>"/> 
+            <input type="hidden" name="job[<?php echo $jobx;?>][object]" value="<?=$job['objectid']?>"/> 
+            <b>Job(s) - <?php echo "<font color='{$color}'>".$jobname."</font>";?></b>
+        	<table width="100%">
         	    <thead>
         	       <tr>
-        	           <td class="content_row_header">&nbsp;</td>
+        	           <td width="80" class="content_row_header">&nbsp;</td>
         	           <td width="110" class="content_row_header">Soll-Zeit</td>
         	           <td width="110" class="content_row_header">%-Ges.Zeit</td>
-        	           <td width="110" class="content_row_header">Arbeiter (Std. verf.)</td>
-        	           <td width="110" class="content_row_header">Event</td>
+        	           <td width="350" class="content_row_header">Fällig</td>
+        	           <td width="190" class="content_row_header">Ticket MA</td>
+        	           <td class="content_row_header">&nbsp;</td>
         	       </tr>
         	    </thead>
-        	    <?php for ($i = 1; $i <= $_REQUEST["workers"]; $i++){?>
-        		<tr>
-        			<td class="" valign="top">&nbsp;</td>
-        			<td class="content_row" valign="top">
-        			    <input type="text" style="width:100px" name="work_<?=$i?>" onfocus="markfield(this,0)" 
-        			    onblur="markfield(this,1)" value="<?php if ($i == $_REQUEST["workers"]) { echo printPrice($workamount_last,2); } else { echo printPrice($eachamount,2); }?>"/>
-        			    <?php if ($i == $_REQUEST["workers"]) { $t_total += $workamount_last; $duration = $workamount_last;} else { $t_total += tofloat(printPrice($eachamount,2)); ; $duration = $eachamount;} 
-        			    if ($i < $_REQUEST["workers"]) $workamount_last -= tofloat(printPrice($eachamount,2));?>
-        			</td>
-        			<td class="content_row" valign="top">
-        			    <span id="perc_<?=$i?>"><?php if ($i == $_REQUEST["workers"]) { echo printPrice(percentage($workamount_last, $workamount, 2),2); } else { echo printPrice(percentage($eachamount, $workamount, 2),2); }?>%</span>
-        			    <?php if ($i == $_REQUEST["workers"]) { $t_total_perc += tofloat(percentage($workamount_last, $workamount, 2)); } else { $t_total_perc += tofloat(percentage($eachamount, $workamount, 2)); }?>
-        			</td>
-        			<td class="content_row" valign="top">
-        			     <select name="worker_<?=$i?>" id="worker_<?=$i?>" style="width:110px" onchange="workerSelected(<?=$i?>);">
-        			     <?php echo $userselect_opt;?>
-        			     </select>
-        			</td>
-        			<td class="content_row" valign="top">
-        			<?php $duration = sprintf('%02d:%02d', (int) $duration, fmod($duration, 1) * 60); ?>
-        			     <div id="jobevent_<?php echo $i;?>" class="fc-event" style="background-color:#<?php echo $color;?>;border:1px solid #<?php echo $color;?>" 
-            			 data-event='{"id":"<?php echo $i;?>","title":"<?php echo $header_number.': '.$jobname.' #'.$i;?>","duration":"<?php echo $duration;?>","stick":"true","constraint":"businessHours","color":"green","due":"<?php echo date("d.m.Y",$header_duedate);?>","users":"[]","usernames":"[]"}'>
-            			     <?php echo $header_number.': '.$jobname.' #'.$i;?>
-            			</div>
-            		</td>
-        		</tr>
+        	    <?php 
+        	    $percent_left = 100;
+        	    for ($i = 1; $i <= $req_job["workers"]; $i++){
+        	        if ($i == $req_job["workers"]) 
+        	        { 
+        	            $t_total += $workamount_last; 
+        	            $duration = $workamount_last;
+        	            $t_total_perc += $percent_left;
+        	            $print_workamount = printPrice($workamount_last,2);
+        	            $print_percentage = printPrice($percent_left,2);
+        	        } else { 
+        	            $t_total += tofloat(printPrice($eachamount,2));
+        	            $duration = $eachamount;
+        	            $t_total_perc += tofloat(percentage($eachamount, $workamount, 2));
+        	            $percent_left -= tofloat(percentage($eachamount, $workamount, 2));
+        	            $print_workamount = printPrice($eachamount,2);
+        	            $print_percentage = printPrice(percentage($eachamount, $workamount, 2),2);
+        	        }
+        	        if ($i < $req_job["workers"]) 
+        	            $workamount_last -= tofloat(printPrice($eachamount,2));
+        	        ?>
+                    <script language="JavaScript">
+                        $(function() {
+                        	$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                        		 lang:'de',
+                        		 i18n:{
+                        		  de:{
+                        		   months:[
+                        		    'Januar','Februar','März','April',
+                        		    'Mai','Juni','Juli','August',
+                        		    'September','Oktober','November','Dezember',
+                        		   ],
+                        		   dayOfWeek:[
+                        		    "So.", "Mo", "Di", "Mi", 
+                        		    "Do", "Fr", "Sa.",
+                        		   ]
+                        		  }
+                        		 },
+                        		 timepicker:true,
+                        		 format:'d.m.Y H:i',
+                        		 minDate:'0',
+                        		 inline: true,
+                        		 weeks:true,
+                        		 onChangeMonth:function(ct,$i){
+                            		 var amount = $('#job_amount_<?=$jobx?>_<?=$i?>').val();
+                        			 $.ajax({
+                     		    		type: "GET",
+                     		    		url: "libs/modules/planning/planning.ajax.php",
+                     		    		data: { exec: "ajax_getDisabledDates", date: ct.dateFormat('d.m.Y'), amount: amount, type: "<?=$job['type']?>", objectid: "<?=$req_job["object"]?>" },
+                     		    		success: function(data) 
+                     		    		    {
+                     		        			return;
+                     		    		    }
+                     		    	});
+                       			 }
+                        	});
+                        	$('#job_amount_<?=$jobx?>_<?=$i?>').change(function() {
+                            	recalc(<?=$i?>,<?=$jobx?>,<?=count($req_job["workers"])+1?>);
+                            	
+                        		$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                        			disabledDates: ['25.06.2015','26.06.2015']
+                     		        ,formatDate:'d.m.Y'
+                        		});
+                        	});
+                    	});
+                    </script>
+            		<tr style="background-color: <?php if($i % 2 != 0) echo '#eaeaea'; else echo '#eadddd';?>;">
+            			<td class="content_row" valign="top">#<?php echo $i;?></td>
+            			<td class="content_row" valign="top">
+            			    <input type="text" style="width:100px" id="job_amount_<?=$jobx?>_<?=$i?>" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][amount]" onfocus="markfield(this,0)" 
+            			    onblur="markfield(this,1)" value="<?php echo $print_workamount;?>"/>
+            			    <input type="hidden" id="job_amount_old_<?=$jobx?>_<?=$i?>" value="<?php echo $print_workamount;?>"/>
+            			</td>
+            			<td class="content_row" valign="top">
+            			    <span id="perc_<?=$jobx?>_<?=$i?>"><?php echo $print_percentage;?>%</span>
+            			</td>
+        			    <td class="content_row" valign="top">
+        			         <input type="text" style="width:350px" id="job_due_<?=$jobx?>_<?=$i?>" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][due]" 
+                			 class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
+                			 onfocus="markfield(this,0)" onblur="markfield(this,1)" 
+                			 value="<? echo date('d.m.Y H:i');?>"/>
+            			     <input type="hidden" id="job_duemonth_<?=$jobx?>_<?=$i?>" value="<?php echo date("m");?>"/>
+        			    </td>
+            			<td class="content_row" valign="top">
+            			     <select name="job[<?php echo $jobx;?>][jobs][<?=$i?>][worker]" id="job_worker_<?=$jobx?>_<?=$i?>" style="width:180px"></select>
+            			</td>
+        			    <td class="content_row" valign="top">&nbsp;</td>
+            		</tr>
         		<?php }?>
         		<tr>
-        			<td class="" valign="top">Gesamt:</td>
-        			<td class="content_row" valign="top"><span id="total_jtime"><?php echo printPrice($t_total,2);?></span></td>
-        			<td class="content_row" valign="top"><span id="totaljperc"><?php echo printPrice($t_total_perc,2);?></span></td>
+        			<td class="content_row" valign="top">Gesamt:</td>
+        			<td class="content_row" valign="top"><span id="total_jtime"><?php echo printPrice($t_total,2);?></span><span id="total_jtime_fixed" style="display: none;"><?php echo printPrice($t_total,2);?></span></td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
         			<td class="content_row" valign="top">&nbsp;</td>
         			<td class="content_row" valign="top">&nbsp;</td>
         		</tr>
         		<tr>
         			<td class="content_row" valign="top">zu vergeben:</td>
-        			<td class="content_row" valign="top"><span id="total_jtime_open"><?php echo "0";?></span></td>
-        			<td class="content_row" valign="top"><span id="totaljperc_open"><?php echo "0%";?></span></td>
+        			<td class="content_row" valign="top"><span id="total_jtime_open"><?php echo "0";?></span></b></td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
         			<td class="content_row" valign="top">&nbsp;</td>
         			<td class="content_row" valign="top">&nbsp;</td>
         		</tr>
         	</table>
+            </form>
         </div>
-        <br/>
-        </div>
-        <div style="width: 60%; float: right;">
-            <div class="box1">
-            	<div id='loading'>loading...</div>
-            	<div id='planning_calendar'></div>
-            	<script>
-                	$(document).ready(function() {
-                		$('#planning_calendar').fullCalendar({
-                    		height: "auto",
-                			header: {
-                				left: 'prev,next today',
-                				center: 'title',
-                				right: 'month,agendaWeek,agendaDay'
-                			},
-                			defaultView: 'agendaWeek',
-                			droppable: true, // this allows things to be dropped onto the calendar
-                			editable: true,
-                			eventLimit: true, // allow "more" link when too many events
-                			eventStartEditable: true,
-                			eventDurationEditable: false,
-                			weekNumbers: true,
-                			events: {
-                				url: 'libs/modules/planning/planning.ajax.php',
-                				type: 'GET',
-                				data: {
-                					exec: 'getCalEvents'
-                				},
-                				error: function() {
-                					alert('there was an error while fetching events!');
-                				},
-                				color: 'red',   // a non-ajax option
-                				// textColor: 'black' // a non-ajax option
-                			},
-                			eventOverlap: true,
-                			allDayDefault: false,
-                			slotDuration: '00:30:00',
-                			snapDuration: '00:01:00',
-                			loading: function(bool) {
-                				$('#loading').toggle(bool);
-                			},
-                			drop: function(date) {
-                    			$(this).toggle();
-                			},
-                			eventReceive: function(event) {
-                				var check = moment(event.start);
-                			    var today = moment();
-                			    if(check < today)
-                			    {
-                		            $('#planning_calendar').fullCalendar( 'removeEvents', event.id )
-                		            $('#jobevent_'+event.id).toggle();
-                			    }
-                			},
-                			businessHours: {
-                			    start: '00:00',
-                			    end: '<?php if ($_REQUEST["jtype"] == "ME") echo $me->getMachine()->getMaxHours().':00'; else echo '23:59';?>',
-                			    dow: [ 0, 1, 2, 3, 4, 5, 6 ]
-                			}    
-                			,eventDrop: function(event, delta, revertFunc) {
-                				var check = moment(event.start);
-                			    var today = moment();
-                			    if(check < today)
-                			    {
-                			    	revertFunc();
-                			    }
-
-                		    }
-                		    ,eventRender: function(event, element) {
-                    	        element.attr('title', event.title);
-                    	        var t = moment(event.start).twix(event.end);
-                    	        var duration = event.end-event.start;
-                    	        var content = '<h4>'+event.title+'</h4></br>';
-                    	        content += 'gepl. Start: '+moment(event.start).format('LLL')+'</br>';
-                    	        content += 'gepl. Ende: '+moment(event.end).format('LLL')+'</br>';
-                    	        content += 'gepl. Dauer: '+moment(duration).format('HH:mm')+'</br>';
-                    	        content += '</br>';
-                    	        content += '<b>Fällig: '+event.due+'</b></br>';
-                    	        element.qtip({
-                    	            content: {
-                    	                text: content
-                    	            }
-                    	        });
-                		    }
-                		});
-                		$('.fc-event').each(function() {
-                			$(this).draggable({
-                				zIndex: 999,
-                				revert: true,      // will cause the event to go back to its
-                				revertDuration: 0  //  original position after the drag
-                			});
-            
-                		});
-                	});
-                </script>
-            </div>
-        </div>
+        </br>
+    <?php
+    $jobx++;
+    }
+    ?>
+    <br/>
     </div>
 <?php }?>
 </br>

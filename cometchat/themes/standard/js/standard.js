@@ -1,5 +1,5 @@
 (function($){
-    $.standard = (function(){
+    $.ccstandard = (function(){
         var settings = {};
         var baseUrl;
         var language;
@@ -16,6 +16,13 @@
         var webkitRequest = 0;
         var lastmessagetime = Math.floor(new Date().getTime());
         var favicon;
+        var msg_beep = '';
+        var option_button = '';
+        var user_tab = '';
+        var chat_boxes = '';
+        var chat_left = '';
+        var chat_right = '';
+        var usertab2 = '';
         var checkfirstmessage;
         var chatboxHeight = parseInt('<?php echo $chatboxHeight; ?>');
         var chatboxWidth = parseInt('<?php echo $chatboxWidth; ?>');
@@ -30,13 +37,12 @@
                         document.getElementById('messageBeep').play();
                     }
                 }catch(error){
-                    messageBeep = 0;
                 }
             },
             initialize: function(){
                 settings = jqcc.cometchat.getSettings();
                 baseUrl = jqcc.cometchat.getBaseUrl();
-                language = jqcc.cometchat.getLanguageAll();
+                language = jqcc.cometchat.getLanguage();
                 trayicon = jqcc.cometchat.getTrayicon();
                 var trayData = '';
                 var trayDataBody = '';
@@ -55,7 +61,7 @@
                         }
                         trayData += '</div>';
                         cometchat_popout = "";
-                        if(x=="chatrooms"||x=="games"){
+                        if(x=="chatrooms"||x=="games"||x=="broadcastmessage"){
                             cometchat_popout = '<div class="cometchat_popout cometchat_pop'+x+'"></div>';
                         }
                         if(icon[3]=='_popup'){
@@ -75,24 +81,20 @@
                     var cc_states = cc_state.split(/:/);
                     number = cc_states[3];
                 }
-                // var baseCode = '<div id="cometchat_trayicons">'+trayDataBody+'</div><div id="cometchat_base"><div id="cometchat_hide" onclick="jqcc.cometchat.hideBar();"></div><div id="cometchat_optionsbutton" class="cometchat_tab"><div id="cometchat_optionsbutton_icon" class="cometchat_optionsimages"></div></div><div id="cometchat_trayicons">'+trayData+'</div><span id="cometchat_userstab" class="cometchat_tab"><span id="cometchat_userstab_icon"></span><span id="cometchat_userstab_text">'+language[9]+' ('+number+')</span></span><div id="cometchat_chatbox_right"><span class="cometchat_tabtext"></span><span style="top:-5px;display:none" class="cometchat_tabalertlr"></span></div><div id="cometchat_chatboxes"><div id="cometchat_chatboxes_wide"></div></div><div id="cometchat_chatbox_left"><span class="cometchat_tabtext"></span><span class="cometchat_tabalertlr" style="top:-5px;display:none;"></span></div></div><div id="cometchat_optionsbutton_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[0]+'</div><div class="cometchat_minimizebox"></div><br clear="all"/></div><div class="cometchat_tabsubtitle">'+language[1]+'</div><div class="cometchat_tabcontent cometchat_optionstyle"><div id="guestsname"><strong>'+language[43]+'</strong><br/><input type="text" class="cometchat_guestnametextbox"/><div class="cometchat_guestnamebutton">'+language[44]+'</div></div><strong>'+language[2]+'</strong><br/><textarea class="cometchat_statustextarea"></textarea><div class="cometchat_statusbutton">'+language[22]+'</div><div class="cometchat_statusinputs"><strong>'+language[23]+'</strong><br/><span class="cometchat_user_available"></span><span class="cometchat_optionsstatus available">'+language[3]+'</span><span class="cometchat_optionsstatus2 cometchat_user_invisible" ></span><span class="cometchat_optionsstatus invisible">'+language[5]+'</span><div style="clear:both"></div><span class="cometchat_optionsstatus2 cometchat_user_busy"></span><span class="cometchat_optionsstatus busy">'+language[4]+'</span><span class="cometchat_optionsstatus2 cometchat_user_invisible"></span><span class="cometchat_optionsstatus cometchat_gooffline">'+language[11]+'</span><br clear="all"/></div><div class="cometchat_options_disable"><div><input type="checkbox" id="cometchat_soundnotifications" style="vertical-align: -2px;">'+language[13]+'</div><div style="clear:both"></div><div><input type="checkbox" id="cometchat_popupnotifications" style="vertical-align: -2px;">'+language[24]+'</div></div></div></div><div id="cometchat_userstab_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[12]+'</div><div class="cometchat_minimizebox"></div><br clear="all"/></div><div class="cometchat_tabsubtitle" id="cometchat_searchbar"><input type="text" name="cometchat_search" class="cometchat_search cometchat_search_light" id="cometchat_search" value="'+language[18]+'"></div><div class="cometchat_tabcontent cometchat_tabstyle"><div id="cometchat_userscontent"><div id="cometchat_userslist"><div class="cometchat_nofriends">'+language[41]+'</div></div></div></div></div>';
-				var ticketid = parseInt($('#logged_user_ticket').html());
-				var ticketData = '';
-				var ticketBody = '';
-				if (ticketid != 0){
-					// alert("ungleich");
-					var ticketid = $('#active_timer_ObjectID').html();
-					var moduleid = $('#active_timer_ModuleID').html();
-					var ticketname = $('#active_timer_Title').html();
-					// ticketData = '<div class="cometchat_trayicon" id="cometchat_trayicon_ticket" style="display:block;" unselectable="on" style="-moz-user-select: none;"><div class="cometchat_trayicontext"><a href="index.php?pid=106&exec=edit&tktid='+ticketid+'">Zeitmessung f&uuml;r Ticket: \''+ticketname+'\'</a><a href="libs/modules/timekeeping/timekeeper.iframe.php?tm_objectid='+ticketid+'&tm_moduleid='+moduleid+'" class="products" id="a_timer_stop_home"><img src="images/icons/hourglass--minus.png" title="Stop"></a><div id="bar_ticket_name"></div></div></div>';
-					ticketData = '<div onclick="document.getElementById(\'cometchat_trayicon_ticket_popup\').style.display=\'\'" class="cometchat_trayicon" id="cometchat_trayicon_ticket" style="display:block;" unselectable="on" style="-moz-user-select: none;"><div class="cometchat_trayicontext">Zeitmessung f&uuml;r Ticket: \''+ticketname+'\'</div></div>';
-					ticketBody = '<div style="display: none; left: 21px; width: 600px; z-index: 100003;" class="cometchat_traypopup" id="cometchat_trayicon_ticket_popup"><div class="cometchat_traytitle"><div class="cometchat_name">Ticket</div><div class="cometchat_minimizebox" onclick="document.getElementById(\'cometchat_trayicon_ticket_popup\').style.display=\'none\'"></div><br clear="all"></div><div class="cometchat_traycontent" style="background-position: 68px bottom;"><div style="height:300px" class="cometchat_traycontenttext"><div class="cometchat_loading"></div><iframe width="600" height="300" frameborder="0" id="cometchat_trayicon_ticket_iframe" allowtransparency="true" class="cometchat_iframe" src="libs/modules/timekeeping/timekeeper.iframe.php?tm_objectid='+ticketid+'&tm_moduleid='+moduleid+'"></iframe></div></div></div>';
-				} else {
-					// alert("gleich");
-					ticketData = '<div class="cometchat_trayicon" id="cometchat_trayicon_ticket" style="display:none;" unselectable="on" style="-moz-user-select: none;"><div class="cometchat_trayicontext">Zeitmessung f&uml;r Ticket:<div id="bar_ticket_name"></div></div></div>';
-				}
-                var baseCode = '<div id="cometchat_trayicons">'+trayDataBody+ticketBody+'</div><div id="cometchat_base"><div id="cometchat_hide" onclick="jqcc.cometchat.hideBar();"></div><div id="cometchat_optionsbutton" class="cometchat_tab"><div id="cometchat_optionsbutton_icon" class="cometchat_optionsimages"></div></div><div id="cometchat_trayicons">'+trayData+ticketData+'</div><span id="cometchat_userstab" class="cometchat_tab"><span id="cometchat_userstab_icon"></span><span id="cometchat_userstab_text">'+language[9]+' ('+number+')</span></span><div id="cometchat_chatbox_right"><span class="cometchat_tabtext"></span><span style="top:-5px;display:none" class="cometchat_tabalertlr"></span></div><div id="cometchat_chatboxes"><div id="cometchat_chatboxes_wide"></div></div><div id="cometchat_chatbox_left"><span class="cometchat_tabtext"></span><span class="cometchat_tabalertlr" style="top:-5px;display:none;"></span></div></div><div id="cometchat_optionsbutton_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[0]+'</div><div class="cometchat_minimizebox"></div><br clear="all"/></div><div class="cometchat_tabsubtitle">'+language[1]+'</div><div class="cometchat_tabcontent cometchat_optionstyle"><div id="guestsname"><strong>'+language[43]+'</strong><br/><input type="text" class="cometchat_guestnametextbox"/><div class="cometchat_guestnamebutton">'+language[44]+'</div></div><strong>'+language[2]+'</strong><br/><textarea class="cometchat_statustextarea"></textarea><div class="cometchat_statusbutton">'+language[22]+'</div><div class="cometchat_statusinputs"><strong>'+language[23]+'</strong><br/><span class="cometchat_user_available"></span><span class="cometchat_optionsstatus available">'+language[3]+'</span><span class="cometchat_optionsstatus2 cometchat_user_invisible" ></span><span class="cometchat_optionsstatus invisible">'+language[5]+'</span><div style="clear:both"></div><span class="cometchat_optionsstatus2 cometchat_user_busy"></span><span class="cometchat_optionsstatus busy">'+language[4]+'</span><span class="cometchat_optionsstatus2 cometchat_user_invisible"></span><span class="cometchat_optionsstatus cometchat_gooffline">'+language[11]+'</span><br clear="all"/></div><div class="cometchat_options_disable"><div><input type="checkbox" id="cometchat_soundnotifications" style="vertical-align: -2px;">'+language[13]+'</div><div style="clear:both"></div><div><input type="checkbox" id="cometchat_popupnotifications" style="vertical-align: -2px;">'+language[24]+'</div></div></div></div><div id="cometchat_userstab_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[12]+'</div><div class="cometchat_minimizebox"></div><br clear="all"/></div><div class="cometchat_tabsubtitle" id="cometchat_searchbar"><input type="text" name="cometchat_search" class="cometchat_search cometchat_search_light" id="cometchat_search" value="'+language[18]+'"></div><div class="cometchat_tabcontent cometchat_tabstyle"><div id="cometchat_userscontent"><div id="cometchat_userslist"><div class="cometchat_nofriends">'+language[41]+'</div></div></div></div></div>';
-				//
+                var ccauthpopup = '';
+                var ccauthlogout = '';
+                if(settings.ccauth.enabled=="1"){
+                    ccauthlogout = '<div class="cometchat_tooltip" id="cometchat_authlogout" title="'+language[80]+'"></div>';
+                }
+                if(settings.ccauth.enabled=="1"){
+                    ccauthpopup = '<div id="cometchat_auth_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[77]+'</div><div class="cometchat_minimizebox cometchat_tooltip" id="cometchat_minimize_auth_popup" title="'+language[78]+'"></div><br clear="all"/></div><div class="cometchat_tabsubtitle">'+language[79]+'</div><div class="cometchat_tabcontent cometchat_optionstyle"><div id="social_login">';
+                    var authactive = settings.ccauth.active;
+                    authactive.forEach(function(auth) {
+                        ccauthpopup += '<img onclick="window.open(\''+baseUrl+'functions/login/signin.php?network='+auth.toLowerCase()+'\',\'socialwindow\',\'location=0,status=0,scrollbars=0,width=1000,height=600\')" src="'+baseUrl+'themes/'+settings.theme+'/images/login'+auth.toLowerCase()+'.png" class="auth_options"></img>';
+                    });
+                    ccauthpopup += '</div></div></div>';
+                }
+                var baseCode = '<div id="cometchat_trayicons">'+trayDataBody+'</div><div id="cometchat_base"><div id="cometchat_hide" onclick="jqcc.cometchat.hideBar();"></div><div id="cometchat_optionsbutton" class="cometchat_tab"><div id="cometchat_optionsbutton_icon" class="cometchat_optionsimages"></div></div>'+ccauthpopup+'<div id="cometchat_trayicons">'+trayData+'</div><span id="cometchat_userstab" class="cometchat_tab"><span id="cometchat_userstab_icon"></span><span id="cometchat_userstab_text">'+language[9]+' ('+number+')</span></span><div id="cometchat_chatbox_right"><span class="cometchat_tabtext"></span><span style="top:-5px;display:none" class="cometchat_tabalertlr"></span></div><div id="cometchat_chatboxes"><div id="cometchat_chatboxes_wide"></div></div><div id="cometchat_chatbox_left"><span class="cometchat_tabtext"></span><span class="cometchat_tabalertlr" style="top:-5px;display:none;"></span></div></div><div id="cometchat_optionsbutton_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[0]+'</div>'+ccauthlogout+'<div class="cometchat_minimizebox"></div><br clear="all"/></div><div class="cometchat_tabsubtitle">'+language[1]+'</div><div class="cometchat_tabcontent cometchat_optionstyle"><div id="guestsname"><strong>'+language[43]+'</strong><br/><input type="text" class="cometchat_guestnametextbox"/><div class="cometchat_guestnamebutton">'+language[44]+'</div></div><strong>'+language[2]+'</strong><br/><textarea class="cometchat_statustextarea"></textarea><div class="cometchat_statusbutton">'+language[22]+'</div><div class="cometchat_statusinputs"><strong>'+language[23]+'</strong><br/><span class="cometchat_user_available"></span><span class="cometchat_optionsstatus available">'+language[3]+'</span><span class="cometchat_optionsstatus2 cometchat_user_invisible" ></span><span class="cometchat_optionsstatus invisible">'+language[5]+'</span><div style="clear:both"></div><span class="cometchat_optionsstatus2 cometchat_user_busy"></span><span class="cometchat_optionsstatus busy">'+language[4]+'</span><span class="cometchat_optionsstatus2 cometchat_user_invisible"></span><span class="cometchat_optionsstatus cometchat_gooffline offline">'+language[11]+'</span><br clear="all"/></div><div class="cometchat_options_disable"><div><input type="checkbox" id="cometchat_soundnotifications" style="vertical-align: -2px;">'+language[13]+'</div><div style="clear:both"></div><div><input type="checkbox" id="cometchat_popupnotifications" style="vertical-align: -2px;">'+language[24]+'</div></div></div></div><div id="cometchat_userstab_popup" class="cometchat_tabpopup" style="display:none"><div class="cometchat_userstabtitle"><div class="cometchat_userstabtitletext">'+language[12]+'</div><div class="cometchat_minimizebox"></div><br clear="all"/></div><div class="cometchat_tabsubtitle" id="cometchat_searchbar"><input type="text" name="cometchat_search" class="cometchat_search cometchat_search_light" placeholder="'+language[18]+'"></div><div class="cometchat_tabcontent cometchat_tabstyle"><div id="cometchat_userscontent"><div id="cometchat_userslist"><div class="cometchat_nofriends">'+language[41]+'</div></div></div></div></div>';
                 $('#cometchat').html(baseCode);
                 $('div.cometchat_trayicontext').each(function(){
                     trayWidth += this.clientWidth+1;
@@ -178,28 +180,36 @@
                 });
                 $("#cometchat").find("div.cometchat_popchatrooms").click(function(){
                     chatroom_location = jqcc("#cometchat").children().find('#cometchat_trayicon_chatrooms_iframe').attr('src');
-                    myRef = window.open(chatroom_location+'&popoutmode=1', 'popoutchat', 'left=20,top=20,status=0,toolbar=0,menubar=0,directories=0,location=0,status=0,scrollbars=0,resizable=1,width=800,height=600');
+                    myRef = window.open(chatroom_location+'&popoutmode=1', 'cc_module_chatrooms', 'left=20,top=20,status=0,toolbar=0,menubar=0,directories=0,location=0,status=0,scrollbars=0,resizable=1,width=800,height=600');
                     jqcc.cometchat.closeModule('chatrooms');
                 });
                 $("#cometchat").find("div.cometchat_popgames").click(function(){
                     games_location = jqcc("#cometchat").children().find('#cometchat_trayicon_games_iframe').attr('src');
-                    myRef = window.open(games_location,'popoutchat','left=20,top=20,status=0,toolbar=0,menubar=0,directories=0,location=0,status=0,scrollbars=0,resizable=1,width='+trayicon['games'][4]+',height='+trayicon['games'][5]+'');
+                    myRef = window.open(games_location,'cc_module_games','left=20,top=20,status=0,toolbar=0,menubar=0,directories=0,location=0,status=0,scrollbars=0,resizable=1,width='+trayicon['games'][4]+',height='+trayicon['games'][5]+'');
                     jqcc.cometchat.closeModule('games');
+                });
+                $("#cometchat").find("div.cometchat_popbroadcastmessage").click(function(){
+                    broadcastmessage_location = jqcc("#cometchat").children().find('#cometchat_trayicon_broadcastmessage_iframe').attr('src');
+                    myRef = window.open(broadcastmessage_location+'&popoutmode=1','cc_module_broadcastmessage','left=20,top=20,status=0,toolbar=0,menubar=0,directories=0,location=0,status=0,scrollbars=0,resizable=1,width='+trayicon['broadcastmessage'][4]+',height='+trayicon['broadcastmessage'][5]+'');
+                    jqcc.cometchat.closeModule('broadcastmessage');
                 });
                 $('#cometchat').find('div.cometchat_trayicon').click(function(){
                     var id = $(this).attr('id').substr(19);
                     jqcc.cometchat.setAlert(id, 0);
-                    if(jqcc.cometchat.getThemeVariable('openChatboxId')!=''){
-                        $('#cometchat_user_'+jqcc.cometchat.getThemeVariable('openChatboxId')+'_popup').removeClass('cometchat_tabopen');
-                        $('#cometchat_user_'+jqcc.cometchat.getThemeVariable('openChatboxId')).removeClass('cometchat_tabclick').removeClass("cometchat_usertabclick");
-                        $("#cometchat_user_"+jqcc.cometchat.getThemeVariable('openChatboxId')).find('.cometchat_closebox_bottom').removeClass("cometchat_closebox_bottom_click");
-                        jqcc.cometchat.setSessionVariable('openChatboxId', '');
+                    if(id != 'scrolltotop') {
+                        if(jqcc.cometchat.getThemeVariable('openChatboxId')!=''){
+                            $('#cometchat_user_'+jqcc.cometchat.getThemeVariable('openChatboxId')+'_popup').removeClass('cometchat_tabopen');
+                            $('#cometchat_user_'+jqcc.cometchat.getThemeVariable('openChatboxId')).removeClass('cometchat_tabclick').removeClass("cometchat_usertabclick");
+                            $("#cometchat_user_"+jqcc.cometchat.getThemeVariable('openChatboxId')).find('.cometchat_closebox_bottom').removeClass("cometchat_closebox_bottom_click");
+                            jqcc.cometchat.setSessionVariable('openChatboxId', '');
+                        }
+                        $('#cometchat_auth_popup').removeClass('cometchat_tabopen');
+                        $('#cometchat_userstab_popup').removeClass('cometchat_tabopen');
+                        $('#cometchat_userstab').removeClass('cometchat_userstabclick').removeClass('cometchat_tabclick');
+                        $('#cometchat_optionsbutton_popup').removeClass('cometchat_tabopen');
+                        $('#cometchat_optionsbutton').removeClass('cometchat_tabclick');
+                        jqcc.cometchat.setSessionVariable('buddylist', '0');
                     }
-                    $('#cometchat_userstab_popup').removeClass('cometchat_tabopen');
-                    $('#cometchat_userstab').removeClass('cometchat_userstabclick').removeClass('cometchat_tabclick');
-                    $('#cometchat_optionsbutton_popup').removeClass('cometchat_tabopen');
-                    $('#cometchat_optionsbutton').removeClass('cometchat_tabclick');
-                    jqcc.cometchat.setSessionVariable('buddylist', '0');
                     var target = "_self";
                     if(trayicon[id][3]){
                         target = trayicon[id][3];
@@ -298,6 +308,8 @@
                 if($.inArray('block', settings.plugins)>-1){
                     $.ccblock.addCode();
                 }
+
+                attachPlaceholder('#cometchat_searchbar');
             },
             newAnnouncement: function(item){
                 if($.cookie(settings.cookiePrefix+"popup")&&$.cookie(settings.cookiePrefix+"popup")=='true'){
@@ -331,12 +343,27 @@
                 $.each(item, function(i, buddy){
                     longname = buddy.n;
                     if(chatboxOpened[buddy.id]!=null){
+                        if(buddy.d == 1 && $("#cometchat_user_"+buddy.id).find(".cometchat_closebox_bottom_status.cometchat_mobile").length < 1){
+                            $("#cometchat_user_"+buddy.id).find(".cometchat_closebox_bottom_status").addClass('cometchat_mobile').html('<div class="cometchat_dot"></div>');
+                        }else if(buddy.d == 0){
+                            $("#cometchat_user_"+buddy.id).find(".cometchat_closebox_bottom_status").removeClass('cometchat_mobile').html('');
+                        }
                         $("#cometchat_user_"+buddy.id).find("div.cometchat_closebox_bottom_status")
-                                .removeClass("cometchat_available")
-                                .removeClass("cometchat_busy")
-                                .removeClass("cometchat_offline")
-                                .removeClass("cometchat_away")
-                                .addClass("cometchat_"+buddy.s);
+                        .removeClass("cometchat_available")
+                        .removeClass("cometchat_busy")
+                        .removeClass("cometchat_offline")
+                        .removeClass("cometchat_away")
+                        .addClass("cometchat_"+buddy.s);
+                        $("#cometchat_user_"+buddy.id).find(".cometchat_closebox_bottom_status.cometchat_mobile")
+                        .removeClass("cometchat_mobile_available")
+                        .removeClass("cometchat_mobile_busy")
+                        .removeClass("cometchat_mobile_offline")
+                        .removeClass("cometchat_mobile_away")
+                        .removeClass("cometchat_available")
+                        .removeClass("cometchat_busy")
+                        .removeClass("cometchat_offline")
+                        .removeClass("cometchat_away")
+                        .addClass('cometchat_mobile_'+buddy.s);
                         if($("#cometchat_user_"+buddy.id+"_popup").length>0){
                             $("#cometchat_user_"+buddy.id+"_popup").find("div.cometchat_message").html(buddy.m);
                         }
@@ -345,7 +372,7 @@
                         onlineNumber++;
                     }
                     totalFriendsNumber++;
-                    var group = '';									
+                    var group = '';
                     var icon = '';
                     if(buddy.g!=lastGroup&&typeof buddy.g!="undefined"){
                         if(buddy.g==''){
@@ -361,12 +388,13 @@
                         groupNumber++;
                         lastGroup = buddy.g;
                     }
+                    var usercontentstatus = buddy.s;
                     if(buddy.d==1){
-                        buddy.s = 'mobile';
-                        icon = '<div class="cometchat_dot"></div>';
+                       usercontentstatus = 'mobile cometchat_mobile_'+buddy.s;
+                       icon = '<div class="cometchat_dot"></div>';
                     }
-                    buddylisttemp += group+'<div id="cometchat_userlist_'+buddy.id+'" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentname">'+longname+'</span><span class="cometchat_userscontentdot cometchat_'+buddy.s+'">'+icon+'</span></div>';
-                    buddylisttempavatar += group+'<div id="cometchat_userlist_'+buddy.id+'" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentavatar"><img class="cometchat_userscontentavatarimage" original="'+buddy.a+'"></span><span class="cometchat_userscontentname">'+longname+'</span><span class="cometchat_userscontentdot cometchat_'+buddy.s+'">'+icon+'</span></div>';
+                    buddylisttemp += group+'<div id="cometchat_userlist_'+buddy.id+'" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentname">'+longname+'</span><span class="cometchat_userscontentdot cometchat_'+usercontentstatus+'">'+icon+'</span></div>';
+                    buddylisttempavatar += group+'<div id="cometchat_userlist_'+buddy.id+'" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentavatar"><img class="cometchat_userscontentavatarimage" original="'+buddy.a+'"></span><span class="cometchat_userscontentname">'+longname+'</span><span class="cometchat_userscontentdot cometchat_'+usercontentstatus+'">'+icon+'</span></div>';
                     var message = '';
                     if(settings.displayOnlineNotification==1&&jqcc.cometchat.getExternalVariable('initialize')!=1&&jqcc.cometchat.getThemeArray('buddylistStatus', buddy.id)!=buddy.s&&buddy.s=='available'){
                         message = language[19];
@@ -408,7 +436,7 @@
                         }
                     });
                 }
-                $("#cometchat_search").keyup();
+                $(".cometchat_search").keyup();
                 $('div.cometchat_userlist').unbind('click');
                 $('div.cometchat_userlist').bind('click', function(e){
                     jqcc.cometchat.userClick(e.target);
@@ -438,12 +466,25 @@
             },
             loggedOut: function(){
                 document.title = jqcc.cometchat.getThemeVariable('documentTitle');
-                $("#cometchat_optionsbutton").addClass("cometchat_optionsimages_exclamation");
-                $("#cometchat_optionsbutton_icon").css('display', 'none');
+                if(settings.ccauth.enabled=="1"){
+                    $("#cometchat_optionsbutton_icon").addClass("cometchat_optionsimages_ccauth");
+                    $("#cometchat_optionsbutton").attr("title",language[77]);
+                }else{
+                    $("#cometchat_optionsbutton").addClass("cometchat_optionsimages_exclamation");
+                    $("#cometchat_optionsbutton_icon").css('display', 'none');
+                    $("#cometchat_optionsbutton").attr("title",language[8]);
+                }
                 $("#cometchat_userstab").hide();
                 $("#cometchat_chatboxes").hide();
                 $("#cometchat_chatbox_left").hide();
                 $("#cometchat_chatbox_right").hide();
+                msg_beep = $("#messageBeep").detach();
+                option_button = $("#cometchat_optionsbutton_popup").detach();
+                user_tab = $("#cometchat_userstab_popup").detach();
+                chat_boxes = $("#cometchat_chatboxes").detach();
+                chat_left = $("#cometchat_chatbox_left").detach();
+                chat_right = $("#cometchat_chatbox_right").detach();
+                usertab2 = $("#cometchat_userstab").detach();
                 $("#cometchat_optionsbutton_popup").removeClass("cometchat_tabopen");
                 $("#cometchat_userstab_popup").removeClass("cometchat_tabopen");
                 $("#cometchat_optionsbutton").removeClass("cometchat_tabclick");
@@ -453,7 +494,6 @@
                     jqcc.cometchat.setThemeVariable('openChatboxId', '');
                     jqcc.cometchat.setSessionVariable('openChatboxId', jqcc.cometchat.getThemeVariable('openChatboxId'));
                 }
-                jqcc.cometchat.setThemeVariable('loggedout', 1);
             },
             userStatus: function(item){
                 var cometchat_optionsbutton_popup = $('#cometchat_optionsbutton_popup');
@@ -463,8 +503,7 @@
                     jqcc[settings.theme].goOffline(1);
                 }else{
                     jqcc[settings.theme].removeUnderline();
-                    $("#cometchat_userstab_icon").addClass('cometchat_user_'+item.s+'2');
-                    cometchat_optionsbutton_popup.find("."+item.s).css('text-decoration', 'underline');
+                    jqcc[settings.theme].updateStatus(item.s);
                 }
                 if(item.id>10000000){
                     $("#guestsname").show();
@@ -487,7 +526,7 @@
                     t--;
                 }
             },
-            createChatboxData: function(id, name, status, message, avatar, link, silent, tryOldMessages){
+            createChatboxData: function(id, name, status, message, avatar, link, isdevice, silent, tryOldMessages){
                 var cometchat_chatboxes = $("#cometchat_chatboxes");
                 if(chatboxOpened[id]!=null){
                     if(!$("#cometchat_user_"+id).hasClass('cometchat_tabclick')&&silent!=1){
@@ -521,11 +560,13 @@
                 longname = name;
                 $("<span/>").attr("id", "cometchat_user_"+id).addClass("cometchat_tab").html('<div class="cometchat_user_shortname">'+shortname+'</div>').appendTo($("#cometchat_chatboxes_wide"));
                 var icon = '';
-                if(status == 'mobile'){
-                    icon = '<div class="cometchat_dot"></div>';
+                var usercontentstatus = status;
+                if(isdevice==1){
+                   usercontentstatus = 'mobile cometchat_mobile_'+status;
+                   icon = '<div class="cometchat_dot"></div>';
                 }
                 var cometchat_user_id = $("#cometchat_user_"+id);
-                cometchat_user_id.append('<div class="cometchat_closebox_bottom_status cometchat_'+status+'">'+icon+'</div>');
+                cometchat_user_id.append('<div class="cometchat_closebox_bottom_status cometchat_'+usercontentstatus+'">'+icon+'</div>');
                 cometchat_user_id.append('<div class="cometchat_closebox_bottom"></div>');
                 var cometchat_closebox_bottom = cometchat_user_id.find(".cometchat_closebox_bottom");
                 cometchat_closebox_bottom.mouseenter(function(){
@@ -560,7 +601,7 @@
                         for(var i = 0; i<pluginslength; i++){
                             var name = 'cc'+settings.plugins[i];
                             if(typeof ($[name])=='object'){
-                                pluginshtml += '<div class="cometchat_pluginsicon cometchat_'+settings.plugins[i]+'" title="'+$[name].getTitle()+'" onclick="javascript:jqcc.'+name+'.init('+id+');"></div>';
+                                pluginshtml += '<div class="cometchat_pluginsicon cometchat_'+settings.plugins[i]+'" title="'+$[name].getTitle()+'" name="'+name+'" to="'+id+'" chatroommode="0"></div>';
                             }
                         }
                         pluginshtml += '</div>';
@@ -576,11 +617,25 @@
                 if(avatar!=''){
                     avatarsrc = '<div class="cometchat_avatarbox">'+startlink+'<img src="'+avatar+'" class="cometchat_avatar" />'+endlink+'</div>';
                 }
-                $("<div/>").attr("id", "cometchat_user_"+id+"_popup").addClass("cometchat_tabpopup").css('display', 'none').html('<div class="cometchat_tabtitle"><div class="cometchat_name">'+startlink+longname+endlink+'<span id="cometchat_typing_'+id+'" class="cometchat_typing"></span></div></div><div class="cometchat_tabsubtitle">'+avatarsrc+'<div class="cometchat_message">'+message+'</div>'+pluginshtml+'<div style="clear:both"></div>'+'</div><div class="cometchat_tabcontent"><div class="cometchat_tabcontenttext" id="cometchat_tabcontenttext_'+id+'"></div><div class="cometchat_tabcontentinput"><textarea class="cometchat_textarea"></textarea><div class="cometchat_tabcontentsubmit"></div></div><div style="clear:both"></div></div>').appendTo($("#cometchat"));
+                var prepend = '';
+                var jabber = jqcc.cometchat.getThemeArray('isJabber', id);
+
+                if(jqcc.cometchat.getThemeVariable('prependLimit') != '0' && jabber != 1){
+                    prepend = '<div class=\"cometchat_prependMessages\" onclick\="jqcc.standard.prependMessagesInit('+id+')\" id = \"cometchat_prependMessages_'+id+'\">'+language[83]+'</div>';
+                }
+
+                $("<div/>").attr("id", "cometchat_user_"+id+"_popup").addClass("cometchat_tabpopup").css('display', 'none').html('<div class="cometchat_tabtitle"><span id="cometchat_typing_'+id+'" class="cometchat_typing"></span><div class="cometchat_name">'+startlink+longname+endlink+'</div></div><div class="cometchat_tabsubtitle">'+avatarsrc+'<div class="cometchat_message">'+message+'</div>'+pluginshtml+'<div style="clear:both"></div>'+'</div>'+prepend+'<div class="cometchat_tabcontent"><div class="cometchat_tabcontenttext" id="cometchat_tabcontenttext_'+id+'">'+'</div><div class="cometchat_tabcontentinput"><textarea class="cometchat_textarea" placeholder="'+language[85]+'"></textarea><div class="cometchat_tabcontentsubmit"></div></div><div style="clear:both"></div></div>').appendTo($("#cometchat"));
                 var cometchat_user_popup = $("#cometchat_user_"+id+'_popup');
                 if(jqcc().slimScroll){
-                    cometchat_user_popup.find("div.cometchat_tabcontenttext").slimScroll({height: '211px'});
+                    cometchat_user_popup.find("div.cometchat_tabcontenttext").slimScroll({height: (chatboxHeight+11)+'px'});
                 }
+                cometchat_user_popup.find('.cometchat_pluginsicon').click(function(){
+                    var name = $(this).attr('name');
+                    var to = $(this).attr('to');
+                    var chatroommode = $(this).attr('chatroommode');
+                    var controlparameters = {"to":to, "chatroommode":chatroommode};
+                    jqcc[name].init(controlparameters);
+                });
                 cometchat_user_popup.find("textarea.cometchat_textarea").keydown(function(event){
                     return jqcc[settings.theme].chatboxKeydown(event, this, id);
                 });
@@ -675,11 +730,12 @@
                                 jqcc.cometchat.setThemeVariable('openChatboxId', '');
                                 jqcc.cometchat.setSessionVariable('openChatboxId', jqcc.cometchat.getThemeVariable('openChatboxId'));
                             }
-                            cometchat_user_popup.css('left', baseLeft+cometchat_user_id.position().left-77);
+                            var popupLeft = baseLeft+cometchat_user_id.position().left - (cometchat_user_popup.width() - cometchat_user_id.outerWidth(false) - 1);
+                            cometchat_user_popup.css('left',popupLeft);
                             $(this).addClass("cometchat_tabclick").addClass("cometchat_usertabclick");
                             cometchat_user_popup.addClass("cometchat_tabopen");
                             cometchat_closebox_bottom.addClass("cometchat_closebox_bottom_click");
-                            jqcc.cometchat.setThemeVariable('openChatboxId', id);
+                            jqcc.cometchat.setThemeVariable('openChatboxId', [id+'']);
                             jqcc.cometchat.setSessionVariable('openChatboxId', jqcc.cometchat.getThemeVariable('openChatboxId'));
                             if(olddata[id]!=1&&(jqcc.cometchat.getExternalVariable('initialize')!=1||isNaN(id))){
                                 jqcc[settings.theme].updateChatbox(id);
@@ -704,27 +760,47 @@
                 if(silent!=1){
                     cometchat_user_id.click();
                 }
+                attachPlaceholder("#cometchat_user_"+id+'_popup');
                 jqcc.cometchat.setThemeArray('chatBoxesOrder', id, 0);
                 chatboxOpened[id] = 0;
                 jqcc.cometchat.orderChatboxes();
             },
             addMessages: function(item){
                 $.each(item, function(i, incoming){
+                    if(typeof(incoming.self) ==='undefined' && typeof(incoming.old) ==='undefined' && typeof(incoming.sent) ==='undefined'){
+                        incoming.sent = Math.floor(new Date().getTime()/1000);
+                        incoming.old = incoming.self = 1;
+                    }
+                    if(typeof(incoming.m)!== 'undefined'){
+                        incoming.message = incoming.m;
+                    }
+
+                    var message = jqcc.cometchat.processcontrolmessage(incoming);
+
+                    if(message == null || message == ""){
+                        return;
+                    }
+                    if(typeof(incoming.nopopup) === "undefined" || incoming.nopopup =="") {
+                        incoming.nopopup = 0;
+                    }
+                    if(incoming.self ==1 ){
+                         incoming.nopopup = 1;
+                    }
                     checkfirstmessage = ($("#cometchat_tabcontenttext_"+incoming.from+" .cometchat_chatboxmessage").length) ? 0 : 1;
                     var shouldPop = 0;
                     if($('#cometchat_user_'+incoming.from).length == 0){
                             shouldPop = 1;
-                    } 
+                    }
                     if(jqcc.cometchat.getThemeArray('trying', incoming.from)===undefined){
-                        if(typeof (jqcc[settings.theme].createChatbox)!=='undefined'){
-                            jqcc[settings.theme].createChatbox(incoming.from, jqcc.cometchat.getThemeArray('buddylistName', incoming.from), jqcc.cometchat.getThemeArray('buddylistStatus', incoming.from), jqcc.cometchat.getThemeArray('buddylistMessage', incoming.from), jqcc.cometchat.getThemeArray('buddylistAvatar', incoming.from), jqcc.cometchat.getThemeArray('buddylistLink', incoming.from), 1, 1);
+                        if(typeof (jqcc[settings.theme].createChatbox)!=='undefined' && incoming.nopopup == 0){
+                            jqcc[settings.theme].createChatbox(incoming.from, jqcc.cometchat.getThemeArray('buddylistName', incoming.from), jqcc.cometchat.getThemeArray('buddylistStatus', incoming.from), jqcc.cometchat.getThemeArray('buddylistMessage', incoming.from), jqcc.cometchat.getThemeArray('buddylistAvatar', incoming.from), jqcc.cometchat.getThemeArray('buddylistLink', incoming.from), jqcc.cometchat.getThemeArray('buddylistIsDevice', incoming.from), 1, 1);
                         }
                     }
                     if(jqcc.cometchat.getThemeArray('buddylistName', incoming.from)==null||jqcc.cometchat.getThemeArray('buddylistName', incoming.from)==''){
                         if(jqcc.cometchat.getThemeArray('trying', incoming.from)<5){
                             setTimeout(function(){
                                 if(typeof (jqcc[settings.theme].addMessages)!=='undefined'){
-                                    jqcc[settings.theme].addMessages([{"from": incoming.from, "message": incoming.message, "self": incoming.self, "old": incoming.old, "id": incoming.id, "sent": incoming.sent}]);
+                                    jqcc[settings.theme].addMessages([{"from": incoming.from, "message": message, "self": incoming.self, "old": incoming.old, "id": incoming.id, "sent": incoming.sent}]);
                                 }
                             }, 2000);
                         }
@@ -746,17 +822,17 @@
                         }
                         separator = ':&nbsp;&nbsp;';
                         if($("#cometchat_message_"+incoming.id).length>0){
-                            $("#cometchat_message_"+incoming.id).find(".cometchat_chatboxmessagecontent").html(incoming.message);
+                            $("#cometchat_message_"+incoming.id).find(".cometchat_chatboxmessagecontent").html(message);
                         }else{
                             sentdata = '';
                             if(incoming.sent!=null){
-                                var ts = new Date(incoming.sent*1000);
+                                var ts = incoming.sent;
                                 sentdata = jqcc[settings.theme].getTimeDisplay(ts, incoming.from);
                             }
                             if(!settings.fullName){
                                 fromname = fromname.split(" ")[0];
                             }
-                            var msg = jqcc[settings.theme].processMessage('<div class="cometchat_chatboxmessage" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagefrom'+selfstyle+'"><strong>'+fromname+'</strong>'+separator+'</span><span class="cometchat_chatboxmessagecontent'+selfstyle+'">'+incoming.message+'</span>'+sentdata+'</div>', selfstyle);
+                            var msg = jqcc[settings.theme].processMessage('<div class="cometchat_chatboxmessage" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagefrom'+selfstyle+'"><strong>'+fromname+'</strong>'+separator+'</span><span class="cometchat_chatboxmessagecontent'+selfstyle+'">'+message+'</span>'+sentdata+'</div>', selfstyle);
                             $("#cometchat_user_"+incoming.from+"_popup").find("div.cometchat_tabcontenttext").append(msg);
                             $("#cometchat_typing_"+incoming.from).css('display', 'none');
                             jqcc[settings.theme].scrollDown(incoming.from);
@@ -775,7 +851,7 @@
                         }
                     }
                     var newMessage = 0;
-                    if((jqcc.cometchat.getThemeVariable('isMini')==1||(jqcc.cometchat.getThemeVariable('openChatboxId')!=incoming.from))&&incoming.self!=1&&settings.desktopNotifications==1){
+                    if((jqcc.cometchat.getThemeVariable('isMini')==1||(jqcc.cometchat.getThemeVariable('openChatboxId')!=incoming.from))&&incoming.self!=1&&settings.desktopNotifications==1&&incoming.old==0){
                         var callChatboxEvent = function(){
                             if(typeof incoming.from!='undefined'){
                                 for(x in desktopNotifications){
@@ -795,13 +871,14 @@
                             for(x in desktopNotifications[incoming.from]){
                                 ++newMessageCount;
                                 desktopNotifications[incoming.from][x].close();
-                            } 
+                            }
                             jqcc.cometchat.notify((++newMessageCount)+' '+language[46]+' '+jqcc.cometchat.getThemeArray('buddylistName', incoming.from), jqcc.cometchat.getThemeArray('buddylistName', incoming.from), language[47], callChatboxEvent, incoming.from, incoming.id);
                         }else{
-                            jqcc.cometchat.notify(language[48]+' '+jqcc.cometchat.getThemeArray('buddylistName', incoming.from), jqcc.cometchat.getThemeArray('buddylistAvatar', incoming.from), incoming.message, callChatboxEvent, incoming.from, incoming.id);
+                            jqcc.cometchat.notify(language[48]+' '+jqcc.cometchat.getThemeArray('buddylistName', incoming.from), jqcc.cometchat.getThemeArray('buddylistAvatar', incoming.from), message, callChatboxEvent, incoming.from, incoming.id);
                         }
                     }
-                    if(jqcc.cometchat.getThemeVariable('openChatboxId').indexOf(incoming.from)==-1&&settings.autoPopupChatbox==1&&shouldPop==1&&incoming.self==0){    
+                    var chatBoxArray = jqcc.cometchat.getThemeVariable('openChatboxId');
+                    if($.inArray(incoming.from + '',chatBoxArray)==-1&&settings.autoPopupChatbox==1&&shouldPop==1&&incoming.self==0){
                         jqcc.cometchat.tryClick(incoming.from);
                     }
                 });
@@ -871,6 +948,7 @@
             removeUnderline: function(){
                 $("#cometchat_optionsbutton_popup").find("span.busy").css('text-decoration', 'none');
                 $("#cometchat_optionsbutton_popup").find("span.invisible").css('text-decoration', 'none');
+                $("#cometchat_optionsbutton_popup").find("span.offline").css('text-decoration', 'none');
                 $("#cometchat_optionsbutton_popup").find("span.available").css('text-decoration', 'none');
                 jqcc[settings.theme].removeUnderline2();
             },
@@ -878,15 +956,22 @@
                 $("#cometchat_userstab_icon").removeClass('cometchat_user_available2');
                 $("#cometchat_userstab_icon").removeClass('cometchat_user_busy2');
                 $("#cometchat_userstab_icon").removeClass('cometchat_user_invisible2');
+                $("#cometchat_userstab_icon").removeClass('cometchat_user_offline2');
                 $("#cometchat_userstab_icon").removeClass('cometchat_user_away2');
+            },
+            updateStatus: function(status){
+                $("#cometchat_userstab_icon").addClass('cometchat_user_'+status+'2');
+                $('span.cometchat_optionsstatus.'+status).css('text-decoration', 'underline');
             },
             goOffline: function(silent){
                 jqcc.cometchat.setThemeVariable('offline', 1);
                 jqcc[settings.theme].removeUnderline();
-                $("#cometchat_userstab_icon").addClass('cometchat_user_invisible2');
                 if(silent!=1){
                     jqcc.cometchat.sendStatus('offline');
+                }else{
+                    jqcc[settings.theme].updateStatus('offline');
                 }
+                $('#cometchat_auth_popup').removeClass('cometchat_tabopen');
                 $('#cometchat_userstab_popup').removeClass('cometchat_tabopen');
                 $('#cometchat_userstab').removeClass('cometchat_userstabclick').removeClass('cometchat_tabclick');
                 $('#cometchat_optionsbutton_popup').removeClass('cometchat_tabopen');
@@ -1073,8 +1158,7 @@
                             $('#cometchat_userstab_text').html(language[9]+' ('+jqcc.cometchat.getThemeVariable('lastOnlineNumber')+')');
                             jqcc.cometchat.chatHeartbeat(1);
                             jqcc[settings.theme].removeUnderline();
-                            $("#cometchat_userstab_icon").addClass('cometchat_user_available2');
-                            $("#cometchat_optionsbutton_popup").find("span.available").css('text-decoration', 'underline');
+                            jqcc[settings.theme].updateStatus('available');
                         }
                         if(cc_states[5]!=' '&&cc_states[5]!=''&&cc_states[5]!=jqcc.cometchat.getThemeVariable('trayOpen')&&settings.autoLoadModules==1){
                             $('#cometchat_trayicon_'+cc_states[5]).click();
@@ -1088,17 +1172,19 @@
                 }
             },
             setModuleAlert: function(id, number){
-                if(!$('#cometchat_trayicon_'+id+'_popup').hasClass('cometchat_tabopen')){
-                    $("#cometchat_trayicon_"+id).find("span.cometchat_tabalert").remove();
+                if((!$('#cometchat_trayicon_'+id+'_popup').hasClass('cometchat_tabopen')) && (jqcc('#cometchat_trayicon_'+id+'_popup').length>0)){
+                    if($("#cometchat_trayicon_"+id).find("span.cometchat_tabalert").length > 0){
+                        $("#cometchat_trayicon_"+id).find("span.cometchat_tabalert").remove();
+                    }
                     if(number!=0){
-                        $("<span/>").css('top', '-10px').addClass("cometchat_tabalert").html(number).appendTo($("#cometchat_trayicon_"+id));
+                        $("<span>").css('top', '-10px').addClass("cometchat_tabalert").html(number).appendTo($("#cometchat_trayicon_"+id));
                     }
                 }
             },
             addPopup: function(id, amount, add){
                 if(jqcc.cometchat.getThemeArray('buddylistName', id)==null||jqcc.cometchat.getThemeArray('buddylistName', id)==''){
                     if(jqcc.cometchat.getThemeArray('trying', id)===undefined){
-                        jqcc[settings.theme].createChatbox(id, null, null, null, null, null, 1, null);
+                        jqcc[settings.theme].createChatbox(id, null, null, null, null, null, null, 1, null);
                     }
                     if(jqcc.cometchat.getThemeArray('trying', id)<5){
                         setTimeout(function(){
@@ -1129,40 +1215,24 @@
                 }
             },
             getTimeDisplay: function(ts, id){
+                ts = parseInt(ts);
                 var style = "style=\"display:none;\"";
-                if(typeof (jqcc.ccchattime)!='undefined'&&jqcc.ccchattime.getEnabled(id)){
+                if(typeof (jqcc.ccchattime)!='undefined'&&jqcc.ccchattime.getEnabled(id,0)){
                     style = "style=\"display:inline;\"";
                 }
-                var ap = "";
-                var hour = ts.getHours();
-                var minute = ts.getMinutes();
-                var date = ts.getDate();
-                var month = ts.getMonth();
-                if(settings.armyTime!=1){
-                    ap = hour>11 ? "PM" : "AM";
-                    hour = hour==0 ? 12 : hour>12 ? hour-12 : hour;
-                }else{
-                    hour = hour<10 ? "0"+hour : hour;
+                var time = getTimeDisplay(ts);
+                if((ts+"").length == 10){
+                    ts = ts*1000;
                 }
-                minute = minute<10 ? "0"+minute : minute;
-                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                var type = 'th';
-                if(date==1||date==21||date==31){
-                    type = 'st';
-                }
-                else if(date==2||date==22){
-                    type = 'nd';
-                }
-                else if(date==3||date==23){
-                    type = 'rd';
-                }
+                var timeDataStart = "<span class=\"cometchat_ts\" "+style+">("+time.hour+":"+time.minute+time.ap;
+                var timeDataEnd = ")</span>";
                 if(ts<jqcc.cometchat.getThemeVariable('todays12am')){
-                    return "<span class=\"cometchat_ts\" "+style+">("+hour+":"+minute+ap+" "+date+type+" "+months[month]+")</span>";
+                    return timeDataStart+" "+time.date+time.type+" "+time.month+timeDataEnd;
                 }else{
-                    return "<span class=\"cometchat_ts\" "+style+">("+hour+":"+minute+ap+")</span>";
+                    return timeDataStart+timeDataEnd;
                 }
             },
-            createChatbox: function(id, name, status, message, avatar, link, silent, tryOldMessages){
+            createChatbox: function(id, name, status, message, avatar, link, isdevice, silent, tryOldMessages){
                 if(id==null||id==''){
                     return;
                 }
@@ -1170,11 +1240,11 @@
                     if(jqcc.cometchat.getThemeArray('trying', id)===undefined){
                         jqcc.cometchat.setThemeArray('trying', id, 1);
                         if(!isNaN(id)){
-                            jqcc.cometchat.createChatboxSet(id, name, status, message, avatar, link, silent, tryOldMessages);
+                            jqcc.cometchat.createChatboxSet(id, name, status, message, avatar, link, isdevice, silent, tryOldMessages);
                         }else{
                             setTimeout(function(){
                                 if(typeof (jqcc[settings.theme].createChatbox)!=='undefined'){
-                                    jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), silent, tryOldMessages);
+                                    jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), jqcc.cometchat.getThemeArray('buddylistIsDevice', id), silent, tryOldMessages);
                                 }
                             }, 5000);
                         }
@@ -1183,28 +1253,31 @@
                             jqcc.cometchat.incrementThemeVariable('trying['+id+']');
                             setTimeout(function(){
                                 if(typeof (jqcc[settings.theme].createChatbox)!=='undefined'){
-                                    jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), silent, tryOldMessages);
+                                    jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), jqcc.cometchat.getThemeArray('buddylistIsDevice', id), silent, tryOldMessages);
                                 }
                             }, 5000);
                         }
                     }
                 }else{
                     if(typeof (jqcc[settings.theme].createChatboxData)!=='undefined'){
-                        jqcc[settings.theme].createChatboxData(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), silent, tryOldMessages);
+                        jqcc[settings.theme].createChatboxData(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), jqcc.cometchat.getThemeArray('buddylistIsDevice', id), silent, tryOldMessages);
                     }
                 }
             },
-            createChatboxSuccess: function(id, name, status, message, avatar, link, silent, tryOldMessages, data){
-                name = data.n;
-                status = data.s;
-                message = data.m;
-                avatar = data.a;
-                link = data.l;
+            createChatboxSuccess: function(data, silent, tryOldMessages){
+                var id = data.id;
+                var name = data.n;
+                var status = data.s;
+                var message = data.m;
+                var avatar = data.a;
+                var link = data.l;
+                var isdevice = data.d;
                 jqcc.cometchat.setThemeArray('buddylistStatus', id, status);
                 jqcc.cometchat.setThemeArray('buddylistMessage', id, message);
                 jqcc.cometchat.setThemeArray('buddylistAvatar', id, avatar);
                 jqcc.cometchat.setThemeArray('buddylistName', id, name);
                 jqcc.cometchat.setThemeArray('buddylistLink', id, link);
+                jqcc.cometchat.setThemeArray('buddylistIsDevice', id, isdevice);
                 if(chatboxOpened[id]!=null){
                     $("#cometchat_user_"+id).find("div.cometchat_closebox_bottom_status")
                             .removeClass("cometchat_available")
@@ -1219,7 +1292,7 @@
                 jqcc.cometchat.setThemeVariable('trying', id, 5);
                 if(id!=null&&id!=''&&name!=null&&name!=''){
                     if(typeof (jqcc[settings.theme].createChatboxData)!=='undefined'){
-                        jqcc[settings.theme].createChatboxData(id, name, status, message, avatar, link, silent, tryOldMessages);
+                        jqcc[settings.theme].createChatboxData(id, name, status, message, avatar, link, isdevice, silent, tryOldMessages);
                     }
                 }
             },
@@ -1263,7 +1336,7 @@
                 });
             },
             chatTab: function(){
-                var cometchat_search = $("#cometchat_search");
+                var cometchat_search = $(".cometchat_search");
                 var cometchat_userscontent = $('#cometchat_userscontent');
                 cometchat_search.click(function(){
                     var searchString = $(this).val();
@@ -1283,9 +1356,11 @@
                     var searchString = $(this).val();
                     if(searchString.length>0&&searchString!=language[18]){
                         cometchat_userscontent.find('div.cometchat_userlist').hide().parent().find('div.cometchat_userlist:icontains('+searchString+')').show();
+                        cometchat_userscontent.find('.cometchat_subsubtitle').hide();
                         cometchat_search.removeClass('cometchat_search_light');
                     }else{
                         cometchat_userscontent.find('div.cometchat_userlist').show();
+                        cometchat_userscontent.find('.cometchat_subsubtitle').show();
                     }
                 });
                 var cometchat_userstabtitle = $("#cometchat_userstab_popup").find("div.cometchat_userstabtitle");
@@ -1316,8 +1391,7 @@
                         jqcc.cometchat.setThemeVariable('offline', 0);
                         jqcc.cometchat.setThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'), 'available');
                         jqcc[settings.theme].removeUnderline();
-                        $("#cometchat_userstab_icon").addClass('cometchat_user_available2');
-                        $('.cometchat_optionsstatus.available').css('text-decoration', 'underline');
+                        jqcc[settings.theme].updateStatus('available');
                         $('#cometchat_userstab_text').html(language[9]+' ('+jqcc.cometchat.getThemeVariable('lastOnlineNumber')+')');
                         jqcc.cometchat.chatHeartbeat(1);
                         jqcc.cometchat.sendStatus('available');
@@ -1339,13 +1413,14 @@
                     }
                     var baseLeft = $('#cometchat_base').position().left;
                     var barActualWidth = jqcc('#cometchat_base').width();
-                    $('#cometchat_userstab_popup').css('left', baseLeft+barActualWidth-223-32);
+                    $('#cometchat_userstab_popup').css('left', baseLeft+barActualWidth-223-27);
                     $(this).toggleClass("cometchat_tabclick").toggleClass("cometchat_userstabclick");
                     $('#cometchat_userstab_popup').toggleClass("cometchat_tabopen");
                 });
             },
             optionsButton: function(){
                 var cometchat_optionsbutton_popup = $("#cometchat_optionsbutton_popup");
+                var cometchat_auth_popup = $("#cometchat_auth_popup");
                 cometchat_optionsbutton_popup.find("span.cometchat_gooffline").click(function(){
                     jqcc[settings.theme].goOffline();
                 });
@@ -1364,11 +1439,9 @@
                     $.cookie(settings.cookiePrefix+"popup", notification, {path: '/', expires: 365});
                 });
                 cometchat_optionsbutton_popup.find("span.available").click(function(event){
-                    if(jqcc.cometchat.getThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'))!='available'){
+                    if(jqcc.cometchat.getThemeVariable('currentStatus')!='available'){
                         jqcc.cometchat.setThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'), 'available');
                         jqcc[settings.theme].removeUnderline();
-                        $("#cometchat_userstab_icon").addClass('cometchat_user_available2');
-                        $(this).css('text-decoration', 'underline');
                         jqcc.cometchat.sendStatus('available');
                     }
                 });
@@ -1379,20 +1452,16 @@
                     jqcc[settings.theme].setGuestName();
                 });
                 cometchat_optionsbutton_popup.find("span.busy").click(function(event){
-                    if(jqcc.cometchat.getThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'))!='busy'){
+                    if(jqcc.cometchat.getThemeVariable('currentStatus')!='busy'){
                         jqcc.cometchat.setThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'), 'busy');
                         jqcc[settings.theme].removeUnderline();
-                        $("#cometchat_userstab_icon").addClass('cometchat_user_busy2');
-                        $(this).css('text-decoration', 'underline');
                         jqcc.cometchat.sendStatus('busy');
                     }
                 });
                 cometchat_optionsbutton_popup.find("span.invisible").click(function(event){
-                    if(jqcc.cometchat.getThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'))!='invisible'){
+                    if(jqcc.cometchat.getThemeVariable('currentStatus')!='invisible'){
                         jqcc.cometchat.setThemeArray('buddylistStatus', jqcc.cometchat.getThemeVariable('userid'), 'invisible');
                         jqcc[settings.theme].removeUnderline();
-                        $("#cometchat_userstab_icon").addClass('cometchat_user_invisible2');
-                        $(this).css('text-decoration', 'underline');
                         jqcc.cometchat.sendStatus('invisible');
                     }
                 });
@@ -1404,14 +1473,14 @@
                 });
                 var cometchat_optionsbutton = $('#cometchat_optionsbutton');
                 cometchat_optionsbutton.mouseover(function(){
-                    if(!cometchat_optionsbutton_popup.hasClass("cometchat_tabopen")){
+                    if(!cometchat_optionsbutton_popup.hasClass("cometchat_tabopen") && !cometchat_auth_popup.hasClass("cometchat_tabopen")){
                         if(jqcc.cometchat.getThemeVariable('loggedout')==0){
                             if(tooltipPriority==0){
                                 jqcc[settings.theme].tooltip('cometchat_optionsbutton', language[0]);
                             }
                         }else{
                             if(tooltipPriority==0){
-                                jqcc[settings.theme].tooltip('cometchat_optionsbutton', language[8]);
+                                jqcc[settings.theme].tooltip('cometchat_optionsbutton', jqcc(this).attr("title"));
                             }
                         }
                     }
@@ -1440,10 +1509,9 @@
                         $("#cometchat_tooltip").css('display', 'none');
                         var baseLeft = $('#cometchat_base').position().left;
                         var barActualWidth = $('#cometchat_base').width();
-                        $('#cometchat_optionsbutton_popup').css('left', baseLeft+barActualWidth-223-32);
+                        $('#cometchat_optionsbutton_popup').css('left', baseLeft+barActualWidth-223-27);
                         $(this).toggleClass("cometchat_tabclick");
                         cometchat_optionsbutton_popup.toggleClass("cometchat_tabopen");
-                        cometchat_optionsbutton.toggleClass("cometchat_optionsimages_click");
                         $('#cometchat_userstab_popup').removeClass('cometchat_tabopen');
                         $('#cometchat_userstab').removeClass('cometchat_userstabclick').removeClass('cometchat_tabclick');
                         jqcc.cometchat.setSessionVariable('buddylist', '0');
@@ -1462,12 +1530,33 @@
                             }
                         }
                     }else{
-                        if(language[16]!=''){
+                        if(settings.ccauth.enabled == "1"){
+                            $("#cometchat_tooltip").css('display', 'none');
+                            var baseLeft = $('#cometchat_base').position().left;
+                            var cometchat_hide = $('#cometchat_hide').outerWidth(false);
+                            cometchat_auth_popup.css('right', baseLeft+cometchat_hide);
+                            $(this).toggleClass("cometchat_tabclick");
+                            cometchat_auth_popup.toggleClass("cometchat_tabopen");
+                        }else if(language[16]!=''){
                             location.href = language[16];
                         }
                     }
                 });
+                var auth_cometchat_userstabtitle = cometchat_auth_popup.find("div.cometchat_userstabtitle");
+                var auth_cometchat_minimize = auth_cometchat_userstabtitle.find("div.cometchat_minimizebox");
+
+                auth_cometchat_userstabtitle.click(function(){
+                    cometchat_optionsbutton.click();
+                });
+                auth_cometchat_userstabtitle.mouseenter(function(){
+                    auth_cometchat_minimize.addClass("cometchat_chatboxtraytitlemouseover");
+                });
+                auth_cometchat_userstabtitle.mouseleave(function(){
+                    auth_cometchat_minimize.removeClass("cometchat_chatboxtraytitlemouseover");
+                });
+
                 var cometchat_userstabtitle = cometchat_optionsbutton_popup.find(".cometchat_userstabtitle");
+                var auth_logout = cometchat_userstabtitle.find("div#cometchat_authlogout");
                 cometchat_userstabtitle.click(function(){
                     $('#cometchat_optionsbutton').click();
                 });
@@ -1477,11 +1566,51 @@
                 cometchat_userstabtitle.mouseleave(function(){
                     cometchat_userstabtitle.find("div.cometchat_minimizebox").removeClass("cometchat_chatboxtraytitlemouseover");
                 });
+                auth_logout.mouseenter(function(){
+                    auth_logout.css('opacity','1');
+                    cometchat_optionsbutton_popup.find("div.cometchat_minimizebox").removeClass("cometchat_chatboxtraytitlemouseover");
+                });
+                auth_logout.mouseleave(function(){
+                    auth_logout.css('opacity','0.5');
+                    cometchat_optionsbutton_popup.find("div.cometchat_minimizebox").addClass("cometchat_chatboxtraytitlemouseover");
+                });
+                logout_click();
+                function logout_click(){
+                    auth_logout.click(function(event){
+                        auth_logout.unbind('click');
+                        event.stopPropagation();
+                        auth_logout.css('background','url('+baseUrl+'themes/standard/images/loading.gif) no-repeat top left');
+                        jqcc.ajax({
+                            url: baseUrl+'functions/login/logout.php',
+                            dataType: 'jsonp',
+                            success: function(){
+                                if(typeof(cometuncall_function)==="function"){
+                                    cometuncall_function(jqcc.cometchat.getThemeVariable('cometid'));
+                                    jqcc.cometchat.setThemeVariable('cometid','');
+                                }
+                                auth_logout.css('background','url('+baseUrl+'themes/standard/images/logout.png) no-repeat top left');
+                                logout_click();
+                                $("#cometchat_user_"+jqcc.cometchat.getThemeVariable('openChatboxId')).find('.cometchat_closebox_bottom').click();
+                                jqcc.cometchat.setSessionVariable('openChatboxId', '');
+                                $.cookie(settings.cookiePrefix+"loggedin", null, {path: '/'});
+                                $.cookie(settings.cookiePrefix+"state", null, {path: '/'});
+                                $.cookie(settings.cookiePrefix+"jabber", null, {path: '/'});
+                                $.cookie(settings.cookiePrefix+"jabber_type", null, {path: '/'});
+                                $.cookie(settings.cookiePrefix+"hidebar", null, {path: '/'});
+                                jqcc[settings.theme].loggedOut();
+                                jqcc.cometchat.setThemeVariable('loggedout', 1);
+                                clearTimeout(jqcc.cometchat.getCcvariable().heartbeatTimer);
+                            },
+                            error: function(){
+                                logout_click();
+                                alert(language[81]);
+                            }
+                        });
+                    });
+                }
             },
             chatboxKeyup: function(event, chatboxtextarea, id){
-                if(event.keyCode==13&&event.shiftKey==0){
-                    $(chatboxtextarea).val('');
-                }
+
                 var adjustedHeight = chatboxtextarea.clientHeight;
                 var maxHeight = 94;
                 clearTimeout(typingTimer);
@@ -1504,7 +1633,7 @@
             },
             chatboxKeydown: function(event, chatboxtextarea, id, force){
                 var condition = 1;
-                if((event.keyCode==13&&event.shiftKey==0)||force==1){
+                if((event.keyCode==13&&event.shiftKey==0)||force==1 && !$(chatboxtextarea).hasClass('placeholder')){
                     var message = $(chatboxtextarea).val();
                     message = message.replace(/^\s+|\s+$/g, "");
                     $(chatboxtextarea).val('');
@@ -1570,7 +1699,7 @@
                     jqcc[settings.theme].windowResize(silent);
                 }
             },
-            scrollDown: function(id){
+            scrollDown: function(id,scrollForce){
                 if(jqcc().slimScroll){
                     $('#cometchat_tabcontenttext_'+id).slimScroll({scroll: '1'});
                 }else{
@@ -1587,32 +1716,10 @@
                 }
             },
             updateChatboxSuccess: function(id, data){
-                var temp = '';
                 var name = jqcc.cometchat.getThemeArray('buddylistName', id);
                 $("#cometchat_tabcontenttext_"+id).html('');
-                $.each(data, function(type, item){
-                    if(type=='messages'){
-                        $.each(item, function(i, incoming){
-                            if($("#cometchat_message_"+incoming.id).length>0){
-                                return;
-                            }
-                            var selfstyle = '';
-                            if(incoming.self==1){
-                                fromname = language[10];
-                                selfstyle = ' cometchat_self';
-                            }else{
-                                fromname = name;
-                            }
-                            var ts = new Date(incoming.sent*1000);
-                            if(!settings.fullName){
-                                fromname = fromname.split(" ")[0];
-                            }
-                            temp += (jqcc[settings.theme].processMessage('<div class="cometchat_chatboxmessage" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagefrom'+selfstyle+'"><strong>'+fromname+'</strong>:&nbsp;&nbsp;</span><span class="cometchat_chatboxmessagecontent'+selfstyle+'">'+incoming.message+'</span>'+jqcc[settings.theme].getTimeDisplay(ts, incoming.from)+'</div>', selfstyle));
-                        });
-                    }
-                });
-                if(temp!=''){
-                    document.getElementById("cometchat_tabcontenttext_"+id).innerHTML = '<div>'+temp+'</div>';
+                if(typeof (jqcc[settings.theme].addMessages)!=='undefined'&&data.hasOwnProperty('messages')){
+                    jqcc[settings.theme].addMessages(data['messages']);
                 }
                 jqcc[settings.theme].scrollDown(id);
             },
@@ -1647,8 +1754,8 @@
                 if(cometchat_base.length){
                     var baseLeft = cometchat_base.position().left;
                     var barActualWidth = cometchat_base.width();
-                    $('#cometchat_userstab_popup').css('left', baseLeft+barActualWidth-223-32);
-                    $('#cometchat_optionsbutton_popup').css('left', baseLeft+barActualWidth-223-32);
+                    $('#cometchat_userstab_popup').css('left', baseLeft+barActualWidth-223-27);
+                    $('#cometchat_optionsbutton_popup').css('left', baseLeft+barActualWidth-223-27);
                 }
                 if(jqcc.cometchat.getThemeVariable('trayOpen')!=''){
                     $('#cometchat_trayicon_'+jqcc.cometchat.getThemeVariable('trayOpen')+'_popup').css('left', $('#cometchat_trayicon_'+jqcc.cometchat.getThemeVariable('trayOpen')).offset().left).css('width', trayicon[jqcc.cometchat.getThemeVariable('trayOpen')][4]);
@@ -1687,8 +1794,8 @@
                         jqcc.cometchat.chatHeartbeat(1);
                         $("#cometchat_optionsbutton_popup").find("span.available").click();
                     }
-                    if(typeof (jqcc[settings.theme].createChatbox)!=='undefined'){
-                        jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id));
+                    if(typeof (jqcc[settings.theme].createChatbox)!=='undefined' && jqcc.cometchat.getUserID() != id){
+                        jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), jqcc.cometchat.getThemeArray('buddylistIsDevice', id));
                     }
                 }
             },
@@ -1765,8 +1872,17 @@
             },
             reinitialize: function(){
                 if(jqcc.cometchat.getThemeVariable('loggedout')==1){
+                    $('#cometchat_auth_popup').removeClass("cometchat_tabopen");
+                    $("#cometchat_optionsbutton_icon").removeClass("cometchat_optionsimages_ccauth");
                     $("#cometchat_optionsbutton").removeClass("cometchat_optionsimages_exclamation");
                     $("#cometchat_optionsbutton_icon").css('display', 'block');
+                    $("body").append(msg_beep);
+                    $("#cometchat").append(option_button);
+                    $("#cometchat").append(user_tab);
+                    $("#cometchat_base").append(usertab2);
+                    $("#cometchat_base").append(chat_right);
+                    $("#cometchat_base").append(chat_boxes);
+                    $("#cometchat_base").append(chat_left);
                     $("#cometchat_userstab").show();
                     $("#cometchat_chatboxes").show();
                     $("#cometchat_chatbox_left").show();
@@ -1774,6 +1890,7 @@
                     jqcc.cometchat.setThemeVariable('loggedout', 0);
                     jqcc.cometchat.setExternalVariable('initialize', '1');
                     jqcc.cometchat.chatHeartbeat();
+                    $("#cometchat_userstab").click();
                 }
             },
             updateHtml: function(id, temp){
@@ -1802,7 +1919,7 @@
                 }
                 id = id.substr(19);
                 if(typeof (jqcc[settings.theme].createChatbox)!=='undefined'){
-                    jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id));
+                    jqcc[settings.theme].createChatbox(id, jqcc.cometchat.getThemeArray('buddylistName', id), jqcc.cometchat.getThemeArray('buddylistStatus', id), jqcc.cometchat.getThemeArray('buddylistMessage', id), jqcc.cometchat.getThemeArray('buddylistAvatar', id), jqcc.cometchat.getThemeArray('buddylistLink', id), jqcc.cometchat.getThemeArray('buddylistIsDevice', id));
                 }
             },
             messageBeep: function(baseUrl){
@@ -1810,9 +1927,6 @@
             },
             ccClicked: function(id){
                 $(id).click();
-            },
-            ccAddClass: function(id, classadded){
-                $(id).addClass(classadded);
             },
             moveLeft: function(){
                 jqcc[settings.theme].moveBar("-=152px");
@@ -1836,7 +1950,79 @@
                         $('#'+$(this).attr('id')).find('div.cometchat_minimizebox').click();
                     }
                 });
+            },
+            prependMessagesInit: function(id){
+                var messages = jqcc('#cometchat_tabcontenttext_'+id).find('.cometchat_chatboxmessage');
+                $('#cometchat_prependMessages_'+id).text(language[41]);
+                jqcc('#cometchat_prependMessages_'+id).attr('onclick','');
+                if(messages.length > 0){
+                    prepend = messages[0].id.split('_')[2];
+                }else{
+                    prepend = -1;
+                }
+                jqcc.cometchat.updateChatboxSet(id,prepend);
+            },
+            prependMessages:function(id,data){
+                var oldMessages = '';
+                var count = 0;
+                $.each(data, function(type, item){
+                    if(type=="messages"){
+                        $.each(item, function(i, incoming){
+                            count = count+1;
+                            var selfstyle = '';
+                            if(parseInt(incoming.self)==1){
+                                fromname = language[10];
+                                selfstyle = ' cometchat_self';
+                            }else{
+                                fromname = jqcc.cometchat.getThemeArray('buddylistName', incoming.from);
+                            }
+
+                            var message = jqcc.cometchat.processcontrolmessage(incoming);
+
+                            if(message == null){
+                                return;
+                            }
+
+                           if(incoming.sent!=null){
+                                var ts = incoming.sent;
+                                sentdata = jqcc[settings.theme].getTimeDisplay(ts, incoming.from);
+                            }
+                            var separator = ':&nbsp;&nbsp;';
+                            var msg = jqcc[settings.theme].processMessage('<div class="cometchat_chatboxmessage" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagefrom'+selfstyle+'"><strong>'+fromname+'</strong>'+separator+'</span><span class="cometchat_chatboxmessagecontent'+selfstyle+'">'+message+'</span>'+sentdata+'</div>', selfstyle);
+                            oldMessages+=msg;
+                        });
+                    }
+                });
+                jqcc('#cometchat_tabcontenttext_'+id).prepend(oldMessages);
+                $('#cometchat_prependMessages_'+id).text(language[83]);
+                if((count - parseInt(jqcc.cometchat.getThemeVariable('prependLimit')) < 0)){
+                    $('#cometchat_prependMessages_'+id).text(language[84]);
+                    jqcc('#cometchat_prependMessages_'+id).attr('onclick','');
+                    jqcc('#cometchat_prependMessages_'+id).css('cursor','default');
+                }else{
+                    jqcc('#cometchat_prependMessages_'+id).attr('onclick','jqcc.standard.prependMessagesInit('+id+')');
+                }
             }
-        };       
+        };
     })();
 })(jqcc);
+
+if(typeof(jqcc.standard) === "undefined"){
+    jqcc.standard=function(){};
+}
+
+jqcc.extend(jqcc.standard, jqcc.ccstandard);
+
+/* code for Cloud Mobileapp compatibilty to Hide CometChat bar.*/
+jqcc(document).ready(function() {
+    var platform = jqcc.cookie('cc_platform_cod');
+    if((platform == 'android' || platform == 'ios') && jqcc.cometchat.getSettings().enableMobileTab == 1) {
+        var hideInterval = setInterval(function(){
+            if(jqcc('.cometchat_ccmobiletab_redirect').length>0||jqcc('#cometchat').length>0){
+                jqcc('#cometchat').hide();
+                jqcc('.cometchat_ccmobiletab_redirect').hide();
+                clearTimeout(hideInterval);
+            }
+        },500);
+    }
+});

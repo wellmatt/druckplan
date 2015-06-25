@@ -52,10 +52,10 @@
 
 */
  $callbackfn = '';
- if(!empty($_GET['callbackfn']) && $_GET['callbackfn'] == 'desktop'){ 
-    $desktopmode = 1; 
- }else{ 
-    $desktopmode = 0; 
+ if(!empty($_GET['callbackfn']) && $_GET['callbackfn'] == 'desktop'){
+    $desktopmode = 1;
+ }else{
+    $desktopmode = 0;
  }
  include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'comet.js');
  ?>
@@ -75,48 +75,84 @@ function cometcall_function(id, td, calleeAPI){
     }, function(incoming){
         <?php
          if(file_exists(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'realtimetranslate'.DIRECTORY_SEPARATOR.'config.php')) {
+             include_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'realtimetranslate'.DIRECTORY_SEPARATOR.'config.php');
+             if($useGoogle == 1 && !empty($googleKey)){
+         ?>
+                if(jqcc.cookie('<?php echo $cookiePrefix;?>lang')){
+                    var lang = jqcc.cookie('<?php echo $cookiePrefix;?>lang');
+                    jqcc.ajax({
+                        url: "https://www.googleapis.com/language/translate/v2?key=<?php echo $googleKey;?>&callback=?",
+                        data: {q: incoming.message, target: lang},
+                        dataType: 'jsonp',
+                        success: function(data){
+                            if(typeof(data.data)!="undefined"){
+                                incoming.message = data.data.translations[0].translatedText+' <span class="untranslatedtext">('+incoming.message+')</span>';
+                            }
+                            if(typeof (jqcc[calleeAPI].addMessages)=="function"){
+                                jqcc[calleeAPI].addMessages([{ "id": incoming.id, "from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "selfadded": 0, "sent": parseInt(incoming.sent)+td}]);
+                            }
+                        }
+                    });
+                }else{
+                    if(typeof (jqcc[calleeAPI].addMessages)=="function"){
+                        jqcc[calleeAPI].addMessages([{ "id": incoming.id, "from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "selfadded": 0, "sent": parseInt(incoming.sent)+td}]);
+                    }
+                }
+                <?php
+                 } else {
+                ?>
+                    if(typeof (jqcc[calleeAPI].addMessages)=="function"){
+                        jqcc[calleeAPI].addMessages([{ "id": incoming.id, "from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "selfadded": 0, "sent": parseInt(incoming.sent)+td}]);
+                    }
+                <?php
+                 }
+         } else { ?>
+            if(typeof (jqcc[calleeAPI].addMessages)=="function"){
+                jqcc[calleeAPI].addMessages([{ "id": incoming.id, "from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "selfadded": 0, "sent": parseInt(incoming.sent)+td}]);
+            }
+        <?php
+        }
+        ?>
+    });
+}
+function chatroomcall_function(id,userid){
+    comet.subscribe({
+        channel: id,
+        timetoken: 0
+    }, function(incoming){
+        <?php
+         if(file_exists(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'realtimetranslate'.DIRECTORY_SEPARATOR.'config.php')) {
          include_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'realtimetranslate'.DIRECTORY_SEPARATOR.'config.php');
          if($useGoogle == 1 && !empty($googleKey)){
          ?>
-        if(jqcc.cookie('<?php echo $cookiePrefix;?>lang')){
+        if(jqcc.cookie('<?php echo $cookiePrefix;?>lang') && incoming.fromid != userid){
             var lang = jqcc.cookie('<?php echo $cookiePrefix;?>lang');
             jqcc.ajax({
                 url: "https://www.googleapis.com/language/translate/v2?key=<?php echo $googleKey;?>&callback=?",
                 data: {q: incoming.message, target: lang},
                 dataType: 'jsonp',
                 success: function(data){
-                    incoming.message = data.data.translations[0].translatedText+' <span class="untranslatedtext">('+incoming.message+')</span>';
-                    if(typeof (jqcc[calleeAPI].addMessages)=="function"){
-                        jqcc[calleeAPI].addMessages([{"from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "id": parseInt(incoming.sent), "selfadded": 0, "sent": parseInt(incoming.sent/1000)+td}]);
+                    if(typeof(data.data)!="undefined"){
+                        incoming.message = data.data.translations[0].translatedText+' <span class="untranslatedtext">('+incoming.message+')</span>';
                     }
+                    $.cometchat.setChatroomVars('newMessages', $.cometchat.getChatroomVars('newMessages')+1);
+                    $[$.cometchat.getChatroomVars('calleeAPI')].addChatroomMessage(incoming.fromid, incoming.message, incoming.id, '1', parseInt(incoming.sent), incoming.from);
                 }
             });
         }else{
-            if(typeof (jqcc[calleeAPI].addMessages)=="function"){
-                jqcc[calleeAPI].addMessages([{"from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "id": parseInt(incoming.sent), "selfadded": 0, "sent": parseInt(incoming.sent/1000)+td}]);
-            }
+            $.cometchat.setChatroomVars('newMessages', $.cometchat.getChatroomVars('newMessages')+1);
+            $[$.cometchat.getChatroomVars('calleeAPI')].addChatroomMessage(incoming.fromid, incoming.message, incoming.id, '1', parseInt(incoming.sent), incoming.from);
         }
         <?php
          } else { ?>
-        if(typeof (jqcc[calleeAPI].addMessages)=="function"){
-            jqcc[calleeAPI].addMessages([{"from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "id": parseInt(incoming.sent), "selfadded": 0, "sent": parseInt(incoming.sent/1000)+td}]);
-        }
+            $.cometchat.setChatroomVars('newMessages', $.cometchat.getChatroomVars('newMessages')+1);
+            $[$.cometchat.getChatroomVars('calleeAPI')].addChatroomMessage(incoming.fromid, incoming.message, incoming.id, '1', parseInt(incoming.sent), incoming.from);
         <?php
          }
          } else { ?>
-        if(typeof (jqcc[calleeAPI].addMessages)=="function"){
-            jqcc[calleeAPI].addMessages([{"from": incoming.from, "message": incoming.message, "self": incoming.self, "old": 0, "id": parseInt(incoming.sent), "selfadded": 0, "sent": parseInt(incoming.sent/1000)+td}]);
-        }
+            $.cometchat.setChatroomVars('newMessages', $.cometchat.getChatroomVars('newMessages')+1);
+            $[$.cometchat.getChatroomVars('calleeAPI')].addChatroomMessage(incoming.fromid, incoming.message, incoming.id, '1', parseInt(incoming.sent), incoming.from);
         <?php } ?>
-    });
-}
-function chatroomcall_function(id){
-    comet.subscribe({
-        channel: id,
-        timetoken: 0
-    }, function(incoming){
-        $.cometchat.setChatroomVars('newMessages', $.cometchat.getChatroomVars('newMessages')+1);
-        $[$.cometchat.getChatroomVars('calleeAPI')].addChatroomMessage(parseInt(incoming.sent), incoming.message, incoming.fromid, '1', parseInt(incoming.sent), '1', incoming.from);
     });
 }
 function cometuncall_function(id){

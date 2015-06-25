@@ -6,14 +6,6 @@ if (empty($_GET['process'])) {
 	global $getstylesheet;
 	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 
-if ($armyTime == 1) {
-	$armyTimeYes = 'checked="checked"';
-	$armyTimeNo = '';
-} else {
-	$armyTimeNo = 'checked="checked"';
-	$armyTimeYes = '';
-}
-
 if ($displayFullName == 1) {
 	$displayFullNameYes = 'checked="checked"';
 	$displayFullNameNo = '';
@@ -61,6 +53,7 @@ if ($allowAvatar == 1) {
 	$allowAvatarNo = 'checked="checked"';
 	$allowAvatarYes = '';
 }
+
 if ($crguestsMode == 1) {
 	$crguestsModeYes = 'checked="checked"';
 	$crguestsModeNo = '';
@@ -69,13 +62,19 @@ if ($crguestsMode == 1) {
 	$crguestsModeYes = '';
 }
 
-
+if ($newMessageIndicator == 1) {
+	$newMessageYes = 'checked="checked"';
+	$newMessageNo = '';
+} else {
+	$newMessageNo = 'checked="checked"';
+	$newMessageYes = '';
+}
 
 echo <<<EOD
 <!DOCTYPE html>
 $getstylesheet
-<form action="?module=dashboard&action=loadexternal&type=module&name=chatrooms&process=true" method="post">
-<div id="content">
+<form style="height:100%" action="?module=dashboard&action=loadexternal&type=module&name=chatrooms&process=true" method="post">
+<div id="content" style="width:auto">
 		<h2>Settings</h2>
 		<h3>If you are unsure about any value, please skip them</h3>
 		<div>
@@ -88,11 +87,8 @@ $getstylesheet
 
 				<div class="title long">If yes, users can create chatrooms</div><div class="element"><input name="allowUsers" value="1" $allowUsersYes type="radio">Yes <input name="allowUsers" $allowUsersNo value="0" type="radio">No</div>
 				<div style="clear:both;padding:5px;"></div>
-				
-				<div class="title long">If yes, users can delete his own message in chatroom</div><div class="element"><input name="allowDelete" value="1" $allowDeleteYes type="radio">Yes <input name="allowDelete" $allowDeleteNo value="0" type="radio">No</div>
-				<div style="clear:both;padding:5px;"></div>
 
-				<div class="title long">If yes, 24-hour time will be used</div><div class="element"><input name="armyTime" value="1" $armyTimeYes type="radio">Yes <input name="armyTime" $armyTimeNo value="0" type="radio">No</div>
+				<div class="title long">If yes, users can delete his own message in chatroom</div><div class="element"><input name="allowDelete" value="1" $allowDeleteYes type="radio">Yes <input name="allowDelete" $allowDeleteNo value="0" type="radio">No</div>
 				<div style="clear:both;padding:5px;"></div>
 
 				<div class="title long">If yes, full name will be displayed in chatrooms</div><div class="element toppad"><input name="displayFullName" $displayFullNameYes value="1"   type="radio">Yes <input name="displayFullName" value="0" type="radio" $displayFullNameNo>No</div>
@@ -114,7 +110,10 @@ $getstylesheet
 				<div class="title long">Auto enter chatroom ID</div><div class="element"><input type="text" class="inputbox short" name="autoLogin" value="$autoLogin"></div>
 				<div style="clear:both;padding:5px;"></div>
 
-				<div class="title long">Beep on new messages</div><div class="element toppad"><input name="messageBeep" $messageBeepYes value="1"   type="radio">Yes <input name="messageBeep" value="0" type="radio" $messageBeepNo>No</div>				
+				<div class="title long">Beep on new messages</div><div class="element toppad"><input name="messageBeep" $messageBeepYes value="1"   type="radio">Yes <input name="messageBeep" value="0" type="radio" $messageBeepNo>No</div>
+				<div style="clear:both;padding:5px;"></div>
+
+				<div class="title long">Show indicator on new messages</div><div class="element"><input name="newMessageIndicator" $newMessageYes value="1"   type="radio">Yes <input name="newMessageIndicator" value="0" type="radio" $newMessageNo>No</div>
 
 			</div>
 		</div>
@@ -125,19 +124,23 @@ $getstylesheet
 </form>
  <script type="text/javascript" src="../js.php?admin=1"></script>
             <script type="text/javascript" language="javascript">
-                resizeWindow();
-                function resizeWindow() {
-                    window.resizeTo(($("form").width()+30), ($("form").height()+85));
+                $(function() {
+					setTimeout(function(){
+							resizeWindow();
+						},200);
+				});
+				function resizeWindow() {
+                    window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
                 }
             </script>
 EOD;
 } else {
-	
+
 	$data = '';
 	foreach ($_POST as $field => $value) {
 		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
 	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 	header("Location:?module=dashboard&action=loadexternal&type=module&name=chatrooms");
 }

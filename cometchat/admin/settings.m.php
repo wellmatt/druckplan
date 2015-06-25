@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -57,25 +57,25 @@ if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $navigation = <<<EOD
 	<div id="leftnav">
-		<a href="?module=settings&ts={$ts}">Settings</a>
+		<a href="?module=settings&amp;ts={$ts}">Settings</a>
 EOD;
 
 if (defined('SWITCH_ENABLED') && SWITCH_ENABLED == 1) {
 	$navigation .= <<<EOD
-		<a href="?module=settings&action=whosonline&ts={$ts}">Whos Online List</a>
+		<a href="?module=settings&amp;action=whosonline&amp;ts={$ts}">Whos Online List</a>
 EOD;
 }
 
 $navigation .= <<<EOD
-		<a href="?module=settings&action=comet&ts={$ts}">Comet Service</a>
-		<a href="?module=settings&action=guests&ts={$ts}">Guest Chat</a>
-		<a href="?module=settings&action=caching&ts={$ts}">Caching</a>
-		<a href="?module=settings&action=banuser&ts={$ts}">Banned words &amp; users</a>
-		<a href="?module=settings&action=baseurl&ts={$ts}">Change Base URL</a>
-		<a href="?module=settings&action=changeuserpass&ts={$ts}">Change Admin User/Pass</a>
-		<a href="?module=settings&action=cron&ts={$ts}">Cron</a>
-		<a href="?module=settings&action=clearcachefiles&ts={$ts}">Clear Cache</a>
-		<a href="?module=settings&action=disablecometchat&ts={$ts}">Disable CometChat</a>
+		<a href="?module=settings&amp;action=comet&amp;ts={$ts}">Comet Service</a>
+		<a href="?module=settings&amp;action=ccauth&amp;ts={$ts}">Authentication Mode</a>
+		<a href="?module=settings&amp;action=caching&amp;ts={$ts}">Caching</a>
+		<a href="?module=settings&amp;action=banuser&amp;ts={$ts}">Banned words &amp; users</a>
+		<a href="?module=settings&amp;action=baseurl&amp;ts={$ts}">Change Base URL</a>
+		<a href="?module=settings&amp;action=changeuserpass&amp;ts={$ts}">Change Admin User/Pass</a>
+		<a href="?module=settings&amp;action=cron&amp;ts={$ts}">Cron</a>
+		<a href="?module=settings&amp;action=clearcachefiles&amp;ts={$ts}">Clear Cache</a>
+		<a href="?module=settings&amp;action=disablecometchat&amp;ts={$ts}">Disable CometChat</a>
 	</div>
 EOD;
 
@@ -100,6 +100,7 @@ $options = array(
     "armyTime"                      => array('choice','If set to yes, show time plugin will use 24-hour clock format'),
     "disableForIE6"                 => array('choice','If set to yes, CometChat will be hidden in IE6'),
     "hideBar"                       => array('choice','Hide bar for non-logged in users?'),
+	"disableForMobileDevices"       => array('choice','If set to yes, CometChat bar will be hidden in mobile devices'),
     "startOffline"                  => array('choice','Load bar in offline mode for all first time users?'),
     "fixFlash"                      => array('choice','Set to yes, if Adobe Flash animations/ads are appearing on top of the bar (experimental)'),
     "lightboxWindows"               => array('choice','Set to yes, if you want to use the lightbox style popups'),
@@ -108,19 +109,20 @@ $options = array(
     "windowTitleNotify"             => array('choice','If yes, notify new incoming messages by changing the browser title'),
     "floodControl"                  => array('textbox','Chat spam control in milliseconds (Disabled if set to 0)'),
     "windowFavicon"                 => array('choice','If yes, Update favicon with number of messages (Supported on Chrome, Firefox, Opera)'),
+    "prependLimit"                 => array('textbox','Number of messages that are fetched when load earlier messages is clicked')
 );
 
 function index() {
 	global $body;
 	global $navigation;
 	global $options;
-        global $ts;
-	
+    global $ts;
+
 	$form = '';
-	
+
 	foreach ($options as $option => $result) {
 		global ${$option};
-	
+
 		$form .= '<div class="titlelong" >'.$result[1].'</div><div class="element">';
 
 		if ($result[0] == 'textbox') {
@@ -129,29 +131,29 @@ function index() {
 
 		if ($result[0] == 'choice') {
 			if (${$option} == 1) {
-				$form .= '<input type="radio" name="'.$option.'" value="1" checked>Yes <input type="radio" name="'.$option.'" value="0" >No';	
+				$form .= '<input type="radio" name="'.$option.'" value="1" checked>Yes <input type="radio" name="'.$option.'" value="0" >No';
 			} else {
 				$form .= '<input type="radio" name="'.$option.'" value="1" >Yes <input type="radio" name="'.$option.'" value="0" checked>No';
 			}
-			
+
 		}
 
 		if ($result[0] == 'dropdown') {
 
 			$form .= '<select  name="'.$option.'">';
-			
+
 			foreach ($result[2] as $opt) {
 				if ($opt == ${$option}) {
-					$form .= '<option value="'.$opt.'" selected>'.ucwords($opt);	
+					$form .= '<option value="'.$opt.'" selected>'.ucwords($opt);
 				} else {
 					$form .= '<option value="'.$opt.'">'.ucwords($opt);
 				}
 			}
 
 			$form .= '</select>';
-			
+
 		}
-		
+
 		$form .= '</div><div style="clear:both;padding:7px;"></div>';
 	}
 
@@ -168,7 +170,7 @@ function index() {
 			</div>
 		</div>
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update Settings" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Update Settings" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -182,7 +184,7 @@ EOD;
 function updatesettings() {
         global $ts;
 	global $options;
-	
+
 	$data = '';
 
 	foreach ($_POST as $option => $value) {
@@ -200,7 +202,7 @@ function updatesettings() {
 
 function caching() {
 	global $ts;
-	global $body;	
+	global $body;
 	global $navigation;
 
 	$nc = "";
@@ -216,8 +218,8 @@ function caching() {
 	$MC_USERNAME = MC_USERNAME;
 	$MC_PASSWORD = MC_PASSWORD;
 	$MC_NAME = MC_NAME;
-	
-	
+
+
 	if($MC_NAME == 'files') {
 		$fc = "selected = ''";
 	} elseif ($MC_NAME == 'memcache') {
@@ -235,12 +237,12 @@ function caching() {
 	} else {
 		$nc = "selected = ''";
 	}
-	
+
 	$body = <<<EOD
 	{$navigation}
 	<script>
-		$(document).ready(function(){
-			
+		$(function(){
+
 			if($("#MC_NAME option:selected").val() == 'memcache' || $("#MC_NAME option:selected").val() == 'memcached') {
 				$('.memcache').css('display','block');
 				$('.memcachier').hide();
@@ -250,7 +252,7 @@ function caching() {
 				$('#MC_USERNAME,#MC_PASSWORD').attr('required','true');
 			}
 		});
-		
+
 
 		$('select[id^=MC_NAME]').live('change', function() {
 			$('#MC_USERNAME,#MC_PASSWORD').removeAttr('required');
@@ -260,26 +262,26 @@ function caching() {
 			} else if ($("#MC_NAME option:selected").index() == 3){
 			   $('#MC_USERNAME,#MC_PASSWORD').attr('required','true');
 			   $('.memcache').css('display','block');
-			   $('.memcachier').show();			   		   
+			   $('.memcachier').show();
 			} else {
 			   $('.memcache').css('display','none');
-			   $('.memcachier').hide();			   		   
+			   $('.memcachier').hide();
 			}
-		});	
+		});
 		setTimeout(function () {
-				var myform = document.getElementById('memcache');				
+				var myform = document.getElementById('memcache');
 				myform.addEventListener('submit', function(e) {
 					e.preventDefault();
 					if ($("#MC_NAME option:selected").index() == 1 && ($('#MC_SERVER').val() == null || $('#MC_SERVER').val() == '' || $('#MC_PORT').val() == null || $('#MC_PORT').val() == '')) {
-						alert('Please enter memcache server name and port.');					  
+						alert('Please enter memcache server name and port.');
 						return false;
 					} else if ($("#MC_NAME option:selected").index() == 3 && ($('#MC_SERVER').val() == null || $('#MC_SERVER').val() == '' || $('#MC_PORT').val() == null || $('#MC_PORT').val() == '' || $('#MC_USERNAME').val() == null || $('#MC_USERNAME').val() == '' || $('#MC_PASSWORD').val() == null || $('#MC_PASSWORD').val() == '' )) {
-						alert('Please enter all the details for memcachier server.');			
+						alert('Please enter all the details for memcachier server.');
 					} else if ($("#MC_NAME option:selected").index() == 7 && ($('#MC_SERVER').val() == null || $('#MC_SERVER').val() == '' || $('#MC_PORT').val() == null || $('#MC_PORT').val() == '')){
-						alert('Please enter all the details for memcached server.');	
+						alert('Please enter all the details for memcached server.');
 					} else {
 						myform.submit();
-					} 
+					}
 				});
 		}, 500);
 	</script>
@@ -287,7 +289,7 @@ function caching() {
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
 		<h2>Caching</h2>
 		<h3>You can set CometChat to use either Memcaching or File caching.</h3>
-		<div>			
+		<div>
 			<div style="float:left;width:60%">
 				<div id="centernav">
 					<div style="width:200px" class="title">Select caching type:</div><div class="element"><select id="MC_NAME" name="MC_NAME">
@@ -311,14 +313,14 @@ function caching() {
 					<div style="clear:both;padding:5px;"></div>
 				</div>
 				<div id="centernav" class="memcachier" style="display:none">
-					<div style="width:200px" class="title">Memcachier Username:</div><div class="element"><input type="text" id="MC_USERNAME"  name="MC_USERNAME" value="{$MC_USERNAME}"></div>
+					<div style="width:200px" class="title">Memcachier Username:</div><div class="element"><input type="text" id="MC_USERNAME"  name="MC_USERNAME" value="{$MC_USERNAME}" ></div>
 					<div style="clear:both;padding:5px;"></div>
 				</div>
 				<div id="centernav" class="memcachier" style="display:none">
-					<div style="width:200px" class="title">Memcachier Password:</div><div class="element"><input type="text" id="MC_PASSWORD" name="MC_PASSWORD" value="{$MC_PASSWORD}"></div>
+					<div style="width:200px" class="title">Memcachier Password:</div><div class="element"><input type="text" id="MC_PASSWORD" name="MC_PASSWORD" value="{$MC_PASSWORD}" ></div>
 					<div style="clear:both;padding:5px;"></div>
 				</div>
-				
+
 			</div>
 			<div id="rightnav">
 				<h1>Tips</h1>
@@ -328,7 +330,7 @@ function caching() {
 			</div>
 		</div>
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update Listing" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Update Listing" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -360,10 +362,10 @@ function updatecaching(){
 		} else {
 			$errorCode = 3;
 		}
-	} elseif ($_POST['MC_NAME'] != '') { 
+	} elseif ($_POST['MC_NAME'] != '') {
 			$conn = 0;
 			$memcacheAuth = 1;
-			phpFastCache::setup("storage",$_POST['MC_NAME']); 
+			phpFastCache::setup("storage",$_POST['MC_NAME']);
 			$memcache = new phpFastCache();
 			$driverPresent = (isset($memcache->driver->option['availability'])) ? 0 : 1;
 			if ($driverPresent) {
@@ -371,7 +373,7 @@ function updatecaching(){
 					$server = array(array($_POST['MC_SERVER'],$_POST['MC_PORT'],1));
 					$memcache->option('server', $server);
 				}
-				$memcache->set('auth','ok',30); 
+				$memcache->set('auth','ok',30);
 				if (!$conn = $memcache->get('auth')){
 					$errorCode = 1;
 				}
@@ -413,7 +415,7 @@ function whosonline() {
 	global $body;
 	global $navigation;
         global $ts;
-	
+
 	$dy = "";
 	$dn = "";
 
@@ -444,7 +446,7 @@ function whosonline() {
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update Listing" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Update Listing" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -469,7 +471,7 @@ function updatewhosonline() {
 }
 
 function clearcachefiles() {
-	global $body;	
+	global $body;
 	global $navigation;
         global $ts;
 
@@ -523,13 +525,13 @@ function clearcachejscss($directory, $recursive = true, $listDirs = false, $list
 				} else {
 					if($listFiles){
 						if((strpos($file,'.js') >= -1) && (strpos($file,'.js.bak') <= -1) && (!in_array($file, $ingorelistjs))){
-							$file = $directory . DIRECTORY_SEPARATOR . $file;				
+							$file = $directory . DIRECTORY_SEPARATOR . $file;
 							$file = str_replace('.js','.min.js',$file);
                                                         if(file_exists($file)){
                                                             unlink($file);
                                                         }
 						}else if((strpos($file,'.css') >= -1) && (strpos($file,'.css.bak') <= -1) && (!in_array($file, $ingorelistcss))) {
-							$file = $directory . DIRECTORY_SEPARATOR . $file;							
+							$file = $directory . DIRECTORY_SEPARATOR . $file;
 							$file = str_replace('.css','.min.css',$file);
                                                         if(file_exists($file)){
                                                             unlink($file);
@@ -541,9 +543,9 @@ function clearcachejscss($directory, $recursive = true, $listDirs = false, $list
 		}
 		closedir($handle);
 	}
-        
+
         if ($handle = opendir(dirname(dirname(__FILE__)).'/cache/')) {
-		   while (false !== ($file = readdir($handle))) {   
+		   while (false !== ($file = readdir($handle))) {
 			if ($file != "." && $file != ".." && $file != "index.html") {
 			 @unlink(dirname(dirname(__FILE__)).'/cache/'.$file);
 		   }
@@ -555,7 +557,7 @@ function disablecometchat() {
 	global $body;
 	global $navigation;
         global $ts;
-	
+
 	$dy = "";
 	$dn = "";
 
@@ -586,7 +588,7 @@ function disablecometchat() {
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Update" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -605,100 +607,6 @@ function updatedisablecometchat() {
 	$_SESSION['cometchat']['error'] = 'CometChat updated successfully';
 
 	header("Location:?module=settings&action=disablecometchat&ts={$ts}");
-
-}
-
-function guests() {
-	global $body;
-	global $navigation;
-	global $guestsMode;
-	global $guestsList;
-	global $guestsUsersList;
-	global $guestnamePrefix;
-        global $ts;
-	
-	$dy = "";
-	$dn = "";
-	$gL1 = $gL2 = $gL3 = $gUL1 = $gUL2 = $gUL3 = '';
-
-	if ($guestsMode == 1) {
-		$dy = "checked";
-	} else {
-		$dn = "checked";
-	}
-
-	if ($guestsList == 1) {	$gL1 = "selected"; }
-	if ($guestsList == 2) {	$gL2 = "selected"; }
-	if ($guestsList == 3) {	$gL3 = "selected"; }
-
-	if ($guestsUsersList == 1) { $gUL1 = "selected"; }
-	if ($guestsUsersList == 2) { $gUL2 = "selected"; }
-	if ($guestsUsersList == 3) { $gUL3 = "selected"; }
-
-	$body = <<<EOD
-	$navigation
-	<form action="?module=settings&action=updateguests&ts={$ts}" method="post">
-	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
-		<h2>Guests Chat</h2>
-		<h3>This feature will enable guests to chat on your site without login.</h3>
-
-		<div style="float: left;width: 500px;">
-			<div id="centernav">
-				<div class="title" style="width:200px">Enable Guest Chat:</div><div class="element"><input type="radio" name="guestsMode" value="1" $dy>Yes <input type="radio" $dn name="guestsMode" value="0" >No</div>
-				<div style="clear:both;padding:5px;"></div>
-			</div>
-
-			<div id="centernav">
-				<div class="title" style="width:200px">Prefix for guest names:</div><div class="element"><input type="text" name="guestnamePrefix" value="$guestnamePrefix"></div>
-				<div style="clear:both;padding:5px;"></div>
-			</div>
-
-			<div id="centernav">
-				<div class="title" style="width:200px">In Who`s Online list, for guests:</div><div class="element"><select name="guestsList"><option value="1" $gL1>Show only guests</option><option value="2" $gL2>Show only logged in users</option><option value="3" $gL3>Show both</option></select></div>
-				<div style="clear:both;padding:5px;"></div>
-			</div>
-
-			<div id="centernav">
-				<div class="title" style="width:200px">And for logged in users:</div><div class="element"><select name="guestsUsersList"><option value="1" $gUL1>Show only guests</option><option value="2" $gUL2>Show only logged in users</option><option value="3" $gUL3>Show both</option></select></div>
-				<div style="clear:both;padding:5px;"></div>
-			</div>
-		</div>
-		<div id="rightnav">
-			<h1>TIPS</h1>
-			<ul id="modules_availablemodules">
-				<li>If you have configured CometChat to show friends in the Who's Online list, then do not select "Show only logged in users" or "Show both" for Guests.</li>
-				<li>Guests will not be able to use certain plugins/modules like chatrooms.</li>
-			</ul>
-		</div>
-
-		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
-	</div>
-
-	<div style="clear:both"></div>
-	</form>
-EOD;
-
-	template();
-
-}
-
-function updateguests() {
-        global $ts;
-	
-	$data = '';
-
-	foreach ($_POST as $option => $value) {
-		$data .= '$'.$option.' = \''.$value.'\';'."\r\n";
-	}
-
-	if (!empty($data)) {
-		configeditor('GUESTS',$data,0);
-	}
-
-	$_SESSION['cometchat']['error'] = 'Setting details updated successfully';
-
-	header("Location:?module=settings&action=guests&ts={$ts}");
 
 }
 
@@ -733,13 +641,13 @@ function banuser() {
 	<form action="?module=settings&action=banuserprocess&ts={$ts}" method="post">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
 		<h2>Banned words and users</h2>
-		<h3>You can ban users and add words to the abusive list. If you do not know the user's ID, <a href="?module=settings&action=finduser&ts={$ts}">click here to find out</a></h3>
+		<h3>You can ban users and add words to the abusive list. If you do not know the user's ID, <a href="?module=settings&amp;action=finduser&amp;ts={$ts}">click here to find out</a></h3>
 
 		<div>
 			<div id="centernav">
 				<div class="title">Banned Words:</div><div class="element"><input type="text" class="inputbox" name="bannedwords" value="$bannedw"></div>
 				<div style="clear:both;padding:5px;"></div>
-				<div class="title">Banned User IDs:</div><div class="element"><input type="text" class="inputbox" name="bannedids" value="$bannedids"> <a href="?module=settings&action=finduser&ts={$ts}">Don't know ID?</a></div>
+				<div class="title">Banned User IDs:</div><div class="element"><input type="text" class="inputbox" name="bannedids" value="$bannedids"> <a href="?module=settings&amp;action=finduser&amp;ts={$ts}">Don't know ID?</a></div>
 				<div style="clear:both;padding:5px;"></div>
 				<div class="title">Banned User IPs:</div><div class="element"><input type="text" class="inputbox" name="bannedips" value="$bannedips"> </div>
 				<div style="clear:both;padding:5px;"></div>
@@ -756,7 +664,7 @@ function banuser() {
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Modify" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Modify" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -770,17 +678,17 @@ EOD;
 function banuserprocess() {
         global $ts;
 	if (!empty($_POST['bannedmessage'])) {
-		
+
 		$bannids = explode(",",$_POST['bannedids']);
 		foreach ($bannids as $id) {
-			if (!empty($id) && $id != "'" && $id != "," && $id != " ") {	
+			if (!empty($id) && $id != "'" && $id != "," && $id != " ") {
 				if(!preg_match("/[\d]+/", $id) || preg_match("/\./", $id) ) {
 					header("Location:?module=settings&action=banuser&ts={$ts}");
 					return;
 				}
 			}
 		}
-		$words = array();		
+		$words = array();
 
 		$inputWords = explode(",",$_POST['bannedwords']);
 
@@ -796,10 +704,10 @@ function banuserprocess() {
 
 		if ($words == "''") { $words = ''; }
 
-		$ips = array();		
+		$ips = array();
 
 		$inputips = explode(",",$_POST['bannedips']);
-		
+
 		foreach ($inputips as $ip) {
 			$ip = preg_replace("/\s+/"," ",str_replace("'","",$ip));
 			if (!empty($ip) && $ip != "'" && $ip != "," && $ip != " ") {
@@ -810,7 +718,7 @@ function banuserprocess() {
 				array_push($ips,$ip);
 			}
 		}
-		
+
 		$ips = "'".implode("','",$ips)."'";
 
 		if ($ips == "''") { $ips = ''; }
@@ -855,7 +763,7 @@ function changeuserpass() {
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Change user/pass" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Change user/pass" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -891,7 +799,7 @@ function baseurl() {
 		<h2>Update Base URL</h2>
 		<h3>If CometChat is not working on your site, your Base URL might be incorrect.</h3>
 
-		
+
 		<div>
 			<div id="centernav">
 				<div class="titlelong" style="text-align:left;padding-left:40px;">Our detection algorithm suggests: <b><script>document.write(window.location.pathname.replace("admin/","").replace("admin",""));</script></b></div>
@@ -908,7 +816,7 @@ function baseurl() {
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update settings" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Update settings" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -924,7 +832,7 @@ function updatebaseurl() {
 
 		$baseurl = str_replace('\\','/',$_POST['baseurl']);
 
-		if ($baseurl[0] != '/') {
+		if ($baseurl[0] != '/' && strpos($baseurl,'http://')===false && strpos($baseurl,'https://')===false) {
 			$baseurl = '/'.$baseurl;
 		}
 
@@ -957,13 +865,6 @@ function comet() {
 		$dn = "checked";
 	}
 
-	if (defined('SAVE_LOGS') && SAVE_LOGS == 1) {
-		$dy2 = "checked";
-	} else {
-		$dn2 = "checked";
-	}
-
-	$historylimit = COMET_HISTORY_LIMIT;
 	$keya = KEY_A;
 	$keyb = KEY_B;
 	$keyc = KEY_C;
@@ -1015,17 +916,13 @@ EOD;
 			<div id="centernav">
 				<div class="title" style="width:200px">Use Comet Service?</div><div class="element"><input type="radio" name="dou" value="1" $dy>Yes <input type="radio" $dn name="dou" value="0" >No</div>
 				<div style="clear:both;padding:5px;"></div>
-				<div class="title" style="width:200px">Save Logs?</div><div class="element"><input type="radio" name="dou2" value="1" $dy2>Yes <input type="radio" $dn2 name="dou2" value="0" >No</div>
-				<div style="clear:both;padding:5px;"></div>
-				<div class="title">History limit:</div><div class="element"><input type="text" class="inputbox" name="historylimit" value="$historylimit" required="true"/></div>
-				<div style="clear:both;padding:5px;"></div>
 				<div class="title">Key A:</div><div class="element"><input type="text" class="inputbox" name="keya" value="$keya" required="true"/></div>
 				<div style="clear:both;padding:5px;"></div>
 				<div class="title">Key B:</div><div class="element"><input type="text" class="inputbox" name="keyb" value="$keyb" required="true"/></div>
 				<div style="clear:both;padding:5px;"></div>
 				<div class="title">Key C:</div><div class="element"><input type="text" class="inputbox" name="keyc" value="$keyc" required="true"/></div>
 				<div style="clear:both;padding:5px;"></div>
-				
+
 			</div>
 			<div id="rightnav">
 				<h1>Warning</h1>
@@ -1039,7 +936,7 @@ EOD;
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Update settings" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Update settings" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -1052,14 +949,14 @@ EOD;
 function updatecomet() {
         global $ts;
 	$_SESSION['cometchat']['error'] = 'Comet service settings successfully updated';
-	$data = "define('USE_COMET','".$_POST['dou']."');\r\ndefine('SAVE_LOGS','".$_POST['dou2']."');\r\ndefine('COMET_HISTORY_LIMIT','".$_POST['historylimit']."');\r\ndefine('KEY_A','".$_POST['keya']."');\r\ndefine('KEY_B','".$_POST['keyb']."');\r\ndefine('KEY_C','".$_POST['keyc']."');";
+	$data = "define('USE_COMET','".$_POST['dou']."');\r\ndefine('KEY_A','".$_POST['keya']."');\r\ndefine('KEY_B','".$_POST['keyb']."');\r\ndefine('KEY_C','".$_POST['keyc']."');";
 	configeditor('COMET',$data);
-	
+
 	header("Location:?module=settings&action=comet&ts={$ts}");
 }
 
 function finduser() {
-	global $body;	
+	global $body;
 	global $navigation;
         global $ts;
 
@@ -1078,7 +975,7 @@ function finduser() {
 		</div>
 
 		<div style="clear:both;padding:7.5px;"></div>
-		<input type="submit" value="Search Database" class="button">&nbsp;&nbsp;or <a href="?module=settings&action=banuser&ts={$ts}">cancel</a>
+		<input type="submit" value="Search Database" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;action=banuser&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -1097,7 +994,7 @@ function searchlogs() {
 	global $navigation;
 	global $body;
         global $bannedUserIDs;
-	
+
 	$username = $_REQUEST['susername'];
 
 	if (empty($username)) {
@@ -1105,19 +1002,19 @@ function searchlogs() {
 		$username = 'Q293YXJkaWNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgc2FmZT8NCkV4cGVkaWVuY3kgYXNrcyB0aGUgcXVlc3Rpb24gLSBpcyBpdCBwb2xpdGljPw0KVmFuaXR5IGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcG9wdWxhcj8NCkJ1dCBjb25zY2llbmNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcmlnaHQ/DQpBbmQgdGhlcmUgY29tZXMgYSB0aW1lIHdoZW4gb25lIG11c3QgdGFrZSBhIHBvc2l0aW9uDQp0aGF0IGlzIG5laXRoZXIgc2FmZSwgbm9yIHBvbGl0aWMsIG5vciBwb3B1bGFyOw0KYnV0IG9uZSBtdXN0IHRha2UgaXQgYmVjYXVzZSBpdCBpcyByaWdodC4=';
 	}
 
-	$sql = ("select $usertable_userid id, $usertable_username username from $usertable where $usertable_username LIKE '%".mysqli_real_escape_string($GLOBALS['dbh'],sanitize_core($username))."%'");
+	$sql = ("select ".mysqli_real_escape_string($GLOBALS['dbh'],$usertable_userid)." id, ".mysqli_real_escape_string($GLOBALS['dbh'],$usertable_username)." username from ".mysqli_real_escape_string($GLOBALS['dbh'],$usertable)." where ".mysqli_real_escape_string($GLOBALS['dbh'],$usertable_username)." LIKE '%".mysqli_real_escape_string($GLOBALS['dbh'],sanitize_core($username))."%'");
 	$query = mysqli_query($GLOBALS['dbh'],$sql);
 
 	$userslist = '';
-        
+
 	while ($user = mysqli_fetch_assoc($query)) {
 		if (function_exists('processName')) {
 			$user['username'] = processName($user['username']);
 		}
-                $banuser = '<a style="font-size: 11px; margin-top: 2px; margin-left: 5px; float: right; font-weight: bold; color: #0F5D7E;" href="?module=settings&action=banusersprocess&susername='.$username.'&bannedids='.$user['id'].'&ts='.$ts.'"><img style="width: 16px;" title="Ban User" src="images/ban.png"></a>';
-                        
+                $banuser = '<a style="font-size: 11px; margin-top: 2px; margin-left: 5px; float: right; font-weight: bold; color: #0F5D7E;" href="?module=settings&amp;action=banusersprocess&amp;susername='.$username.'&amp;bannedids='.$user['id'].'&amp;ts='.$ts.'"><img style="width: 16px;" title="Ban User" src="images/ban.png"></a>';
+
                 if(in_array($user['id'],$bannedUserIDs)) {
-                    $banuser = '<a style="font-size: 11px; margin-top: 2px; margin-left: 5px; float: right; font-weight: bold; color: #0F5D7E;" href="?module=settings&action=unbanusersprocess&susername='.$username.'&bannedids='.$user['id'].'&ts='.$ts.'"><img style="width: 16px;" title="Unban User" src="images/unban.png"></a>';
+                    $banuser = '<a style="font-size: 11px; margin-top: 2px; margin-left: 5px; float: right; font-weight: bold; color: #0F5D7E;" href="?module=settings&amp;action=unbanusersprocess&amp;susername='.$username.'&amp;bannedids='.$user['id'].'&amp;ts='.$ts.'"><img style="width: 16px;" title="Unban User" src="images/unban.png"></a>';
                 }
 		$userslist .= '<li class="ui-state-default cursor_default"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$user['username'].' - '.$user['id'].'</span>'.$banuser.'<div style="clear:both"></div></li>';
 	}
@@ -1127,7 +1024,7 @@ function searchlogs() {
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
 		<h2>Search results</h2>
-		<h3>Please find the user id next to each username. <a href="?module=settings&action=finduser&ts={$ts}">Click here to search again</a></h3>
+		<h3>Please find the user id next to each username. <a href="?module=settings&amp;action=finduser&amp;ts={$ts}">Click here to search again</a></h3>
 
 		<div>
 			<ul id="modules_logs">
@@ -1141,7 +1038,7 @@ function searchlogs() {
 	<div style="clear:both"></div>
 
 EOD;
-	
+
 	template();
 }
 
@@ -1151,24 +1048,24 @@ function banusersprocess() {
 	global $bannedUserIPs;
 	global $bannedMessage;
 	global $bannedWords;
-        
+
         $bannedids = '';
-	
+
 	foreach ($bannedUserIDs as $b) {
 		$bannedids .= $b.',';
 	}
         $bannedids .= $_REQUEST['bannedids'];
         $bannedips = '';
-        
+
 	foreach ($bannedUserIPs as $b) {
 		$bannedips .= '\''.$b.'\',';
 	}
-        
+
         $bannedw = '';
         foreach ($bannedWords as $b) {
 		$bannedw .= "'".$b.'\',';
 	}
-        
+
         $_SESSION['cometchat']['error'] = 'Ban ID list successfully modified.';
         $data = '$bannedWords = array( '.$bannedw.' );'."\r\n".'$bannedUserIPs = array( '.$bannedips.' );'."\r\n".'$bannedUserIDs = array('.$bannedids.');'."\r\n".'$bannedMessage = \''.$bannedMessage.'\';';
         configeditor('BANNED',$data);
@@ -1181,25 +1078,25 @@ function unbanusersprocess() {
 	global $bannedUserIPs;
 	global $bannedMessage;
 	global $bannedWords;
-        
+
         $bannedids = $bannedUserIDs;
-	
+
         if(($key = array_search($_GET['bannedids'], $bannedids)) !== false) {
             unset($bannedids[$key]);
         }
         $bannedids =  implode(',',$bannedids);
-	
+
         $bannedips = '';
-        
+
 	foreach ($bannedUserIPs as $b) {
 		$bannedips .= '\''.$b.'\',';
 	}
-        
+
         $bannedw = '';
         foreach ($bannedWords as $b) {
 		$bannedw .= "'".$b.'\',';
 	}
-        
+
         $_SESSION['cometchat']['error'] = 'Ban ID list successfully modified.';
         $data = '$bannedWords = array( '.$bannedw.' );'."\r\n".'$bannedUserIPs = array( '.$bannedips.' );'."\r\n".'$bannedUserIDs = array('.$bannedids.');'."\r\n".'$bannedMessage = \''.$bannedMessage.'\';';
         configeditor('BANNED',$data);
@@ -1225,7 +1122,7 @@ function cron() {
 			} else {
 				$datamodules .= '<div style="clear:both;padding:2.5px;"></div><li class="titlecheck" ><input class="input_sub"  type="checkbox" name="cron['.$t[0].']" value="1" onclick="javascript:cron_checkbox_check(\''.$t[0].'\',\'modules\')"> Run cron for '.$t[0].'<a  href="javascript:void(0)" style="margin-left:5px;" onclick="javascript:cron_auth_link(\''.$baseurl.'\',\''.$t[0].'\',\''.$auth.'\')"><img src="images/embed.png" style="float: right;margin-right: 17px;" title="Cron URL Code"></a></li>';
 			}
-		}		
+		}
 	}
 
 	foreach ($plugins as $p) {
@@ -1246,11 +1143,11 @@ function cron() {
 			<div id="centernav">
 				<div id='error' style="display:none;color:red;font-size:13px">Please select atleast one the options</div>
 				<h4><span><input id='individual' style="vertical-align: middle; margin-top: -2px;" type="radio" name="cron[type]" value="individual" onclick="javascript:$('#individualcat').slideDown('slow')" checked>Run individual crons</span></h4>
-			
+
 				<div id="individualcat" >
 					<div class="titlecheck" ><input id="plugins" type="checkbox" name="cron[plugins]" value="1"  class="title_class" onclick="check_all('plugins','sub_plugins','{$auth}')">
 						<div class="maintext" onclick="javascript:$('#sub_plugins').slideToggle('slow')" style="cursor: pointer;">Run all plugins cron<a  href="javascript:void(0)" style="margin-left:5px;" onclick="javascript:cron_auth_link('{$baseurl}','plugins','{$auth}')"><img src="images/embed.png" style="float: right; margin-right: 17px;" title="Cron URL Code"></a></div>
-					</div>					
+					</div>
 					<div id="sub_plugins">
 						<ul style="margin-left: 60px;width:88%">
 							{$dataplugins}
@@ -1282,7 +1179,7 @@ function cron() {
 					</div>
 				</div>
 				<div style="clear:both"></div>
-				<h4><span><input id='all' style="vertical-align: middle; margin-top: -2px;" type="radio" name="cron[type]" value="all" onclick="javascript:$('#individualcat').slideUp('slow')" >Run entire cron</span><a  href="javascript:void(0)" style="margin-left:5px;" onclick="javascript:cron_auth_link('{$baseurl}','all','{$auth}')"><img src="images/embed.png" style="float: right; margin-right: 17px;" title="Cron URL Code"></a></h4>		
+				<h4><span><input id='all' style="vertical-align: middle; margin-top: -2px;" type="radio" name="cron[type]" value="all" onclick="javascript:$('#individualcat').slideUp('slow')" >Run entire cron</span><a  href="javascript:void(0)" style="margin-left:5px;" onclick="javascript:cron_auth_link('{$baseurl}','all','{$auth}')"><img src="images/embed.png" style="float: right; margin-right: 17px;" title="Cron URL Code"></a></h4>
 
 			</div>
 			<div id="rightnav">
@@ -1295,7 +1192,7 @@ function cron() {
 
 		<div style="clear:both;padding:7.5px;"></div>
 		<input type="hidden" value="{$auth}" name="auth">
-		<input type="submit" value="Run" class="button">&nbsp;&nbsp;or <a href="?module=settings&ts={$ts}">cancel</a>
+		<input type="submit" value="Run" class="button">&nbsp;&nbsp;or <a href="?module=settings&amp;ts={$ts}">cancel</a>
 	</div>
 
 	<div style="clear:both"></div>
@@ -1307,9 +1204,198 @@ EOD;
 }
 
 function processcron() {
-        global $ts;
+    global $ts;
 	$auth = md5(md5(ADMIN_USER).md5(ADMIN_PASS));
 	include_once(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'cron.php');
 	$_SESSION['cometchat']['error'] = 'Cron executed successfully';
 	header("Location:?module=settings&action=cron&ts={$ts}");
+}
+
+function ccauth() {
+	global $body;
+	global $navigation;
+	global $ccactiveauth;
+	global $guestsMode;
+	global $guestsList;
+	global $guestsUsersList;
+	global $guestnamePrefix;
+    global $ts;
+
+	$ccauthoptions = array('Facebook','Google','Twitter');
+	if(USE_CCAUTH == '1'){
+		$ccauthshow = '';
+		$siteauthshow = 'style="display:none"';
+		$siteauthradio_checked = '';
+		$ccauthradio_checked = 'checked';
+	}else{
+		$siteauthshow = '';
+		$ccauthshow = 'style="display:none"';
+		$ccauthradio_checked = '';
+		$siteauthradio_checked = 'checked';
+	}
+	$authmode = USE_CCAUTH;
+	$ccactiveauthlist = '';
+	$ccauthlistoptions = '';
+	$no = 0;
+	$no_auth = '';
+	foreach ($ccauthoptions as $ccauthoption) {
+        ++$no;
+        $ccauthhref = 'onclick="ccauth_addauthmode('.$no.',\''.$ccauthoption.'\');" style="cursor: pointer;"';
+		if (in_array($ccauthoption, $ccactiveauth)) {
+			$ccauthhref = 'style="opacity: 0.5;cursor: default;"';
+		}
+		$ccactiveauthdata = '<span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a '.$ccauthhref.' id="'.$ccauthoption.'">add</a></span>';
+
+		$ccauthlistoptions .= '<li class="ui-state-default"><div class="cometchat_ccauthicon cometchat_'.$ccauthoption.'" style="margin:0;margin-right:5px;float:left;"></div><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$ccauthoption.'</span>'.$ccactiveauthdata.'<div style="clear:both"></div></li>';
+	}
+	$no = 0;
+	foreach ($ccactiveauth as $ccauthoption) {
+		++$no;
+		$config = ' <a href="javascript:void(0)" onclick="javascript:auth_configauth(\''.$ccauthoption.'\')" style="margin-right:5px"><img src="images/config.png" title="Configure"></a>';
+        $ccactiveauthlist .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ccauthoption.'" rel="'.$ccauthoption.'"><img height="16" width="16" src="images/'.$ccauthoption.'.png" style="margin:0;float:left;"></img><div class="cometchat_ccauthicon cometchat_'.$ccauthoption.'" style="margin:0;margin-right:5px;margin-top:2px;float:left;"></div><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ccauthoption.'_title">'.stripslashes($ccauthoption).'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;">'.$config.'<a href="javascript:void(0)" onclick="javascript:ccauth_removeauthmode(\''.$no.'\')"><img src="images/remove.png" title="Remove Authentication Mode"></a></span><div style="clear:both"></div></li>';
+	}
+
+	if(!$ccactiveauthlist){
+		$no_auth .= '<div id="no_auth" style="width: 480px;float: left;color: #333333;">You have no Authentication Mode activated at the moment. To activate an Authentication Mode, please add them from the list of available Authentication Modes.</div>';
+	}
+
+	$dy = "";
+	$dn = "";
+	$gL1 = $gL2 = $gL3 = $gUL1 = $gUL2 = $gUL3 = '';
+
+	if ($guestsMode == 1) {
+		$dy = "checked";
+	} else {
+		$dn = "checked";
+	}
+
+	if ($guestsList == 1) {	$gL1 = "selected"; }
+	if ($guestsList == 2) {	$gL2 = "selected"; }
+	if ($guestsList == 3) {	$gL3 = "selected"; }
+
+	if ($guestsUsersList == 1) { $gUL1 = "selected"; }
+	if ($guestsUsersList == 2) { $gUL2 = "selected"; }
+	if ($guestsUsersList == 3) { $gUL3 = "selected"; }
+
+	$body = <<<EOD
+	$navigation
+	<form onsubmit="return ccauth_updateorder({$authmode});" action="?module=settings&action=updateauthmode&ts={$ts}" method="post">
+	<input type="hidden" name="cc_auth_order" id="cc_auth_order"></input>
+	<div id="rightcontent" style="float:left;width:725px;border-left:1px dotted #ccc;padding-left:20px;">
+		<h2>Authentication Mode</h2>
+		<h3>You can choose to either integrate with your site's login system (if you have one) or to use our social login feature to enable your users to login using their social accounts.</h3>
+		<div id="site_auth" class="auth_container">
+			<div style="overflow: hidden;">
+				<input type="radio" name="auth_mode" class="auth_select" id="site_auth_radio" value="site_auth" $siteauthradio_checked>
+				<h2 class="auth_select_text">Site's Authentication</h2>
+			</div>
+			<div id="site_auth_options" {$siteauthshow}>
+				<div style="float: left;width: 725px;">
+					<div id="centernav">
+						<div class="title" style="width:200px">Enable Guest Chat:</div><div class="element"><input type="radio" name="guestsMode" value="1" $dy>Yes <input type="radio" $dn name="guestsMode" value="0" >No</div>
+						<div style="clear:both;padding:5px;"></div>
+					</div>
+
+					<div id="centernav">
+						<div class="title" style="width:200px">Prefix for guest names:</div><div class="element"><input type="text" name="guestnamePrefix" value="$guestnamePrefix"></div>
+						<div style="clear:both;padding:5px;"></div>
+					</div>
+
+					<div id="centernav">
+						<div class="title" style="width:200px">In Who`s Online list, for guests:</div><div class="element"><select name="guestsList"><option value="1" $gL1>Show only guests</option><option value="2" $gL2>Show only logged in users</option><option value="3" $gL3>Show both</option></select></div>
+						<div style="clear:both;padding:5px;"></div>
+					</div>
+
+					<div id="centernav">
+						<div class="title" style="width:200px">And for logged in users:</div><div class="element"><select name="guestsUsersList"><option value="1" $gUL1>Show only guests</option><option value="2" $gUL2>Show only logged in users</option><option value="3" $gUL3>Show both</option></select></div>
+						<div style="clear:both;padding:5px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="cc_auth" class="auth_container">
+			<div style="overflow: hidden;">
+				<input type="radio" name="auth_mode" class="auth_select" id="cc_auth_radio" value="cc_auth" {$ccauthradio_checked}>
+				<h2 class="auth_select_text">Social Login</h2>
+			</div>
+			<div id="cc_auth_options" {$ccauthshow}>
+				<div style="overflow:hidden">
+					<ul id="auth_livemodes" class="ui-sortable" unselectable="on">
+						{$no_auth}
+						{$ccactiveauthlist}
+					</ul>
+					<div id="rightnav" style="margin-top:5px">
+						<h1>Available Modes</h1>
+						<ul id="auth_availableauthmodes">
+						$ccauthlistoptions
+						</ul>
+					</div>
+				</div>
+				<div>
+				</div>
+			</div>
+		</div>
+		<input type="submit" value="Update Authentication Mode" class="button">
+	</div>
+
+	<div style="clear:both"></div>
+	</form>
+
+	<script type="text/javascript">
+		$(function() {
+			$("#auth_livemodes").sortable({
+				items: "li:not(.ui-state-unsort)",
+				connectWith: 'ul'
+			});
+			$("#auth_livemodes").disableSelection();
+		});
+		$(function(){
+			$('#site_auth_radio').live('click',function(){
+				$('#site_auth_options').show('slow');
+				$('#cc_auth_options').hide('slow');
+			});
+			$('#cc_auth_radio').live('click',function(){
+				$('#cc_auth_options').show('slow');
+				$('#site_auth_options').hide('slow');
+			});
+		});
+	</script>
+EOD;
+
+	template();
+
+}
+
+function updateauthmode() {
+	global $ts;
+	global $ccactiveauth;
+
+	$auth_mode = 0;
+
+	if($_POST['auth_mode'] == 'cc_auth'){
+		$auth_mode = 1;
+	}
+
+	if(USE_CCAUTH!=$auth_mode){
+		$sql = ("truncate table `cometchat`;truncate table cometchat_block;truncate table cometchat_chatroommessages;truncate table cometchat_chatrooms;truncate table cometchat_chatrooms_users;truncate table cometchat_comethistory;truncate table cometchat_status;CREATE TABLE IF NOT EXISTS `cometchat_users` (`id` int(11) NOT NULL AUTO_INCREMENT,`username` varchar(100) NOT NULL,`displayname` varchar(100) NOT NULL,`avatar` varchar(200) NOT NULL,`link` varchar(200) NOT NULL,`grp` varchar(25) NOT NULL,PRIMARY KEY (`id`),UNIQUE KEY `username` (`username`)) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
+		mysqli_multi_query($GLOBALS['dbh'],$sql);
+	}
+
+	$ccactiveauthdata = 'define(\'USE_CCAUTH\',\''.$auth_mode.'\');'."\n\n".'$ccactiveauth = array(';
+
+	foreach ($_POST as $option => $value) {
+		if($option!='auth_mode'){
+			if($option == 'cc_auth_order'){
+				$ccactiveauthdata .= substr($value,0,-1).');'."\r\n\n";
+			}else{
+				$ccactiveauthdata .= '$'.$option.' = \''.$value.'\';'."\n";
+			}
+		}
+	}
+
+	configeditor('CCAUTH',$ccactiveauthdata);
+
+	$_SESSION['cometchat']['error'] = 'Authentication Mode details updated successfully';
+
+	header("Location:?module=settings&action=ccauth&ts={$ts}");
 }

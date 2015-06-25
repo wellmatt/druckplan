@@ -49,13 +49,13 @@ var Canvas2Image = (function() {
 	// takes an imagedata object as argument
 	var createBMP = function(oData) {
 		var aHeader = [];
-	
+
 		var iWidth = oData.width;
 		var iHeight = oData.height;
 
 		aHeader.push(0x42); // magic 1
-		aHeader.push(0x4D); 
-	
+		aHeader.push(0x4D);
+
 		var iFileSize = iWidth*iHeight*3 + 54; // total header size = 54 bytes
 		aHeader.push(iFileSize % 256); iFileSize = Math.floor(iFileSize / 256);
 		aHeader.push(iFileSize % 256); iFileSize = Math.floor(iFileSize / 256);
@@ -83,34 +83,34 @@ var Canvas2Image = (function() {
 		aInfoHeader.push(iImageWidth % 256); iImageWidth = Math.floor(iImageWidth / 256);
 		aInfoHeader.push(iImageWidth % 256); iImageWidth = Math.floor(iImageWidth / 256);
 		aInfoHeader.push(iImageWidth % 256);
-	
+
 		var iImageHeight = iHeight;
 		aInfoHeader.push(iImageHeight % 256); iImageHeight = Math.floor(iImageHeight / 256);
 		aInfoHeader.push(iImageHeight % 256); iImageHeight = Math.floor(iImageHeight / 256);
 		aInfoHeader.push(iImageHeight % 256); iImageHeight = Math.floor(iImageHeight / 256);
 		aInfoHeader.push(iImageHeight % 256);
-	
+
 		aInfoHeader.push(1); // num of planes
 		aInfoHeader.push(0);
-	
+
 		aInfoHeader.push(24); // num of bits per pixel
 		aInfoHeader.push(0);
-	
+
 		aInfoHeader.push(0); // compression = none
 		aInfoHeader.push(0);
 		aInfoHeader.push(0);
 		aInfoHeader.push(0);
-	
-		var iDataSize = iWidth*iHeight*3; 
+
+		var iDataSize = iWidth*iHeight*3;
 		aInfoHeader.push(iDataSize % 256); iDataSize = Math.floor(iDataSize / 256);
 		aInfoHeader.push(iDataSize % 256); iDataSize = Math.floor(iDataSize / 256);
 		aInfoHeader.push(iDataSize % 256); iDataSize = Math.floor(iDataSize / 256);
-		aInfoHeader.push(iDataSize % 256); 
-	
+		aInfoHeader.push(iDataSize % 256);
+
 		for (var i=0;i<16;i++) {
 			aInfoHeader.push(0);	// these bytes not used
 		}
-	
+
 		var iPadding = (4 - ((iWidth * 3) % 4)) % 4;
 
 		var aImgData = oData.data;
@@ -195,7 +195,7 @@ var Canvas2Image = (function() {
 			var oScaledCanvas = scaleCanvas(oCanvas, iWidth, iHeight);
 			var strMime = "image/jpeg";
 			var strData = oScaledCanvas.toDataURL(strMime);
-	
+
 			// check if browser actually supports jpeg by looking for the mime type in the data uri.
 			// if not, return false
 			if (strData.indexOf(strMime) != 5) {
@@ -348,7 +348,7 @@ if (!window.atob) window.atob = base64decode;
 })();
 
 /***********************************/
-$(document).ready(function() {
+$(function() {
     canvas = document.querySelector('#paint');
     var strDataURI = canvas.toDataURL("image/jpeg");
     var ctx = canvas.getContext('2d');
@@ -359,7 +359,7 @@ $(document).ready(function() {
     canvas.width = parseInt($(window).width());
     canvas.height = parseInt($(window).height());
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);  // now fill the canvas 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // now fill the canvas
     var mouse = {x: 0, y: 0};
     var last_mouse = {x: 0, y: 0};
 
@@ -377,8 +377,8 @@ $(document).ready(function() {
     ctx.lineWidth = '1';
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.strokeStyle = 'red ';
-    var selectedColor = 'red ';
+    ctx.strokeStyle = 'red';
+    var selectedColor = '#ff0000';
 
 
     canvas.addEventListener('mousedown', function(e) {
@@ -436,9 +436,9 @@ $(window).resize(function () {
     ctx.lineWidth = '1';
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.strokeStyle = 'red ';
+    ctx.strokeStyle = 'red';
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height); 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
 function send() {

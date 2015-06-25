@@ -10,15 +10,15 @@ echo <<<EOD
 <!DOCTYPE html>
 
 $getstylesheet
-<form action="?module=dashboard&action=loadexternal&type=module&name=facebook&process=true" method="post">
-<div id="content">
+<form style="height:100%" action="?module=dashboard&action=loadexternal&type=module&name=facebook&process=true" method="post">
+<div id="content" style="width:auto">
 		<h2>Settings</h2>
 
 		<div>
-			<div id="centernav" style="width:380px;height:125px;">
+			<div id="centernav" style="width:380px;">
 				<div class="title">Facebook Page URL:</div><div class="element"><input type="text" class="inputbox" name="pageUrl" value="$pageUrl"></div>
 				<div style="clear:both;padding:5px;"></div>
-					
+
 			</div>
 		</div>
 
@@ -28,19 +28,23 @@ $getstylesheet
 </form>
 <script type="text/javascript" src="../js.php?admin=1"></script>
             <script type="text/javascript" language="javascript">
-                resizeWindow();
-                function resizeWindow() {
-                    window.resizeTo(($("form").width()+30), ($("form").height()+85));
+                $(function() {
+					setTimeout(function(){
+							resizeWindow();
+						},200);
+				});
+				function resizeWindow() {
+                    window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
                 }
             </script>
 EOD;
 } else {
-	
+
 	$data = '';
 	foreach ($_POST as $field => $value) {
 		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
 	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 	header("Location:?module=dashboard&action=loadexternal&type=module&name=facebook");
 }

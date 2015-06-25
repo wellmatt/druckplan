@@ -38,13 +38,13 @@ var initializeMobileWebapp = 1;
                 window.addEventListener('onorientationchange' in window ? 'orientationchange' : 'resize', function(){
                     jqcc.mobilewebapp.detect();
                 }, false);
-                if(typeof (jqcc.cookie(cookie_prefix+'new'))!='undefined'&&jqcc.cookie(cookie_prefix+'new')!=''){
-                    jqcc.chatmobilewebapp.loadPanel(jqcc.cookie(cookie_prefix+'new'));
-                    jqcc.cookie(cookie_prefix+'new', '', {path: '/'});
+                if(typeof (jqcc.cookie(cookiePrefix+'new'))!='undefined'&&jqcc.cookie(cookiePrefix+'new')!=''){
+                    jqcc.chatmobilewebapp.loadPanel(jqcc.cookie(cookiePrefix+'new'));
+                    jqcc.cookie(cookiePrefix+'new', '', {path: '/'});
                 }
-                if (location.href.match('extensions/mobilewebapp/#user-')) {
-                    $userid = location.href.split('extensions/mobilewebapp/#user-');
-                    window.history.pushState('', '', jqcc.cometchat.getBaseUrl()+'extensions/mobilewebapp/');
+                if (location.href.match('#user-')) {
+                    $userid = location.href.split('#user-');
+                    window.history.pushState('', '', jqcc.cometchat.getBaseUrl()+'extensions/mobilewebapp/index.php?cookiePrefix='+cookiePrefix+'&basedata='+jqcc.cometchat.getBaseData()+'&ccmobileauth='+jqcc.cometchat.getThemeVariable('ccmobileauth'));
                     jqcc.chatmobilewebapp.chatWith($userid[1]);
                 }
             },
@@ -55,6 +55,12 @@ var initializeMobileWebapp = 1;
                 buddylisttemp['busy'] = '';
                 buddylisttemp['offline'] = '';
                 buddylisttemp['away'] = '';
+                var thumbnaillimit = <?php echo intval($thumbnailDisplayNumber);?>;
+                var buddylistsize = data.length;
+                var displaythumbnail = true;
+                if(buddylistsize > thumbnaillimit){
+                    displaythumbnail = false;
+                }
                 $.each(data, function(i, buddy){
                     longname = buddy.n;
                     buddyListName[buddy.id] = buddy.n;
@@ -62,7 +68,8 @@ var initializeMobileWebapp = 1;
                     if(!buddyListMessages[buddy.id]){
                         buddyListMessages[buddy.id] = 0;
                     }
-                    buddylisttemp[buddy.s] += '<li id="onlinelist_'+buddy.id+'" class="row userlists" onclick="javascript:jqcc.chatmobilewebapp.loadPanel(\''+buddy.id+'\')" data-filtertext="'+longname+'"><div class="small-7 columns"><img src="images/cleardot.gif" class=" status status-'+buddy.s+' "><span class="longname search_name">'+longname+'</span></div><div class="small-5 columns"><img src="'+buddy.a+'" class=" avatarimage"/><span class="newmessages">'+buddyListMessages[buddy.id]+'</span></div></li>';
+                    var imgTag = displaythumbnail?'<img src="'+buddy.a+'" class=" avatarimage"/>':'';
+                    buddylisttemp[buddy.s] += '<li id="onlinelist_'+buddy.id+'" class="row userlists" onclick="javascript:jqcc.chatmobilewebapp.loadPanel(\''+buddy.id+'\')" data-filtertext="'+longname+'"><div class="small-7 columns"><img src="images/cleardot.gif" class=" status status-'+buddy.s+' "><span class="longname search_name">'+longname+'</span></div><div class="small-5 columns">'+imgTag+'<span class="newmessages">'+buddyListMessages[buddy.id]+'</span></div></li>';
                     $('#onlinelist_'+buddy.id).remove();
                 });
                 buddylist = buddylisttemp['available']+buddylisttemp['busy']+buddylisttemp['away']+buddylisttemp['offline'];
@@ -89,7 +96,8 @@ var initializeMobileWebapp = 1;
                 var lastMsg = $("#cwlist").find("li:last div").attr('id');
                 var msgId = parseInt(lastMsg.split('_')[2]);
                 clearmsg[chatboxId] = msgId;
-                $.ccclearconversation.init(chatboxId);
+                var controlparameters = {"to":chatboxId, "chatroommode":"0"};
+                $.ccclearconversation.init(controlparameters);
                 $("#cwlist").empty();
                 setTimeout(function(){
                     jqcc.mobilewebapp.scrollToBottom();
@@ -98,10 +106,11 @@ var initializeMobileWebapp = 1;
             reportChat: function(id){
                 $('#cometchat_container_report').find('.cometchat_closebox').click();
                 $('#opt').css('display', 'none');
-                var chatboxId = id;
+                var params = {};
                 if($('#cwlist').find('li').length){
-                    var callbackfn = 'mobilewebapp';
-                    $.ccreport.init(chatboxId, callbackfn);
+                    params['to']= id;
+                    params['mode']= 'mobilewebapp';
+                    $.ccreport.init(params);
                 }else{
                     alert('<?php echo $mobilewebapp_language[32];?>');
                 }
@@ -122,16 +131,25 @@ var initializeMobileWebapp = 1;
             chatboxKeydownSet: function(id){
                 var message = jqcc.mobilewebapp.checkSmiley($('#chatmessage').val());
                 if($.trim(message)!=""){
-                    jqcc.cometchat.chatboxKeydownSet(id, message);
+                    jqcc.cometchat.chatboxKeydownSet(id, message ,'mobilewebapp');
                 }
                 $('#chatmessage').val('');
                 $('#chatmessage').focus();
                 return false;
             },
             attachMessage: function(data){
+
                 var temp = '';
                 var atleastOneNewMessage = 0;
                 $.each(data, function(i, incoming){
+                    if(typeof(incoming.self) ==='undefined' && typeof(incoming.old) ==='undefined' && typeof(incoming.sent) ==='undefined'){
+                        incoming.sent = Math.floor(new Date().getTime()/1000);
+                        incoming.old = incoming.self = 1;
+                    }
+                    if(typeof(incoming.m)!== 'undefined'){
+                        incoming.message = incoming.m;
+                    }
+
                     if(!buddyListName[incoming.from]){
                         jqcc.cometchat.getUserDetails(incoming.from);
                     }
@@ -139,18 +157,19 @@ var initializeMobileWebapp = 1;
                     if(fromname.indexOf(" ")!=-1){
                         fromname = fromname.slice(0, fromname.indexOf(" "));
                     }
-                    var message = incoming.message;
+                    var message = jqcc.cometchat.processcontrolmessage(incoming);
+
                     if((message!=''&&(message.indexOf('jqcc.cc')>-1))){
                         var first = message.indexOf('<a');
                         message = message.substring(0, (first-1));
-                        incoming.message = message+'<?php echo $mobilewebapp_language[34];?>';
+                        message = message+'<?php echo $mobilewebapp_language[34];?>';
                     }else if(((message.indexOf('jqcc.cometchat.joinChatroom')>-1))){
-                        incoming.message = '<?php echo $mobilewebapp_language[35];?>';
+                        message = '<?php echo $mobilewebapp_language[35];?>';
                     }
                     if(incoming.self==0){
-                        var temp = (('<li><div class="cometchat_chatboxmessage you" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagecontent">'+incoming.message+'</span>'+'</div><div style="clear:both;"></div></li>'));
+                        var temp = (('<li><div class="cometchat_chatboxmessage you" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagecontent">'+message+'</span>'+'</div><div style="clear:both;"></div></li>'));
                         atleastOneNewMessage++;
-                        if(currentChatboxId==incoming.from&&incoming.old!=1){
+                        if(currentChatboxId==incoming.from){
                             if(!(clearmsg[incoming.from])||(clearmsg[incoming.from]<incoming.id&&currentChatboxId==incoming.from)){
                                 $('#cwlist').append(temp);
                                 setTimeout(function(){
@@ -173,13 +192,13 @@ var initializeMobileWebapp = 1;
                     }else if(incoming.self==1){
                         if($("#cometchat_message_"+incoming.id).length>0){
                             if(!$("#cometchat_message_"+incoming.id).find("a").hasClass('imagemessage')){
-                                $("#cometchat_message_"+incoming.id).find("span.cometchat_chatboxmessagecontent").html(incoming.message);
+                                $("#cometchat_message_"+incoming.id).find("span.cometchat_chatboxmessagecontent").html(message);
                             }
                         }else{
                             if($("#cwlist #cometchat_message_"+incoming.id).length!=1){
                                 fromname = '<?php echo $mobilewebapp_language[6];?>';
                                 selfstyle = 'selfmessage';
-                                var temp = (('<li><div class="cometchat_chatboxmessage '+selfstyle+' me" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagecontent">'+incoming.message+'</span>'+'</div><div style="clear:both;"></div></li>'));
+                                var temp = (('<li><div class="cometchat_chatboxmessage '+selfstyle+' me" id="cometchat_message_'+incoming.id+'"><span class="cometchat_chatboxmessagecontent">'+message+'</span>'+'</div><div style="clear:both;"></div></li>'));
                                 if(currentChatboxId==incoming.from){
                                     if(!(clearmsg[incoming.from])||(clearmsg[incoming.from]<incoming.id&&currentChatboxId==incoming.from)){
                                         $('#cwlist').append(temp);
@@ -203,6 +222,8 @@ var initializeMobileWebapp = 1;
                     buddyListMessages[id] = 0;
                 }
                 longname = data.n;
+
+
                 var buddylist = '<li id="onlinelist_'+data.id+'" onclick="javascript:jqcc.chatmobilewebapp.loadPanel(\''+data.id+'\')" data-filtertext="'+longname+'"><img src="images/cleardot.gif" class="status status-'+data.s+' "><span class="longname">'+longname+'</span><span class=""><img src="'+buddy.a+'" class=" avatarimage"/></span><span class="newmessages">0</span></li>';
                 $('#nousersonline').css('display', 'none');
                 $('#permanent').prepend(buddylist);
@@ -215,12 +236,12 @@ var initializeMobileWebapp = 1;
                 if(typeof (id)!='undefined'&&id!=null){
                 buddyListMessages[id] = 0;
                 $('#onlinelist_'+id).find('span.newmessages').html('0').removeClass('newmessageCount');
-                var cc_state = jqcc.cookie(cookie_prefix+'state');
+                var cc_state = jqcc.cookie(cookiePrefix+'state');
                 if(typeof (cc_state)!='undefined'&&cc_state!=null&&cc_state!=''){
                     var pattern = id+"\\|[0-9]+";
                     var regex = new RegExp(pattern);
                     cc_state = cc_state.replace(regex, id+"|0");
-                    jqcc.cookie(cookie_prefix+'state', cc_state, {path: '/'});
+                    jqcc.cookie(cookiePrefix+'state', cc_state, {path: '/'});
                 }
                 var userName = buddyListName[id];
                 var flag = 0;
@@ -266,13 +287,13 @@ var initializeMobileWebapp = 1;
                     if(type=='messages'){
                         var temp = '';
                         $.each(item, function(i, incoming){
-                            var message = incoming.message;
+                            var message = jqcc.cometchat.processcontrolmessage(incoming);
                             if(((message.indexOf('jqcc.cc')>-1))){
                                 var first = message.indexOf('<a');
                                 message = message.substring(0, (first-1));
-                                incoming.message = message+'<?php echo $mobilewebapp_language[34];?>';
+                                message = message+'<?php echo $mobilewebapp_language[34];?>';
                             }else if(((message.indexOf('jqcc.cometchat.joinChatroom')>-1))){
-                                incoming.message = '<?php echo $mobilewebapp_language[35];?>';
+                                message = '<?php echo $mobilewebapp_language[35];?>';
                             }
                             var self;
                             var selfstyle = '';
@@ -292,7 +313,7 @@ var initializeMobileWebapp = 1;
                             }else{
                                 self = 'me';
                             }
-                            temp += ('<li><div class="cometchat_chatboxmessage '+selfstyle+' '+self+'" id="cometchat_message_'+incoming.id+'">'+messagefrom+'<span class="cometchat_chatboxmessagecontent'+selfstyle+'">'+incoming.message+'</span>'+'</div><div style="clear:both;"></div>');
+                            temp += ('<li><div class="cometchat_chatboxmessage '+selfstyle+' '+self+'" id="cometchat_message_'+incoming.id+'">'+messagefrom+'<span class="cometchat_chatboxmessagecontent'+selfstyle+'">'+message+'</span>'+'</div><div style="clear:both;"></div>');
                         });
                         if(currentChatboxId==id){
                             setTimeout(function(){

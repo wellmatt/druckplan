@@ -7,6 +7,8 @@
 // ---------------------------------------------------------------------------------
 $_BASEDIR = dirname(__FILE__) . "/";
 require_once($_BASEDIR."/libs/basic/config.php");
+// require_once 'libs/basic/cachehandler/cachehandler.class.php';
+// require_once 'thirdparty/phpfastcache/phpfastcache.php';
 
 $_CONFIG = new ConfigContainer();
 

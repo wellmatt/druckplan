@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -62,50 +62,54 @@ if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR
 }
 
 if ($p_<4) exit;
+
+checkScreenshareConfig();
+
 if($screensharePluginType== 2){
 	$alertmessage = 0;
 	$useremailid = '';
-	if (isset($_REQUEST['chatroommode'])) {
+	if (!empty($_REQUEST['chatroommode'])) {
 		$_REQUEST['callback'] = time();
 	}
-	
-	if ($_GET['action'] == 'request') { 
-		$sql ="SELECT ".$email." FROM `".TABLE_PREFIX.DB_USERTABLE."` WHERE `".DB_USERTABLE_USERID."` ='".$userid."'";
+
+	if ($_GET['action'] == 'request') {
+
+		$sql ="SELECT ".$email." FROM `".TABLE_PREFIX.DB_USERTABLE."` WHERE `".DB_USERTABLE_USERID."` ='".mysqli_real_escape_string($GLOBALS['dbh'],$userid)."'";
 		$query = mysqli_query($GLOBALS['dbh'],$sql);
 		$result = mysqli_fetch_assoc($query);
 		$url="https://api.zoom.us/v1/user/list";
 		$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&page_size=30&page_number=1";
 		$response  = json_decode(checkcURL(0,$url,$params,1), true);
-
 		$flag = 0;
+
 		foreach ($response['users'] as $user) {
 			if ($user['email'] == $result['email']) {
 				$url="https://api.zoom.us/v1/meeting/create";
 				$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&host_id=".$user['id']."&topic=screenshare&type=3&option_jbh=true&option_start_type=screen_share";
 				$response = json_decode(checkcURL(0,$url,$params,1), true);
-				$grp = $_REQUEST['to'];
-				if (!empty($response['start_url']) && !isset($_REQUEST['chatroommode'])) {
-					sendMessageTo($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."','".$response['join_url']."','".$response['start_url']."');\">".$screenshare_language[3]."</a> ".$screenshare_language[4]);
-					
+				$grp = mysqli_real_escape_string($GLOBALS['dbh'],$_REQUEST['to']);
+				if (!empty($response['start_url']) && empty($_REQUEST['chatroommode'])) {
+					sendMessage($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' class='acceptSceenshare' to='".$userid."' grp='".$grp."' join_url='".$response['join_url']."' start_url='".$response['start_url']."' chatroommode='0' mobileAction=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."','".$response['join_url']."','".$response['start_url']."');\" >".$screenshare_language[3]."</a> ".$screenshare_language[4],1);
+
 					$temp_callback = $_REQUEST['callback'];
 					$_REQUEST['callback'] = time();
-					
-					sendSelfMessage($_REQUEST['to'],$screenshare_language[5]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept_fid('".$userid."','".$response['start_url']."');\">".$screenshare_language[11]."</a>");
+
+					sendMessage($_REQUEST['to'],$screenshare_language[5]." <a href='javascript:void(0);' class='accept_fidSceenshare' to='".$userid."' start_url='".$response['start_url']."' chatroommode='0' mobileAction=\"javascript:jqcc.ccscreenshare.accept_fid('".$userid."','".$response['start_url']."');\">".$screenshare_language[11]."</a>",2);
 					$_REQUEST['callback'] = $temp_callback;
 				} else if (!empty($response['start_url'])) {
-					sendChatroomMessage($grp,$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."','".$response['join_url']."','".$response['start_url']."', 'chatroommode');\">".$screenshare_language[3]."</a>");
+					sendChatroomMessage($grp,$screenshare_language[2]." <a href='javascript:void(0);' class='acceptSceenshare' to='".$userid."' grp='".$grp."' join_url='".$response['join_url']."' start_url='".$response['start_url']."' chatroommode='0' mobileAction=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."','".$response['join_url']."','".$response['start_url']."', 'chatroommode');\" >".$screenshare_language[3]."</a>",0);
 				}
 				$flag = 0;
 					break;
 			}
 			$flag++;
 		}
-		if ($flag != 0 && !isset($_REQUEST['chatroommode'])) {
+		if ($flag != 0 && empty($_REQUEST['chatroommode'])) {
 			$url="https://api.zoom.us/v1/user/create";
 			$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&email=".$result['email']."&type=1";
 			json_decode(checkcURL(0,$url,$params,1), true);
-			sendSelfMessage($_REQUEST['to'],$screenshare_language[12]." ".$result['email']);
-		} else if($flag != 0 && isset($_REQUEST['chatroommode'])) {
+			sendMessage($_REQUEST['to'],$screenshare_language[12]." ".$result['email'],2);
+		} else if($flag != 0 && !empty($_REQUEST['chatroommode'])) {
 			$url="https://api.zoom.us/v1/user/create";
 			$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&email=".$result['email']."&type=1";
 			json_decode(checkcURL(0,$url,$params,1), true);
@@ -115,14 +119,14 @@ if($screensharePluginType== 2){
 	}
 
 	if ($_GET['action'] == 'accept') {
-		
-		$sql ="SELECT ".$email." FROM `".TABLE_PREFIX.DB_USERTABLE."` WHERE `".DB_USERTABLE_USERID."` ='".$userid."'";
+
+		$sql ="SELECT ".$email." FROM `".TABLE_PREFIX.DB_USERTABLE."` WHERE `".DB_USERTABLE_USERID."` ='".mysqli_real_escape_string($GLOBALS['dbh'],$userid)."'";
 		$query = mysqli_query($GLOBALS['dbh'],$sql);
 		$result = mysqli_fetch_assoc($query);
-		
+
 		$url="https://api.zoom.us/v1/user/list";
 		$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&page_size=30&page_number=1";
-		$response = json_decode(checkcURL(0,$url,$params,1), true);		
+		$response = json_decode(checkcURL(0,$url,$params,1), true);
 		$flag = 0;
 		foreach ($response['users'] as $user) {
 			if ($user['email'] == $result['email']) {
@@ -131,12 +135,12 @@ if($screensharePluginType== 2){
 			}
 			$flag++;
 		}
-		if($flag != 0 && !isset($_REQUEST['chatroommode'])) {
+		if($flag != 0 && empty($_REQUEST['chatroommode'])) {
 			$url="https://api.zoom.us/v1/user/create";
 			$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&email=".$result['email']."&type=1";
 			json_decode(checkcURL(0,$url,$params,1), true);
-			sendSelfMessage($_REQUEST['to'],$screenshare_language[12]." ".$result['email']);
-		} else if ($flag != 0 && isset($_REQUEST['chatroommode'])) {
+			sendMessage($_REQUEST['to'],$screenshare_language[12]." ".$result['email'],2);
+		} else if ($flag != 0 && !empty($_REQUEST['chatroommode'])) {
 			$url="https://api.zoom.us/v1/user/create";
 			$params="api_key=".$zoomapplicationid."&api_secret=".$zoomappAuthSecret."&data_type=JSON&email=".$result['email']."&type=1";
 			json_decode(checkcURL(0,$url,$params,1), true);
@@ -144,21 +148,21 @@ if($screensharePluginType== 2){
 			$useremailid = $result['email'];
 		}
 	}
-	if (isset($_REQUEST['chatroommode'])) {
+	if (!empty($_REQUEST['chatroommode'])) {
 		echo $alertmessage.'^'.$useremailid;
 	}
 	exit;
 } else {
 	if ($_GET['action'] == 'request') {
 
-		$grp = $_REQUEST['id'];
-                if (isset($_REQUEST['chatroommode'])) {
-                    sendChatroomMessage($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$_REQUEST['to']."','".$grp."','','', 'chatroommode');\">".$screenshare_language[3]."</a>");
+		$grp = mysqli_real_escape_string($GLOBALS['dbh'],$_REQUEST['id']);
+                if (!empty($_REQUEST['chatroommode'])) {
+                    sendChatroomMessage($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' class='acceptSceenshare' to='".$_REQUEST['to']."' grp='".$grp."' join_url='' start_url='' chatroommode='1' mobileAction=\"javascript:jqcc.ccscreenshare.accept('".$_REQUEST['to']."','".$grp."','','', 'chatroommode');\">".$screenshare_language[3]."</a>",0);
                 } else {
-                    sendMessageTo($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."');\">".$screenshare_language[3]."</a> ".$screenshare_language[4]);
+                    sendMessage($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' class='acceptSceenshare' to='".$userid."' grp='".$grp."' join_url='' start_url='' chatroommode='0' mobileAction=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."');\">".$screenshare_language[3]."</a> ".$screenshare_language[4],1);
                     $temp_callback = $_REQUEST['callback'];
                     $_REQUEST['callback'] = time();
-                    sendSelfMessage($_REQUEST['to'],$screenshare_language[5]);
+                    sendMessage($_REQUEST['to'],$screenshare_language[5],2);
                     $_REQUEST['callback'] = $temp_callback;
                 }
 
@@ -169,8 +173,8 @@ if($screensharePluginType== 2){
 	}
 
 	if ($_GET['action'] == 'accept') {
-		sendMessageTo($_REQUEST['to'],$screenshare_language[6]);
-		
+		sendMessage($_REQUEST['to'],$screenshare_language[6],1);
+
 		if (!empty($_GET['callback'])) {
 			header('content-type: application/json; charset=utf-8');
 			echo $_GET['callback'].'()';
@@ -183,13 +187,12 @@ if($screensharePluginType== 2){
 		$id = $_GET['id'];
 		$type = $_GET['type'];
 
-		
 		if (!empty($_GET['chatroommode'])) {
-			sendChatroomMessage($_GET['roomid'],$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$_GET['id']."');\">".$screenshare_language[3]."</a>");
+			sendChatroomMessage($_GET['roomid'],$screenshare_language[2]." <a href='javascript:void(0);' class='acceptSceenshare' to='".$userid."' grp='".$_GET['id']."' join_url='' start_url='' chatroommode='1' mobileAction=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$_GET['id']."');\">".$screenshare_language[3]."</a>",0);
 		}
 
 		ini_set('display_errors', 0);
-		
+
 		$connectUrl = "rtmp://" . $hostAddress . "/" . $application;
 
 	if ($screensharePluginType == '0') {
@@ -198,8 +201,8 @@ if($screensharePluginType== 2){
 				<!DOCTYPE html>
 				<html>
 				<head>
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-				<title>{$screenshare_language[0]}</title> 
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+				<title>{$screenshare_language[0]}</title>
 				<style>
 				html, body, div, span, applet, object, iframe,
 				h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -252,6 +255,7 @@ EOD;
 			<html>
 				<head>
 				<title>ScreenViewer</title>
+					<script src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 					<script type="text/javascript" src="../../js.php?type=plugin&name=screenshare&subtype=fmsred5"></script>
 					<script type="text/javascript">
 					var screenViewer = null;
@@ -274,7 +278,7 @@ EOD;
 EOD;
 		}
 	} else {
-		
+
 		if ($type == 1) {
 			$data = '<div id="tut8CtrlWrapper" class="controls-wrapper">
 					<div class="controls-wrapper">
@@ -316,11 +320,11 @@ EOD;
 				<script type="text/javascript" src="http://api.addlive.com/stable/addlive-sdk.min.js"></script>
 				<script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.min.js"></script>
 				<script src="../../js.php?type=plugin&name=screenshare&subtype=addlive" type="text/javascript"></script>
-				
+
 				<link media="all" rel="stylesheet" type="text/css" href="../../css.php?type=plugin&name=screenshare&subtype=addlive" />
 				<script type="text/javascript">
 						var scopeid = "{$id}";
-						$(document).ready(function(){
+						$(function(){
 							$('.cometchat_loading').hide();
 						});
 				</script>
@@ -338,4 +342,32 @@ EOD;
 EOD;
 	}
 }
+}
+
+function checkScreenshareConfig(){
+
+	global $hostAddress, $screensharePluginType , $applicationid , $appAuthSecret;
+
+	$error = "<div style='background:white;'>Please configure this plugin using administration panel before using. <a href='http://www.cometchat.com/documentation/admin/plugins/screensharing-plugin/' target='_blank'>Click here</a> for more information.</div>";
+
+	switch ($screensharePluginType) {
+		case '0':
+			if (empty($hostAddress)) {
+				echo $error;
+				exit;
+			}
+			break;
+		case '1':
+			if (empty($applicationid) || empty($appAuthSecret)) {
+				echo $error;
+				exit;
+			}
+			break;
+		case '2':
+			if (empty($zoomapplicationid) || empty($zoomappAuthSecret)) {
+				echo $error;
+				exit;
+			}
+			break;
+	}
 }

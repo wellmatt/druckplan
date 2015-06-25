@@ -15,7 +15,7 @@ if(typeof(jqcc) === 'undefined'){jqcc = jQuery;};
 (function($) {
     var ccjabber = [];
     jqcc.extend(
-        jqcc.standard, {            
+        jqcc.standard, {
             jabberInit: function() {
                 ccjabber = jqcc.ccjabber.getCcjabberVariable();
                 $('<div class="cometchat_tabsubtitle2" id="jabber_login">' + ccjabber.login + '</div>').insertAfter('#cometchat_userstab_popup .cometchat_userstabtitle');
@@ -33,13 +33,13 @@ if(typeof(jqcc) === 'undefined'){jqcc = jQuery;};
                 $.cometchat.updateJabberOnlineNumber(0);
                 $('.cometchat_subsubtitle_siteusers').remove();
                 $('.cometchat_subsubtitle_jabber').remove();
-                hash = '';                
+                hash = '';
                 $('#jabber_login').html(ccjabber.login);
                 $('#cometchat_userslist_jabber').html('');
                 ccjabber.heartbeatCount = 1;
                 clearTimeout(ccjabber.messageTimer);
                 ccjabber.heartbeatTime = ccjabber.minHeartbeat;
-                jqcc.ccjabber.jabberLogout();               
+                jqcc.ccjabber.jabberLogout();
                 $('#jabber_login').unbind('click');
                 $('#jabber_login').bind('click', function() {
                         jqcc.ccjabber.login();
@@ -113,7 +113,7 @@ if(typeof(jqcc) === 'undefined'){jqcc = jQuery;};
                     var onlineNumber = 0;
                     var type = 0;
                     $.each(data, function(id, user) {
-                       
+
                         if (user.id) {
                             var numericid = ((user.id).split('@')[0]).split('-')[1];
                             var found = user.id.indexOf('facebook');
@@ -134,7 +134,7 @@ if(typeof(jqcc) === 'undefined'){jqcc = jQuery;};
                                     }
                                 });
                             }
-                            if (user.n != '') {    
+                            if (user.n != '') {
                                 var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
                                 var test = '';
                                 test = pattern.test(user.n);
@@ -145,8 +145,9 @@ if(typeof(jqcc) === 'undefined'){jqcc = jQuery;};
                                     shortname = user.n;
                                 }
                             }
+                            user.a = (user.a).replace('http://',window.location.protocol+'//').replace('https://',window.location.protocol+'//');
                             buddylisttemp += '<div id="cometchat_userlist_' + user.id + '" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentname">' + shortname + '</span><span class="cometchat_userscontentdot cometchat_' + user.s + '"></span></div>';
-                            buddylisttempavatar += '<div id="cometchat_userlist_' + user.id + '" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentavatar"><img class="cometchat_userscontentavatarimage" original="' + (user.a).replace('http://','https://') + '"></span><span class="cometchat_userscontentname">' + shortname + '</span><span class="cometchat_userscontentdot cometchat_' + user.s + '"></span></div>';
+                            buddylisttempavatar += '<div id="cometchat_userlist_' + user.id + '" class="cometchat_userlist" onmouseover="jqcc(this).addClass(\'cometchat_userlist_hover\');" onmouseout="jqcc(this).removeClass(\'cometchat_userlist_hover\');"><span class="cometchat_userscontentavatar"><img class="cometchat_userscontentavatarimage" original="' + user.a + '"></span><span class="cometchat_userscontentname">' + shortname + '</span><span class="cometchat_userscontentdot cometchat_' + user.s + '"></span></div>';
                             $.cometchat.userAdd(user.id, user.s, user.m, user.n, user.a, '');
                         }
                         if (user.md5) {

@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -58,29 +58,31 @@ if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 if (empty($_GET['process'])) {
 	global $getstylesheet;
 	include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
-	
+
 	$curl = 0;
 	$errorMsg = '';
 
 	$rchkd = '';
 	$fchkd = '';
 	$ochkd = '';
-	
-	
+	$wchkd = '';
+
 	$hideFMSSettings = '';
 	$hideRed5Settings = '';
 	$hideOTASettings = '';
-	
-
+	$hideCommonSettings = '';
+	$hideOpentokSettings  = '';
 	$commonSettings = '';
 
 	if ($videoPluginType == '2') {
 		$ochkd = "selected";
-		$hideFMSSettings = 'style="display:none;"';
+		$hideCommonSettings = 'style="display:none;"';
 		$commonSettings = 'display:none;';
 		$errorMsg = "";
+
 		if(!checkcURL()) {
 			$curl = 1;
+			$hideOpentokSettings  = 'style="display:none;"';
 			$hideOTASettings = 'style="display:none;"';
 			$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for CometChat Server.</h2>";
 		}
@@ -88,19 +90,36 @@ if (empty($_GET['process'])) {
 		$rchkd = "selected";
 		$hideFMSSettings = 'style="display:none;"';
 		$hideOTASettings = 'style="display:none;"';
+		$hideOpentokSettings  = 'style="display:none;"';
 		$errorMsg = "";
-	} else { 
+	}elseif ($videoPluginType == '3') {
+		$wchkd = "selected";
+		$hideCommonSettings = 'style="display:none;"';
+		$commonSettings = 'display:none;';
+		$errorMsg = "";
+		$hideOpentokSettings  = 'style="display:none;"';
+		$hideFMSSettings = 'style="display:none;"';
+		$hideRed5Settings = 'style="display:none;"';
+		$hideOTASettings = 'style="display:none;"';
+        $avchat_mobile_warning = 'This option will work on modern desktop browsers which have support for webRTC (Chrome, Firefox &amp; Opera)';
+	} else {
 		$fchkd = "selected";
 		$hideRed5Settings = 'style="display:none;"';
 		$hideOTASettings = 'style="display:none;"';
 		$errorMsg = "";
+		$hideOpentokSettings  = 'style="display:none;"';
 	}
-	
 
-	
+	if(!file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'OpenTok'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php')){
+		$curl = 1;
+	 	$hideOTASettings = 'style="display:none;"';
+		$hideOpentokSettings  = 'style="display:none;"';
+		$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>You must upload CometChat Opentok package before you can configure this plugin. Please visit the following <a href='http://www.cometchat.com/documentation/admin/plugins/audio-video-broadcast/opentok-2-0/' target = '_blank'> link</a> for directions. If you have already added it, please click <a href='#' onclick='javascript:window.location.reload();'>here</a> to refresh.</h2>";
+    }
+
 	$message = "<h3 id='data'></h3>";
 
-	
+
 echo <<<EOD
 <!DOCTYPE html>
 
@@ -108,18 +127,21 @@ echo <<<EOD
 <head>
 	<script type="text/javascript" src="../js.php?admin=1"></script>
 	<script type="text/javascript" language="javascript">
-	
-		$(document).ready(function() {
+
+		$(function() {
 			var selected = $("#pluginTypeSelector :selected").val();
 			var errorMsg = 0;
+			$('#errormsg').hide();
 			if(selected=="0" || selected=="1") {
 				$('h3').hide();
+			}else if(selected=="3"){
+				$('h3').show();
+				$('#data').html('This option will work on modern desktop browsers which have support for webRTC (Chrome, Firefox &amp; Opera)');
 			} else {
 				$('h3').show();
 				$('#data').html('Make sure that the width and height are in the ratio 4:3. Default width is 350 and height is 262.');
 			}
-			resizeWindow();			
-				
+
 			$("#pluginTypeSelector").change(function() {
 				var selected = $("#pluginTypeSelector :selected").val();
 				if(selected=="1") {
@@ -129,6 +151,8 @@ echo <<<EOD
 					$("#centernav").show();
 					$("#centernavot").hide();
 					$("#otaSettings").hide();
+					$("#opentokSettings").hide();
+					$('#errormsg').hide();
 					$('h3').hide();
 				} else if(selected=="2") {
 					$("#fmsSettings").hide();
@@ -136,24 +160,43 @@ echo <<<EOD
 					if(errorMsg == {$curl}) {
 						$("#otaSettings").show();
 						$("#centernavot").show();
+						$("#opentokSettings").show();
 					} else {
 						$('#errormsg').show();
 					}
 					$('h3').show();
 					$('#data').html('Make sure that the width and height are in the ratio 4:3. Default width is 350 and height is 262.');
+
 				} else if(selected=="0") {
 					$(".element_fms").show();
 					$(".element_red5").hide();
 					$("#fmsSettings").show();
 					$("#centernav").show();
 					$("#centernavot").hide();
+					$("#opentokSettings").hide();
 					$('h3').hide();
+					$('#errormsg').hide();
+				} else if(selected=="3") {
+					$('#data').html('This option will work on modern desktop browsers which have support for webRTC (Chrome, Firefox &amp; Opera)');
+					$(".element_fms").hide();
+					$("#fmsSettings").hide();
+					$(".element_red5").hide();
+					$("#otaSettings").hide();
+					$("#centernavot").hide();
+					$("#centernav").hide();
+					$("#opentokSettings").hide();
+					$('h3').show();
+					$('#errormsg').hide();
 				}
 				resizeWindow();
 			});
-			
+
+			setTimeout(function(){
+				resizeWindow();
+			},200);
+
 			function resizeWindow() {
-				window.resizeTo(($("form").width()+30), ($("form").height()+75));
+				window.resizeTo(($("form").outerWidth(false)+window.outerWidth-$("form").outerWidth(false)), ($('form').outerHeight(false)+window.outerHeight-window.innerHeight));
 			}
 		});
 	</script>
@@ -162,24 +205,26 @@ echo <<<EOD
 
 </head>
 
-<body style="float:left;">
-	<form action="?module=dashboard&action=loadexternal&type=plugin&name=broadcast&process=true" method="post" style="float:left;">
-	<div id="content" style="float:left; margin:0px;">
+<body>
+	<form style="height:100%" action="?module=dashboard&action=loadexternal&type=plugin&name=broadcast&process=true" method="post">
+	<div id="content" style="width:auto">
 			<h2>Audio/Video Broadcast Settings</h2><br />
 					{$message}
 			<div style="margin-bottom:10px;">
 					<div class="title">Use :</div>
 					<div class="element" id="">
 						<select name="videoPluginType" id="pluginTypeSelector">
-							<option value="2" $ochkd>CometChat Server</option>							
+							<option value="3" $ochkd>CometChat Server (WebRTC)</option>
+							<option value="2" $ochkd>OpenTok 2.0</option>
 							<option value="1" $rchkd>RED5 or FMS (RTMP)</option>
 							<option value="0" $fchkd>FMS (RTMFP)</option>
 						</select>
 					</div>
 					<div style="clear:both;padding:5px;"></div>
+					<div style="clear:both;padding:5px;"></div>
 					{$errorMsg}
-					<div id="otaSettings" $hideOTASettings>
-						
+				<div id="otaSettings" $hideOTASettings>
+
 					<div>
 						<div id="centernavot" style="width:380px">
 							<div class="title">Video Width:</div><div class="element"><input type="text" class="inputbox" name="vidWidth" value="$vidWidth"></div>
@@ -196,8 +241,8 @@ echo <<<EOD
 					<div class="title">Quality:</div><div class="element"><input type="text" class="inputbox" name="quality" value="$quality"></div>
 					<div style="clear:both;padding:5px;"></div>
 				</div>
-			
-				<div id="fmsSettings">
+
+				<div id="fmsSettings" $hideCommonSettings>
 					<div>
 						<div id="centernav" style="width:380px">
 							<div class="title">Connect URL:</div><div class="element_fms" $hideFMSSettings><input type="text" class="inputbox" name="connectUrl" value="$connectUrl"></div>
@@ -215,23 +260,31 @@ echo <<<EOD
 					</div>
 				</div>
 
-				<div style="clear:both;padding:5px;"></div>					
+				<div id="opentokSettings" $hideOpentokSettings>
+					<div>
+						<div id="centernav" style="width:380px">
+							<div class="title">Opentok API Key:</div><div><input type="text" class="inputbox" name="opentokApiKey" value="$opentokApiKey"></div>
+							<div style="clear:both;padding:5px;"></div>
+							<div class="title">Opentok API Secret:</div><div><input type="text" class="inputbox" name="opentokApiSecret" value="$opentokApiSecret"></div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;padding:5px;"></div>
 			</div>
 			<div style="clear:both;padding:7.5px;"></div>
 			<input type="submit" value="Update Settings" class="button">&nbsp;&nbsp;or <a href="javascript:window.close();">cancel or close</a>
 	</div>
 	</form>
 </body>
-<script>resizeWindow();</script>
 </html>
 EOD;
 } else {
-	
+
 	$data = '';
 	foreach ($_POST as $field => $value) {
 		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
 	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 	header("Location:?module=dashboard&action=loadexternal&type=plugin&name=broadcast");
 }

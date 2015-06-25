@@ -5,9 +5,9 @@
 CometChat
 Copyright (c) 2014 Inscripts
 
-CometChat ('the Software') is a copyrighted work of authorship. Inscripts 
-retains ownership of the Software and any copies of it, regardless of the 
-form in which the copies may exist. This license is not a sale of the 
+CometChat ('the Software') is a copyrighted work of authorship. Inscripts
+retains ownership of the Software and any copies of it, regardless of the
+form in which the copies may exist. This license is not a sale of the
 original Software or any copies.
 
 By installing and using CometChat on your server, you agree to the following
@@ -18,27 +18,27 @@ and any Corporate Licensee and 'Inscripts' means Inscripts (I) Private Limited:
 
 CometChat license grants you the right to run one instance (a single installation)
 of the Software on one web server and one web site for each license purchased.
-Each license may power one instance of the Software on one domain. For each 
-installed instance of the Software, a separate license is required. 
+Each license may power one instance of the Software on one domain. For each
+installed instance of the Software, a separate license is required.
 The Software is licensed only to you. You may not rent, lease, sublicense, sell,
 assign, pledge, transfer or otherwise dispose of the Software in any form, on
-a temporary or permanent basis, without the prior written consent of Inscripts. 
+a temporary or permanent basis, without the prior written consent of Inscripts.
 
 The license is effective until terminated. You may terminate it
-at any time by uninstalling the Software and destroying any copies in any form. 
+at any time by uninstalling the Software and destroying any copies in any form.
 
-The Software source code may be altered (at your risk) 
+The Software source code may be altered (at your risk)
 
-All Software copyright notices within the scripts must remain unchanged (and visible). 
+All Software copyright notices within the scripts must remain unchanged (and visible).
 
 The Software may not be used for anything that would represent or is associated
-with an Intellectual Property violation, including, but not limited to, 
+with an Intellectual Property violation, including, but not limited to,
 engaging in any activity that infringes or misappropriates the intellectual property
-rights of others, including copyrights, trademarks, service marks, trade secrets, 
-software piracy, and patents held by individuals, corporations, or other entities. 
+rights of others, including copyrights, trademarks, service marks, trade secrets,
+software piracy, and patents held by individuals, corporations, or other entities.
 
-If any of the terms of this Agreement are violated, Inscripts reserves the right 
-to revoke the Software license at any time. 
+If any of the terms of this Agreement are violated, Inscripts reserves the right
+to revoke the Software license at any time.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
@@ -63,12 +63,17 @@ if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR
 
 if ($p_<3) exit;
 
+if (empty($hostAddress)) {
+	echo "<div style='background:white;'>Please configure this plugin using administration panel before using. <a href='http://www.cometchat.com/documentation/admin/plugins/whiteboard-plugin/' target='_blank'>Click here</a> for more information.</div>";
+	exit;
+}
+
 if ($_GET['action'] == 'request') {
-	sendMessageTo($_REQUEST['to'],$whiteboard_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwhiteboard.accept('".$userid."','".$_REQUEST['id']."');\">".$whiteboard_language[3]."</a> ".$whiteboard_language[4]);
+	sendMessage($_REQUEST['to'],$whiteboard_language[2]." <a href='javascript:void(0);' class='accept_White' to='".$userid."' random='".$_REQUEST['id']."' chatroommode='0' mobileAction=\"javascript:jqcc.ccwhiteboard.accept('".$userid."','".$_REQUEST['id']."');\">".$whiteboard_language[3]."</a> ".$whiteboard_language[4],1);
 
-	sendSelfMessage($_REQUEST['to'],$whiteboard_language[5]);
+	sendMessage($_REQUEST['to'],$whiteboard_language[5],2);
 
-	
+
 	if (!empty($_GET['callback'])) {
 		header('content-type: application/json; charset=utf-8');
 		echo $_GET['callback'].'()';
@@ -77,8 +82,8 @@ if ($_GET['action'] == 'request') {
 }
 
 if ($_GET['action'] == 'accept') {
-	sendMessageTo($_REQUEST['to'],$whiteboard_language[6]);
-		
+	sendMessage($_REQUEST['to'],$whiteboard_language[6],1);
+
 	if (!empty($_GET['callback'])) {
 		header('content-type: application/json; charset=utf-8');
 		echo $_GET['callback'].'()';
@@ -86,16 +91,16 @@ if ($_GET['action'] == 'accept') {
 }
 
 if ($_GET['action'] == 'whiteboard') {
-	
+
 	$id = $_GET['id'];
 	$type = 'whiteboard';
 
 	if (!empty($_GET['chatroommode'])) {
 		if (!empty($_GET['subaction'])) {
-		sendChatroomMessage($_GET['id'],$whiteboard_language[7]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwhiteboard.accept('".$id."','0','".$_GET['chatroommode']."');\">".$whiteboard_language[8]."</a>");
+		sendChatroomMessage($_GET['id'],$whiteboard_language[7]." <a href='javascript:void(0);' class='accept_White' to='".$id."' random='0' chatroommode='1' mobileAction=\"javascript:jqcc.ccwhiteboard.accept('".$id."','0','".$_GET['chatroommode']."');\">".$whiteboard_language[8]."</a>",0);
 		}
 		$id .= "chatroom";
-		
+
 	} else{
             if($userid < $id) {
                 $id =  md5(md5($userid).md5($id))."users";
@@ -104,10 +109,6 @@ if ($_GET['action'] == 'whiteboard') {
             }
 	}
 	ini_set('display_errors', 0);
-	 
-
-
-
 
 	$displayName = "Unknown".rand(0,999);
 	$username = $displayName;
@@ -119,9 +120,9 @@ if ($_GET['action'] == 'whiteboard') {
 	}
 
 	$result = mysqli_query($GLOBALS['dbh'],$sql);
-	
+
 	if($row = mysqli_fetch_assoc($result)) {
-		
+
 		if (function_exists('processName')) {
 			$row['username'] = processName($row['username']);
 		}
@@ -129,32 +130,25 @@ if ($_GET['action'] == 'whiteboard') {
 		$displayName = $row['username'];
 		$username = $row['username'];
 	}
-    
+
     $role = 0;
-	
-	if (empty($hostAddress)) {
-	
-		echo "<div style='background:white;'>Please configure this plugin using administration centre before using.</div>"; exit;
-	}
-	
-	if(!empty($port))
-	{
+
+	if(!empty($port)) {
 		$connectUrl = "rtmp://" . $hostAddress .":".$port. "/" . $application;
-	}
-	else
-	{
+	}else{
 		$connectUrl = "rtmp://" . $hostAddress . "/" . $application;
 	}
+
 	$baseURL = str_replace('_','',str_replace(':','_', str_replace('.','_',str_replace('/','_',BASE_URL.$_SERVER['SERVER_NAME']))));
-	$connectUrl = "{$connectUrl}/{$id}"."{$baseURL}";
-	
+	$connectUrl = "{$connectUrl}/{$id}";
+	$boundry_limit = "{$whiteboard_language[10]}";
 
 echo <<<EOD
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-<title>{$whiteboard_language[0]}</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>{$whiteboard_language[0]}</title>
 <style>
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -198,12 +192,13 @@ body {
 
 
 </style>
-
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
   <script type="text/javascript" src="../../js.php?type=plugin&name=whiteboard"></script>
+
         <script type="text/javascript">
             var swfVersionStr = "10.1.0";
             var xiSwfUrlStr = "playerProductInstall.swf";
-            var flashvars = {connectUrl: "{$connectUrl}", whitebWidth: {$whitebWidth}, whitebHeight: {$whitebHeight}, };
+            var flashvars = {connectUrl: "{$connectUrl}", whitebWidth: {$whitebWidth}, whitebHeight: {$whitebHeight}, boundrylang: "{$boundry_limit}" };
             var params = {};
             params.quality = "high";
             params.bgcolor = "#000000";
@@ -215,9 +210,9 @@ body {
             attributes.name = "whiteboard";
             attributes.align = "middle";
             swfobject.embedSWF(
-                "whiteboard.swf", "flashContent", 
-                "{$whitebWidth}", "{$whitebHeight}", 
-                swfVersionStr, xiSwfUrlStr, 
+                "whiteboard.swf", "flashContent",
+                "{$whitebWidth}", "{$whitebHeight}",
+                swfVersionStr, xiSwfUrlStr,
                 flashvars, params, attributes);
 			swfobject.createCSS("#flashContent", "display:block;text-align:left;");
         </script>
@@ -228,15 +223,15 @@ body {
 
   <div id="flashContent">
         	<p>
-	        	To view this page ensure that Adobe Flash Player version 
-				10.1.0 or greater is installed. 
+	        	To view this page ensure that Adobe Flash Player version
+				10.1.0 or greater is installed.
 			</p>
-			<script type="text/javascript"> 
-				var pageHost = ((document.location.protocol == "https:") ? "https://" :	"http://"); 
-				document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
-								+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
-			</script> 
-        </div>	
+			<script type="text/javascript">
+				var pageHost = ((document.location.protocol == "https:") ? "https://" :	"http://");
+				document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
+								+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
+			</script>
+        </div>
 </body>
 </html>
 EOD;

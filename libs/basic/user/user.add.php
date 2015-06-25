@@ -50,7 +50,7 @@ if ($_REQUEST["subexec"] == "save")
     else
         $user->setAdmin(false);
 
-    if ($user->getId()==0){
+    if ($user->getId()>0){
         if ($_REQUEST["user_password"] && $_REQUEST["user_password_repeat"] == $_REQUEST["user_password"])
             $user->setPassword(trim(addslashes($_REQUEST["user_password"])));
     }

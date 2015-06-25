@@ -21,26 +21,6 @@ object {
 	float: left;
 }
 
-#videobar {
-	float: top;	
-}
-
-#publisher-controls {
-	display: none;
-}
-
-#push-to-talk {
-	padding-top: 5px;
-	display: none;
-}
-
-#devicePanelContainer {
-	position: absolute;
-	left: 250px;
-	top: 10px;
-	display:none;
-}
-
 #devicePanelCloseButton {
 	position: relative;
 	z-index: 10;
@@ -71,25 +51,6 @@ a.settingsClose:hover {
 	cursor: pointer;
 }
 
-table {
-	clear: both;
-}
-
-td {
-	vertical-align: top;
-	padding-right: 15px;
-}
-
-.publisherContainer {
-	float: left;
-}
-
-.subscriberContainer {
-	width: 264px;
-	margin-left: 4px;
-	float:left;
-}
-
 html, body {
 	padding: 0px;
 	background: #000;
@@ -99,26 +60,24 @@ html, body {
 #navigation {
 	position: fixed;
 	bottom: 0px;
-	background: #333;
+	background: rgba(0,0,0,0.5);
 	width: 100%;
 	left: 0px;
 	padding: 0px;
-	display: none;
+	z-index: 99;
 }
 
 #navigation img {
 	border: 0;
-	float: right;
+	float: left;
 	margin-left: 5px;
 }
 
 #navigation_elements {
 	margin: 5px;
 	height: 20px;
-}
-
-#unpublishLink {
-	display: none;
+	display: inline-block;
+	width:240px;
 }
 
 #loading {
@@ -127,10 +86,6 @@ html, body {
 	top:48%;
 	margin: 0 auto;
 	text-align: center;
-}
-
-#canvas {
-	display: none;
 }
 
 #myCamera, #otherCamera {
@@ -147,4 +102,21 @@ html, body {
 	margin: 0 auto;
 	text-align: center;
 	display: none;
+}
+
+#canvasPub{
+	position: fixed;
+	bottom: 5px;
+	right: 5px;
+	z-index: 100;
+	width: 120px;
+	height: 90px;
+}
+html,body,#canvasSub{
+	height: 100%;
+}
+.OT_subscriber{
+	float: left !important;
+	width:100% !important;
+	height: 100% !important;
 }
