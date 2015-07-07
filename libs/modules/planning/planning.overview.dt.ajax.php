@@ -1,6 +1,30 @@
 <?php
-    require_once '../../../config.php';
+    error_reporting(-1);
+    ini_set('display_errors', 1);
+    chdir ("../../../");
+    require_once 'config.php';
+    require_once("libs/basic/mysql.php");
+    require_once("libs/basic/globalFunctions.php");
+    require_once("libs/basic/clients/client.class.php");
+    require_once("libs/basic/translator/translator.class.php");
+    require_once 'libs/basic/countries/country.class.php';
+    require_once("libs/basic/groups/group.class.php");
+    require_once("libs/modules/businesscontact/contactperson.class.php");
+    require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
+    require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
+    require_once 'libs/modules/calculation/order.class.php';
+    require_once 'libs/modules/calculation/calculation.class.php';
+    require_once 'libs/modules/article/article.class.php';
+    require_once 'libs/modules/planning/planning.job.class.php';
+    require_once 'libs/modules/calculation/calculation.machineentry.class.php';
+    require_once 'libs/modules/machines/machine.class.php';
 
+
+    $DB = new DBMysql();
+    $DB->connect($_CONFIG->db);
+    global $_LANG;
+    
+    
     $aColumns = array( 'null', 'id', 'number', 'title', 'customer', 'deliverydate', 'comment', 'type' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
@@ -240,14 +264,47 @@
                 $row[] = $aRow[ $aColumns[$i] ];
             }
         }
-        $row[] = null;
-// 		var_dump($row); echo "</br>";
+        $daCount = 0;
+        $plCount = 0;
+        if ($aRow['type'] == 'K')
+        {
+            $order = new Order($aRow['id']);
+            $calcs = Calculation::getAllCalculations($order);
+            foreach ($calcs as $calc)
+            {
+                if ($calc->getState())
+                {
+                    $mes = Machineentry::getAllMachineentries($calc->getId());
+                    foreach ($mes as $me)
+                    {
+                        if ($me->getTime()>0)
+                        {
+                            $daCount += 1;
+                            $tmp_pl = PlanningJob::getAllJobs(" AND object = {$aRow['id']} AND subobject = {$me->getId()}");
+                            if (count($tmp_pl)>0)
+                                $plCount += 1;
+                        }
+                    }
+                }
+            }
+        } else {
+            $daCount = 0;
+            $orderpositions = Orderposition::getAllOrderposition($aRow['id']);
+            foreach ($orderpositions as $opos)
+            {
+                if ($opos->getQuantity()>0)
+                {
+                    $daCount += 1;
+                    $tmp_pl = PlanningJob::getAllJobs(" AND object = {$aRow['id']} AND subobject = {$opos->getId()}");
+                    if (count($tmp_pl)>0)
+                        $plCount += 1;
+                }
+            }
+        }
+        
+        $row[] = $plCount.'/'.$daCount;
         $output['aaData'][] = $row;
     }
-    
-//     var_dump($output); echo "</br>";
      
     echo json_encode( $output );
-    
-//     echo  json_last_error();
 ?>

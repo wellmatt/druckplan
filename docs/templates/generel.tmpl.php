@@ -109,11 +109,25 @@ if (1 == 1) { // is_a($order, "Order")
     $smarty->assign('CustomerId', $order->getCustomer()
         ->getId());
     
+    $smarty->assign('CustomerNameSD', $order->getCustomer()
+        ->getNameAsLine());
+    
     $smarty->assign('CustomerName', $order->getCustomer()
         ->getNameAsLine());
     
     $smarty->assign('CustomerAddress', str_replace("\n", "<br />", $order->getCustomer()
         ->getAddressAsLine()));
+    
+    $smarty->assign('CustomerAddressSD', str_replace("\n", "<br />", $order->getCustomer()
+        ->getAddressAsLine()));
+    
+    if ($order->getInvoiceAddress() >0)
+    {
+        $smarty->assign('CustomerName', $order->getInvoiceAddress()
+            ->getNameAsLine());
+        $smarty->assign('CustomerAddress', str_replace("\n", "<br />", $order->getInvoiceAddress()
+            ->getAddressAsLine()));
+    }
     
     $smarty->assign('CustomerEmail', $order->getCustomer()
         ->getEmail());

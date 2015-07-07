@@ -19,7 +19,7 @@ require_once 'libs/modules/tickets/ticket.log.class.php';
 
 class Ticket {
     
-    private $id;
+    private $id = 0;
     private $title;
     private $crtdate;
     private $crtuser;
@@ -94,17 +94,6 @@ class Ticket {
                 $r = $r[0];
                 $this->total_time = $r["time"]/60/60;
             }
-            
-            
-            $sql = "SELECT * FROM tickets_association WHERE ticketid = {$id} ORDER BY module ASC";
-            if($DB->num_rows($sql))
-            {
-                $retarray = Array();
-                foreach($DB->select($sql) as $r){
-                    $retarray[] = new TicketAssociation($r["id"]);
-                }
-                $this->associations = $retarray;
-            }
         }
     }
 
@@ -144,7 +133,6 @@ class Ticket {
                 $tmp_crtuser = $this->crtuser->getId();
             else
                 $tmp_crtuser = $_USER->getId();
-            
             $this->number = $_USER->getClient()->createTicketnumber();
             $sql = "INSERT INTO tickets
             (title, duedate, closedate, closeuser, editdate, number, customer, 

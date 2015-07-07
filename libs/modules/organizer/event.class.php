@@ -197,17 +197,18 @@ class Event {
             require_once $_BASEDIR . 'libs/modules/tickets/ticket.class.php';
             $tickets = Ticket::getDueTicketsWithinTimeFrame($start, $end, $user);
             foreach($tickets as $ticket) {
-
-                $event = new Event();
-                $event->setTitle('[TICKET] ' . $ticket->getNumber());
-                $event->setPublic(1);
-                $event->setUser($user);
-                $event->setDesc('Ticket ' . $ticket->getNumber() . ' (' . $ticket->getTitle() . ')');
-                $event->setBegin($ticket->getDuedate());
-                $event->setEnd($ticket->getDuedate()+3600);
-				$event->setTicket($ticket);
-                $retval[] = $event;
-
+                if ($ticket->getState()->getId() != 1 && $ticket->getState()->getId() != 3)
+                {
+                    $event = new Event();
+                    $event->setTitle('[TICKET] ' . $ticket->getNumber());
+                    $event->setPublic(1);
+                    $event->setUser($user);
+                    $event->setDesc('Ticket ' . $ticket->getNumber() . ' (' . $ticket->getTitle() . ')');
+                    $event->setBegin($ticket->getDuedate());
+                    $event->setEnd($ticket->getDuedate()+3600);
+    				$event->setTicket($ticket);
+                    $retval[] = $event;
+                }
             }
 
         }

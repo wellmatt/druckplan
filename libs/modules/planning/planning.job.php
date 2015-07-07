@@ -10,6 +10,18 @@ require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/calculation/order.class.php';
 require_once 'libs/modules/calculation/calculation.class.php';
 require_once 'libs/modules/article/article.class.php';
+require_once 'libs/modules/planning/planning.job.class.php';
+
+if (!$_REQUEST["id"])
+    die("something went wrong!!");
+
+if ((int)$_REQUEST["delitem"]>0)
+{
+    $del_item = new PlanningJob((int)$_REQUEST["delitem"]);
+    $del_ticket = $del_item->getTicket();
+    $del_ticket->delete();
+    $del_item->delete();
+}
 
 $jobs = Array();
 if ($_REQUEST["type"] == "V")
@@ -30,7 +42,8 @@ if ($_REQUEST["type"] == "V")
     foreach ($orderpositions as $opos)
     {
         $opos_article = new Article($opos->getObjectid());
-        if ($opos_article->getIsWorkHourArt())
+        $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$opos->getId()} AND artmach = {$opos_article->getId()}");
+        if ($opos_article->getIsWorkHourArt() && count($tmp_planned_jobs)==0)
         {
             $jobs[] = Array("title" => $opos_article->getTitle(), "amount" => $opos->getQuantity(), "type" => "OP", "objectid" => $opos->getId());
         }
@@ -58,11 +71,64 @@ if ($_REQUEST["type"] == "V")
             $mes = Machineentry::getAllMachineentries($calc->getId());
             foreach ($mes as $me)
             {
-                $jobs[] = Array("title" => $me->getMachine()->getName(), "amount" => $me->getTime()/60, "type" => "ME", "objectid" => $me->getId());
+                $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$me->getId()} AND artmach = {$me->getMachine()->getId()}");
+                if (count($tmp_planned_jobs)==0)
+                    $jobs[] = Array("title" => $me->getMachine()->getName(), "amount" => $me->getTime()/60, "type" => "ME", "objectid" => $me->getId());
             }
         }
     }
 }
+
+if ($_REQUEST["step"]==2){
+    if ($_REQUEST["subexec"]=="save")
+    {
+        foreach ($_REQUEST["job"] as $reqjob)
+        {
+            foreach ($reqjob["jobs"] as $reqjobs)
+            {
+                if ((int)$reqjobs["id"]>0)
+                {
+                    $pj = new PlanningJob((int)$reqjobs["id"]);
+                    $pj->setStart(strtotime($reqjobs["due"]));
+                    $pjend = strtotime($reqjobs["due"]) + (tofloat($reqjobs["amount"]) * 60 * 60 );
+                    echo $pjend;
+                    $pj->setEnd($pjend);
+                    $pj->save();
+                }
+                else
+                {
+                    $pj = new PlanningJob();
+                    if ($_REQUEST["type"] == "K")
+                    {
+                        $pj->setType(PlanningJob::TYPE_K);
+                        $pj->setObject(new Order((int)$_REQUEST["id"]));
+                        $pj->setSubobject(new Machineentry((int)$reqjob["object"]));
+                        $pj->setArtmach(new Machine((int)$reqjob["artmach"]));
+                    }
+                    else
+                    {
+                        $pj->setType(PlanningJob::TYPE_V);
+                        $pj->setObject(new CollectiveInvoice((int)$_REQUEST["id"]));
+                        $pj->setSubobject(new Orderposition((int)$reqjob["object"]));
+                        $pj->setArtmach(new Article((int)$reqjob["artmach"]));
+                    }
+                    $pj->setAssigned_user(new User((int)$reqjobs["worker"]));
+                    $pj->setTicket(new Ticket(1));
+                    $pj->setStart(strtotime($reqjobs["due"]));
+                    $pjend = strtotime($reqjobs["due"]) + (tofloat($reqjobs["amount"]) * 60 * 60 );
+                    echo $pjend;
+                    $pj->setEnd($pjend);
+                    $pj->createMyTicket();
+                    $pj->save();
+                }
+            }
+        }
+        header('Location: index.php?page='.$_REQUEST['page'].'&id='.$_REQUEST["id"].'&type='.$_REQUEST["type"]);
+    }
+}
+$planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} GROUP BY subobject ORDER BY object, subobject, artmach DESC");
+if (count($planned_jobs)>0)
+    $_REQUEST["step"] = 1;
 
 ?>
 
@@ -73,6 +139,7 @@ if ($_REQUEST["type"] == "V")
 <script src='jscripts/calendar/de.js'></script>
 <script src='jscripts/qtip/jquery.qtip.min.js'></script>
 <link href='jscripts/qtip/jquery.qtip.min.css' rel='stylesheet'/>
+<script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 
 
 <table width="100%">
@@ -130,7 +197,7 @@ if ($_REQUEST["type"] == "V")
 <br/>
 <div class="box1">
     <b>Aufgaben</b>
-    <form action="index.php?page=<?=$_REQUEST['page']?>&step=1" method="post" name="job_create_<?=$job['objectid']?>" id="job_create_<?=$job['objectid']?>">
+    <form action="index.php?page=<?=$_REQUEST['page']?>&step=1" method="post" name="job_create" id="job_create">
     <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"> 
     <input type="hidden" name="type" value="<?=$_REQUEST["type"]?>"> 
 	<table width="100%">
@@ -138,7 +205,6 @@ if ($_REQUEST["type"] == "V")
     		<tr>
     			<td class="content_row content_row_header" valign="top">Artikel/Maschine</td>
     			<td class="content_row content_row_header" valign="top">Soll Zeit (Std.)</td>
-    			<td class="content_row content_row_header" valign="top">Simultan?</td>
     			<td class="content_row content_row_header" valign="top">Anz. Arbeiter/Jobs</td>
     		</tr>
 	   </thead>
@@ -149,30 +215,54 @@ if ($_REQUEST["type"] == "V")
         	   foreach ($jobs as $job){
             	   if($job["amount"]>0){?>
                 		<tr>
-                            <input type="hidden" name="job[<?php echo $x;?>][type]" value="<?=$job['type']?>"/> 
-                            <input type="hidden" name="job[<?php echo $x;?>][object]" value="<?=$job['objectid']?>"/> 
+                            <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?=$job['type']?>"/> 
+                            <input type="hidden" name="crt_job[<?php echo $x;?>][object]" value="<?=$job['objectid']?>"/> 
                 			<td class="content_row" valign="top"><?php echo $job["title"];?></td>
                 			<td class="content_row" valign="top"><?php echo printPrice($job["amount"],2);?></td>
-                			<td class="content_row" valign="top"><input type="checkbox" value="1" name="job[<?php echo $x;?>][simultaneous]" <?php if ($_REQUEST["job"][$x]["simultaneous"]) echo "checked";?>/></td>
-                			<td class="content_row" valign="top"><input type="number" value="<?php if ($_REQUEST["job"][$x]["workers"]) echo $_REQUEST["job"][$x]["workers"]; else echo "1";?>" name="job[<?php echo $x;?>][workers]" style="width: 60px;"/>
+                			<td class="content_row" valign="top"><input type="number" value="<?php if ($_REQUEST["job"][$x]["workers"]) echo $_REQUEST["job"][$x]["workers"]; else echo "1";?>" name="crt_job[<?php echo $x;?>][workers]" style="width: 60px;"/>
                 		</tr>
             	       <?php $time_total += $job["amount"];
             	   }
             	   $x++;
-        	   }?>
+        	   }
+            }
+        	   foreach ($planned_jobs as $pljob)
+        	   {
+        	       $tmp_planned_subjobs = PlanningJob::getAllJobs(" AND object = {$pljob->getObject()->getId()} AND subobject = {$pljob->getSubobject()->getId()} ORDER BY object, subobject, artmach DESC");
+        	       ?>
+            	   <tr>
+        	       <td class="content_row" valign="top"><?php echo $pljob->getTitle();?></td>
+        	       <td class="content_row" valign="top"><?php echo printPrice($pljob->getPlannedTime(),2);?></td>
+        	       <td class="content_row" valign="top"><?php echo count($tmp_planned_subjobs);?></td>
+        	       </tr>
+        	       <?php
+        	       $time_total += $pljob->getPlannedTime();
+        	   }
+        	   ?>
         		<tr>
         			<td class="content_row content_row_header" valign="top">Gesamt</td>
         			<td class="content_row content_row_header" valign="top"><?php echo printPrice($time_total,2);?></td>
-        			<td class="content_row content_row_header" valign="top">&nbsp;</td>
         			<td class="content_row content_row_header" valign="top"><?php if (count($jobs)>0) echo '<button type="submit" class="btn btn-primary btn-xs">Job(s) erstellen</button></td>';?></td>
         		</tr>
-	   <?php }?>
 	</table>
 	</form>
 </div>
 </br>
 <?php if ($_REQUEST["step"]==1){
     ?>
+    <div id="fl_menu">
+    	<div class="label">Quick Move</div>
+    	<div class="menu">
+            <a href="#top" class="menu_item">Kopfdaten</a>
+            <a href="index.php?page=libs/modules/planning/planning.overview.php" class="menu_item">Zurück</a>
+            <a href="#" class="menu_item" onclick="$('#jobform').submit();">Speichern</a>
+        </div>
+    </div>
+    <script language="JavaScript">
+    	$(function() {
+    	    $('#jobform').validate({});
+    	});
+    </script>
     <script language="JavaScript">
     	function recalc(id,job,iterator)
     	{
@@ -223,10 +313,188 @@ if ($_REQUEST["type"] == "V")
     	    $('#total_jtime').html(total);
     	}
     </script>
-    <div>
+    <div class="box1">
+        <form action="index.php?page=<?=$_REQUEST['page']?>&step=2&subexec=save" method="post" id="jobform" name="jobform">
+        <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"> 
+        <input type="hidden" name="type" value="<?=$_REQUEST["type"]?>"> 
     <?php
     $jobx = 0;
-    foreach ($_REQUEST["job"] as $req_job)
+    foreach ($planned_jobs as $req_job)
+    {
+        $planned_subjobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$req_job->getSubobject()->getId()} ORDER BY object, subobject, artmach DESC");
+        if ($req_job->getType() == PlanningJob::TYPE_K)
+        {
+            $me = $req_job->getSubobject();
+            $workamount = $me->getTime()/60;
+            $eachamount = round_up($workamount/count($planned_subjobs),2);
+            $jobname = $me->getMachine()->getName();
+            $color = $me->getMachine()->getColor();
+            $qual_users = $me->getMachine()->getQualified_users();
+            $artmach = $me->getMachine()->getId();
+        } else
+        {
+            $op = $req_job->getSubobject();
+            $workamount = $op->getQuantity();
+            $eachamount = round_up($workamount/count($planned_subjobs),2);
+            $jobart = new Article($op->getObjectid());
+            $jobname = $jobart->getTitle();
+            $color = "3a87ad";
+            $qual_users = $jobart->getQualified_users();
+            $artmach = $jobart->getId();
+        }
+        ?>
+        <div class="box2">
+            <input type="hidden" name="job[<?php echo $jobx;?>][artmach]" value="<?=$artmach?>"/> 
+            <input type="hidden" name="job[<?php echo $jobx;?>][type]" value="<?php if ($req_job->getType() == PlanningJob::TYPE_K) echo "ME"; else echo "OP";?>"/> 
+            <input type="hidden" name="job[<?php echo $jobx;?>][object]" value="<?=$req_job->getSubobject()->getId()?>"/> 
+            <b>Job(s) - <?php echo "<font color='{$color}'>".$jobname."</font>";?></b>
+        	<table width="100%">
+        	    <thead>
+        	       <tr>
+        	           <td width="80" class="content_row_header">&nbsp;</td>
+        	           <td width="110" class="content_row_header">Soll-Zeit</td>
+        	           <td width="110" class="content_row_header">%-Ges.Zeit</td>
+        	           <td width="350" class="content_row_header">Fällig</td>
+        	           <td width="190" class="content_row_header">Ticket MA</td>
+        	           <td class="content_row_header">&nbsp;</td>
+        	       </tr>
+        	    </thead>
+        	    <?php 
+        	    $i = 1;
+        	    $total_time = 0;
+        	    foreach ($planned_subjobs as $planned_subjob){
+        	        ?>
+        	        <input type="hidden" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][id]" value="<?=$planned_subjob->getId()?>"/> 
+                    <script language="JavaScript">
+                        $(function() {
+                        	$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                        		 lang:'de',
+                        		 i18n:{
+                        		  de:{
+                        		   months:[
+                        		    'Januar','Februar','März','April',
+                        		    'Mai','Juni','Juli','August',
+                        		    'September','Oktober','November','Dezember',
+                        		   ],
+                        		   dayOfWeek:[
+                        		    "So.", "Mo", "Di", "Mi", 
+                        		    "Do", "Fr", "Sa.",
+                        		   ]
+                        		  }
+                        		 },
+                        		 timepicker:true,
+                        		 format:'d.m.Y H:i',
+                        		 minDate:'0',
+                        		 <?php if ($header_duedate>0) echo "maxDate: '".date("d.m.Y",$header_duedate)."',";?>
+                        		 inline: true,
+                        		 weeks:true,
+                        		 onSelectDate:function(ct,$i){
+                            		 var amount = $('#job_amount_<?=$jobx?>_<?=$i?>').val();
+                        			 $.ajax({
+                     		    		type: "GET",
+                     		    		url: "libs/modules/planning/planning.ajax.php",
+                     		    		data: { exec: "ajax_getDisabledDates", date: ct.dateFormat('d.m.Y'), amount: amount, type: "<?php if ($planned_subjob->getType() == PlanningJob::TYPE_K) echo "ME"; else echo "OP";?>", objectid: "<?=$planned_subjob->getSubobject()->getId()?>" },
+                     		    		success: function(data) 
+                     		    		    {
+                          		    		    var response = JSON.parse(data);
+                            		    		$('#job_worker_<?=$jobx?>_<?=$i?>').empty();
+                          		    		    response.valid_users.forEach(function(entry) {
+                              		    		    var time_left = entry.time/60/60;
+                                		    		time_left = time_left.toFixed(2);
+                                		    		time_left = time_left.toString().replace(".", ",");
+                          		    		    	$('#job_worker_<?=$jobx?>_<?=$i?>').append('<option value="'+entry.id+'">'+entry.name+' ('+time_left+' Std.)</option>');
+                        		    		    });
+                                        		$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                                        			disabledDates: response.disabledDates,formatDate:'d.m.Y'
+                                        		});
+                     		        			return;
+                     		    		    }
+                     		    	});
+                       			 }
+                        		 ,onChangeMonth:function(ct,$i){
+                            		 var amount = $('#job_amount_<?=$jobx?>_<?=$i?>').val();
+                        			 $.ajax({
+                     		    		type: "GET",
+                     		    		url: "libs/modules/planning/planning.ajax.php",
+                     		    		data: { exec: "ajax_getDisabledDates", date: ct.dateFormat('d.m.Y'), amount: amount, type: "<?php if ($planned_subjob->getType() == PlanningJob::TYPE_K) echo "ME"; else echo "OP";?>", objectid: "<?=$planned_subjob->getSubobject()->getId()?>" },
+                     		    		success: function(data) 
+                     		    		    {
+                          		    		    var response = JSON.parse(data);
+                            		    		$('#job_worker_<?=$jobx?>_<?=$i?>').empty();
+                          		    		    response.valid_users.forEach(function(entry) {
+                              		    		    var time_left = entry.time/60/60;
+                                		    		time_left = time_left.toFixed(2);
+                                		    		time_left = time_left.toString().replace(".", ",");
+                          		    		    	$('#job_worker_<?=$jobx?>_<?=$i?>').append('<option value="'+entry.id+'">'+entry.name+' ('+time_left+' Std.)</option>');
+                        		    		    });
+                                        		$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                                        			disabledDates: response.disabledDates,formatDate:'d.m.Y'
+                                        		});
+                     		        			return;
+                     		    		    }
+                     		    	});
+                       			 }
+                        	});
+                        	$('#job_amount_<?=$jobx?>_<?=$i?>').change(function() {
+                            	recalc(<?=$i?>,<?=$jobx?>,<?=count($planned_subjobs)?>);
+                        	});
+                    	});
+                    </script>
+            		<tr style="background-color: <?php if($i % 2 != 0) echo '#eaeaea'; else echo '#eadddd';?>;">
+            			<td class="content_row" valign="top">#<?php echo $i;?></td>
+            			<td class="content_row" valign="top">
+            			    <input type="text" style="width:100px" id="job_amount_<?=$jobx?>_<?=$i?>" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][amount]" onfocus="markfield(this,0)" 
+            			    onblur="markfield(this,1)" value="<?php echo printPrice(($planned_subjob->getEnd() - $planned_subjob->getStart())/60/60,2);?>" required/>
+            			    <input type="hidden" id="job_amount_old_<?=$jobx?>_<?=$i?>" value="<?php echo printPrice(($planned_subjob->getEnd() - $planned_subjob->getStart())/60/60,2);?>"/>
+            			</td>
+            			<td class="content_row" valign="top">
+            			    <span id="perc_<?=$jobx?>_<?=$i?>"><?php echo printPrice(percentage((($planned_subjob->getEnd() - $planned_subjob->getStart())/60/60), $workamount, 2),2);?>%</span>
+            			</td>
+        			    <td class="content_row" valign="top">
+        			         <input type="text" style="width:350px" id="job_due_<?=$jobx?>_<?=$i?>" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][due]" 
+                			 class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
+                			 onfocus="markfield(this,0)" onblur="markfield(this,1)" 
+                			 value="<? echo date('d.m.Y H:i',$planned_subjob->getStart());?>" required/>
+            			     <input type="hidden" id="job_duemonth_<?=$jobx?>_<?=$i?>" value="<?php echo date("m",$planned_subjob->getStart());?>"/>
+        			    </td>
+            			<td class="content_row" valign="top">
+            			     <?php echo $planned_subjob->getAssigned_user()->getNameAsLine();?></br>
+            			     <?php echo '<a target="_blank" href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='.$planned_subjob->getTicket()->getId().'">#'.$planned_subjob->getTicket()->getNumber().'</a>'?>
+            			</td>
+        			    <td class="content_row" valign="top">&nbsp;
+        			    <?php if ($planned_subjob->getTicket()->getState()->getId() == 2){?>
+        			     <span style="float: right"><a href="index.php?page=<?=$_REQUEST['page']?>&type=<?=$_REQUEST["type"]?>&id=<?=$_REQUEST["id"]?>&delitem=<?=$planned_subjob->getId()?>"><img src="images/icons/cross.png" class="pointer"></a></span>
+        			    <?php }?>
+        			    </td>
+            		</tr>
+        		<?php 
+        		$total_time += (($planned_subjob->getEnd() - $planned_subjob->getStart())/60/60);
+        		$i++;
+        	    }?>
+        		<tr>
+        			<td class="content_row" valign="top">Gesamt:</td>
+        			<td class="content_row" valign="top"><span id="total_jtime"><?php echo printPrice($total_time,2);?></span><span id="total_jtime_fixed" style="display: none;"><?php echo printPrice($workamount,2);?></span></td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        		</tr>
+        		<tr>
+        			<td class="content_row" valign="top">zu vergeben:</td>
+        			<td class="content_row" valign="top"><span id="total_jtime_open"><?php echo printPrice($workamount-$total_time,2);?></span></b></td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        			<td class="content_row" valign="top">&nbsp;</td>
+        		</tr>
+        	</table>
+        </div>
+        </br>
+    <?php
+    $jobx++;
+    }
+    if ($_REQUEST["crt_job"]){
+    foreach ($_REQUEST["crt_job"] as $req_job)
     {
         if ($req_job["type"] == "ME")
         {
@@ -236,6 +504,7 @@ if ($_REQUEST["type"] == "V")
             $jobname = $me->getMachine()->getName();
             $color = $me->getMachine()->getColor();
             $qual_users = $me->getMachine()->getQualified_users();
+            $artmach = $me->getMachine()->getId();
         } else
         {
             $op = new Orderposition($req_job["object"]);
@@ -245,6 +514,7 @@ if ($_REQUEST["type"] == "V")
             $jobname = $jobart->getTitle();
             $color = "3a87ad";
             $qual_users = $jobart->getQualified_users();
+            $artmach = $jobart->getId();
         }
         $workamount_last = $workamount;
         $t_total = 0;
@@ -252,9 +522,9 @@ if ($_REQUEST["type"] == "V")
         
         ?>
         <div class="box2">
-            <form action="index.php?page=<?=$_REQUEST['page']?>&step=2&subexec=save" method="post">
-            <input type="hidden" name="job[<?php echo $jobx;?>][type]" value="<?=$job['type']?>"/> 
-            <input type="hidden" name="job[<?php echo $jobx;?>][object]" value="<?=$job['objectid']?>"/> 
+            <input type="hidden" name="job[<?php echo $jobx;?>][artmach]" value="<?=$artmach?>"/> 
+            <input type="hidden" name="job[<?php echo $jobx;?>][type]" value="<?=$req_job['type']?>"/> 
+            <input type="hidden" name="job[<?php echo $jobx;?>][object]" value="<?=$req_job['object']?>"/> 
             <b>Job(s) - <?php echo "<font color='{$color}'>".$jobname."</font>";?></b>
         	<table width="100%">
         	    <thead>
@@ -288,6 +558,7 @@ if ($_REQUEST["type"] == "V")
         	        if ($i < $req_job["workers"]) 
         	            $workamount_last -= tofloat(printPrice($eachamount,2));
         	        ?>
+        	        <input type="hidden" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][id]" value="0"/> 
                     <script language="JavaScript">
                         $(function() {
                         	$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
@@ -308,9 +579,10 @@ if ($_REQUEST["type"] == "V")
                         		 timepicker:true,
                         		 format:'d.m.Y H:i',
                         		 minDate:'0',
+                        		 <?php if ($header_duedate>0) echo "maxDate: '".date("d.m.Y",$header_duedate)."',";?>
                         		 inline: true,
                         		 weeks:true,
-                        		 onChangeMonth:function(ct,$i){
+                        		 onSelectDate:function(ct,$i){
                             		 var amount = $('#job_amount_<?=$jobx?>_<?=$i?>').val();
                         			 $.ajax({
                      		    		type: "GET",
@@ -318,6 +590,40 @@ if ($_REQUEST["type"] == "V")
                      		    		data: { exec: "ajax_getDisabledDates", date: ct.dateFormat('d.m.Y'), amount: amount, type: "<?=$job['type']?>", objectid: "<?=$req_job["object"]?>" },
                      		    		success: function(data) 
                      		    		    {
+                          		    		    var response = JSON.parse(data);
+                            		    		$('#job_worker_<?=$jobx?>_<?=$i?>').empty();
+                          		    		    response.valid_users.forEach(function(entry) {
+                              		    		    var time_left = entry.time/60/60;
+                                		    		time_left = time_left.toFixed(2);
+                                		    		time_left = time_left.toString().replace(".", ",");
+                          		    		    	$('#job_worker_<?=$jobx?>_<?=$i?>').append('<option value="'+entry.id+'">'+entry.name+' ('+time_left+' Std.)</option>');
+                        		    		    });
+                                        		$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                                        			disabledDates: response.disabledDates,formatDate:'d.m.Y'
+                                        		});
+                     		        			return;
+                     		    		    }
+                     		    	});
+                       			 }
+                        		 ,onChangeMonth:function(ct,$i){
+                            		 var amount = $('#job_amount_<?=$jobx?>_<?=$i?>').val();
+                        			 $.ajax({
+                     		    		type: "GET",
+                     		    		url: "libs/modules/planning/planning.ajax.php",
+                     		    		data: { exec: "ajax_getDisabledDates", date: ct.dateFormat('d.m.Y'), amount: amount, type: "<?=$job['type']?>", objectid: "<?=$req_job["object"]?>" },
+                     		    		success: function(data) 
+                     		    		    {
+                          		    		    var response = JSON.parse(data);
+                            		    		$('#job_worker_<?=$jobx?>_<?=$i?>').empty();
+                          		    		    response.valid_users.forEach(function(entry) {
+                              		    		    var time_left = entry.time/60/60;
+                                		    		time_left = time_left.toFixed(2);
+                                		    		time_left = time_left.toString().replace(".", ",");
+                          		    		    	$('#job_worker_<?=$jobx?>_<?=$i?>').append('<option value="'+entry.id+'">'+entry.name+' ('+time_left+' Std.)</option>');
+                        		    		    });
+                                        		$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
+                                        			disabledDates: response.disabledDates,formatDate:'d.m.Y'
+                                        		});
                      		        			return;
                      		    		    }
                      		    	});
@@ -325,11 +631,6 @@ if ($_REQUEST["type"] == "V")
                         	});
                         	$('#job_amount_<?=$jobx?>_<?=$i?>').change(function() {
                             	recalc(<?=$i?>,<?=$jobx?>,<?=count($req_job["workers"])+1?>);
-                            	
-                        		$('#job_due_<?=$jobx?>_<?=$i?>').datetimepicker({
-                        			disabledDates: ['25.06.2015','26.06.2015']
-                     		        ,formatDate:'d.m.Y'
-                        		});
                         	});
                     	});
                     </script>
@@ -337,7 +638,7 @@ if ($_REQUEST["type"] == "V")
             			<td class="content_row" valign="top">#<?php echo $i;?></td>
             			<td class="content_row" valign="top">
             			    <input type="text" style="width:100px" id="job_amount_<?=$jobx?>_<?=$i?>" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][amount]" onfocus="markfield(this,0)" 
-            			    onblur="markfield(this,1)" value="<?php echo $print_workamount;?>"/>
+            			    onblur="markfield(this,1)" value="<?php echo $print_workamount;?>" required/>
             			    <input type="hidden" id="job_amount_old_<?=$jobx?>_<?=$i?>" value="<?php echo $print_workamount;?>"/>
             			</td>
             			<td class="content_row" valign="top">
@@ -347,11 +648,11 @@ if ($_REQUEST["type"] == "V")
         			         <input type="text" style="width:350px" id="job_due_<?=$jobx?>_<?=$i?>" name="job[<?php echo $jobx;?>][jobs][<?=$i?>][due]" 
                 			 class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
                 			 onfocus="markfield(this,0)" onblur="markfield(this,1)" 
-                			 value="<? echo date('d.m.Y H:i');?>"/>
+                			 value="<? echo date('d.m.Y H:i');?>" required/>
             			     <input type="hidden" id="job_duemonth_<?=$jobx?>_<?=$i?>" value="<?php echo date("m");?>"/>
         			    </td>
             			<td class="content_row" valign="top">
-            			     <select name="job[<?php echo $jobx;?>][jobs][<?=$i?>][worker]" id="job_worker_<?=$jobx?>_<?=$i?>" style="width:180px"></select>
+            			     <select name="job[<?php echo $jobx;?>][jobs][<?=$i?>][worker]" id="job_worker_<?=$jobx?>_<?=$i?>" style="width:180px" required></select>
             			</td>
         			    <td class="content_row" valign="top">&nbsp;</td>
             		</tr>
@@ -373,14 +674,14 @@ if ($_REQUEST["type"] == "V")
         			<td class="content_row" valign="top">&nbsp;</td>
         		</tr>
         	</table>
-            </form>
         </div>
         </br>
     <?php
     $jobx++;
-    }
+    }}
     ?>
     <br/>
+    </form>
     </div>
 <?php }?>
 </br>

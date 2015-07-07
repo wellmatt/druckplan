@@ -506,6 +506,8 @@
                 }
                 else if ( $aColumns[$i] == 'id' )
                 {
+                    if ($_REQUEST["details"] == "1")
+                        $row[] = "";
                     $row[] = $aRow[ $aColumns[$i] ];
                 }
                 else if ( $aColumns[$i] == 'closedate' )

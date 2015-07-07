@@ -255,7 +255,7 @@ class Calculation
         return $retval;
     }
     
-	//gln, speziell für Niemann, 
+	//gln, speziell fï¿½r Niemann, 
 	//um geaenderte Werte in einem Teilauftrag automatisch in alle anderen Teilauftraege zu uebertragen
     static function getCalculationsForUpdate($order, $calc_geaendert, $itemorder = self::ORDER_ID)
     {
@@ -275,7 +275,7 @@ class Calculation
         return $retval;
     }
 
-	//gln, speziell für Niemann, 
+	//gln, speziell fï¿½r Niemann, 
 	//um geaenderte Werte in einem Teilauftrag automatisch in alle anderen Teilauftraege zu uebertragen
     static function deleteCalculationsForUpdate($order_id, $calc_geaendert)
     {

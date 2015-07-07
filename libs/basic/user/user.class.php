@@ -236,6 +236,17 @@ class User {
         }
         return $users;
     }
+    
+    public function getWorkingtimeForDay($date) // $date unixtimestamp
+    {
+        $day = date("w",$date);
+        $ret = 0;
+        foreach ($this->workinghours[$day] as $time)
+        {
+            $ret += $time["end"]-$time["start"];
+        }
+        return $ret;
+    }
      
     /**
      * Pr�fen der Logindaten.

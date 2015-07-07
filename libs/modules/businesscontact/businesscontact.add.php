@@ -150,6 +150,7 @@ if ($_REQUEST["subexec"] == "save")
             $address->setFax(trim(addslashes($_REQUEST["fax"])));
             $address->setCountry(new Country (trim(addslashes($_REQUEST["country"]))));
             $address->setBusinessContact($businessContact);
+            $address->setDefault(1);
             $address->save();
         }
     }
@@ -168,6 +169,7 @@ if ($_REQUEST["subexec"] == "save")
             $address->setCountry(new Country (trim(addslashes($_REQUEST["country"]))));
             $address->setShoprel(1);
             $address->setBusinessContact($businessContact);
+            $address->setDefault(1);
             $address->save();
         }
     }

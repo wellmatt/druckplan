@@ -41,7 +41,7 @@ $ticket = new Ticket($_REQUEST["tktid"]);
     </colgroup>
     <tr>
         <td><b>Ticket:</b></td>
-        <td><?php echo $ticket->getTitle();?></td>
+        <td><?php echo $ticket->getTitle();?> - #<?php echo $ticket->getNumber();?></td>
         <td><b>Kunde:</b></td>
         <td><?php echo $ticket->getCustomer()->getNameAsLine(); echo " - "; echo $ticket->getCustomer_cp()->getNameAsLine2();?></td>
     </tr>

@@ -13,7 +13,8 @@ require_once 'libs/modules/organizer/event.class.php';
                 <?php 
                 $ticket_states = TicketState::getAllStates();
                 foreach ($ticket_states as $ticket_state){
-                    echo '<tr><td><font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
+                    if ($ticket_state->getId() != 1 && $ticket_state->getId() != 3)
+                        echo '<tr><td><font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
                 }
                 ?>
             </table>

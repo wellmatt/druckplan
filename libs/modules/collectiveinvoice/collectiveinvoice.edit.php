@@ -19,11 +19,10 @@ if($collectinv->getId()==0){
 	$selected_customer = new BusinessContact((int)$_REQUEST["order_customer"]);
 	$collectinv->setBusinesscontact($selected_customer);
 	
-	
 	//Datum und Benutzer setzen, wer erstellt hat
 	$collectinv->setCrtuser($_USER);
 	$collectinv->setCrtdate(time());
-	
+	$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact());
 }else{//Falls eine bestehende Rechnung veraendert werden soll
 	$selected_customer = new BusinessContact($collectinv->getBusinesscontact()->getId());
 }
@@ -36,6 +35,7 @@ $alldeliverycondition = DeliveryTerms::getAllDeliveryConditions();
 
 // Lieferaddressen des Geschaeftskontakts holen
 $all_deliveryadress = Address::getAllAddresses($selected_customer, Address::ORDER_NAME, Address::FILTER_DELIV);
+$all_invoiceadress = Address::getAllAddresses($selected_customer, Address::ORDER_NAME, Address::FILTER_INVC);
 
 
 if (!empty($_REQUEST['subexec']) && $_REQUEST['subexec']){
@@ -494,11 +494,17 @@ function addPositionRow(){
 			<td class="content_row" colspawn="7">
 				<select name="colinv_deliveryadress" style="width: 300px" class="text" 
 						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<option value="0"> &lt; <?=$_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
 				<?	foreach($all_deliveryadress as $adress){
-						echo '<option value="'. $adress->getId() . '"';
-						if($adress->getId() == $collectinv->getDeliveryaddress()->getId()){ echo ' selected="selected"'; }
-						echo ">".$adress->getAddressAsLine() . "</option>";
+				        if ($collectinv->getId() == 0)
+				        {
+				            echo '<option value="'. $adress->getId() . '"';
+				            if($adress->getDefault()){ echo ' selected="selected"'; }
+				            echo ">".$adress->getAddressAsLine() . "</option>";
+				        } else {
+    						echo '<option value="'. $adress->getId() . '"';
+    						if($adress->getId() == $collectinv->getDeliveryaddress()->getId()){ echo ' selected="selected"'; }
+    						echo ">".$adress->getAddressAsLine() . "</option>";
+				        }
 					} ?>
 				</select>
 			</td> 
@@ -507,7 +513,7 @@ function addPositionRow(){
 			</td>
 			<td class="content_row"  valign="top">
 				<input 	name="colinv_deliverydate" id="colinv_deliverydate" style="width: 80px" class="text" 
-						value="<?=date('d.m.Y',$collectinv->getDeliverydate())?>" 
+						value="<?php if ($collectinv->getDeliverydate()>0) echo date('d.m.Y',$collectinv->getDeliverydate()); else echo date('d.m.Y');?>" 
 						onfocus="markfield(this,0)" onblur="markfield(this,1)">
 			</td>
 		</tr>
@@ -515,13 +521,19 @@ function addPositionRow(){
             <td class="content_row" valign="top"><b><?=$_LANG->get('Rechnungsadresse')?></b></td>
             <td class="content_row" valign="top">
                <select name="invoice_address" style="width:300px" class="text">
-                   <option value=""><?=$_LANG->get('keine gesonderte Rechnungsadresse')?></option>
                   <? 
-                       foreach($collectinv->getCustomer()->getInvoiceAddresses() as $invc)
+                       foreach($all_invoiceadress as $invc)
                        {
-                           echo '<option value="'.$invc->getId().'" ';
-                           if($collectinv->getInvoiceAddress()->getId() == $invc->getId()) echo "selected";
-                           echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
+    				       if ($collectinv->getId() == 0)
+    				       {
+                               echo '<option value="'.$invc->getId().'" ';
+                               if($invc->getDefault()) echo "selected";
+                               echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
+    				       } else {
+                               echo '<option value="'.$invc->getId().'" ';
+                               if($collectinv->getInvoiceAddress()->getId() == $invc->getId()) echo "selected";
+                               echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
+    				       }
                        }
                    ?>
                </select>
@@ -603,9 +615,16 @@ function addPositionRow(){
                     <? 
                     foreach($all_user as $us)
                     {
-                        echo '<option value="'.$us->getId().'" ';
-                        if($collectinv->getInternContact()->getId() == $us->getId()) echo "selected";
-                        echo '>'.$us->getNameAsLine().'</option>';
+                        if ($collectinv->getId() == 0)
+                        {
+                            echo '<option value="'.$us->getId().'" ';
+                            if($_USER->getId() == $us->getId()) echo "selected";
+                            echo '>'.$us->getNameAsLine().'</option>';
+                        } else {
+                            echo '<option value="'.$us->getId().'" ';
+                            if($collectinv->getInternContact()->getId() == $us->getId()) echo "selected";
+                            echo '>'.$us->getNameAsLine().'</option>';
+                        }
                     }
                     ?>
                 </select>

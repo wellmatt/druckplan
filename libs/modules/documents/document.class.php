@@ -535,7 +535,7 @@ class Document
                     $bMargin = $pdf->getBreakMargin();
                     $auto_page_break = $pdf->getAutoPageBreak();
                     $pdf->SetAutoPageBreak(false, 0);
-                    $img_path = "images/products/" . $order->getPicture();
+                    $img_path = "images/products/" . $order->getPicture2();
                     $img_file = $_BASEDIR . $img_path;
                     $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
                     $pdf->SetAutoPageBreak($auto_page_break, $bMargin);

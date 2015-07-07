@@ -75,33 +75,35 @@ if($events) {
 if ($user->getCalBirthday() == 1) {
 	$all_contactperson = ContactPerson::getAllContactPersons();
 	foreach ($all_contactperson as $cp) {
-		
 		$birthdate = $cp->getBirthDate();
-		$birth_day = date('d',$birthdate);
-		$birth_moth = date('m',$birthdate);
-		$birth_year = date('Y',$birthdate);
-		
-		$age = (date("md", date("U", mktime(0, 0, 0, $birth_moth, $birth_day, $birth_year))) > date("md")
-			? ((date("Y") - $birth_year) - 1)
-			: (date("Y") - $birth_year));
-		$age++;
-			
-		$birthday_title = "Geb.: " . $cp->getNameAsLine2() . " (".$age.")";	
-			
-		if ($birth_moth >= date('m',time())) {
-			if ($birth_day >= date('d',time())) {
-				$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time()))), 
-				"allDay" => "true", "editable" => "false", 
-				    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
-				    "textColor" => '#fff',
-				    "editable" => false);
-			}
-		} else {
-			$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time())+1)), 
-			"allDay" => "true", "editable" => "false", 
-			    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
-			    "textColor" => '#fff',
-				"editable" => false);
+		if ($birthdate>0)
+		{
+    		$birth_day = date('d',$birthdate);
+    		$birth_moth = date('m',$birthdate);
+    		$birth_year = date('Y',$birthdate);
+    		
+    		$age = (date("md", date("U", mktime(0, 0, 0, $birth_moth, $birth_day, $birth_year))) > date("md")
+    			? ((date("Y") - $birth_year) - 1)
+    			: (date("Y") - $birth_year));
+    		$age++;
+    			
+    		$birthday_title = "Geb.: " . $cp->getNameAsLine2() . " (".$age.")";	
+    			
+    		if ($birth_moth >= date('m',time())) {
+    			if ($birth_day >= date('d',time())) {
+    				$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time()))), 
+    				"allDay" => "true", "editable" => "false", 
+    				    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
+    				    "textColor" => '#fff',
+    				    "editable" => false);
+    			}
+    		} else {
+    			$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time())+1)), 
+    			"allDay" => "true", "editable" => "false", 
+    			    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
+    			    "textColor" => '#fff',
+    				"editable" => false);
+    		}
 		}
 	}
 }

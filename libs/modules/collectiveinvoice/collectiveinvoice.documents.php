@@ -25,9 +25,17 @@ if($_REQUEST["createDoc"]){
     $doc->setRequestModule(Document::REQ_MODULE_COLLECTIVEORDER);
     
     if($_REQUEST["createDoc"] == "offer")
+    {
         $doc->setType(Document::TYPE_OFFER);
+        $collectinv->setStatus(2);
+        $collectinv->save();
+    }
     if($_REQUEST["createDoc"] == "offerconfirm")
+    {
         $doc->setType(Document::TYPE_OFFERCONFIRM);
+        $collectinv->setStatus(3);
+        $collectinv->save();
+    }
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
     if($_REQUEST["createDoc"] == "delivery")

@@ -83,6 +83,13 @@ $(document).ready(function() {
 		        fnCallback(json)
 		    } );
 		},
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        	var res = aData[8].split("/");
+        	var pl = parseInt(res[0]);
+        	var jobs = parseInt(res[1]);
+        	if (pl < jobs)
+            	$(nRow).addClass('highlight');
+        },
 		"language": 
 					{
 						"emptyTable":     "Keine Daten vorhanden",
@@ -144,7 +151,7 @@ $(document).ready(function() {
  
     $('#planning_table tbody').on( 'click', 'tr td:first-child', function () {
         var tr = $(this).closest('tr');
-        var row = mailtable.row( tr );
+        var row = planning_table.row( tr );
         var idx = $.inArray( tr.attr('id'), detailRows );
         var control = $(this);
  
@@ -170,20 +177,19 @@ $(document).ready(function() {
 } );
 
 function get_child ( d,row,idx,tr,control ) {
-// 	var body = $.ajax({
-// 		type: "GET",
-// 		url: "libs/modules/mail/mail.ajax.php",
-// 		data: { exec: "getMailBody", mailid: mailid, mailbox: mailbox, muid: d[5] },
-// 		success: function(data) 
-// 		    {
-// 			    row.child( '<div class="box2">'+data+'</div>' ).show();
-//                 $( ".details-control-loading" ).removeClass( 'details-control-loading' );
-//                 tr.removeClass('highlight');
-//                 if ( idx === -1 ) {
-//                     detailRows.push( tr.attr('id') );
-//                 }
-// 		    }
-// 	});
+	var body = $.ajax({
+		type: "GET",
+		url: "libs/modules/planning/planning.ajax.php",
+		data: { "exec": "ajax_getJobDataForOverview", "id": d[1] },
+		success: function(data) 
+		    {
+			    row.child( '<div class="box1">'+data+'</div>' ).show();
+                $( ".details-control-loading" ).removeClass( 'details-control-loading' );
+                if ( idx === -1 ) {
+                    detailRows.push( tr.attr('id') );
+                }
+		    }
+	});
 }
 
 function TableRefresh()
@@ -214,7 +220,7 @@ function TableRefresh()
 				<th><?=$_LANG->get('Fällig')?></th>
 				<th><?=$_LANG->get('Bemerkung')?></th>
 				<th><?=$_LANG->get('Typ')?></th>
-				<th><?=$_LANG->get('Jobs')?></th>
+				<th><?=$_LANG->get('verpl. Jobs')?></th>
 			</tr>
 		</thead>
 		<tfoot>
@@ -227,7 +233,7 @@ function TableRefresh()
 				<th><?=$_LANG->get('Fällig')?></th>
 				<th><?=$_LANG->get('Bemerkung')?></th>
 				<th><?=$_LANG->get('Typ')?></th>
-				<th><?=$_LANG->get('Jobs')?></th>
+				<th><?=$_LANG->get('verpl. Jobs')?></th>
 			</tr>
 		</tfoot>
 	</table>

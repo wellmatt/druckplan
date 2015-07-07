@@ -36,6 +36,31 @@ $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 global $_LANG;
 
+/**
+ * @param array $array
+ * @param string $value
+ * @param bool $asc - ASC (true) or DESC (false) sorting
+ * @param bool $preserveKeys
+ * @return array
+ * */
+function sortBySubValue($array, $value, $asc = true, $preserveKeys = false)
+{
+    if (is_object(reset($array))) {
+        $preserveKeys ? uasort($array, function ($a, $b) use ($value, $asc) {
+            return $a->{$value} == $b->{$value} ? 0 : ($a->{$value} - $b->{$value}) * ($asc ? 1 : -1);
+        }) : usort($array, function ($a, $b) use ($value, $asc) {
+            return $a->{$value} == $b->{$value} ? 0 : ($a->{$value} - $b->{$value}) * ($asc ? 1 : -1);
+        });
+    } else {
+        $preserveKeys ? uasort($array, function ($a, $b) use ($value, $asc) {
+            return $a[$value] == $b[$value] ? 0 : ($a[$value] - $b[$value]) * ($asc ? 1 : -1);
+        }) : usort($array, function ($a, $b) use ($value, $asc) {
+            return $a[$value] == $b[$value] ? 0 : ($a[$value] - $b[$value]) * ($asc ? 1 : -1);
+        });
+    }
+    return $array;
+}
+
 if ($_REQUEST["exec"] == "getCalEvents")
 {
     // Short-circuit if the client did not give us a date range.
@@ -74,57 +99,227 @@ if ($_REQUEST["exec"] == "getCalEvents")
 }
 if ($_REQUEST["exec"] == "ajax_getDisabledDates")
 {
-    $retval = Array();
+    $disabledDates = Array();
+    $valid_users = Array();
     $objectid = $_REQUEST["objectid"];
     $type = $_REQUEST["type"];
     $amount = $_REQUEST["amount"];
-    $date = $_REQUEST["date"];
-    $month = date("m",strtotime($date));
-    $year = date("Y",strtotime($date));
-    if ($month == date("m") && $year == date("Y"))
+    $req_date = $_REQUEST["date"];
+    $req_date_mktime = mktime(0,0,0,date("m",strtotime($req_date)),date("d",strtotime($req_date)),date("Y",strtotime($req_date)));
+    
+    $start = strtotime('-2 month',$req_date_mktime);
+    $end = strtotime('+2 month',$req_date_mktime);
+    
+    $arrayRange=array();
+    $dateFrom=$start;
+    $dateTo=$end;
+    
+    if ($dateTo>=$dateFrom)
     {
-        $start = mktime(0,0,0,date("m"),date("d"),date("Y"));
-    } else {
-        $mktime1 = mktime(0,0,0,$month,24,$year);
-        $start = strtotime('-1 month',$mktime1);
+        $arrayRange[$dateFrom]["time"] = 0;
+        foreach (USER::getAllUser() as $user)
+            $arrayRange[$dateFrom]["user"][$user->getId()] = $user->getWorkingtimeForDay($dateFrom);
+        while ($dateFrom<$dateTo)
+        {
+            $dateFrom+=86400;
+            $arrayRange[$dateFrom]["time"] = 0;
+            foreach (USER::getAllUser() as $user)
+                $arrayRange[$dateFrom]["user"][$user->getId()] = $user->getWorkingtimeForDay($dateFrom);
+        }
     }
-    $mktime2 = mktime(0,0,0,$month,6,$year);
-    $end = strtotime('+2 month',$mktime2);
     
     
-    
-    $job_arr = Array();
     $jobs = PlanningJob::getAllJobs(" AND start>".$start." AND end<".$end);
     foreach ($jobs as $job)
     {
-        $date = mktime(0,0,0,date("m",$job->getDate()),date("d",$job->getDate()),date("Y",$job->getDate()));
-        $job_arr[$date] = 0;
+        $date = mktime(0,0,0,date("m",$job->getStart()),date("d",$job->getStart()),date("Y",$job->getStart()));
         if ($job->getTime()>0)
-            $job_arr[$date] += $job->getTime();
+        {
+            $arrayRange[$date]["time"] += ($job->getTime() * 60 * 60);
+            $arrayRange[$date]["user"][$job->getAssigned_user()->getId()] -= ($job->getTime() * 60 * 60);
+        }
         elseif ($job->getPlannedTime()>0)
-            $job_arr[$date] += $job->getPlannedTime();
+        {
+            $arrayRange[$date]["time"] += ($job->getPlannedTime() * 60 * 60);
+            $arrayRange[$date]["user"][$job->getAssigned_user()->getId()] -= ($job->getPlannedTime() * 60 * 60);
+        }
     }
     
     if ($type == "ME"){
         $me = new Machineentry($objectid);
         $machine = $me->getMachine();
-        for ( $i = $start; $i <= $end; $i = $i + 86400 ) {
-            $date = mktime(0,0,0,date("m",$i),date("d",$i),date("Y",$i));
-            $total_seconds = $machine->getRunningtimeForDay($date);
-            if (isset($job_arr[$date]))
-            {
-                $total_seconds -= ($job_arr[$date]*60*60);
-            }
+        $dateFrom=$start;
+        $dateTo=$end;
+        if ($dateTo>=$dateFrom)
+        {
+            $arrayRange[$dateFrom]["time"] = 0;
+            $total_seconds = $machine->getRunningtimeForDay($dateFrom);
+            $total_seconds -= $arrayRange[$dateFrom]["time"];
             if ($total_seconds < ($amount*60*60))
-                $retval[] = date("d.m.Y",$date);
+                $disabledDates[] = date("d.m.Y",$dateFrom);
+            else
+            {
+                $valid_user = false;
+                foreach ($arrayRange[$dateFrom]["user"] as $userid => $usr_time)
+                {
+                    if ($usr_time > ($amount*60*60))
+                    {
+                        $valid_user = true;
+                        $user_obj = new User($userid);
+                        if ($dateFrom == $req_date_mktime)
+                            $valid_users[] = Array( "id" => $userid, "name" => $user_obj->getNameAsLine(), "time" => $usr_time );
+                    }
+                }
+                if (!$valid_user)
+                    $disabledDates[] = date("d.m.Y",$dateFrom);
+            }
+            while ($dateFrom<$dateTo)
+            {
+                $dateFrom+=86400;
+                $arrayRange[$dateFrom]["time"] = 0;
+                $total_seconds = $machine->getRunningtimeForDay($dateFrom);
+                $total_seconds -= $arrayRange[$dateFrom]["time"];
+                if ($total_seconds < ($amount*60*60))
+                    $disabledDates[] = date("d.m.Y",$dateFrom);
+                else
+                {
+                    $valid_user = false;
+                    foreach ($arrayRange[$dateFrom]["user"] as $userid => $usr_time)
+                    {
+                        if ($usr_time > ($amount*60*60))
+                        {
+                            $valid_user = true;
+                            $user_obj = new User($userid);
+                            if ($dateFrom == $req_date_mktime)
+                                $valid_users[] = Array( "id" => $userid, "name" => $user_obj->getNameAsLine(), "time" => $usr_time );
+                        }
+                    }
+                    if (!$valid_user)
+                        $disabledDates[] = date("d.m.Y",$dateFrom);
+                }
+            }
         }
     } else if ($type == "OP")
     {
         $op = new Orderposition($objectid);
         $jobart = new Article($op->getObjectid());
+        $dateFrom=$start;
+        $dateTo=$end;
+        if ($dateTo>=$dateFrom)
+        {
+            $valid_user = false;
+            foreach ($arrayRange[$dateFrom]["user"] as $userid => $usr_time)
+            {
+                if ($usr_time > ($amount*60*60))
+                {
+                    $valid_user = true;
+                    $user_obj = new User($userid);
+                    if ($dateFrom == $req_date_mktime)
+                        $valid_users[] = Array( "id" => $userid, "name" => $user_obj->getNameAsLine(), "time" => $usr_time );
+                }
+            }
+            if (!$valid_user)
+                $disabledDates[] = date("d.m.Y",$dateFrom);
+            while ($dateFrom<$dateTo)
+            {
+                $dateFrom+=86400;
+                $valid_user = false;
+                foreach ($arrayRange[$dateFrom]["user"] as $userid => $usr_time)
+                {
+                    if ($usr_time > ($amount*60*60))
+                    {
+                        $valid_user = true;
+                        $user_obj = new User($userid);
+                        if ($dateFrom == $req_date_mktime)
+                            $valid_users[] = Array( "id" => $userid, "name" => $user_obj->getNameAsLine(), "time" => $usr_time );
+                    }
+                }
+                if (!$valid_user)
+                    $disabledDates[] = date("d.m.Y",$dateFrom);
+            }
+        }
     }
     
-    $output_array = Array( "disabledDates" => $retval );
-    echo json_encode($output_array);
+    $valid_users = sortBySubValue($valid_users, 'time', true, false);
     
+    $output_array = Array( "valid_users" => $valid_users, "disabledDates" => $disabledDates );
+    echo json_encode($output_array);
+}
+if ($_REQUEST["exec"] == "ajax_getJobDataForOverview")
+{
+    if ($_REQUEST["id"])
+    {
+        echo '<table width="100%">';
+        echo '<tr>';
+        echo '<td>ID</td>';
+        echo '<td>MA</td>';
+        echo '<td>Ticket</td>';
+        echo '<td>gepl. für</td>';
+        echo '<td>S-Zeit</td>';
+        echo '<td>I-Zeit</td>';
+        echo '<td>Status</td>';
+        echo '</tr>';
+        $pjs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} ");
+        foreach ($pjs as $pj)
+        {
+            echo '<tr>';
+            
+            echo '<td>#'.$pj->getId().'</td>';
+            echo '<td>'.$pj->getAssigned_user()->getNameAsLine().'</td>';
+            echo '<td><a target="_blank" href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='.$pj->getTicket()->getId().'">#'.$pj->getTicket()->getNumber().'</a></td>';
+            echo '<td>'.date("d.m.Y H:i",$pj->getStart()).' -> '.date("d.m.Y H:i",$pj->getEnd()).'</td>';
+            echo '<td>'.number_format($pj->getPlannedTime(), 2, ",", "").'</td>';
+            if ($pj->getTime()>$pj->getPlannedTime())
+                $style = ' style="background-color: red;"';
+            echo '<td '.$style.'>'.number_format($pj->getTime(), 2, ",", "").'</td>';
+            echo '<td><span style="display: inline-block; vertical-align: top; background-color: '.$pj->getTicket()->getState()->getColorcode().'" class="label">';
+            echo $pj->getTicket()->getState()->getTitle().'</span></td>';
+            
+            echo '</tr>';
+        }
+        echo '</table>';
+    }
+}
+if ($_REQUEST["exec"] == "ajax_getJobsForCal")
+{
+    $start = strtotime($_REQUEST["start"]);
+    $end = strtotime($_REQUEST["end"]);
+    $type = substr($_REQUEST["artmach"], 0, 1);
+    $artmach = substr($_REQUEST["artmach"], 1);
+    $output_arrays = Array();
+    if ($type == "0")
+        $pjs = PlanningJob::getAllJobs();
+    
+    if ($type == "K")
+    {
+        $pjs = PlanningJob::getAllJobs(" AND type = 2 AND artmach = {$artmach}");
+    }
+    if ($type == "V")
+    {
+        $pjs = PlanningJob::getAllJobs(" AND type = 1 AND artmach = {$artmach}");
+    }
+    
+    foreach ($pjs as $pj)
+    {
+        if ($pj->getType() == PlanningJob::TYPE_K)
+        {
+            $title = $pj->getObject()->getNumber() . ': ' . $pj->getArtmach()->getName() . "\n" . $pj->getAssigned_user()->getNameAsLine();
+            $color = $pj->getArtmach()->getColor();
+        } else {
+            $title = $pj->getObject()->getNumber() . ': ' . $pj->getArtmach()->getTitle() . "\n" . $pj->getAssigned_user()->getNameAsLine();
+            $color = '3a87ad';
+        }
+        $begin = date("Y-m-d\TH:i:s",$pj->getStart());
+        $end = date("Y-m-d\TH:i:s",$pj->getEnd());
+        $output_arrays[] = Array ("id" => $pj->getId(), 
+                                  "title" => $title, 
+                                  "start" => $begin, 
+                                  "end" => $end,
+                                  "url" => "index.php?page=libs/modules/planning/planning.job.php&type=".$type."&id=".$pj->getObject()->getId(), 
+                                  "textColor" => $color, 
+                                  "editable" => false
+                                  );
+    }
+    
+    echo json_encode($output_arrays);
 }

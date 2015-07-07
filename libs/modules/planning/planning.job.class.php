@@ -55,8 +55,8 @@ class PlanningJob {
                 }
                 elseif ($this->type == PlanningJob::TYPE_K)
                 {
-                    $this->object = new Machineentry((int)$r["object"]);
-                    $this->subobject = new Order((int)$r["subobject"]);
+                    $this->object = new Order((int)$r["object"]);
+                    $this->subobject = new Machineentry((int)$r["subobject"]);
                     $this->artmach = new Machine((int)$r["artmach"]);
                 }
                 $this->assigned_user = new User((int)$r["assigned_user"]);
@@ -74,7 +74,7 @@ class PlanningJob {
         global $DB;
         $retval = Array();
     
-        $sql = "SELECT id FROM planning_jobs WHERE state >0 {$filter}";
+        $sql = "SELECT id FROM planning_jobs WHERE state > 0 {$filter}";
     
         if($DB->num_rows($sql))
         {
@@ -86,24 +86,58 @@ class PlanningJob {
         return $retval;
     }
 
+    static function getUniqueArtmach()
+    {
+        global $DB;
+        $machines = Array();
+        $articles = Array();
+    
+        $sql = "SELECT DISTINCT artmach, type FROM planning_jobs WHERE state = 0";
+    
+        if($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $r)
+            {
+                if ($r["type"] == PlanningJob::TYPE_K)
+                {
+                    $machines[] = new Machine($r["artmach"]);
+                } else {
+                    $articles[] = new Article($r["artmach"]);
+                }
+            }
+        }
+        $retval = Array('machines'=>$machines,'articles'=>$articles);
+        return $retval;
+    }
+
     function createMyTicket()
     {
+        global $_USER;
         $ticket = new Ticket();
-        $schedule_part = new SchedulePart($this->sched_machine->getSchedulePartId());
-        $schedule = new Schedule($schedule_part->getScheduleId());
-        $title = "".$schedule->getNumber().": ".$this->sched_machine->getMachine()->getName();
+        if ($this->type == PlanningJob::TYPE_V)
+        {
+            $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getTitle();
+            $ticket->setCustomer($this->object->getCustomer());
+            $ticket->setCustomer_cp($this->object->getCustContactperson());
+        }
+        elseif ($this->type == PlanningJob::TYPE_K)
+        {
+            $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getName();
+            $ticket->setCustomer($this->object->getCustomer());
+            $ticket->setCustomer_cp($this->object->getCustContactperson());
+        }
         $ticket->setTitle($title);
-        $ticket->setDuedate($this->sched_machine->getDeadline());
-        $ticket->setCustomer($schedule->getCustomer());
-        $ticket->setCustomer_cp($schedule->getCustomer_cp());
-        $ticket->setAssigned_user($this->user);
-        $ticket->setCategory(new TicketCategory(4));
+        $ticket->setDuedate($this->start);
+        $ticket->setAssigned_user($this->assigned_user);
+        $ticket->setCategory(new TicketCategory(2));
         $ticket->setState(new TicketState(2));
-        $ticket->setPriority(new TicketPriority(9));
+        $ticket->setPriority(new TicketPriority(4));
         $ticket->setSource(Ticket::SOURCE_JOB);
+        $ticket->setPlanned_time(($this->end - $this->start)/60/60);
+        $ticket->setCrtuser($_USER);
         $save_ok = $ticket->save();
         if ($save_ok)
-        $this->ticket = $ticket;
+            $this->ticket = $ticket;
     }
 
     function save()
@@ -117,7 +151,7 @@ class PlanningJob {
                 ticket = {$this->ticket->getId()},
                 start = {$this->start},
                 end = {$this->end},
-                artmach = {$this->artmach},
+                artmach = {$this->artmach->getId()},
                 state = {$this->state}";
         
         if ($this->id > 0) {
@@ -155,15 +189,16 @@ class PlanningJob {
     {
         if ($this->type == PlanningJob::TYPE_V)
         {
-            return $this->object->getTitle();
+            $art = new Article($this->subobject->getObjectid());
+            return $art->getTitle();
         }
         elseif ($this->type == PlanningJob::TYPE_K)
         {
-            return $this->object->getMachine()->getName();
+            return $this->subobject->getMachine()->getName();
         }
     }
     
-    public function getPlannedTime()
+    public function getPlannedTimeOrig()
     {
         if ($this->type == PlanningJob::TYPE_V)
         {
@@ -171,8 +206,13 @@ class PlanningJob {
         }
         elseif ($this->type == PlanningJob::TYPE_K)
         {
-            return $this->object->getTime()/60;
+            return $this->subobject->getTime()/60;
         }
+    }
+    
+    public function getPlannedTime()
+    {
+        return ($this->end-$this->start)/60/60;
     }
     
     public function getTime()
@@ -237,7 +277,7 @@ class PlanningJob {
     }
 
 	/**
-     * @param Ambigous <CollectiveInvoice, Machineentry> $object
+     * @param Ambigous <CollectiveInvoice, Order> $object
      */
     public function setObject($object)
     {
@@ -253,7 +293,7 @@ class PlanningJob {
     }
 
 	/**
-     * @param Ambigous <Order, Orderposition> $subobject
+     * @param Ambigous <Machineentry, Orderposition> $subobject
      */
     public function setSubobject($subobject)
     {

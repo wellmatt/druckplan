@@ -104,8 +104,10 @@ $(function() {
     <tr>
         <td class="content_row_header"><?=$_LANG->get('Kunden ausw&auml;hlen')?></td>
         <td id="td-selcustomer">
-			<input type="text" name="search" id="search" style="width:280px">
+			<input type="text" name="search" id="search" style="width:280px" required>
+			<input type="hidden" name="order_customer" id="order_customer" required>
 			<br>
+			<?php /*
             <select name="order_customer" style="width:280px" class="text" id="order_customer" onChange="this.form.submit()" required>
 				<option value="" selected></option> 
                 <? 
@@ -114,11 +116,12 @@ $(function() {
                     <option value="<?=$cust->getId()?>"><?=$cust->getNameAsLine()?>, <?=$cust->getCity()?></option> 
                 <?}?>
             </select>
+            */?>
         </td>
     </tr>
     <tr>
         <td colspan="2" align="right">
-            <input type="submit" value="<?=$_LANG->get('Auswählen')?>">
+            <input type="submit" value="<?=$_LANG->get('AuswÃ¤hlen')?>">
         </td>
     </tr>
     

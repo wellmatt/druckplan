@@ -356,48 +356,6 @@ if($_REQUEST["exec"] == "edit"){
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style type="text/css">
-        <!--
-        /* body{margin:0px; padding:0px;} */
-        #fl_menu{
-            position:fixed; 
-            top:100px; 
-            left:0px; 
-            z-index:999; 
-            width:150px; 
-            height:50px;
-        	margin-left:100px;
-        	margin-top:100px;	
-        }
-        #fl_menu .label{
-            padding-left:20px; 
-        /*     line-height:50px;  */
-        /*     font-family:"Arial Black", Arial, Helvetica, sans-serif;  */
-            font-size:14px; 
-            font-weight:bold;
-            background:#4c7499; 
-            color:#fff; 
-        /*     letter-spacing:7px; */
-        }
-        #fl_menu .menu{
-        /*     display:none; */
-        }
-        #fl_menu .menu .menu_item{
-            display:block; 
-            background:#4c7499; 
-            color:#bbb; 
-            border-top:1px solid #333; 
-            padding:10px 20px; 
-        /*     font-family:Arial, Helvetica, sans-serif;  */
-            font-size:12px; 
-            text-decoration:none;
-        }
-        #fl_menu .menu a.menu_item:hover{
-            background:#333; 
-            color:#fff;
-        }
-        -->
-    </style>
 </head>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >

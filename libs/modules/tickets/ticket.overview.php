@@ -68,7 +68,7 @@ $(document).ready(function() {
         "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php",
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"aaSorting": [[ 5, "desc" ]],
+		"aaSorting": [[ 6, "desc" ]],
 		"dom": 'T<"clear">flrtip',        
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -98,6 +98,7 @@ $(document).ready(function() {
 			var tourmarker = document.getElementById('ajax_tourmarker').value;
 			var iMin_cl = document.getElementById('ajax_cl_date_min').value;
 			var iMax_cl = document.getElementById('ajax_cl_date_max').value;
+		    aoData.push( { "name": "details", "value": "1", } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "start_due", "value": iMinDue, } );
@@ -117,6 +118,12 @@ $(document).ready(function() {
 		},
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
+		    		{
+                        "className":      'details-control',
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": ''
+                    },
 		            null,
 		            null,
 		            null,
@@ -154,6 +161,72 @@ $(document).ready(function() {
 						}
 					}
     } );
+
+    var DELAY = 500, clicks = 0, timer = null;
+    $("#ticketstable tbody td:not(:first-child)").live('click', function(e){
+
+        clicks++;  //count clicks
+
+        var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
+        var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
+        
+        if(clicks === 1) {
+
+            timer = setTimeout(function() {
+                clicks = 0;             //after action performed, reset counter
+                timer = null;
+                window.location = 'index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[1]; 
+            }, DELAY);
+
+        } else {
+
+            clearTimeout(timer);    //prevent single-click action
+            clicks = 0;             //after action performed, reset counter
+            timer = null;
+            var win = window.open('index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[1], '_blank');
+            win.focus();
+        }
+
+    })
+    .on("dblclick", function(e){
+        e.preventDefault();  //cancel system double-click event
+    });
+
+    var detailRows = [];
+    $('#ticketstable tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = ticketstable.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+        var control = $(this);
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            $(this).addClass( 'details-control-loading' );
+            get_child(row.data(),row,idx,tr,control);
+        }
+    } );
+    
+    function get_child ( d,row,idx,tr,control ) {
+    	var body = $.ajax({
+    		type: "GET",
+    		url: "libs/modules/tickets/ticket.summary.php",
+    		data: { "tktid": d[1], "inline": "true" },
+    		success: function(data) 
+    		    {
+    			    row.child( '<div class="box2">'+data+'</div>' ).show();
+                    $( ".details-control-loading" ).removeClass( 'details-control-loading' );
+                    tr.removeClass('highlight');
+                    if ( idx === -1 ) {
+                        detailRows.push( tr.attr('id') );
+                    }
+    		    }
+    	});
+    }
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	$('#date_min').datepicker(
@@ -302,36 +375,6 @@ $(document).ready(function() {
 		$('#ticketstable').dataTable().fnDraw(); 
 	})
 
-
-    var DELAY = 500, clicks = 0, timer = null;
-    $("#ticketstable tbody td").live('click', function(e){
-
-        clicks++;  //count clicks
-
-        var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
-        var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
-        
-        if(clicks === 1) {
-
-            timer = setTimeout(function() {
-                clicks = 0;             //after action performed, reset counter
-                timer = null;
-                window.location = 'index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0]; 
-            }, DELAY);
-
-        } else {
-
-            clearTimeout(timer);    //prevent single-click action
-            clicks = 0;             //after action performed, reset counter
-            timer = null;
-            var win = window.open('index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='+aData[0], '_blank');
-            win.focus();
-        }
-
-    })
-    .on("dblclick", function(e){
-        e.preventDefault();  //cancel system double-click event
-    });
 	
 } );
 
@@ -538,6 +581,7 @@ function TicketTableRefresh()
 	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
 		<thead>
 			<tr>
+				<th>&nbsp;</th>
 				<th><?=$_LANG->get('ID')?></th>
 				<th><?=$_LANG->get('#')?></th>
 				<th><?=$_LANG->get('Kategorie')?></th>
@@ -553,6 +597,7 @@ function TicketTableRefresh()
 		</thead>
 		<tfoot>
 			<tr>
+				<th>&nbsp;</th>
 				<th><?=$_LANG->get('ID')?></th>
 				<th><?=$_LANG->get('#')?></th>
 				<th><?=$_LANG->get('Kategorie')?></th>
