@@ -53,6 +53,7 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
+		            null,
 		            <?if($_CONFIG->shopActivation){?>
 		            { "sortable": false },
 		            <?}?>
@@ -116,6 +117,7 @@ $(document).ready(function() {
                 <th width="105"><?=$_LANG->get('Bild')?></th>
                 <th><?=$_LANG->get('Titel')?></th>
                 <th width="80"><?=$_LANG->get('Art.-Nr.')?></th>
+                <th width="80"><?=$_LANG->get('Matchcode')?></th>
                 <th width="160"><?=$_LANG->get('Warengruppe')?></th>
                 <th width="160"><?=$_LANG->get('zug. Kunde')?></th>
 				<?if($_CONFIG->shopActivation){?>

@@ -57,7 +57,15 @@ $all_orders = CollectiveInvoice::getAllCollectiveInvoiceForShop(CollectiveInvoic
 	        <? 	$allpos = $order->getPositions();
 	        	foreach ($allpos AS $pos){ ?>
 	        		<? // =$pos->getTitle(); ?> 
-	        		<?=$pos->getCommentForShop();?><br />
+	        		<?=$pos->getCommentForShop();?>
+	        		<?php 
+	        	    if ($pos->getFile_attach()>0){
+			                $tmp_attach = new Attachment($pos->getFile_attach());
+			                echo '<a href="../'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
+                                  <img src="../images/icons/disk--arrow.png" title="Angehängte Datei herunterladen"> '.$tmp_attach->getOrig_filename().'</a>';
+		            }
+	        		?>
+	        		<br />
 	        <?	} ?>
 	        </td>
 	        <td class="filerow" style="vertical-align: top;">

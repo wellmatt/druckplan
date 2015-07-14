@@ -116,6 +116,11 @@ $tmeEnd = mktime(0,0,0,date('j'), date('n'), date('Y')) + 60*60*24;
 			}
 		});
 
+		$(".fc-today-button").click(function() {
+		    $('#li_calendar').addClass("open");
+		    sleep(300, show_cal);
+		});
+
 		$('#loading_ch').toggle(false);
 		
 	});
@@ -130,6 +135,11 @@ function sleep(millis, callback) {
     setTimeout(function()
             { callback(); }
     , millis);
+}
+
+function show_cal(){
+    $('#li_calendar').addClass("open");
+	$('#calendar_ch').fullCalendar( 'refetchEvents' );
 }
 
 function cal_refresh(){

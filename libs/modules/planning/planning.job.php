@@ -82,6 +82,7 @@ if ($_REQUEST["type"] == "V")
 if ($_REQUEST["step"]==2){
     if ($_REQUEST["subexec"]=="save")
     {
+        $tickets = Array();
         foreach ($_REQUEST["job"] as $reqjob)
         {
             foreach ($reqjob["jobs"] as $reqjobs)
@@ -119,7 +120,41 @@ if ($_REQUEST["step"]==2){
                     echo $pjend;
                     $pj->setEnd($pjend);
                     $pj->createMyTicket();
+
+                    $asso = new Association();
+                    $asso->setCrtdate(time());
+                    $asso->setCrtuser($_USER);
+                    $asso->setModule1("Ticket");
+                    if ($pj->getType() == PlanningJob::TYPE_K)
+                        $asso->setModule2("Order");
+                    else 
+                        $asso->setModule2("CollectiveInvoice");
+                    $asso->setObjectid1($pj->getTicket()->getId());
+                    $asso->setObjectid2($pj->getObject()->getId());
+                    $asso->save();
+                    
+                    $tickets[] = $pj->getTicket();
                     $pj->save();
+                }
+            }
+        }
+        $alry_asso = Array();
+        foreach ($tickets as $asso_ticket)
+        {
+            $alry_asso[] = $asso_ticket->getId();
+            foreach ($tickets as $asso_link)
+            {
+                if ($asso_ticket->getId() != $asso_link->getId() && !in_array($asso_link->getId(), $alry_asso))
+                {
+                    $alry_asso[] = $asso_link->getId();
+                    $asso = new Association();
+                    $asso->setCrtdate(time());
+                    $asso->setCrtuser($_USER);
+                    $asso->setModule1("Ticket");
+                    $asso->setModule2("Ticket");
+                    $asso->setObjectid1($asso_ticket->getId());
+                    $asso->setObjectid2($asso_link->getId());
+                    $asso->save();
                 }
             }
         }
@@ -458,7 +493,7 @@ if (count($planned_jobs)>0)
             			     <input type="hidden" id="job_duemonth_<?=$jobx?>_<?=$i?>" value="<?php echo date("m",$planned_subjob->getStart());?>"/>
         			    </td>
             			<td class="content_row" valign="top">
-            			     <?php echo $planned_subjob->getAssigned_user()->getNameAsLine();?></br>
+            			     <?php echo $planned_subjob->getTicket()->getAssigned_user()->getNameAsLine();?></br>
             			     <?php echo '<a target="_blank" href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='.$planned_subjob->getTicket()->getId().'">#'.$planned_subjob->getTicket()->getNumber().'</a>'?>
             			</td>
         			    <td class="content_row" valign="top">&nbsp;

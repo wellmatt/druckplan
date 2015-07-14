@@ -381,6 +381,380 @@ class Order {
     }
 
 
+    public static function generateSummary($orderid)
+    {
+        $order = new Order($orderid);
+        $html = "";
+        
+        $html .= '<h1>Kalkulationsbersicht</h1>';
+        $html .= '<div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
+        $html .= '<colgroup><col width="10%"><col width="23%"><col width="10%"><col width="23%"><col width="10%"><col></colgroup>';
+        $html .= '<tr><td><b>Kundennummer:</b></td>';
+        $html .= '<td>'.$order->getCustomer()->getCustomernumber().'</td>';
+        $html .= '<td><b>Vorgang:</b></td>';
+        $html .= '<td>'.$order->getNumber().'</td>';
+        $html .= '<td><b>Telefon:</b></td>';
+        $html .= '<td>'.$order->getCustomer()->getPhone().'</td>';
+        $html .= '</tr><tr>';
+        $html .= '<td valign="top"><b>Name:</b></td>';
+        $html .= '<td valign="top">'.nl2br($order->getCustomer()->getNameAsLine()).'</td>';
+        $html .= '<td valign="top"><b>Adresse:</b></td>';
+        $html .= '<td valign="top">'.nl2br($order->getCustomer()->getAddressAsLine()).'</td>';
+        $html .= '<td valign="top"><b>E-Mail:</b></td>';
+        $html .= '<td valign="top">'.$order->getCustomer()->getEmail().'</td>';
+        $html .= '</tr></table></div><br><div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
+        $html .= '<colgroup><col width="10%"><col width="23%"><col width="10%"><col width="23%"><col width="10%"><col></colgroup>';
+        $html .= '<tr>';
+        $html .= '<td valign="top"><b>Produkt:</b></td>';
+        $html .= '<td valign="top">'.$order->getProduct()->getName().'</td>';
+        $html .= '<td valign="top"><b>Beschreibung:</b></td>';
+        $html .= '<td valign="top">'.$order->getProduct()->getDescription().'</td>';
+        $html .= '<td valign="top"><b>Bemerkungen:</b></td>';
+        $html .= '<td valign="top">'.nl2br($order->getNotes()).'</td>';
+        $html .= '</tr><tr>';
+        $html .= '<td><b>Lieferadresse:</b></td>';
+        $html .= '<td>'.nl2br($order->getDeliveryAddress()->getAddressAsLine()).'</td>';
+        $html .= '<td><b>Lieferbedingungen:</b></td>';
+        $html .= '<td>'.$order->getDeliveryTerms()->getComment().'</td>';
+        $html .= '<td><b>Lieferdatum:</b></td>';
+        $html .= '<td>';
+        if($order->getDeliveryDate() > 0) 
+            $html .= date('d.m.Y', $order->getDeliveryDate());
+        $html .= '</td>';
+        $html .= '</tr><tr>';
+        $html .= '<td><b>Zahlungsadresse:</b></td>';
+        $html .= '<td>'.nl2br($order->getInvoiceAddress()->getAddressAsLine()).'</td>';
+        $html .= '<td><b>Zahlungsbedingungen:</b></td>';
+        $html .= '<td>'.$order->getPaymentTerms()->getComment().'</td>';
+        $html .= '<td><b>&nbsp;</b></td><td>&nbsp;</td></tr></table></div><br>';
+        
+        $i = 1; 
+        foreach(Calculation::getAllCalculations($order) as $calc) {
+            $calc_sorts = $calc->getSorts();
+            if ($calc_sorts == 0)
+                $calc_sorts = 1;
+            
+            $html .= '<h2>Teilauftag # '.$i.' - Auflage '.printBigInt($calc->getAmount()).' ('.$calc_sorts.' Sorte(n)* '.$calc->getAmount()/$calc_sorts.' Auflage)</h2>';
+            $html .= '<div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%"><colgroup><col width="15%">';
+            $html .= '<col width="35%"><col width="15%"><col width="35%"></colgroup><tr>';
+            $html .= '<td valign="top"><b>Inhalt:</b></td>';
+            $html .= '<td valign="top">';
+            $html .= $calc->getPaperContent()->getName().', '.$calc->getPaperContentWeight().' g';
+            $html .= '</td>';
+            $html .= '<td valign="top"><b>zus. Inhalt:</b></td>';
+            $html .= '<td valign="top">';
+            
+            if($calc->getPaperAddContent()->getId()) {
+                $html .= $calc->getPaperAddContent()->getName().', '.$calc->getPaperAddContentWeight().' g';
+            }
+            
+            $html .= '</td></tr><tr><td valign="top"></td><td valign="top">';
+            $html .= $calc->getPagesContent().' Seiten, '.$calc->getProductFormat()->getName().', '.$calc->getChromaticitiesContent()->getName();
+            $html .= '</td><td valign="top"></td><td valign="top">';
+            
+            if($calc->getPaperAddContent()->getId()) {
+                $html .= $calc->getPagesAddContent().' Seiten, '.$calc->getProductFormat()->getName().', '.$calc->getChromaticitiesAddContent()->getName();
+            }
+            
+            $html .= '</td></tr><tr><td colspan="4">&nbsp;</td></tr><tr><td valign="top">';
+            
+            if($calc->getPaperAddContent2()->getId() > 0) {
+                $html .= '<b>zus. Inhalt 2:</b>';
+            }
+            
+            $html .= '</td><td valign="top">';
+            
+            if($calc->getPaperAddContent2()->getId() > 0) {
+                $html .= $calc->getPaperAddContent2()->getName().', '.$calc->getPaperAddContent2Weight().' g';
+            }
+            
+            $html .= '</td><td valign="top">';
+            
+            if($calc->getPaperAddContent3()->getId() > 0) {
+                $html .= '<b>zus. Inhalt 3:</b>';
+            }
+            
+            $html .= '</td><td valign="top">';
+            
+            if($calc->getPaperAddContent3()->getId()) {
+                $html .= $calc->getPaperAddContent3()->getName().', '.$calc->getPaperAddContent3Weight().' g';
+            }
+            
+            $html .= '</td></tr><tr><td valign="top"></td><td valign="top">';
+            
+            if($calc->getPaperAddContent2()->getId()) {
+                $html .= $calc->getPagesAddContent2().' Seiten, '.$calc->getProductFormat()->getName().', '.$calc->getChromaticitiesAddContent2()->getName();
+            }
+            
+            $html .= '</td><td valign="top"></td><td valign="top">';
+            
+            if($calc->getPaperAddContent3()->getId()) {
+                $html .= $calc->getPagesAddContent3().' Seiten, '.$calc->getProductFormat()->getName().', '.$calc->getChromaticitiesAddContent3()->getName();
+            }
+            
+            $html .= '</td></tr>';
+            
+            if($calc->getPaperEnvelope()->getId()) {
+                $html .= '<tr><td colspan="4">&nbsp;</td></tr><tr>';
+                $html .= '<td valign="top"><b>Umschlag:</b></td>';
+                $html .= '<td valign="top">';
+                $html .= $calc->getPaperEnvelope()->getName().', '.$calc->getPaperEnvelopeWeight().' g';
+                $html .= '</td></tr><tr><td valign="top"></td><td valign="top">';
+                $html .= $calc->getPagesEnvelope().' Seiten, '.$calc->getProductFormat()->getName().', '.$calc->getChromaticitiesEnvelope()->getName();
+                $html .= '</td></tr>';
+            }
+            
+            $html .= '</table></div><br>';
+            $html .= '<h3>Papierpreise</h3>';
+            $html .= '<div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
+            $html .= '<colgroup><col width="15%"><col width="35%"><col width="15%"><col width="35%"></colgroup><tr>';
+            $html .= '<td valign="top"><b>Inhalt:</b></td>';
+            $html .= '<td valign="top">';
+            $html .= 'Bogenformat: '.$calc->getPaperContentWidth().' mm x '.$calc->getPaperContentHeight().' mm <br>';
+            $html .= 'Produktformat: '.$calc->getProductFormatWidth().' mm x '.$calc->getProductFormatHeight().' mm,'; 
+            $html .= $calc->getProductFormatWidthOpen().' mm x '.$calc->getProductFormatHeightOpen().' mm (offen)<br>';
+            $html .= 'Nutzen pro Bogen: '.$calc->getProductsPerPaper(Calculation::PAPER_CONTENT).',';
+            $html .= 'Anzahl B&ouml;gen pro Auflage: '.printPrice($calc->getPagesContent() / $calc->getProductsPerPaper(Calculation::PAPER_CONTENT)).'<br>';
+            $html .= 'B&ouml;gen insgesamt:';
+             
+            $sheets = ceil($calc->getPagesContent() / $calc->getProductsPerPaper(Calculation::PAPER_CONTENT) * $calc->getAmount());
+            $html .= printBigInt($sheets);
+            $html .= ' + Zuschuss';
+            $html .= printBigInt($calc->getPaperContentGrant());
+            
+            $sheets += $calc->getPaperContentGrant();
+            
+            $html .= '<br>Papiergewicht:';
+             
+            $area = $calc->getPaperContentWidth() * $calc->getPaperContentHeight();
+
+            $html .= printPrice((($area * $calc->getPaperContentWeight() / 10000 / 100) * $sheets) / 1000);
+            $html .= ' kg,';
+            $html .= 'Papierpreis: '.printPrice($calc->getPaperContent()->getSumPrice($sheets)).' €<br>';
+            $html .= 'Preisbasis: '; 
+            
+            if ($calc->getPaperContent()->getPriceBase() == Paper::PRICE_PER_100KG) 
+                $html .= 'Preis pro 100 kg';
+            else 
+                $html .= 'Preis pro 1000 B&ouml;gen';
+
+            $html .= '</td><td valign="top"><b>zus. Inhalt:</b></td><td valign="top">';
+            
+            if($calc->getPaperAddContent()->getId()) {
+                $html .= 'Bogenformat: '.$calc->getPaperAddContentWidth().' mm x '.$calc->getPaperAddContentHeight().' mm <br>';
+                $html .= 'Produktformat: '.$calc->getProductFormatWidth().' mm x '.$calc->getProductFormatHeight().' mm,';
+                $html .= $calc->getProductFormatWidthOpen().' mm x '.$calc->getProductFormatHeightOpen().' mm (offen)<br>';
+                $html .= 'Nutzen pro Bogen: '.$calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT).',';
+                $html .= 'Anzahl B&ouml;gen pro Auflage: '.printPrice($calc->getPagesAddContent() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT)).'<br>';
+                $html .= 'B&ouml;gen insgesamt:';
+                 
+                $sheets = ceil($calc->getPagesAddContent() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT) * $calc->getAmount());
+                $html .= printBigInt($sheets);
+                $html .= ' + Zuschuss';
+                $html .= printBigInt($calc->getPaperAddContentGrant());
+                
+                $sheets += $calc->getPaperAddContentGrant();
+                $html .= '<br>';
+                $html .= 'Papiergewicht:';
+                 
+                $area = $calc->getPaperAddContentWidth() * $calc->getPaperAddContentHeight();
+                $html .= printPrice((($area * $calc->getPaperAddContentWeight() / 10000 / 100) * $sheets) / 1000);
+                $html .= ' kg,';
+                $html .= 'Papierpreis: '.printPrice($calc->getPaperAddContent()->getSumPrice($sheets)).' €<br>';
+                $html .= 'Preisbasis: ';
+                 
+                if ($calc->getPaperAddContent()->getPriceBase() == Paper::PRICE_PER_100KG)
+                    $html .= 'Preis pro 100 kg';
+                else 
+                    $html .= 'Preis pro 1000 B&ouml;gen';
+            }
+            
+            $html .= '</td></tr><tr><td colspan="4">&nbsp;</td></tr><tr>';
+            $html .= '<td valign="top"><b>zus. Inhalt 2:</b></td>';
+            $html .= '<td valign="top">';
+            
+            if($calc->getPaperAddContent2()->getId()) {
+                $html .= 'Bogenformat: '.$calc->getPaperAddContent2Width().' mm x '.$calc->getPaperAddContent2Height().' mm <br>';
+                $html .= 'Produktformat: '.$calc->getProductFormatWidth().' mm x '.$calc->getProductFormatHeight().' mm,';
+                $html .= $calc->getProductFormatWidthOpen().' mm x '.$calc->getProductFormatHeightOpen().' mm (offen)<br>';
+                $html .= 'Nutzen pro Bogen: '.$calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2).',';
+                $html .= 'Anzahl B&ouml;gen pro Auflage:';
+                $html .= printPrice($calc->getPagesAddContent2() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2)).'<br>';
+                $html .= 'B&ouml;gen insgesamt:';
+                
+                $sheets = ceil($calc->getPagesAddContent2() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2) * $calc->getAmount());
+                $html .= printBigInt($sheets);
+                $html .= ' + Zuschuss';
+                $html .= printBigInt($calc->getPaperAddContent2Grant());
+                
+                $sheets += $calc->getPaperAddContent2Grant();
+                $html .= '<br>Papiergewicht:';
+                 
+                $area = $calc->getPaperAddContent2Width() * $calc->getPaperAddContent2Height();
+                $html .= printPrice((($area * $calc->getPaperAddContent2Weight() / 10000 / 100) * $sheets) / 1000);
+                $html .= ' kg,';
+                $html .= 'Papierpreis: '.printPrice($calc->getPaperAddContent2()->getSumPrice($sheets)).' €<br>';
+                $html .= 'Preisbasis: '; 
+                
+                if ($calc->getPaperAddContent2()->getPriceBase() == Paper::PRICE_PER_100KG)
+                    $html .= 'Preis pro 100 kg';
+                else
+                    $html .= 'Preis pro 1000 B&ouml;gen';
+            }
+            
+            $html .= '</td><td valign="top"><b>zus. Inhalt 3:</b></td><td valign="top">';
+            
+            if($calc->getPaperAddContent3()->getId()) {
+                $html .= 'Bogenformat: '.$calc->getPaperAddContent3Width().' mm x '.$calc->getPaperAddContent3Height().' mm <br>';
+                $html .= 'Produktformat: '.$calc->getProductFormatWidth().' mm x '.$calc->getProductFormatHeight().' mm,';
+                $html .= $calc->getProductFormatWidthOpen().' mm x '.$calc->getProductFormatHeightOpen().' mm (offen)<br>';
+                $html .= 'Nutzen pro Bogen: '.$calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3).',';
+                $html .= 'Anzahl B&ouml;gen pro Auflage:';
+                $html .= printPrice($calc->getPagesAddContent3() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3)).'<br>';
+                $html .= 'B&ouml;gen insgesamt:';
+                
+                $sheets = ceil($calc->getPagesAddContent3() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3) * $calc->getAmount());
+                $html .= printBigInt($sheets);
+                $html .= ' + Zuschuss';
+                $html .= printBigInt($calc->getPaperAddContent3Grant());
+                
+                $sheets += $calc->getPaperAddContent3Grant();
+                $html .= '<br>Papiergewicht:';
+                 
+                $area = $calc->getPaperAddContent3Width() * $calc->getPaperAddContent3Height();
+                $html .= printPrice((($area * $calc->getPaperAddContent3Weight() / 10000 / 100) * $sheets) / 1000);
+                $html .= ' kg,';
+                $html .= 'Papierpreis: '.printPrice($calc->getPaperAddContent3()->getSumPrice($sheets)).' €<br>';
+                $html .= 'Preisbasis: '; 
+                
+                if ($calc->getPaperAddContent3()->getPriceBase() == Paper::PRICE_PER_100KG)
+                    $html .= 'Preis pro 100 kg';
+                else
+                    $html .= 'Preis pro 1000 B&ouml;gen';
+            }
+            
+            $html .= '</td></tr>';
+            
+            if($calc->getPaperEnvelope()->getId()) {
+                $html .= '<tr><td colspan="4">&nbsp;</td></tr><tr>';
+                $html .= '<td valign="top"><b>Umschlag:</b></td><td valign="top">';
+                $html .= 'Bogenformat: '.$calc->getPaperEnvelopeWidth().' mm x '.$calc->getPaperEnvelopeHeight().' mm <br>';
+                $html .= 'Produktformat: '.$calc->getProductFormatWidth().' mm x '.$calc->getProductFormatHeight().' mm,';
+                $html .= $calc->getEnvelopeWidthOpen().' mm x '.$calc->getEnvelopeHeightOpen().' mm (offen)<br>';
+                $html .= 'Nutzen pro Bogen: '.$calc->getProductsPerPaper(Calculation::PAPER_ENVELOPE).',';
+                $html .= 'Anzahl B&ouml;gen pro Auflage: '.printPrice($calc->getPagesEnvelope() / $calc->getProductsPerPaper(Calculation::PAPER_ENVELOPE)).'<br>';
+                $html .= 'B&ouml;gen insgesamt:';
+
+                $sheets = ceil($calc->getPagesEnvelope() / $calc->getProductsPerPaper(Calculation::PAPER_ENVELOPE) * $calc->getAmount());
+                $html .= printBigInt($sheets);
+                $html .= ' + Zuschuss';
+                $html .= printBigInt($calc->getPaperEnvelopeGrant());
+                
+                $sheets += $calc->getPaperEnvelopeGrant();
+                $html .= '<br>Papiergewicht:';
+                 
+                $area = $calc->getPaperEnvelopeWidth() * $calc->getPaperEnvelopeHeight();
+                $html .= printPrice((($area * $calc->getPaperEnvelopeWeight() / 10000 / 100) * $sheets) / 1000);
+                $html .= ' kg,';
+                $html .= 'Papierpreis: '.printPrice($calc->getPaperEnvelope()->getSumPrice($sheets)).' €<br>';
+                $html .= 'Preisbasis: ';
+
+                if ($calc->getPaperEnvelope()->getPriceBase() == Paper::PRICE_PER_100KG)
+                    $html .= 'Preis pro 100 kg';
+                else
+                    $html .= 'Preis pro 1000 B&ouml;gen';
+                
+                $html .= '</td></tr>';
+            }
+            
+            $html .= '</table></div><br><h3>Fertigungsprozess</h3>';
+            $html .= '<div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
+            $html .= '<colgroup><col width="15%"><col width="35%"><col width="15%"><col width="35%"></colgroup>';
+            
+            foreach(MachineGroup::getAllMachineGroups(MachineGroup::ORDER_POSITION) as $mg) {
+                $machentries = Machineentry::getAllMachineentries($calc->getId(), Machineentry::ORDER_ID, $mg->getId()); 
+                if(count($machentries) > 0)
+                {
+                    $html .= '<tr><td valign="top"><b>'.$mg->getName().'</b></td>';
+                    $html .= '<td valign="top">';
+                    
+                    foreach($machentries as $me) {
+                        $html .= 'Maschine '.$me->getMachine()->getName();
+                        
+                        if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                               $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET ||
+                               $me->getMachine()->getType() == Machine::TYPE_FOLDER) {
+                                switch($me->getPart())
+                                {
+                                    case Calculation::PAPER_CONTENT:
+                                        $html .= '(Inhalt)';
+                                        break;
+                                    case Calculation::PAPER_ADDCONTENT:
+                                        $html .= '(zus. Inhalt)';
+                                        break;
+                                    case Calculation::PAPER_ENVELOPE:
+                                        $html .= '(Umschlag)';
+                                        break;
+                                    case Calculation::PAPER_ADDCONTENT2:
+                                    	$html .= '(zus. Inhalt 2)';
+                                    	break;
+        							case Calculation::PAPER_ADDCONTENT3:
+                                        $html .= '(zus. Inhalt 3)';
+                                      	break;
+                                }
+                        }
+                        $html .= '<br>';
+                        
+                        if($me->getMachine()->getType() == Machine::TYPE_CTP) { 
+                            $html .= 'Anzahl Druckplatten: '.$calc->getPlateCount();
+                            $html .= '<br>';
+                        }
+                        
+                        $html .= 'Grundzeit: '.$me->getMachine()->getTimeBase().' min.,';
+                        
+                        if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {
+                            $html .= 'Einrichtzeit Druckplatten:';
+                            $html .= $calc->getPlateCount($me) * $me->getMachine()->getTimePlatechange().' min.';
+                            $html .= 'Laufzeit:';
+                            $html .= $me->getTime() - ($calc->getPlateCount($me) * $me->getMachine()->getTimePlatechange()) - $me->getMachine()->getTimeBase().' min.';
+                        } else {
+                            $html .= 'Laufzeit inkl. maschinenspez. R&uuml;stzeiten:';
+                            $html .= $me->getTime() - $me->getMachine()->getTimeBase().' min.';
+                        }
+                        
+                        $html .= '<br>';
+                        $html .= 'Zeit: '.$me->getTime().' min.,';
+                        $html .= 'Preis: '.printPrice($me->getPrice()).' €<br>';
+                        $html .= '<br>';
+                    }
+                    
+                    $html .= '</td></tr>';
+                }
+            }
+            
+        	if (count($calc->getPositions())>0 && $calc->getPositions() != FALSE) {
+        	    $html .= '<tr><td valign="top"><b>Zus. Positionen</b></td>';
+        	    $html .= '<td>';
+
+        	    foreach($calc->getPositions() as $pos){
+        	        $html .= $pos->getComment() ." : ";
+        	        $html .= printPrice($pos->getCalculatedPrice())." ".$_USER->getClient()->getCurrency()."<br/>";
+        	        $html .= '<br/>';
+        	    }
+        	    $html .= '</td></tr>';
+            }
+            
+            $html .= '</table></div><br><div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
+            $html .= '<colgroup><col width="15%"><col width="35%"><col width="15%"><col width="35%"></colgroup><tr>';
+            $html .= '<td valign="top"><b>Produktionskosten:</b></td><td valign="top"><b>';
+            $html .= printPrice($calc->getSubTotal()).' €</b>';
+            $html .= '</td></tr></table></div><br>';
+            
+            $i++;
+        }
+        
+        return $html;
+    }
 /******************************************** Statistik **********************************/
     
     static function getStatistic1monthTab($mincrtdat)

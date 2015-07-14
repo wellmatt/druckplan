@@ -684,6 +684,16 @@ function callBoxFancyAbo(my_href) {
                       $association_object = $ticket;
                       $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
                       ?>
+                      <script type="text/javascript">
+                      function removeAsso(id)
+                      {
+                    	  $.ajax({
+                        		type: "POST",
+                        		url: "libs/modules/associations/association.ajax.php",
+                        		data: { ajax_action: "delete_asso", id: id }
+                        		})
+                      }
+                      </script>
                       <div class="btn-group dropdown">
                       <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
                         Verknüpfungen <span class="badge"><?php echo count($associations);?></span> <span class="caret"></span>
@@ -691,6 +701,7 @@ function callBoxFancyAbo(my_href) {
                       <ul class="dropdown-menu" role="menu">
                         <?php 
                             if (count($associations)>0){
+                                $as = 0;
                                 foreach ($associations as $association){
                                     if ($association->getModule1() == get_class($association_object) && $association->getObjectid1() == $association_object->getId()){
                                         $classname = $association->getModule2();
@@ -703,9 +714,13 @@ function callBoxFancyAbo(my_href) {
                                         $link_href = Association::getPath($classname);
                                         $object_name = Association::getName($object);
                                     }
-                                    echo '<li><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
+                                    echo '<li id="as_'.$as.'"><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
                                     echo $object_name;
-                                    echo '</a></li>';
+                                    echo '</a>';
+                                    if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+                                        echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso('.$association->getId().'); $("#as_'.$as.'").remove();\'/>';
+                                    echo '</li>';
+                                    $as++;
                                 }
                             }
                             echo '<li class="divider"></li>';

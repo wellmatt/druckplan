@@ -16,6 +16,8 @@ require_once 'libs/modules/notifications/notification.class.php';
 require_once 'libs/modules/timer/timer.class.php';
 require_once 'libs/modules/perferences/perferences.class.php';
 require_once 'libs/modules/tickets/ticket.log.class.php';
+require_once 'libs/modules/calculation/order.class.php';
+require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 
 class Ticket {
     
@@ -215,7 +217,7 @@ class Ticket {
         return $totaltime;
     }
     
-    static function getDueTicketsWithinTimeFrame($start, $end, User $user) {
+    static function getDueTicketsWithinTimeFrame($start, $end, User $user, $ticketstates = null) {
         global $DB;
         $retval = Array();
     
@@ -231,9 +233,14 @@ class Ticket {
             $groupsql .= ") ";
         }
         $sWhere .= " WHERE (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
+        if ($ticketstates != null)
+        {
+            $tsids = implode(",", $ticketstates);
+            $sWhere .= " AND tsid in ({$tsids}) ";
+        }
         
         $sql = "SELECT id, assigned, crtuser FROM (SELECT
-        tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state,
+        tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state, tickets_states.id as tsid,
         businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title,
         IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned,
         CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser

@@ -128,7 +128,7 @@ class BusinessContact {
         }
         
 
-        $cached = Cachehandler::fromCache("obj_bc_" . $id);
+//         $cached = Cachehandler::fromCache("obj_bc_" . $id);
         if (!is_null($cached))
         {
             $vars = array_keys(get_class_vars(get_class($this)));
@@ -230,7 +230,7 @@ class BusinessContact {
         		$this->produkte = $res[0]["produkte"];
         		$this->bedarf = $res[0]["bedarf"];
 
-        		Cachehandler::toCache("obj_bc_".$id, $this);
+//         		Cachehandler::toCache("obj_bc_".$id, $this);
         	    return true;
                 // sql returns more than one record, should not happen!
             //} 
@@ -636,7 +636,7 @@ class BusinessContact {
 		}
 		if($res)
 		{
-    		Cachehandler::toCache("obj_bc_".$this->id, $this);
+//     		Cachehandler::toCache("obj_bc_".$this->id, $this);
 			return true;
 		}
 		else

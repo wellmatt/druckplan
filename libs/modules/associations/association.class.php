@@ -114,13 +114,30 @@ class Association {
         switch ($classname)
         {
             case "Ticket":
-                return 'Ticket - ' . $object->getNumber() . ' ' . $object->getTitle();
+                if ($object->getState()->getId() == 1)
+                {
+                    $del1 = '<del>';
+                    $del2 = '</del>';
+                }
+                return $del1.'Ticket - ' . $object->getNumber() . ' ' . $object->getTitle() . $del2 .
+                       ' <span style="display: inline-block; vertical-align: top; background-color: '.$object->getState()->getColorcode().'" class="label">
+                       '.$object->getState()->getTitle().'</span>';
                 break;
             case "Order":
-                return 'Kalkulation - ' . $object->getNumber() . ' ' . $object->getTitle();
+                if ($object->getStatus() == 0)
+                {
+                    $del1 = '<del>';
+                    $del2 = '</del>';
+                }
+                return $del1.'Kalkulation - ' . $object->getNumber() . ' ' . $object->getTitle().$del2;
                 break;
             case "CollectiveInvoice":
-                return 'Vorgang - ' . $object->getNumber() . ' ' . $object->getTitle();
+                if ($object->getStatus() == 0)
+                {
+                    $del1 = '<del>';
+                    $del2 = '</del>';
+                }
+                return $del1.'Vorgang - ' . $object->getNumber() . ' ' . $object->getTitle().$del2;
                 break;
             case "Event":
                 return 'Termin - ' . $object->getTitle();
@@ -129,7 +146,12 @@ class Association {
                 return 'Planung - ' . $object->getNumber() . ' ' . $object->getObject();
                 break;
             case "Machine":
-                return 'Maschine - ' . $object->getName();
+                if ($object->getStatus() == 0)
+                {
+                    $del1 = '<del>';
+                    $del2 = '</del>';
+                }
+                return $del1.'Maschine - ' . $object->getName().$del2;
                 break;
         }
     }

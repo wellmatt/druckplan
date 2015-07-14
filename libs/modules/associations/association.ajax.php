@@ -17,6 +17,14 @@ require_once 'libs/modules/organizer/event.class.php';
 /*
  * Suchfelder
  */
+
+if ($_REQUEST["ajax_action"] == "delete_asso"){
+    if ($_REQUEST["id"])
+    {
+        $del_asso = new Association((int)$_REQUEST["id"]);
+        $del_asso->delete();
+    }
+}
 if ($_REQUEST["ajax_action"] == "search_calc"){
     $retval = Array();
     $orders = Order::getAllOrders(Order::ORDER_NUMBER, " AND (number LIKE '%{$_REQUEST['term']}%' OR title LIKE '%{$_REQUEST['term']}%') ");

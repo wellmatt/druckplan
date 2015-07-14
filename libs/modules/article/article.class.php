@@ -43,6 +43,7 @@ class Article {
 	private $isworkhourart;			// Ist es ein Arbeits-Stunden Artikel
 	private $show_shop_price = 1;	// Freigabe fuer den Shop
 	private $shop_needs_upload;     // Datei upload im Warenkorb
+	private $matchcode;             // Artikel Matchcode
 	
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
@@ -85,6 +86,7 @@ class Article {
 		    $this->upt_date = $cached->getUpt_date();
 		    $this->qualified_users = $cached->getQualified_users();
 		    $this->orderamounts = $cached->getOrderamounts();
+		    $this->matchcode = $cached->getMatchcode();
 // 		    echo "Object loaded from Cache...</br>";
 		}
 		
@@ -111,6 +113,7 @@ class Article {
 				$this->isworkhourart = $r["isworkhourart"];
 				$this->show_shop_price = $r["show_shop_price"];
 				$this->shop_needs_upload = $r["shop_needs_upload"];
+				$this->matchcode = $r["matchcode"];
 				
 				if ($r["tradegroup"] == 0){
 					$this->tradegroup->setTitle(" &ensp; ");
@@ -187,7 +190,8 @@ class Article {
 					shop_customer_id	= {$this->shopCustomerID},
 					show_shop_price		= {$this->show_shop_price},
 					shop_needs_upload	= {$this->shop_needs_upload},
-					isworkhourart		= {$this->isworkhourart}
+					isworkhourart		= {$this->isworkhourart},
+					matchcode		    = '{$this->matchcode}' 
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
 		} else {
@@ -196,14 +200,14 @@ class Article {
 					tradegroup, crtdate, crtuser, 
 					shoprel, picture, number, tax, 
 					minorder, maxorder, orderunit,  
-					orderunitweight, shop_customer_rel, shop_customer_id, isworkhourart, show_shop_price, shop_needs_upload )
+					orderunitweight, shop_customer_rel, shop_customer_id, isworkhourart, show_shop_price, shop_needs_upload, matchcode )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',  
 					{$groupid}, {$now}, {$_USER->getId()}, 
 					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax}, 
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
-					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload} )";
+					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, '{$this->matchcode}' )";
 			$res = $DB->no_result($sql);
             
             if($res){
@@ -952,6 +956,22 @@ class Article {
     public function setShop_needs_upload($shop_needs_upload)
     {
         $this->shop_needs_upload = $shop_needs_upload;
+    }
+    
+	/**
+     * @return the $matchcode
+     */
+    public function getMatchcode()
+    {
+        return $this->matchcode;
+    }
+
+	/**
+     * @param field_type $matchcode
+     */
+    public function setMatchcode($matchcode)
+    {
+        $this->matchcode = $matchcode;
     }
     
 }

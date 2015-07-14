@@ -297,7 +297,7 @@ function addPositionRow(){
 				<?= $_LANG->get('Firmenname') ?>
 			</td>
 			<td class="content_row_clear">
-				<?= $selected_customer->getNameAsLine()?>			
+				<a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$selected_customer->getId()?>" target="_blank"><?= $selected_customer->getNameAsLine()?></a>			
 			</td>
 			<td class="content_row_header">
 				<?= $_LANG->get('E-Mail') ?>

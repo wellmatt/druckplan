@@ -357,7 +357,7 @@ if ($_USER == false)
                         
                         
             <!-- calendar -->
-            <li class="dropdown-grid">
+            <li id='li_calendar' class="dropdown-grid">
               <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, cal_refresh);"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span><span class="caret"></span></a>
               <div class="dropdown-grid-wrapper" role="menu">
                 <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-6">

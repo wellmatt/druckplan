@@ -127,7 +127,10 @@ if($_REQUEST["subexec"] == "save")
             {
                 foreach ($_REQUEST["wotime"][$i] as $wtime)
                 {
-                    $tmp_wtime_arr[$i][] = Array("start"=>strtotime($wtime["start"]),"end"=>strtotime($wtime["end"]));
+                    if ($wtime["start"]>0 && $wtime["end"]>0)
+                    {
+                        $tmp_wtime_arr[$i][] = Array("start"=>strtotime($wtime["start"]),"end"=>strtotime($wtime["end"]));
+                    }
                 }
             }
         }

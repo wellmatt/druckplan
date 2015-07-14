@@ -42,7 +42,7 @@ if ($_REQUEST["ajax_action"] == "search_customer_cp"){
 }
 if ($_REQUEST["ajax_action"] == "search_article"){
     $retval = Array();
-    $allArticle = Article::getAllArticle(Article::ORDER_TITLE, " AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%') ");
+    $allArticle = Article::getAllArticle(Article::ORDER_TITLE, " AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%' OR matchcode LIKE '%{$_REQUEST['term']}%') ");
     foreach ($allArticle as $a){
         $retval[] = Array("value" => $a->getId(), "label" => $a->getTitle());
     }

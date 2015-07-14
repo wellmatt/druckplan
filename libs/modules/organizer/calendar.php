@@ -14,7 +14,7 @@ require_once 'libs/modules/organizer/event.class.php';
                 $ticket_states = TicketState::getAllStates();
                 foreach ($ticket_states as $ticket_state){
                     if ($ticket_state->getId() != 1 && $ticket_state->getId() != 3)
-                        echo '<tr><td><font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
+                        echo '<tr><td><input type="checkbox" onclick="refetchEvents();" checked value="'.$ticket_state->getId().'" class="chkb_legend"/> <font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
                 }
                 ?>
             </table>
@@ -24,33 +24,17 @@ require_once 'libs/modules/organizer/event.class.php';
 <?php
 
 global $_USER;
-if ($_REQUEST["sel_user"])
-{
-    if((int)$_REQUEST["sel_user"] > 0)
-        $sel_user = new User((int)$_REQUEST["sel_user"]);
-    else
-    {
-    	$sel_user = $_USER;
-    	echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
-    }
-} else
-{
-	$sel_user = $_USER;
-	echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
-}
 
 if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
 	$users = User::getAllUser(User::ORDER_LOGIN);
 	?>
 	<center>
 	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
-	F&uuml;r Benutzer: <select name="sel_user" id="sel_user" style="width:150px" onchange="document.getElementById('select_cal_user').submit()" class="text">
+	F&uuml;r Benutzer: <select name="sel_user" id="sel_user" style="width:150px" onchange="refetchEvents();" class="text">
 		<? foreach ($users as $user) {?>
 		<option value="<?=$user->getId()?>" 
 		<?
-			if($user->getId() == $_REQUEST["sel_user"]) 
-				echo "selected>";
-			elseif($user->getId() == $_USER->getId() && !$_REQUEST["sel_user"])
+			if($user->getId() == $_USER->getId())
 				echo "selected>";
 		?>
 		><?=$user->getFirstname()?> <?=$user->getLastname()?></option>
@@ -59,6 +43,9 @@ if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
 	</form>
 	</center>
 	<?
+} else {
+    $sel_user = $_USER;
+    echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
 }
 
 if ($_REQUEST["exec"])
@@ -91,7 +78,7 @@ if ($_REQUEST["exec"])
 <script src='jscripts/calendar/de.js'></script>
 <script>
 	$(document).ready(function() {
-	
+		
 		$("a#hiddenclicker").fancybox({
 			'type'    : 'iframe',
 			'transitionIn'	:	'elastic',
@@ -103,8 +90,6 @@ if ($_REQUEST["exec"])
 			'helpers'		:   { overlay:null, closeClick:true }
 		});
 	
-		var e = document.getElementById("sel_user");
-		var strUser = e.options[e.selectedIndex].value;
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -123,17 +108,31 @@ if ($_REQUEST["exec"])
 			},
 			editable: true,
 			eventLimit: true,
-			events: {
-				url: 'libs/modules/organizer/calendar_getevents.php',
-				type: 'GET',
-				data: {
-					user: strUser,
-					custom_param2: 'somethingelse'
-				},
-				error: function() {
-					alert('there was an error while fetching events!');
-				}
-			},
+		    events: function(start, end, timezone, callback) {
+// 				var e = document.getElementById("sel_user");
+// 				var strUser = e.options[e.selectedIndex].value;
+		    	var strUser = $( "#sel_user" ).val();
+			    var states = [];
+		    	$('.chkb_legend').each(function( index ) {
+		    		if ( $( this ).prop( "checked" ) )
+		    		{
+			    		states.push(this.value);
+		    		}
+		    	});
+		        $.ajax({
+		            url: 'libs/modules/organizer/calendar_getevents.php',
+		            dataType: 'json',
+		            data: {
+	 					user: strUser,
+		                start: start.format('YYYY-MM-DD'),
+		                end: end.format('YYYY-MM-DD'),
+		                states: states
+		            },
+		            success: function (eventstring) {
+                        callback(eventstring);
+		            }
+		        });
+		    },
 			loading: function(bool) {
 				$('#loading').toggle(bool);
 			},
@@ -169,6 +168,10 @@ function callBoxFancy(my_href) {
 	var j1 = document.getElementById("hiddenclicker");
 	j1.href = my_href;
 	$('#hiddenclicker').trigger('click');
+}
+function refetchEvents()
+{
+	$('#calendar').fullCalendar( 'refetchEvents' );
 }
 </script>
 <style>

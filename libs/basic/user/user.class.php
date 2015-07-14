@@ -67,7 +67,7 @@ class User {
     /* Konstruktor
      * Falls id �bergeben, werden die entsprechenden Daten direkt geladen
     */
-    function __construct($id = 0, $addgroups = true)
+    function __construct($id = 0) // , $addgroups = true
     {
         global $DB;
         global $_USER;
@@ -144,8 +144,8 @@ class User {
                 }
                 $this->workinghours = $tmp_worktimes;
                 
-                if ($addgroups)
-                {
+//                 if ($addgroups)
+//                 {
                     $sql = " SELECT * FROM user_groups WHERE user_id = {$this->id}";
                     if ($DB->num_rows($sql) > 0)
                     {
@@ -153,7 +153,7 @@ class User {
                         foreach ($res as $r)
                             $this->groups[] = new Group($r["group_id"], false);
                     }
-                }
+//                 }
         		Cachehandler::toCache("obj_usr_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!

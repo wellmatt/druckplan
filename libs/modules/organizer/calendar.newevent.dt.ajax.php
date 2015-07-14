@@ -1,14 +1,16 @@
 <?php
 
+    error_reporting(-1);
+    ini_set('display_errors', 1);
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article.matchcode', 'tradegroup_title', 'customer', 'shop_customer_rel' );
+    $aColumns = array( 'bname', 'cname' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
      
     /* DB table to use */
-    $sTable = "article";
+    $sTable = "businesscontact";
      
     /* Database connection information */
     $gaSql['user']       = $_CONFIG->db->user;
@@ -122,20 +124,27 @@
     
     if ( $sWhere == "" )
     {
-        $sWhere = " WHERE status = 1 ";
+        $sWhere = " WHERE active = 1 ";
     }
     else
     {
-        $sWhere .= " AND status = 1 ";
+        $sWhere .= " AND active = 1 ";
     }
     
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, article.matchcode, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
-               FROM article LEFT JOIN article_pictures ON article_pictures.articleid = article.id LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-               LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id
+    $sQuery = "SELECT * FROM (
+                SELECT
+                contactperson.id,
+                CONCAT(businesscontact.name1,' ',businesscontact.name2) AS bname,
+                CONCAT(contactperson.name1,', ',contactperson.name2) AS cname,
+                businesscontact.active as active
+                FROM
+                contactperson
+                INNER JOIN businesscontact ON contactperson.businesscontact = businesscontact.id
+               ) t1 
                $sWhere
                $sOrder
                $sLimit
@@ -147,11 +156,16 @@
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT COUNT(article.id)
-               FROM article 
-               LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
-               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-               LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id 
+        SELECT COUNT(id) FROM (
+            SELECT
+            contactperson.id,
+            CONCAT(businesscontact.name1,' ',businesscontact.name2) AS bname,
+            CONCAT(contactperson.name1,', ',contactperson.name2) AS cname,
+            businesscontact.active as active
+            FROM
+            contactperson
+            INNER JOIN businesscontact ON contactperson.businesscontact = businesscontact.id
+           ) t1 
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -162,12 +176,17 @@
      
     /* Total data set length */
     $sQuery = "
-        SELECT COUNT(article.id) 
-        FROM article 
-        LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
-        LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
-        LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id  
-        WHERE status = 1
+        SELECT COUNT(id) FROM (
+            SELECT
+            contactperson.id,
+            CONCAT(businesscontact.name1,' ',businesscontact.name2) AS bname,
+            CONCAT(contactperson.name1,', ',contactperson.name2) AS cname,
+            businesscontact.active as active
+            FROM
+            contactperson
+            INNER JOIN businesscontact ON contactperson.businesscontact = businesscontact.id
+           ) t1 
+        WHERE active = 1
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -187,61 +206,12 @@
      
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
-//         echo "Durchlauf f�r :" . $aRow[ $aColumns[0] ] . "</br> </br>";
         $row = array();
-        for ( $i=0 ; $i<count($aColumns) ; $i++ )
-        {
-            if ( $aColumns[$i] == 'art_picture' )
-            {
-                $pic_sql = "SELECT url FROM article_pictures WHERE articleid = {$aRow[ $aColumns[0] ]} LIMIT 1";
-				
-				$rResultPics = mysql_query( $pic_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-				$aResultPics = mysql_fetch_array($rResultPics);
-				
-                if(count($aResultPics) > 0){
-                    $row[] = '<a href="images/products/'.$aResultPics[0].'" target="_blank">
-                              <img src="images/products/'.$aResultPics[0].'" style="max-width: 100px; max-height: 100px;" width="100px"></a>';
-                } else {
-                    $row[] = '<img src="images/icons/image.png" title="Kein Bild hinterlegt">&nbsp;';
-                }
-            }
-            else if ( $aColumns[$i] == 'id' )
-            {
-                /* do not print the id */
-                $row[] = $aRow[ $aColumns[$i] ];
-            }
-            else if ( $aColumns[$i] == 'shop_customer_rel' )
-            {
-                if($_CONFIG->shopActivation){
-                    if ($aRow[$aColumns[$i]] == 1){
-                        $row[] = '<img src="images/status/green_small.gif">';
-                    } else {
-                        $row[] = '<img src="images/status/red_small.gif">';
-                    }
-                }
-            }
-            else if ( $aColumns[$i] == 'article.matchcode' )
-            {
-                /* do not print the id */
-                $row[] = nl2br(htmlentities(utf8_encode($aRow['matchcode'])));
-            }
-            else
-            {
-                /* General output */
-                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
-            }
-        }
-        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$aRow[ $aColumns[0] ].'"><img src="images/icons/pencil.png" title="Bearbeiten"></a>
-        		  <a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=copy&aid='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png" title="Kopieren"></a>
-        		  <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/article/article.php&exec=delete&did='.$aRow[ $aColumns[0] ].'\')">
-        		  <img src="images/icons/cross-script.png" title="L&ouml;schen"></a>';
-// 		var_dump($row); echo "</br>";
+        $row[] = '<img src="../../../images/icons/building.png" />'.nl2br(htmlentities(utf8_encode($aRow['bname'])));
+        $row[] = '<input type="checkbox" id="chkb_'.$aRow['id'].'" onclick="add_contactperson(this)" value="'.$aRow['id'].'">'.nl2br(htmlentities(utf8_encode($aRow['cname']))).'</td>
+				  <input type="hidden" name="contactperson_name_'.$aRow['id'].'" id="contactperson_name_'.$aRow['id'].'" value="'.nl2br(htmlentities(utf8_encode($aRow['cname']))).'">';
         $output['aaData'][] = $row;
     }
-    
-//     var_dump($output); echo "</br>";
      
     echo json_encode( $output );
-    
-//     echo  json_last_error();
 ?>

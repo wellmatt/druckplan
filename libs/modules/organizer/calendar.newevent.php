@@ -43,7 +43,7 @@ if ($_USER == false)
 $part_users_int = Array();
 $part_users_ext = Array();
 $users = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
-$businesscontacts = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME, BusinessContact::FILTER_ALL, BusinessContact::LOADER_MEDIUM);
+// $businesscontacts = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME, BusinessContact::FILTER_ALL, BusinessContact::LOADER_MEDIUM);
 
 $_REQUEST["eventid"] = (int)$_REQUEST["eventid"];
 $event = new Event($_REQUEST["eventid"]);
@@ -178,8 +178,15 @@ $(document).ready(function() {
     } );
     var table_bcontacs = $('#table_bcontacs').DataTable( {
         "paging": true,
+        "processing": true,
+        "bServerSide": true,
+        "sAjaxSource": "calendar.newevent.dt.ajax.php",
 		"stateSave": true,
 		"pageLength": 10,
+		"columns": [
+		            null,
+		            null,
+		          ],
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"language": 
 					{
@@ -476,6 +483,7 @@ function add_contactperson(element)
 					<th width="180"><?=$_LANG->get('Kontakt Person')?></th>
 				</tr>
 			</thead>
+			<?php /*?>
 			<?foreach($businesscontacts as $c) { ?>
 			<? 	$contactpersons = $c->getContactpersons();
 				if (count($contactpersons)>0){
@@ -488,6 +496,7 @@ function add_contactperson(element)
 			<?		}
 				}
 			} ?>
+			*/ ?>
 			</table>
 		</div>
 	</div>

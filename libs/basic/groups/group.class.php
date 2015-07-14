@@ -25,6 +25,7 @@ class Group {
    const RIGHT_DELETE_COLINV = 4096;
    const RIGHT_COMBINE_COLINV = 8192;
    const RIGHT_TICKET_CHANGE_OWNER = 16384;
+   const RIGHT_ASSO_DELETE = 32768;
    
    function __construct($id = 0, $adduser = true)
    {

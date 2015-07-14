@@ -144,14 +144,14 @@ class Event {
             return false;
     }
 	
-    static function getAllEventsTimeframe($start, $end, $user = null, $selectOtherDates = true)
+    static function getAllEventsTimeframe($start, $end, $user = null, $selectOtherDates = true, $ticketstates = null)
     {
         global $DB;
         global $_USER;
         $retval = Array();
         if (!$user)
             $user = $_USER;
-		
+        
 		$start = explode("-",$start);
 		$end = explode("-",$end);
 
@@ -167,7 +167,7 @@ class Event {
                      end >= {$start} AND end < {$end} OR
                      begin < {$start} AND end >= {$end})
                     ";
-		// echo $sql;
+// 		echo $sql;
         if ($DB->num_rows($sql))
         {
             foreach ($DB->select($sql) as $r)
@@ -195,7 +195,7 @@ class Event {
 
             // Tickets
             require_once $_BASEDIR . 'libs/modules/tickets/ticket.class.php';
-            $tickets = Ticket::getDueTicketsWithinTimeFrame($start, $end, $user);
+            $tickets = Ticket::getDueTicketsWithinTimeFrame($start, $end, $user, $ticketstates);
             foreach($tickets as $ticket) {
                 if ($ticket->getState()->getId() != 1 && $ticket->getState()->getId() != 3)
                 {
@@ -300,6 +300,16 @@ class Event {
     }
 
     public function getParticipantsInt()
+    {
+        return $this->participants_int;
+    }
+
+    public function getParticipants_Ext()
+    {
+        return $this->participants_ext;
+    }
+
+    public function getParticipants_Int()
     {
         return $this->participants_int;
     }

@@ -42,7 +42,7 @@ $user = new User($_GET['user']);
 // $range_start = parseDateTime($_GET['start']);
 // $range_end = parseDateTime($_GET['end']);
 
-$events = Event::getAllEventsTimeframe($_GET['start'], $_GET['end'], $user, $selectOtherDates = true);
+$events = Event::getAllEventsTimeframe($_GET['start'], $_GET['end'], $user, $selectOtherDates = true, $_REQUEST["states"]);
 
 
 // print_r($events);
@@ -73,10 +73,15 @@ if($events) {
 }
 
 if ($user->getCalBirthday() == 1) {
-	$all_contactperson = ContactPerson::getAllContactPersons();
+    $start = explode("-",$_GET['start']);
+    $end = explode("-",$_GET['end']);
+    $start = mktime(0,0,0, $start[1], $start[2], $start[0]);
+    $end = mktime(0,0,0, $end[1], $end[2], $end[0])+60*60*24;
+    
+	$all_contactperson = ContactPerson::getAllContactPersonsBDay($start,$end);
 	foreach ($all_contactperson as $cp) {
 		$birthdate = $cp->getBirthDate();
-		if ($birthdate>0)
+		if ($birthdate!=0)
 		{
     		$birth_day = date('d',$birthdate);
     		$birth_moth = date('m',$birthdate);
@@ -107,6 +112,4 @@ if ($user->getCalBirthday() == 1) {
 		}
 	}
 }
-
-// Send JSON to the client.
 echo json_encode($output_arrays);

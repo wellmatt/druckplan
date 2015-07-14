@@ -119,25 +119,38 @@ class PlanningJob {
             $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getTitle();
             $ticket->setCustomer($this->object->getCustomer());
             $ticket->setCustomer_cp($this->object->getCustContactperson());
+            $comm = "";
         }
         elseif ($this->type == PlanningJob::TYPE_K)
         {
             $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getName();
             $ticket->setCustomer($this->object->getCustomer());
             $ticket->setCustomer_cp($this->object->getCustContactperson());
+            $comm = Order::generateSummary($this->object->getId());
         }
         $ticket->setTitle($title);
         $ticket->setDuedate($this->start);
         $ticket->setAssigned_user($this->assigned_user);
         $ticket->setCategory(new TicketCategory(2));
         $ticket->setState(new TicketState(2));
-        $ticket->setPriority(new TicketPriority(4));
+        $ticket->setPriority(new TicketPriority(1));
         $ticket->setSource(Ticket::SOURCE_JOB);
         $ticket->setPlanned_time(($this->end - $this->start)/60/60);
         $ticket->setCrtuser($_USER);
         $save_ok = $ticket->save();
         if ($save_ok)
+        {
             $this->ticket = $ticket;
+            $comment = new Comment();
+            $comment->setCrtuser($_USER);
+            $comment->setCrtdate(time());
+            $comment->setModule("Ticket");
+            $comment->setObjectid($ticket->getId());
+            $comment->setTitle("aus Planung generiert");
+            $comment->setVisability(Comment::VISABILITY_INTERNAL);
+            $comment->setComment($comm);
+            $comment->save();
+        }
     }
 
     function save()

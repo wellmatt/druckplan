@@ -79,12 +79,13 @@ class Comment {
     {
         global $DB;
         $now = time();
+        $tmp_com = mysql_real_escape_string($this->comment);
         
         if ($this->id > 0) {
             $sql = "UPDATE comments SET
             title 			= '{$this->title}',
             state			= {$this->state},
-            comment			= '{$this->comment}',
+            comment			= '{$tmp_com}',
             visability			= {$this->visability},
             mailed			= {$this->mailed}
             WHERE id = {$this->id}";
@@ -94,7 +95,7 @@ class Comment {
             (title, crtdate, crtuser, crtcp, state, module, objectid, comment, visability, mailed )
             VALUES
             ( '{$this->title}' , {$now}, {$this->crtuser->getId()}, {$this->crtcp->getId()}, {$this->state}, '{$this->module}',
-            {$this->objectid}, '{$this->comment}', {$this->visability}, {$this->mailed} )";
+            {$this->objectid}, '{$tmp_com}', {$this->visability}, {$this->mailed} )";
             $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM comments WHERE title = '{$this->title}'";

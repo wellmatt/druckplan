@@ -22,6 +22,7 @@ if ($_REQUEST["exec"] == "delete"){
 	$del_docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER, 
 										"requestId" => $del_perso_order->getId(), 
 										 "module" => Document::REQ_MODULE_PERSONALIZATION));
+	$tmp_del = $del_perso_order->delete();
     foreach ($del_docs as $del_doc){
 		$del_doc->delete();
 	}

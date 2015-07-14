@@ -21,6 +21,14 @@ $associations = Association::getAssociationsForObject(get_class($association_obj
 		j1.href = my_href;
 		$('#association_hiddenclicker').trigger('click');
 	}
+    function removeAsso(id)
+    {
+  	  $.ajax({
+      		type: "POST",
+      		url: "libs/modules/associations/association.ajax.php",
+      		data: { ajax_action: "delete_asso", id: id }
+      		})
+    }
 </script>
 
   <div id="association_hidden_clicker" style="display:none"><a id="association_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
@@ -29,6 +37,7 @@ $associations = Association::getAssociationsForObject(get_class($association_obj
     <ul class="dropdown-menu">
     <?php 
         if (count($associations)>0){
+            $as = 0;
             foreach ($associations as $association){
                 if ($association->getModule1() == get_class($association_object) && $association->getObjectid1() == $association_object->getId()){
                     $classname = $association->getModule2();
@@ -43,7 +52,11 @@ $associations = Association::getAssociationsForObject(get_class($association_obj
                 }
                 echo '<li><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
                 echo '> ' . $object_name;
-                echo '</a></li>';
+                echo '</a>';
+                if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+                    echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso('.$association->getId().'); $("#as_'.$as.'").remove();\'/>';
+                echo '</li>';
+                $as++;
             }
         }
         echo '<li><a href="#" onclick="callBoxFancy(\'libs/modules/associations/association.frame.php?module='.get_class($association_object).'&objectid='.$association_object->getId().'\');">> NEU</a></li>';

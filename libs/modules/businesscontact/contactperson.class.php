@@ -88,7 +88,7 @@ class ContactPerson {
         	$this->priv_country = new Country(55); 
         }
         
-        $cached = Cachehandler::fromCache("obj_cp_" . $id);
+//         $cached = Cachehandler::fromCache("obj_cp_" . $id);
         if (!is_null($cached))
         {
             $vars = array_keys(get_class_vars(get_class($this)));
@@ -189,7 +189,7 @@ class ContactPerson {
                     $this->categories_cancreate = $tmp_categories_cancreate;
                 }
 				
-                Cachehandler::toCache("obj_cp_".$id, $this);
+//                 Cachehandler::toCache("obj_cp_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
@@ -285,7 +285,23 @@ class ContactPerson {
     	return $contactPersons;
 	}
 	
-
+	public static function getAllContactPersonsBDay($start,$end)
+	{
+	    global $DB;
+	    
+	    $contactPersons = Array();
+	    $sql = " SELECT id, birthdate FROM contactperson WHERE active > 0";
+	    $res = $DB->select($sql);
+	    if($DB->num_rows($sql))
+	    {
+	        foreach ($res as $r)
+	        {
+	            if (date("m",$r["birthdate"]) >= date("m",$start) && date("m",$r["birthdate"]) <= date("m",$end))
+	                $contactPersons[] = new ContactPerson($r["id"]);
+	        }
+	        return $contactPersons;
+	    }
+	}
 
 	public static function getAllContactPersonsWithBC($filter = "")
 	{
@@ -478,10 +494,11 @@ class ContactPerson {
 		    VALUES ( {$category->getId()}, {$this->id}, {$cansee}, {$cancreate} )";
 		    $DB->no_result($sql);
 		}
-		
+
+// 		Cachehandler::removeCache("obj_cp_".$this->id);
 		if($res)
 		{
-            Cachehandler::toCache("obj_cp_".$this->id, $this);
+// 		    Cachehandler::toCache("obj_cp_".$this->id, $this);
 			return true;
 		}
 		else

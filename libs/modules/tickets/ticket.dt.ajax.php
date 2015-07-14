@@ -44,7 +44,10 @@
         die("Login failed");
     }
 
-    $aColumns = array( 'id', 'number', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
+    if ($_REQUEST["details"] == "1")
+        $aColumns = array( 'null', 'id', 'number', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
+    else
+        $aColumns = array( 'id', 'number', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -503,6 +506,9 @@
                 else if ( $aColumns[$i] == 'priority' )
                 {
                     $row[] = nl2br(htmlentities(utf8_encode($aRow['priority_title'])));
+                }
+                else if ( $aColumns[$i] == 'null' )
+                {
                 }
                 else if ( $aColumns[$i] == 'id' )
                 {

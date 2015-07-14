@@ -53,6 +53,7 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setIsWorkHourArt((int)$_REQUEST["article_isworkhourart"]);
 	$article->setShowShopPrice((int)$_REQUEST["article_show_shop_price"]);
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
+	$article->setMatchcode($_REQUEST["article_matchcode"]);
 	
 	$quser_list = Array();
 	foreach ($_REQUEST["qusr"] as $qusr)
@@ -282,6 +283,13 @@ function addOrderAmount()
     				<td class="content_row_clear">
     				<input id="article_number" name="article_number" type="text" class="text" 
     					value="<?=$article->getNumber()?>" style="width: 180px">
+    				</td>
+    			</tr>
+    			<tr>
+    				<td class="content_row_header"><?=$_LANG->get('Matchcode')?></td>
+    				<td class="content_row_clear">
+    				<input id="article_matchcode" name="article_matchcode" type="text" class="text" 
+    					value="<?=$article->getMatchcode()?>" style="width: 180px">
     				</td>
     			</tr>
     			<tr>
