@@ -619,7 +619,7 @@ if ((int)$_REQUEST["persoid"] > 0){
 		
 			
 			$all_persos = Personalization::getAllPersonalizationsByCustomerSearch($busicon->getId(), "title ASC",$search_ver_string);
-			$all_persoorders = Personalizationorder::getAllPersonalizationordersForShop($busicon->getId(), Personalizationorder::ORDER_CRTDATE, $search_string);
+// 			$all_persoorders = Personalizationorder::getAllPersonalizationordersForShop($busicon->getId(), Personalizationorder::ORDER_CRTDATE, $search_string);
 		?>
 		
 		<script language="javascript">
@@ -633,6 +633,59 @@ if ((int)$_REQUEST["persoid"] > 0){
 		   return false;
 		}
 		</script>
+        <!-- DataTables -->
+        <link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.css">
+        <link rel="stylesheet" type="text/css" href="../css/dataTables.bootstrap.css">
+        <script type="text/javascript" charset="utf8" src="../jscripts/datatable/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="../jscripts/datatable/numeric-comma.js"></script>
+        <script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.bootstrap.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            var art_table = $('#porder_table').DataTable( {
+                "processing": true,
+                "bServerSide": true,
+                "sAjaxSource": "personalization.dt.ajax.php?customerid=<?php echo $busicon->getId();?>",
+                "paging": true,
+        		"stateSave": false,
+        		"pageLength": "25",
+        		"aaSorting": [[ 2, "asc" ]],
+        		"dom": 'flrtip',        
+        		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+        		"columns": [
+        		            null,
+        		            null,
+        		            null,
+        		            null,
+        		            null,
+        		            null
+        		          ],
+        		"language": 
+        					{
+        						"emptyTable":     "Keine Daten vorhanden",
+        						"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+        						"infoEmpty": 	  "Keine Seiten vorhanden",
+        						"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+        						"infoPostFix":    "",
+        						"thousands":      ".",
+        						"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+        						"loadingRecords": "Lade...",
+        						"processing":     "Verarbeite...",
+        						"search":         "Suche:",
+        						"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+        						"paginate": {
+        							"first":      "Erste",
+        							"last":       "Letzte",
+        							"next":       "N&auml;chste",
+        							"previous":   "Vorherige"
+        						},
+        						"aria": {
+        							"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+        							"sortDescending": ": aktivieren um absteigend zu sortieren"
+        						}
+        					}
+            } );
+        } );
+        </script>
 		 
 		<div class="box2" style="min-height:180px;">
 			<table style="width:100%">
@@ -681,16 +734,22 @@ if ((int)$_REQUEST["persoid"] > 0){
 					<td width="400px">
 			    		<h1>Angelegte Personalisierungen</h1>
 			    	</td>
-			    	<td width="200px" align="right">
-			    		<form action="index.php" method="post" name="perso_search" id="perso_search" >
-			    			<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
-			    			<input name="search_string" type="text" value="<?=$search_string?>" style="width:150px;"/>
-			    			<img src="../images/icons/magnifier-left.png" alt="<?=$_LANG->get('Suchen');?>" class="pointer"
-			    				 onClick="document.getElementById('perso_search').submit()" />
-			    		</form>
-			    	</td>
 			    </tr>
 			</table>
+			
+        	<table id="porder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+                <thead>
+                    <tr>
+                        <th width="105"><?=$_LANG->get('Beschreibung')?></th>
+                        <th><?=$_LANG->get('Titel')?></th>
+                        <th width="80"><?=$_LANG->get('Erstelldatum')?></th>
+                        <th width="80"><?=$_LANG->get('Bestelldatum')?></th>
+                        <th width="160"><?=$_LANG->get('Menge')?></th>
+                        <th width="160"><?=$_LANG->get('Optionen')?></th>
+                    </tr>
+                </thead>
+        	</table>
+			<?php /*
 			<table cellpadding="2" cellspacing="0" style="width:100%; border:0px;">
 			    <colgroup>
 			        <col>
@@ -707,7 +766,6 @@ if ((int)$_REQUEST["persoid"] > 0){
 			        <td class="filerow_header" align="center"><?=$_LANG->get('Erstelldatum');?></td>
 			        <td class="filerow_header" align="center"><?=$_LANG->get('Bestelldatum');?></td>
 			        <td class="filerow_header" align="right"><?=$_LANG->get('Menge');?></td>
-			        <?php /*<td class="filerow_header" align="center"><?=$_LANG->get('Status');?></td>*/?>
 			        <td class="filerow_header"><?=$_LANG->get('Optionen');?></td>
 			    </tr>
 			    <?foreach ($all_persoorders AS $perso_order){ 
@@ -722,13 +780,6 @@ if ((int)$_REQUEST["persoid"] > 0){
 			        	<?if ($perso_order->getOrderdate() > 0) echo date("d.m.Y",$perso_order->getOrderdate()) // - H:i?>
 			        </td>
 			        <td class="filerow" align="right"><?=$perso_order->getAmount()?> Stk.</td>
-			        <?php /*
-			        <td class="filerow" align="center">
-			        	<img src="../images/status/<?=$perso_order->getStatusImage()?>" 
-			        		 title="<?=$perso_order->getStatusDescription()?>" 
-			        		 alt="<?=$perso_order->getStatusDescription()?>">
-			        </td>
-			        */?>
 			        <td class="filerow">
 			        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&persoorderid=<?=$perso_order->getId()?>&exec=edit" class="button">Ansehen</a>
 			        <? 	if($perso_order->getStatus() >= 1){ ?>
@@ -744,6 +795,7 @@ if ((int)$_REQUEST["persoid"] > 0){
 					echo '<tr><td class="filerow" colspan="4" align="center">'.$_LANG->get('Keine Personalisierungen aktiv').'</td></tr>';
 			    }?>
 			</table>
+			*/ ?>
 		</div>
 		<? } ?>
 		</td>

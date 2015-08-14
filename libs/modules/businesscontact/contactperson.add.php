@@ -210,7 +210,21 @@ $(function() {
 	</tr>
 </table>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form"
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="#" class="menu_item" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=4'">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+    	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){ ?>
+        	<?if($_REQUEST["exec"] != "new"){?>
+                <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$contactperson->getId()?>&id=<?=$contactperson->getBusinessContact()->getID()?>')">Löschen</a>
+        	<?}?>
+        <?}?>
+    </div>
+</div>
+
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form" 
 	onsubmit="return checkform(new Array(this.name1))">
 	<!-- input type="hidden" name="exec" value="edit"--> 
 	<input type="hidden" name="exec" value="save_cp"> 
@@ -785,33 +799,4 @@ $(function() {
 		<?php }?>
 		</table>
     </div>
-	
-	<table width="1000">
-		<colgroup>
-			<col width="280px">
-			<col >
-		</colgroup>
-		<tr>
-			<td class="content_row_header">
-			    <input type="button" class="button" value="<?=$_LANG->get('Zur&uuml;ck')?>"  
-			    		onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=4'">
-			</td>
-			<?php if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP) || $_USER->isAdmin()){?>
-			<td class="content_row_clear" >
-				<?if($_USER->getId() != 14){ ?>
-					<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-				<?}?>
-			</td>
-			<?php }?>
-			
-	        <td class="content_row_clear" align="right">
-	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){ ?>
-		        	<?if($_REQUEST["exec"] != "new"){?>
-		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$contactperson->getId()?>&id=<?=$contactperson->getBusinessContact()->getID()?>')" 
-		        				value="<?=$_LANG->get('L&ouml;schen')?>">
-		        	<?}?>
-		        <?}?>
-	        </td>
-		</tr>
-	</table>
 </form>

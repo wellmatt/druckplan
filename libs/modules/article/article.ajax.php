@@ -49,6 +49,26 @@ if ($_REQUEST["exec"] == "checkArticleNumber") {
 		echo "NO";
 	}
 }
+if ($_REQUEST["ajax_action"] == "search_customer"){
+    $retval = Array();
+    $customers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME, " (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%' OR matchcode LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($customers as $c){
+        $retval[] = Array("label" => $c->getNameAsLine(), "value" => $c->getId());
+	} 
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
+}
+if ($_REQUEST["ajax_action"] == "search_customer_cp"){
+    $retval = Array();
+	$allContactPerson = ContactPerson::getAllContactPersons(NULL, ContactPerson::ORDER_NAME, " AND (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");
+	foreach ($allContactPerson as $cp){
+	    $retval[] = Array("label" => $cp->getNameAsLine(), "value" => $cp->getId());
+	} 
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
+}
 
 ?>
 

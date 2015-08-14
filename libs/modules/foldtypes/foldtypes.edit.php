@@ -46,7 +46,16 @@ if($_REQUEST["subexec"] == "save")
    </tr>
 </table>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="foldtype_form" onSubmit="return checkform(new Array(this.foldtype_name,this.foldtype_description))">
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#foldtype_form').submit();">Speichern</a>
+    </div>
+</div>
+
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="foldtype_form" name="foldtype_form" onSubmit="return checkform(new Array(this.foldtype_name,this.foldtype_description))">
 	<input type="hidden" name="exec" value="edit">
 	<input type="hidden" name="subexec" value="save">
 	<input type="hidden" name="id" value="<?=$ft->getId()?>">
@@ -102,20 +111,4 @@ if($_REQUEST["subexec"] == "save")
 		</table>
 	</div>
 	<br/>
-	<?// Speicher & Navigations-Button ?>
-	<table width="100%">
-	    <colgroup>
-	        <col width="180">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	    </tr>
-	</table>
 </form>

@@ -300,6 +300,19 @@ function addPriceRow()
 		<td align="right"><?=$savemsg?></td>
 	</tr>
 </table>
+
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+        <?php if ($perso->getId()>0){?>
+        <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/personalization/personalization.php&exec=delete&id=<?php echo $perso->getId();?>')">Löschen</a>
+        <?php }?>
+    </div>
+</div>
+
 <form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="perso_edit" id="perso_edit"   
 		onSubmit="return checkform(new Array(this.perso_title))">
 	<? // -------------------- Pesonalisierungdetails ------------------------------------------ ?>
@@ -460,23 +473,6 @@ function addPriceRow()
 			<?} // Ende if(neuer Artikel) ?>
 		</table>
 	</div>
-	<? // ---------- Speicher & Navigations-Button --------------------------------------------- ?>
-	<br/>
-	<table width="100%">
-	    <colgroup>
-	        <col width="180">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	    </tr>
-	</table>
 
 <?if ($_REQUEST["exec"] != "new"){ 
 	// PDF Anzeigen lassen, damit nicht alles in HTML doppelt gemacht werden muss 
@@ -752,28 +748,5 @@ function addPriceRow()
 		<br/>* <?=$_LANG->get('Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
 	</div>
 	<br/>
-	
-	<? // ---------- Speicher & Navigations-Button --------------------------------------------- ?>
-	<br/>
-	<table width="100%">
-	    <colgroup>
-	        <col width="180">
-	        <col width="180">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	        <td class="content_row_clear" align="right">
-        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=libs/modules/personalization/personalization.php&exec=delete&id=<?php echo $perso->getId();?>')" 
-        				value="<?=$_LANG->get('L&ouml;schen')?>">
-	        </td>
-	    </tr>
-	</table>
 <? } ?>
 </form>

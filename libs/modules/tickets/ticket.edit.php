@@ -136,7 +136,12 @@ if($_REQUEST["exec"] == "edit"){
         if ($ticket->getTitle() != $_REQUEST["tkt_title"])
             $logentry .= "Titel: " . $ticket->getTitle() . " >> " . $_REQUEST["tkt_title"] . "</br>";
         if ($ticket->getDuedate() != strtotime($_REQUEST["tkt_due"]))
-            $logentry .= "Fälligkeit: " . date('d.m.Y H:i',$ticket->getDuedate()) . " >> " . date('d.m.Y H:i',$_REQUEST["tkt_due"]) . "</br>";
+        {
+            if ($_REQUEST["tkt_due"] != "")
+                $logentry .= "Fälligkeit: " . date('d.m.Y H:i',$ticket->getDuedate()) . " >> " . date('d.m.Y H:i',$_REQUEST["tkt_due"]) . "</br>";
+            else
+                $logentry .= "Fälligkeit: " . date('d.m.Y H:i',$ticket->getDuedate()) . " >> ohne Fälligkeit</br>";
+        }
         $newcustomer = new BusinessContact($_REQUEST["tkt_customer_id"]);
         if ($ticket->getCustomer()->getId() != $_REQUEST["tkt_customer_id"])
             $logentry .= "Kunde: " . $ticket->getCustomer()->getNameAsLine() . " >> " . $newcustomer->getNameAsLine() . "</br>";
@@ -317,17 +322,15 @@ if($_REQUEST["exec"] == "edit"){
                 $save_ok = $ticketcomment->save();
                 $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
                 if ($save_ok) {
-                    if ($_FILES['tktc_attachments']) {
-                        $file_ary = reArrayFiles($_FILES['tktc_attachments']);
-                    
-                        foreach ($file_ary as $file) {
-                            if ($file["name"] != ""){
+                    if ($_REQUEST["tktc_files"]) {
+                        foreach ($_REQUEST["tktc_files"] as $file) {
+                            if ($file != ""){
                                 $tmp_attachment = new Attachment();
                                 $tmp_attachment->setCrtdate(time());
                                 $tmp_attachment->setCrtuser($_USER);
                                 $tmp_attachment->setModule("Comment");
                                 $tmp_attachment->setObjectid($ticketcomment->getId());
-                                $tmp_attachment->move_save_file($file);
+                                $tmp_attachment->move_uploaded_file($file);
                                 $save_ok = $tmp_attachment->save();
                                 $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
                                 if ($save_ok === false){
@@ -365,6 +368,45 @@ if($_REQUEST["exec"] == "edit"){
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <script src="jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
 <script src="jscripts/moment/moment-with-locales.min.js"></script>
+
+<!-- file upload -->
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="css/jquery.fileupload.css">
+<script src="jscripts/jquery/js/jquery.ui.widget.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="jscripts/jquery/js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="jscripts/jquery/js/jquery.fileupload.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<!-- // file upload -->
+
+<script>
+/*jslint unparam: true */
+/*global window, $ */
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    var url = 'libs/modules/attachment/attachment.handler.php';
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo('#files');
+                $('#files').append('<input name="tktc_files[]" type="hidden" value="'+file.name+'"/>');
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
 
 <script language="JavaScript">
 	$(function() {
@@ -631,6 +673,9 @@ function callBoxFancyAbo(my_href) {
             <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
         <?}?>
         <a href="#" class="menu_item" onclick="$('#ticket_edit').submit();">Speichern</a>
+        <?php if ($_USER->getId() == $ticket->getCrtuser()->getId() || $_USER->getId() == $ticket->getAssigned_user()->getId() || $_USER->isAdmin()){?>
+            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&tktid=<?=$ticket->getId()?>');">Löschen</a>
+        <?php }?>
     </div>
 </div>
 
@@ -759,9 +804,6 @@ function callBoxFancyAbo(my_href) {
                       <?php } ?>
                         class="btn btn-sm btn-default" title="<?php echo $abo_title;?>">Abonnoments&nbsp;<span id="abo_count" class="badge"><?php if (count($abonnoments)>0) echo count($abonnoments);?></span></button>
                       <!-- <button type="button" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=close&tktid=<?=$ticket->getId()?>');" class="btn btn-sm btn-warning">Schließen</button> -->
-                      <?php if ($_USER->getId() == $ticket->getCrtuser()->getId() || $_USER->getId() == $ticket->getAssigned_user()->getId() || $_USER->isAdmin()){?>
-                      <button type="button" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&tktid=<?=$ticket->getId()?>');" class="btn btn-sm btn-danger">Löschen</button>
-                      <?php }?>
                     </div>
                     <?php }?>
                 </td>
@@ -969,7 +1011,7 @@ function callBoxFancyAbo(my_href) {
   	<div class="ticket_comment">
   	     <table width="100%" border="1">
   	         <tr>
-  	             <td rowspan="6" width="50%">
+  	             <td rowspan="6" width="50%" valign="top">
   	                 <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea>
   	             </td>
     		     <?php if ($new_ticket == false){?>
@@ -1071,8 +1113,8 @@ function callBoxFancyAbo(my_href) {
                          	$( "#tktc_article" ).focus();
                          	$( "#stop_timer" ).val("1");
                         	$( "#tktc_article_amount" ).val(precise_round((sec-start)/60/60,2));
-                        	if ( $( "#tktc_article_amount" ).val() < 0.25){
-                        		$( "#tktc_article_amount" ).val("0.25");
+                        	if ( $( "#tktc_article_amount" ).val() < 0.1){
+                        		$( "#tktc_article_amount" ).val("0,1");
                         	}
                          	clearInterval(clock);
                          	$( "#ticket_timer" ).removeClass("btn-warning");
@@ -1124,7 +1166,10 @@ function callBoxFancyAbo(my_href) {
                     	var timestamp = sec-start;
                     	$("#ticket_timer").html(rectime(timestamp));
                         if ($("#stop_timer").prop('checked')){
-                            $("#tktc_article_amount").val(precise_round((sec-start)/60/60,2));
+                            var amount = precise_round((sec-start)/60/60,2);
+                            amount = amount.replace(".",",");
+                            $("#tktc_article_amount").val(amount);
+//                             $("#tktc_article_amount").val(precise_round((sec-start)/60/60,2));
                         }
                     }
                     function rectime(secs) {
@@ -1141,7 +1186,9 @@ function callBoxFancyAbo(my_href) {
                     }
                     $( "#stop_timer" ).click(function() {
                         if ($("#stop_timer").prop('checked')){
-                            $("#tktc_article_amount").val(precise_round((sec-start)/60/60,2));
+                            var amount = precise_round((sec-start)/60/60,2);
+                            amount = amount.replace(".",",");
+                            $("#tktc_article_amount").val(amount);
                         }
                     });
                     function precise_round(num, decimals) {
@@ -1182,45 +1229,28 @@ function callBoxFancyAbo(my_href) {
 		     </tr>
 		     <tr>
 		          <td width="25%">Anhänge:</td>
-		          <td width="25%">
-		              <input type="file" multiple="multiple" name="tktc_attachments[]" width="100%" />
+		          <td width="25%" valign="top">
+		              <span class="btn btn-success btn-xs fileinput-button">
+                          <span>Hinzufügen...</span>
+		                  <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
+		              </span>
+                      <div id="files" class="files"></div>
+                      <div id="progress" class="progress">
+                          <div class="progress-bar progress-bar-success"></div>
+                      </div>
 		          </td>
 		     </tr>
   	         
   	     </table>
 	</div>
   </br>
-  <?php /*
-  <table width="100%">
-    <colgroup>
-        <col width="180">
-        <col>
-    </colgroup> 
-    <tr>
-        <td class="content_row_header">
-        <?php 
-        if ($_REQUEST["returnhome"] == 1){?>
-        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-        			onclick="window.location.href='index.php'">
-        <?} else {?>
-        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-        <?}?>
-        </td>
-        <td class="content_row_clear" align="right">
-        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-        </td>
-    </tr>
-  </table>
-  </br>
-  */ ?>
   <?php 
   $all_comments = Comment::getCommentsForObject(get_class($ticket),$ticket->getId());
   $all_comments = array_reverse($all_comments);
   if ($_REQUEST["sort"] == "asc"){
       $all_comments = array_reverse($all_comments);
   }
-  if (count($all_comments) > 0){?>
+  if (count($all_comments) > 0 && $ticket->getId()>0){?>
   <a name="ticket_comments"></a> 
   <div class="ticket_comments">
     <table><tr><td align="left"><h3><i class="icon-comment"></i> Kommentare <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=asc"><img src="images/icons/arrow-090.png"/></a></h3></td></tr></table>
@@ -1412,7 +1442,7 @@ function callBoxFancyAbo(my_href) {
   </br>
   <?php 
   $all_logs = TicketLog::getAllForTicket($ticket);
-  if (count($all_logs) > 0){?>
+  if (count($all_logs) > 0 && $ticket->getId()>0){?>
   <a name="ticket_logs"></a>
   <div class="ticket_logs">
     <table><tr><td align="left"><h3><i class="icon-comment"></i> Log</h3></td></tr></table>

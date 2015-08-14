@@ -18,7 +18,8 @@ if($collectinv->getId()==0){
 	//ausgew?hlten Benutzer aus der DB holen und setzen
 	$selected_customer = new BusinessContact((int)$_REQUEST["order_customer"]);
 	$collectinv->setBusinesscontact($selected_customer);
-	
+	$tmp_presel_cp = new ContactPerson((int)$_REQUEST["order_contactperson"]);
+	$collectinv->setCustContactperson($tmp_presel_cp);
 	//Datum und Benutzer setzen, wer erstellt hat
 	$collectinv->setCrtuser($_USER);
 	$collectinv->setCrtdate(time());
@@ -362,8 +363,20 @@ function addPositionRow(){
 </div>
 <br/>
 	
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#form_collectiveinvoices').submit();">Speichern</a>
+        <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){ ?>
+            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=<?php echo $collectinv->getId();?>')">Löschen</a>
+        <?}?>
+    </div>
+</div>
+	
 <?//--------------------------Beginn Formular----------------------------?>
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="form_collectiveinvoices" onsubmit="return checkform(new Array(colinv_title))">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="form_collectiveinvoices" name="form_collectiveinvoices" onsubmit="return checkform(new Array(colinv_title))">
 	
 	<input 	type="hidden" name="exec" value="save">
 	<input 	type="hidden" name="ciid" value="<?=$collectinv->getId()?>">
@@ -881,23 +894,4 @@ function addPositionRow(){
 <br/>
 
 <input type="hidden" id="poscount" value="<?php echo $i;?>"/>
-
-<div  class="box1">
-	<table width="100%">
-		<tr>
-			<td align="left">
-				<span class="menu_order" onclick="location.href='index.php?page=libs/modules/calculation/order.php'"><?= $_LANG->get('Zur&uuml;ck')?></span>
-			</td>
-			<td align="right">
-				<input class="button" type="submit" value="<?=$_LANG->get('Speichern')?>">
-			</td>
-	        <td class="content_row_clear" align="right">
-	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){ ?>
-		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=<?php echo $collectinv->getId();?>')" 
-		        				value="<?=$_LANG->get('L&ouml;schen')?>">
-		        <?}?>
-	        </td>
-		</tr>
-	</table>
-</div>
 </form>

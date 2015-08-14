@@ -153,7 +153,7 @@
                orders.delivery_date as deliverydate,orders.notes as `comment`,'K' as `type`
                FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
                INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-               WHERE orders_calculations.state = 1
+               WHERE orders_calculations.state = 1 AND orders.`status` > 0 
                UNION
                SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
                collectiveinvoice.deliverydate,collectiveinvoice.`comment`,'V' as `type`
@@ -178,7 +178,7 @@
                orders.delivery_date as deliverydate,orders.notes as `comment`,'K' as `type`
                FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
                INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-               WHERE orders_calculations.state = 1
+               WHERE orders_calculations.state = 1 AND orders.`status` > 0 
                UNION
                SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
                collectiveinvoice.deliverydate,collectiveinvoice.`comment`,'V' as `type`
@@ -201,7 +201,7 @@
         orders.delivery_date as deliverydate,orders.notes as `comment`,'K' as `type`
         FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
         INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-        WHERE orders_calculations.state = 1
+        WHERE orders_calculations.state = 1 AND orders.`status` > 0 
         UNION
         SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
         collectiveinvoice.deliverydate,collectiveinvoice.`comment`,'V' as `type`

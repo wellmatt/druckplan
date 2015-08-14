@@ -44,6 +44,7 @@ class Article {
 	private $show_shop_price = 1;	// Freigabe fuer den Shop
 	private $shop_needs_upload;     // Datei upload im Warenkorb
 	private $matchcode;             // Artikel Matchcode
+	private $shop_approval;         // Shop Freigabe für BCs und CPs
 	
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
@@ -87,6 +88,7 @@ class Article {
 		    $this->qualified_users = $cached->getQualified_users();
 		    $this->orderamounts = $cached->getOrderamounts();
 		    $this->matchcode = $cached->getMatchcode();
+		    $this->shop_approval = $cached->getShop_approval();
 // 		    echo "Object loaded from Cache...</br>";
 		}
 		
@@ -152,6 +154,18 @@ class Article {
 				    $retval = Array();
 				    foreach($DB->select($sql) as $r){
 				    	$retval[] = $r["amount"];
+				    }
+				    $this->orderamounts = $retval;
+				}
+				
+				$sql = "SELECT * FROM article_shop_approval WHERE article = {$id}";
+				if($DB->num_rows($sql)){
+				    $retval = Array("BCs"=>Array(),"CPs"=>Array());
+				    foreach($DB->select($sql) as $r){
+				        if ($r["bc"]>0)
+				    	   $retval["BCs"][] = $r["bc"];
+				        elseif ($r["cp"]>0)
+				           $retval["CPs"][] = $r["cp"];
 				    }
 				    $this->orderamounts = $retval;
 				}
@@ -245,9 +259,35 @@ class Article {
 		        VALUES
 		        ({$this->id}, {$orderamount})";
 		        $res = $DB->no_result($sql);
-// 		        echo $sql;
 		    }
 		}
+		
+		$sql = "DELETE FROM article_shop_approval 
+		        WHERE article = {$this->id}";
+		$DB->no_result($sql);
+		
+		if (count($this->shop_approval["BCs"]>0))
+		{
+		    foreach($this->shop_approval["BCs"] as $shopappr)
+		    {
+		        $sql = "INSERT INTO article_shop_approval
+		        (article, bc, cp)
+		        VALUES
+		        ({$this->id}, {$shopappr}, 0)";
+		        $DB->no_result($sql);
+		    }
+		}
+		if (count($this->shop_approval["CPs"]>0))
+		{
+		    foreach($this->shop_approval["CPs"] as $shopappr)
+		    {
+		        $sql = "INSERT INTO article_shop_approval
+		        (article, bc, cp)
+		        VALUES
+		        ({$this->id}, 0, {$shopappr})";
+		        $DB->no_result($sql);
+		    }
+	    }
 
 		Cachehandler::toCache("obj_article_".$this->id, $this);
 		return $res;
@@ -439,6 +479,32 @@ class Article {
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Article($r["id"]);
+			}
+		}
+		return $retval;
+	}
+	
+	static function getAllShopArticleByCustomerAndCp($cust_id, $cp_id, $order = self::ORDER_ID){
+		global $DB;
+		$retval = Array();
+		
+		$sql = "SELECT id FROM article WHERE
+				status > 0 AND shoprel = 1 
+				ORDER BY {$order} ";
+		
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = new Article($r["id"]);
+			}
+		}
+		
+		$sql = "SELECT article FROM article_shop_approval WHERE 
+				(bc = {$cust_id} OR cp = {$cp_id}) 
+				ORDER BY {$order} ";
+		
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = new Article($r["article"]);
 			}
 		}
 		return $retval;
@@ -973,6 +1039,24 @@ class Article {
     {
         $this->matchcode = $matchcode;
     }
+	/**
+     * @return the $shop_approval
+     */
+    public function getShop_approval()
+    {
+        return $this->shop_approval;
+    }
+
+	/**
+     * @param field_type $shop_approval
+     */
+    public function setShop_approval($shop_approval)
+    {
+        $this->shop_approval = $shop_approval;
+    }
+
+    
+    
     
 }
 ?>

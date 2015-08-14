@@ -36,7 +36,15 @@ $all_country = Country::getEveryCountry();
 	</tr>
 </table>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post">
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="#" class="menu_item" onclick="$('#countries_form').submit();">Speichern</a>
+    </div>
+</div>
+
+<form action="index.php?page=<?=$_REQUEST['page']?>" id="countries_form" method="post">
 
 <input type="hidden" name="exec" value="save"> 
 

@@ -214,7 +214,16 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
    </tr>
 </table>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="machine_form" onsubmit="return checkform(new Array(this.product_name))">
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#machine_form').submit();">Speichern</a>
+    </div>
+</div>
+
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form" onsubmit="return checkform(new Array(this.product_name))">
 <input type="hidden" name="exec" value="edit">
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" name="id" value="<?=$product->getId()?>">
@@ -632,14 +641,4 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
     </tr>
 </table>
 </div>
-
-<table width="100%">
-    <tr>
-        <td align="left">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	    </td>
-        <td align="right"><input type="submit" value="<?=$_LANG->get('Speichern')?>"></td>
-    </tr>
-</table>
 </form>

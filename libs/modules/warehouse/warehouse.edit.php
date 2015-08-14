@@ -87,6 +87,15 @@ function openSearchWindow(id)
 
 <?//------------------ Tabelle mit den Demodaten ----------------------------------------------------------?>
 
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#stock_form').submit();">Speichern</a>
+    </div>
+</div>
+
 <form id="stock_form" name="stock_form" method="post">
 <input type="hidden" id="stockid" name="stockid" value="<?=$stock->getId()?>" />
 <input type="hidden" id="subexec" name="subexec" value="save" />
@@ -187,22 +196,4 @@ function openSearchWindow(id)
 	</tr>
 </table>
 </div>
-<table width="100%">
-    <colgroup>
-        <col width="180">
-        <col>
-    </colgroup> 
-    <tr>
-        <td class="content_row_header">
-        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-        </td>
-        <td class="content_row_clear" align="right">
-        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-        </td>
-    </tr>
-</table>
-	
 </form>
-
-<br/><br/>

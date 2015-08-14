@@ -135,6 +135,8 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
         
         $content = "";
         $id = $part->findBody('html');
+        if ($id == NULL)
+            $id = $part->findBody();
         if ($id != NULL)
         {
             $body = $part->getPart($id);
@@ -553,10 +555,10 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
             )
         ));
         
-        if ($_REQUEST["move"])
+//         if ($_REQUEST["move"])
             $move = true;
-        else
-            $move = false;
+//         else
+//             $move = false;
         
         $uids = new Horde_Imap_Client_Ids( $_REQUEST["muid"] );
         $flag = Horde_Imap_Client::FLAG_DELETED;
@@ -600,10 +602,10 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
             )
         ));
         
-        if ($_REQUEST["move"])
+//         if ($_REQUEST["move"])
             $move = true;
-        else
-            $move = false;
+//         else
+//             $move = false;
         
         $uids = new Horde_Imap_Client_Ids( $_REQUEST["muids"] );
         $flag = Horde_Imap_Client::FLAG_DELETED;

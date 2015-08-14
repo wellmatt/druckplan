@@ -59,6 +59,15 @@ $(function() {
 	</tr>
 </table>
 
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zur√ºck</a>
+        <a href="#" class="menu_item" onclick="$('#task_edit').submit();">Speichern</a>
+    </div>
+</div>
+
 <form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="task_edit" id="task_edit"   
 		onSubmit="return checkForm(new Array(this.task_title, this.task_content))">
 	<div class="box1">
@@ -85,17 +94,17 @@ $(function() {
 				</td>
 			</tr>
 			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('F‰lligkeit')?> *</td>
+				<td class="content_row_header" valign="top"><?=$_LANG->get('F√§lligkeit')?> *</td>
 				<td class="content_row_clear" valign="top">
                     <input name="task_due_date" id="task_due_date" style="width:100px"
                         value="<? if($task->getDue_date() > 0) echo date('d.m.Y', $task->getDue_date())?>">
 				</td>
 			</tr>
 			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Priorit‰t')?> *</td>
+				<td class="content_row_header" valign="top"><?=$_LANG->get('Priorit√§t')?> *</td>
 				<td class="content_row_clear" valign="top">
                    <select name="task_prio" style="width:330px" class="text">
-                       <option value="0"><?=$_LANG->get('keine Priorit‰t')?></option>
+                       <option value="0"><?=$_LANG->get('keine Priorit√§t')?></option>
                       <? 
                            for($i = 1; $i <= 10; $i++)
                            {
@@ -125,21 +134,4 @@ $(function() {
 			<?}?>
 		</table>
 	</div>
-	<br/>
-	<?// Speicher & Navigations-Button ?>
-	<table width="100%">
-	    <colgroup>
-	        <col width="180">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	    </tr>
-	</table>
 </form>

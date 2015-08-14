@@ -95,6 +95,7 @@ $(document).ready(function() {
 		    aoData.push( { "name": "crtuser", "value": crtuser, } );
 		    aoData.push( { "name": "assigned", "value": assigned, } );
 		    aoData.push( { "name": "showclosed", "value": showclosed, } );
+		    aoData.push( { "name": "withoutdue", "value": "1", } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );

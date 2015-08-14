@@ -43,7 +43,7 @@
         error_log("Login failed (basic-importer.php)");
         die("Login failed");
     }
-
+    
     if ($_REQUEST["details"] == "1")
         $aColumns = array( 'null', 'id', 'number', 'category', 'crtdate', 'crtuser', 'duedate', 'title', 'state', 'customer', 'priority', 'assigned' );
     else
@@ -141,7 +141,7 @@
         {
             if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" )
             {
-                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
+                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( utf8_decode($_GET['sSearch']) )."%' OR ";
             }
         }
         $sWhere = substr_replace( $sWhere, "", -3 );
@@ -167,7 +167,7 @@
     
     if ($_REQUEST["forme"]){
         $foruser = new User((int)$_REQUEST["forme"]);
-//         var_dump($abonnoments);
+        
         $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
         $forgroups = $foruser->getGroups();
         if (count($forgroups) > 0){
@@ -189,7 +189,7 @@
         if ($abonnoments != ""){
             $abonnoments = " AND id IN (" . $abonnoments . ") ";
         }
-//         var_dump($abonnoments);
+        
         $forname = $foruser->getFirstname() . " " . $foruser->getLastname();
         $forgroups = $foruser->getGroups();
         if (count($forgroups) > 0){
@@ -345,6 +345,14 @@
             $sWhere .= " WHERE tsid > 1 ";
         } else {
             $sWhere .= " AND tsid > 1 ";
+        }
+    }
+    
+    if ((int)$_GET['withoutdue'] != 1){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE duedate > 0 ";
+        } else {
+            $sWhere .= " AND duedate > 0 ";
         }
     }
     

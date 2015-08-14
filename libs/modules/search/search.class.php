@@ -68,6 +68,9 @@ class Search {
             $limit = "{$this->offset},{$this->limit}";
         else
             $limit = "{$this->limit}";
+
+        if ($this->where)
+            $where = $this->where;
         
         $sql =  "
                 SELECT {$fieldset}, MATCH ({$matchset}) AGAINST ('{$this->against}') as score

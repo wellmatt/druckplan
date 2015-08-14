@@ -84,6 +84,10 @@ if ($_REQUEST["exec"] == "send")
     
     // Set the from address
     $mail_from = $mailadress_send->getAddress();
+    if (!filter_var($mail_from, FILTER_VALIDATE_EMAIL))
+    {
+        $mail_from .= $perf->getMail_domain();
+    }
     $mail->addHeader('From', $mail_from);
     
     // Set the subject of the mail
@@ -95,12 +99,13 @@ if ($_REQUEST["exec"] == "send")
     $mail->setHtmlBody($mail_text);
     
     // Add the file as an attachment, set the file name and what kind of file it is.
-    if ($_FILES['mail_attachments']) {
-        $file_ary = reArrayFiles($_FILES['mail_attachments']);
-                
-        foreach ($file_ary as $file) {
-            if ($file["name"] != ""){
-                $mail->addAttachment($file["tmp_name"], $file["name"], $file["type"]);
+    if ($_REQUEST['mail_files']) {
+        foreach ($_REQUEST['mail_files'] as $file) {
+            if ($file != ""){
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $ftype = finfo_file($finfo, 'libs/modules/attachment/files/'.$file);
+                finfo_close($finfo);
+                $mail->addAttachment('libs/modules/attachment/files/'.$file, $file, $ftype);
             }
         }
     }
@@ -116,7 +121,7 @@ if ($_REQUEST["exec"] == "send")
                 $mail->addHeader('CC', $recipients);
         }
     } else {
-        $mail->addHeader('CC', $mail_to);
+        $mail->addHeader('CC', $mail_cc);
     }
 
     // Add BCC
@@ -149,6 +154,40 @@ if ($_REQUEST["exec"] == "send")
     
     // Send the mail
     $mail->send($mailer);
+    
+    try {
+        /* Connect to an IMAP server.
+         *   - Use Horde_Imap_Client_Socket_Pop3 (and most likely port 110) to
+         *     connect to a POP3 server instead. */
+        $client = new Horde_Imap_Client_Socket(array(
+            'username' => $mailadress_send->getAddress(),
+            'password' => $mailadress_send->getPassword(),
+            'hostspec' => $mailadress_send->getHost(),
+            'port' => $mailadress_send->getPort(),
+            'secure' => 'ssl',
+            'cache' => array(
+                'backend' => new Horde_Imap_Client_Cache_Backend_Cache(array(
+                    'cacheob' => new Horde_Cache(new Horde_Cache_Storage_File(array(
+                        'dir' => '/tmp/hordecache'
+                    )))
+                ))
+            )
+        ));
+
+        $message_array = Array( Array("data"=>Array(Array("t"=>"text","v"=>$mail->getRaw(false)))) );
+        $client->append("contilas-sent", $message_array, Array("create"=>true));
+    } catch (Horde_Imap_Client_Exception $e) {
+        var_dump($e->details);
+        echo "</br>";
+    }
+
+    if ($_REQUEST['mail_files']) {
+        foreach ($_REQUEST['mail_files'] as $file) {
+            if ($file != ""){
+                unlink('libs/modules/attachment/files/'.$file);
+            }
+        }
+    }
     
     echo '<script type="text/javascript">';
     echo 'parent.$.fancybox.close();';
@@ -292,6 +331,10 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
     } catch (Horde_Imap_Client_Exception $e) {
         fatal_error('Could not connect to Server!');
     }
+} else {
+    $signatur = $_USER->getSignature();
+    
+    $content =  '<br><br>'.$signatur;
 }
 
 ?>
@@ -328,6 +371,46 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
 
 <script src="../../../thirdparty/ckeditor/ckeditor.js"></script>
 <script src="../../../jscripts/jvalidation/dist/jquery.validate.min.js"></script>
+
+<!-- file upload -->
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="../../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../../css/jquery.fileupload.css">
+<script src="../../../jscripts/jquery/js/jquery.ui.widget.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="../../../jscripts/jquery/js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="../../../jscripts/jquery/js/jquery.fileupload.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<!-- // file upload -->
+
+<script>
+/*jslint unparam: true */
+/*global window, $ */
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    var url = '../../../libs/modules/attachment/attachment.handler.php';
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo('#files');
+                $('#files').append('<input name="mail_files[]" type="hidden" value="'+file.name+'"/>');
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
 
 <script language="JavaScript">
 	$(function() {
@@ -615,8 +698,16 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
             </div>
             <div class=" col-xs-11">
                 <div class="input-group">
-                    <span class="input-group-addon"></span>
-                    <input type="file" multiple="multiple" id="mail_attachments" name="mail_attachments[]">
+                      <span class="input-group-addon">
+                      <span class="btn btn-success btn-xs fileinput-button">
+                          <span>Hinzufügen...</span>
+                          <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
+                      </span>
+                      <div id="files" class="files"></div>
+                      <div id="progress" class="progress">
+                          <div class="progress-bar progress-bar-success"></div>
+                      </div>
+                      </span>
                 </div>
             </div>
           </div>

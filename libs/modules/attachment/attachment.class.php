@@ -147,6 +147,22 @@ class Attachment {
         }
     }
     
+    public function move_uploaded_file($file)
+    {
+        $destination = "./docs/attachments/";
+        
+        $filename = md5($file.time());
+        $new_filename = $destination.$filename;
+        $tmp_outer = rename('./libs/modules/attachment/files/'.$file, $new_filename);
+        if ($tmp_outer) {
+            $this->orig_filename = $file;
+            $this->filename = $filename;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     
 	/**
      * @return the $id

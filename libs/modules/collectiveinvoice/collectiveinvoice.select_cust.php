@@ -7,7 +7,7 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
-$customers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME, BusinessContact::FILTER_CUST_IST);
+// $customers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME, BusinessContact::FILTER_CUST_IST);
 
 ?>
 
@@ -25,27 +25,7 @@ function validateForm()
 		alert(unescape(customer));
 		return false;
 	}
-	
-	/**else if (title=="")
-	{
-		alert(titel);
-		return false;
-	}*/
 }
-
-
-
-// function searchCust()
-// {
-	// var search = document.getElementById('order_search_cust').value;
-	// if(search != '')
-	// {
-    	// $.post("libs/modules/calculation/order.ajax.php", {exec: 'searchCust', str: search}, function(data) {
-    		Work on returned data
-    		// document.getElementById('order_customer').innerHTML = data;
-    	// });
-	// }
-// }
 </script>
 
 <!-- FancyBox -->
@@ -62,25 +42,23 @@ function validateForm()
 <!-- /FancyBox -->
  <script>
 $(function() {
-       $( "#search" ).autocomplete({
-            delay: 0,
-            source: 'libs/modules/businesscontact/businesscontact.ajax.autocomplete.php',
-			minLength: 2,
-			dataType: "json",
-            select: function(event, ui) {
-                // $('#searchval').val(ui.item.value);
-				$('#order_customer').val(ui.item.id);
-				// $('#neworder_form').submit();
-				document.getElementById('neworder_form').submit();
-            }
-        
-        });
+   $( "#search" ).autocomplete({
+        delay: 0,
+        source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_customer_and_cp',
+		minLength: 2,
+		dataType: "json",
+        select: function(event, ui) {
+			$('#order_customer').val(ui.item.bid);
+			$('#order_contactperson').val(ui.item.cid);
+			document.getElementById('neworder_form').submit();
+        }
+    });
 });
 </script>
 
 <table width="100%">
    <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Sammelauftrag anlegen')?></td>
+      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorgang anlegen')?></td>
       <td align="right"><?=$savemsg?></td>
       <td width="200" class="content_header">
       	
@@ -102,21 +80,11 @@ $(function() {
         <col width="280">
     </colgroup>
     <tr>
-        <td class="content_row_header"><?=$_LANG->get('Kunden ausw&auml;hlen')?></td>
+        <td class="content_row_header"><?=$_LANG->get('Kunden suchen')?></td>
         <td id="td-selcustomer">
 			<input type="text" name="search" id="search" style="width:280px" required>
 			<input type="hidden" name="order_customer" id="order_customer" required>
-			<br>
-			<?php /*
-            <select name="order_customer" style="width:280px" class="text" id="order_customer" onChange="this.form.submit()" required>
-				<option value="" selected></option> 
-                <? 
-                foreach($customers as $cust)
-                {?>
-                    <option value="<?=$cust->getId()?>"><?=$cust->getNameAsLine()?>, <?=$cust->getCity()?></option> 
-                <?}?>
-            </select>
-            */?>
+			<input type="hidden" name="order_contactperson" id="order_contactperson" required>
         </td>
     </tr>
     <tr>

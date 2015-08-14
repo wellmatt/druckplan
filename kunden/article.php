@@ -208,7 +208,7 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			</div>
 		</form>
 <?		} else { // ---------- Auflistung der freigegeben Artikel fuer dieses Kunden ------------------------
-			$all_article = Article::getAllShopArticleByCustomer($busicon->getId());
+			$all_article = Article::getAllShopArticleByCustomerAndCp((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]);
 			?>
 			<div class="box2" style="min-height:180px;">
 			<b>Artikel</b>

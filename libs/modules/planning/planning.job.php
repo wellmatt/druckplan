@@ -187,7 +187,7 @@ if (count($planned_jobs)>0)
 </table>
 </br>
 <div class="box1">
-    <b>Auftrags-Kopfdaten</b>
+    <b>Job-Kopfdaten</b>
 	<table width="100%">
 		<tr>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Titel')?></td>
@@ -231,7 +231,7 @@ if (count($planned_jobs)>0)
 </div>
 <br/>
 <div class="box1">
-    <b>Aufgaben</b>
+    <b>Job-Positionen</b>
     <form action="index.php?page=<?=$_REQUEST['page']?>&step=1" method="post" name="job_create" id="job_create">
     <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"> 
     <input type="hidden" name="type" value="<?=$_REQUEST["type"]?>"> 

@@ -90,6 +90,62 @@ $(document).ready(function() {
         document.location=aData[7];
     });
 //-> End Comments
+// Start Notes
+    var search_notes = $('#search_notes').DataTable( {
+        "processing": true,
+        "bServerSide": true,
+        "sAjaxSource": "libs/modules/search/search.ajax.php?exec=search_notes&query=<?php echo $query;?>&access=<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
+		"stateSave": false,
+		"pageLength": 10,
+		"dom": 'lrtip',
+		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+		"columns": [
+		            { "searchable": false, "orderable": false },
+		            { "searchable": false, "orderable": false },
+		            { "searchable": false, "orderable": false },
+		            { "searchable": false, "orderable": false },
+		            { "searchable": false, "orderable": false },
+		            { "searchable": false, "orderable": false },
+		            { "searchable": false, "orderable": false, "visible": false }
+		          ],
+        "language": {
+                    	"url": "jscripts/datatable/German.json"
+          	        },
+        "fnDrawCallback": function (settings) 
+                            {
+                             $("#search_notes").parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+                            }
+    } );
+    $("#search_notes tbody td").live('click',function(){
+        var aPos = $('#search_notes').dataTable().fnGetPosition(this);
+        var aData = $('#search_notes').dataTable().fnGetData(aPos[0]);
+        callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[0]+'&tktid=0');
+    });
+//-> End Comments
+} );
+</script>
+	
+<div id="tktc_hidden_clicker" style="display:none"><a id="tktc_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
+
+<script type="text/javascript">
+function callBoxFancytktc(my_href) {
+	var j1 = document.getElementById("tktc_hiddenclicker");
+	j1.href = my_href;
+	$('#tktc_hiddenclicker').trigger('click');
+}
+
+$(document).ready(function() {
+    $("a#tktc_hiddenclicker").fancybox({
+    	'type'          :   'iframe',
+    	'transitionIn'	:	'elastic',
+    	'transitionOut'	:	'elastic',
+    	'speedIn'		:	600, 
+    	'speedOut'		:	200, 
+    	'width'         :   1024,
+    	'height'		:	768, 
+    	'overlayShow'	:	true,
+    	'helpers'		:   { overlay:null, closeClick:true }
+    });
 } );
 </script>
 
@@ -147,6 +203,30 @@ $(document).ready(function() {
         			</div>
     			</div>
 			</div>
+			</br>
+	        <!-- end row -->
+	        <!-- start row -->
+        	<div class="row">
+        		<div class="col-md-12">
+        			<div class="box1">
+        	            <h4>Notizen</h4>
+        				<table id="search_notes" width="100%" cellpadding="0"
+        					cellspacing="0" class="stripe hover row-border order-column">
+        					<thead>
+        						<tr>
+        							<th><?=$_LANG->get('ID')?></th>
+        							<th><?=$_LANG->get('Titel')?></th>
+                    				<th><?=$_LANG->get('Datum')?></th>
+                    				<th><?=$_LANG->get('erst. von')?></th>
+                    				<th><?=$_LANG->get('Kunde')?></th>
+        							<th><?=$_LANG->get('Relevanz')?></th>
+        						</tr>
+        					</thead>
+        				</table>
+        			</div>
+    			</div>
+			</div>
+			</br>
 	        <!-- end row -->
 		</div>
 	</div>

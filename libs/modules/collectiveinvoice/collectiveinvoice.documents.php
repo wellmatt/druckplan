@@ -114,7 +114,7 @@ if ($_REQUEST["subexec"] == "send")
 <link rel="stylesheet" href="css/documents.css" type="text/css">
 <div class="box1 menuorder">
     <span class="menu_order" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>'">
-    	<?=$_LANG->get('Zur�ck')?>
+    	<?=$_LANG->get('Zurück')?>
     </span>
 </div>
 <div class="box1" style="margin-top:50px;">

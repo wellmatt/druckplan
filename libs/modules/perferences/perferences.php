@@ -98,6 +98,15 @@ function deleteFormatRawRow(obj)
    </tr>
 </table>
 
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#perf_form').submit();">Speichern</a>
+    </div>
+</div>
+
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" enctype="multipart/form-data" name="perf_form" id="perf_form">
 <input type="hidden" name="exec" value="save">
 <div class="box1">
@@ -258,17 +267,5 @@ function deleteFormatRawRow(obj)
                </tr>
             </table>
        </div>
-
-<table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
-<tr>
-   <td class="content_row_clear">
-   		<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	    		onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-   </td>
-   <td align="right" width="150">
-      	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-   </td>
-</tr>
-</table>
 
 </form>

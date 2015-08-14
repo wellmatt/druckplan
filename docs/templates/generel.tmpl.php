@@ -102,6 +102,11 @@ if (1 == 1) { // is_a($order, "Order")
     
     $smarty->assign('ContactPerson', $order->getCustContactperson());
     
+    $paydays = $order->getPaymentterm()->getNettodays();
+    $payday = date("d.m.Y",strtotime('+'.$paydays.' days', time()));
+    
+    $smarty->assign('PayDate', $payday);
+    
     // Customer
     
     $smarty->assign('Customer', $order->getCustomer());

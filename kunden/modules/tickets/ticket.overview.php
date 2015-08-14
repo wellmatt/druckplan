@@ -47,7 +47,7 @@ $(document).ready(function() {
         // "scrollY": "600px",
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "../../../libs/modules/tickets/ticket.dt.ajax.php?bcid=<?=$busicon->getId()?>&portal=1&userid=<?=$_USER->getId()?>&cpid=<?=$_CONTACTPERSON->getId();?>",
+        "sAjaxSource": "../../../libs/modules/tickets/ticket.dt.ajax.php?bcid=<?=$busicon->getId()?>&withoutdue=1&portal=1&userid=<?=$_USER->getId()?>&cpid=<?=$_CONTACTPERSON->getId();?>",
         "paging": true,
 		"stateSave": true,
 // 		"dom": 'flrtip',        

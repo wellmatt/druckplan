@@ -85,7 +85,6 @@ if ($_REQUEST["doLogout"] == 1)
         $userstring = mcrypt_decrypt(MCRYPT_BLOWFISH, $_CONFIG->cookieSecret, $_COOKIE["vic_login"], MCRYPT_MODE_CBC, $_COOKIE["vic_iv"]);
         $userdata = explode(' ', $userstring);
     }
-     
 
     $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
     
@@ -187,6 +186,11 @@ if ($_USER == false)
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("a[href='#top']").click(function() {
+			  $("html, body").animate({ scrollTop: 0 }, "slow");
+			  return false;
+		});
+		
 		$("a#a_timer_stop_home").fancybox({
 		    'type'    : 'iframe'
 		})

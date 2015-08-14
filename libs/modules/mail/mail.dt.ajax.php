@@ -178,7 +178,9 @@
             
             $row = Array();
 
-            $options = '<img src="images/icons/mail-open.png" title="als gelesen markieren" class="pointer" 
+            $options = '<a href="libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'" target="_blank">
+                        <img src="images/icons/printer.png" title="Mail drucken" class="pointer"/></a>&nbsp;';
+            $options .= '<img src="images/icons/mail-open.png" title="als gelesen markieren" class="pointer" 
                         onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
             $options .= '<img src="images/icons/mail.png" title="als ungelesen markieren" class="pointer" 
                         onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';

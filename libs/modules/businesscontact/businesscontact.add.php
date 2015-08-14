@@ -217,6 +217,66 @@ $all_user = User::getAllUser(User::ORDER_NAME);
  *************************************************************************/
 ?>
 
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css"
+	href="css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8"
+	src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8"
+	src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8"
+	src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8"
+	src="jscripts/datatable/date-uk.js"></script>
+	
+<div id="tktc_hidden_clicker" style="display:none"><a id="tktc_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
+
+<script type="text/javascript">
+function callBoxFancytktc(my_href) {
+	var j1 = document.getElementById("tktc_hiddenclicker");
+	j1.href = my_href;
+	$('#tktc_hiddenclicker').trigger('click');
+}
+$(document).ready(function() {
+    var search_tickets = $('#comment_table').DataTable( {
+        "processing": true,
+        "bServerSide": true,
+        "sAjaxSource": "libs/modules/businesscontact/businesscontact.comments.dt.ajax.php?bcid=<?php echo $businessContact->getId();?>&access=<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
+		"stateSave": false,
+		"pageLength": 10,
+		"dom": 'flrtip',
+		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+		"columns": [
+		            { "searchable": false},
+		            { "searchable": true},
+		            { "searchable": true},
+		            { "searchable": false},
+		            { "searchable": false}
+		          ],
+        "language": {
+                    	"url": "jscripts/datatable/German.json"
+          	        }
+    } );
+    $("#comment_table tbody td").live('click',function(){
+        var aPos = $('#comment_table').dataTable().fnGetPosition(this);
+        var aData = $('#comment_table').dataTable().fnGetData(aPos[0]);
+        callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[0]+'&tktid=0');
+    });
+	
+	$("a#tktc_hiddenclicker").fancybox({
+		'type'          :   'iframe',
+		'transitionIn'	:	'elastic',
+		'transitionOut'	:	'elastic',
+		'speedIn'		:	600, 
+		'speedOut'		:	200, 
+		'width'         :   1024,
+		'height'		:	768, 
+		'overlayShow'	:	true,
+		'helpers'		:   { overlay:null, closeClick:true }
+	});
+} );
+</script>
 
 <script>
 	$(function() {
@@ -349,6 +409,23 @@ function commi_checkbox(){
  ******* 				HTML-Bereich								*******
  *************************************************************************/?>
 	
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        
+        <?php if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_BC) || $_USER->isAdmin()){?>
+            <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+        <?php } ?>
+    	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){ ?>
+        	<?if($_REQUEST["exec"] != "new"){?>
+                <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$businessContact->getId()?>')">Löschen</a>
+        	<?}?>
+        <?}?>
+    </div>
+</div>
+	
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form" enctype="multipart/form-data"
 	onSubmit="return checkCustomerNumber(new Array(this.name1));" > 
 	<?// gucken, ob die Passwoerter (Webshop-Login) gleich sind und ob alle notwendigen Felder gef�llt sind?>
@@ -366,17 +443,9 @@ function commi_checkbox(){
 			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li> 
 			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li> 
 			<li><a href="#tabs-3"><? echo $_LANG->get('Ansprechpartner');?></a></li>
-			<?php /*?>
-			<?if ($_CONFIG->shopActivation){?>
-				<li><a href="#tabs-4"><? echo $_LANG->get('Kundenportal');?></a></li>
-			<?}?>
-			<?php */?>
-			<?php  /*
-			$security_ticket_cat = new TicketCategory(1);
-			if ($security_ticket_cat->cansee()){
-			?>
-			<li><a href="#tabs-6"><? echo $security_ticket_cat->getTitle();?></a></li>
-			<?php } */?>
+			<?php if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){?>
+		    <li><a href="#tabs-12"><? echo $_LANG->get('Notizen');?></a></li>
+            <?php } ?>
 			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.$ticketcount.'</span>';?></a></li>
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
@@ -1251,43 +1320,31 @@ function commi_checkbox(){
 		$_REQUEST['page'] = "libs/modules/businesscontact/businesscontact.php";?>
 		</div>
 
+		<? // ------------------------------------- Notizen ----------------------------------------------?>
+		
+		<div id="tabs-12">
+		<?if($businessContact->getId()){?>
+            <h4>Notizen</h4>
+            <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
+            <span style="float:right;" class="pointer" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">Neu</span>
+            <?php }?>
+			<table id="comment_table" width="100%" cellpadding="0"
+				cellspacing="0" class="stripe hover row-border order-column">
+				<thead>
+					<tr>
+        				<th><?=$_LANG->get('ID')?></th>
+        				<th><?=$_LANG->get('Titel')?></th>
+        				<th><?=$_LANG->get('erst. von')?></th>
+        				<th><?=$_LANG->get('Datum')?></th>
+        				<th><?=$_LANG->get('Sichtbarkeit')?></th>
+					</tr>
+				</thead>
+			</table>
+		<?php }?>
+		</div>
+
 	<? // ------------------------------------- Navigations und Speicher Buttons ------------------------------------?>
 
 	</div>
 </div>
-	<table width="100%">
-	    <colgroup>
-	        <col width="150">
-	        <col width="380">
-	        <col width="420">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <?php if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_BC) || $_USER->isAdmin()){?>
-	        <td class="content_row_clear" align="center">
-	        		<input type="submit" onclick='$("#user_form").submit()' value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	        <?php } ?>
-	        <?php /*
-	        <td class="content_row_clear" align="right">
-		        	<?if($businessContact->getId() != 0){?>
-		        		<input type="Button" value="<?=$_LANG->get('Speichern u. KD-Login versch.')?>" class="button"
-		        			   onclick=" document.getElementById('subexec').value='send'; askSubmit(document.getElementById('user_form'));">
-					<?}?>
-	        </td>
-	        */?>
-	        <td class="content_row_clear" align="right">
-	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){ ?>
-		        	<?if($_REQUEST["exec"] != "new"){?>
-		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$businessContact->getId()?>')" 
-		        				value="<?=$_LANG->get('L&ouml;schen')?>">
-		        	<?}?>
-		        <?}?>
-	        </td>
-	    </tr>
-	</table>
 <!--//-->

@@ -47,7 +47,7 @@ $(document).ready(function() {
         // "scrollY": "600px",
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php?formeabo=<?php echo $_USER->getId();?>",
+        "sAjaxSource": "libs/modules/tickets/ticket.dt.ajax.php?formeabo=<?php echo $_USER->getId();?>&withoutdue=1",
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,

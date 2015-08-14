@@ -77,7 +77,9 @@ if($_REQUEST["subexec"] == "clone"){
 if((int)$_REQUEST["createNew"] == 1){
 	$order->setTitle(trim(addslashes($_REQUEST["order_title"])));
 	$order->setCustomer(new BusinessContact((int)$_REQUEST["order_customer"]));	
-	$order->setCustContactperson($order->getCustomer()->getMainContactperson());
+	$tmp_presel_cp = new ContactPerson((int)$_REQUEST["order_contactperson"]);
+	$order->setCustContactperson($tmp_presel_cp);
+// 	$order->setCustContactperson($order->getCustomer()->getMainContactperson());
 	$order->setPaymentTerms($order->getCustomer()->getPaymentTerms());
 	$order->save();
 	echo "<script type=\"text/javascript\">location.href='index.php?page=".$_REQUEST['page']."&id=".$order->getId()."&exec=edit&step=1';</script>";

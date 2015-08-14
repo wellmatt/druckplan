@@ -24,7 +24,7 @@ elseif ($_REQUEST["exec"] == "edit_ad" OR $_REQUEST["exec"] == "edit_ai" OR $_RE
 }
 elseif ($_REQUEST["exec"] == "edit_cp" OR $_REQUEST["exec"] == "save_cp")
 {
-	require_once('contactperson.add.php');
+	require_once('libs/modules/businesscontact/contactperson.add.php');
 }
 elseif ($_REQUEST["exec"] == "delete_a")
 {

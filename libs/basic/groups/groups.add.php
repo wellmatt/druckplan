@@ -34,6 +34,7 @@ if ($_REQUEST["subexec"] == "save")
    $group->setRight(Group::RIGHT_COMBINE_COLINV, (int)$_REQUEST["right_combine_colinv"]);
    $group->setRight(Group::RIGHT_TICKET_CHANGE_OWNER, (int)$_REQUEST["right_ticket_change_owner"]);
    $group->setRight(Group::RIGHT_ASSO_DELETE, (int)$_REQUEST["right_asso_delete"]);
+   $group->setRight(Group::RIGHT_NOTES_BC, (int)$_REQUEST["right_notes_bc"]);
    $savemsg = getSaveMessage($group->save());
    $savemsg .= $DB->getLastError();  
 }
@@ -52,8 +53,17 @@ $users = User::getAllUser(User::ORDER_LOGIN);
    </tr>
 </table>
 
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#group_form').submit();">Speichern</a>
+    </div>
+</div>
+
 <div class="box1">
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="group_form" onsubmit="return checkform(new Array(this.group_name, this.user_description))">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="group_form" name="group_form" onsubmit="return checkform(new Array(this.group_name, this.user_description))">
 <input type="hidden" name="exec" value="edit">
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" name="id" value="<?=$group->getId()?>">
@@ -153,20 +163,13 @@ $users = User::getAllUser(User::ORDER_LOGIN);
       <td class="content_row_clear"><?=$_LANG->get('Verknüpfung löschen')?></td>
       <td class="content_row_clear"><input type="checkbox" name="right_asso_delete" value="1" <? if($group->hasRight(Group::RIGHT_ASSO_DELETE)) echo "checked";?>></td>
    </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Zugriff auf GK-Notizen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_notes_bc" value="1" <? if($group->hasRight(Group::RIGHT_NOTES_BC)) echo "checked";?>></td>
+   </tr>
    
 </table>
-<table width="500px">
-   <colgroup>
-      <col width="180">
-      <col>
-   </colgroup>
-   <tr>
-      <td class="content_row_header">&nbsp;</td>
-      <td class="content_row_clear" align="right">
-         <input type="submit" value=<?=$_LANG->get('Speichern')?>>
-      </td>
-   </tr>
-</table>
+
 
 </form>
 </div>

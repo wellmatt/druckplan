@@ -65,9 +65,10 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
     $comment->setModule($_REQUEST["tktc_module"]);
     $comment->setObjectid($_REQUEST["tktc_objectid"]);
     $comment->setVisability((int)$_REQUEST["tktc_type"]);
+    $comment->setTitle($_REQUEST["tktc_title"]);
     $save_ok = $comment->save();
     
-    if ($save_ok && $_FILES['tktc_attachments']){
+    if ($save_ok){
         if ($comment->getModule() == "Ticket")
         {
             $tmp_ticket = new Ticket($comment->getObjectid());
@@ -93,30 +94,36 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
                 $ticketlog->save();
             }
         }
-        
-        $file_ary = reArrayFiles($_FILES['tktc_attachments']);
-    
-        foreach ($file_ary as $file) {
-            if ($file["name"] != ""){
+    }
+    if ($save_ok && $_REQUEST['tktc_files']){
+        foreach ($_REQUEST["tktc_files"] as $file) {
+            if ($file != ""){
                 $tmp_attachment = new Attachment();
                 $tmp_attachment->setCrtdate(time());
                 $tmp_attachment->setCrtuser($_USER);
                 $tmp_attachment->setModule("Comment");
                 $tmp_attachment->setObjectid($comment->getId());
-                $tmp_attachment->move_save_file($file);
-                $save_ok = $tmp_attachment->save();
-                $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
-                if ($save_ok === false){
+                $tmp_attachment->move_uploaded_file($file);
+                $save_ok2 = $tmp_attachment->save();
+                $savemsg = getSaveMessage($save_ok2)." ".$DB->getLastError();
+                if ($save_ok2 === false){
                     break;
                 }
             }
         }
     }
     if ($save_ok){
-        $tmp_ticket = new Ticket($_REQUEST["tktid"]);
-        Notification::generateNotificationsFromAbo(get_class($tmp_ticket), "Comment", $tmp_ticket->getNumber(), $tmp_ticket->getId());
-        echo '<script language="JavaScript">parent.$.fancybox.close(); 
-              parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$tmp_ticket->getId().'";</script>';
+        if ($_REQUEST["tktid"]>0)
+        {
+            $tmp_ticket = new Ticket($_REQUEST["tktid"]);
+            Notification::generateNotificationsFromAbo(get_class($tmp_ticket), "Comment", $tmp_ticket->getNumber(), $tmp_ticket->getId());
+            echo '<script language="JavaScript">parent.$.fancybox.close(); 
+                  parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$tmp_ticket->getId().'";</script>';
+        } else if ($_REQUEST["tktc_module"] == "BusinessContact") {
+            echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href=parent.location.href+"&tabshow=5";</script>';
+        } else {
+            echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href=parent.location.href;</script>';
+        }
     }
 }
 ?>
@@ -126,14 +133,53 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
-<!-- jQuery -->
-<link type="text/css" href="../../../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
-<script type="text/javascript" src="../../../jscripts/jquery/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="../../../jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
-<!-- /jQuery -->
-<script src="../../../thirdparty/ckeditor/ckeditor.js"></script>
-<script language="javascript" src="../../../jscripts/basic.js"></script>
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
+<link rel="stylesheet" href="../../../css/bootstrap.min.css">
+<script src="../../../jscripts/jquery/js/jquery-1.11.1.min.js"></script>
+<script src="../../../thirdparty/ckeditor/ckeditor.js"></script>
+<script src="../../../jscripts/jvalidation/dist/jquery.validate.min.js"></script>
+<script src="../../../jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
+<script src="../../../jscripts/moment/moment-with-locales.min.js"></script>
+
+<!-- file upload -->
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="../../../css/jquery.fileupload.css">
+<script src="../../../jscripts/jquery/js/jquery.ui.widget.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="../../../jscripts/jquery/js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="../../../jscripts/jquery/js/jquery.fileupload.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="../../../jscripts/bootstrap.min.js"></script>
+<!-- // file upload -->
+
+<script>
+/*jslint unparam: true */
+/*global window, $ */
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    var url = '../../../libs/modules/attachment/attachment.handler.php';
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo('#files');
+                $('#files').append('<input name="tktc_files[]" type="hidden" value="'+file.name+'"/>');
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
 
 <script>
 	$(function() {
@@ -150,6 +196,12 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
 	<input type="hidden" name="tktc_objectid" value="<?php echo $_REQUEST["tktc_objectid"];?>">
 	<table style="width:100%">
       <tr>
+          <td width="25%">Titel:</td>
+          <td width="75%">
+                <input type="text" name="tktc_title" style="width: 300px;">
+          </td>
+      </tr>
+      <tr>
           <td width="25%">Typ:</td>
           <td width="75%">
                 <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
@@ -163,8 +215,15 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
       </tr>
       <tr>
           <td width="25%">Anhänge:</td>
-          <td width="25%">
-              <input type="file" multiple="multiple" name="tktc_attachments[]" width="100%" />
+          <td width="25%" valign="top">
+              <span class="btn btn-success btn-xs fileinput-button">
+                  <span>Hinzufügen...</span>
+                  <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
+              </span>
+              <div id="files" class="files"></div>
+              <div id="progress" class="progress">
+                  <div class="progress-bar progress-bar-success"></div>
+              </div>
           </td>
       </tr>
 	</table>

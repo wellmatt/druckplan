@@ -24,7 +24,7 @@ if($_REQUEST["subexec"] == "save")
 {
     if ($vacation->getState() != Urlaub::STATE_APPROVED || $_REQUEST["exec"] == "newvacation")
     {
-        // Diese Dinge nur ändern wenn Status nicht Approved ist.
+        // Diese Dinge nur ï¿½ndern wenn Status nicht Approved ist.
         $_REQUEST["vac_from"]       = explode(".", $_REQUEST["vac_from"]);
         $_REQUEST["vac_from"]       = (int)mktime(0, 0, 0, $_REQUEST["vac_from"][1], $_REQUEST["vac_from"][0], $_REQUEST["vac_from"][2]);
         $_REQUEST["vac_to"]       = explode(".", $_REQUEST["vac_to"]);
@@ -60,7 +60,7 @@ if($_REQUEST["subexec"] == "save")
             <tr><td><b>'.$_LANG->get('Bemerkungen').'</b></td><td>'.nl2br($vacation->getNotes()).'</td></tr>
         </table></p>
         <p></p>';
-        // Nachricht an die verschicken, die Urlaub genehmigen dürfen.
+        // Nachricht an die verschicken, die Urlaub genehmigen dï¿½rfen.
         $users = User::getAllUser();
         $to = Array();
         foreach($users as $u)
@@ -154,8 +154,20 @@ $(function() {
 	</tr>
 </table>
 
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">ZurÃ¼ck</a>
+        <?php if($vacation->getState() != Urlaub::STATE_APPROVED || $_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_URLAUB)){?>
+            <a href="#" class="menu_item" onclick="$('#vacation_form').submit();">Speichern</a>
+            <a href="#" class="menu_item_delete" onclick="askDel(\'index.php?page='.$_REQUEST['page'].'&exec=delvacation&id='.$vacation->getId().'\')">LÃ¶schen</a>
+        <?php } ?>
+    </div>
+</div>
+
 <div class="box1">
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="vacation_form">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="vacation_form" id="vacation_form">
 <input type="hidden" name="exec" value="<?=$_REQUEST["exec"]?>">
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" name="id" value="<?=$vacation->getId()?>">
@@ -246,10 +258,5 @@ $(function() {
     </td>
 </tr>
 <?  }
-echo "</table></div><br><br>";
-if($vacation->getState() != Urlaub::STATE_APPROVED || $_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_URLAUB))
-{
-    echo '<input value="'.$_LANG->get('Speichern').'" type="submit">&nbsp;';
-    echo '<input type="button" class="buttonRed" value="'.$_LANG->get('L&ouml;schen').'" onclick="askDel(\'index.php?page='.$_REQUEST['page'].'&exec=delvacation&id='.$vacation->getId().'\')">';
-} ?>
+echo "</table></div>"; ?>
 </form>

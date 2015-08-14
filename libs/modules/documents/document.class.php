@@ -504,6 +504,8 @@ class Document
             );
             
             $pdf = new TCPDF($direction, 'mm', $format, true, 'UTF-8', false);
+            $pdf->SetPrintHeader(false);
+            $pdf->SetPrintFooter(false);
             $pdf->AddPage();
             
             if ($version == self::VERSION_EMAIL){
@@ -515,6 +517,8 @@ class Document
                 $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
                 $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
                 $pdf->setPageMark();
+                $pdf->SetPrintHeader(false);
+                $pdf->SetPrintFooter(false);
             }
             
             if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
@@ -530,6 +534,8 @@ class Document
             {
                 $this->setReverse(1);
                 $pdf->AddPage();
+                $pdf->SetPrintHeader(false);
+                $pdf->SetPrintFooter(false);
                 
                 if ($version == self::VERSION_EMAIL){
                     $bMargin = $pdf->getBreakMargin();
@@ -540,6 +546,8 @@ class Document
                     $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
                     $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
                     $pdf->setPageMark();
+                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintFooter(false);
                 }
                 
                 if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
@@ -562,11 +570,15 @@ class Document
             } else {
                 $pref= new Perferences();
                 if ($version == self::VERSION_EMAIL)
+                {
                     $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
+                    $pdf->SetPrintFooter(false);
+                }
                 else
                 {
-                    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-                    $pdf->setPrintHeader(false);
+                    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);                    
+                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintFooter(false);
                 }
                 $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
                 $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);

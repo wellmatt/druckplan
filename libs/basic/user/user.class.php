@@ -80,7 +80,7 @@ class User {
         $cached = Cachehandler::fromCache("obj_usr_" . $id);
         if (!is_null($cached))
         {
-            $vars = array_keys(get_class_vars(get_class($this)));
+            $vars = array_keys(get_class_vars(User));
             foreach ($vars as $var)
             {
                 $method = "get".ucfirst($var);
@@ -278,6 +278,7 @@ class User {
                 return $user;
             }
         }
+        echo "login failed!";
         return false;
     }
      

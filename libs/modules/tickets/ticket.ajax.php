@@ -100,4 +100,7 @@ if ($_REQUEST["ajax_action"] == "setFilter_cl_date_min"){
 if ($_REQUEST["ajax_action"] == "setFilter_cl_date_max"){
     $_SESSION['tkt_cl_date_max'] = $_POST['tkt_cl_date_max'];
 }
+if ($_REQUEST["ajax_action"] == "setFilter_ajax_withoutdue"){
+    $_SESSION['tkt_ajax_withoutdue'] = $_POST['tkt_ajax_withoutdue'];
+}
 ?>

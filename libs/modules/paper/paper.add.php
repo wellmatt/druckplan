@@ -246,8 +246,32 @@ function addSupplierRow()
 }
 </script>
 
+	    	<?php if($paper->hasPriceBase() && $alternativePaperMode) : ?>
+		        <td class="content_row_header">
+		        	<input type="button" value="<?= $_LANG->get('&laquo; Zur&uuml;ck zur Auftragsbearbeitung') ?>" class="button" 
+		        		onclick="prepareProductCloning()" >
+		        </td>
+	        <?php else : ?>
+		    	<td class="content_row_header">
+	    	    	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
+			        	onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+		        </td>
+	        <?php endif; ?>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="paper_form" onSubmit="return checkform(new Array(this.paper_name))">
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <?php if($paper->hasPriceBase() && $alternativePaperMode) : ?>
+        <a href="#" onclick="prepareProductCloning()" class="menu_item">Zur&uuml;ck zur Auftragsbearbeitung</a>
+        <?php else : ?>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <?php endif; ?>
+        <a href="#" class="menu_item" onclick="$('#paper_form').submit();">Speichern</a>
+    </div>
+</div>
+
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form" onSubmit="return checkform(new Array(this.paper_name))">
 <input name="exec" value="edit" type="hidden">
 <input name="subexec" value="save" type="hidden">
 <input name="id" value="<?=$paper->getId()?>" type="hidden">
@@ -466,30 +490,4 @@ function addSupplierRow()
 </table>
 <?  } ?>
 </div>
-	<br/>
-	<?// Speicher & Navigations-Button ?>
-	<table width="100%">
-	    <colgroup>
-	        <col width="180">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	    	<?php if($paper->hasPriceBase() && $alternativePaperMode) : ?>
-		        <td class="content_row_header">
-		        	<input type="button" value="<?= $_LANG->get('&laquo; Zur&uuml;ck zur Auftragsbearbeitung') ?>" class="button" 
-		        		onclick="prepareProductCloning()" >
-		        </td>
-	        <?php else : ?>
-		    	<td class="content_row_header">
-	    	    	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-			        	onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-		        </td>
-	        <?php endif; ?>
-	        
-
-	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	    </tr>
-	</table>
 </form>

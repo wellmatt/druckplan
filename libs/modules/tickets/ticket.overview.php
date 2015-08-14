@@ -22,6 +22,7 @@ if ($_REQUEST["exec"]=="reset")
     unset($_SESSION['tkt_ajax_tourmarker']);
     unset($_SESSION['tkt_cl_date_min']);
     unset($_SESSION['tkt_cl_date_max']);
+    unset($_SESSION['tkt_ajax_withoutdue']);
 }
 
 ?>
@@ -98,6 +99,7 @@ $(document).ready(function() {
 			var tourmarker = document.getElementById('ajax_tourmarker').value;
 			var iMin_cl = document.getElementById('ajax_cl_date_min').value;
 			var iMax_cl = document.getElementById('ajax_cl_date_max').value;
+			var withoutdue = document.getElementById('ajax_withoutdue').value;
 		    aoData.push( { "name": "details", "value": "1", } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
@@ -112,6 +114,7 @@ $(document).ready(function() {
 		    aoData.push( { "name": "tourmarker", "value": tourmarker, } );
 		    aoData.push( { "name": "cl_start", "value": iMin_cl, } );
 		    aoData.push( { "name": "cl_end", "value": iMax_cl, } );
+		    aoData.push( { "name": "withoutdue", "value": withoutdue, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -335,6 +338,16 @@ $(document).ready(function() {
         $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_assigned", "tkt_ajax_assigned": $(this).val()});
 		$('#ticketstable').dataTable().fnDraw(); 
 	})
+	$('#withoutdue').change(function(){	
+		if ($('#withoutdue').prop('checked')){
+			$('#ajax_withoutdue').val(1); 
+	        $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_withoutdue", "tkt_ajax_withoutdue": "1"});
+		} else {
+			$('#ajax_withoutdue').val(0); 
+	        $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_ajax_withoutdue", "tkt_ajax_withoutdue": "0"});
+		}
+		$('#ticketstable').dataTable().fnDraw(); 
+	})
 	$('#showclosed').change(function(){	
 		if ($('#showclosed').prop('checked')){
 			$('#ajax_showclosed').val(1); 
@@ -545,6 +558,13 @@ function TicketTableRefresh()
                 <input name="ajax_cl_date_max" id="ajax_cl_date_max" type="hidden" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="'.$_SESSION['tkt_cl_date_max'].'"';?> />  
                 bis: <input name="date_cl_max" id="date_cl_max" style="width:70px;" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['tkt_cl_date_max']).'"';?> class="text" 
                 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+            </td>
+        </tr>
+        <tr align="left">
+            <td>ohne Fälligkeit:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_withoutdue" id="ajax_withoutdue" type="hidden" <?php if ($_SESSION['tkt_ajax_withoutdue']) echo ' value="'.$_SESSION['tkt_ajax_withoutdue'].'" '; else echo ' value="1" ';?>/>
+                <input name="withoutdue" id="withoutdue" type="checkbox" value="1" <?php if ($_SESSION['tkt_ajax_showclosed'] || $_SESSION['tkt_ajax_showclosed'] == Null) echo ' checked ';?>/>
             </td>
         </tr>
         <tr align="left">
