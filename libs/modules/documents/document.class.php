@@ -81,6 +81,8 @@ class Document
     private $stornoDate = 0;
 
     private $paper_order_pid = 0; // nur f�r Papier Bestellungen
+    
+    private $preview = 0; // vorschau
 
     function __construct($id = 0)
     {
@@ -429,7 +431,7 @@ class Document
                     }
         
         // create Document Name if empty
-        if ($this->name == "") {
+        if ($this->name == "" && $this->preview == 0) {
             // Test if we have already a freed number
             $sql = "SELECT * FROM documents_freednumbers
                     WHERE client_id = {$_USER->getClient()->getId()}
@@ -448,13 +450,13 @@ class Document
                     case self::TYPE_OFFER:
                         
                         // $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_OFFER);
-                        $tmp_index = self::getDocIndexCounter(Document::REQ_MODULE_ORDER, Document::TYPE_OFFER, $order->getId());
+                        $tmp_index = self::getDocIndexCounter($this->requestModule, Document::TYPE_OFFER, $order->getId());
                         $this->name = "AN" . substr($order->getNumber(), 2) . $tmp_index;
                         break;
                     case self::TYPE_OFFERCONFIRM:
                         
                         // $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_OFFERCONFIRM);
-                        $tmp_index = self::getDocIndexCounter(Document::REQ_MODULE_ORDER, Document::TYPE_OFFERCONFIRM, $order->getId());
+                        $tmp_index = self::getDocIndexCounter($this->requestModule, Document::TYPE_OFFERCONFIRM, $order->getId());
                         $this->name = "AB" . substr($order->getNumber(), 2) . $tmp_index;
                         break;
                     case self::TYPE_FACTORY:
@@ -631,7 +633,12 @@ class Document
         ob_flush();
         $filename = $this->getFilename($version);
         
-        $pdf->Output($filename, 'F'); 
+        if ($this->preview == 0)
+            $pdf->Output($filename, 'F');
+        else {
+            $pdf->Output($filename, 'I');
+            exit();
+        } 
 
         return $this->hash;
     }
@@ -870,5 +877,24 @@ class Document
             preg_replace("/[^0-9]/", "", substr($num, $sep+1, strlen($num)))
         );
     }
+    
+	/**
+     * @return the $preview
+     */
+    public function getPreview()
+    {
+        return $this->preview;
+    }
+
+	/**
+     * @param number $preview
+     */
+    public function setPreview($preview)
+    {
+        $this->preview = $preview;
+    }
+
+    
+    
 }
 ?>

@@ -19,4 +19,8 @@ if ($_REQUEST["ajax_action"] == "removeAttach" && $_REQUEST["attachid"]){
     $attachment = new Attachment((int)$_REQUEST["attachid"]);
     $attachment->delete();
 }
+if ($_REQUEST["ajax_action"] == "removeArt" && $_REQUEST["artid"]){
+    $c_article = new CommentArticle((int)$_REQUEST["artid"]);
+    $c_article->delete();
+}
 ?>

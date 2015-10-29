@@ -289,32 +289,41 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
         $part = $list->first()->getStructure();
     
         $id = $part->findBody('html');
-        $body = $part->getPart($id);
-    
-        $query2 = new Horde_Imap_Client_Fetch_Query();
-        $query2->bodyPart($id, array(
-            'decode' => true,
-            'peek' => false
-        ));
-    
-        $list2 = $client->fetch($_REQUEST["mailbox"], $query2, array(
-            'ids' => $uid
-        ));
-    
-        $message2 = $list2->first();
-        $content = $message2->getBodyPart($id);
-        if (!$message2->getBodyPartDecode($id)) {
-            $body->setContents($content);
-            $content = $body->getContents();
-        }
-    
-        $content = strip_tags( $content, '<img><p><br><i><b><u><em><strong><strike><font><span><div><style><a>' );
-        $content = trim( $content );
-        $charset = $body->getCharset();
-        if ( 'iso-8859-1' === $charset ) {
-            $content = utf8_encode( $content );
-        } elseif ( function_exists( 'iconv' ) ) {
-            $content = iconv( $charset, 'UTF-8', $content );
+        
+        $content = "";
+        $id = $part->findBody('html');
+        if ($id == NULL)
+            $id = $part->findBody();
+        if ($id != NULL)
+        {
+            $body = $part->getPart($id);
+            
+        
+            $query2 = new Horde_Imap_Client_Fetch_Query();
+            $query2->bodyPart($id, array(
+                'decode' => true,
+                'peek' => false
+            ));
+        
+            $list2 = $client->fetch($_REQUEST["mailbox"], $query2, array(
+                'ids' => $uid
+            ));
+        
+            $message2 = $list2->first();
+            $content = $message2->getBodyPart($id);
+            if (!$message2->getBodyPartDecode($id)) {
+                $body->setContents($content);
+                $content = $body->getContents();
+            }
+        
+            $content = strip_tags( $content, '<img><p><br><i><b><u><em><strong><strike><font><span><div><style><a>' );
+            $content = trim( $content );
+            $charset = $body->getCharset();
+            if ( 'iso-8859-1' === $charset ) {
+                $content = utf8_encode( $content );
+            } elseif ( function_exists( 'iconv' ) ) {
+                $content = iconv( $charset, 'UTF-8', $content );
+            }
         }
         
         $signatur = $_USER->getSignature();

@@ -228,6 +228,21 @@ function removeAttach(id)
     document.getElementById('attachfield_'+id).style.display = 'none';
 }
 </script>
+ <script>
+$(function() {
+   $( "#customer_search" ).autocomplete({
+        delay: 0,
+        source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_customer',
+		minLength: 2,
+		dataType: "json",
+        select: function(event, ui) {
+			$('#customer').val(ui.item.value);
+			$('#customer_search').val(ui.item.label);
+			return false;
+        }
+    });
+});
+</script>
 <link rel="stylesheet" type="text/css" href="./css/mail.css" />
 
 
@@ -263,13 +278,8 @@ function removeAttach(id)
 <tr>
    <td class="content_row_header"><?=$_LANG->get('Kunde');?>:</td>
    <td class="content_row_clear">
-      <select name="customer" style="width:350px;" class="text" onChange="updateMailList();updateConfidence()">
-         <option value="-1">&lt;Bitte w&auml;hlen&gt;</option>
-         <?
-            foreach ($customers as $cust)
-            echo '<option value="'.$cust->getId().'">'.$cust->getNameAsLine().'</option>';
-         ?>
-      </select>
+      <input name="customer_search" id="customer_search" type="text" style="width:350px;" class="text" onChange="updateMailList();updateConfidence()"/>
+      <input name="customer" id="customer" type="hidden"/>
    </td>
 </tr>
 

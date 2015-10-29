@@ -15,6 +15,23 @@ $format_sizes_unique = $perf->getFormats_raw();
 ?>
 
 <script language="javascript">
+function switchUmschUmst(id)
+{
+	if ($('#umschl_'+id).prop('checked'))
+	{
+		$('#umst_'+id).prop('checked', false);
+		$('#umschl_umst_'+id).val(1);
+	}
+	else if ($('#umst_'+id).prop('checked'))
+	{
+		$('#umschl_'+id).prop('checked', false);
+		$('#umschl_umst_'+id).val(1);
+	}
+	else
+	{
+		$('#umschl_umst_'+id).val(0);
+	}
+}
 function addRow(group)
 {
 	var counter = parseInt(document.getElementById('counter_machs').value);
@@ -693,9 +710,17 @@ foreach($groups as $group)
                         //}
                         if( $mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET && $mach->getMachine()->getUmschlUmst() > 0)
                         {
-							echo $_LANG->get('umschlagen/umst&uuml;lpen');
-							echo '<input type="checkbox" name="umschl_umst_'.$x. '" value="1"';
-							if($mach->getUmschlagenUmstuelpen()) echo ' checked="checked"';
+							echo $_LANG->get('umschlagen');
+							echo '<input type="checkbox" onchange="switchUmschUmst('.$x.');" id="umschl_'.$x.'" name="umschl_'.$x.'" value="1"';
+							if($mach->getUmschl()) echo ' checked="checked"';
+							echo '></br>';
+							echo $_LANG->get('umst&uuml;lpen');
+							echo '<input type="checkbox" onchange="switchUmschUmst('.$x.');" id="umst_'.$x.'" name="umst_'.$x. '" value="1"';
+							if($mach->getUmst()) echo ' checked="checked"';
+							echo '></br>';
+							echo '<input type="hidden" id="umschl_umst_'.$x. '" name="umschl_umst_'.$x. '" value="';
+							if($mach->getUmschlagenUmstuelpen()) echo '1'; else echo '0';
+                            echo '"';
 							echo '>';
                       	} elseif ($mach->getMachine()->getType() == Machine::TYPE_FOLDER){
                       	    $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
@@ -866,15 +891,20 @@ foreach($groups as $group)
 								</td>
 							</tr>
 
-                    <?	} else if ($mach->getMachine()->getType() == Machine::TYPE_CUTTER) { // added by ascherer 22.07.14  // temp remove  && $group->getName() == "Verarbeitung"
-                            echo $_LANG->get('Schnitte: ');
-                            echo '<input type="text" name="mach_cutter_cuts_'.$x.'" id="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" style="width:80px">&nbsp;';
-                            echo $_LANG->get('Angeschnitten: ');
-                            echo '<input type="checkbox" name="mach_cutter_precut_'.$x.'" value="1" onchange="angeschnitten('.$x.',this);">';
+                    <?	} else if ($mach->getMachine()->getType() == Machine::TYPE_CUTTER ||
+                                   $mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL || 
+                                   $mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) { // added by ascherer 22.07.14  // temp remove  && $group->getName() == "Verarbeitung"
+//                             echo $_LANG->get('Schnitte: ');
+//                             echo '<input type="text" name="mach_cutter_cuts_'.$x.'" id="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" style="width:80px">&nbsp;';
+//                             echo $_LANG->get('Angeschnitten: ');
+//                             echo '<input type="checkbox" name="mach_cutter_precut_'.$x.'" value="1" onchange="angeschnitten('.$x.',this);">';
 							echo "<tr><td align='top'>";
 							echo $_LANG->get('Laufrichtung: ');
 							echo '<select name="mach_roll_dir_'.$x.'" style="width:80px">';
-							echo '<option value=""></option>';
+							echo '<option value="0" ';
+							if ($mach->getRoll_dir() == 0) echo 'selected';
+							echo '>';
+							echo 'auto</option>';
 							echo '<option value="1" ';
 							if ($mach->getRoll_dir() == 1) echo 'selected';
 							echo '>';
@@ -885,8 +915,8 @@ foreach($groups as $group)
 							echo 'schmale Bahn</option>';
 							echo '</select>';
 							echo "</td></tr>";
-							echo "<tr><td>&nbsp;</td></tr>";
-							echo "<tr><td>&nbsp;</td></tr>";
+// 							echo "<tr><td>&nbsp;</td></tr>";
+// 							echo "<tr><td>&nbsp;</td></tr>";
 						} else {
                     		echo "<tr><td>&nbsp;</td></tr>";
                     	}
@@ -939,24 +969,24 @@ foreach($groups as $group)
 						else if($mach->getMachine()->getType() == Machine::TYPE_CUTTER) // added by ascherer 22.07.14 // temp remove  && $group->getName() == "Verarbeitung"
                         {
                             // NEU NUR NOCH UNIQUE PAPIER FORMATE
-                            echo 'IN: <select name="mach_format_in_'.$x.'" style="width:80px">';
-                            foreach ($format_sizes_unique as $size)
-                            {
-                                echo '<option value="'.printPrice($size['width']).'x'.printPrice($size['height']).'" ';
-                                if (printPrice($size['width']).'x'.printPrice($size['height']) == printPrice($mach->getFormat_in_width()).'x'.printPrice($mach->getFormat_in_height())) echo 'selected';
-                                echo '>';
-                                echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
-                            }
-                            echo '</select>';
-                            echo 'OUT: <select name="mach_format_out_'.$x.'" style="width:80px">';
-                            foreach ($format_sizes_unique as $size)
-                            {
-                                echo '<option value="'.printPrice($size['width']).'x'.printPrice($size['height']).'" ';
-                                if (printPrice($size['width']).'x'.printPrice($size['height']) == printPrice($mach->getFormat_out_width()).'x'.printPrice($mach->getFormat_out_height())) echo 'selected';
-                                echo '>';
-                                echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
-                            }
-                            echo '</select>';
+//                             echo 'IN: <select name="mach_format_in_'.$x.'" style="width:80px">';
+//                             foreach ($format_sizes_unique as $size)
+//                             {
+//                                 echo '<option value="'.printPrice($size['width']).'x'.printPrice($size['height']).'" ';
+//                                 if (printPrice($size['width']).'x'.printPrice($size['height']) == printPrice($mach->getFormat_in_width()).'x'.printPrice($mach->getFormat_in_height())) echo 'selected';
+//                                 echo '>';
+//                                 echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+//                             }
+//                             echo '</select>';
+//                             echo 'OUT: <select name="mach_format_out_'.$x.'" style="width:80px">';
+//                             foreach ($format_sizes_unique as $size)
+//                             {
+//                                 echo '<option value="'.printPrice($size['width']).'x'.printPrice($size['height']).'" ';
+//                                 if (printPrice($size['width']).'x'.printPrice($size['height']) == printPrice($mach->getFormat_out_width()).'x'.printPrice($mach->getFormat_out_height())) echo 'selected';
+//                                 echo '>';
+//                                 echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+//                             }
+//                             echo '</select>';
 						}
                         echo '</td>';
                         echo '</td>';
@@ -1045,6 +1075,103 @@ foreach($groups as $group)
 			<input type="checkbox" name="color_control" value="1" <?if($calc->getColorControl() == 1) echo 'checked="checked"';?>>
 		</td>
 	</tr>
+    <tr>
+        <td class="content_row_header" width="290" valign="top">
+            <?=$_LANG->get('Verarbeitung')?>
+        </td>
+        <td class="content_row_clear">
+            <textarea name="text_processing" class="text" style="width:660px;height:50px;"><?=$calc->getTextProcessing()?></textarea>
+        </td>
+    </tr>
+</table>
+</div>
+
+<h1><?=$_LANG->get('Schneideoptionen')?></h1>
+<div class="box2">
+<table width="100%">
+	<colgroup>
+		<col width="270" >
+    	<col>
+    	<col>
+    	<col>
+    	<col>
+    	<col>
+	</colgroup>
+	<tr>
+		<td class="content_row_header">
+			<?=$_LANG->get('Rohbogenformat')?>
+		</td>
+		<td class="content_row_clear">
+		<? if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
+				echo $_LANG->get('Inhalt: '); 
+                echo '<select name="format_in_content" style="width:120px">';
+                foreach ($format_sizes_unique as $size)
+                {
+                    echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
+                    if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_content()) echo 'selected';
+                    echo '>';
+                    echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+                }
+                echo '</select>';
+		} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) {
+				echo $_LANG->get('Zus. Inhalt: '); 
+                echo '<select name="format_in_addcontent" style="width:120px">';
+                foreach ($format_sizes_unique as $size)
+                {
+                    echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
+                    if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_addcontent()) echo 'selected';
+                    echo '>';
+                    echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+                }
+                echo '</select>';
+		} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+				echo $_LANG->get('Zus. Inhalt 2: '); 
+                echo '<select name="format_in_addcontent2" style="width:120px">';
+                foreach ($format_sizes_unique as $size)
+                {
+                    echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
+                    if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_addcontent2()) echo 'selected';
+                    echo '>';
+                    echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+                }
+                echo '</select>';
+		} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+				echo $_LANG->get('Zus. Inhalt 3: '); 
+                echo '<select name="format_in_addcontent3" style="width:120px">';
+                foreach ($format_sizes_unique as $size)
+                {
+                    echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
+                    if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_addcontent3()) echo 'selected';
+                    echo '>';
+                    echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+                }
+                echo '</select>';
+		} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) {
+				echo $_LANG->get('Umschlag: '); 
+                echo '<select name="format_in_envelope" style="width:120px">';
+                foreach ($format_sizes_unique as $size)
+                {
+                    echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
+                    if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_envelope()) echo 'selected';
+                    echo '>';
+                    echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
+                }
+                echo '</select>';
+		} ?>
+		</td>
+	</tr>
 	<tr>
 		<td class="content_row_header">
 			<?=$_LANG->get('Anschnitt')?>
@@ -1055,36 +1182,236 @@ foreach($groups as $group)
 				<input name="cut_content" id="cut_content" style="width:50px" class="text"';
                    	value="<?=printPrice($calc->getCutContent())?>"> <?=$_LANG->get('mm');?>
 		<?	} ?>
+	      </td>
+	      <td class="content_row_clear">
 		<? 	if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) { ?>
-				&ensp;&ensp;<?=$_LANG->get('Zus. Inhalt');?>: 
+				<?=$_LANG->get('Zus. Inhalt');?>: 
 				<input name="cut_addcontent" id="cut_addcontent" style="width:50px" class="text"';
                 	   value="<?=printPrice($calc->getCutAddContent())?>"> <?=$_LANG->get('mm');?>
 		<?	} ?>
+	      </td>
+	      <td class="content_row_clear">
 		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) { ?>
-				&ensp;&ensp;<?=$_LANG->get('Zus. Inhalt 2');?>: 
+				<?=$_LANG->get('Zus. Inhalt 2');?>: 
 				<input name="cut_addcontent2" id="cut_addcontent2" style="width:50px" class="text"';
                 	   value="<?=printPrice($calc->getCutAddContent3())?>"> <?=$_LANG->get('mm');?>
 		<?	} ?>
+	      </td>
+	      <td class="content_row_clear">
 		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) { ?>
-				&ensp;&ensp;<?=$_LANG->get('Zus. Inhalt 3');?>: 
+				<?=$_LANG->get('Zus. Inhalt 3');?>: 
 				<input name="cut_addcontent3" id="cut_addcontent3" style="width:50px" class="text"';
                 	   value="<?=printPrice($calc->getCutAddContent3())?>"> <?=$_LANG->get('mm');?>
 		<?	} ?>
+	      </td>
+	      <td class="content_row_clear">
 		<? 	if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) { ?>
-				&ensp;&ensp;<?=$_LANG->get('Umschlag');?>: 
+				<?=$_LANG->get('Umschlag');?>: 
 				<input name="cut_envelope" id="cut_envelope" style="width:50px" class="text"';
                 	   value="<?=printPrice($calc->getCutEnvelope())?>"> <?=$_LANG->get('mm');?>
 		<?	} ?>	
 		</td>
 	</tr>
-    <tr>
-        <td class="content_row_header" width="290" valign="top">
-            <?=$_LANG->get('Verarbeitung')?>
-        </td>
-        <td class="content_row_clear">
-            <textarea name="text_processing" class="text" style="width:660px;height:50px;"><?=$calc->getTextProcessing()?></textarea>
-        </td>
-    </tr>
+	<tr>
+		<td class="content_row_header" valign="top">
+			<?=$_LANG->get('Schnitte Endv.')?>
+		</td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
+				echo '<b>Inhalt:</b>'; 
+				
+            	$schemes = array();
+            	$part = Calculation::PAPER_CONTENT;
+            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
+            	foreach ($mach_entry as $me)
+            	{
+            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+            	    {
+            	        $mach = $me->getMachine();
+            	        $machentry = $me;
+            	    }
+            	}
+            	$product_max = 0;
+            	$product_counted = false;
+            	
+            	include('scheme.php');
+            	if ($tmp_anschnitt > 0){
+            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+            	} else {
+            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+            	}
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) {
+				echo '<b>Zus. Inhalt:</b>'; 
+				
+            	$schemes = array();
+            	$part = Calculation::PAPER_ADDCONTENT;
+            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
+            	foreach ($mach_entry as $me)
+            	{
+            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+            	    {
+            	        $mach = $me->getMachine();
+            	        $machentry = $me;
+            	    }
+            	}
+            	$product_max = 0;
+            	$product_counted = false;
+            	
+            	include('scheme.php');
+            	if ($tmp_anschnitt > 0){
+            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+            	} else {
+            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+            	}
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+				echo '<b>Zus. Inhalt 2:</b>'; 
+				
+            	$schemes = array();
+            	$part = Calculation::PAPER_ADDCONTENT2;
+            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
+            	foreach ($mach_entry as $me)
+            	{
+            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+            	    {
+            	        $mach = $me->getMachine();
+            	        $machentry = $me;
+            	    }
+            	}
+            	$product_max = 0;
+            	$product_counted = false;
+            	
+            	include('scheme.php');
+            	if ($tmp_anschnitt > 0){
+            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+            	} else {
+            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+            	}
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+				echo '<b>Zus. Inhalt 3:</b>'; 
+				
+            	$schemes = array();
+            	$part = Calculation::PAPER_ADDCONTENT3;
+            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
+            	foreach ($mach_entry as $me)
+            	{
+            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+            	    {
+            	        $mach = $me->getMachine();
+            	        $machentry = $me;
+            	    }
+            	}
+            	$product_max = 0;
+            	$product_counted = false;
+            	
+            	include('scheme.php');
+            	if ($tmp_anschnitt > 0){
+            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+            	} else {
+            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+            	}
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) {
+				echo '<b>Umschlag:</b>'; 
+				
+            	$schemes = array();
+            	$part = Calculation::PAPER_ENVELOPE;
+            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
+            	foreach ($mach_entry as $me)
+            	{
+            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+            	    {
+            	        $mach = $me->getMachine();
+            	        $machentry = $me;
+            	    }
+            	}
+            	$product_max = 0;
+            	$product_counted = false;
+            	
+            	include('scheme.php');
+            	if ($tmp_anschnitt > 0){
+            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+            	} else {
+            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+            	}
+			} ?>
+	      </td>
+	</tr>	
+	<tr>
+		<td class="content_row_header" valign="top">
+			<?=$_LANG->get('Nutzen Rohb.')?>
+		</td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
+				echo '<b>Inhalt:</b></br>'; 
+				
+                $format_in = explode("x", $calc->getFormat_in_content());
+                $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+            	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) {
+				echo '<b>Zus. Inhalt:</b></br>'; 
+				
+                $format_in = explode("x", $calc->getFormat_in_addcontent());
+                $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth());
+            	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+				echo '<b>Zus. Inhalt 2:</b></br>'; 
+				
+                $format_in = explode("x", $calc->getFormat_in_addcontent2());
+                $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width());
+            	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+				echo '<b>Zus. Inhalt 3:</b></br>'; 
+				
+                $format_in = explode("x", $calc->getFormat_in_addcontent3());
+                $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width());
+            	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+			} ?>
+	      </td>
+	      <td class="content_row_clear">
+		<? 	if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) {
+				echo '<b>Umschlag:</b></br>'; 
+				
+                $format_in = explode("x", $calc->getFormat_in_envelope());
+                $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth());
+            	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+			} ?>
+	      </td>
+	</tr>
 </table>
 </div>
 <br/>

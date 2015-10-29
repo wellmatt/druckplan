@@ -172,5 +172,29 @@ if ($_REQUEST['exec'] == 'getDeliveryPrice'){
 	echo printPrice($del_term->getCharges());
 }
 
+
+if ($_REQUEST["ajax_action"] == "search_position"){
+    $retval = Array();
+    
+    $allArticle = Article::getAllArticle(Article::ORDER_TITLE, " AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%' OR matchcode LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($allArticle as $a){
+        $retval[] = Array("type"=> 2, "value" => $a->getId(), "label" => "Artikel: " . $a->getTradegroup()->getTitle() . ": " . $a->getTitle() . " (" . $a->getNumber() . ")");
+    }
+    
+    $allOrders = Order::getAllOrdersByCustomer(Order::ORDER_TITLE,(int)$_REQUEST["bcid"]," AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($allOrders as $a){
+        $retval[] = Array("type"=> 1, "value" => $a->getId(), "label" => "Kalkulation: " . $a->getTitle() . " (" . $a->getNumber() . ")");
+    }
+    
+    $allPersos = Personalizationorder::getAllPersonalizationorders((int)$_REQUEST["bcid"],Personalizationorder::ORDER_TITLE,true);
+    foreach ($allPersos as $a){
+        $retval[] = Array("type"=> 3, "value" => $a->getId(), "label" => "Perso: " . $a->getTitle());
+    }
+    
+    $retval = json_encode($retval);
+    header("Content-Type: application/json");
+    echo $retval;
+}
+
 ?>
 

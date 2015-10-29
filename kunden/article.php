@@ -6,6 +6,9 @@
 // or all of the contents in any form is strictly prohibited. 
 // ---------------------------------------------------------------------------------- 
 
+$_USER = new User($busicon->getSupervisor()->getId());
+Global $_USER;
+
 $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_DELIV_SHOP);
 // Tabelle um den Warenkorb zu plazieren ?>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -29,8 +32,8 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			}
 			// Verf�gbare Menge vorhanden?
 			if ($_REQUEST["subexec"]=="add_item"){
-			    $wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
-			    if((int)$_REQUEST["shopping_amount"]<=$wh_count)
+// 			    $wh_count = Warehouse::getTotalStockByArticle((int)$_REQUEST["articleid"]);
+// 			    if((int)$_REQUEST["shopping_amount"]<=$wh_count)
     				if ($_REQUEST["shopping_amount"]>0){
 			            $deliv_adr = new Address((int)$_REQUEST["article_deliv"]);
     					$attributes["id"] 		= $article->getId();
@@ -209,6 +212,7 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 		</form>
 <?		} else { // ---------- Auflistung der freigegeben Artikel fuer dieses Kunden ------------------------
 			$all_article = Article::getAllShopArticleByCustomerAndCp((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]);
+// 			var_dump($all_article);
 			?>
 			<div class="box2" style="min-height:180px;">
 			<b>Artikel</b>

@@ -1,7 +1,7 @@
 <?php
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'type', 'number', 'cust_name', 'title', 'fremdleistung', 'crtdat', 'status' );
+    $aColumns = array( 'id', 'number', 'cust_name', 'title', 'fremdleistung', 'crtdat', 'status' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -147,10 +147,7 @@
     $sQuery = "SELECT * FROM
                (SELECT orders.id as id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,
                orders.crtdat,orders.`status`,'1' as type, businesscontact.id as bcid 
-               FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
-               SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,
-               collectiveinvoice.crtdate,collectiveinvoice.`status`,'2' as type, businesscontact.id as bcid 
-               FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a   
+               FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0) a   
                $sWhere
                $sOrder
                $sLimit";
@@ -167,10 +164,7 @@
         SELECT COUNT(".$sIndexColumn.")
         FROM   
         (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status`,'1' as type, businesscontact.id as bcid 
-        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
-        SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
-        collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`,'2' as type, businesscontact.id as bcid 
-        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0) a
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -185,9 +179,7 @@
         SELECT COUNT(".$sIndexColumn.")
         FROM   
         (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status` 
-        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0 UNION
-        SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
-        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0) a
         WHERE status > 0
     ";
 //     var_dump($sQuery);
@@ -236,11 +228,7 @@
             else if ( $aColumns[$i] == 'status' )
             {
                 $tmp_row = '';
-                if ($aRow['type'] == 1){
-                    $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=1">';
-                } else { 
-                    $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=1">';
-                }
+                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=1">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 1){
                     $tmp_row .= 'red.gif';
@@ -250,11 +238,7 @@
                 $tmp_row .= '" title="Vorgang angelegt"></a>';
 
             
-                if ($aRow['type'] == 1){
-                    $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=2">';
-                } else { 
-                    $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=2">';
-                }
+                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=2">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 2){
                     $tmp_row .= 'orange.gif';
@@ -264,11 +248,7 @@
                 $tmp_row .= '" title="Vorgang gesendet"></a>';
 
             
-                if ($aRow['type'] == 1){
-                    $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=3">';
-                } else { 
-                    $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=3">';
-                }
+                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=3">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 3){
                     $tmp_row .= 'yellow.gif';
@@ -278,11 +258,7 @@
                 $tmp_row .= '" title="Vorgang angenommen"></a>';
 
             
-                if ($aRow['type'] == 1){
-                    $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=4">';
-                } else { 
-                    $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=4">';
-                }
+                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=4">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 4){
                     $tmp_row .= 'lila.gif';
@@ -292,11 +268,7 @@
                 $tmp_row .= '" title="In Produktion"></a>';
 
             
-                if ($aRow['type'] == 1){
-                    $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=5">';
-                } else { 
-                    $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=5">';
-                }
+                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=5">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 5){
                     $tmp_row .= 'green.gif';
@@ -310,60 +282,39 @@
             }
             else if ( $aColumns[$i] == 'fremdleistung' )
             {
-                if ($aRow['type'] == 1){
-                    $tmp_row = '';
-                    $sQueryAttributes = 'SELECT orders_machines.supplier_status,orders_machines.supplier_id,CONCAT(businesscontact.name1,businesscontact.name2) as cust_name,
-                                         orders_machines.supplier_send_date,orders_machines.supplier_receive_date,orders_machines.supplier_info 
-                                         FROM orders INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-                                         INNER JOIN orders_machines ON orders_machines.calc_id = orders_calculations.id
-                                         INNER JOIN businesscontact ON orders_machines.supplier_id = businesscontact.id
-                                         WHERE orders_machines.supplier_status > 0 AND orders_calculations.state = 1 AND orders.id = '.$aRow[ $aColumns[0] ];
-                    $rAttributes = mysql_query( $sQueryAttributes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-                    while ($data = mysql_fetch_row($rAttributes)){
-                		if($data[0] == 0){ $status = "TODO"; $img="red.gif";};
-                		if($data[0] == 1){ $status = "Bestellt"; $img="orange.gif";};
-                		if($data[0] == 2){ $status = "In Produktion"; $img="lila.gif";};
-                		if($data[0] == 3){ $status = "Im Haus"; $img="green.gif";};
-                		
-                		$title = $status." \n";
-                		if ($data[1] > 0 ) $title .= utf8_encode($data[2])."\n";
-                		if ($data[3] > 0 ) $title .= "Liefer-/Bestelldatum: ".date("d.m.Y", $data[3])." \n";
-                		if ($data[4] > 0 ) $title .= "Retour: ".date("d.m.Y", $data[4])." \n";
-                		$title .= utf8_encode($data[5])." \n";
-                		
-                		
-                		$tmp_row = '<img src="images/status/'.$img.'" alt="'.$status.'" title="'.$title.'">';
-                    }
-                    if ($tmp_row == ''){
-                        $tmp_row = 'keine';
-                    }
-                    $row[] = $tmp_row;
-                } else {
-                    $row[] = 'keine';
+                $tmp_row = '';
+                $sQueryAttributes = 'SELECT orders_machines.supplier_status,orders_machines.supplier_id,CONCAT(businesscontact.name1,businesscontact.name2) as cust_name,
+                                     orders_machines.supplier_send_date,orders_machines.supplier_receive_date,orders_machines.supplier_info 
+                                     FROM orders INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
+                                     INNER JOIN orders_machines ON orders_machines.calc_id = orders_calculations.id
+                                     INNER JOIN businesscontact ON orders_machines.supplier_id = businesscontact.id
+                                     WHERE orders_machines.supplier_status > 0 AND orders_calculations.state = 1 AND orders.id = '.$aRow[ $aColumns[0] ];
+                $rAttributes = mysql_query( $sQueryAttributes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+                while ($data = mysql_fetch_row($rAttributes)){
+            		if($data[0] == 0){ $status = "TODO"; $img="red.gif";};
+            		if($data[0] == 1){ $status = "Bestellt"; $img="orange.gif";};
+            		if($data[0] == 2){ $status = "In Produktion"; $img="lila.gif";};
+            		if($data[0] == 3){ $status = "Im Haus"; $img="green.gif";};
+            		
+            		$title = $status." \n";
+            		if ($data[1] > 0 ) $title .= utf8_encode($data[2])."\n";
+            		if ($data[3] > 0 ) $title .= "Liefer-/Bestelldatum: ".date("d.m.Y", $data[3])." \n";
+            		if ($data[4] > 0 ) $title .= "Retour: ".date("d.m.Y", $data[4])." \n";
+            		$title .= utf8_encode($data[5])." \n";
+            		
+            		
+            		$tmp_row = '<img src="images/status/'.$img.'" alt="'.$status.'" title="'.$title.'">';
                 }
-            }
-            else if ( $aColumns[$i] == 'type' )
-            {
-                if ($aRow[ $aColumns[$i] ] == '1'){
-                    $row[] = 'K';
-                } else if ( $aRow[ $aColumns[$i] ] == '2'){
-                    $row[] = 'V';
+                if ($tmp_row == ''){
+                    $tmp_row = 'keine';
                 }
+                $row[] = $tmp_row;
             }
         }
-        if ($aRow['type'] == 1){
-            $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><img src="images/icons/pencil.png"></a>
-                      <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png"></a>';
-        } else {
-            $row[] = '<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='.$aRow[ $aColumns[0] ].'"><img src="images/icons/pencil.png"></a>';
-        }
-// 		var_dump($row); echo "</br>";
+        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><img src="images/icons/pencil.png"></a>
+                  <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png"></a>';
         $output['aaData'][] = $row;
     }
-    
-//     var_dump($output); echo "</br>";
      
     echo json_encode( $output );
-    
-//     echo  json_last_error();
 ?>

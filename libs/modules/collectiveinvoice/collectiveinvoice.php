@@ -45,7 +45,7 @@ case 'delete':
 	// Hier könnte auch die globale Funktion angepasst werden, dass es spezifischeres Feedback gibt
 	
 // 	require_once('collectiveinvoice.overview.php');
-    echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
+    echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.overview.php'</script>";
 	break;
 case 'deletepos':
 	$delpos = new Orderposition((int)$_REQUEST['delpos']);
@@ -64,13 +64,37 @@ case 'deletepos':
 	
 	require_once('collectiveinvoice.edit.php');
 	break;
+case 'softdeletepos':
+	$delpos = new Orderposition((int)$_REQUEST['delpos']);
+	
+	//Beim L�schen von Aufträgen werden diese insgesammt gelöscht (also status=0 gesetzt)
+	if($delpos->getType() == 1){
+		$tmp_order = new Order($delpos->getObjectid());
+		$tmp_order->setCollectiveinvoiceId(0);
+		$tmp_order->save();
+	}
+	$tmp_del_amount = 0 - $delpos->getQuantity();
+	$tmp_del_article = $delpos->getObjectid();
+	$tmp_del_type = $delpos->getType();
+	
+	$savemsg = getSaveMessage($delpos->deletesoft());
+	
+	require_once('collectiveinvoice.edit.php');
+	break;
+case 'restorepos':
+	$delpos = new Orderposition((int)$_REQUEST['delpos']);
+	
+	if($delpos->getType() == 1){
+		$tmp_order = new Order($delpos->getObjectid());
+		$tmp_order->setCollectiveinvoiceId($delpos->getCollectiveinvoice());
+		$tmp_order->save();
+	}
+	
+	$savemsg = getSaveMessage($delpos->restore());
+	
+	require_once('collectiveinvoice.edit.php');
+	break;
 case 'save':
-	//Number berechnen bei neuer Rechnung
-// 	if($_REQUEST["ciid"] == NULL || $collectinv->getId() == 0 ){
-// 		$tmp_number = $collectinv->getClient()->createOrderNumber(1);
-// 	} else {					//wenn Bearbeiten oder Position hinzugef�gt, wieder �ffnen
-// 		$tmp_number=$_REQUEST["colinv_number"];
-// 	}
 	
 	$tmp_deliv = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["colinv_deliverycosts"])));
 
@@ -95,6 +119,16 @@ case 'save':
 	
 	$savemsg = getSaveMessage($collectinv->save());
 	
+	if ($_REQUEST["asso_class"] && $_REQUEST["asso_object"])
+	{
+	    $new_asso = new Association();
+	    $new_asso->setModule1(get_class($collectinv));
+	    $new_asso->setObjectid1((int)$collectinv->getId());
+	    $new_asso->setModule2($_REQUEST["asso_class"]);
+	    $new_asso->setObjectid2((int)$_REQUEST["asso_object"]);
+	    $new_asso->save();
+	}
+	
 	echo mysql_error();
 	
 	if($collectinv->getId()==NULL){
@@ -106,8 +140,9 @@ case 'save':
 	$xi=0;
 	$au_suffix=1;
 	//echo "<br/> <br/> <br/> <br/> <br/> <br/>---<br/>---";
-	//var_dump($_REQUEST["orderpos"]);
+// 	var_dump($_REQUEST["orderpos"]); echo "</br>";
 	foreach ($_REQUEST["orderpos"] as $single_order){
+// 	    var_dump($single_order); echo "</br></br>";
 		if ( !( $_REQUEST["orderpos"][$xi]["id"] == "0" && 			// Wenn in den "Neu"-Feldern nichts drin steht
 				$_REQUEST["orderpos"][$xi]["comment"] == "" &&		// soll er auch nichts speichern
 				$_REQUEST["orderpos"][$xi]["quantity"] == "")){
@@ -166,13 +201,14 @@ case 'docs':
 case 'setState':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();
-	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
+	echo "<script language='JavaScript'>location.href='index.php?page=".$_REQUEST['page']."&ciid=".$collectinv->getId()."&exec=edit'</script>";
 // 	require_once('collectiveinvoice.overview.php');
 	break;
 case 'setState2':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();
-	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
+// 	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
+	echo "<script language='JavaScript'>location.href='index.php?page=".$_REQUEST['page']."&ciid=".$collectinv->getId()."&exec=edit'</script>";
 // 	require_once('collectiveinvoice.edit.php');
 	break;
 case 'createFromTicket':

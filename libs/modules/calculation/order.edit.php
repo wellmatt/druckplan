@@ -82,6 +82,17 @@ if((int)$_REQUEST["createNew"] == 1){
 // 	$order->setCustContactperson($order->getCustomer()->getMainContactperson());
 	$order->setPaymentTerms($order->getCustomer()->getPaymentTerms());
 	$order->save();
+	
+	if ($_REQUEST["asso_class"] && $_REQUEST["asso_object"])
+	{
+	    $new_asso = new Association();
+	    $new_asso->setModule1(get_class($order));
+	    $new_asso->setObjectid1((int)$order->getId());
+	    $new_asso->setModule2($_REQUEST["asso_class"]);
+	    $new_asso->setObjectid2((int)$_REQUEST["asso_object"]);
+	    $new_asso->save();
+	}
+	
 	echo "<script type=\"text/javascript\">location.href='index.php?page=".$_REQUEST['page']."&id=".$order->getId()."&exec=edit&step=1';</script>";
 }
 
@@ -779,6 +790,13 @@ if((int)$_REQUEST["step"] == 3){
 		$calc->setCutEnvelope((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["cut_envelope"]))));
 		$calc->save();
 
+		// Schneideoptionen
+		
+		$calc->setFormat_in_content($_REQUEST["format_in_content"]);
+		$calc->setFormat_in_addcontent($_REQUEST["format_in_addcontent"]);
+		$calc->setFormat_in_addcontent2($_REQUEST["format_in_addcontent2"]);
+		$calc->setFormat_in_addcontent3($_REQUEST["format_in_addcontent3"]);
+		$calc->setFormat_in_envelope($_REQUEST["format_in_envelope"]);
 
 		// Falzboegen speichern
 		$calc->setFoldschemeContent(trim(addslashes($_REQUEST["foldscheme_content"])));
@@ -809,6 +827,8 @@ if((int)$_REQUEST["step"] == 3){
 					$entry->setFinishing(new Finishing((int)$_REQUEST["mach_finishing_{$id}"]));
 					//gln, umschlagen/umstuelpen
 					$entry->setUmschlagenUmstuelpen((int)$_REQUEST["umschl_umst_{$id}"]);
+					$entry->setUmschl((int)$_REQUEST["umschl_{$id}"]);
+					$entry->setUmst((int)$_REQUEST["umst_{$id}"]);
 					//error_log($id." umschlumst ".$_REQUEST["umschl_umst_{$id}"]);
 					$entry->setInfo(trim(addslashes($_REQUEST["mach_info_{$id}"])));
 
@@ -962,10 +982,17 @@ if((int)$_REQUEST["step"] == 3){
 //     					    echo "setFormat_out_height = " . $tmp_cut_format_out[1] . "</br>";
 					    }
 					    
-					    $entry->setRoll_dir((int)$_REQUEST["mach_roll_dir_{$id}"]);
-					    $entry->setCutter_cuts($_REQUEST["mach_cutter_cuts_{$id}"]);
+// 					    $entry->setCutter_cuts((int)$_REQUEST["mach_cutter_cuts_{$id}"]);
 					    
 					    $entry->setPrice($entry->getMachine()->getMachinePrice($entry));
+					    $entry->save();
+					}
+					
+					if ($entry->getMachine()->getType() == Machine::TYPE_CUTTER ||
+					    $entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL || 
+					    $entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+					{
+					    $entry->setRoll_dir((int)$_REQUEST["mach_roll_dir_{$id}"]);
 					    $entry->save();
 					}
 					

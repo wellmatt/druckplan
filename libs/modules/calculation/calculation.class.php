@@ -104,6 +104,14 @@ class Calculation
 	private $cutter_height = 0;
 	private $roll_dir = 0;
 	
+	private $format_in_content;
+	private $format_in_addcontent;
+	private $format_in_addcontent2;
+	private $format_in_addcontent3;
+	private $format_in_envelope;
+	
+	// other
+	
 	private $title; // Kalkulation's Titel
     
     function __construct($id = 0) 
@@ -207,6 +215,12 @@ class Calculation
 				$this->cutter_weight = $r["cutter_weight"];
 				$this->cutter_height = $r["cutter_height"];
 				$this->roll_dir = $r["roll_dir"];
+				
+				$this->format_in_content = $r["format_in_content"];
+				$this->format_in_addcontent = $r["format_in_addcontent"];
+				$this->format_in_addcontent2 = $r["format_in_addcontent2"];
+				$this->format_in_addcontent3 = $r["format_in_addcontent3"];
+				$this->format_in_envelope = $r["format_in_envelope"];
 				
 				$this->title = $r["title"];
                 
@@ -365,6 +379,13 @@ class Calculation
 						cutter_weight =	{$this->cutter_weight},
 						cutter_height =	{$this->cutter_height},
 						roll_dir =	{$this->roll_dir},
+						
+						format_in_content =	'{$this->format_in_content}',
+						format_in_addcontent =	'{$this->format_in_addcontent}',
+						format_in_addcontent2 =	'{$this->format_in_addcontent2}',
+						format_in_addcontent3 =	'{$this->format_in_addcontent3}',
+						format_in_envelope =	'{$this->format_in_envelope}',
+						
 						title =	'{$this->title}',
         				color_control = {$this->colorControl}, ";
         
@@ -1761,8 +1782,85 @@ class Calculation
     {
         $this->sorts = $sorts;
     }
+    
+	/**
+     * @return the $format_in_content
+     */
+    public function getFormat_in_content()
+    {
+        return $this->format_in_content;
+    }
 
-	
-	
+	/**
+     * @return the $format_in_addcontent
+     */
+    public function getFormat_in_addcontent()
+    {
+        return $this->format_in_addcontent;
+    }
+
+	/**
+     * @return the $format_in_addcontent2
+     */
+    public function getFormat_in_addcontent2()
+    {
+        return $this->format_in_addcontent2;
+    }
+
+	/**
+     * @return the $format_in_addcontent3
+     */
+    public function getFormat_in_addcontent3()
+    {
+        return $this->format_in_addcontent3;
+    }
+
+	/**
+     * @return the $format_in_envelope
+     */
+    public function getFormat_in_envelope()
+    {
+        return $this->format_in_envelope;
+    }
+
+	/**
+     * @param field_type $format_in_content
+     */
+    public function setFormat_in_content($format_in_content)
+    {
+        $this->format_in_content = $format_in_content;
+    }
+
+	/**
+     * @param field_type $format_in_addcontent
+     */
+    public function setFormat_in_addcontent($format_in_addcontent)
+    {
+        $this->format_in_addcontent = $format_in_addcontent;
+    }
+
+	/**
+     * @param field_type $format_in_addcontent2
+     */
+    public function setFormat_in_addcontent2($format_in_addcontent2)
+    {
+        $this->format_in_addcontent2 = $format_in_addcontent2;
+    }
+
+	/**
+     * @param field_type $format_in_addcontent3
+     */
+    public function setFormat_in_addcontent3($format_in_addcontent3)
+    {
+        $this->format_in_addcontent3 = $format_in_addcontent3;
+    }
+
+	/**
+     * @param field_type $format_in_envelope
+     */
+    public function setFormat_in_envelope($format_in_envelope)
+    {
+        $this->format_in_envelope = $format_in_envelope;
+    }
 }
 ?>

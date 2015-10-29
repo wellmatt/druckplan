@@ -33,7 +33,7 @@
 }
 #fl_menu .menu .menu_item_delete{
     display:block; 
-    background:red; 
+    background:#fa6262; 
     color:#bbb; 
     border-top:1px solid #333; 
     padding:10px 20px; 

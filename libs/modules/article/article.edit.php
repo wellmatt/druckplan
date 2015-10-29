@@ -15,7 +15,6 @@ $article = new Article($_REQUEST["aid"]);
 $all_tradegroups = Tradegroup::getAllTradegroups(0);
 
 
-
 if($_REQUEST["exec"] == "copy"){
 	$old_article = new Article($_REQUEST["aid"]);
 	$allprices = $old_article->getPrices(); 		//Damit Preise korrekt kopiert werden
@@ -241,7 +240,7 @@ function addOrderAmount()
     var amount = prompt("Bitte Bestellmenge angeben", "");
     
     if (amount != null) {
-    	$("#article_orderamounts").append('<option selected="selected" value="'+amount+'">'+amount+'</option>');
+    	$("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>');
     }
 }
 </script>
@@ -253,13 +252,55 @@ function addOrderAmount()
 	src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+<script type="text/javascript" charset="utf8" src="jscripts/tinymce/tinymce.min.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("a#picture_select").fancybox({
 		    'type'    : 'iframe'
-		})
+		});
+	    tinymce.init(
+    	    {
+        	    selector:'.artdesc',
+        	    menubar: false,
+        	    statusbar: false,
+        	    toolbar: false
+    	    }
+	    );
 	});
+</script>
+
+<script language="JavaScript">
+    $(function() {
+    	$( "#shop_add_customer" ).autocomplete({
+      		 source: "libs/modules/article/article.ajax.php?ajax_action=search_customer",
+      		 minLength: 2,
+      		 focus: function( event, ui ) {
+      		 $( "#shop_add_customer" ).val( ui.item.label );
+      		 return false;
+      		 },
+      		 select: function( event, ui ) {
+          		 var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
+           		 newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></td></tr>';
+            	 $("#shop_appr_bcs tr:last").after(newRow);
+          		 return false;
+          	 }
+  		});
+    	$( "#shop_add_customer_cp" ).autocomplete({
+    		 source: "libs/modules/article/article.ajax.php?ajax_action=search_customer_cp",
+    		 minLength: 2,
+    		 focus: function( event, ui ) {
+    		 $( "#shop_add_customer_cp" ).val( ui.item.label );
+    		 return false;
+    		 },
+    		 select: function( event, ui ) {
+          		 var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
+           		 newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></td></tr>';
+            	 $("#shop_appr_cps tr:last").after(newRow);
+        		 return false;
+        	 }
+		});
+    });
 </script>
 
 <table width="100%">
@@ -326,7 +367,7 @@ function addOrderAmount()
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
 						<td class="content_row_clear"><textarea id="article_desc"
-								name="article_desc" rows="4" cols="50" class="text"><?=stripslashes($article->getDesc())?></textarea>
+								name="article_desc" rows="4" cols="50" class="text artdesc"><?=stripslashes($article->getDesc())?></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -371,18 +412,18 @@ function addOrderAmount()
 					</tr>
 					<tr valign="top">
 						<td class="content_row_header"><?=$_LANG->get('Mögl. Bestellmengen (Shop)')?></td>
-						<td class="content_row_clear"><select
-							name="article_orderamounts[]" id="article_orderamounts"
-							multiple="" size="6" style="width: 184px">
-    					   <?php 
-    					   foreach ($article->getOrderamounts() as $orderamount)
-    					   {
-    					       echo '<option selected value="'.$orderamount.'">'.$orderamount.'</option>';
-    					   }
-    					   ?>
-    					</select><img src="images/icons/plus.png"
-							class="pointer icon-link" title="Bestellmenge hinzufügen"
-							onclick="addOrderAmount();"></td>
+						<td class="content_row_clear">
+						  <div id="orderamounts">
+        					   <?php 
+        					   foreach ($article->getOrderamounts() as $orderamount)
+        					   {
+        					       echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
+                                         <img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>';
+        					   }
+        					   ?>
+    					   </div>
+        				   <img src="images/icons/plus.png"	class="pointer icon-link" title="Bestellmenge hinzufügen" onclick="addOrderAmount();">
+						</td>
 					</tr>
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Verpackungseinheit/-gewicht')?></td>
@@ -636,40 +677,6 @@ function addOrderAmount()
 			</div>
 			</br>
 			<div id="qusers" class="box1" style="min-height: 180px;">
-
-				<script language="JavaScript">
-            $(function() {
-            	$( "#shop_add_customer" ).autocomplete({
-              		 source: "libs/modules/article/article.ajax.php?ajax_action=search_customer",
-              		 minLength: 2,
-              		 focus: function( event, ui ) {
-              		 $( "#shop_add_customer" ).val( ui.item.label );
-              		 return false;
-              		 },
-              		 select: function( event, ui ) {
-                  		 var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
-                   		 newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></td></tr>';
-                    	 $("#shop_appr_bcs tr:last").after(newRow);
-                  		 return false;
-                  	 }
-          		});
-            	$( "#shop_add_customer_cp" ).autocomplete({
-            		 source: "libs/modules/article/article.ajax.php?ajax_action=search_customer_cp",
-            		 minLength: 2,
-            		 focus: function( event, ui ) {
-            		 $( "#shop_add_customer_cp" ).val( ui.item.label );
-            		 return false;
-            		 },
-            		 select: function( event, ui ) {
-                  		 var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
-                   		 newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></td></tr>';
-                    	 $("#shop_appr_cps tr:last").after(newRow);
-                		 return false;
-                	 }
-        		});
-            });
-            </script>
-
 				<b>Shop</b>
 				<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>

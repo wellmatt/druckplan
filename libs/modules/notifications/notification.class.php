@@ -62,7 +62,7 @@ class Notification {
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO notifications
-            (user, title, path, crtdate, state, crtmodule )
+            (`user`, title, path, crtdate, state, crtmodule )
             VALUES
             ( {$this->user->getId()}, '{$this->title}', '{$this->path}',
             {$now}, {$this->state}, '{$this->crtmodule}' )";
@@ -137,12 +137,30 @@ class Notification {
         $tmp_notification->setUser($touser);
 //         if ($touser == $_USER)
 //             return false;
+//         echo "generateNotification fired!</br>";
         switch($crtmodule){
             case "CollectiveInvoice":
                 switch ($type){
                     case "NewOrderShop":
                         $tmp_notification->setTitle("Neue Bestellung von \"".$reference."\"");
                         $tmp_notification->setPath("index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
+                }
+                break;
+            case "Event":
+                switch ($type){
+                    case "NewEvent":
+//                         echo "NewEvent fired!</br>";
+                        $tmp_notification->setTitle("Neue Termineinladung von \"".$reference."\"");
+                        $tmp_notification->setPath("index.php?page=libs/modules/organizer/calendar.php&exec=showevent&id=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
+                    case "ChangeEvent":
+                        $tmp_notification->setTitle("Terminänderung von \"".$reference."\"");
+                        $tmp_notification->setPath("index.php?page=libs/modules/organizer/calendar.php&exec=showevent&id=".$objectid);
                         $tmp_notification->setCrtmodule($crtmodule);
                         $tmp_notification->save();
                         break;

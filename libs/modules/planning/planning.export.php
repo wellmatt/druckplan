@@ -18,7 +18,10 @@ require_once 'libs/modules/planning/planning.job.class.php';
 $_REQUEST["id"] = (int)$_REQUEST["id"];
 $_REQUEST["type"] = (int)$_REQUEST["type"];
 
-$mjs = PlanningJob::getAllJobs(" AND type = {$_REQUEST["type"]} AND artmach = {$_REQUEST["id"]} ORDER BY start, object, subobject, artmach ASC");
+$start = $_REQUEST["start"];
+$end = $_REQUEST["end"];
+
+$mjs = PlanningJob::getAllJobs(" AND type = {$_REQUEST["type"]} AND artmach = {$_REQUEST["id"]} AND start >= {$start} AND end <= {$end} ORDER BY start, object, subobject, artmach ASC");
 
 ?>
 
@@ -55,7 +58,7 @@ function printPage() {
  *************************************************************************/?>
 <body OnLoad="printPage()">
 
-<h2><?php if ($_REQUEST["type"] == 2) echo $mjs[0]->getArtmach()->getName(); elseif ($_REQUEST["type"]==1) echo $mjs[0]->getArtmach()->getTitle();?></h2>
+<h2><?php if ($_REQUEST["type"] == 2) echo $mjs[0]->getArtmach()->getName(); elseif ($_REQUEST["type"]==1) echo $mjs[0]->getArtmach()->getTitle();?> <span class="small"><?php echo date('d.m.Y',$start) . " > " . date('d.m.Y',$end)?></span></h2>
 
 <table width="100%">
     <tr>

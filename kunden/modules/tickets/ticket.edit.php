@@ -324,9 +324,18 @@ $(document).ready(function () {
         <td width="25%">Herkunft:</td>
         <td width="25%">
             <select name="tkt_source" id="tkt_source" style="width:160px" required>
-                <option value="<?php echo Ticket::SOURCE_EMAIL?>" <?php if ($ticket->getSource() == Ticket::SOURCE_EMAIL) echo "selected"; ?>>per E-Mail</option>
-                <option value="<?php echo Ticket::SOURCE_PHONE?>" <?php if ($ticket->getSource() == Ticket::SOURCE_PHONE) echo "selected"; ?>>per Telefon</option>
-                <option value="<?php echo Ticket::SOURCE_OTHER?>" <?php if ($ticket->getSource() == Ticket::SOURCE_OTHER || $ticket->getId() == 0) echo "selected"; ?>>andere</option>
+                <?php 
+                $tkt_all_sources = TicketSource::getAllSources();
+                foreach ($tkt_all_sources as $tkt_source){
+                    if ($ticket->getSource() == $tkt_source->getId()){
+                        echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                    } elseif ($ticket->getId() == 0 && $tkt_source->getDefault()) {
+                        echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                    } else {
+                        echo '<option value="'.$tkt_source->getId().'">'.$tkt_source->getTitle().'</option>';
+                    }
+                }
+                ?>
             </select>
         </td>
       </tr>

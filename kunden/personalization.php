@@ -495,10 +495,13 @@ if ((int)$_REQUEST["persoid"] > 0){
 				    		<td valign="top">
 				    			<input  type="text" name="persoorder_title" value="<?= (empty($tmp_title)) ? '(Unbenannt)' : $tmp_title ?>" style="width: 150px;">
 				    		</td>
+				    		<td rowspan="5" valign="top">&nbsp;</td>
+				    		<td rowspan="5" valign="top">&nbsp;</td>
+				    		<!-- 
 				    		<td rowspan="5" valign="top"><b>Bemerkung </b></td>
 				    		<td rowspan="5" valign="top">
 				    			<textarea name="persoorder_comment" rows="4" cols="35"><?=stripslashes($perso_order->getComment())?></textarea>
-				    		</td>
+				    		</td> -->
 				    	</tr>
 				    	<tr>
 				    		<td valign="top"><b>Bestellmenge</b></td>
@@ -648,10 +651,11 @@ if ((int)$_REQUEST["persoid"] > 0){
                 "paging": true,
         		"stateSave": false,
         		"pageLength": "25",
-        		"aaSorting": [[ 2, "asc" ]],
+        		"aaSorting": [[ 3, "desc" ]],
         		"dom": 'flrtip',        
         		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
         		"columns": [
+        		            null,
         		            null,
         		            null,
         		            null,
@@ -740,6 +744,7 @@ if ((int)$_REQUEST["persoid"] > 0){
         	<table id="porder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
                 <thead>
                     <tr>
+                        <th width="20"><?=$_LANG->get('ID')?></th>
                         <th width="105"><?=$_LANG->get('Beschreibung')?></th>
                         <th><?=$_LANG->get('Titel')?></th>
                         <th width="80"><?=$_LANG->get('Erstelldatum')?></th>

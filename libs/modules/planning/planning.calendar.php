@@ -33,10 +33,23 @@ $pl_artmachs = PlanningJob::getUniqueArtmach();
         </select>
     </form>
     <?php if($_REQUEST["artmach"]){?>
-    <a target="_blank" href="libs/modules/planning/planning.export.php?id=<?php echo substr($_REQUEST["artmach"], 1);?>&type=<?php if (substr($_REQUEST["artmach"], 0, 1) == "V") echo PlanningJob::TYPE_V; elseif (substr($_REQUEST["artmach"], 0, 1) == "K") echo PlanningJob::TYPE_K;?>">Export</a>
+    <a href="#" onclick="DoExport();">Export</a>
     <?php }?>
 </center>
 
+<script type="text/javascript">
+function DoExport()
+{
+	var location = 'libs/modules/planning/planning.export.php?id=<?php echo substr($_REQUEST["artmach"], 1);?>&type=<?php if (substr($_REQUEST["artmach"], 0, 1) == "V") echo PlanningJob::TYPE_V; elseif (substr($_REQUEST["artmach"], 0, 1) == "K") echo PlanningJob::TYPE_K;?>';
+	var viewStartDate = moment($('#calendar').fullCalendar('getView').intervalStart._d).format('X');
+	var viewEndDate = moment($('#calendar').fullCalendar('getView').intervalEnd._d).format('X');
+	location += '&start=' + viewStartDate;
+	location += '&end=' + viewEndDate;
+	window.open(location,'_blank');
+}
+</script>
+<div id="cal_start" style="display:none"></div>
+<div id="cal_end" style="display:none"></div>
 
 <div id="hidden_clicker" style="display:none">
 <a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a>
@@ -82,8 +95,8 @@ $pl_artmachs = PlanningJob::getUniqueArtmach();
 			selectHelper: false,
 			editable: false,
 			eventLimit: true,
-			eventRender: function(event, element) {
-			    $(element).tooltip({title: event.title});             
+			eventRender: function(event, element, view) {
+			    $(element).tooltip({title: event.title});
 			},
 			events: {
 				url: 'libs/modules/planning/planning.ajax.php',

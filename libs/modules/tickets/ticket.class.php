@@ -11,6 +11,7 @@
 require_once 'libs/modules/tickets/ticket.category.class.php';
 require_once 'libs/modules/tickets/ticket.priority.class.php';
 require_once 'libs/modules/tickets/ticket.state.class.php';
+require_once 'libs/modules/tickets/ticket.source.class.php';
 require_once 'libs/modules/comment/comment.class.php';
 require_once 'libs/modules/notifications/notification.class.php';
 require_once 'libs/modules/timer/timer.class.php';
@@ -233,38 +234,35 @@ class Ticket {
             $groupsql .= ") ";
         }
         $sWhere .= " WHERE (assigned = '" . $forname . "' " . $groupsql . " OR crtuser = '" . $forname . "') ";
-        if ($ticketstates != null)
+        if (isset($ticketstates) && $ticketstates != null && $ticketstates != "")
         {
             $tsids = implode(",", $ticketstates);
             $sWhere .= " AND tsid in ({$tsids}) ";
-        }
         
-        $sql = "SELECT id, assigned, crtuser FROM (SELECT
-        tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state, tickets_states.id as tsid,
-        businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title,
-        IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned,
-        CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser
-        FROM tickets
-        LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
-        LEFT JOIN tickets_states ON tickets_states.id = tickets.state
-        LEFT JOIN tickets_priorities ON tickets_priorities.id = tickets.priority
-        LEFT JOIN tickets_categories ON tickets_categories.id = tickets.category
-        LEFT JOIN `user` ON `user`.id = tickets.assigned_user
-        LEFT JOIN groups ON groups.id = tickets.assigned_group
-        LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser
-        HAVING duedate >= {$start} AND duedate <= {$end}
-        ) tickets
-        $sWhere 
-        ORDER BY id ASC";
-
-//         echo $sql;
-        
-        if($DB->num_rows($sql)) {
-            foreach($DB->select($sql) as $r){
-                $retval[] = new Ticket((int)$r["id"]);
+            $sql = "SELECT id, assigned, crtuser FROM (SELECT
+            tickets.id, tickets_categories.title as category, tickets.crtdate, tickets.duedate, tickets.title, tickets_states.title as state, tickets_states.id as tsid,
+            businesscontact.name1 as customer, businesscontact.id as bcid, tickets_priorities.value as priority, tickets_priorities.title as priority_title,
+            IF (`user`.login != '', CONCAT(`user`.user_firstname,' ',`user`.user_lastname), groups.group_name) assigned,
+            CONCAT(user2.user_firstname,' ',user2.user_lastname) AS crtuser
+            FROM tickets
+            LEFT JOIN businesscontact ON businesscontact.id = tickets.customer
+            LEFT JOIN tickets_states ON tickets_states.id = tickets.state
+            LEFT JOIN tickets_priorities ON tickets_priorities.id = tickets.priority
+            LEFT JOIN tickets_categories ON tickets_categories.id = tickets.category
+            LEFT JOIN `user` ON `user`.id = tickets.assigned_user
+            LEFT JOIN groups ON groups.id = tickets.assigned_group
+            LEFT JOIN `user` AS user2 ON user2.id = tickets.crtuser
+            HAVING duedate >= {$start} AND duedate <= {$end}
+            ) tickets
+            $sWhere 
+            ORDER BY id ASC";
+            
+            if($DB->num_rows($sql)) {
+                foreach($DB->select($sql) as $r){
+                    $retval[] = new Ticket((int)$r["id"]);
+                }
             }
         }
-//         var_dump($retval);
         return $retval;
     }
     
@@ -278,6 +276,30 @@ class Ticket {
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Ticket($r["id"]);
+            }
+        }
+    
+        return $retval;
+    }
+    
+    public static function getAllTicketsFlatAjax($filter = '')
+    {
+        global $DB;
+        global $_USER;
+        $retval = Array();
+    
+        $sql = "SELECT
+                tickets.id,
+                tickets.title,
+                tickets.number,
+                businesscontact.name1,
+                businesscontact.matchcode
+                FROM
+                tickets
+                INNER JOIN businesscontact ON tickets.customer = businesscontact.id {$filter}";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = Array("label" => $r["name1"] . ": " . $r["number"] . " - " . $r["title"], "value" => $r["id"]);
             }
         }
     

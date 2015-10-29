@@ -481,6 +481,7 @@ class User {
     // Benutzer neu anlegen und ID in $id speichern
     function save() {
         global $DB;
+        $tmp_signature = addslashes($this->signature);
         if ($this->id > 0)
         {
             $sql = " UPDATE user SET
@@ -488,7 +489,7 @@ class User {
             user_lastname = '{$this->lastname}',
             user_email = '{$this->email}',
             user_phone = '{$this->phone}',
-            user_signature = '{$this->signature}',
+            user_signature = '{$tmp_signature}',
             user_active = {$this->active},
             user_level = {$this->userlevel},
             user_lang = {$this->lang->getId()},
@@ -511,6 +512,7 @@ class User {
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
 
+//             var_dump($res); echo "</br>";
 //             echo $sql . "</br>";
             
             $sql = " DELETE FROM user_groups WHERE user_id = {$this->id}";
@@ -533,7 +535,7 @@ class User {
             telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa, w_su, w_month )
             VALUES
             ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
-            '{$this->signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
+            '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
             '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()}, 
             '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
             '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}', '{$this->w_su}', '{$this->w_month}' )";

@@ -192,6 +192,7 @@ $order = new Order((int)$_REQUEST["id"]);
                 ?> + <?=$_LANG->get('Zuschuss')?> 
                     <? echo printBigInt($calc->getPaperContentGrant());
                     $sheets += $calc->getPaperContentGrant()?><br>
+                    <?php $sheets_content = $sheets;?>
             <?=$_LANG->get('Papiergewicht')?>: 
                 <? $area = $calc->getPaperContentWidth() * $calc->getPaperContentHeight();
                    echo printPrice((($area * $calc->getPaperContentWeight() / 10000 / 100) * $sheets) / 1000);
@@ -216,6 +217,7 @@ $order = new Order((int)$_REQUEST["id"]);
                     ?> + <?=$_LANG->get('Zuschuss')?>
                     <? echo printBigInt($calc->getPaperAddContentGrant());
                     $sheets += $calc->getPaperAddContentGrant()?><br>
+                    <?php $sheets_addcontent = $sheets;?>
                 <?=$_LANG->get('Papiergewicht')?>: 
                     <? $area = $calc->getPaperAddContentWidth() * $calc->getPaperAddContentHeight();
                        echo printPrice((($area * $calc->getPaperAddContentWeight() / 10000 / 100) * $sheets) / 1000);
@@ -247,6 +249,7 @@ $order = new Order((int)$_REQUEST["id"]);
                     ?> + <?=$_LANG->get('Zuschuss')?>
                     <? echo printBigInt($calc->getPaperAddContent2Grant());
                     $sheets += $calc->getPaperAddContent2Grant()?><br>
+                    <?php $sheets_addcontent2 = $sheets;?>
                 <?=$_LANG->get('Papiergewicht')?>: 
                     <? $area = $calc->getPaperAddContent2Width() * $calc->getPaperAddContent2Height();
                        echo printPrice((($area * $calc->getPaperAddContent2Weight() / 10000 / 100) * $sheets) / 1000);
@@ -273,6 +276,7 @@ $order = new Order((int)$_REQUEST["id"]);
                     ?> + <?=$_LANG->get('Zuschuss')?>
                     <? echo printBigInt($calc->getPaperAddContent3Grant());
                     $sheets += $calc->getPaperAddContent3Grant()?><br>
+                    <?php $sheets_addcontent3 = $sheets;?>
                 <?=$_LANG->get('Papiergewicht')?>: 
                     <? $area = $calc->getPaperAddContent3Width() * $calc->getPaperAddContent3Height();
                        echo printPrice((($area * $calc->getPaperAddContent3Weight() / 10000 / 100) * $sheets) / 1000);
@@ -303,6 +307,7 @@ $order = new Order((int)$_REQUEST["id"]);
                 ?> + <?=$_LANG->get('Zuschuss')?>
                     <? echo printBigInt($calc->getPaperEnvelopeGrant());
                     $sheets += $calc->getPaperEnvelopeGrant()?><br>
+                    <?php $sheets_envelope = $sheets;?>
             <?=$_LANG->get('Papiergewicht')?>: 
                 <? $area = $calc->getPaperEnvelopeWidth() * $calc->getPaperEnvelopeHeight();
                    echo printPrice((($area * $calc->getPaperEnvelopeWeight() / 10000 / 100) * $sheets) / 1000);
@@ -315,6 +320,114 @@ $order = new Order((int)$_REQUEST["id"]);
         </td>
     </tr>
     <? } ?>
+</table>
+</div>
+<br>
+
+<h3><?=$_LANG->get('Rohb&ouml;gen')?></h3>
+<div class="outer">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <colgroup>
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+    </colgroup>
+    <tr>
+    <?php
+        foreach (Machineentry::getAllMachineentries($calc->getId(), Machineentry::ORDER_ID) as $me)
+        {
+            if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+               $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+            {
+                switch($me->getPart())
+                {
+                    case Calculation::PAPER_CONTENT:
+                        if ($calc->getFormat_in_content() != ""){
+                            $format_in = explode("x", $calc->getFormat_in_content());
+                            $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                            $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth()));
+                            $roh2 = ceil($sheets_content / $roh);
+                            echo '<td valign="top"><b>'.$_LANG->get('Inhalt').':</b></br>';
+                            echo 'Format: '.$calc->getFormat_in_content().' mm</br>';
+                            echo 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                            echo 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperContentHeight().' * '.$calc->getPaperContentWidth().')) / B&ouml;gen</br>';
+                            echo 'Nutzen: '.(int)$roh_schnitte.'</br>';
+                            echo '</td>';
+                        } else {
+                            echo '<td valign="top"><b>'.$_LANG->get('Inhalt').':</b></td>';
+                        }
+                        break;
+                    case Calculation::PAPER_ADDCONTENT:
+                        if ($calc->getFormat_in_addcontent() != ""){
+                            $format_in = explode("x", $calc->getFormat_in_addcontent());
+                            $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                            $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth()));
+                            $roh2 = ceil($sheets_addcontent / $roh);
+                            echo '<td valign="top"><b>'.$_LANG->get('Zus. Inhalt').':</b></br>';
+                            echo 'Format: '.$calc->getFormat_in_addcontent().' mm</br>';
+                            echo 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                            echo 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperAddContentHeight().' * '.$calc->getPaperAddContentWidth().')) / B&ouml;gen</br>';
+                            echo 'Nutzen: '.(int)$roh_schnitte.'</br>';
+                            echo '</td>';
+                        } else {
+                            echo '<td valign="top"><b>'.$_LANG->get('Zus. Inhalt').':</b></td>';
+                        }
+                        break;
+                    case Calculation::PAPER_ADDCONTENT2:
+                        if ($calc->getFormat_in_addcontent2() != ""){
+                            $format_in = explode("x", $calc->getFormat_in_addcontent2());
+                            $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                            $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width()));
+                            $roh2 = ceil($sheets_addcontent2 / $roh);
+                            echo '<td valign="top"><b>'.$_LANG->get('Zus. Inhalt 2').':</b></br>';
+                            echo 'Format: '.$calc->getFormat_in_addcontent2().' mm</br>';
+                            echo 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                            echo 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperAddContent2Height().' * '.$calc->getPaperAddContent2Width().')) / B&ouml;gen</br>';
+                            echo 'Nutzen: '.(int)$roh_schnitte.'</br>';
+                            echo '</td>';
+                        } else {
+                            echo '<td valign="top"><b>'.$_LANG->get('Zus. Inhalt 2').':</b></td>';
+                        }
+                        break;
+                    case Calculation::PAPER_ADDCONTENT3:
+                        if ($calc->getFormat_in_addcontent3() != ""){
+                            $format_in = explode("x", $calc->getFormat_in_addcontent3());
+                            $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                            $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width()));
+                            $roh2 = ceil($sheets_addcontent3 / $roh);
+                            echo '<td valign="top"><b>'.$_LANG->get('Zus. Inhalt 3').':</b></br>';
+                            echo 'Format: '.$calc->getFormat_in_addcontent3().' mm</br>';
+                            echo 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                            echo 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperAddContent3Height().' * '.$calc->getPaperAddContent3Width().')) / B&ouml;gen</br>';
+                            echo 'Nutzen: '.(int)$roh_schnitte.'</br>';
+                            echo '</td>';
+                        } else {
+                            echo '<td valign="top"><b>'.$_LANG->get('Zus. Inhalt 3').':</b></td>';
+                        }
+                        break;
+                    case Calculation::PAPER_ENVELOPE:
+                        if ($calc->getFormat_in_envelope() != ""){
+                            $format_in = explode("x", $calc->getFormat_in_envelope());
+                            $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                            $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth()));
+                            $roh2 = ceil($sheets_envelope / $roh);
+                            echo '<td valign="top"><b>'.$_LANG->get('Umschlag').':</b></br>';
+                            echo 'Format: '.$calc->getFormat_in_envelope().' mm</br>';
+                            echo 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                            echo 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperEnvelopeHeight().' * '.$calc->getPaperEnvelopeWidth().')) / B&ouml;gen</br>';
+                            echo 'Nutzen: '.(int)$roh_schnitte.'</br>';
+                            echo '</td>';
+                        } else {
+                            echo '<td valign="top"><b>'.$_LANG->get('Umschlag').':</b></td>';
+                        }
+                        break;
+                }
+            }
+        }
+    ?>
+    </tr>
 </table>
 </div>
 <br>
@@ -365,6 +478,19 @@ $order = new Order((int)$_REQUEST["id"]);
                     echo "<br>";
                 }
                 ?>
+                
+                <? if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) { ?>
+                    <?=$_LANG->get('Druckart')?>: 
+                    <?php 
+                    if ((int)$me->getUmschl() == 1)
+                        echo 'Umschlagen';
+                    elseif ((int)$me->getUmst() == 1)
+                        echo 'Umscht&uuml;lpen';
+                    else
+                        echo 'Sch&ouml;n & Wider';
+                    echo '</br>';
+                    ?>
+                <? } ?>
                 
                 <?=$_LANG->get('Grundzeit')?>: <?=$me->getMachine()->getTimeBase()?> min.,
                 <? if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) { ?>

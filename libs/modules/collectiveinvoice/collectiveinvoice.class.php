@@ -139,7 +139,7 @@ class CollectiveInvoice{
 //             echo $sql . "</br>";
 			return $DB->no_result($sql);
 		} else {
-			$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_ORDER);
+			$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_COLINV);
 			$sql = "INSERT INTO collectiveinvoice
 				(status, title, number, crtdate, crtuser, 
 				 deliverycosts, comment, businesscontact, client,
@@ -270,6 +270,31 @@ class CollectiveInvoice{
 	       return $collectinv;
 	    }
 	    return false;
+	}
+	
+	public static function duplicate($id)
+	{
+	    $col = new CollectiveInvoice((int)$id);
+	    $newcol = $col;
+	    $newcol->resetId();
+	    $newcol->setTitle($newcol->getTitle() . " Kopie");
+	    $newcol->save();
+	    
+	    $newops = Array();
+	    $ops = Orderposition::getAllOrderposition((int)$id);
+	    foreach ($ops as $op)
+	    {
+	        if ($op->getType() == Orderposition::TYPE_ARTICLE || $op->getType() == Orderposition::TYPE_MANUELL)
+	        {
+	            $op->setCollectiveinvoice($newcol->getId());
+	            $op->setId(0);
+	            $newops[] = $op;
+	        }
+	    }
+	    if (!empty($newops))
+	        Orderposition::saveMultipleOrderpositions($newops);
+	    
+	    return $newcol->getId();
 	}
 	
 	/**
@@ -428,13 +453,18 @@ class CollectiveInvoice{
 		return $retval;
 	}
 	
+	private function resetId()
+	{
+	    $this->id = 0;
+	}
+	
 	/**
 	 * Liefert alle OrderPositionen f�r die aufrufende manuelle Rechnung 
 	 *  
 	 * @return multitype:OrderPosition
 	 */
-	public function getPositions(){
-        return Orderposition::getAllOrderposition($this->id);
+	public function getPositions($softdeleted = false){
+        return Orderposition::getAllOrderposition($this->id, $softdeleted);
 	}
 	
 	public function getCustomer(){
@@ -706,5 +736,7 @@ class CollectiveInvoice{
     {
         $this->ext_comment = $ext_comment;
     }
+    
+    
 }
 ?>

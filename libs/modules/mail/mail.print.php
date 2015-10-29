@@ -6,8 +6,8 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
-// error_reporting(-1);
-// ini_set('display_errors', 1);
+error_reporting(-1);
+ini_set('display_errors', 1);
 chdir('../../../');
 require_once("config.php");
 require_once("libs/basic/mysql.php");
@@ -20,6 +20,7 @@ require_once 'libs/basic/countries/country.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once "thirdparty/phpfastcache/phpfastcache.php";
+require_once 'libs/modules/perferences/perferences.class.php';
 
 
 require_once 'vendor/Horde/Autoloader.php';
@@ -41,6 +42,8 @@ $_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
+$perf = new Perferences();
+
 $cache = phpFastCache("memcache");
 
 $mailadress = new Emailaddress($_REQUEST["mailid"]);
@@ -49,6 +52,12 @@ $server = $mailadress->getHost();
 $port = $mailadress->getPort();
 $user = $mailadress->getAddress();
 $password = $mailadress->getPassword();
+
+$mail_to = $mailadress->getAddress();
+if (!filter_var($mail_to, FILTER_VALIDATE_EMAIL))
+{
+    $mail_to .= $perf->getMail_domain();
+}
 
 try {
     /* Connect to an IMAP server.
@@ -96,6 +105,7 @@ try {
         $body = $part->getPart($id);
 
         $query2 = new Horde_Imap_Client_Fetch_Query();
+        $query2->envelope();
         $query2->bodyPart($id, array(
             'decode' => true,
             'peek' => false
@@ -104,6 +114,10 @@ try {
         $list2 = $client->fetch($_REQUEST["mailbox"], $query2, array(
             'ids' => $uid
         ));
+        
+        $mail_origin = $list2->first()->getEnvelope()->from->__toString() . " (" . $list2->first()->getEnvelope()->sender->__get("bare_addresses")[0] . ")";
+        $mail_subject = $list2->first()->getEnvelope()->subject;
+        $mail_date = date("d.m.Y H:i",$list2->first()->getEnvelope()->date->__toString());
 
         $message2 = $list2->first();
         $content = $message2->getBodyPart($id);
@@ -159,6 +173,21 @@ function printPage() {
  ******* 				HTML-Bereich								*******
  *************************************************************************/?>
 <body OnLoad="printPage()">
-<div class="demo">	
-<?php echo $content; ?>
+
+<div style="margin: auto; padding: 10px; width: 90%;">
+    <div class="mail_print_header">
+        <h4>
+        <?php echo $_USER->getNameAsLine();?><br>
+        <hr></hr>
+        Von: <?php echo $mail_origin;?><br>
+        An: <?php echo $_USER->getNameAsLine() . " (" . $mail_to . ")";?><br>
+        Gesendet: <?php echo $mail_date;?><br>
+        Betreff: <?php echo $mail_subject;?><br>
+        </h4>
+    </div>
+    <hr></hr></br>
+    
+    <div class="demo">	
+    <?php echo $content; ?>
+    </div>
 </div>

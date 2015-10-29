@@ -326,7 +326,13 @@ class ContactPerson {
 	    $res = $DB->select($sql);
 	    if($DB->num_rows($sql))
 	        foreach ($res as $r)
-	            $retarray[] = Array("cid" => $r["cid"], "bid" => $r["bid"], "label" => $r["bname1"]." ".$r["bname2"]." - ".$r["cname1"].", ".$r["cname2"], "tourmarker" => $r["tourmarker"] );
+	            $retarray[] = Array(
+	                "cid" => $r["cid"], 
+	                "bid" => $r["bid"], 
+	                "label" => $r["bname1"]." ".$r["bname2"]." - ".$r["cname1"].", ".$r["cname2"], 
+	                "bclabel" => $r["bname1"]." ".$r["bname2"], 
+	                "tourmarker" => $r["tourmarker"] 
+	                );
 	        return $retarray;
 	}
 	

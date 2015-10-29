@@ -95,6 +95,17 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
             }
         }
     }
+    if ($save_ok && $_REQUEST["tktc_article_id"] != "" && $_REQUEST["tktc_article_amount"] != ""){
+        $tc_article = new CommentArticle();
+        $tc_article->setArticle(new Article($_REQUEST["tktc_article_id"]));
+        $tc_article->setAmount((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["tktc_article_amount"]))));
+        $tc_article->setState(1);
+        $tc_article->setComment_id($comment->getId());
+        $save_ok = $tc_article->save();
+        if ($save_ok){
+            $comment->setArticles(Array($tc_article));
+        }
+    }
     if ($save_ok && $_REQUEST['tktc_files']){
         foreach ($_REQUEST["tktc_files"] as $file) {
             if ($file != ""){
@@ -116,7 +127,35 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
         if ($_REQUEST["tktid"]>0)
         {
             $tmp_ticket = new Ticket($_REQUEST["tktid"]);
-            Notification::generateNotificationsFromAbo(get_class($tmp_ticket), "Comment", $tmp_ticket->getNumber(), $tmp_ticket->getId());
+            
+            $logentry = "";
+            $tmp_array = $_REQUEST["abo_notify"];
+            foreach ($tmp_array as $abouser){
+                $tmp_user = new User($abouser);
+                if (!Abonnement::hasAbo($tmp_ticket,$tmp_user)){
+                    $abo = new Abonnement();
+                    $abo->setAbouser($tmp_user);
+                    $abo->setModule(get_class($tmp_ticket));
+                    $abo->setObjectid($tmp_ticket->getId());
+                    $abo->save();
+                    $logentry .= 'Abonnement hinzugefügt: ' . $tmp_user->getNameAsLine() . '</br>';
+                }
+                if ($tmp_user->getId() != $_USER->getId())
+                {
+                    Notification::generateNotification($tmp_user, get_class($tmp_ticket), "Comment", $tmp_ticket->getNumber(), $tmp_ticket->getId());
+                    $logentry .= 'Benachrichtigung generiert für User: ' . $tmp_user->getNameAsLine() . '</br>';
+                }
+            }
+            if ($logentry != ""){
+                $ticketlog = new TicketLog();
+                $ticketlog->setCrtusr($_USER);
+                $ticketlog->setDate(time());
+                $ticketlog->setTicket($tmp_ticket);
+                $ticketlog->setEntry($logentry);
+                $ticketlog->save();
+            }
+            
+//             Notification::generateNotificationsFromAbo(get_class($tmp_ticket), "Comment", $tmp_ticket->getNumber(), $tmp_ticket->getId());
             echo '<script language="JavaScript">parent.$.fancybox.close(); 
                   parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$tmp_ticket->getId().'";</script>';
         } else if ($_REQUEST["tktc_module"] == "BusinessContact") {
@@ -135,7 +174,9 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
 
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
 <link rel="stylesheet" href="../../../css/bootstrap.min.css">
+<link type="text/css" href="../../../jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" />	
 <script src="../../../jscripts/jquery/js/jquery-1.11.1.min.js"></script>
+<script src="../../../jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 <script src="../../../thirdparty/ckeditor/ckeditor.js"></script>
 <script src="../../../jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <script src="../../../jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
@@ -184,6 +225,43 @@ $(function () {
 <script>
 	$(function() {
 		CKEDITOR.replace( 'tktc_comment' );
+		
+        $( "#tktc_article" ).autocomplete({
+        	 source: "../../../libs/modules/tickets/ticket.ajax.php?ajax_action=search_article",
+        	 minLength: 2,
+        	 focus: function( event, ui ) {
+        	 $( "#tktc_article" ).val( ui.item.label );
+        	 return false;
+        	 },
+        	 select: function( event, ui ) {
+        		 $( "#tktc_article" ).val( ui.item.label );
+        		 $( "#tktc_article_id" ).val( ui.item.value );
+        		 if ($("#tktc_article_amount").val() == ""){
+        			 $( "#tktc_article_amount" ).val("1");
+        		 }
+        		 return false;
+        	 }
+        });
+    	
+      	 $( "#tktc_new_notify_user" ).autocomplete({
+      		 source: "../../../libs/modules/tickets/ticket.ajax.php?ajax_action=search_user",
+      		 minLength: 2,
+      		 focus: function( event, ui ) {
+      		 $( "#tktc_new_notify_user" ).val( ui.item.label );
+      		 return false;
+      		 },
+      		 select: function( event, ui ) {
+          		 $( "#tktc_new_notify_user" ).val( ui.item.label );
+          		 $( "#abo_notify" )
+          		 $('#abo_notify').append($('<option>', {
+                      value: ui.item.value,
+                      text: ui.item.label,
+                      selected: true
+                   }));
+          		 $( "#tktc_new_notify_user" ).val("");
+          		 return false;
+      		 }
+      	 });
 	});
 </script>
 
@@ -211,7 +289,56 @@ $(function () {
           </td>
       </tr>
       <tr>
-          <td width="100%" colspan="2"><textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea></td>
+          <td width="100%" colspan="2"><textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea></br></td>
+      </tr>
+      <?php 
+      if ($_REQUEST["tktid"]>0)
+      {
+          $tmp_ticket = new Ticket($_REQUEST["tktid"]);
+      ?>
+      <tr>
+          <td width="25%">Benachrichtigen:</td>
+          <td width="25%">
+              <script type="text/javascript">
+	              function select_all()
+	              {
+	            	$('#abo_notify').children().each(function(index,item){
+	            		$(this).attr('selected', 'selected');
+            		});
+	              }
+	              function deselect_all()
+	              {
+	            	$('#abo_notify').children().each(function(index,item){
+	            		$(this).removeAttr('selected');
+            		});
+	              }
+              </script>
+              <span class="pointer" onclick="select_all();">alle</span> - <span class="pointer" onclick="deselect_all();">keiner</span></br>
+              <select id="abo_notify" name="abo_notify[]" size="5" multiple> 
+                 <?php  
+                    if (Abonnement::hasAbo($tmp_ticket))
+                    {
+                        $abonnoments = Abonnement::getAbonnementsForObject(get_class($tmp_ticket), $tmp_ticket->getId());
+                        foreach ($abonnoments as $abonnoment){
+                            echo '<option value="'.$abonnoment->getAbouser()->getId().'">'.$abonnoment->getAbouser()->getNameAsLine().'</option>';
+                        }
+                    }
+                 ?>
+              </select></br>
+              <b>Hinzufügen:</b></br>
+              <input type="text" id="tktc_new_notify_user"></br>
+          </td>
+      </tr>
+      <?php }?>
+      <tr>
+          <td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+      <tr>
+          <td width="25%">Tätigkeit Nr.:</td>
+          <td width="25%">
+              <input type="text" id="tktc_article" name="tktc_article"/> Menge: <input type="text" id="tktc_article_amount" name="tktc_article_amount"/>
+              <input type="hidden" id="tktc_article_id" name="tktc_article_id"/></br>
+          </td>
       </tr>
       <tr>
           <td width="25%">Anhänge:</td>

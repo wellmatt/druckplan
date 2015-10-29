@@ -92,7 +92,7 @@ class PlanningJob {
         $machines = Array();
         $articles = Array();
     
-        $sql = "SELECT DISTINCT artmach, type FROM planning_jobs WHERE state = 0";
+        $sql = "SELECT DISTINCT artmach, type FROM planning_jobs WHERE state = 1";
     
         if($DB->num_rows($sql))
         {
@@ -134,7 +134,7 @@ class PlanningJob {
         $ticket->setCategory(new TicketCategory(2));
         $ticket->setState(new TicketState(2));
         $ticket->setPriority(new TicketPriority(1));
-        $ticket->setSource(Ticket::SOURCE_JOB);
+        $ticket->setSource(Ticket::SOURCE_JOB); // TODO: hardcoded
         $ticket->setPlanned_time(($this->end - $this->start)/60/60);
         $ticket->setCrtuser($_USER);
         $save_ok = $ticket->save();

@@ -249,7 +249,7 @@ if ($_REQUEST["exec"] == "save")
 <script language="JavaScript" >
 $(function() {
 	 $( "#ticket" ).autocomplete({
-		 source: "../associations/association.ajax.php?ajax_action=search_ticket",
+		 source: "../mail/mail.ajax.php?ajax_action=search_ticket",
 		 minLength: 2,
 		 focus: function( event, ui ) {
     		 $( "#ticket" ).val( ui.item.label );

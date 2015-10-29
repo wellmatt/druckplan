@@ -58,6 +58,8 @@ if($doc->getType() == Document::TYPE_INVOICE)
     $filename .= "invoice/".$_USER->getClient()->getId().'.'.$doc->getHash();
 if($doc->getType() == Document::TYPE_FACTORY)
     $filename .= "factory/".$_USER->getClient()->getId().'.'.$doc->getHash();
+if($doc->getType() == Document::TYPE_PAPER_ORDER)
+    $filename .= "paper_order/".$_USER->getClient()->getId().'.'.$doc->getHash();
 if($doc->getType() == Document::TYPE_LABEL)
 	$filename .= "label/".$_USER->getClient()->getId().'.'.$doc->getHash();
 if($doc->getType() == Document::TYPE_INVOICEWARNING)

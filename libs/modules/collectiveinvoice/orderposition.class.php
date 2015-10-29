@@ -16,7 +16,7 @@ class Orderposition{
 	const TYPE_ARTICLE 			= 2;
 	const TYPE_PERSONALIZATION 	= 3;
 	private $id = 0;
-	private $status = 0;				// Status z.B.: 0 = geloescht, 1 = aktiv 
+	private $status = 0;				// Status z.B.: 0 = geloescht, 1 = aktiv, 2 = soft gelöscht
 	private $quantity = 0;				// Menge/Stueckzahl
 	private $price = 0;					// Einzelpreis
 	private $tax = 19; 					// MWST
@@ -63,11 +63,13 @@ class Orderposition{
 	 * @param int $collectiveId : Id einer Sammelrechnung
 	 * @return Array : Orderposition
 	 */
-	static function getAllOrderposition($collectiveId){
+	static function getAllOrderposition($collectiveId,$softdeleted = false){
 		global $DB;
-		//aus demo1 auskommentiert
-		//$sql = "SELECT * FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveId} AND status > 0";
-		$sql = "SELECT id FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveId} AND status > 0";
+		if ($softdeleted)
+		    $status = " AND status > 0 ";
+		else
+		    $status = " AND status = 1 ";
+		$sql = "SELECT id FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveId} {$status}";
 		$orderpos = Array();
 		if($DB->no_result($sql)){
 			$result = $DB->select($sql);
@@ -146,6 +148,40 @@ class Orderposition{
 	public function delete(){
 		global $DB;
 		$sql = "UPDATE collectiveinvoice_orderposition SET status = 0 WHERE id = {$this->id}";
+		$res = $DB->no_result($sql);
+		if($res){
+			unset($this);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Soft Loeschfunktion fuer Auftragspositionen
+	 * 
+	 * @return boolean
+	 */
+	public function deletesoft(){
+		global $DB;
+		$sql = "UPDATE collectiveinvoice_orderposition SET status = 2 WHERE id = {$this->id}";
+		$res = $DB->no_result($sql);
+		if($res){
+			unset($this);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Soft Loeschfunktion fuer Auftragspositionen
+	 * 
+	 * @return boolean
+	 */
+	public function restore(){
+		global $DB;
+		$sql = "UPDATE collectiveinvoice_orderposition SET status = 1 WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
 		if($res){
 			unset($this);

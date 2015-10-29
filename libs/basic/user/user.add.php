@@ -277,6 +277,17 @@ $(document).ready(function () {
 		<td width="200" class="content_header" align="right"><?=$savemsg?></td>
 	</tr>
 </table>
+
+
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+    </div>
+</div>
+
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form"
 	onsubmit="return checkpass(new Array(this.user_login, this.user_firstname, this.user_lastname, this.user_email))">
 <div class="box1">
@@ -720,14 +731,6 @@ $(document).ready(function () {
 </div>
 </br>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
-    </div>
-</div>
 
 <? } // Ende if (Benutzer wird neu erstellt)?>
 </form>

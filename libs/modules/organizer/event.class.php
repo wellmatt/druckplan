@@ -62,8 +62,25 @@ class Event {
                 $this->participants_int = unserialize($res[0]["participants_int"]);
                 $this->participants_ext = unserialize($res[0]["participants_ext"]);
                 $this->adress = $res[0]["adress"];
-                Cachehandler::toCache("obj_event_".$id, $this);
             }
+            
+            $sql = "SELECT * FROM events_participants WHERE event = {$id}";
+            if($DB->num_rows($sql)){
+                $retval_int = Array();
+                $retval_ext = Array();
+                foreach($DB->select($sql) as $r){
+                    if ($r["type"] == 1)
+                        $retval_int[] = $r["participant"];
+                    else
+                        $retval_ext[] = $r["participant"];
+                }
+                if (!empty($retval_int))
+                    $this->participants_int = $retval_int;
+                if (!empty($retval_ext))
+                    $this->participants_ext = $retval_ext;
+            }
+            
+            Cachehandler::toCache("obj_event_".$id, $this);
         }
     }
 
@@ -158,39 +175,45 @@ class Event {
         $start = mktime(0,0,0, $start[1], $start[2], $start[0]);
         $end = mktime(0,0,0, $end[1], $end[2], $end[0])+60*60*24;
         
-        $sql = "SELECT id FROM events
-                WHERE
-                    (user_id = {$user->getId()} OR
-                    public = 1) AND
-                    (begin >= {$start} AND end < {$end} OR
-                     begin >= {$start} AND begin < {$end} OR
-                     end >= {$start} AND end < {$end} OR
-                     begin < {$start} AND end >= {$end})
-                    ";
-// 		echo $sql;
-        if ($DB->num_rows($sql))
+        if (in_array("99992", $ticketstates))
         {
-            foreach ($DB->select($sql) as $r)
+            $sql = "SELECT DISTINCT events.id FROM events
+                    LEFT JOIN events_participants ON events.id = events_participants.event
+                    WHERE
+                    (events.user_id = {$user->getId()} OR
+                    events.public = 1 OR (events_participants.type = 1 AND events_participants.participant = {$user->getId()})) AND
+                    (events.begin >= {$start} AND events.end < {$end} OR
+                     events.begin >= {$start} AND events.begin < {$end} OR
+                     events.end >= {$start} AND events.end < {$end} OR
+                     events.begin < {$start} AND events.end >= {$end})
+                    ";
+            if ($DB->num_rows($sql))
             {
-                $retval[] = new Event($r["id"]);
+                foreach ($DB->select($sql) as $r)
+                {
+                    $retval[] = new Event($r["id"]);
+                }
             }
         }
 
         if($selectOtherDates) {
 
             // Orders
-            require_once $_BASEDIR . 'libs/modules/calculation/order.class.php';
-            $orders = Order::getOrdersWithinTimeFrame($start, $end);
-            foreach($orders as $order) {
-                $event = new Event();
-                $event->setTitle('[AUFTRAG] ' . $order->getNumber());
-                $event->setPublic(1);
-                $event->setUser($user);
-                $event->setDesc('Auftrag ' . $order->getNumber() . ' (' . $order->getTitle() . ')');
-                $event->setBegin(mktime(7,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
-                $event->setEnd(mktime(8,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
-				$event->setOrder($order);
-                $retval[] = $event;
+            if (in_array("99991", $ticketstates))
+            {
+                require_once $_BASEDIR . 'libs/modules/calculation/order.class.php';
+                $orders = Order::getOrdersWithinTimeFrame($start, $end);
+                foreach($orders as $order) {
+                    $event = new Event();
+                    $event->setTitle('[AUFTRAG] ' . $order->getNumber());
+                    $event->setPublic(1);
+                    $event->setUser($user);
+                    $event->setDesc('Auftrag ' . $order->getNumber() . ' (' . $order->getTitle() . ')');
+                    $event->setBegin(mktime(7,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
+                    $event->setEnd(mktime(8,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
+    				$event->setOrder($order);
+                    $retval[] = $event;
+                }
             }
 
             // Tickets
@@ -205,7 +228,10 @@ class Event {
                     $event->setUser($user);
                     $event->setDesc('Ticket ' . $ticket->getNumber() . ' (' . $ticket->getTitle() . ')');
                     $event->setBegin($ticket->getDuedate());
-                    $event->setEnd($ticket->getDuedate()+3600);
+                    if ($ticket->getPlanned_time()>0)
+                        $event->setEnd($ticket->getDuedate()+($ticket->getPlanned_time()*60*60));
+                    else 
+                        $event->setEnd($ticket->getDuedate()+3600);
     				$event->setTicket($ticket);
                     $retval[] = $event;
                 }
@@ -398,16 +424,37 @@ class Event {
 						adress = '{$this->adress}',
 						participants_ext = '{$participants_ext}' 
                     WHERE id = {$this->id}";
-// 			echo $sql . "</br>";
+            
+
+            $sql = "DELETE FROM events_participants WHERE event = {$this->id}";
+            $DB->no_result($sql);
+            
+            foreach($this->participants_int as $parti)
+            {
+                $sql = "INSERT INTO events_participants
+                (event, participant, type)
+                VALUES
+                ({$this->id}, {$parti}, 1)";
+                $DB->no_result($sql);
+            }
+            foreach($this->participants_ext as $parti)
+            {
+                $sql = "INSERT INTO events_participants
+                (event, participant, type)
+                VALUES
+                ({$this->id}, {$parti}, 2)";
+                $DB->no_result($sql);
+            }
+            
             Cachehandler::toCache("obj_event_".$this->id, $this);
             return $DB->no_result($sql); 
         } else
         {
             $sql = "INSERT INTO events
-                        (user_id, public, title, `description`, begin, end, participants_int, participants_ext, adress)
+                        (user_id, public, title, `description`, begin, end, adress)
                     VALUES
                         ({$this->user->getId()}, {$this->public}, '{$this->title}',
-                         '{$this->desc}', {$this->begin}, {$this->end}, '{$participants_int}', '{$participants_ext}', '{$this->adress}')";
+                         '{$this->desc}', {$this->begin}, {$this->end}, '{$this->adress}')";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -415,6 +462,28 @@ class Event {
                 $sql = "SELECT max(id) id FROM events WHERE user_id = {$this->user->getId()}";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
+                
+
+                $sql = "DELETE FROM events_participants WHERE event = {$this->id}";
+                $DB->no_result($sql);
+                
+                foreach($this->participants_int as $parti)
+                {
+                    $sql = "INSERT INTO events_participants
+                    (event, participant, type)
+                    VALUES
+                    ({$this->id}, {$parti}, 1)";
+                    $DB->no_result($sql);
+                    }
+                    foreach($this->participants_ext as $parti)
+                    {
+                    $sql = "INSERT INTO events_participants
+                    (event, participant, type)
+                        VALUES
+                        ({$this->id}, {$parti}, 2)";
+                        $DB->no_result($sql);
+                    }
+                
                 Cachehandler::toCache("obj_event_".$this->id, $this);
                 return true;
             } else

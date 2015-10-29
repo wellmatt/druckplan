@@ -104,7 +104,7 @@ $ticket = new Ticket($_REQUEST["tktid"]);
 
 <?php 
 
-$all_comments = Comment::getCommentsForObject(get_class($ticket),$ticket->getId());
+$all_comments = Comment::getCommentsForObjectSummary(get_class($ticket),$ticket->getId());
 
 $art_array = Array();
 
@@ -159,18 +159,18 @@ $totalprice = 0;
     <table cellpadding="0" cellspacing="0" border="0" width="50%">
 		<thead>
 			<tr>
-				<th><u>Artikel</u></th>
-				<th><u>Menge</u></th>
+				<th width="15%"><u>Artikel</u></th>
+				<th width="15%"><u>Menge</u></th>
 				<th><u>Kommentar</u></th>
-				<th><u>User</u></th>
+				<th width="20%"><u>User</u></th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr>
-				<th><u>Artikel</u></th>
-				<th><u>Menge</u></th>
+				<th width="15%"><u>Artikel</u></th>
+				<th width="15%"><u>Menge</u></th>
 				<th><u>Kommentar</u></th>
-				<th><u>User</u></th>
+				<th width="20%"><u>User</u></th>
 			</tr>
 		</tfoot>
 		<?php foreach ($all_comments as $comment){
@@ -178,7 +178,7 @@ $totalprice = 0;
 		        foreach ($comment->getArticles() as $c_article){?>
         <tr>
             <td valign="top"><?php echo $c_article->getArticle()->getTitle();?></td>
-            <td valign="top"><?php echo $c_article->getAmount();?></td>
+            <td valign="top"><?php echo printPrice($c_article->getAmount(),2);?></td>
             <td valign="top"><?php echo $comment->getComment();?></td>
             <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
         </tr>
@@ -191,14 +191,16 @@ $totalprice = 0;
     <table cellpadding="0" cellspacing="0" border="0" width="50%">
 		<thead>
 			<tr>
-				<th><u>User</u></th>
+				<th width="15%"><u>User</u></th>
 				<th><u>Kommentar</u></th>
+				<th width="15%"><u>Datum</u></th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr>
 				<th><u>User</u></th>
 				<th><u>Kommentar</u></th>
+				<th><u>Datum</u></th>
 			</tr>
 		</tfoot>
 		<?php $x=0;foreach ($all_comments as $comment){
@@ -206,6 +208,7 @@ $totalprice = 0;
         <tr class="<?=getRowColor($x)?>">
             <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
             <td valign="top"><?php echo $comment->getComment();?></td>
+            <td valign="top"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?></td>
         </tr>
         <?php $x++;}}?>
     </table>

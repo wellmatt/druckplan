@@ -163,6 +163,21 @@ class Comment {
         return $retval;
     }
     
+    public static function getCommentsForObjectSummary($module,$objectid)
+    {
+        global $DB;
+        $retval = Array();
+        
+        $sql = "SELECT id FROM comments WHERE module = '{$module}' AND objectid = {$objectid} ORDER BY id DESC";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+            	$retval[] = new Comment($r["id"]);
+            }
+        }
+        
+        return $retval;
+    }
+    
     public static function getLatestCommentsForObject($module,$objectid)
     {
         global $DB;

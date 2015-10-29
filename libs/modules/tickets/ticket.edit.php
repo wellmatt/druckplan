@@ -25,9 +25,17 @@ if($_REQUEST["exec"] == "new"){
     $ticket = new Ticket();
     $header_title = $_LANG->get('Ticket erstellen');
     
+    if ($_REQUEST["customer"] && $_REQUEST["contactperson"])
+    {
+        $tmp_customer = new BusinessContact((int)$_REQUEST["customer"]);
+        $tmp_contactperson = new ContactPerson((int)$_REQUEST["contactperson"]);
+        $ticket->setCustomer($tmp_customer);
+        $ticket->setCustomer_cp($tmp_contactperson);
+    }
+    
     if ($_REQUEST["frommail"] == true)
     {
-        $ticket->setSource(Ticket::SOURCE_EMAIL);
+        $ticket->setSource(Ticket::SOURCE_EMAIL); // TODO: hardcoded
         
         $mailadress = new Emailaddress($_REQUEST["mailid"]);
         
@@ -150,12 +158,12 @@ if($_REQUEST["exec"] == "edit"){
             $logentry .= "Ansprechpartner: " . $ticket->getCustomer_cp()->getNameAsLine() . " >> " . $newcustomercp->getNameAsLine() . "</br>";
         if (substr($_REQUEST["tkt_assigned"], 0, 2) == "u_"){
             $tmp_newuser = new User((int)substr($_REQUEST["tkt_assigned"], 2));
-            if ($ticket->getAssigned_user() != $tmp_newuser->getId())
+            if ($ticket->getAssigned_user()->getId() != $tmp_newuser->getId())
                 $logentry .= "Zug. MA: " . $ticket->getAssigned_user()->getNameAsLine() . " >> " . $tmp_newuser->getNameAsLine() . "</br>";
         }
         if (substr($_REQUEST["tkt_assigned"], 0, 2) == "g_"){
             $tmp_newgroup = new Group((int)substr($_REQUEST["tkt_assigned"], 2));
-            if ($ticket->getAssigned_group() != $tmp_newgroup->getId())
+            if ($ticket->getAssigned_group()->getId() != $tmp_newgroup->getId())
                 $logentry .= "Zug. MA: " . $ticket->getAssigned_group()->getName() . " >> " . $tmp_newgroup->getName() . "</br>";
         }
         $tmp_newcat = new TicketCategory((int)$_REQUEST["tkt_category"]);
@@ -188,15 +196,23 @@ if($_REQUEST["exec"] == "edit"){
         $ticket->setCustomer_cp(new ContactPerson($_REQUEST["tkt_customer_cp_id"]));
         $assigned = "";
         if (substr($_REQUEST["tkt_assigned"], 0, 2) == "u_"){
-            $ticket->setAssigned_group(new Group(0));
-            $ticket->setAssigned_user(new User((int)substr($_REQUEST["tkt_assigned"], 2)));
-            $new_assiged = "Benutzer <b>" . $ticket->getAssigned_user()->getNameAsLine() . "</b>";
-            $assigned = "user";
+            $tmp_newuser = new User((int)substr($_REQUEST["tkt_assigned"], 2));
+            if ($ticket->getAssigned_user()->getId() != $tmp_newuser->getId())
+            {
+                $ticket->setAssigned_group(new Group(0));
+                $ticket->setAssigned_user(new User((int)substr($_REQUEST["tkt_assigned"], 2)));
+                $new_assiged = "Benutzer <b>" . $ticket->getAssigned_user()->getNameAsLine() . "</b>";
+                $assigned = "user";
+            }
         } elseif (substr($_REQUEST["tkt_assigned"], 0, 2) == "g_") {
-            $ticket->setAssigned_group(new Group((int)substr($_REQUEST["tkt_assigned"], 2)));
-            $ticket->setAssigned_user(new User(0));
-            $new_assiged = "Gruppe <b>" . $ticket->getAssigned_group()->getName() . "</b>";
-            $assigned = "group";
+            $tmp_newgroup = new Group((int)substr($_REQUEST["tkt_assigned"], 2));
+            if ($ticket->getAssigned_group()->getId() != $tmp_newgroup->getId())
+            {
+                $ticket->setAssigned_group(new Group((int)substr($_REQUEST["tkt_assigned"], 2)));
+                $ticket->setAssigned_user(new User(0));
+                $new_assiged = "Gruppe <b>" . $ticket->getAssigned_group()->getName() . "</b>";
+                $assigned = "group";
+            }
         }
         $ticket->setCategory(new TicketCategory((int)$_REQUEST["tkt_category"]));
         if ($ticket->getCategory()->getId() == 1){
@@ -264,7 +280,7 @@ if($_REQUEST["exec"] == "edit"){
                 $ticketcomment->setComment($_REQUEST["tktc_comment"]);
                 if ($ticket->getId() <= 0){
                     $ticketcomment->setTitle("Ticket wurde erstellt");
-                } elseif ($_REQUEST["tkt_assigned"] != "0"){
+                } elseif ($_REQUEST["tkt_assigned"] != "0" && ($assigned == "group" || $assigned == "user")){
                     $ticketcomment->setTitle("Ticket ".$new_assiged." zugewiesen");
                 }
                 $ticketcomment->setCrtuser($_USER);
@@ -278,7 +294,25 @@ if($_REQUEST["exec"] == "edit"){
                 if ($save_ok){
                     $logentry .= 'Neues <a href="#comment_'.$ticketcomment->getId().'">Kommentar (#'.$ticketcomment->getId().')</a> von ' . $ticketcomment->getCrtuser()->getNameAsLine() . '</br>';
                     
-                    Notification::generateNotificationsFromAbo(get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
+                    $tmp_array = $_REQUEST["abo_notify"];
+                    foreach ($tmp_array as $abouser){
+                        $tmp_user = new User($abouser);
+                        if (!Abonnement::hasAbo($ticket,$tmp_user)){
+                            $abo = new Abonnement();
+                            $abo->setAbouser($tmp_user);
+                            $abo->setModule(get_class($ticket));
+                            $abo->setObjectid($ticket->getId());
+                            $abo->save();
+                            $logentry .= 'Abonnement hinzugefügt: ' . $tmp_user->getNameAsLine() . '</br>';
+                        }
+                        if ($tmp_user->getId() != $_USER->getId())
+                        {
+                            Notification::generateNotification($tmp_user, get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
+                            $logentry .= 'Benachrichtigung generiert für User: ' . $tmp_user->getNameAsLine() . '</br>';
+                        }
+                    }
+//                     Notification::generateNotificationsFromAbo(get_class($ticket), "Comment", $ticket->getNumber(), $ticket->getId());
+
                     if ($ticketcomment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
                     {
                         $mailer = new Horde_Mail_Transport_Mail();
@@ -351,6 +385,15 @@ if($_REQUEST["exec"] == "edit"){
                 $ticketlog->save();
             }
         }
+    }
+    if ($_REQUEST["asso_class"] && $_REQUEST["asso_object"])
+    {
+        $new_asso = new Association();
+        $new_asso->setModule1(get_class($ticket));
+        $new_asso->setObjectid1((int)$ticket->getId());
+        $new_asso->setModule2($_REQUEST["asso_class"]);
+        $new_asso->setObjectid2((int)$_REQUEST["asso_object"]);
+        $new_asso->save();
     }
 }
 
@@ -470,7 +513,7 @@ $(function() {
     		 $( "#tkt_tourmarker" ).html( ui.item.tourmarker );
     		 return false;
     	 }
-		 });
+	 });
 	
 	 $( "#tktc_article" ).autocomplete({
 		 source: "libs/modules/tickets/ticket.ajax.php?ajax_action=search_article",
@@ -488,7 +531,27 @@ $(function() {
     		 }
     		 return false;
 		 }
-		 });
+	 });
+	
+	 $( "#tktc_new_notify_user" ).autocomplete({
+		 source: "libs/modules/tickets/ticket.ajax.php?ajax_action=search_user",
+		 minLength: 2,
+		 focus: function( event, ui ) {
+		 $( "#tktc_new_notify_user" ).val( ui.item.label );
+		 return false;
+		 },
+		 select: function( event, ui ) {
+    		 $( "#tktc_new_notify_user" ).val( ui.item.label );
+    		 $( "#abo_notify" )
+    		 $('#abo_notify').append($('<option>', {
+                value: ui.item.value,
+                text: ui.item.label,
+                selected: true
+             }));
+    		 $( "#tktc_new_notify_user" ).val("");
+    		 return false;
+		 }
+	 });
 });
 </script>
 <script language="JavaScript">
@@ -714,16 +777,17 @@ function callBoxFancyAbo(my_href) {
                 <td width="100%" align="right">
                     <?php if ($ticket->getId()>0){?>
                     <div class="btn-group" role="group">
+                    <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>';" class="btn btn-sm btn-default">Refresh</button>
                       <div class="btn-group dropdown">
-                      <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
-                        Summary <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a href="#" onclick="showSummary();">Summary internal</a>
-                                <a href="#" onclick="showSummaryExt();">Summary external</a>
-                            </li>
-                      </ul>
+                          <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+                            Summary <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#" onclick="showSummary();">Summary internal</a>
+                                    <a href="#" onclick="showSummaryExt();">Summary external</a>
+                                </li>
+                          </ul>
                       </div>
                       <?php 
                       $association_object = $ticket;
@@ -768,24 +832,10 @@ function callBoxFancyAbo(my_href) {
                                     $as++;
                                 }
                             }
-                            echo '<li class="divider"></li>';
-                            echo '<li><a href="#" onclick="callBoxFancyAsso(\'libs/modules/associations/association.frame.php?module='.get_class($association_object).'&objectid='.$association_object->getId().'\');">Neue Verknüpfung</a></li>';
                         ?>
                       </ul>
                       </div>
-                      <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>';" class="btn btn-sm btn-default">Refresh</button>
-                      <button type="button" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=createFromTicket&tktid=<?=$ticket->getId()?>');" class="btn btn-sm btn-default">Vorgang erstellen</button>
-                      <?php /*
-                      if (Abonnement::hasAbo($ticket))
-                      {?>
-                        <button id="abo_remove" type="button" class="btn btn-sm btn-default">Abo entfernen</button>
-                        <button id="abo_add" type="button"  style="display: none" class="btn btn-sm btn-default">Abonnieren</button>
-                      <?php } else { ?>
-                        <button id="abo_remove" type="button" style="display: none" class="btn btn-sm btn-default">Abo entfernen</button>
-                        <button id="abo_add" type="button" class="btn btn-sm btn-default">Abonnieren</button>
-                      <?php } 
-                        $abonnoments = Abonnement::getAbonnementsForObject(get_class($ticket), $ticket->getId());
-                        }*/
+                      <?php
                         if (Abonnement::hasAbo($ticket))
                         {
                             $abonnoments = Abonnement::getAbonnementsForObject(get_class($ticket), $ticket->getId());
@@ -798,12 +848,29 @@ function callBoxFancyAbo(my_href) {
                             }
                         }
                       ?>
-                        <button type="button" 
+                      <button type="button" 
                       <?php if ($_USER->getId() == $ticket->getCrtuser()->getId() || $_USER->getId() == $ticket->getAssigned_user()->getId() || $_USER->isAdmin()){?>
                          onclick="callBoxFancyAbo('libs/modules/abonnements/abonnement.add.frame.php?module=<?php echo get_class($ticket);?>&objectid=<?php echo $ticket->getId();?>');" 
                       <?php } ?>
                         class="btn btn-sm btn-default" title="<?php echo $abo_title;?>">Abonnoments&nbsp;<span id="abo_count" class="badge"><?php if (count($abonnoments)>0) echo count($abonnoments);?></span></button>
-                      <!-- <button type="button" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=close&tktid=<?=$ticket->getId()?>');" class="btn btn-sm btn-warning">Schließen</button> -->
+                      
+                      <div class="btn-group dropdown" style="margin-left: 0px;">
+                          <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+                            Neu <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#" onclick="callBoxFancyAsso('libs/modules/associations/association.frame.php?module=<?php echo get_class($association_object);?>&objectid=<?php echo $association_object->getId();?>');">Verknüpfung</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=createFromTicket&tktid=<?=$ticket->getId()?>');">Ticket Vorgang</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&order_customer=<?php echo $ticket->getCustomer()->getId();?>&order_contactperson=<?php echo $ticket->getCustomer_cp()->getId();?>&order_title=<?php echo $ticket->getTitle();?>');">Vorgang erstellen</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/calculation/order.php&exec=edit&createNew=1&order_customer=<?php echo $ticket->getCustomer()->getId();?>&order_contactperson=<?php echo $ticket->getCustomer_cp()->getId();?>&order_title=<?php echo $ticket->getTitle();?>');">Kalkulation erstellen</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $ticket->getCustomer()->getId();?>&contactperson=<?php echo $ticket->getCustomer_cp()->getId();?>');">Ticket erstellen</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&order_customer=<?php echo $ticket->getCustomer()->getId();?>&order_contactperson=<?php echo $ticket->getCustomer_cp()->getId();?>&order_title=<?php echo $ticket->getTitle();?>&asso_class=<?php echo get_class($ticket);?>&asso_object=<?php echo $ticket->getId()?>');">Vorgang erstellen (verknüpft)</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/calculation/order.php&exec=edit&createNew=1&order_customer=<?php echo $ticket->getCustomer()->getId();?>&order_contactperson=<?php echo $ticket->getCustomer_cp()->getId();?>&order_title=<?php echo $ticket->getTitle();?>&asso_class=<?php echo get_class($ticket);?>&asso_object=<?php echo $ticket->getId()?>');">Kalkulation erstellen (verknüpft)</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $ticket->getCustomer()->getId();?>&contactperson=<?php echo $ticket->getCustomer_cp()->getId();?>&asso_class=<?php echo get_class($ticket);?>&asso_object=<?php echo $ticket->getId()?>');">Ticket erstellen (verknüpft)</a>
+                                </li>
+                          </ul>
+                      </div>
                     </div>
                     <?php }?>
                 </td>
@@ -817,6 +884,8 @@ function callBoxFancyAbo(my_href) {
   <input type="hidden" name="subexec" value="save"> 
   <input type="hidden" name="tktid" value="<?=$ticket->getId()?>">
   <input type="hidden" name="returnhome" value="<?=$_REQUEST["returnhome"]?>">
+  <input type="hidden" name="asso_class" value="<?php echo $_REQUEST["asso_class"];?>"> 
+  <input type="hidden" name="asso_object" value="<?php echo $_REQUEST["asso_object"];?>"> 
   
   <div class="ticket_header">
   	<table width="100%" border="1">
@@ -827,7 +896,7 @@ function callBoxFancyAbo(my_href) {
         </td>
         <td width="15%">Kunde:</td>
         <td width="35%">
-            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2(); } ?>" style="width:300px" required/>
+            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($ticket->getCustomer()->getId()>0) { echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2(); } ?>" style="width:300px" required/>
             <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php echo $ticket->getCustomer()->getId();?>" required/>
             <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php echo $ticket->getCustomer_cp()->getId();?>" required/>
         </td>
@@ -855,7 +924,7 @@ function callBoxFancyAbo(my_href) {
         </td>
         <td width="25%">Telefon:</td>
         <td width="25%"><div id="cp_phone">
-                            <?php if ($ticket->getId()>0){?>
+                            <?php if ($ticket->getCustomer_cp()->getId()>0){?>
                             <span  onClick="dialNumber('<?php echo $_USER->getTelefonIP();?>/command.htm?number=<?php echo $ticket->getCustomer_cp()->getPhoneForDial();?>')"
 									title="<?php echo $ticket->getCustomer_cp()->getPhoneForDial()." ".$_LANG->get('anrufen');?>" class="pointer icon-link">
 									<img src="images/icons/telephone.png" alt="TEL"> <?php echo $ticket->getCustomer_cp()->getPhone();?>
@@ -885,7 +954,7 @@ function callBoxFancyAbo(my_href) {
             </select>
         </td>
         <td width="25%">eMail-Adresse:</td>
-        <td width="25%"><div id="cp_mail"><?php if ($ticket->getId()>0) echo $ticket->getCustomer_cp()->getEmail();?></div></td>
+        <td width="25%"><div id="cp_mail"><?php if ($ticket->getCustomer_cp()->getId()>0) echo $ticket->getCustomer_cp()->getEmail();?></div></td>
       </tr>
       <tr>
         <td width="25%">Priorität:</td>
@@ -906,10 +975,24 @@ function callBoxFancyAbo(my_href) {
         <td width="25%">Herkunft:</td>
         <td width="25%">
             <select name="tkt_source" id="tkt_source" style="width:160px" required>
+                <?php 
+                $tkt_all_sources = TicketSource::getAllSources();
+                foreach ($tkt_all_sources as $tkt_source){
+                    if ($ticket->getSource() == $tkt_source->getId()){
+                        echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                    } elseif ($ticket->getId() == 0 && $tkt_source->getDefault()) {
+                        echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                    } else {
+                        echo '<option value="'.$tkt_source->getId().'">'.$tkt_source->getTitle().'</option>';
+                    }
+                }
+                ?>
+                <?php /*
                 <option value="<?php echo Ticket::SOURCE_EMAIL?>" <?php if ($ticket->getSource() == Ticket::SOURCE_EMAIL) echo "selected"; ?>>per E-Mail</option>
                 <option value="<?php echo Ticket::SOURCE_PHONE?>" <?php if ($ticket->getSource() == Ticket::SOURCE_PHONE) echo "selected"; ?>>per Telefon</option>
                 <option value="<?php echo Ticket::SOURCE_JOB?>" <?php if ($ticket->getSource() == Ticket::SOURCE_JOB) echo "selected"; ?>>Job</option>
                 <option value="<?php echo Ticket::SOURCE_OTHER?>" <?php if ($ticket->getSource() == Ticket::SOURCE_OTHER || ($ticket->getId() == 0 && !$_REQUEST["frommail"])) echo "selected"; ?>>andere</option>
+                */?>
             </select>
         </td>
       </tr>
@@ -965,13 +1048,14 @@ function callBoxFancyAbo(my_href) {
         <td width="25%">Zugewiesen an:</td>
         <td width="25%">
         <?php 
-        if ($ticket->getId() > 0) {
+//         if ($ticket->getId() > 0) {
+        /*
             if ($ticket->getAssigned_group()->getId() > 0){
                 echo $ticket->getAssigned_group()->getName();
             } else {
                 echo $ticket->getAssigned_user()->getNameAsLine();
             }
-        } else {?>
+        } else {*/?>
             <select name="tkt_assigned" id="tkt_assigned" style="width:160px" required>
             <option disabled>-- Users --</option>
             <?php 
@@ -998,7 +1082,7 @@ function callBoxFancyAbo(my_href) {
             }
             ?>
             </select>
-        <?php }?>
+        <?php //}?>
         </td>
         <td width="25%">Gepl. Zeit:</td>
         <td width="25%">
@@ -1011,39 +1095,11 @@ function callBoxFancyAbo(my_href) {
   	<div class="ticket_comment">
   	     <table width="100%" border="1">
   	         <tr>
-  	             <td rowspan="6" width="50%" valign="top">
-  	                 <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea>
-  	             </td>
-    		     <?php if ($new_ticket == false){?>
-    		     <tr>
-    		          <td width="25%">neuen MA zuweisen:</td>
-    		          <td width="25%">
-                        <select name="tkt_assigned" id="tkt_assigned" style="width:160px" required>
-                        <option value="0" selected>&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-                        <option disabled>-- Users --</option>
-                        <?php 
-                        $all_user = User::getAllUser(User::ORDER_NAME);
-                        $all_groups = Group::getAllGroups(Group::ORDER_NAME);
-                        foreach ($all_user as $tkt_user){
-                            echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
-                        }
-                        ?>
-                        <option disabled>-- Groups --</option>
-                        <?php 
-                        foreach ($all_groups as $tkt_groups){
-                            echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
-                        }
-                        ?>
-                        </select>
-    		          </td>
-    		     </tr>
-    		     <?php } ?>
 		         <?php ////// TIMER STUFF >>> ///?>
 		         <?php if ($ticket->getId() > 0){ ?>
-		         <td width="25%">Timer:</td>
-		         <td width="25%">
+		         <td width="5%">Timer:</td>
+		         <td width="10%">
 		              <?php
-// 		              $timer = Timer::getLastUsed();
 		              $timer = Timer::getLastUsed();
 		              $timer_start = 0;
 		              $timer_running = 0;
@@ -1089,147 +1145,119 @@ function callBoxFancyAbo(my_href) {
 		              <input id="ticket_timer_timestamp" name="ticket_timer_timestamp" type="hidden" value="<?php echo $timer_start;?>"/>
 		              <input id="ticket_timer_running" name="ticket_timer_running" type="hidden" value="<?php echo $timer_running;?>"/>
 		              <input id="stop_timer" name="stop_timer" type="hidden" value="0"/>
-		         </td>
-  	         </tr>
-		     <!-- <tr>
-		          <td width="25%">&nbsp;</td>
-		          <td width="25%"><input type="checkbox" name="stop_timer" id="stop_timer" value="1" <?php if ($reset_disabled == true) echo "disabled";?>> Zeit eintragen und zurücksetzen?</td>
-		     </tr>  -->               
-		     <script>
-                $(document).ready(function () {
-                	var clock;
-                	var sec = moment().unix();
-                	var start = parseInt($('#ticket_timer_timestamp').val());
-                	var running = parseInt($('#ticket_timer_running').val());
-                    if (start != 0){
-                		var timestamp = sec-start;
-                		$("#ticket_timer").html(rectime(timestamp));
-                    }
-                	if (start != 0 && running == 1){
-                		clock = setInterval(stopWatch,1000);
-                	}
-                    $( "#ticket_timer" ).click(function() {
-                        if ($( "#ticket_timer" ).hasClass("btn-warning")){
-                         	$( "#tktc_article" ).focus();
-                         	$( "#stop_timer" ).val("1");
-                        	$( "#tktc_article_amount" ).val(precise_round((sec-start)/60/60,2));
-                        	if ( $( "#tktc_article_amount" ).val() < 0.1){
-                        		$( "#tktc_article_amount" ).val("0,1");
-                        	}
-                         	clearInterval(clock);
-                         	$( "#ticket_timer" ).removeClass("btn-warning");
-                         	clearInterval(clock_home);
-                         	$( "#ticket_timer_home" ).removeClass("btn-warning");
-
-                        	<?php /*
-                        	$.ajax({
-                        		type: "POST",
-                        		url: "libs/modules/timer/timer.ajax.php",
-                        		data: { ajax_action: "stop", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
-                        		})
-                        		.done(function( msg ) {
-                                	window.clearInterval(clock);
-                                	$( "#ticket_timer" ).removeClass("btn-warning");
-                                	window.clearInterval(clock_home);
-                                	$( "#ticket_timer_home" ).removeClass("btn-warning");
-                                	$('#stop_timer').prop('disabled', false);
-                        		});
-                        	*/?>
-                        } else {
-                        	if (!$( "#ticket_timer" ).hasClass("btn-error")){
-                            	if ($( "#stop_timer" ).val() != 1){
-                                	$.ajax({
-                                		type: "POST",
-                                		url: "libs/modules/timer/timer.ajax.php",
-                                		data: { ajax_action: "start", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
-                                		})
-                                		.done(function( msg ) {
-                                			if (start == 0){
-                                			 start = moment().unix();
-                                			}
-                                			sec = moment().unix();
-                                        	clock = setInterval(stopWatch,1000);
-                                        	$( "#ticket_timer" ).addClass("btn-warning");
-                                        	clock_home = setInterval(stopWatch_home,1000);
-                                        	$( "#ticket_timer_home" ).addClass("btn-warning");
-                                        	$('#stop_timer').prop('disabled', false);
-        //                       			  alert( "Data Saved: " + msg );
-                                		});
+		         </td>       
+    		     <script>
+                    $(document).ready(function () {
+                    	var clock;
+                    	var sec = moment().unix();
+                    	var start = parseInt($('#ticket_timer_timestamp').val());
+                    	var running = parseInt($('#ticket_timer_running').val());
+                        if (start != 0){
+                    		var timestamp = sec-start;
+                    		$("#ticket_timer").html(rectime(timestamp));
+                        }
+                    	if (start != 0 && running == 1){
+                    		clock = setInterval(stopWatch,1000);
+                    	}
+                        $( "#ticket_timer" ).click(function() {
+                            if ($( "#ticket_timer" ).hasClass("btn-warning")){
+                             	$( "#tktc_article" ).focus();
+                             	$( "#stop_timer" ).val("1");
+                                var amount = precise_round((sec-start)/60/60,2);
+                            	if ( amount < 0.1){
+                            		$( "#tktc_article_amount" ).val("0,1");
+                            	} else {
+                                    amount = amount.replace(".",",");
+                         		   $( "#tktc_article_amount" ).val(amount);
                             	}
-                        	} else {
-                        		$('#hiddenclicker_tkcframe').trigger('click');
-                        	}
+                             	clearInterval(clock);
+                             	$( "#ticket_timer" ).removeClass("btn-warning");
+                             	clearInterval(clock_home);
+                             	$( "#ticket_timer_home" ).removeClass("btn-warning");
+                            } else {
+                            	if (!$( "#ticket_timer" ).hasClass("btn-error")){
+                                	if ($( "#stop_timer" ).val() != 1){
+                                    	$.ajax({
+                                    		type: "POST",
+                                    		url: "libs/modules/timer/timer.ajax.php",
+                                    		data: { ajax_action: "start", module: "<?php echo get_class($ticket);?>", objectid: "<?php echo $ticket->getId();?>" }
+                                    		})
+                                    		.done(function( msg ) {
+                                    			if (start == 0){
+                                    			 start = moment().unix();
+                                    			}
+                                    			sec = moment().unix();
+                                            	clock = setInterval(stopWatch,1000);
+                                            	$( "#ticket_timer" ).addClass("btn-warning");
+                                            	clock_home = setInterval(stopWatch_home,1000);
+                                            	$( "#ticket_timer_home" ).addClass("btn-warning");
+                                            	$('#stop_timer').prop('disabled', false);
+                                    		});
+                                	}
+                            	} else {
+                            		$('#hiddenclicker_tkcframe').trigger('click');
+                            	}
+                            }
+                        });
+                        function stopWatch() {
+                        	sec++;
+                        	var timestamp = sec-start;
+                        	$("#ticket_timer").html(rectime(timestamp));
+                            if ($("#stop_timer").prop('checked')){
+                                var amount = precise_round((sec-start)/60/60,2);
+                                amount = amount.replace(".",",");
+                                $("#tktc_article_amount").val(amount);
+                            }
                         }
+                        function rectime(secs) {
+                        	var hr = Math.floor(secs / 3600);
+                        	var min = Math.floor((secs - (hr * 3600))/60);
+                        	var sec = Math.floor(secs - (hr * 3600) - (min * 60));
+                        	
+                        	if (hr < 10) {hr = "0" + hr; }
+                        	if (min < 10) {min = "0" + min;}
+                        	if (sec < 10) {sec = "0" + sec;}
+                        	return hr + ':' + min + ':' + sec;
+                        }
+                        $( "#stop_timer" ).click(function() {
+                            if ($("#stop_timer").prop('checked')){
+                                var amount = precise_round((sec-start)/60/60,2);
+                                amount = amount.replace(".",",");
+                                $("#tktc_article_amount").val(amount);
+                            }
+                        });
+                        function precise_round(num, decimals) {
+                        	var t=Math.pow(10, decimals);   
+                     	    return (Math.round((num * t) + (decimals>0?1:0)*(Math.sign(num) * (10 / Math.pow(100, decimals)))) / t).toFixed(decimals);
+                       	}
+                       	
+                       	<?php 
+                       	if ($_REQUEST["start_timer"] == 1){
+                       	?>
+                       	$('#ticket_timer').trigger('click');
+                       	<?php   
+                       	}
+                       	?>
                     });
-                    function stopWatch() {
-                    	sec++;
-                    	var timestamp = sec-start;
-                    	$("#ticket_timer").html(rectime(timestamp));
-                        if ($("#stop_timer").prop('checked')){
-                            var amount = precise_round((sec-start)/60/60,2);
-                            amount = amount.replace(".",",");
-                            $("#tktc_article_amount").val(amount);
-//                             $("#tktc_article_amount").val(precise_round((sec-start)/60/60,2));
-                        }
-                    }
-                    function rectime(secs) {
-                    	var hr = Math.floor(secs / 3600);
-                    	var min = Math.floor((secs - (hr * 3600))/60);
-                    	var sec = Math.floor(secs - (hr * 3600) - (min * 60));
-//                     	alert (hr + ':' + min + ':' + sec);
-                    	
-                    	if (hr < 10) {hr = "0" + hr; }
-                    	if (min < 10) {min = "0" + min;}
-                    	if (sec < 10) {sec = "0" + sec;}
-//                     	if (hr) {hr = "00";}
-                    	return hr + ':' + min + ':' + sec;
-                    }
-                    $( "#stop_timer" ).click(function() {
-                        if ($("#stop_timer").prop('checked')){
-                            var amount = precise_round((sec-start)/60/60,2);
-                            amount = amount.replace(".",",");
-                            $("#tktc_article_amount").val(amount);
-                        }
-                    });
-                    function precise_round(num, decimals) {
-                    	var t=Math.pow(10, decimals);   
-                 	    return (Math.round((num * t) + (decimals>0?1:0)*(Math.sign(num) * (10 / Math.pow(100, decimals)))) / t).toFixed(decimals);
-                   	}
-                   	
-                   	<?php 
-                   	if ($_REQUEST["start_timer"] == 1){
-                   	?>
-                   	$('#ticket_timer').trigger('click');
-                   	<?php   
-                   	}
-                   	?>
-                });
-             </script>
-		     <?php } else { ?>
-		             <td width="25%">&nbsp;</td>
-                     <td width="25%">&nbsp;</td>
-             </tr>
+                 </script>
+    		     <?php } else { ?>
+		             <td width="5%">&nbsp;</td>
+                     <td width="10%">&nbsp;</td>
              <?php }// <<< TIMER STUFF //////?>
-		     <tr>
-		          <td width="25%">Tätigkeit Nr.:</td>
+		          <td width="5%">Tätigkeit Nr.:</td>
 		          <td width="25%">
 		              <input type="text" id="tktc_article" name="tktc_article"/> Menge: <input type="text" id="tktc_article_amount" name="tktc_article_amount"/>
                       <input type="hidden" id="tktc_article_id" name="tktc_article_id"/>
 		          </td>
-		     </tr>
-		     <tr>
-
-		          <td width="25%">Kommentar Typ:</td>
-		          <td width="25%">
-                    <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar<br>
+		          <td width="15%">Kommentar Typ:</td>
+		          <td width="20%">
+                    <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar
                     <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
-                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)<br>
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)
                     <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
 		          </td>
-		     </tr>
-		     <tr>
-		          <td width="25%">Anhänge:</td>
-		          <td width="25%" valign="top">
+		          <td width="5%">Anhänge:</td>
+		          <td width="25%">
 		              <span class="btn btn-success btn-xs fileinput-button">
                           <span>Hinzufügen...</span>
 		                  <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
@@ -1239,8 +1267,42 @@ function callBoxFancyAbo(my_href) {
                           <div class="progress-bar progress-bar-success"></div>
                       </div>
 		          </td>
-		     </tr>
-  	         
+  	         </tr>
+  	         <tr>
+  	             <td colspan="7" width="50%" valign="top">
+  	                 <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea>
+  	             </td>
+  	             <td style="padding-left: 5px;">
+  	                  <script type="text/javascript">
+        	              function select_all()
+        	              {
+        	            	$('#abo_notify').children().each(function(index,item){
+        	            		$(this).attr('selected', 'selected');
+      	            		});
+        	              }
+        	              function deselect_all()
+        	              {
+        	            	$('#abo_notify').children().each(function(index,item){
+        	            		$(this).removeAttr('selected');
+      	            		});
+        	              }
+  	                  </script>
+  	                  <b>Benachrichtigen:</b> <span class="pointer" onclick="select_all();">alle</span> - <span class="pointer" onclick="deselect_all();">keiner</span></br>
+  	                  <select id="abo_notify" name="abo_notify[]" size="15" multiple> 
+  	                     <?php  
+                            if (Abonnement::hasAbo($ticket))
+                            {
+                                $abonnoments = Abonnement::getAbonnementsForObject(get_class($ticket), $ticket->getId());
+                                foreach ($abonnoments as $abonnoment){
+                                    echo '<option value="'.$abonnoment->getAbouser()->getId().'">'.$abonnoment->getAbouser()->getNameAsLine().'</option>';
+                                }
+                            }
+                         ?>
+                      </select></br>
+                      <b>Hinzufügen:</b></br>
+                      <input type="text" id="tktc_new_notify_user">
+  	             </td>
+  	         </tr>
   	     </table>
 	</div>
   </br>
@@ -1333,7 +1395,10 @@ function callBoxFancyAbo(my_href) {
                 <td colspan="2">
                     <?php 
                         foreach ($comment->getArticles() as $c_article){
-                            echo '<span>'.$c_article->getAmount().'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a></span></br>';
+                            if ($c_article->getState() == 1)
+                                echo '<span>'.$c_article->getAmount().'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a></span></br>';
+                            elseif ($c_article->getState() == 0 && $_USER->isAdmin())
+                                echo '<span><del>'.$c_article->getAmount().'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a></del></span></br>';
                         }
                     ?>
                     &nbsp;
@@ -1411,6 +1476,19 @@ function callBoxFancyAbo(my_href) {
                                                 echo '<span><a href="'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a></span></br>';
                                             elseif ($c_attachment->getState() == 0 && $_USER->isAdmin())
                                                 echo '<span><del><a href="'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a></del></span></br>';
+                                        }
+                                    ?>
+                                    &nbsp;
+                                </td>
+                              </tr>
+                              <?php }?>
+                              <?php if (count($comment->getArticles()) > 0){?>
+                              <tr>
+                                <td width="25%">Artikel:</td>
+                                <td colspan="2">
+                                    <?php 
+                                        foreach ($comment->getArticles() as $c_article){
+                                            echo '<span>'.$c_article->getAmount().'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a></span></br>';
                                         }
                                     ?>
                                     &nbsp;

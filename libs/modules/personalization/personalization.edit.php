@@ -306,7 +306,7 @@ function addPriceRow()
 	<div class="menu">
         <a href="#top" class="menu_item">Seitenanfang</a>
         <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+        <a href="#" class="menu_item" onclick="$('#perso_edit').submit();">Speichern</a>
         <?php if ($perso->getId()>0){?>
         <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/personalization/personalization.php&exec=delete&id=<?php echo $perso->getId();?>')">Löschen</a>
         <?php }?>

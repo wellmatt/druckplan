@@ -228,7 +228,7 @@ class Order {
      * @param int $customerId
      * @return multitype:Order
      */
-    static function getAllOrdersByCustomer($order = self::ORDER_TITLE, $customerId = 0){
+    static function getAllOrdersByCustomer($order = self::ORDER_TITLE, $customerId = 0, $filter = null){
     	$retval = Array();
     	global $DB;
     	$sql = "SELECT id FROM orders
@@ -383,6 +383,7 @@ class Order {
 
     public static function generateSummary($orderid)
     {
+        global $_USER;
         $order = new Order($orderid);
         $html = "";
         
@@ -430,6 +431,9 @@ class Order {
         
         $i = 1; 
         foreach(Calculation::getAllCalculations($order) as $calc) {
+            if ($calc->getState() == 0)
+                continue;
+            
             $calc_sorts = $calc->getSorts();
             if ($calc_sorts == 0)
                 $calc_sorts = 1;
@@ -523,6 +527,7 @@ class Order {
             $html .= printBigInt($calc->getPaperContentGrant());
             
             $sheets += $calc->getPaperContentGrant();
+            $sheets_content = $sheets;
             
             $html .= '<br>Papiergewicht:';
              
@@ -554,8 +559,9 @@ class Order {
                 $html .= printBigInt($calc->getPaperAddContentGrant());
                 
                 $sheets += $calc->getPaperAddContentGrant();
-                $html .= '<br>';
-                $html .= 'Papiergewicht:';
+                $sheets_addcontent = $sheets;
+                
+                $html .= '<br>Papiergewicht:';
                  
                 $area = $calc->getPaperAddContentWidth() * $calc->getPaperAddContentHeight();
                 $html .= printPrice((($area * $calc->getPaperAddContentWeight() / 10000 / 100) * $sheets) / 1000);
@@ -588,6 +594,8 @@ class Order {
                 $html .= printBigInt($calc->getPaperAddContent2Grant());
                 
                 $sheets += $calc->getPaperAddContent2Grant();
+                $sheets_addcontent2 = $sheets;
+                
                 $html .= '<br>Papiergewicht:';
                  
                 $area = $calc->getPaperAddContent2Width() * $calc->getPaperAddContent2Height();
@@ -619,6 +627,8 @@ class Order {
                 $html .= printBigInt($calc->getPaperAddContent3Grant());
                 
                 $sheets += $calc->getPaperAddContent3Grant();
+                $sheets_addcontent3 = $sheets;
+                
                 $html .= '<br>Papiergewicht:';
                  
                 $area = $calc->getPaperAddContent3Width() * $calc->getPaperAddContent3Height();
@@ -651,6 +661,8 @@ class Order {
                 $html .= printBigInt($calc->getPaperEnvelopeGrant());
                 
                 $sheets += $calc->getPaperEnvelopeGrant();
+                $sheets_envelope = $sheets;
+                
                 $html .= '<br>Papiergewicht:';
                  
                 $area = $calc->getPaperEnvelopeWidth() * $calc->getPaperEnvelopeHeight();
@@ -666,7 +678,134 @@ class Order {
                 
                 $html .= '</td></tr>';
             }
+
+            $html .= '</table></div><br>';
+            $html .= '<h3>Rohb&ouml;gen</h3><div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
+            $html .= '<colgroup><col width="20%"><col width="20%"><col width="20%"><col width="20%"><col width="20%"></colgroup><tr>';
+            foreach (Machineentry::getAllMachineentries($calc->getId(), Machineentry::ORDER_ID) as $me)
+            {
+                if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                   $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+                {
+                    switch($me->getPart())
+                    {
+                        case Calculation::PAPER_CONTENT:
+                            if ($calc->getFormat_in_content() != ""){
+                                $format_in = explode("x", $calc->getFormat_in_content());
+                                $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth()));
+                                $roh2 = ceil($sheets_content / $roh);
+                                $html .= '<td valign="top"><b>Inhalt:</b></br>';
+                                $html .= 'Format: '.$calc->getFormat_in_content().' mm</br>';
+                                $html .= 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                                $html .= 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperContentHeight().' * '.$calc->getPaperContentWidth().')) / B&ouml;gen</br>';
+                                $html .= '</td>';
+                            } else {
+                                $html .= '<td valign="top"><b>Inhalt:</b></td>';
+                            }
+                            break;
+                        case Calculation::PAPER_ADDCONTENT:
+                            if ($calc->getFormat_in_addcontent() != ""){
+                                $format_in = explode("x", $calc->getFormat_in_addcontent());
+                                $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth()));
+                                $roh2 = ceil($sheets_addcontent / $roh);
+                                $html .= '<td valign="top"><b>Zus. Inhalt:</b></br>';
+                                $html .= 'Format: '.$calc->getFormat_in_addcontent().' mm</br>';
+                                $html .= 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                                $html .= 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperAddContentHeight().' * '.$calc->getPaperAddContentWidth().')) / B&ouml;gen</br>';
+                                $html .= '</td>';
+                            } else {
+                                $html .= '<td valign="top"><b>Zus. Inhalt:</b></td>';
+                            }
+                            break;
+                        case Calculation::PAPER_ADDCONTENT2:
+                            if ($calc->getFormat_in_addcontent2() != ""){
+                                $format_in = explode("x", $calc->getFormat_in_addcontent2());
+                                $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width()));
+                                $roh2 = ceil($sheets_addcontent2 / $roh);
+                                $html .= '<td valign="top"><b>Zus. Inhalt 2:</b></br>';
+                                $html .= 'Format: '.$calc->getFormat_in_addcontent2().' mm</br>';
+                                $html .= 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                                $html .= 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperAddContent2Height().' * '.$calc->getPaperAddContent2Width().')) / B&ouml;gen</br>';
+                                $html .= '</td>';
+                            } else {
+                                $html .= '<td valign="top"><b>Zus. Inhalt 2:</b></td>';
+                            }
+                            break;
+                        case Calculation::PAPER_ADDCONTENT3:
+                            if ($calc->getFormat_in_addcontent3() != ""){
+                                $format_in = explode("x", $calc->getFormat_in_addcontent3());
+                                $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width()));
+                                $roh2 = ceil($sheets_addcontent3 / $roh);
+                                $html .= '<td valign="top"><b>Zus. Inhalt 3:</b></br>';
+                                $html .= 'Format: '.$calc->getFormat_in_addcontent3().' mm</br>';
+                                $html .= 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                                $html .= 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperAddContent3Height().' * '.$calc->getPaperAddContent3Width().')) / B&ouml;gen</br>';
+                                $html .= '</td>';
+                            } else {
+                                $html .= '<td valign="top"><b>Zus. Inhalt 3:</b></td>';
+                            }
+                            break;
+                        case Calculation::PAPER_ENVELOPE:
+                            if ($calc->getFormat_in_envelope() != ""){
+                                $format_in = explode("x", $calc->getFormat_in_envelope());
+                                $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth()));
+                                $roh2 = ceil($sheets_envelope / $roh);
+                                $html .= '<td valign="top"><b>Umschlag:</b></br>';
+                                $html .= 'Format: '.$calc->getFormat_in_envelope().' mm</br>';
+                                $html .= 'Anzahl: '.$roh2.' B&ouml;gen</br>';
+                                $html .= 'Rechnung: Abrunden(('.$format_in[0].' * '.$format_in[1].') / ('.$calc->getPaperEnvelopeHeight().' * '.$calc->getPaperEnvelopeWidth().')) / B&ouml;gen</br>';
+                                $html .= '</td>';
+                            } else {
+                                $html .= '<td valign="top"><b>Umschlag:</b></td>';
+                            }
+                            break;
+                    }
+                }
+            }
+            $html .= '</tr>';
             
+            $html .= '<tr><td class="content_row_header" valign="top">Nutzen Rohb.</td><td class="content_row_clear">';
+    		if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
+    				echo '<b>Inhalt:</b></br>'; 
+    				
+                    $format_in = explode("x", $calc->getFormat_in_content());
+                    $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+			}
+            $html .= '</td><td class="content_row_clear">';
+            if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) {
+    				echo '<b>Zus. Inhalt:</b></br>'; 
+    				
+                    $format_in = explode("x", $calc->getFormat_in_addcontent());
+                    $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth());
+                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+            }
+            $html .= '</td><td class="content_row_clear">';
+            if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+    				echo '<b>Zus. Inhalt 2:</b></br>'; 
+    				
+                    $format_in = explode("x", $calc->getFormat_in_addcontent2());
+                    $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width());
+                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+            }
+            $html .= '</td><td class="content_row_clear">';
+            if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
+    				echo '<b>Zus. Inhalt 3:</b></br>'; 
+    				
+                    $format_in = explode("x", $calc->getFormat_in_addcontent3());
+                    $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width());
+                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+            }
+            $html .= '</td><td class="content_row_clear">';
+            if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) {
+    				echo '<b>Umschlag:</b></br>'; 
+    				
+                    $format_in = explode("x", $calc->getFormat_in_envelope());
+                    $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth());
+                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+            }
+
+            $html .= '</td></tr>';
             $html .= '</table></div><br><h3>Fertigungsprozess</h3>';
             $html .= '<div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
             $html .= '<colgroup><col width="15%"><col width="35%"><col width="15%"><col width="35%"></colgroup>';
@@ -708,6 +847,17 @@ class Order {
                         if($me->getMachine()->getType() == Machine::TYPE_CTP) { 
                             $html .= 'Anzahl Druckplatten: '.$calc->getPlateCount();
                             $html .= '<br>';
+                        }
+                        
+                        if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {
+                            $html .= 'Druckart: ';
+                            if ((int)$me->getUmschl() == 1)
+                                $html .= 'Umschlagen';
+                            elseif ((int)$me->getUmst() == 1)
+                                $html .= 'Umscht&uuml;lpen';
+                            else
+                                $html .= 'Sch&ouml;n & Wider';
+                            $html .= '</br>';
                         }
                         
                         $html .= 'Grundzeit: '.$me->getMachine()->getTimeBase().' min.,';
@@ -1199,6 +1349,11 @@ static function getCountOrdersPerCustMonth($year)
     }
 
     public function getPaymentTerms()
+    {
+        return $this->paymentTerms;
+    }
+
+    public function getPaymentterm()
     {
         return $this->paymentTerms;
     }

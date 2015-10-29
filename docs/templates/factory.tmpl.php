@@ -21,24 +21,27 @@ foreach ($calcs as $calc) {
         $zip .= strtoupper($order->getCustomer()->getCountry()->getCode()) . "-" . $order->getCustomer()->getZip() . " " . $order->getCustomer()->getCity();
             
         $paperstr = $_LANG->get('Inhalt') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_CONTENT) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
-        $paperstr .= $calc->getPaperContent()->getName() . " " . $calc->getPaperContentWeight();
+        $paperstr .= $calc->getPaperContent()->getName() . " " . $calc->getPaperContentWeight() . "g";
 //         echo $paperstr."<br><br>";
         
         if ($calc->getPaperAddContent()->getId()) {
             $paperstr .= "<br>" . $_LANG->get('zus. Inhalt') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ADDCONTENT) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
-            $paperstr .= $calc->getPaperAddContent()->getName() . " " . $calc->getPaperAddContentWeight();
+            $paperstr .= $calc->getPaperAddContent()->getName() . " " . $calc->getPaperAddContentWeight() . "g";
         }
         if ($calc->getPaperAddContent2()->getId()) {
+            $paperstr .= "<br>";
             $paperstr .= "<br>" . $_LANG->get('zus. Inhalt 2') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
-            $paperstr .= $calc->getPaperAddContent2()->getName() . " " . $calc->getPaperAddContent2Weight();
+            $paperstr .= $calc->getPaperAddContent2()->getName() . " " . $calc->getPaperAddContent2Weight() . "g";
         }
         if ($calc->getPaperAddContent3()->getId()) {
+            $paperstr .= "<br>";
             $paperstr .= "<br>" . $_LANG->get('zus. Inhalt 3') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
-            $paperstr .= $calc->getPaperAddContent3()->getName() . " " . $calc->getPaperAddContent3Weight();
+            $paperstr .= $calc->getPaperAddContent3()->getName() . " " . $calc->getPaperAddContent3Weight() . "g";
         }
         if ($calc->getPaperEnvelope()->getId()) {
+            $paperstr .= "<br>";
             $paperstr .= "<br>". $_LANG->get('Umschlag') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ENVELOPE) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
-            $paperstr .= $calc->getPaperEnvelope()->getName() . " " . $calc->getPaperEnvelopeWeight();
+            $paperstr .= $calc->getPaperEnvelope()->getName() . " " . $calc->getPaperEnvelopeWeight() . "g";
         }      
 //         echo $paperstr;
                 
@@ -53,6 +56,7 @@ foreach ($calcs as $calc) {
         if ($calc->getChromaticitiesEnvelope()->getId())
             $chrstr .= "<br>Umschlag: " . $calc->getChromaticitiesEnvelope()->getName();   
         
+
         // Lieferdatum ausgeben, wenn gesetzt
         $tmp_date = "";
         if ($order->getDeliveryDate() > 0) {
@@ -103,14 +107,29 @@ foreach ($calcs as $calc) {
                                     $temp["Position"] .= " (Umschlag)";
                 }
                 
-                if ($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET && $me->getMachine()->getUmschlUmst() > 0 && $me->getUmschlagenUmstuelpen() > 0) {
-                    $paper = $calc->getPaperContent();
-                    $direction = $paper->getPaperDirection($calc, $me->getPart());
-                    if ($direction == Paper::PAPER_DIRECTION_SMALL)
-                        $temp["Position"] .= "<br><b>umstülpen</b>";
-                    else
-                        $temp["Position"] .= "<br><b>umschlagen</b>";
+                if ($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) { //  && $me->getMachine()->getUmschlUmst() > 0 && $me->getUmschlagenUmstuelpen() > 0
+                        $temp["Position"] .= '<br>Druckart: ';
+                        if ((int)$me->getUmschl() == 1)
+                            $temp["Position"] .= '<b>Umschlagen</b>';
+                        elseif ((int)$me->getUmst() == 1)
+                            $temp["Position"] .= '<b>Umscht&uuml;lpen</b>';
+                        else
+                            $temp["Position"] .= '<b>Sch&ouml;n & Wieder</b>';
+                        $temp["Position"] .= '<br>';
+//                     $paper = $calc->getPaperContent();
+//                     $direction = $paper->getPaperDirection($calc, $me->getPart());
+//                     if ($direction == Paper::PAPER_DIRECTION_SMALL)
+//                         $temp["Position"] .= "<br><b>umstülpen</b>";
+//                     else
+//                         $temp["Position"] .= "<br><b>umschlagen</b>";
                 }
+                
+                if ($me->getMachine()->getType() == Machine::TYPE_CUTTER && $me->getFormat_in_height() > 0 && $me->getFormat_in_width() > 0)
+                    $temp["Position"] .= "<br>Eingangsbogen: ".$me->getFormat_in_height()."x".$me->getFormat_in_width();
+                
+                if ($me->getMachine()->getType() == Machine::TYPE_CUTTER && $me->getFormat_out_height() > 0 && $me->getFormat_out_width() > 0)
+                    $temp["Position"] .= "<br>Ausgangsbogen: ".$me->getFormat_out_height()."x".$me->getFormat_out_width();
+                
                 
                 if ($jobrow["pos_plandate"] > 0) {
                     $temp["Date"] = date('d.m.Y', $jobrow["pos_plandate"]);
@@ -161,7 +180,7 @@ $htmldump = $smarty->fetch('string:' . $datei);
 // var_dump($htmltemp);
 
 $pdf->SetMargins($pref->getPdf_margin_left(), $pref->getPdf_margin_top(), $pref->getPdf_margin_right(), TRUE);
-$pdf->AddPage();
+// $pdf->AddPage();
 
 $pdf->writeHTML($htmldump);
 

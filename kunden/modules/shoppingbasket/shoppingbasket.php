@@ -241,8 +241,9 @@ function BasketSubmit()
 						<? 
 						if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 						$artic = new Article($entry->getId());
-						if ($artic->getPicture() != "" && $artic->getPicture()!= NULL){?>
-							<img src="../images/products/<?=$artic->getPicture()?>" width="100px">&nbsp;
+				    	$all_pictures = $artic->getAllPictures();
+						if ($all_pictures[0]["url"] != NULL && $all_pictures[0]["url"] !=""){?>
+							<img src="../images/products/<?=$all_pictures[0]["url"]?>" width="100px">&nbsp;
 						<?}} // Ende if(Bild gesetzt)?>
 						<? 
 						if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
@@ -368,12 +369,13 @@ function BasketSubmit()
 				<td> &ensp; </td>
 			</tr>
 			<tr>
-				<td> 
+				<td valign="top"> 
 					<b><?=$_LANG->get('Hinweis');?> / <?=$_LANG->get('Bemerkung');?></b>
 				</td>
 				<td>
-					<input type="text" id="shopping_note" name="shopping_note" style="width: 200px;"
-							value="<?=$shopping_basket->getNote()?>">
+				    <textarea rows="4" cols="50" id="shopping_note" name="shopping_note" style="width: 200px;"><?=$shopping_basket->getNote()?></textarea>
+					<!-- <input type="text" id="shopping_note" name="shopping_note" style="width: 200px;"
+							value="<?=$shopping_basket->getNote()?>"> -->
 				</td>
 			</tr>
 		</table>

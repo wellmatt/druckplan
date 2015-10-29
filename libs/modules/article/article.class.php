@@ -60,39 +60,39 @@ class Article {
 		global $_USER;
 		$this->tradegroup = new Tradegroup(0);
 
-		$cached = Cachehandler::fromCache("obj_article_" . $id);
-		if (!is_null($cached))
-		{
-		    $this->id = $cached->getId();
-		    $this->status = $cached->getStatus();
-		    $this->shoprel = $cached->getShoprel();
-		    $this->title = $cached->getTitle();
-		    $this->desc = $cached->getDesc();
-		    $this->picture = $cached->getPicture();
-		    $this->number = $cached->getNumber();
-		    $this->tax = $cached->getTax();
-		    $this->minorder = $cached->getMinorder();
-		    $this->maxorder = $cached->getMaxorder();
-		    $this->orderunit = $cached->getOrderunit();
-		    $this->orderunitweight = $cached->getOrderunitweight();
-		    $this->tradegroup = $cached->getTradegroup();
-		    $this->shopCustomerID = $cached->getShopCustomerID();
-		    $this->shopCustomerRel = $cached->getShopCustomerRel();
-		    $this->isworkhourart = $cached->getIsWorkHourArt();
-		    $this->show_shop_price = $cached->getShowShopPrice();
-		    $this->shop_needs_upload = $cached->getShop_needs_upload();
-		    $this->crt_user = $cached->getCrt_user();
-		    $this->crt_date = $cached->getCrt_date();
-		    $this->upt_user = $cached->getUpt_user();
-		    $this->upt_date = $cached->getUpt_date();
-		    $this->qualified_users = $cached->getQualified_users();
-		    $this->orderamounts = $cached->getOrderamounts();
-		    $this->matchcode = $cached->getMatchcode();
-		    $this->shop_approval = $cached->getShop_approval();
-// 		    echo "Object loaded from Cache...</br>";
-		}
+// 		$cached = Cachehandler::fromCache("obj_article_" . $id);
+// 		if (!is_null($cached))
+// 		{
+// 		    $this->id = $cached->getId();
+// 		    $this->status = $cached->getStatus();
+// 		    $this->shoprel = $cached->getShoprel();
+// 		    $this->title = $cached->getTitle();
+// 		    $this->desc = $cached->getDesc();
+// 		    $this->picture = $cached->getPicture();
+// 		    $this->number = $cached->getNumber();
+// 		    $this->tax = $cached->getTax();
+// 		    $this->minorder = $cached->getMinorder();
+// 		    $this->maxorder = $cached->getMaxorder();
+// 		    $this->orderunit = $cached->getOrderunit();
+// 		    $this->orderunitweight = $cached->getOrderunitweight();
+// 		    $this->tradegroup = $cached->getTradegroup();
+// 		    $this->shopCustomerID = $cached->getShopCustomerID();
+// 		    $this->shopCustomerRel = $cached->getShopCustomerRel();
+// 		    $this->isworkhourart = $cached->getIsWorkHourArt();
+// 		    $this->show_shop_price = $cached->getShowShopPrice();
+// 		    $this->shop_needs_upload = $cached->getShop_needs_upload();
+// 		    $this->crt_user = $cached->getCrt_user();
+// 		    $this->crt_date = $cached->getCrt_date();
+// 		    $this->upt_user = $cached->getUpt_user();
+// 		    $this->upt_date = $cached->getUpt_date();
+// 		    $this->qualified_users = $cached->getQualified_users();
+// 		    $this->orderamounts = $cached->getOrderamounts();
+// 		    $this->matchcode = $cached->getMatchcode();
+// 		    $this->shop_approval = $cached->getShop_approval();
+// // 		    echo "Object loaded from Cache...</br>";
+// 		}
 		
-		if ($id > 0 && is_null($cached)){
+		if ($id > 0){ //  && is_null($cached)
 			$sql = "SELECT * FROM article WHERE id = {$id}";
 			if($DB->num_rows($sql)){
 				$r = $DB->select($sql);
@@ -167,9 +167,9 @@ class Article {
 				        elseif ($r["cp"]>0)
 				           $retval["CPs"][] = $r["cp"];
 				    }
-				    $this->orderamounts = $retval;
+				    $this->shop_approval = $retval;
 				}
-			    Cachehandler::toCache("obj_article_".$id, $this);
+// 			    Cachehandler::toCache("obj_article_".$id, $this);
 			}
 		}
 	}
@@ -289,7 +289,7 @@ class Article {
 		    }
 	    }
 
-		Cachehandler::toCache("obj_article_".$this->id, $this);
+// 		Cachehandler::toCache("obj_article_".$this->id, $this);
 		return $res;
 		
 	}
@@ -488,23 +488,19 @@ class Article {
 		global $DB;
 		$retval = Array();
 		
-		$sql = "SELECT id FROM article WHERE
-				status > 0 AND shoprel = 1 
-				ORDER BY {$order} ";
+		$sql = "SELECT DISTINCT id FROM
+                (
+                SELECT id FROM article WHERE
+                status > 0 AND shoprel = 1
+                UNION ALL
+                SELECT article as id FROM article_shop_approval WHERE 
+                (bc = {$cust_id} OR cp = {$cp_id})
+                ) t1
+                ORDER BY id ASC";
 		
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Article($r["id"]);
-			}
-		}
-		
-		$sql = "SELECT article FROM article_shop_approval WHERE 
-				(bc = {$cust_id} OR cp = {$cp_id}) 
-				ORDER BY {$order} ";
-		
-		if($DB->num_rows($sql)){
-			foreach($DB->select($sql) as $r){
-				$retval[] = new Article($r["article"]);
 			}
 		}
 		return $retval;

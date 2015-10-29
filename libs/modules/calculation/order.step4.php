@@ -272,7 +272,7 @@ $(document).ready(function() {
             <td width="25">
                 <a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=4&setStatus=1">
                     <? 
-                    echo '<img class="select" src="./images/status/';
+                    echo '<img class="select" title="'.getOrderStatus(1).'" src="./images/status/';
                     if($order->getStatus() == 1)
                         echo 'red.gif';
                     else
@@ -284,7 +284,7 @@ $(document).ready(function() {
             <td width="25">
                 <a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=4&setStatus=2">
                     <? 
-                    echo '<img class="select" src="./images/status/';
+                    echo '<img class="select" title="'.getOrderStatus(2).'" src="./images/status/';
                     if($order->getStatus() == 2)
                         echo 'orange.gif';
                     else
@@ -296,7 +296,7 @@ $(document).ready(function() {
             <td width="25">
                 <a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=4&setStatus=3">
                     <? 
-                    echo '<img class="select" src="./images/status/';
+                    echo '<img class="select" title="'.getOrderStatus(3).'" src="./images/status/';
                     if($order->getStatus() == 3)
                         echo 'yellow.gif';
                     else
@@ -308,7 +308,7 @@ $(document).ready(function() {
             <td width="25">
                 <a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=4&setStatus=4">
                     <? 
-                    echo '<img class="select" src="./images/status/';
+                    echo '<img class="select" title="'.getOrderStatus(4).'" src="./images/status/';
                     if($order->getStatus() == 4)
                         echo 'lila.gif';
                     else
@@ -320,7 +320,7 @@ $(document).ready(function() {
             <td width="25">
                 <a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=4&setStatus=5">
                     <? 
-                    echo '<img class="select" src="./images/status/';
+                    echo '<img class="select" title="'.getOrderStatus(5).'" src="./images/status/';
                     if($order->getStatus() == 5)
                         echo 'green.gif';
                     else

@@ -231,7 +231,7 @@
         {
             if ( $aColumns[$i] == 'id' )
             {
-                
+                $row[] = $aRow[ $aColumns[$i] ];
             }
             else if ( $aColumns[$i] == 'descr' )
             {

@@ -50,6 +50,16 @@ if ($_REQUEST["ajax_action"] == "search_article"){
     header("Content-Type: application/json");
     echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "search_user"){
+    $retval = Array();
+    $allUsers = User::getAllUserFiltered(User::ORDER_NAME, " AND (login LIKE '%{$_REQUEST['term']}%' OR CONCAT(user_firstname,' ',user_lastname) LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($allUsers as $u){
+        $retval[] = Array("value" => $u->getId(), "label" => $u->getNameAsLine());
+    }
+    $retval = json_encode($retval);
+    header("Content-Type: application/json");
+    echo $retval;
+}
 if ($_REQUEST["ajax_action"] == "setFilter_date_min"){
     $_SESSION['tkt_date_min'] = $_POST['tkt_date_min'];
 }

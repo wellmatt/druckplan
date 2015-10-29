@@ -51,7 +51,20 @@ $part = (int)$_REQUEST["part"];
 $calc = new Calculation($calc_id);
 $order = new Order($calc->getOrderId());
 $mach_entry = Machineentry::getMachineForPapertype($part, $calc_id);
-$mach = $mach_entry[0]->getMachine();
+$mach = null;
+foreach ($mach_entry as $me)
+{
+    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+    {
+        $mach = $me->getMachine();
+        $machentry = $me;
+    }
+}
+$rolldir = $machentry->getRoll_dir();
+
+if ($mach == null)
+    die('Keine passende Maschine gefunden!');
 
 $product_max_open = (int)$_REQUEST["max"];
 $product_counted = (bool)$_REQUEST["counted"];
@@ -98,8 +111,31 @@ if($part != Calculation::PAPER_ENVELOPE){
 $width_closed     = $calc->getProductFormatWidth();
 $height_closed     = $calc->getProductFormatHeight();
 
-$direction = $paper->getPaperDirection($calc, $part);
-
+if ($rolldir == 0)
+    $direction = $paper->getPaperDirection($calc, $part);
+elseif ($rolldir == 1) // breite bahn
+{
+    $direction = Paper::PAPER_DIRECTION_SMALL;
+    if ($paperH > $paperW)
+    {
+        $paperH_temp = $paperH;
+        $paperW_temp = $paperW;
+        $paperH = $paperW;
+        $paperW = $paperH_temp;
+    }
+}
+else // schmale bahn
+{ 
+    $direction = Paper::PAPER_DIRECTION_WIDE;
+    if ($paperW > $paperH)
+    {
+        $paperH_temp = $paperH;
+        $paperW_temp = $paperW;
+        $paperW = $paperH;
+        $paperH = $paperW_temp;
+    }
+}
+    
 if ($height == $height_closed && $width == $width_closed){
     $product_max_closed = $product_max_open;
 } else {
@@ -188,7 +224,7 @@ $product_rows2_closed       = floor(($paperH - $mach->getBorder_top() - $mach->g
 $product_per_paper2  = $product_per_line2 * $product_rows2;
 
 
-if($product_per_paper2 >= $product_per_paper){
+if($product_per_paper2 >= $product_per_paper){ //  || $rolldir == 1
 	$flipped = true;
 	$product_rows     = $product_rows2;
 	$product_per_line = $product_per_line2;
@@ -231,6 +267,12 @@ if($product_per_paper2 >= $product_per_paper){
 // echo "product_per_paper   = " . $product_per_line * $product_rows;
 // echo "</br>";
 // echo $calc->getPagesContent() . "</br>";
+
+if ($tmp_anschnitt > 0){
+    $schnitte = (4 + ($product_per_line-1)*2 + (($product_rows-1))*2);
+} else {
+    $schnitte = (4 + ($product_per_line-1) + ($product_rows-1));
+}
 
 
 // PDF initialisieren
@@ -347,11 +389,20 @@ if($tmp_farbrand > 0){
 
 $text= "Auftrag: " . $order->getNumber() . " | " . "Titel: " . $order->getTitle();
 
-if($calc->getPaperContent()->getPaperDirection($calc, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
-	$laufrichtung = "schmale Bahn";
-} else {
-	$laufrichtung = "breite Bahn";
-}	
+if($rolldir == 0)
+{
+    if($calc->getPaperContent()->getPaperDirection($calc, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
+    	$laufrichtung = "schmale Bahn";
+    } else {
+    	$laufrichtung = "breite Bahn";
+    }
+} elseif ($rolldir == 1)
+{
+    $laufrichtung = "breite Bahn";
+} elseif ($rolldir == 2)
+{
+    $laufrichtung = "schmale Bahn";
+}
 		
 $text_options=array(left=>50,right=>50,justification=>"center");
 $pdf->ezText($text, 40, $text_options);
@@ -397,6 +448,24 @@ $pdf->y = $mach_top - 160;
 					
  $data[] = Array(	"Eigenschaft"		=> "Laufrichtung: ",
 					"Wert" 				=> $laufrichtung);
+ 
+ if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {
+     if ((int)$machentry->getUmschl() == 1)
+     {
+         $data[] = Array(	"Eigenschaft"		=> "Druckart: ",
+        					"Wert" 				=> "Umschlagen");
+     }
+     elseif ((int)$machentry->getUmst() == 1)
+     {
+         $data[] = Array(	"Eigenschaft"		=> "Druckart: ",
+        					"Wert" 				=> "Umschtuelpen");
+     }
+     else
+     {
+         $data[] = Array(	"Eigenschaft"		=> "Druckart: ",
+        					"Wert" 				=> "Schoen & Wider");
+     }
+ }
 					
  $data[] = Array(	"Eigenschaft"		=> " ",
 					"Wert" 				=> " ");
@@ -407,7 +476,7 @@ $pdf->y = $mach_top - 160;
  $data[] = Array(	"Eigenschaft"		=> "Papiergewicht: ",
 					"Wert" 				=> $paper_weight . 'g');
 					
- $data[] = Array(	"Eigenschaft"		=> "Bogengröße: ",
+ $data[] = Array(	"Eigenschaft"		=> "Bogengroesse: ",
 					"Wert" 				=> $paperW . "x" . $paperH);
 					
  $data[] = Array(	"Eigenschaft"		=> " ",
@@ -422,8 +491,69 @@ $pdf->y = $mach_top - 160;
  $data[] = Array(	"Eigenschaft"		=> "Offenes Format: ",
 					"Wert" 				=> $product_width . "x" . $product_height);
 					
+ $data[] = Array(	"Eigenschaft"		=> " ",
+					"Wert" 				=> " ");
+					
  $data[] = Array(	"Eigenschaft"		=> "Anschnitt: ",
 					"Wert" 				=> printPrice($tmp_anschnitt) . 'mm');
+ 
+ $data[] = Array(	"Eigenschaft"		=> "Schnitte: ",
+					"Wert" 				=> $schnitte);
+					
+ $data[] = Array(	"Eigenschaft"		=> " ",
+					"Wert" 				=> " ");
+ 
+ if($part == Calculation::PAPER_CONTENT) {
+     $sheets = ceil($calc->getPagesContent() / $calc->getProductsPerPaper(Calculation::PAPER_CONTENT) * $calc->getAmount());
+     $sheets += $calc->getPaperContentGrant();
+
+     $format_in_raw = $calc->getFormat_in_content();
+     $format_in = explode("x", $calc->getFormat_in_content());
+     $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth()));
+     $roh2 = ceil($sheets / $roh);
+ } else if ($part == Calculation::PAPER_ADDCONTENT) {
+     $sheets = ceil($calc->getPagesAddContent() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT) * $calc->getAmount());
+     $sheets += $calc->getPaperAddContentGrant();
+
+     $format_in_raw = $calc->getFormat_in_addcontent();
+     $format_in = explode("x", $calc->getFormat_in_addcontent());
+     $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth()));
+     $roh2 = ceil($sheets / $roh);
+ } else if ($part == Calculation::PAPER_ADDCONTENT2) {
+     $sheets = ceil($calc->getPagesAddContent2() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2) * $calc->getAmount());
+     $sheets += $calc->getPaperAddContent2Grant();
+
+     $format_in_raw = $calc->getFormat_in_addcontent2();
+     $format_in = explode("x", $calc->getFormat_in_addcontent2());
+     $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width()));
+     $roh2 = ceil($sheets / $roh);
+ } else if ($part == Calculation::PAPER_ADDCONTENT3) {
+     $sheets = ceil($calc->getPagesAddContent3() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3) * $calc->getAmount());
+     $sheets += $calc->getPaperAddContent3Grant();
+
+     $format_in_raw = $calc->getFormat_in_addcontent3();
+     $format_in = explode("x", $calc->getFormat_in_addcontent3());
+     $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width()));
+     $roh2 = ceil($sheets / $roh);
+ } else if ($part == Calculation::PAPER_ENVELOPE) {
+     $sheets = ceil($calc->getPagesEnvelope() / $calc->getProductsPerPaper(Calculation::PAPER_ENVELOPE) * $calc->getAmount());
+     $sheets += $calc->getPaperEnvelopeGrant();
+
+     $format_in_raw = $calc->getFormat_in_envelope();
+     $format_in = explode("x", $calc->getFormat_in_envelope());
+     $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth()));
+     $roh2 = ceil($sheets / $roh);
+ }
+					
+ $data[] = Array(	"Eigenschaft"		=> "Anz. Bogen: ",
+					"Wert" 				=> printPrice($sheets));
+ 
+ $data[] = Array(	"Eigenschaft"		=> "Format Roh-Bogen: ",
+					"Wert" 				=> $format_in_raw);
+ 
+ $data[] = Array(	"Eigenschaft"		=> "Anz. Roh-Bogen: ",
+					"Wert" 				=> printPrice($roh2));
+ 
 					
  $pdf->ezTable($data,$type,$dummy,$attr);
 

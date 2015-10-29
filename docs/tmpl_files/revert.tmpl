@@ -35,8 +35,8 @@ hiermit erhalten Sie eine Gutschrift mit folgenden Positionen:</span></span></p>
 	<thead>
 		<tr>
 			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:center; width:25px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Pos.</span></span></th>
-			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:225px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Beschreibung</span></span></th>
-			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Menge</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:200px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Beschreibung</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:65px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Menge</span></span></th>
 			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">USt.</span></span></th>
 			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">EP (Netto)</span></span></th>
 			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">GP (Netto)</span></span></th>
@@ -47,11 +47,11 @@ hiermit erhalten Sie eine Gutschrift mit folgenden Positionen:</span></span></p>
 			<td style="text-align:center; width:25px">
 			<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos@iteration}</span></span></p>
 			</td>
-			<td style="text-align:left; width:225px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></td>
-			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getQuantity()}</span></span></td>
+			<td style="text-align:left; width:200px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></td>
+			<td style="text-align:left; width:65px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getQuantity()}</span></span></td>
 			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getTax()} %</span></span></td>
-			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getPrice()} {$Currency}</span></span></td>
-			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getNetto()} {$Currency}</span></span></td>
+			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getPrice()} {$Currency}</span></span></td>
+			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getNetto()} {$Currency}</span></span></td>
 		</tr>
 		<!-- {/if} --><!-- {/foreach} -->
 	</tbody>
@@ -63,25 +63,25 @@ hiermit erhalten Sie eine Gutschrift mit folgenden Positionen:</span></span></p>
 	<tbody><!-- {if $DeliveryCosts gt 0} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Porto und Verpackung</span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$DeliveryCosts} {$Currency}</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{PrintPrice var=$DeliveryCosts} {$Currency}</span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 		<!-- {/if} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Netto)</strong></span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{$SumNetto} {$Currency}</strong></span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{PrintPrice var=$SumNetto} {$Currency}</strong></span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 		<!-- {foreach $TaxesKey as $Key} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">USt. ({$Key} %)</span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{$Taxes.$Key} {$Currency}</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{PrintPrice var=$Taxes.$Key} {$Currency}</span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 		<!-- {/foreach} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Brutto)</strong></span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{$SumBrutto} {$Currency}</strong></span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{PrintPrice var=$SumBrutto} {$Currency}</strong></span></span></td>
 			<td>&nbsp;</td>
 		</tr>
 	</tbody>

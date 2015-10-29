@@ -66,8 +66,8 @@ class CommentArticle {
     {
         global $DB;
         if ($this->id > 0) {
-            $sql = "UPDATE comments_article
-                    SET state = 0; 
+            $sql = "UPDATE comments_article 
+                    SET state = 0 
     			    WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
                 unset($this);

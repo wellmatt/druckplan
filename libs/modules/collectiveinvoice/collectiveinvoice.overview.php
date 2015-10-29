@@ -1,119 +1,202 @@
-<?//--------------------------------------------------------------------------------
+<?
+//----------------------------------------------------------------------------------
 // Author:        iPactor GmbH
-// Updated:       14.09.2012
+// Updated:       16.03.2012
 // Copyright:     2012 by iPactor GmbH. All Rights Reserved.
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
-$collectiveinvoices= CollectiveInvoice::getAllCollectiveInvoice(CollectiveInvoice::ORDER_CRTDATE_DESC);
+
 
 ?>
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+
+<script type="text/javascript" charset="utf8" src="jscripts/moment/moment-with-locales.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
+
+<script type="text/javascript">
+jQuery.fn.dataTableExt.oSort['uk_date-asc']  = function(a,b) {
+    var ukDatea = a.split('.');
+    var ukDateb = b.split('.');
+     
+    var x = (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+    var y = (ukDateb[2] + ukDateb[1] + ukDateb[0]) * 1;
+     
+    return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+};
+ 
+jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
+    var ukDatea = a.split('.');
+    var ukDateb = b.split('.');
+     
+    var x = (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+    var y = (ukDateb[2] + ukDateb[1] + ukDateb[0]) * 1;
+     
+    return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
+};
+
+$(document).ready(function() {
+    var orders = $('#orders').DataTable( {
+        // "scrollY": "1000px",
+        "processing": true,
+        "bServerSide": true,
+        "sAjaxSource": "libs/modules/collectiveinvoice/collectiveinvoice.dt.ajax.php<?php if ($_REQUEST['cust_id']) echo '?cust_id='.$_REQUEST["cust_id"];?>",
+        "paging": true,
+		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+		"pageLength": <?php echo $perf->getDt_show_default();?>,
+		"dom": 'T<"clear">flrtip',
+		"aaSorting": [[ 4, "desc" ]],
+		"order": [[ 4, "desc" ]],
+		"tableTools": {
+			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
+            "aButtons": [
+                         "copy",
+                         "csv",
+                         "xls",
+                         {
+                             "sExtends": "pdf",
+                             "sPdfOrientation": "landscape",
+                             "sPdfMessage": "Contilas - Orders"
+                         },
+                         "print"
+                     ]
+                 },
+		"fnServerData": function ( sSource, aoData, fnCallback ) {
+			var iMin = document.getElementById('ajax_date_min').value;
+			var iMax = document.getElementById('ajax_date_max').value;
+		    aoData.push( { "name": "start", "value": iMin, } );
+		    aoData.push( { "name": "end", "value": iMax, } );
+		    $.getJSON( sSource, aoData, function (json) {
+		        fnCallback(json)
+		    } );
+		},
+		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
+		"aoColumnDefs": [ { "sType": "uk_date", "aTargets": [ 4 ] } ],
+		"columns": [
+		            null,
+		            null,
+		            null,
+		            null,
+		            null,
+		            null,
+		            { "sortable": false }
+		          ],
+		"language": 
+					{
+						"emptyTable":     "Keine Daten vorhanden",
+						"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+						"infoEmpty": 	  "Keine Seiten vorhanden",
+						"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+						"infoPostFix":    "",
+						"thousands":      ".",
+						"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+						"loadingRecords": "Lade...",
+						"processing":     "Verarbeite...",
+						"search":         "Suche:",
+						"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+						"paginate": {
+							"first":      "Erste",
+							"last":       "Letzte",
+							"next":       "N&auml;chste",
+							"previous":   "Vorherige"
+						},
+						"aria": {
+							"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+							"sortDescending": ": aktivieren um absteigend zu sortieren"
+						}
+					}
+    } );
+
+    $("#orders tbody td:not(:last-child)").live('click',function(){
+        var aPos = $('#orders').dataTable().fnGetPosition(this);
+        var aData = $('#orders').dataTable().fnGetData(aPos[0]);
+    	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
+    });
+
+	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
+	$('#date_min').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
+            	$('#orders').dataTable().fnDraw();
+            }
+	});
+	$('#date_max').datepicker(
+		{
+			showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: 'dd.mm.yy',
+            showOn: "button",
+            buttonImage: "images/icons/calendar-blue.png",
+            buttonImageOnly: true,
+            onSelect: function(selectedDate) {
+                $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
+            	$('#orders').dataTable().fnDraw();
+            }
+	});
+	
+} );
+</script>
 <table width="100%">
-	<tr>
-		<td width="180" class="content_header">
-			<img src="<?= $_MENU->getIcon($_SESSION['pid'])?>"> <?= $_LANG->get('Sammelrechnungen')?>
-		</td>
-		<td align="center">
-			<? echo $savemsg; ?>
-		</td>
-		<td width="300" class="content_header" align="right">
-			<a	href="index.php?page=<?=$_REQUEST['page']?>&exec=select_user" title="<?= $_LANG->get('Sammelrechnung erstellen')?>"> 
-				<img src="images/icons/folder--plus.png"> <?= $_LANG->get('Sammelrechnung erstellen')?>
-			</a>
-		</td>
-	</tr>
+   <tr>
+      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorg&auml;nge')?></td>
+      <td><?=$savemsg?></td>
+      <?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
+      <td width="200" class="content_header" align="right">
+      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php"><img src="images/icons/arrow-join.png">
+      	<span style="font-size:13px"><?=$_LANG->get('VorgÃ¤nge ZusammenfÃ¼hren')?></span></a>
+      </td>
+      <?php }?>
+      <td width="200" class="content_header" align="right">
+      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user"><img src="images/icons/calculator--plus.png">
+      	<span style="font-size:13px"><?=$_LANG->get('Vorgang hinzuf&uuml;gen')?></span></a>
+   </tr>
 </table>
+
 <div class="box1">
-	<table width="100%" cellspacing="0" cellpadding="0">
-		<colgroup>
-			<col width="140">
-			<col>
-			<col width="150">
-			<col width="200">
-			<col width="130">
-			<col width="100">
-		</colgroup>
+
+<div class="box2">
+    <table>
+        <tr align="left">
+            <td>Datum Filter:&nbsp;&nbsp;</td>
+            <td valign="left">
+                <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
+                <input name="date_min" id="date_min" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+            </td>
+            <td valign="left">
+                <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
+                bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
+                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+            </td>
+        </tr>
+    </table>
+</div>
+</br>
+<table id="orders" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+	<thead>
 		<tr>
-			<td class="content_header"><?=$_LANG->get('Nummer')?>
-			</td>
-			<td class="content_header"><?=$_LANG->get('Titel')?>
-			</td>
-			<td class="content_header"><?=$_LANG->get('Kunde')?>
-			</td>
-			<td class="content_header"><?=$_LANG->get('Status')?>
-			</td>
-			<td class="content_header" align="center"><?=$_LANG->get('Optionen')?>
-			</td>
+			<th width="10"><?=$_LANG->get('ID')?></th>
+			<th width="100"><?=$_LANG->get('Nummer')?></th>
+			<th><?=$_LANG->get('Kunde')?></th>
+			<th><?=$_LANG->get('Titel')?></th>
+			<th width="90"><?=$_LANG->get('Angelegt am')?></th>
+			<th width="150"><?=$_LANG->get('Status')?></th>
+			<th width="80"><?=$_LANG->get('Optionen')?></th>
 		</tr>
-<?		$collectiveinvoices= CollectiveInvoice::getAllCollectiveInvoice();
-		if(count($collectiveinvoices)>0){
-			$i = 0;
-			foreach($collectiveinvoices as $ci){?>
-		<tr class="<?=getRowColor($i)?> pointer" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-			<td class="content_row" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$ci->getId()?>'">
-				<?=$ci->getNumber()?>&nbsp;
-			</td>
-			<td class="content_row" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$ci->getId()?>'">
-				<?=$ci->getTitle()?>&nbsp;
-			</td>
-			<td class="content_row" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$ci->getId()?>'">
-			<?=date("d.m.Y",$ci->getcrtdate())?>&nbsp;
-			</td>
-			<td class="content_row" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$ci->getId()?>'">
-				<?=$ci->getBusinessContact()->getNameAsLine()?>&nbsp;
-			</td>
-			<td class="content_row">
-				<table>
-					<tr>
-						<td>
-						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?= $ci->getId() ?>&exec=setState&state=1">
-								<img class="select" src="./images/status/<?
-	            				if($ci->getStatus() == 1)
-	            	    				echo 'red.gif';
-					            	else
-										echo 'black.gif'; ?>" title="<?= $_LANG->get('Status ändern')?>">
-						</a>
-						</td>
-						<td><a
-							href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$ci->getId()?>&exec=setState&state=2">
-								<img class="select" src="./images/status/<?
-	            				if($ci->getStatus() == 2)
-					                	echo 'orange.gif';
-					                else
-					                	echo 'black.gif';?>" title="<?= $_LANG->get('Status ändern')?>">
-						</a>
-						</td>
-						<td><a
-							href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$ci->getId()?>&exec=setState&state=3">
-								<img class="select" src="./images/status/<?
-									if($ci->getStatus() == 3)
-					                	echo 'yellow.gif';
-					                else
-					                	echo 'black.gif'; ?>" title="<?= $_LANG->get('Status ändern')?>">
-						</a>
-						</td>
-						<td><a
-							href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?= $ci->getId()?>&exec=setState&state=4">
-								<img class="select" src="./images/status/<?
-	            					if($ci->getStatus() == 4)
-	            						echo 'lila.gif';
-									else
-										echo 'black.gif';?>" title="<?= $_LANG->get('Status ändern')?>">
-						</a>
-						</td>
-					</tr>
-				</table>
-			</td>
-			<td class="content_row" align="center">
-				<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$ci->getId()?>">
-					<img src="images/icons/pencil.png" title="<?= $_LANG->get('Bearbeiten')?>"></a>
-				&ensp;
-				<a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&del_id=<?=$ci->getId()?>')">
-					<img src="images/icons/cross-script.png" title ="<?= $_LANG->get('Löschen')?>"></a>
-			</td>
-		</tr>
-		<?$i++;
-		}
-	}?>
-	</table>
+	</thead>
+</table>
 </div>

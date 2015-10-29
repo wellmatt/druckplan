@@ -20,6 +20,7 @@ class Client {
     const NUMBER_WARNING = 7;
     const NUMBER_WORK = 8; // Drucktasche
     const NUMBER_PAPER_ORDER = 9; // Papier Bestellung
+    const NUMBER_COLINV = 10;
      
     private $id;
     private $name;
@@ -234,6 +235,10 @@ class Client {
             case self::NUMBER_ORDER:
                 $ffield = 'number_format_order';
                 $nfield = 'number_counter_order';
+                break;
+            case self::NUMBER_COLINV:
+                $ffield = 'number_format_colinv';
+                $nfield = 'number_counter_colinv';
                 break;
             case self::NUMBER_OFFER:
                 $ffield = 'number_format_offer';

@@ -274,6 +274,7 @@ class Shoppingbasket{
         	                    $tmp_order_pos->setComment($tmp_perso_order->getTitle());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
         	                    $tmp_order_pos->setPerso_order($tmp_perso_order->getId());
+        	                    $tmp_order_pos->setPrice($entry->getPrice()/$entry->getAmount());
         	                    
         	                    // Bestellung aktualisieren, damit sie im Backend auftaucht
         	                    // $tmp_perso->setStatus(2);	// nicht mehr den Status umsetzen, damit diese als Vorlage bleibt

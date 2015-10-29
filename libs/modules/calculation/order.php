@@ -111,8 +111,8 @@ $(document).ready(function() {
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"dom": 'T<"clear">flrtip',
-		"aaSorting": [[ 6, "desc" ]],
-		"order": [[ 6, "desc" ]],
+		"aaSorting": [[ 5, "desc" ]],
+		"order": [[ 5, "desc" ]],
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -140,7 +140,6 @@ $(document).ready(function() {
 		"aoColumnDefs": [ { "sType": "uk_date", "aTargets": [ 4 ] } ],
 		"columns": [
 		            null,
-		            { "sortable": false },
 		            null,
 		            null,
 		            null,
@@ -178,11 +177,7 @@ $(document).ready(function() {
     $("#orders tbody td").live('click',function(){
         var aPos = $('#orders').dataTable().fnGetPosition(this);
         var aData = $('#orders').dataTable().fnGetData(aPos[0]);
-        if (aData[1] == 'K'){
-            document.location='index.php?page=libs/modules/calculation/order.php&exec=edit&id='+aData[0]+'&step=4';
-        } else if (aData[1] == 'V'){
-        	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
-        }
+        document.location='index.php?page=libs/modules/calculation/order.php&exec=edit&id='+aData[0]+'&step=4';
     });
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
@@ -217,18 +212,8 @@ $(document).ready(function() {
 </script>
 <table width="100%">
    <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorg&auml;nge')?></td>
+      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Kalkulationen')?></td>
       <td><?=$savemsg?></td>
-      <?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
-      <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php"><img src="images/icons/arrow-join.png">
-      	<span style="font-size:13px"><?=$_LANG->get('Vorgänge Zusammenführen')?></span></a>
-      </td>
-      <?php }?>
-      <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user"><img src="images/icons/calculator--plus.png">
-      	<span style="font-size:13px"><?=$_LANG->get('Vorgang hinzuf&uuml;gen')?></span></a>
-      </td>
       <td width="200" class="content_header" align="right">
       	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/calculator--plus.png">
       	<span style="font-size:13px"><?=$_LANG->get('Kalkulation hinzuf&uuml;gen')?></span></a>
@@ -260,7 +245,6 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th width="10"><?=$_LANG->get('ID')?></th>
-			<th width="10"><?=$_LANG->get('Typ')?></th>
 			<th width="100"><?=$_LANG->get('Nummer')?></th>
 			<th><?=$_LANG->get('Kunde')?></th>
 			<th><?=$_LANG->get('Titel')?></th>

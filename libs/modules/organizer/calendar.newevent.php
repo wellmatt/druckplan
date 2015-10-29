@@ -7,8 +7,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
-// error_reporting(-1);
-// ini_set('display_errors', 1);
+error_reporting(-1);
+ini_set('display_errors', 1);
 
 chdir("../../../");
 require_once("config.php");
@@ -23,6 +23,7 @@ require_once 'libs/modules/organizer/contact.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/businesscontact/contactperson.class.php';
 require_once 'libs/modules/organizer/event.class.php';
+require_once 'libs/modules/notifications/notification.class.php';
 
 session_start();
 
@@ -77,18 +78,42 @@ if($_REQUEST["subexec"] == "save")
 		$ext_partitipants[] = (int)$pext;
 	}
 	
+	$tmp_old_int_parts = Array();
+	$all_int_partitipants = $event->getParticipants_Int();
+	foreach ($all_int_partitipants as $tmp_int_part)
+	{
+	    $tmp_old_int_parts[] = $tmp_int_part;
+	}
+	
+	$new_int_parts = array_diff($int_partitipants, $tmp_old_int_parts);
+	
+	foreach ($new_int_parts as $new_part)
+	{
+	    $tmp_user = new User($new_part);
+// 	    if ($tmp_user->getId() != $_USER->getId())
+	       Notification::generateNotification($tmp_user, "Event", "NewEvent", $_USER->getNameAsLine2(), $event->getId());
+	}
+	
+	if (count($event->getParticipantsInt()) > 0 && 
+	    ($event->getBegin() != (int)strtotime($_REQUEST["event_from_date"]) || 
+	    $event->getEnd() != (int)strtotime($_REQUEST["event_to_date"]) ||
+	    $event->getDesc() != trim(addslashes($_REQUEST["event_desc"])) ||
+	    $event->getAdress() != $_REQUEST["formatted_address"])
+	    )
+	{
+	    foreach ($event->getParticipantsInt() as $tmp_int)
+	    {
+	        $tmp_user = new User($tmp_int);
+// 	        if ($tmp_user->getId() != $_USER->getId())
+	           Notification::generateNotification($tmp_user, "Event", "ChangeEvent", $_USER->getNameAsLine2(), $event->getId());
+	    }
+	}
+	
 	$event->setParticipantsInt($int_partitipants);
 	$event->setParticipantsExt($ext_partitipants);
 
-    $_REQUEST["event_from_hour"]    = (int)$_REQUEST["event_from_hour"];
-    $_REQUEST["event_from_minute"]  = (int)$_REQUEST["event_from_minute"];
-    $_REQUEST["event_from_date"]    = explode(".", $_REQUEST["event_from_date"]);
-    $event_begin    = (int)mktime($_REQUEST["event_from_hour"], $_REQUEST["event_from_minute"], 0, $_REQUEST["event_from_date"][1], $_REQUEST["event_from_date"][0], $_REQUEST["event_from_date"][2]);
-    
-    $_REQUEST["event_to_hour"]    = (int)$_REQUEST["event_to_hour"];
-    $_REQUEST["event_to_minute"]  = (int)$_REQUEST["event_to_minute"];
-    $_REQUEST["event_to_date"]    = explode(".", $_REQUEST["event_to_date"]);
-    $event_end    = (int)mktime($_REQUEST["event_to_hour"], $_REQUEST["event_to_minute"], 0, $_REQUEST["event_to_date"][1], $_REQUEST["event_to_date"][0], $_REQUEST["event_to_date"][2]);
+    $event_begin    = (int)strtotime($_REQUEST["event_from_date"]);
+    $event_end    = (int)strtotime($_REQUEST["event_to_date"]);
     
     if (!$event->getUser())
         $event->setUser($_USER);
@@ -139,9 +164,49 @@ if($_REQUEST["subexec"] == "save")
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
 <script	type="text/javascript" src="../../../jscripts/jquery.geocomplete.js"></script>
 
+<link rel="stylesheet" type="text/css" href="../../../jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="../../../jscripts/datetimepicker/jquery.datetimepicker.js"></script>
+
 <script>
 	$(function() {
 		$( "#tabs" ).tabs({ selected: 0 });
+
+		$('#event_from_date').datetimepicker({
+			 lang:'de',
+			 i18n:{
+			  de:{
+			   months:[
+			    'Januar','Februar','März','April',
+			    'Mai','Juni','Juli','August',
+			    'September','Oktober','November','Dezember',
+			   ],
+			   dayOfWeek:[
+			    "So.", "Mo", "Di", "Mi", 
+			    "Do", "Fr", "Sa.",
+			   ]
+			  }
+			 },
+			 timepicker:true,
+			 format:'d.m.Y H:i'
+		});
+		$('#event_to_date').datetimepicker({
+			 lang:'de',
+			 i18n:{
+			  de:{
+			   months:[
+			    'Januar','Februar','März','April',
+			    'Mai','Juni','Juli','August',
+			    'September','Oktober','November','Dezember',
+			   ],
+			   dayOfWeek:[
+			    "So.", "Mo", "Di", "Mi", 
+			    "Do", "Fr", "Sa.",
+			   ]
+			  }
+			 },
+			 timepicker:true,
+			 format:'d.m.Y H:i'
+		});
 	});
 </script>
 <script>
@@ -369,19 +434,15 @@ function add_contactperson(element)
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Von')?></td>
 					<td class="content_row_clear">
-						<input name="event_from_date" value="<?=date('d.m.Y', $event->getBegin())?>" style="width:80px;"
-						class="text" id="event_from_date">&nbsp;
-						<input name="event_from_hour" value="<?=date('H', $event->getBegin())?>" style="width:30px;" class="text"> :
-						<input name="event_from_minute" value="<?=date('i', $event->getBegin())?>" style="width:30px;" class="text">
+						<input name="event_from_date" id="event_from_date" value="<?=date('d.m.Y H:i', $event->getBegin())?>" style="width:200px;"
+						class="text" id="event_from_date">
 					</td>
 				</tr>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
 					<td class="content_row_clear">
-						<input name="event_to_date" value="<?=date('d.m.Y', $event->getEnd())?>" style="width:80px;"
-						class="text" id="event_to_date">&nbsp;
-						<input name="event_to_hour" value="<?=date('H', $event->getEnd())?>" style="width:30px;" class="text"> :
-						<input name="event_to_minute" value="<?=date('i', $event->getEnd())?>" style="width:30px;" class="text">
+						<input name="event_to_date" id="event_to_date" value="<?=date('d.m.Y H:i', $event->getEnd())?>" style="width:200px;"
+						class="text" id="event_to_date">
 					</td>
 				</tr>
 				<tr>

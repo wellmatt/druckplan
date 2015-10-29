@@ -19,6 +19,8 @@ require_once 'libs/basic/countries/country.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once "thirdparty/phpfastcache/phpfastcache.php";
+require_once 'libs/modules/privatecontacts/privatecontact.class.php';
+require_once 'libs/modules/tickets/ticket.class.php';
 
 
 require_once __DIR__.'/../../../vendor/Horde/Autoloader.php';
@@ -690,9 +692,19 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
         }
         $retval[] = Array("label" => "Gruppe: " . $group->getName(), "value" => $groupmailval);
     }
+    $priv_contacts = PrivateContact::getAllPrivateContacts(PrivateContact::ORDER_ID," AND (CONCAT(privatecontacts.name1,' ',privatecontacts.name2) LIKE '%{$_REQUEST["term"]}%' OR privatecontacts.email LIKE '%{$_REQUEST["term"]}%') ",$_USER->getId());
+    foreach ($priv_contacts as $priv_contact){
+        $retval[] = Array("label" => "Privater Kontakt: " . $priv_contact->getNameAsLine2() . " (". $priv_contact->getEmail() . ")", "value" => $priv_contact->getEmail());
+    }
     $retval = json_encode($retval);
     header("Content-Type: application/json");
     echo $retval;
+}
+if ($_REQUEST["ajax_action"] == "search_ticket"){
+    $retval = Ticket::getAllTicketsFlatAjax(" WHERE tickets.state > 0 AND (tickets.title LIKE '%{$_REQUEST['term']}%' OR tickets.number LIKE '%{$_REQUEST['term']}%' OR businesscontact.name1 LIKE '%{$_REQUEST['term']}%' OR businesscontact.matchcode LIKE '%{$_REQUEST['term']}%') ");
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
 }
 
 ?>

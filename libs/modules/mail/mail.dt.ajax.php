@@ -177,23 +177,33 @@
                 $seen = 0;
             
             $row = Array();
-
-            $options = '<a href="libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'" target="_blank">
-                        <img src="images/icons/printer.png" title="Mail drucken" class="pointer"/></a>&nbsp;';
-            $options .= '<img src="images/icons/mail-open.png" title="als gelesen markieren" class="pointer" 
-                        onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
-            $options .= '<img src="images/icons/mail.png" title="als ungelesen markieren" class="pointer" 
-                        onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
-            $options .= '<img src="images/icons/mails.png" title="verschieben" class="pointer" 
-                        onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();"/>&nbsp;';
-            $options .= '<img src="images/icons/mail--arrow.png" title="weiterleiten" class="pointer" 
-                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+            
+            $options = "";
+            // Antworten
             $options .= '<img src="images/icons/mail--pencil.png" title="antworten" class="pointer" 
                         onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+            // Weiterleiten
+            $options .= '<img src="images/icons/mail--arrow.png" title="weiterleiten" class="pointer" 
+                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+            // Verschieben
+            $options .= '<img src="images/icons/mails.png" title="verschieben" class="pointer" 
+                        onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();"/>&nbsp;';
+            // als ungelesen
+            $options .= '<img src="images/icons/mail.png" title="als ungelesen markieren" class="pointer" 
+                        onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
+            // als gelesen
+            $options .= '<img src="images/icons/mail-open.png" title="als gelesen markieren" class="pointer" 
+                        onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
+            // drucken
+            $options .= '<a href="libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'" target="_blank">
+                        <img src="images/icons/printer.png" title="Mail drucken" class="pointer"/></a>&nbsp;';
+            // ticket erstellen
             $options .= '<img src="images/icons/ticket--plus.png" title="Ticket erstellen" class="pointer" 
                         onclick="parent.location.href=\'index.php?page=libs/modules/tickets/ticket.php&exec=new&frommail=true&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\';"/>&nbsp;';
+            // ticket kommentar
             $options .= '<img src="images/icons/ticket--arrow.png" title="als Ticket-Kommentar speichern" class="pointer" 
                         onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.tocomment.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+            // löschen
             $options .= '<img src="images/icons/mail--minus.png" title="löschen" class="pointer"
                         onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
             

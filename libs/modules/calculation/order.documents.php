@@ -609,7 +609,7 @@ if(count($docs) > 0){
 					</td>
 					<td width="40%">
 						<ul class="postnav_text_del">
-							<a href="index.php?id=<?=$order->getId()?>&exec=edit&step=6&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+							<a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=6&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
 						</ul>
 					</td>
 				</tr>
@@ -670,7 +670,7 @@ if(count($docs) > 0){
 			?>
 			</select>
 			&emsp; &emsp;
-			<?=$_LANG->get('Bögen')?> <input type="text" class="text" name="paper_order_boegen" id="paper_order_boegen" style="width: 80px;"> 
+			<?=$_LANG->get('BÃ¶gen')?> <input type="text" class="text" name="paper_order_boegen" id="paper_order_boegen" style="width: 80px;"> 
 			&emsp; &emsp;
 			<?=$_LANG->get('Preis')?> <input type="text" class="text" name="paper_order_price" id="paper_order_price" style="width: 80px;"> <?=$_USER->getClient()->getCurrency()?>
 			&emsp; &emsp;

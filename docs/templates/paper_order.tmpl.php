@@ -6,9 +6,10 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
+
 require_once 'thirdparty/smarty/Smarty.class.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
-require_once 'docs/autodoc/smarty_functions.php';
+require_once 'libs/modules/autodoc/smarty_functions.php';
 
 $calc = new Calculation($order->getPaperOrderCalc());
 $tmp_supplier = new BusinessContact($order->getPaperOrderSupplier());
@@ -23,6 +24,7 @@ $smarty->assign('PaperId', $tmp_paper->getName());
 $smarty->assign('PaperAmount', $order->getPaperOrderBoegen());
 
 $smarty->assign('PaperPrice', $order->getPaperOrderPrice());
+
 
 $htmldump = $smarty->fetch('string:'.$datei);
 $pdf->writeHTML($htmldump);

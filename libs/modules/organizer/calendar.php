@@ -3,50 +3,7 @@
 // ini_set('display_errors', 1);
 require_once 'libs/modules/organizer/event.class.php';
 
-?>
-<table width="100%">
-<tr>
-<td width="200" class="content_header" valign="top"><i class="fa fa-calendar"></i> <?=$_LANG->get('Kalender')?></td>
-        <td align="right">
-            <table>
-                <tr><td>Legende:</td></tr>
-                <?php 
-                $ticket_states = TicketState::getAllStates();
-                foreach ($ticket_states as $ticket_state){
-                    if ($ticket_state->getId() != 1 && $ticket_state->getId() != 3)
-                        echo '<tr><td><input type="checkbox" onclick="refetchEvents();" checked value="'.$ticket_state->getId().'" class="chkb_legend"/> <font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
-                }
-                ?>
-            </table>
-        </td>
-    </tr>
-</table>
-<?php
-
 global $_USER;
-
-if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
-	$users = User::getAllUser(User::ORDER_LOGIN);
-	?>
-	<center>
-	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
-	F&uuml;r Benutzer: <select name="sel_user" id="sel_user" style="width:150px" onchange="refetchEvents();" class="text">
-		<? foreach ($users as $user) {?>
-		<option value="<?=$user->getId()?>" 
-		<?
-			if($user->getId() == $_USER->getId())
-				echo "selected>";
-		?>
-		><?=$user->getFirstname()?> <?=$user->getLastname()?></option>
-		<? } ?>
-	</select>
-	</form>
-	</center>
-	<?
-} else {
-    $sel_user = $_USER;
-    echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
-}
 
 if ($_REQUEST["exec"])
 {
@@ -78,6 +35,7 @@ if ($_REQUEST["exec"])
 <script src='jscripts/calendar/de.js'></script>
 <script>
 	$(document).ready(function() {
+
 		
 		$("a#hiddenclicker").fancybox({
 			'type'    : 'iframe',
@@ -96,6 +54,7 @@ if ($_REQUEST["exec"])
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
+			weekNumbers: true,
 			selectable: true,
 			selectHelper: true,
 			select: function(start, end) {
@@ -109,8 +68,6 @@ if ($_REQUEST["exec"])
 			editable: true,
 			eventLimit: true,
 		    events: function(start, end, timezone, callback) {
-// 				var e = document.getElementById("sel_user");
-// 				var strUser = e.options[e.selectedIndex].value;
 		    	var strUser = $( "#sel_user" ).val();
 			    var states = [];
 		    	$('.chkb_legend').each(function( index ) {
@@ -173,6 +130,21 @@ function refetchEvents()
 {
 	$('#calendar').fullCalendar( 'refetchEvents' );
 }
+function status_all()
+{
+	$('.chkb_legend').each(function( index ) {
+		$( this ).prop( "checked", true )
+	});
+	refetchEvents();
+}
+
+function status_none()
+{
+	$('.chkb_legend').each(function( index ) {
+		$( this ).prop( "checked", false )
+	});
+	refetchEvents();
+}
 </script>
 <style>
 	#calendar {
@@ -187,6 +159,59 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
 }
 ?>
 
-	<div id='loading'>loading...</div>
-
-	<div id='calendar'></div>
+<i class="fa fa-calendar"></i> <?=$_LANG->get('Kalender')?></br>
+<div class="row">
+    <div class="col-md-10">
+    	<div id='loading'>loading...</div>
+    	<div id='calendar'></div>
+    </div>
+    <div class="col-md-2">
+        <table width="100%" valing="top">
+            <tr>
+                <td align="right">
+                    <table>
+                        <tr><td>Status:</td></tr>
+                        <tr><td><span class="pointer" onclick="status_all();">alle</span> | <span class="pointer" onclick="status_none();">keine</span></td></tr>
+                        <?php 
+                        $ticket_states = TicketState::getAllStates();
+                        foreach ($ticket_states as $ticket_state){
+                            if ($ticket_state->getId() != 1 && $ticket_state->getId() != 3)
+                                echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="'.$ticket_state->getId().'" class="chkb_legend"/> <font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
+                        }
+                        echo '<tr><td>&nbsp;</br></td></tr>';
+                        echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="99991" class="chkb_legend"/> Aufträge</td></tr>';
+                        echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="99992" checked class="chkb_legend"/> Termine</td></tr>';
+                        ?>
+                        <tr>
+                            <td>
+                                <?php
+                                if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
+                                	$users = User::getAllUser(User::ORDER_LOGIN);
+                                	?>
+                                	</br>
+                                	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
+                                	Benutzer: <select name="sel_user" id="sel_user" style="width:150px" onchange="refetchEvents();" class="text">
+                                		<? foreach ($users as $user) {?>
+                                		<option value="<?=$user->getId()?>" 
+                                		<?
+                                			if($user->getId() == $_USER->getId())
+                                				echo "selected>";
+                                		?>
+                                		><?=$user->getFirstname()?> <?=$user->getLastname()?></option>
+                                		<? } ?>
+                                	</select>
+                                	</form>
+                                	<?
+                                } else {
+                                    $sel_user = $_USER;
+                                    echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

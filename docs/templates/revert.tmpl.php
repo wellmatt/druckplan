@@ -41,7 +41,8 @@ $smarty->assign('OrderPos',$orderpos);
 $smarty->assign('DeliveryCosts',$order->getDeliveryCosts());
 if ($order->getDeliveryCosts()) {
     // Versandkosten werden auch besteuert (hier 19%)
-    $taxeskey[] = "19";
+    if(!in_array("19", $taxeskey))
+        $taxeskey[] = "19";
     $taxes["19"] += $order->getDeliveryCosts() / 100 * 19;
     $gesnetto += $order->getDeliveryCosts();
 }

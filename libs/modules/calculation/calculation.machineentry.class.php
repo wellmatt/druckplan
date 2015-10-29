@@ -38,6 +38,8 @@ class Machineentry {
     private $supplierPrice = 0 ;				// Einkaufspreis de sSubunternehmers
     private $supplierStatus = 0 ;				// Status der Produktion beim Subunternehmer
     private $umschlUmst = 0 ;				    // gln, umschlagen/umstuelpen
+    private $umschl = 0;
+    private $umst = 0;
     
     private $cutter_cuts = 0;
     private $roll_dir = 0;
@@ -90,6 +92,8 @@ class Machineentry {
                 $this->format_out_width = $r["format_out_width"];
                 $this->format_out_height = $r["format_out_height"];
 				$this->umschlUmst = $r["umschl_umst"]; // gln, umschlagen/umstuelpen
+				$this->umschl = $r["umschl"];
+				$this->umst = $r["umst"];
 				$this->color_detail = $r["color_detail"]; // gln, umschlagen/umstuelpen
 				$this->special_margin = $r["special_margin"];
 				$this->special_margin_text = $r["special_margin_text"];
@@ -215,18 +219,23 @@ class Machineentry {
         				special_margin = {$this->special_margin},
         				special_margin_text = '{$this->special_margin_text}',
         				foldtype = {$this->foldtype->getId()},
-        				umschl_umst = {$this->umschlUmst} 		 ";		//gln, umschlagen/umstuelpen
+        				umschl_umst = {$this->umschlUmst},
+        				umschl = {$this->umschl},
+        				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
         if($this->id > 0)
         {
             $sql = "UPDATE orders_machines SET
                     {$set}
                     WHERE id = {$this->id}";
-//             echo $sql . "</br>";
+//                     if ($this->id == 16)
+//                         echo $sql . "</br>";
                     
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO orders_machines SET {$set}";
             $res = $DB->no_result($sql);
+//                     if ($this->id == 16)
+//                         echo $sql . "</br>";
 //             echo $sql . "</br>";
             // error_log(" --X-- ".$sql." --- ".$DB->getLastError()." --- <br>");
             if($res)
@@ -606,9 +615,37 @@ class Machineentry {
     {
         $this->foldtype = $foldtype;
     }
+    
+	/**
+     * @return the $umschl
+     */
+    public function getUmschl()
+    {
+        return $this->umschl;
+    }
 
-    
-    
-    
+	/**
+     * @return the $umst
+     */
+    public function getUmst()
+    {
+        return $this->umst;
+    }
+
+	/**
+     * @param number $umschl
+     */
+    public function setUmschl($umschl)
+    {
+        $this->umschl = $umschl;
+    }
+
+	/**
+     * @param number $umst
+     */
+    public function setUmst($umst)
+    {
+        $this->umst = $umst;
+    }
 }
 ?>

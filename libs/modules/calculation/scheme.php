@@ -6,6 +6,7 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 
+$rolldir = $machentry->getRoll_dir();
 $total_pages = 0;
 // Basisdaten auslesen
 if($part == Calculation::PAPER_CONTENT) {
@@ -44,13 +45,13 @@ if($part == Calculation::PAPER_CONTENT) {
 // echo "</br>Total Pages: " . $total_pages . "</br>";
 
 
-if($part != Calculation::PAPER_ENVELOPE){
+// if($part != Calculation::PAPER_ENVELOPE){
 	$width = $calc->getProductFormatWidthOpen();
 	$height = $calc->getProductFormatHeightOpen();
-} else {
-	$width = $calc->getEnvelopeWidthOpen();
-	$height = $calc->getEnvelopeHeightOpen();
-}
+// } else {
+// 	$width = $calc->getEnvelopeWidthOpen();
+// 	$height = $calc->getEnvelopeHeightOpen();
+// }
 $width_closed     = $calc->getProductFormatWidth();
 $height_closed     = $calc->getProductFormatHeight();
 
@@ -66,8 +67,30 @@ $height_closed     = $calc->getProductFormatHeight();
 //     }
 // }
 
-
-$direction = $paper->getPaperDirection($calc, $part);
+if ($rolldir == 0)
+    $direction = $paper->getPaperDirection($calc, $part);
+elseif ($rolldir == 1) // breite bahn
+{
+    $direction = Paper::PAPER_DIRECTION_SMALL;
+    if ($paperH > $paperW)
+    {
+        $paperH_temp = $paperH;
+        $paperW_temp = $paperW;
+        $paperH = $paperW;
+        $paperW = $paperH_temp;
+    }
+}
+else // schmale bahn
+{
+    $direction = Paper::PAPER_DIRECTION_WIDE;
+    if ($paperW > $paperH)
+    {
+        $paperH_temp = $paperH;
+        $paperW_temp = $paperW;
+        $paperW = $paperH;
+        $paperH = $paperW_temp;
+    }
+}
 
 // Inhalt
 if ($width_closed < $width && $width_closed != 0 )
@@ -125,7 +148,7 @@ $product_rows2_closed       = floor(($paperH - $mach->getBorder_top() - $mach->g
 $product_per_paper2  = $product_per_line2 * $product_rows2;
 
 
-if($product_per_paper2 >= $product_per_paper){
+if($product_per_paper2 >= $product_per_paper){ //  || $rolldir == 2
 	$flipped = true;
 	$product_rows     = $product_rows2;
 	$product_per_line = $product_per_line2;
@@ -175,21 +198,21 @@ $product_per_paper   = $product_per_line * $product_rows;
 // SCHNITTE TEST
 
 if ($tmp_anschnitt > 0){
-    echo '</br>Berechnung mit Zwischenschnitt</br>';
-    echo 'Basis Schnitte: 4 (außen) </br>';
-    echo 'Schnitte Horizontal: ' . ($product_rows_closed-1)*2 . '</br>';
-    echo 'Schnitte Waagerecht: ' . ($product_per_line_closed/2-1)*2 . '</br>';
-    echo 'Schnitte gesamt: ' . (4 + (($product_rows_closed-1)*2) + (($product_per_line_closed/2-1)*2)) . '</br>';
+//     echo '</br>Berechnung mit Zwischenschnitt</br>';
+//     echo 'Basis Schnitte: 4 (außen) </br>';
+//     echo 'Schnitte Horizontal: ' . ($product_per_line-1)*2 . '</br>';
+//     echo 'Schnitte Vertikal: ' . ($product_rows-1)*2 . '</br>';
+//     echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
 } else {
-    echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-    echo '</br>Basis Schnitte: 4 (außen) </br>';
-    echo 'Schnitte Horizontal: ' . ($product_rows_closed-1)*2 . '</br>';
-    echo 'Schnitte Waagerecht: ' . ($product_per_line_closed/2-1)*2 . '</br>';
-    echo 'Schnitte gesamt: ' . (4 + (($product_rows_closed-1)*2) + (($product_per_line_closed/2-1)*2)) . '</br>';
+//     echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+//     echo '</br>Basis Schnitte: 4 (außen) </br>';
+//     echo 'Schnitte Horizontal: ' . ($product_per_line-1)/2 . '</br>';
+//     echo 'Schnitte Vertikal: ' . ($product_rows-1)/2 . '</br>';
+//     echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
 }
 
 $schemes = Array();
-$x = 0;
+// $x = 0;
 $rest = 1;
 
 $product_per_paper_tmp = $product_per_paper;

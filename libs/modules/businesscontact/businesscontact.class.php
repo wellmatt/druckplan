@@ -115,7 +115,7 @@ class BusinessContact {
         $this->supervisor = new User();
         $this->salesperson = new User();
         
-        if ($_USER != NULL){
+        if (isset($_USER) && get_class($_USER) == "User"){
 	        $this->country = $_USER->getClient()->getCountry();
 	        $this->alt_country = $_USER->getClient()->getCountry();
 	        $this->priv_country = $_USER->getClient()->getCountry();

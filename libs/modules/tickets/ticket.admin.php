@@ -17,6 +17,15 @@ if ($_REQUEST["delete_state"]){
     $del_sta = new TicketState((int)$_REQUEST["delete_state"]);
     $del_sta->delete();
 }
+if ($_REQUEST["delete_source"]){
+    $del_source = new TicketSource((int)$_REQUEST["delete_source"]);
+    $del_source->delete();
+}
+
+if ($_REQUEST["source_default"]){
+    $def_source = new TicketSource((int)$_REQUEST["source_default"]);
+    $def_source->setDefault();
+}
 
 if ($_REQUEST["exec"] == "save")
 {
@@ -75,6 +84,16 @@ if ($_REQUEST["exec"] == "save")
             $prio->setTitle($ptitle);
             $prio->setValue($pvalue);
             $prio->save();
+        }
+    }
+    $all_sources = (int)$_REQUEST["count_sources"];
+    for ($i=0 ; $i <= $all_sources ; $i++){
+        if ($_REQUEST["sources_title_".$i] != "" && $_REQUEST["sources_title_".$i]){
+            $id = (int)$_REQUEST["sources_id_".$i];
+            $title = $_REQUEST["sources_title_".$i];
+            $source = new TicketSource($id);
+            $source->setTitle($title);
+            $source->save();
         }
     }
     
@@ -159,6 +178,24 @@ function addPrioRow()
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('count_prios').value = count;
 }
+function addSourceRow()
+{
+    var obj = document.getElementById('table-sources');
+    var count = parseInt(document.getElementById('count_sources').value) + 1;
+
+    var insert = '<tr><td class="content_row_clear">'+count+'</td>';
+	insert += '<td class="content_row_clear">';
+	insert += '<input type="hidden" name="sources_id_'+count+'" id="sources_id_'+count+'" value="0">';
+	insert += '<input name="sources_title_'+count+'" class="text" type="text"';
+	insert += 'value ="" style="width: 200px">';
+	insert += '</td>';
+	insert += '<td class="content_row_clear">';
+	insert += '<input name="sources_default_'+count+'" type="checkbox" value ="1">';
+	insert += '</td></tr>';
+
+	obj.insertAdjacentHTML("BeforeEnd", insert);
+	document.getElementById('count_sources').value = count;
+}
 </script>
 
 <table width="100%">
@@ -187,6 +224,7 @@ function addPrioRow()
 			<li><a href="#tabs-2"><? echo $_LANG->get('Stati');?></a></li>
 			<?php /*<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>*/?>
 			<li><a href="#tabs-4"><? echo $_LANG->get('Gruppenrechte');?></a></li>
+			<li><a href="#tabs-5"><? echo $_LANG->get('Herkunft');?></a></li>
 		</ul>
        <div id="tabs-0">
             <?php 
@@ -385,6 +423,47 @@ function addPrioRow()
    			</tr>
    			<?php }?>
    			</table>
+       </div>
+       <div id="tabs-5">
+            <?php 
+            $ticket_sources = TicketSource::getAllSources();
+            ?>
+   			<input 	type="hidden" name="count_sources" id="count_sources" 
+				value="<? if(count($ticket_sources) > 0) echo count($ticket_sources); else echo "0";?>">
+			<img src="images/icons/plus.png" class="pointer icon-link" onclick="addSourceRow()">
+            <table border="0" cellpadding="0" cellspacing="0" id="table-sources">
+				<colgroup>
+		        	<col width="40">
+		        	<col width="300">
+		    	</colgroup>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Nr')?></td>
+					<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
+				</tr>
+				<?
+				$x = count($ticket_sources);
+				for ($y=0; $y < $x ; $y++){ ?>
+					<tr>
+						<td class="content_row_clear">
+						<?=$ticket_sources[$y]->getId()?>
+						</td>
+						<td class="content_row_clear">
+						    <input type="hidden" name="sources_id_<?=$y?>" id="sources_id_<?=$y?>" value="<?php echo $ticket_sources[$y]->getId();?>">
+							<input 	name="sources_title_<?=$y?>" class="text" type="text" value ="<?=$ticket_sources[$y]->getTitle();?>" style="width: 200px">
+							<?php if ($ticket_sources[$y]->getDefault() == 1) echo '<img src="images/icons/asterisk.png">';?>
+						</td>
+						<td class="content_row_clear">
+							<a href="index.php?page=<?=$_REQUEST['page']?>&source_default=<?=$ticket_sources[$y]->getId()?>">
+							<img src="images/icons/asterisk.png" class="pointer icon-link" title="als Standard setzen"></a>
+							&nbsp;
+							<?php if ($ticket_sources[$y]->getId() != 1 && $ticket_sources[$y]->getId() != 2 && $ticket_sources[$y]->getId() != 3 && $ticket_sources[$y]->getId() != 4){?>
+						    <a href="index.php?page=<?=$_REQUEST['page']?>&delete_source=<?=$ticket_sources[$y]->getId()?>">
+						    <img src="images/icons/cross-script.png" class="pointer icon-link"></a>&nbsp;
+						    <?php } ?>
+						</td>
+					</tr>
+				<? } ?>
+			</table>
        </div>
 </div>
 </form>
