@@ -69,6 +69,12 @@ if ($_REQUEST["ajax_action"] == "search_customer_cp"){
 	header("Content-Type: application/json");
 	echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "search_tags"){
+    $retval = Article::searchTags($_REQUEST['term']);
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
+}
 
 ?>
 

@@ -19,6 +19,8 @@ require_once('libs/modules/businesscontact/businesscontact.class.php');
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
 <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/tagit/tag-it.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
 <script type="text/javascript">
 $(document).ready(function() {
     var art_table = $('#art_table').DataTable( {
@@ -51,7 +53,7 @@ $(document).ready(function() {
 		            { "sortable": false },
 		            null,
 		            null,
-		            null,
+		            { "sortable": false },
 		            null,
 		            null,
 		            <?if($_CONFIG->shopActivation){?>
@@ -59,6 +61,13 @@ $(document).ready(function() {
 		            <?}?>
 		            { "sortable": false }
 		          ],
+  		"fnServerData": function ( sSource, aoData, fnCallback ) {
+			var tags = document.getElementById('ajax_tags').value;
+		    aoData.push( { "name": "search_tags", "value": tags, } );
+		    $.getJSON( sSource, aoData, function (json) {
+		        fnCallback(json)
+		    } );
+		},
 		"language": 
 					{
 						"emptyTable":     "Keine Daten vorhanden",
@@ -93,10 +102,46 @@ $(document).ready(function() {
 } );
 </script>
 
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery("#tags").tagit({
+        singleField: true,
+        singleFieldNode: $('#tags'),
+        singleFieldDelimiter: ";",
+        allowSpaces: true,
+        minLength: 2,
+        removeConfirmation: true,
+        tagSource: function( request, response ) {
+            $.ajax({
+                url: "libs/modules/article/article.ajax.php?ajax_action=search_tags", 
+                data: { term:request.term },
+                dataType: "json",
+                success: function( data ) {
+                    response( $.map( data, function( item ) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        }
+                    }));
+                }
+            });
+        },
+        afterTagAdded: function(event, ui) {
+            $('#ajax_tags').val($("#tags").tagit("assignedTags"));
+        	$('#art_table').dataTable().fnDraw();
+        },
+        afterTagRemoved: function(event, ui) {
+            $('#ajax_tags').val($("#tags").tagit("assignedTags"));
+        	$('#art_table').dataTable().fnDraw();
+        }
+    });
+});
+</script>
+
 <table width="100%">
 	<tr>
 		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"><span style="font-size: 13px"> <?=$_LANG->get('Artikel')?> </span>
+			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"><span style="font-size: 13px"> <?=$_LANG->get('Artikel')?> </span></br>
 		</td>
         <td valign="center" align="right">
 		</td>
@@ -110,6 +155,19 @@ $(document).ready(function() {
 </table>
 
 <div class="box1">
+
+    <div class="box2">
+        <table>
+            <tr align="left">
+                <td valing="top">Tags:&nbsp;&nbsp;</td>
+                <td valign="top"> 
+                    <input type="hidden" id="ajax_tags" name="ajax_tags"/>
+                    <input name="tags" id="tags" style="width:200px;" class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                </td>
+            </tr>
+        </table>
+    </div>
+    </br>
 	<table id="art_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
         <thead>
             <tr>
@@ -117,7 +175,7 @@ $(document).ready(function() {
                 <th width="105"><?=$_LANG->get('Bild')?></th>
                 <th><?=$_LANG->get('Titel')?></th>
                 <th width="80"><?=$_LANG->get('Art.-Nr.')?></th>
-                <th width="80"><?=$_LANG->get('Matchcode')?></th>
+                <th width="80"><?=$_LANG->get('Tags')?></th>
                 <th width="160"><?=$_LANG->get('Warengruppe')?></th>
                 <th width="160"><?=$_LANG->get('zug. Kunde')?></th>
 				<?if($_CONFIG->shopActivation){?>

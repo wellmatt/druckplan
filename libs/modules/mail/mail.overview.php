@@ -142,6 +142,7 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
+		            null,
 		            null
 		          ],
 		"aaSorting": [[ 3, "desc" ]],
@@ -222,7 +223,7 @@ function get_child ( d,row,idx,tr,control ) {
 	var body = $.ajax({
 		type: "GET",
 		url: "libs/modules/mail/mail.ajax.php",
-		data: { exec: "getMailBody", mailid: mailid, mailbox: mailbox, muid: d[5] },
+		data: { exec: "getMailBody", mailid: mailid, mailbox: mailbox, muid: d[6] },
 		success: function(data) 
 		    {
 			    row.child( '<div class="box2">'+data+'</div>' ).show();
@@ -559,6 +560,7 @@ $(document).ready(function(){
     			<tr>
     			    <th></th>
     				<th><?=$_LANG->get('Von')?></th>
+    				<th><?=$_LANG->get('An')?></th>
     				<th><?=$_LANG->get('Betreff')?></th>
     				<th><?=$_LANG->get('Datum')?></th>
     				<th><?=$_LANG->get('Optionen')?></th>
@@ -568,6 +570,7 @@ $(document).ready(function(){
     			<tr>
     			    <th></th>
     				<th><?=$_LANG->get('Von')?></th>
+    				<th><?=$_LANG->get('An')?></th>
     				<th><?=$_LANG->get('Betreff')?></th>
     				<th><?=$_LANG->get('Datum')?></th>
     				<th><?=$_LANG->get('Optionen')?></th>

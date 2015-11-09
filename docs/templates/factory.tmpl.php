@@ -79,6 +79,7 @@ foreach ($calcs as $calc) {
         $dump["Color"] = $chrstr;
         $dump["DeliveryDate"] = $tmp_date;
         $dump["Type"] = array();
+        $dump["Calc"] = $calc;
         
         $machgroups = MachineGroup::getAllMachineGroups(MachineGroup::ORDER_POSITION);
         foreach ($machgroups as $mg) {

@@ -54,6 +54,12 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
 	$article->setMatchcode($_REQUEST["article_matchcode"]);
 	
+	if ($_REQUEST["article_tags"])
+	{
+	   $tags = explode(";", $_REQUEST["article_tags"]);
+	   $article->setTags($tags);
+	}
+	
 	$tmp_shop_bc_arr = Array();
 	if ($_REQUEST["shop_appr_bc"])
 	{
@@ -71,9 +77,12 @@ if($_REQUEST["subexec"] == "save"){
 // 	var_dump($article->getShop_approval());
 	
 	$quser_list = Array();
-	foreach ($_REQUEST["qusr"] as $qusr)
+	if ($_REQUEST["qusr"])
 	{
-	    $quser_list[] = new User((int)$qusr);
+    	foreach ($_REQUEST["qusr"] as $qusr)
+    	{
+    	    $quser_list[] = new User((int)$qusr);
+    	}
 	}
 	$article->setQualified_users($quser_list);
 	
@@ -246,13 +255,13 @@ function addOrderAmount()
 </script>
 
 <!-- FancyBox -->
-<script type="text/javascript"
-	src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
-<script type="text/javascript"
-	src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-<link rel="stylesheet" type="text/css"
-	href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+<script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+<script type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css"	href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
 <script type="text/javascript" charset="utf8" src="jscripts/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/tagit/tag-it.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
+<!-- <link rel="stylesheet" type="text/css" href="jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" media="screen" /> -->
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -301,6 +310,34 @@ function addOrderAmount()
         	 }
 		});
     });
+</script>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery("#article_tags").tagit({
+        singleField: true,
+        singleFieldNode: $('#article_tags'),
+        singleFieldDelimiter: ";",
+        allowSpaces: true,
+        minLength: 2,
+        removeConfirmation: true,
+        tagSource: function( request, response ) {
+            $.ajax({
+                url: "libs/modules/article/article.ajax.php?ajax_action=search_tags", 
+                data: { term:request.term },
+                dataType: "json",
+                success: function( data ) {
+                    response( $.map( data, function( item ) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        }
+                    }));
+                }
+            });
+        }
+    });
+});
 </script>
 
 <table width="100%">
@@ -359,13 +396,18 @@ function addOrderAmount()
 							value="<?=$article->getNumber()?>" style="width: 180px"></td>
 					</tr>
 					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Matchcode')?></td>
-						<td class="content_row_clear"><input id="article_matchcode"
-							name="article_matchcode" type="text" class="text"
-							value="<?=$article->getMatchcode()?>" style="width: 180px"></td>
+    					<?php 
+    					   $tags = $article->getTags();
+    					   if (count($tags)>0)
+    					       $tags = implode(";", $tags);
+    					?>
+						<td class="content_row_header"><?=$_LANG->get('Tags')?></td>
+						<td class="content_row_clear"><input id="article_tags"
+							name="article_tags" type="text" class="text"
+							value="<?php echo $tags; ?>" style="width: 180px"></td>
 					</tr>
 					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
+						<td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung')?></td>
 						<td class="content_row_clear"><textarea id="article_desc"
 								name="article_desc" rows="4" cols="50" class="text artdesc"><?=stripslashes($article->getDesc())?></textarea>
 						</td>

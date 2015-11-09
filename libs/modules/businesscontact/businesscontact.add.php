@@ -278,6 +278,19 @@ $(document).ready(function() {
 } );
 </script>
 
+ <script>
+$(function() {
+   $( "#name1" ).autocomplete({
+        delay: 0,
+        source: 'libs/modules/businesscontact/businesscontact.ajax.autocomplete.php',
+		minLength: 4,
+		dataType: "json",
+		select: function( event, ui ) {return false;},
+	    focus: function( event, ui ) {return false;}
+    });
+});
+</script>
+
 <script>
 	$(function() {
 		$( "#tabs" ).tabs({ selected: <?=$show_tab?> });
@@ -679,7 +692,7 @@ function commi_checkbox(){
 				</tr>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-					<td class="content_row_clear"><input name="name1" style="width: 250px"
+					<td class="content_row_clear"><input name="name1" id="name1" style="width: 250px"
 						class="text" value="<?=$businessContact->getName1()?>"
 						onfocus="markfield(this,0)" onblur="markfield(this,1)">
 					</td>

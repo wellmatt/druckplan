@@ -79,7 +79,7 @@ $tmeEnd = mktime(0,0,0,date('j'), date('n'), date('Y')) + 60*60*24;
 				type: 'GET',
 				data: {
 					user: strUser,
-					custom_param2: 'somethingelse'
+					states: ['99992']
 				},
 				error: function() {
 					alert('there was an error while fetching events!');

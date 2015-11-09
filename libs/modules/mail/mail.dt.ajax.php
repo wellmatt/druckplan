@@ -208,7 +208,12 @@
                         onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
             
             $row[] = null;
-            $row[] = $list->first()->getEnvelope()->from->__toString();
+            $mail_from = $list->first()->getEnvelope()->from->__toString();
+            $mail_from = str_replace('"', '', $mail_from);
+            $row[] = $mail_from;
+            $mail_to = $list->first()->getEnvelope()->to->__toString();
+            $mail_to = str_replace(",", "</br>", $mail_to);
+            $row[] = $mail_to;
             $row[] = $list->first()->getEnvelope()->subject;
             $row[] = date("d.m.Y H:i",$list->first()->getEnvelope()->date->__toString());
             $row[] = $options;

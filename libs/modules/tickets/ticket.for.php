@@ -267,7 +267,18 @@ $(document).ready(function() {
 		<?=$savemsg?>
 		</td>
 		<td class="content_header" align="right">
-		  <a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> 
+          <?php 
+    	  if ($from_busicon){
+    	      $tmp_bc = new BusinessContact((int)$contactID);
+    	      $main_contact = ContactPerson::getMainContact($tmp_bc);
+    	      if ($tmp_bc->getId()>0 && $main_contact->getId()>0)
+    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new&customer='.$tmp_bc->getId().'&contactperson='.$main_contact->getId().'" class="icon-link"><img src="images/icons/ticket--plus.png"> ';
+    	      else
+    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> ';
+    	  } else {
+    	      echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> ';
+    	  }
+          ?>
 		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
 		</td>
 	</tr>

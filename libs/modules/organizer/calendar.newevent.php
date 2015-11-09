@@ -87,13 +87,6 @@ if($_REQUEST["subexec"] == "save")
 	
 	$new_int_parts = array_diff($int_partitipants, $tmp_old_int_parts);
 	
-	foreach ($new_int_parts as $new_part)
-	{
-	    $tmp_user = new User($new_part);
-// 	    if ($tmp_user->getId() != $_USER->getId())
-	       Notification::generateNotification($tmp_user, "Event", "NewEvent", $_USER->getNameAsLine2(), $event->getId());
-	}
-	
 	if (count($event->getParticipantsInt()) > 0 && 
 	    ($event->getBegin() != (int)strtotime($_REQUEST["event_from_date"]) || 
 	    $event->getEnd() != (int)strtotime($_REQUEST["event_to_date"]) ||
@@ -128,6 +121,13 @@ if($_REQUEST["subexec"] == "save")
 	
     $savemsg = getSaveMessage($event->save());
     echo $DB->getLastError();
+    
+    foreach ($new_int_parts as $new_part)
+    {
+        $tmp_user = new User($new_part);
+	    if ($tmp_user->getId() != $_USER->getId())
+            Notification::generateNotification($tmp_user, "Event", "NewEvent", $_USER->getNameAsLine2(), $event->getId());
+    }
     
     echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
 }

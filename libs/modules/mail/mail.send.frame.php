@@ -282,6 +282,7 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
         ));
         
         $orig_mail_from = $list->first()->getEnvelope()->from->__toString();
+        $orig_mail_from = str_replace('"', '', $orig_mail_from);
         $orig_mail_subject = $list->first()->getEnvelope()->subject;
         $orig_mail_date = date("d.m.Y H:i",$list->first()->getEnvelope()->date->__toString());
         $orig_mail_to = $list->first()->getEnvelope()->to->__toString();

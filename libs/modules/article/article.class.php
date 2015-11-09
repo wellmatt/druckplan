@@ -45,6 +45,7 @@ class Article {
 	private $shop_needs_upload;     // Datei upload im Warenkorb
 	private $matchcode;             // Artikel Matchcode
 	private $shop_approval;         // Shop Freigabe für BCs und CPs
+	private $tags;                  // Artikel Tags
 	
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
@@ -169,6 +170,17 @@ class Article {
 				    }
 				    $this->shop_approval = $retval;
 				}
+				
+
+				$sql = "SELECT tag FROM article_tags WHERE article = {$id}";
+				if($DB->num_rows($sql)){
+				    $retval = Array();
+				    foreach($DB->select($sql) as $r){
+				        $retval[] = $r["tag"];
+				    }
+				    $this->tags = $retval;
+				}
+				
 // 			    Cachehandler::toCache("obj_article_".$id, $this);
 			}
 		}
@@ -262,6 +274,22 @@ class Article {
 		    }
 		}
 		
+		$sql = "DELETE FROM article_tags 
+		        WHERE article = {$this->id}";
+		$DB->no_result($sql);
+		
+		if (count($this->tags)>0)
+		{
+		    foreach ($this->tags as $tag)
+		    {
+		        $sql = "INSERT INTO article_tags
+		        (article, tag)
+		        VALUES
+		        ({$this->id}, '{$tag}')";
+		        $res = $DB->no_result($sql);
+		    }
+		}
+		
 		$sql = "DELETE FROM article_shop_approval 
 		        WHERE article = {$this->id}";
 		$DB->no_result($sql);
@@ -316,6 +344,19 @@ class Article {
 			}
 		}
 	}
+	
+	public static function searchTags($term)
+	{
+		global $DB;
+		$retval = Array();
+		$sql = "SELECT DISTINCT tag FROM article_tags WHERE tag LIKE '{$term}'";
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+			    $retval[] = Array("label" => $r["tag"], "value" => $r["tag"]);
+			}
+		}
+		return $retval;
+	} 
 	
 	/**
 	 * Ueberpruefung, ob eine eingegebene Artikelnummer schon vergeben ist.
@@ -1050,9 +1091,22 @@ class Article {
     {
         $this->shop_approval = $shop_approval;
     }
+    
+	/**
+     * @return the $tags
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
 
-    
-    
+	/**
+     * @param Ambigous <multitype:unknown , multitype:Ambigous <multitype:> > $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    }
     
 }
 ?>

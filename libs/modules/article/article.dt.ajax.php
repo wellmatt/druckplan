@@ -2,7 +2,7 @@
 
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article.matchcode', 'tradegroup_title', 'customer', 'shop_customer_rel' );
+    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title', 'customer', 'shop_customer_rel' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -94,7 +94,7 @@
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "art_picture" )
+            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "art_picture" && $aColumns[$i] != "article_tags" )
             {
                 $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( utf8_decode($_GET['sSearch']) )."%' OR ";
             }
@@ -129,11 +129,37 @@
         $sWhere .= " AND status = 1 ";
     }
     
+    if ($_REQUEST["search_tags"])
+    {
+        $tags = explode(",", $_REQUEST["search_tags"]);
+        $tag_where = "";
+        foreach ($tags as $tag)
+        {
+            $tag_where .= " OR tag LIKE '{$tag}' ";
+        }
+        $sTagArticles = Array();
+        $tQuery = "SELECT article, count(article) as count FROM article_tags WHERE 1=2 {$tag_where} GROUP BY article";
+//         echo $tQuery . "</br>";
+        $rResultStags = mysql_query( $tQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+        while ($stag_row = mysql_fetch_array($rResultStags))
+        {
+            if ($stag_row["count"] >= count($tags))
+                $sTagArticles[] = $stag_row["article"];
+        }
+        if (count($sTagArticles)>0)
+        {
+            $sTagArticles = implode(",", $sTagArticles);
+            $sWhere .= " AND article.id IN ({$sTagArticles}) ";
+        } else
+            $sWhere .= " AND 1=2 ";
+    }
+    
+    
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, article.matchcode, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
+    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
                FROM article LEFT JOIN article_pictures ON article_pictures.articleid = article.id LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
                LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id
                $sWhere
@@ -203,6 +229,23 @@
                               <img src="images/products/'.$aResultPics[0].'" style="max-width: 100px; max-height: 100px;" width="100px"></a>';
                 } else {
                     $row[] = '<img src="images/icons/image.png" title="Kein Bild hinterlegt">&nbsp;';
+                }
+            }
+            else if ( $aColumns[$i] == 'article_tags' )
+            {
+                $tag_sql = "SELECT DISTINCT tag FROM article_tags WHERE article = {$aRow[ $aColumns[0] ]}";
+				
+				$rResultTags = mysql_query( $tag_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+				$tag_rows = array();
+                while ($tag_row = mysql_fetch_array($rResultTags))
+                {
+                    $tag_rows[] = $tag_row["tag"];
+                }
+                if(count($tag_rows) > 0){
+                    $tags = implode("; ", $tag_rows);
+                    $row[] = $tags;
+                } else {
+                    $row[] = '';
                 }
             }
             else if ( $aColumns[$i] == 'id' )
