@@ -115,7 +115,7 @@ foreach ($calcs as $calc) {
                         elseif ((int)$me->getUmst() == 1)
                             $temp["Position"] .= '<b>Umscht&uuml;lpen</b>';
                         else
-                            $temp["Position"] .= '<b>Sch&ouml;n & Wieder</b>';
+                            $temp["Position"] .= '<b>Sch&ouml;n & Wider</b>';
                         $temp["Position"] .= '<br>';
 //                     $paper = $calc->getPaperContent();
 //                     $direction = $paper->getPaperDirection($calc, $me->getPart());

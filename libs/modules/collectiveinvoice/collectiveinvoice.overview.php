@@ -43,7 +43,7 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 };
 
 $(document).ready(function() {
-    var orders = $('#orders').DataTable( {
+    var colinv = $('#colinv').DataTable( {
         // "scrollY": "1000px",
         "processing": true,
         "bServerSide": true,
@@ -114,9 +114,9 @@ $(document).ready(function() {
 					}
     } );
 
-    $("#orders tbody td:not(:last-child)").live('click',function(){
-        var aPos = $('#orders').dataTable().fnGetPosition(this);
-        var aData = $('#orders').dataTable().fnGetData(aPos[0]);
+    $("#colinv tbody td:not(:last-child)").live('click',function(){
+        var aPos = $('#colinv').dataTable().fnGetPosition(this);
+        var aData = $('#colinv').dataTable().fnGetData(aPos[0]);
     	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
     });
 
@@ -131,7 +131,7 @@ $(document).ready(function() {
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
-            	$('#orders').dataTable().fnDraw();
+            	$('#colinv').dataTable().fnDraw();
             }
 	});
 	$('#date_max').datepicker(
@@ -144,7 +144,7 @@ $(document).ready(function() {
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
-            	$('#orders').dataTable().fnDraw();
+            	$('#colinv').dataTable().fnDraw();
             }
 	});
 	
@@ -186,7 +186,7 @@ $(document).ready(function() {
     </table>
 </div>
 </br>
-<table id="orders" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+<table id="colinv" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
 	<thead>
 		<tr>
 			<th width="10"><?=$_LANG->get('ID')?></th>

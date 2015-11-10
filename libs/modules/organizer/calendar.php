@@ -94,23 +94,24 @@ if ($_REQUEST["exec"])
 				$('#loading').toggle(bool);
 			},
 			eventDrop: function(event, delta, revertFunc) {
-				if (!confirm("Eintrag '" + event.title + "' verschieben nach " + event.start.format() + "\nsind Sie sicher?")) {
+				if (!confirm("Eintrag '" + event.title + "' verschieben nach \nStart: " + event.start.format() + "\nEnde: " + event.end.format() + "\nsind Sie sicher?")) {
 					revertFunc();
 				} else {
 					$.ajax({
 						url: 'libs/modules/organizer/calendar.ajax.php',
-						data: 'exec=moveEvent&event_id='+ event.id +'&new_start='+ event.start.unix() +'&new_end='+ event.end.unix(),
+						data: 'exec=moveEvent&event_id='+ event.id +'&new_start='+ event.start.format() +'&new_end='+ event.end.format(),
 						type: "GET",
 						success: function(json) {
 							document.getElementById('errormsg').innerHTML = json;
 						}
 					});
+					return true;
 				}
 			},
 			eventResize: function(event) {
 				$.ajax({
 					url: 'libs/modules/organizer/calendar.ajax.php',
-					data: 'exec=resizeEvent&event_id='+ event.id +'&new_start='+ event.start.unix() +'&new_end='+ event.end.unix(),
+					data: 'exec=resizeEvent&event_id='+ event.id +'&new_start='+ event.start.format() +'&new_end='+ event.end.format(),
 					type: "GET",
 					success: function(json) {
 						document.getElementById('errormsg').innerHTML = json;

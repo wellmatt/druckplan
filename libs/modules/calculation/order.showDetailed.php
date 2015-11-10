@@ -473,8 +473,31 @@ $order = new Order((int)$_REQUEST["id"]);
                               	break;
                         }
                 }?><br>
-                <? if($me->getMachine()->getType() == Machine::TYPE_CTP) { 
-                    echo $_LANG->get('Anzahl Druckplatten').": ".$calc->getPlateCount();
+                <? if($me->getMachine()->getType() == Machine::TYPE_CTP) {
+                    $machentries2 = Machineentry::getAllMachineentries($calc->getId(), Machineentry::ORDER_ID);
+                    foreach($machentries2 as $me2) {
+                       if($me2->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {
+                        switch($me2->getPart())
+                        {
+                            case Calculation::PAPER_CONTENT:
+                                echo $_LANG->get('Anzahl Druckplatten Inhalt').": ".$calc->getPlateCount($me2)."</br>";
+                                break;
+                            case Calculation::PAPER_ADDCONTENT:
+                                echo $_LANG->get('Anzahl Druckplatten zus. Inhalt').": ".$calc->getPlateCount($me2)."</br>";
+                                break;
+                            case Calculation::PAPER_ENVELOPE:
+                                echo $_LANG->get('Anzahl Druckplatten Umschlag').": ".$calc->getPlateCount($me2)."</br>";
+                                break;
+                            case Calculation::PAPER_ADDCONTENT2:
+                                echo $_LANG->get('Anzahl Druckplatten zus. Inhalt 2').": ".$calc->getPlateCount($me2)."</br>";
+                                break;
+                            case Calculation::PAPER_ADDCONTENT3:
+                                echo $_LANG->get('Anzahl Druckplatten zus. Inhalt 3').": ".$calc->getPlateCount($me2)."</br>";
+                                break;
+                        }
+                       }
+                    }
+                    echo $_LANG->get('Anzahl Druckplatten gesamt').": ".$calc->getPlateCount();
                     echo "<br>";
                 }
                 ?>

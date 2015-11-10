@@ -3,7 +3,7 @@
     require_once 'config.php';
     require_once 'libs/modules/comment/comment.class.php';
 
-    $aColumns = array( 'id', 'title', 'crtuser', 'crtdate', 'visability' );
+    $aColumns = array( 'null', 'id', 'title', 'crtuser', 'crtdate', 'visability', 'comment' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -148,6 +148,7 @@
                 comments.crtdate,
                 comments.visability,
                 comments.state,
+                comments.`comment`,
                 comments.module,
                 comments.objectid,
                 comments.crtuser as crtuserid
@@ -173,6 +174,7 @@
                 comments.crtdate,
                 comments.visability,
                 comments.state,
+                comments.`comment`,
                 comments.module,
                 comments.objectid,
                 comments.crtuser as crtuserid
@@ -197,6 +199,7 @@
                 comments.crtdate,
                 comments.visability,
                 comments.state,
+                comments.`comment`,
                 comments.module,
                 comments.objectid,
                 comments.crtuser as crtuserid
@@ -228,6 +231,15 @@
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
             if ( $aColumns[$i] == 'id' )
+            {
+                /* do not print the id */
+                $row[] = $aRow[ $aColumns[$i] ];
+            }
+            else if ( $aColumns[$i] == 'null' )
+            {
+                $row[] = null;
+            }
+            else if ( $aColumns[$i] == 'comment' )
             {
                 /* do not print the id */
                 $row[] = $aRow[ $aColumns[$i] ];

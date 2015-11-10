@@ -247,21 +247,28 @@ $(document).ready(function() {
 		"pageLength": 10,
 		"dom": 'flrtip',
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
-		"columns": [
+		"columns": [            
+		    		{
+                        "className":      'details-control',
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": ''
+                    },
 		            { "searchable": false},
 		            { "searchable": true},
 		            { "searchable": true},
 		            { "searchable": false},
-		            { "searchable": false}
+		            { "searchable": false},
+		            { "visible": false}
 		          ],
         "language": {
                     	"url": "jscripts/datatable/German.json"
           	        }
     } );
-    $("#comment_table tbody td").live('click',function(){
+    $("#comment_table tbody td:not(:first-child)").live('click',function(){
         var aPos = $('#comment_table').dataTable().fnGetPosition(this);
         var aData = $('#comment_table').dataTable().fnGetData(aPos[0]);
-        callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[0]+'&tktid=0');
+        callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[1]+'&tktid=0');
     });
 	
 	$("a#tktc_hiddenclicker").fancybox({
@@ -275,6 +282,27 @@ $(document).ready(function() {
 		'overlayShow'	:	true,
 		'helpers'		:   { overlay:null, closeClick:true }
 	});
+
+	$('#comment_table tbody').on('click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = search_tickets.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( child_comment(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+
+	function child_comment ( d ) {
+	    // `d` is the original data object for the row
+	    return '<div class="box2">'+d[6]+'</div>';
+	}
 } );
 </script>
 
@@ -463,7 +491,8 @@ function commi_checkbox(){
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
 			<li><a href="#tabs-10"><? echo $_LANG->get('Rechnungseingang');?></a></li>
-			<li><a href="#tabs-11"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
+			<li><a href="#tabs-11"><? echo $_LANG->get('Kalkulationen');?></a></li>
+			<li><a href="#tabs-13"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
 		</ul>
 		
 		<? // ---------------------------- Uebesicht ueber den Geschaeftskontakt --------------------------?>
@@ -1322,13 +1351,24 @@ function commi_checkbox(){
 		} ?>
 		</div>
 
-		<? // ------------------------------------- Vorgänge ----------------------------------------------?>
+		<? // ------------------------------------- Kalks ----------------------------------------------?>
 		
 		<div id="tabs-11">
 		<?if($businessContact->getId()){
 		    $_REQUEST['page'] = "libs/modules/calculation/order.php";
 			$_REQUEST['cust_id'] = $businessContact->getId();
 			require_once('libs/modules/calculation/order.php');
+		} 
+		$_REQUEST['page'] = "libs/modules/businesscontact/businesscontact.php";?>
+		</div>
+
+		<? // ------------------------------------- Vorgänge ----------------------------------------------?>
+		
+		<div id="tabs-13">
+		<?if($businessContact->getId()){
+		    $_REQUEST['page'] = "libs/modules/collectiveinvoice/collectiveinvoice.overview.php";
+			$_REQUEST['cust_id'] = $businessContact->getId();
+			require_once('libs/modules/collectiveinvoice/collectiveinvoice.overview.php');
 		} 
 		$_REQUEST['page'] = "libs/modules/businesscontact/businesscontact.php";?>
 		</div>
@@ -1345,6 +1385,7 @@ function commi_checkbox(){
 				cellspacing="0" class="stripe hover row-border order-column">
 				<thead>
 					<tr>
+        				<th></th>
         				<th><?=$_LANG->get('ID')?></th>
         				<th><?=$_LANG->get('Titel')?></th>
         				<th><?=$_LANG->get('erst. von')?></th>

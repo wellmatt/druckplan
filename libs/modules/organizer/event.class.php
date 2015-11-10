@@ -407,8 +407,9 @@ class Event {
             $this->end = $t;
         }
         
-		$participants_int = serialize($this->participants_int);
-		$participants_ext = serialize($this->participants_ext);
+//         echo date("d.m.y H:i",$this->begin);
+//         echo "</br>";
+//         echo date("d.m.y H:i",$this->end);
 		
         global $DB;
         if ($this->id > 0)
@@ -420,10 +421,9 @@ class Event {
                         `description` = '{$this->desc}',
                         begin = {$this->begin},
                         end = {$this->end},
-						participants_int = '{$participants_int}',
-						adress = '{$this->adress}',
-						participants_ext = '{$participants_ext}' 
+						adress = '{$this->adress}'
                     WHERE id = {$this->id}";
+            $res = $DB->no_result($sql);
             
 
             $sql = "DELETE FROM events_participants WHERE event = {$this->id}";
@@ -447,7 +447,7 @@ class Event {
             }
             
             Cachehandler::toCache("obj_event_".$this->id, $this);
-            return $DB->no_result($sql); 
+            return $res; 
         } else
         {
             $sql = "INSERT INTO events

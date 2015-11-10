@@ -30,18 +30,18 @@ $_LANG = new Translator(22);
 
 
 if ($_REQUEST["exec"] == "moveEvent") {
-    $event = new Event($_REQUEST["event_id"]);
-	$new_start = $_REQUEST["new_start"];
-	$new_end = $_REQUEST["new_end"];
-	$event->setBegin($new_start);
-	$event->setEnd($new_end);
+    $event = new Event((int)$_REQUEST["event_id"]);
+	$new_start = strtotime($_REQUEST["new_start"]);
+	$new_end = strtotime($_REQUEST["new_end"]);
+	$event->setBegin((int)$new_start);
+	$event->setEnd((int)$new_end);
 	// $event->save();
 	echo getSaveMessage($event->save()).$DB->getLastError();
 }
 if ($_REQUEST["exec"] == "resizeEvent") {
     $event = new Event($_REQUEST["event_id"]);
-	$new_start = $_REQUEST["new_start"];
-	$new_end = $_REQUEST["new_end"];
+	$new_start = strtotime($_REQUEST["new_start"]);
+	$new_end = strtotime($_REQUEST["new_end"]);
 	$event->setBegin($new_start);
 	$event->setEnd($new_end);
 	// $event->save();
