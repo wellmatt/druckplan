@@ -278,7 +278,6 @@ class User {
                 return $user;
             }
         }
-        echo "login failed!";
         return false;
     }
      

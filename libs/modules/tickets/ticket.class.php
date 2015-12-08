@@ -191,6 +191,7 @@ class Ticket {
                     state = 1 
     				WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
+                Notification::removeForObject("Ticket", $this->getId());
                 unset($this);
                 return true;
             } else {

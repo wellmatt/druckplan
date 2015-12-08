@@ -23,4 +23,10 @@ if ($_REQUEST["ajax_action"] == "removeArt" && $_REQUEST["artid"]){
     $c_article = new CommentArticle((int)$_REQUEST["artid"]);
     $c_article->delete();
 }
+if ($_REQUEST["ajax_action"] == "editArt" && $_REQUEST["artid"] && $_REQUEST["artamount"]){
+    $artamount = tofloat(urldecode($_REQUEST["artamount"]));
+    $c_article = new CommentArticle((int)$_REQUEST["artid"]);
+    $c_article->setAmount($artamount);
+    $c_article->save();
+}
 ?>

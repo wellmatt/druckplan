@@ -225,6 +225,17 @@ class Orderposition{
 		return $retval;
 	}
 	
+	public function getName(){
+	    if ($this->type != 3)
+	    {
+	        $tmp_art = new Article($this->objectid);
+	        return $tmp_art->getTitle();
+	    } else {
+	        $tmp_persoord = new Personalizationorder($this->objectid);
+	        return $tmp_persoord->getTitle();
+	    }
+	}
+	
 	public function getId(){
 		return $this->id;
 	}
@@ -287,7 +298,10 @@ class Orderposition{
 	
 	public function getNetto()
 	{
-	    return $this->getPrice() * $this->getQuantity();
+	    if ($this->getType() != 1)
+	        return $this->getPrice() * $this->getQuantity();
+	    else
+	        return $this->getPrice();
 	}
 
 	public function getType()

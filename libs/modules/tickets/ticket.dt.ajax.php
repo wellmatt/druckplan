@@ -1,6 +1,4 @@
 <?php
-    error_reporting(-1);
-    ini_set('display_errors', 1);
 
     chdir("../../../");
     require_once 'config.php';
@@ -24,6 +22,9 @@
     require_once 'libs/modules/comment/comment.class.php';
     require_once 'libs/modules/abonnements/abonnement.class.php';
 
+//     error_reporting(-1);
+//     ini_set('display_errors', 1);
+    
     session_start();
     
     $DB = new DBMysql();
@@ -483,33 +484,57 @@
                 }
                 else if ( $aColumns[$i] == 'state' )
                 {
-                    if ($_REQUEST["portal"] == 1){
-                        $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
-                        $commenthtml = "<img src='../../../images/icons/message_inbox.gif' title='";
-                        foreach ($latestcomments as $comment){
-                            if ($comment->getVisability() == Comment::VISABILITY_PUBLIC || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
-                            {
-                                $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . strip_tags($comment->getComment());
-                            }
-                        }
-                        $commenthtml .= "'>";
-                        $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ]))).$commenthtml;
-                    } else {
-                        $latestcomments = Comment::getLatestCommentsForObject("Ticket",$aRow['id']);
-                        $commenthtml = "<img src='images/icons/message_inbox.gif' title='";
-                        foreach ($latestcomments as $comment){
-                            if ($_USER->isAdmin()
-                                || $comment->getVisability() == Comment::VISABILITY_PUBLIC
-                                || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL
-                                || $comment->getVisability() == Comment::VISABILITY_INTERNAL
-                                || $comment->getCrtuser() == $_USER)
-                            {
-                                $commenthtml .= date("d.m.Y H:i",$comment->getCrtdate()) . " (".$comment->getCrtuser()->getNameAsLine()."): " . strip_tags($comment->getComment()) . "\n";
-                            }
-                        }
-                        $commenthtml .= "'>";
-                        $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ]))).$commenthtml;
+                    $pj_state = '';
+                    $pj_title = '';
+                    $pj_all_closed = true;
+                    $pj_all_open = true;
+                    $pj_state_sql = "
+                                    SELECT
+                                    tickets.id AS tktid,
+                                    tickets.title,
+                                    tickets.number,
+                                    tickets_states.title as tktstate,
+                                    tickets_states.id as tktstateid,
+                                    CONCAT (`user`.user_firstname,' ',`user`.user_lastname) as user_name,
+                                    groups.group_name
+                                    FROM
+                                    association
+                                    INNER JOIN tickets ON association.objectid2 = tickets.id
+                                    INNER JOIN tickets_states ON tickets.state = tickets_states.id
+                                    LEFT JOIN `user` ON tickets.assigned_user = `user`.id
+                                    LEFT JOIN groups ON tickets.assigned_group = groups.id
+                                    WHERE association.objectid1 = {$aRow['id']}
+                                    ";
+//                     echo $pj_state_sql."</br>";
+                    $rResultPjState = mysql_query( $pj_state_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+                    while ($data = mysql_fetch_array($rResultPjState)){
+                        print_r($data);echo "</br>";
+                        $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]);
+                        if ($data["user_name"] != '')
+                            $pj_title .= ' ('.utf8_encode($data["user_name"]).')';
+                        else 
+                            $pj_title .= ' ('.utf8_encode($data["group_name"]).')';
+                        $pj_title .= '\r\n';
+                        if ($data["tktstateid"] != 3)
+                            $pj_all_closed = false;
+                        if ($data["tktstateid"] != 2)
+                            $pj_all_open = false;
                     }
+                    if ($pj_all_open)
+                    {
+                        $pj_state = '<img src="images/status/red_small.gif" title="'.$pj_title.'"/>';
+                    } elseif ($pj_all_closed)
+                    {
+                        $pj_state = '<img src="images/status/green_small.gif" title="'.$pj_title.'"/>';
+                    } elseif ($pj_all_closed == false && $pj_all_open == false)
+                    {
+                        $pj_state = '<img src="images/status/yellow_small.gif" title="'.$pj_title.'"/>';
+                    }
+                    
+                    if ($pj_state == '')
+                        $pj_state = '<img src="images/status/green_small.gif" title="Keine Verkn."/>';
+                    
+                    $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])))." ".$pj_state;
                 }
                 else if ( $aColumns[$i] == 'priority' )
                 {

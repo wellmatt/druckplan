@@ -59,7 +59,7 @@ class Association {
         VALUES
         ( '{$this->module1}', {$this->objectid1}, '{$this->module2}', {$this->objectid2}, {$now}, {$_USER->getId()} )";
         $res = $DB->no_result($sql);
-//         echo $sql;
+//         echo $sql . "</br>";
         if ($res) {
             $sql = "SELECT max(id) id FROM association WHERE crtdate = {$now}";
             $thisid = $DB->select($sql);
@@ -94,12 +94,16 @@ class Association {
         }
     }
     
-    public static function getAssociationsForObject($module,$objectid)
+    public static function getAssociationsForObject($module,$objectid,$unique = false)
     {
         global $DB;
         $retval = Array();
     
-        $sql = "SELECT id FROM association WHERE (module1 = '{$module}' AND objectid1 = {$objectid}) OR (module2 = '{$module}' AND objectid2 = {$objectid})";
+        if ($unique)
+            $sql = "SELECT id FROM association WHERE module1 = '{$module}' AND objectid1 = {$objectid}";
+        else
+            $sql = "SELECT id FROM association WHERE (module1 = '{$module}' AND objectid1 = {$objectid}) OR (module2 = '{$module}' AND objectid2 = {$objectid})";
+        
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Association($r["id"]);

@@ -2,7 +2,7 @@
 
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title', 'customer', 'shop_customer_rel' );
+    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title', 'shop_customer' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -94,7 +94,7 @@
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "art_picture" && $aColumns[$i] != "article_tags" )
+            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "shop_customer" && $aColumns[$i] != "art_picture" && $aColumns[$i] != "article_tags" )
             {
                 $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( utf8_decode($_GET['sSearch']) )."%' OR ";
             }
@@ -139,7 +139,6 @@
         }
         $sTagArticles = Array();
         $tQuery = "SELECT article, count(article) as count FROM article_tags WHERE 1=2 {$tag_where} GROUP BY article";
-//         echo $tQuery . "</br>";
         $rResultStags = mysql_query( $tQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
         while ($stag_row = mysql_fetch_array($rResultStags))
         {
@@ -154,14 +153,49 @@
             $sWhere .= " AND 1=2 ";
     }
     
+    if ($_REQUEST["tradegroup"])
+    {
+        $selected_tgs = Array();
+        $selected_tgs[] = $_REQUEST["tradegroup"];
+        $tg_sql = "SELECT id FROM tradegroup WHERE tradegroup_parentid = {$_REQUEST["tradegroup"]}";
+
+        $rResulttg = mysql_query( $tg_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+        while ($stg_row = mysql_fetch_array($rResulttg))
+        {
+            $selected_tgs[] = $stg_row["id"];
+        }
+        $tgs = implode(",", $selected_tgs);
+        $sWhere .= " AND tradegroup.id IN ({$tgs}) ";
+    }
+    
+    if ($_REQUEST["bc"] || $_REQUEST["cp"])
+    {
+        if ($_REQUEST["bc"])
+            $bccp_sql = "SELECT article FROM `article_shop_approval` WHERE bc = {$_REQUEST["bc"]}";
+        if ($_REQUEST["cp"])
+            $bccp_sql = "SELECT article FROM `article_shop_approval` WHERE bc = {$_REQUEST["bc"]}";
+        
+        $bccp_articles = Array();
+        $rResultbccp = mysql_query( $bccp_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+        while ($sbccp_row = mysql_fetch_array($rResultbccp))
+        {
+            $bccp_articles[] = $sbccp_row["article"];
+        }
+        if (count($bccp_articles)>0)
+        {
+            $bccp_articles = implode(",", $bccp_articles);
+            $sWhere .= " AND article.id IN ({$bccp_articles}) ";
+        }
+    }
     
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shop_customer_rel, CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer
-               FROM article LEFT JOIN article_pictures ON article_pictures.articleid = article.id LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-               LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id
+    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title 
+               FROM article 
+               LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
+               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
                $sWhere
                $sOrder
                $sLimit
@@ -177,7 +211,6 @@
                FROM article 
                LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
                LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-               LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id 
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -191,8 +224,7 @@
         SELECT COUNT(article.id) 
         FROM article 
         LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
-        LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
-        LEFT JOIN businesscontact ON article.shop_customer_id = businesscontact.id  
+        LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
         WHERE status = 1
     ";
 //     var_dump($sQuery);
@@ -231,6 +263,55 @@
                     $row[] = '<img src="images/icons/image.png" title="Kein Bild hinterlegt">&nbsp;';
                 }
             }
+            else if ( $aColumns[$i] == 'shop_customer' )
+            {
+                $shop_sql = "SELECT
+                             article_shop_approval.id,
+                             article_shop_approval.article,
+                             article_shop_approval.bc,
+                             article_shop_approval.cp,
+                             CONCAT(contactperson.name1,' ',contactperson.name2) as cp_name,
+                             CONCAT(businesscontact.name1,' ',businesscontact.name2) as bc_name
+                             FROM
+                             article_shop_approval
+                             LEFT JOIN contactperson ON article_shop_approval.cp = contactperson.id
+                             LEFT JOIN businesscontact ON article_shop_approval.bc = businesscontact.id
+                             WHERE article = {$aRow[ $aColumns[0] ]}";
+
+                $rResultShop = mysql_query( $shop_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+                $shop_rows_bc = array();
+                $shop_rows_cp = array();
+                while ($shop_row = mysql_fetch_array($rResultShop))
+                {
+                    if ((int)$shop_row['bc']>0)
+                        $shop_rows_bc[] = $shop_row['bc_name'];
+                    else if ((int)$shop_row['cp']>0)
+                        $shop_rows_cp[] = $shop_row['cp_name'];
+                }
+                if(count($shop_rows_bc) > 0 || count($shop_rows_cp) > 0){
+                    $shoptitle = "";
+                    if(count($shop_rows_bc) > 0)
+                    {
+                        $shoptitle = 'Geschäftskontakte:&#10;';
+                        foreach ($shop_rows_bc as $shop_bc)
+                        {
+                            $shoptitle .= $shop_bc . "&#10;";
+                        } 
+                    }
+                    if(count($shop_rows_cp) > 0)
+                    {
+                        $shoptitle = 'Ansprechpartner:&#10;';
+                        foreach ($shop_rows_cp as $shop_cp)
+                        {
+                            $shoptitle .= $shop_cp . "&#10;";
+                        } 
+                    }
+                    $shopstr = '<img src="images/status/green_small.gif" title="'.$shoptitle.'">';
+                    $row[] = $shopstr;
+                } else {
+                    $row[] = '<img src="images/status/red_small.gif">';
+                }
+            }
             else if ( $aColumns[$i] == 'article_tags' )
             {
                 $tag_sql = "SELECT DISTINCT tag FROM article_tags WHERE article = {$aRow[ $aColumns[0] ]}";
@@ -253,16 +334,6 @@
                 /* do not print the id */
                 $row[] = $aRow[ $aColumns[$i] ];
             }
-            else if ( $aColumns[$i] == 'shop_customer_rel' )
-            {
-                if($_CONFIG->shopActivation){
-                    if ($aRow[$aColumns[$i]] == 1){
-                        $row[] = '<img src="images/status/green_small.gif">';
-                    } else {
-                        $row[] = '<img src="images/status/red_small.gif">';
-                    }
-                }
-            }
             else if ( $aColumns[$i] == 'article.matchcode' )
             {
                 /* do not print the id */
@@ -278,13 +349,8 @@
         		  <a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=copy&aid='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png" title="Kopieren"></a>
         		  <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/article/article.php&exec=delete&did='.$aRow[ $aColumns[0] ].'\')">
         		  <img src="images/icons/cross-script.png" title="L&ouml;schen"></a>';
-// 		var_dump($row); echo "</br>";
         $output['aaData'][] = $row;
     }
-    
-//     var_dump($output); echo "</br>";
      
     echo json_encode( $output );
-    
-//     echo  json_last_error();
 ?>

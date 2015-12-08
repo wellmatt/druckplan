@@ -66,6 +66,7 @@ class Order {
     private $paper_order_calc = 0;		// Calculation für Papierbestellung
     
     private $beilagen;                  // Text Feld für Beilagen
+    private $articleid = 0;             // Verknuepfter Artikel
     
     function __construct($id)
     {
@@ -130,6 +131,7 @@ class Order {
                 $this->paper_order_calc = $res["paper_order_calc"];
                 $this->crtusr = new User($res["crtusr"]);
                 $this->beilagen = $res["beilagen"];
+                $this->articleid = $res["articleid"];
             }
         }
     }
@@ -766,35 +768,35 @@ class Order {
             
             $html .= '<tr><td class="content_row_header" valign="top">Nutzen Rohb.</td><td class="content_row_clear">';
     		if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
-    				echo '<b>Inhalt:</b></br>'; 
+    				$html .= '<b>Inhalt:</b></br>'; 
     				
                     $format_in = explode("x", $calc->getFormat_in_content());
                     $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
-                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+                	$html .= 'Nutzen: ' . (int)$roh_schnitte . '</br>';
 			}
             $html .= '</td><td class="content_row_clear">';
             if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) {
-    				echo '<b>Zus. Inhalt:</b></br>'; 
+    				$html .= '<b>Zus. Inhalt:</b></br>'; 
     				
                     $format_in = explode("x", $calc->getFormat_in_addcontent());
                     $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth());
-                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+                	$html .= 'Nutzen: ' . (int)$roh_schnitte . '</br>';
             }
             $html .= '</td><td class="content_row_clear">';
             if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
-    				echo '<b>Zus. Inhalt 2:</b></br>'; 
+    				$html .= '<b>Zus. Inhalt 2:</b></br>'; 
     				
                     $format_in = explode("x", $calc->getFormat_in_addcontent2());
                     $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width());
-                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+                	$html .= 'Nutzen: ' . (int)$roh_schnitte . '</br>';
             }
             $html .= '</td><td class="content_row_clear">';
             if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
-    				echo '<b>Zus. Inhalt 3:</b></br>'; 
+    				$html .= '<b>Zus. Inhalt 3:</b></br>'; 
     				
                     $format_in = explode("x", $calc->getFormat_in_addcontent3());
                     $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width());
-                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+                	$html .= 'Nutzen: ' . (int)$roh_schnitte . '</br>';
             }
             $html .= '</td><td class="content_row_clear">';
             if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) {
@@ -802,7 +804,7 @@ class Order {
     				
                     $format_in = explode("x", $calc->getFormat_in_envelope());
                     $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth());
-                	echo 'Nutzen: ' . (int)$roh_schnitte . '</br>';
+                	$html .= 'Nutzen: ' . (int)$roh_schnitte . '</br>';
             }
 
             $html .= '</td></tr>';
@@ -1124,7 +1126,8 @@ static function getCountOrdersPerCustMonth($year)
                 		paper_order_supplier = {$this->paper_order_supplier}, 
                 		paper_order_calc = {$this->paper_order_calc}, 
                 		beilagen = '{$this->beilagen}', 
-                		show_price_per_thousand = {$this->showPricePer1000} 
+                		show_price_per_thousand = {$this->showPricePer1000},
+                		articleid = {$this->articleid}  
                     WHERE id = {$this->id}";
 			// echo $sql . "</br>";
             return $DB->no_result($sql);
@@ -1145,7 +1148,8 @@ static function getCountOrdersPerCustMonth($year)
                          cust_sign, cust_contactperson, inv_amount, 
                          inv_price_update, deliv_amount, label_logo_active,
                          label_box_amount, label_title, show_product, productname, 
-                         show_price_per_thousand, paper_order_boegen, paper_order_price, paper_order_supplier, paper_order_calc, beilagen )
+                         show_price_per_thousand, paper_order_boegen, paper_order_price, 
+                         paper_order_supplier, paper_order_calc, beilagen, articleid )
                     VALUES
                         ('{$this->number}', 1, '{$this->customer->getId()}', $tmp_product,
                          '{$this->title}', '{$this->notes}', '0', '0', '0',
@@ -1155,7 +1159,7 @@ static function getCountOrdersPerCustMonth($year)
             			 {$this->invoicePriceUpdate}, {$this->deliveryAmount}, {$this->labelLogoActive}, 
             			 {$this->labelLogoActive}, '{$this->labelTitle}', {$this->showProduct}, '{$this->productName}', 
             			 {$this->showPricePer1000}, '{$this->paper_order_boegen}', '{$this->paper_order_price}', 
-						 {$this->paper_order_supplier}, {$this->paper_order_calc}, '{$this->beilagen}' )";
+						 {$this->paper_order_supplier}, {$this->paper_order_calc}, '{$this->beilagen}', {$this->articleid} )";
             $res = $DB->no_result($sql);
 //             echo $sql . "</br>";
             if($res)
@@ -1636,9 +1640,22 @@ static function getCountOrdersPerCustMonth($year)
     {
         return $this->crtusr;
     }
+    
+	/**
+     * @return the $articleid
+     */
+    public function getArticleid()
+    {
+        return $this->articleid;
+    }
 
-
-	
+	/**
+     * @param field_type $articleid
+     */
+    public function setArticleid($articleid)
+    {
+        $this->articleid = $articleid;
+    }
 	
 }
          

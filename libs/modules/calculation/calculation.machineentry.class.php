@@ -647,5 +647,24 @@ class Machineentry {
     {
         $this->umst = $umst;
     }
+    
+	/**
+     * @return the $chromaticity
+     */
+    public function getChromaticity()
+    {
+        return $this->chromaticity;
+    }
+
+	/**
+     * @param Chromaticity $chromaticity
+     */
+    public function setChromaticity($chromaticity)
+    {
+        $this->chromaticity = $chromaticity;
+    }
+
+    
+    
 }
 ?>

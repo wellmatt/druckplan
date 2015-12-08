@@ -10,7 +10,10 @@ require_once 'libs/modules/warehouse/warehouse.class.php';
 
 $_REQUEST["aid"] = (int)$_REQUEST["aid"];
 
-$article = new Article($_REQUEST["aid"]);
+if ($_REQUEST["exec"] != "fromorder")
+{
+    $article = new Article($_REQUEST["aid"]);
+}
 
 $all_tradegroups = Tradegroup::getAllTradegroups(0);
 
@@ -30,6 +33,12 @@ if($_REQUEST["subexec"] == "deletepic"){
     if(unlink($filename)){
         $savemsg = getSaveMessage($article->deletePicture($picid));
     }
+}
+
+if((int)$_REQUEST["remove_apiobj"]>0)
+{
+    $tmp_del_api_obj = new APIObject((int)$_REQUEST["remove_apiobj"]);
+    $tmp_del_api_obj->delete();
 }
 
 if($_REQUEST["subexec"] == "save"){
@@ -127,6 +136,17 @@ if($_REQUEST["subexec"] == "save"){
 	
 	if ($_REQUEST["new_picture"] != 0 && $_REQUEST["new_picture"] != NULL){
 		$article->addPicture($_REQUEST["new_picture"]);
+	}
+	
+	// API Zuordnung
+	
+	if ((int)$_REQUEST["api_new"]>0)
+	{
+	   $tmp_api_obj = new APIObject();
+	   $tmp_api_obj->setApi((int)$_REQUEST["api_new"]);
+	   $tmp_api_obj->setType(API::TYPE_ARTICLE);
+	   $tmp_api_obj->setObject($article->getId());
+	   $tmp_api_obj->save();   
 	}
 	
 	// Damit die gespeicherten Werte auch angezeigt werden
@@ -261,6 +281,7 @@ function addOrderAmount()
 <script type="text/javascript" charset="utf8" src="jscripts/tinymce/tinymce.min.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/tagit/tag-it.min.js"></script>
 <link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
+<script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <!-- <link rel="stylesheet" type="text/css" href="jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" media="screen" /> -->
 
 <script type="text/javascript">
@@ -340,12 +361,24 @@ jQuery(document).ready(function() {
 });
 </script>
 
+<script type="text/javascript">
+$(function() {
+    $('#article_edit').validate();
+});
+</script>
+
 <table width="100%">
 	<tr>
-		<td width="200" class="content_header"><img
+		<td width="350" class="content_header"><img
 			src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzuf�gen')?>
-			<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Artikel bearbeiten')?>
+			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzufügen')?>
+			<?if ($_REQUEST["exec"] == "edit") 
+			{
+			    echo $_LANG->get('Artikel bearbeiten');
+			    if ($article->getOrderid()>0)
+			        echo " - aus <a href='index.php?page=libs/modules/calculation/order.php&exec=edit&id={$article->getOrderid()}&step=4'><u>Kalkulation</u></a> generiert";
+			}?>
+			<?if ($_REQUEST["exec"] == "fromorder" || $_REQUEST["exec"] == "uptfromorder")  echo $_LANG->get('Artikel aus Kalkulation generieren')?>
 			<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
 		</td>
 		<td align="right"><?=$savemsg?></td>
@@ -359,19 +392,28 @@ jQuery(document).ready(function() {
         <a href="#top" class="menu_item">Seitenanfang</a>
         <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
         <a href="#" class="menu_item" onclick="$('#article_edit').submit();">Speichern</a>
+        <?php if ($article->getOrderid()>0){?>
+        <a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?php echo $article->getOrderid();?>&step=4" class="menu_item">Zur Kalkulation</a>
+        <?php }?>
+        <?php if ($_USER->isAdmin()){?>
+            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&did=<?=$article->getId()?>');">Löschen</a>
+        <?php }?>
     </div>
 </div>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post"
 	name="article_edit" id="article_edit"
 	onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))">
+	<input type="hidden" name="exec" value="edit"> 
+	<input type="hidden" name="subexec" value="save"> 
+	<input type="hidden" name="fromorder" value="<?php if ($_REQUEST["fromorder"]) echo "1"; else echo "0";?>"> 
+	<input type="hidden" name="aid" value="<?=$article->getId()?>">
+	
 	<div style="overflow: hidden;">
 		<div style="width: 50%; float: left;">
     	<? // -------------------- Atikeldetails --------------------------------------------------- ?>
     	<div class="box1" style="min-height: 380px;">
-				<b>Kopfdaten</b> <input type="hidden" name="exec" value="edit"> <input
-					type="hidden" name="subexec" value="save"> <input type="hidden"
-					name="aid" value="<?=$article->getId()?>">
+				<b>Kopfdaten</b> 
     		
     		<? // Fuer die ein neues Bild ?>
     		<input type="hidden" name="new_picture" id="new_picture" value="">
@@ -395,6 +437,12 @@ jQuery(document).ready(function() {
 							name="article_number" type="text" class="text"
 							value="<?=$article->getNumber()?>" style="width: 180px"></td>
 					</tr>
+					<?php if ($article->getId()>0){?>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Artikel-ID')?> *</td>
+						<td class="content_row_clear"><?=$article->getId()?></td>
+					</tr>
+					<?php }?>
 					<tr>
     					<?php 
     					   $tags = $article->getTags();
@@ -415,8 +463,8 @@ jQuery(document).ready(function() {
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Warengruppe')?></td>
 						<td class="content_row_clear"><select id="article_tradegroup"
-							name="article_tradegroup" style="width: 170px">
-								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+							name="article_tradegroup" style="width: 170px" required>
+								<!-- <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option> -->
     					<?if ($article->getTradegroup() == NULL){
     						foreach ($all_tradegroups as $tg){
     							echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
@@ -440,6 +488,7 @@ jQuery(document).ready(function() {
 							value="1"
 							<?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>></td>
 					</tr>
+					<!-- 
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Bestellmengen')?> (Min/Max)</td>
 						<td class="content_row_clear"><input id="article_minorder"
@@ -451,7 +500,7 @@ jQuery(document).ready(function() {
 							style="width: 80px">
     					<?=$_LANG->get('Stk.');?> 
     				</td>
-					</tr>
+					</tr> -->
 					<tr valign="top">
 						<td class="content_row_header"><?=$_LANG->get('Mögl. Bestellmengen (Shop)')?></td>
 						<td class="content_row_clear">
@@ -636,6 +685,7 @@ jQuery(document).ready(function() {
     			<? } //Ende alle Preis-Staffeln?>
     		</table>
 				<br />* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
+				<br />* <?=$_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis')?>
     	</div>
 			</br>
     	<?// Ab hier Preisstaffeln (EK) ein geben ?>
@@ -790,7 +840,7 @@ jQuery(document).ready(function() {
 									<td class="content_row_clear">
                         				    <?php echo $tmp_cp->getNameAsLine();?> <img
 										src="images/icons/cross.png" class="pointer"
-										onclick="$(this).parent().remove();;" /> <input type="hidden"
+										onclick="$(this).parent().remove();" /> <input type="hidden"
 										name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
 									</td>
 								</tr>
@@ -800,6 +850,51 @@ jQuery(document).ready(function() {
 							id="shop_add_customer_cp" value="" style="width: 300px" />
 						</td>
 					</tr>
+				</table>
+			</div>
+			</br>
+			<div id="apis" class="box1" style="min-height: 180px;">
+				<b>API-Zuordnung</b></br>&nbsp;
+				<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				    <?php 
+				    $api_objects = APIObject::getAllForObject($article->getId(), API::TYPE_ARTICLE);
+				    if (count($api_objects)>0){
+				        foreach ($api_objects as $api_object)
+				        {
+				            $api = new API($api_object->getApi());
+				            ?>
+        					<tr>
+        						<td class="content_row_header"><?php echo $api->getTitle();?> 
+        						<a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><img src="images/icons/cross.png" class="pointer"/></a></td>
+        					</tr>
+				            <?php     
+				        }
+				    } else {
+				        echo '<tr><td>keine Zuordnungen vorhanden!</td></tr>';
+				    }
+				    ?>
+				    <tr><td><hr></td></tr>
+				    <?php 
+				    $all_apis = API::getAllApisByType(API::TYPE_ARTICLE);
+				    if (count($all_apis)>0){
+				    ?>
+				    <tr>
+				        <td class="content_row_header">
+				            Neue Zuordnung: 
+				            <select name="api_new" id="api_new">
+				                <option value="0">Api wählen</option>
+				                <?php 
+				                foreach ($all_apis as $api)
+				                {
+				                    ?>
+				                    <option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
+				                    <?php    
+				                }
+				                ?>
+				            </select>
+				        </td>
+				    </tr>
+				    <?php }?>
 				</table>
 			</div>
 		</div>

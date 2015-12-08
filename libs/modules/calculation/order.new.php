@@ -89,6 +89,9 @@ $(function() {
             <input name="order_title" style="width:280px" class="text">
         </td>
     </tr>
+	<input type="hidden" name="order_customer" id="order_customer" value="0">
+	<input type="hidden" name="order_contactperson" id="order_contactperson" value="0">
+    <?php /*
     <tr>
         <td class="content_row_header"><?=$_LANG->get('Kunden suchen')?></td>
         <td class="content_row"  id="td-selcustomer">
@@ -97,6 +100,7 @@ $(function() {
 			<input type="hidden" name="order_contactperson" id="order_contactperson" required>
         </td>
     </tr>
+    */ ?>
     
     <tr>
         <td class="content_row" colspan="2" align="right">

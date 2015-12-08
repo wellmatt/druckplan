@@ -64,7 +64,9 @@ foreach ($calcs as $calc) {
         }
 
         // -------------------------------------------------------------------------
-
+        
+        
+        
         $dump = array();
         $dump["CustomerName"] = $order->getCustomer()->getNameAsLine();
         $dump["CustomerAddress"] = $zip;
@@ -93,8 +95,38 @@ foreach ($calcs as $calc) {
             foreach ($machentries as $me) {
                 
                 $temp = array();
+                $temp["Type"] = $me->getMachine()->getType();
                 $tmp_addtext_fl = "";
                 $temp["Position"] = $me->getMachine()->getName();
+                
+                $temp["Plates"] = "";
+                if($me->getMachine()->getType() == Machine::TYPE_CTP) {
+                    $machentries2 = Machineentry::getAllMachineentries($calc->getId(), Machineentry::ORDER_ID);
+                    foreach($machentries2 as $me2) {
+                        if($me2->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {
+                            switch($me2->getPart())
+                            {
+                                case Calculation::PAPER_CONTENT:
+                                    $temp["Plates"] .= $_LANG->get('Anzahl Druckplatten Inhalt').": ".$calc->getPlateCount($me2)."<br>";
+                                    break;
+                                case Calculation::PAPER_ADDCONTENT:
+                                    $temp["Plates"] .= $_LANG->get('Anzahl Druckplatten zus. Inhalt').": ".$calc->getPlateCount($me2)."<br>";
+                                    break;
+                                case Calculation::PAPER_ENVELOPE:
+                                    $temp["Plates"] .= $_LANG->get('Anzahl Druckplatten Umschlag').": ".$calc->getPlateCount($me2)."<br>";
+                                    break;
+                                case Calculation::PAPER_ADDCONTENT2:
+                                    $temp["Plates"] .= $_LANG->get('Anzahl Druckplatten zus. Inhalt 2').": ".$calc->getPlateCount($me2)."<br>";
+                                    break;
+                                case Calculation::PAPER_ADDCONTENT3:
+                                    $temp["Plates"] .= $_LANG->get('Anzahl Druckplatten zus. Inhalt 3').": ".$calc->getPlateCount($me2)."<br>";
+                                    break;
+                            }
+                        }
+                    }
+                    $temp["Plates"] .= $_LANG->get('Anzahl Druckplatten gesamt').": ".$calc->getPlateCount();
+                    $temp["Plates"] .= "<br>";
+                }
                 
                 if ($me->getPart() == Calculation::PAPER_CONTENT) {
                     $temp["Position"] .= " (Inhalt)";

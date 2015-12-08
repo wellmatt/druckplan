@@ -485,7 +485,7 @@ function commi_checkbox(){
 			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li> 
 			<li><a href="#tabs-3"><? echo $_LANG->get('Ansprechpartner');?></a></li>
 			<?php if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){?>
-		    <li><a href="#tabs-12"><? echo $_LANG->get('Notizen');?></a></li>
+		    <li><a href="#tabs-12"><? echo $_LANG->get('Notizen');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.Comment::getCommentCountForObject("BusinessContact", $businessContact->getId()).'</span>';?></a></li>
             <?php } ?>
 			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.$ticketcount.'</span>';?></a></li>
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>

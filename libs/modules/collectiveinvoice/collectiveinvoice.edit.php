@@ -188,7 +188,7 @@ $(function() {
     		 return false;
 		 },
 		 select: function( event, ui ) {
-			 addPositionRow(ui.item.type,ui.item.value,ui.item.label);
+			 addPositionRow(ui.item.type,ui.item.value,ui.item.label,ui.item.orderamounts,ui.item.orderid);
 			 $( "#add_position" ).val("");
     		 return false;
 		 }
@@ -242,19 +242,34 @@ function updatePosDetails(id_i){
 	var tmp_type = document.getElementById('orderpos_type_'+id_i).value;
 	var tmp_objid= document.getElementById('orderpos_objid_'+id_i).value;
 
+// 	if(tmp_type == 1){
+// 		tmp_objid= document.getElementById('orderpos_orderid_'+id_i).value;
+// 		$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
+// 			{exec: 'getOrderDetails', orderid: tmp_objid}, 
+// 			 function(data) {
+// 				var teile = data.split("-+-+-");
+// 				document.getElementById('orderpos_objid_'+id_i).value = teile[0];
+// 				document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
+// 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
+// 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
+// 				document.getElementById('orderpos_comment_'+id_i).style.height = 250;
+// 				document.getElementById('orderpos_quantity_'+id_i).value = "1";
+//				document.getElementById('span_totalprice_'+id_i).value = printPriceJs(parseFloat(teile[1]))+" <?=$_USER->getClient()->getCurrency()?>";
+// 		});  
+// 	}
 	if(tmp_type == 1){
 		$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
-			{exec: 'getOrderDetails', orderid: tmp_objid}, 
+			{exec: 'getArticleDetails', articleid: tmp_objid}, 
 			 function(data) {
 				var teile = data.split("-+-+-");
 				document.getElementById('orderpos_objid_'+id_i).value = teile[0];
 				document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
-				document.getElementById('orderpos_comment_'+id_i).style.height = 250;
-				document.getElementById('orderpos_quantity_'+id_i).value = "1";
+				document.getElementById('orderpos_comment_'+id_i).style.height = 100;
 				document.getElementById('span_totalprice_'+id_i).value = printPriceJs(parseFloat(teile[1]))+" <?=$_USER->getClient()->getCurrency()?>";
-		});  
+				updateArticlePrice(id_i);
+		}); 
 	}
 	if(tmp_type == 2){
 		$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
@@ -290,12 +305,16 @@ function updatePosDetails(id_i){
 function updateArticlePrice(id_i){
 	var tmp_objid= document.getElementById('orderpos_objid_'+id_i).value;
 	var amount = document.getElementById('orderpos_quantity_'+id_i).value;
+	var type = $('#orderpos_type_'+id_i).val();
 	
 	$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
 		{exec: 'getArticlePrice', articleid: tmp_objid, amount: amount}, 
 		 function(data) {
 			document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(data));
-			document.getElementById('span_totalprice_'+id_i).innerHTML = printPriceJs(parseFloat(data) * amount)+" <?=$_USER->getClient()->getCurrency()?>";
+			if (type==1)
+				document.getElementById('span_totalprice_'+id_i).innerHTML = printPriceJs(parseFloat(data))+" <?=$_USER->getClient()->getCurrency()?>";
+			else
+				document.getElementById('span_totalprice_'+id_i).innerHTML = printPriceJs(parseFloat(data) * amount)+" <?=$_USER->getClient()->getCurrency()?>";
 	}); 
 }
 
@@ -309,7 +328,8 @@ function updateDeliveryPrice(){
 	}); 
 }
 
-function addPositionRow(type,objectid,label){
+function addPositionRow(type,objectid,label,orderamounts,orderid){
+	$('.dataTables_empty').parent().remove();
 	var count = parseInt($('#poscount').val());
     var newrow = "";
     newrow += '<tr>';
@@ -320,7 +340,7 @@ function addPositionRow(type,objectid,label){
     	newrow += 'Manuell';
         break;
     case 1:
-    	newrow += 'Kalkulation';
+    	newrow += 'Artikel (Kalk)';
         break;
     case 2:
     	newrow += 'Artikel';
@@ -330,16 +350,26 @@ function addPositionRow(type,objectid,label){
         break;
     } 
     newrow += '<input type="hidden" name="orderpos['+count+'][id]" value="">';
-	newrow += '<input type="hidden" name="orderpos['+count+'][obj_id]" id="orderpos_objid_'+count+'"value="'+objectid+'">';
+    newrow += '<input type="hidden" name="orderpos['+count+'][orderid]" id="orderpos_orderid_'+count+'" value="'+orderid+'">';
+	newrow += '<input type="hidden" name="orderpos['+count+'][obj_id]" id="orderpos_objid_'+count+'" value="'+objectid+'">';
 	newrow += '<input type="hidden" name="orderpos['+count+'][type]" id="orderpos_type_'+count+'" value="'+type+'"></td>';
 	newrow += '<td valign="top" class="content_row"><span id="orderpos_name_'+count+'">'+label+'</br></span>';
 	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" style="width: 440px; height: 100px" ></textarea>';
 	newrow += '</td><td valign="top" class="content_row">';
-	newrow += '<input 	name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="1" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-    newrow += 'Stk.<br/> &ensp;&ensp;&ensp;';
+	if (orderamounts.length>0)
+	{
+	    newrow += '<select name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" style="width: 60px" onchange="updateArticlePrice('+count+')">';
+	    orderamounts.forEach(function(entry) {
+	        newrow += '<option value="'+entry+'">'+entry+'</option>';
+	    });
+	    newrow += '</select>';
+	} else {
+		newrow += '<input 	name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="1" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+	}
+    newrow += ' Stk.<br/> &ensp;&ensp;&ensp;';
     newrow += '<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_'+count+'"';
 	newrow += 'onclick="updateArticlePrice('+count+')"';
-	if (type != 2)
+	if (type != 2 && type != 1)
 		newrow += ' style="display:none" ';
 	newrow += ' title="Staffelpreis aktualisieren">';
 	newrow += '</td><td valign="top" class="content_row"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""'; 
@@ -861,7 +891,7 @@ function addPositionRow(type,objectid,label){
 <div class="box2">
     <div class="box1">
         <b>neue Position:</b>
-        <input type="text" id="add_position" name="add_position"/> <img src="images/icons/plus.png" title="neue manuelle Position" class="pointer" onclick="addPositionRow(0,0,'Manuell');"/>
+        <input type="text" id="add_position" name="add_position"/> <img src="images/icons/plus.png" title="neue manuelle Position" class="pointer" onclick="addPositionRow(0,0,'Manuell',0,0);"/>
     </div>
     <table id="order_pos" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
             <thead>
@@ -887,11 +917,21 @@ function addPositionRow(type,objectid,label){
         					<?php 
         					switch ($position->getType())
         					{
-                                case 0: echo "Manuell"; break;
-                                case 1: echo "Kalkulation"; break;
-                                case 2: echo "Artikel"; break;
-                                case 3: echo "Perso"; break;
-                                default: echo "kein"; break;
+                                case 0: 
+                                    echo "Manuell"; 
+                                    break;
+                                case 1: 
+                                    echo "Artikel (Kalk)"; 
+                                    break;
+                                case 2: 
+                                    echo "Artikel"; 
+                                    break;
+                                case 3: 
+                                    echo "Perso"; 
+                                    break;
+                                default: 
+                                    echo "kein"; 
+                                    break;
         					}   
         					?>
         					<input type="hidden" name="orderpos[<?=$i?>][id]" value="<?= $position->getId()?>">
@@ -902,8 +942,9 @@ function addPositionRow(type,objectid,label){
     					    <span id="orderpos_name_<?=$i?>">
     					    <?php
     					    if($position->getType() == 1){
-    					        $tmp_kalk = new Order($position->getObjectid());
-    					        echo "<b>".$tmp_kalk->getTitle()."</b></br>";
+    					        $tmp_art = new Article($position->getObjectid());
+    					        echo "<b>".$tmp_art->getTitle()."</b></br>";
+    					        echo '<input type="hidden" name="orderpos['.$i.'][orderid]" id="orderpos_orderid_'.$i.'" value="'.$tmp_art->getOrderid().'">';
     					    }
     					    if($position->getType() == 2){
     					        $tmp_art = new Article($position->getObjectid());
@@ -919,14 +960,32 @@ function addPositionRow(type,objectid,label){
     								  style="width: 440px; height: 100px"><?=$position->getComment()?></textarea>
     					</td>
     					<td valign="top" class="content_row">
-    						<input 	name="orderpos[<?=$i?>][quantity]" id="orderpos_quantity_<?=$i?>"
-    								value="<?php echo printPrice($position->getQuantity(),2);?>" class="text" style="width: 60px" 
-    								onfocus="markfield(this,0)" onblur="markfield(this,1)"">
+    					<?php
+                        	if ($position->getType() == 1 || $position->getType() == 2)
+                        	{
+                        	    if (count($tmp_art->getOrderamounts())>0)
+                        	    {
+                            	    echo '<select name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" style="width: 60px" onchange="updateArticlePrice('.$i.')">';
+                            	    foreach ($tmp_art->getOrderamounts() as $orderamount)
+                            	    {
+                            	        echo '<option value="'.$orderamount.'" ';
+                            	        if ($position->getQuantity() == $orderamount)
+                            	            echo ' selected ';
+                            	        echo ' >'.$orderamount.'</option>';
+                            	    }
+                            	    echo '</select>';
+                        	    } else {
+                        	        echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+                        	    }
+                        	} else {
+                        		echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+                        	}
+    					?>
     						<?=$_LANG->get('Stk.')?> <br/>
     						&ensp;&ensp;&ensp;
     						<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_<?=$i?>"
     							 onclick="updateArticlePrice(<?=$i?>)" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"
-    							 <?if($position->getType() != 2) echo 'style="display:none"';?>>
+    							 <?if($position->getType() == 3) echo 'style="display:none"';?>>
     					</td>
     					<td valign="top" class="content_row">
     						<input 	name="orderpos[<?=$i?>][price]" id="orderpos_price_<?=$i?>" class="text"

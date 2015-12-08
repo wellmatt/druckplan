@@ -17,6 +17,8 @@ class Notification {
     private $crtdate;
     private $state = 1;
     private $crtmodule;
+    private $count = 1;
+    private $objectid = 0;
     
     const NOTIF_UNREAD = 1;
     const NOTIF_READ = 0;
@@ -40,6 +42,8 @@ class Notification {
                 $this->crtdate 			= (int)$r["crtdate"];
                 $this->state	        = (int)$r["state"];
                 $this->crtmodule		= $r["crtmodule"];
+                $this->count		    = $r["count"];
+                $this->objectid		    = $r["objectid"];
             }
         }
     }
@@ -56,18 +60,22 @@ class Notification {
         $now = time();
 
         if ($this->id > 0) {
-            $sql = "UPDATE notifications SET
-            state			= {$this->state}
+            $sql = "UPDATE notifications SET 
+            state			= {$this->state}, 
+            title			= '{$this->title}', 
+            path			= '{$this->path}', 
+            count			= {$this->count} 
             WHERE id = {$this->id}";
+//             echo $sql . "</br>";
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO notifications
-            (`user`, title, path, crtdate, state, crtmodule )
+            (`user`, title, path, crtdate, state, crtmodule, objectid, count )
             VALUES
             ( {$this->user->getId()}, '{$this->title}', '{$this->path}',
-            {$now}, {$this->state}, '{$this->crtmodule}' )";
+            {$now}, {$this->state}, '{$this->crtmodule}', {$this->objectid}, {$this->count} )";
             $res = $DB->no_result($sql);
-//             echo $sql;
+//             echo $sql . "</br>";
             if ($res) {
                 $sql = "SELECT max(id) id FROM notifications WHERE crtdate = '{$now}'";
                 $thisid = $DB->select($sql);
@@ -130,14 +138,45 @@ class Notification {
         }
         return $retval;
     }
+    
+    public static function checkUnreadNotification($user,$crtmodule,$objectid)
+    {
+        global $DB;
+        global $_USER;
+        
+        $retval = new Notification();
+        $sql = "SELECT id FROM notifications WHERE user = {$user} AND crtmodule = '{$crtmodule}' AND objectid = {$objectid}";
+//         echo $sql . "</br>";
+        if($DB->num_rows($sql)){
+            $r = $DB->select($sql);
+            $r = $r[0];
+            $retval = new Notification((int)$r["id"]);
+        }
+        return $retval;
+    }
+    
+    public static function removeForObject($crtmodule,$objectid)
+    {
+        global $DB;
+        $sql = "DELETE FROM notifications 
+                WHERE crtmodule = '{$crtmodule}' AND objectid = {$objectid}";
+        if ($DB->no_result($sql)) {
+            unset($this);
+            return true;
+        } else {
+            return false;
+        }
+    }
      
     public static function generateNotification($touser, $crtmodule, $type, $reference, $objectid, $group = ""){
         global $_USER;
-        $tmp_notification = new Notification();
+        $tmp_notification = self::checkUnreadNotification($touser->getId(), $crtmodule, $objectid);
+        if ($tmp_notification->getId()>0)
+        {
+            $tmp_notification->setCount($tmp_notification->getCount()+1);
+        }
+        $tmp_notification->setObjectid($objectid);
         $tmp_notification->setUser($touser);
-//         if ($touser == $_USER)
-//             return false;
-//         echo "generateNotification fired!</br>";
         switch($crtmodule){
             case "CollectiveInvoice":
                 switch ($type){
@@ -152,7 +191,6 @@ class Notification {
             case "Event":
                 switch ($type){
                     case "NewEvent":
-//                         echo "NewEvent fired!</br>";
                         $tmp_notification->setTitle("Neue Termineinladung von \"".$reference."\"");
                         $tmp_notification->setPath("index.php?page=libs/modules/organizer/calendar.php&exec=showevent&id=".$objectid);
                         $tmp_notification->setCrtmodule($crtmodule);
@@ -334,9 +372,38 @@ class Notification {
     {
         $this->crtmodule = $crtmodule;
     }
+    
+	/**
+     * @return the $count
+     */
+    public function getCount()
+    {
+        return $this->count;
+    }
 
+	/**
+     * @param field_type $count
+     */
+    public function setCount($count)
+    {
+        $this->count = $count;
+    }
     
-    
+	/**
+     * @return the $objectid
+     */
+    public function getObjectid()
+    {
+        return $this->objectid;
+    }
+
+	/**
+     * @param number $objectid
+     */
+    public function setObjectid($objectid)
+    {
+        $this->objectid = $objectid;
+    }
 }
 
 

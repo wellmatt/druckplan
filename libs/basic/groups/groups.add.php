@@ -63,7 +63,7 @@ $users = User::getAllUser(User::ORDER_LOGIN);
 </div>
 
 <div class="box1">
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="group_form" name="group_form" onsubmit="return checkform(new Array(this.group_name, this.user_description))">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="group_form" name="group_form" onsubmit="return checkform(new Array(this.group_name, this.group_description))">
 <input type="hidden" name="exec" value="edit">
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" name="id" value="<?=$group->getId()?>">

@@ -1,4 +1,9 @@
 <?
+
+$_REQUEST["id"] = 1;
+require_once('client.add.php');
+
+/*
 if ($_REQUEST["exec"] == "edit")
 {
    require_once('client.add.php');
@@ -52,3 +57,4 @@ $clients = Client::getAllClients(Client::ORDER_NAME);
 </table>
 </div>
 <?} ?>
+*/

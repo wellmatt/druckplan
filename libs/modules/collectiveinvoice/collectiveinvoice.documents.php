@@ -36,6 +36,8 @@ if($_REQUEST["createDoc"]){
         $collectinv->setStatus(3);
         $collectinv->save();
     }
+    if($_REQUEST["createDoc"] == "label")
+        $doc->setType(Document::TYPE_LABEL);
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
     if($_REQUEST["createDoc"] == "delivery")
@@ -45,9 +47,13 @@ if($_REQUEST["createDoc"]){
     if($_REQUEST["createDoc"] == "revert")
     	$doc->setType(Document::TYPE_REVERT);
     
-    
-    $hash = $doc->createDoc(Document::VERSION_EMAIL);
-    $doc->createDoc(Document::VERSION_PRINT, $hash);
+
+    if($_REQUEST["createDoc"] == "factory" || $_REQUEST["createDoc"] == "label"){
+        $doc->createDoc(Document::VERSION_PRINT, false, false);
+    } else {
+        $hash = $doc->createDoc(Document::VERSION_EMAIL);
+        $doc->createDoc(Document::VERSION_PRINT, $hash);
+    }
     $doc->save();
 }
 
@@ -555,6 +561,84 @@ if(count($docs) > 0){
         }
 	}
 }
+
+
+//---------------------------------------------------------------------------
+// Etiketten
+//---------------------------------------------------------------------------
+$docs = Document::getDocuments(Array("type" => Document::TYPE_LABEL, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
+<tr class="<?=getRowColor(1)?>">
+	<td class="content_row" colspan="6"><b><?=$_LANG->get('Etiketten')?></b></td>
+</tr>
+<?
+if(count($docs) > 0){
+	foreach ($docs AS $doc){ ?>
+		<tr class="<?=getRowColor(0)?>">
+		<td class="content_row_clear">&ensp;</td>
+		<td class="content_row_clear">
+			<span class="ok"><?=$doc->getName()?></span>
+		</td>
+		<td class="content_row_clear">
+		<? 	if($doc->getSent())
+	    	    echo '<img src="images/status/green_small.gif">';
+	    	else
+	        	echo '<img src="images/status/red_small.gif">'; ?>
+	    </td>
+		<td class="content_row_clear">
+			<?=$doc->getCreateUser()->getNameAsLine()?>
+		</td>
+		<td class="content_row_clear">
+			<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+		</td>
+		<td class="content_row_clear">
+			<table cellpaddin="0" cellspacing="0" width="100%">
+				<tr>
+					<td width="30%">
+				    	<!--ul class="postnav_text">
+				    		<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
+				    	</ul-->
+		    		</td>
+		    		<td width="30%">
+		    			<ul class="postnav_text">
+		    				<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+		    			</ul>
+					</td>
+					<td width="40%">
+						<ul class="postnav_text_del">
+							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</td>
+		</tr>
+	<?	$x++;
+	}
+}
+?>
+<tr class="<?=getRowColor(0)?>">
+	<td class="content_row_clear">&emsp;</td>
+	<td class="content_row_clear" colspan="4">
+		<?=$_LANG->get('Menge');?>: 
+		<input type="text" class="text" name="label_box_amount" id="label_box_amount" style="width: 80px;" value="1">  
+		
+		&emsp; &emsp;
+		<input type="checkbox" name="label_print_logo" id="label_print_logo" value="1"/>
+		<?=$_LANG->get('Logo drucken');?>
+		
+		&emsp; &emsp;
+		<?=$_LANG->get('Titel');?>:
+		<input type="text" class="text" name="label_title" id="label_title" style="width: 280px;"
+			value="<? echo $collectinv->getTitle();?>">
+	</td>
+	<td class="content_row_clear">
+		<ul class="postnav_text_save">
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=label" onclick="$(this).attr('href',$(this).attr('href')+'&label_box_amount='+$('#label_box_amount').val()+'&label_print_logo='+$('#label_print_logo').val()+'&label_title='+$('#label_title').val())"><?=$_LANG->get('Generieren')?></a>
+		</ul>
+	</td>
+</tr>
+
+<?php 
 //---------------------------------------------------------------------------
 // Ende Dokumente
 //---------------------------------------------------------------------------

@@ -29,7 +29,7 @@ if($_REQUEST["cpid"] == 0){
 
 $contactperson->setBusinessContact(new BusinessContact((int)$_REQUEST["id"]));
 
-if ($_REQUEST["exec"] == "save_cp"){
+if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)){
     $contactperson->setActive(1);
     $contactperson->setTitle(trim(addslashes($_REQUEST["title"])));
     $contactperson->setName1(trim(addslashes($_REQUEST["name1"])));
@@ -215,7 +215,9 @@ $(function() {
 	<div class="menu">
         <a href="#top" class="menu_item">Seitenanfang</a>
         <a href="#" class="menu_item" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=4'">Zurück</a>
+        <?php if($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)){?>
         <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+        <?php } ?>
     	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){ ?>
         	<?if($_REQUEST["exec"] != "new"){?>
                 <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$contactperson->getId()?>&id=<?=$contactperson->getBusinessContact()->getID()?>')">Löschen</a>

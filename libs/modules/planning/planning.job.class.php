@@ -19,11 +19,14 @@ class PlanningJob {
     private $id;
     private $object;
     private $type;
+    private $opos;
     private $subobject;
     private $assigned_user;
+    private $assigned_group;
     private $ticket;
-    private $start;
-    private $end;
+    private $start = 0;
+    private $tplanned = 0;
+    private $tactual = 0;
     private $state = 1;
     private $artmach;
     
@@ -35,6 +38,7 @@ class PlanningJob {
         global $DB;
 
         $this->assigned_user = new User();
+        $this->assigned_group = new Group();
         $this->ticket = new Ticket();
 
         if($id > 0)
@@ -47,22 +51,24 @@ class PlanningJob {
 
                 $this->id = $r["id"];
                 $this->type = $r["type"];
+                $this->object = new CollectiveInvoice((int)$r["object"]);
+                $this->opos = new Orderposition((int)$r["opos"]);
                 if ($this->type == PlanningJob::TYPE_V)
                 {
-                    $this->object = new CollectiveInvoice((int)$r["object"]);
-                    $this->subobject = new Orderposition((int)$r["subobject"]);
+                    $this->subobject = new Article((int)$r["subobject"]);
                     $this->artmach = new Article((int)$r["artmach"]);
                 }
                 elseif ($this->type == PlanningJob::TYPE_K)
                 {
-                    $this->object = new Order((int)$r["object"]);
-                    $this->subobject = new Machineentry((int)$r["subobject"]);
+                    $this->subobject = new Order((int)$r["subobject"]);
                     $this->artmach = new Machine((int)$r["artmach"]);
                 }
                 $this->assigned_user = new User((int)$r["assigned_user"]);
+                $this->assigned_group = new Group((int)$r["assigned_group"]);
                 $this->ticket = new Ticket((int)$r["ticket"]);
                 $this->start = $r["start"];
-                $this->end = $r["end"];
+                $this->tplanned = $r["tplanned"];
+                $this->tactual = $r["tactual"];
                 $this->state = $r["state"];
 
             }
@@ -117,25 +123,26 @@ class PlanningJob {
         if ($this->type == PlanningJob::TYPE_V)
         {
             $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getTitle();
-            $ticket->setCustomer($this->object->getCustomer());
-            $ticket->setCustomer_cp($this->object->getCustContactperson());
-            $comm = "";
+            $comm = $this->opos->getComment();
         }
         elseif ($this->type == PlanningJob::TYPE_K)
         {
             $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getName();
-            $ticket->setCustomer($this->object->getCustomer());
-            $ticket->setCustomer_cp($this->object->getCustContactperson());
             $comm = Order::generateSummary($this->object->getId());
         }
+        $ticket->setCustomer($this->object->getCustomer());
+        $ticket->setCustomer_cp($this->object->getCustContactperson());
         $ticket->setTitle($title);
         $ticket->setDuedate($this->start);
-        $ticket->setAssigned_user($this->assigned_user);
+        if ($this->assigned_user->getId()>0)
+            $ticket->setAssigned_user($this->assigned_user);
+        else
+            $ticket->setAssigned_group($this->assigned_group);
         $ticket->setCategory(new TicketCategory(2));
         $ticket->setState(new TicketState(2));
         $ticket->setPriority(new TicketPriority(1));
         $ticket->setSource(Ticket::SOURCE_JOB); // TODO: hardcoded
-        $ticket->setPlanned_time(($this->end - $this->start)/60/60);
+        $ticket->setPlanned_time($this->tplanned);
         $ticket->setCrtuser($_USER);
         $save_ok = $ticket->save();
         if ($save_ok)
@@ -150,6 +157,15 @@ class PlanningJob {
             $comment->setVisability(Comment::VISABILITY_INTERNAL);
             $comment->setComment($comm);
             $comment->save();
+            
+            $asso = new Association();
+            $asso->setCrtdate(time());
+            $asso->setCrtuser($_USER);
+            $asso->setModule1("Ticket");
+            $asso->setModule2("CollectiveInvoice");
+            $asso->setObjectid1($ticket->getId());
+            $asso->setObjectid2($this->object->getId());
+            $asso->save();
         }
     }
 
@@ -159,11 +175,14 @@ class PlanningJob {
         global $DB;
         $set = "object = {$this->object->getId()},
                 type = {$this->type},
+                opos = {$this->opos->getId()},
                 subobject = {$this->subobject->getId()},
                 assigned_user = {$this->assigned_user->getId()},
+                assigned_group = {$this->assigned_group->getId()},
                 ticket = {$this->ticket->getId()},
-                start = {$this->start},
-                end = {$this->end},
+                `start` = {$this->start},
+                tplanned = {$this->tplanned},
+                tactual = {$this->tactual},
                 artmach = {$this->artmach->getId()},
                 state = {$this->state}";
         
@@ -172,6 +191,7 @@ class PlanningJob {
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO planning_jobs SET " . $set . " ";
+//             echo $sql."</br>";
             $res = $DB->no_result($sql);
             
             if ($res) {
@@ -198,39 +218,50 @@ class PlanningJob {
         return false;
     }
     
+    public static function getJobsForObjectAndOpos($object,$opos)
+    {
+        global $DB;
+        $retval = Array();
+        
+        $sql = "SELECT id FROM planning_jobs WHERE state > 0 AND object = {$object} AND opos = {$opos}";
+        
+        if($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $r)
+            {
+                $retval[] = new PlanningJob($r["id"]);
+            }
+        }
+        return $retval;
+    }
+    
+    public static function getJobsForObjectAndOposAndArtmach($object,$type,$opos,$artmach)
+    {
+        global $DB;
+        $retval = Array();
+        
+        $sql = "SELECT id FROM planning_jobs WHERE state > 0 AND object = {$object} AND type = {$type} AND opos = {$opos} AND artmach = {$artmach}";
+        
+        if($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $r)
+            {
+                $retval[] = new PlanningJob($r["id"]);
+            }
+        }
+        return $retval;
+    }
+    
     public function getTitle()
     {
         if ($this->type == PlanningJob::TYPE_V)
         {
-            $art = new Article($this->subobject->getObjectid());
-            return $art->getTitle();
+            return $this->artmach->getTitle();
         }
         elseif ($this->type == PlanningJob::TYPE_K)
         {
-            return $this->subobject->getMachine()->getName();
+            return $this->artmach->getName();
         }
-    }
-    
-    public function getPlannedTimeOrig()
-    {
-        if ($this->type == PlanningJob::TYPE_V)
-        {
-            return $this->subobject->getQuantity();
-        }
-        elseif ($this->type == PlanningJob::TYPE_K)
-        {
-            return $this->subobject->getTime()/60;
-        }
-    }
-    
-    public function getPlannedTime()
-    {
-        return ($this->end-$this->start)/60/60;
-    }
-    
-    public function getTime()
-    {
-        return $this->ticket->getTotal_time();
     }
     
 	/**
@@ -282,6 +313,30 @@ class PlanningJob {
     }
 
 	/**
+     * @return the $start
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+	/**
+     * @return the $tplanned
+     */
+    public function getTplanned()
+    {
+        return $this->tplanned;
+    }
+
+	/**
+     * @return the $tactual
+     */
+    public function getTactual()
+    {
+        return $this->tactual;
+    }
+
+	/**
      * @return the $state
      */
     public function getState()
@@ -290,7 +345,15 @@ class PlanningJob {
     }
 
 	/**
-     * @param Ambigous <CollectiveInvoice, Order> $object
+     * @return the $artmach
+     */
+    public function getArtmach()
+    {
+        return $this->artmach;
+    }
+
+	/**
+     * @param CollectiveInvoice $object
      */
     public function setObject($object)
     {
@@ -306,7 +369,7 @@ class PlanningJob {
     }
 
 	/**
-     * @param Ambigous <Machineentry, Orderposition> $subobject
+     * @param Ambigous <Order, Article> $subobject
      */
     public function setSubobject($subobject)
     {
@@ -330,39 +393,7 @@ class PlanningJob {
     }
 
 	/**
-     * @param number $state
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-    }
-    
-	/**
-     * @return the $start
-     */
-    public function getStart()
-    {
-        return $this->start;
-    }
-
-	/**
-     * @return the $end
-     */
-    public function getEnd()
-    {
-        return $this->end;
-    }
-
-	/**
-     * @return the $artmach
-     */
-    public function getArtmach()
-    {
-        return $this->artmach;
-    }
-
-	/**
-     * @param field_type $start
+     * @param number $start
      */
     public function setStart($start)
     {
@@ -370,19 +401,67 @@ class PlanningJob {
     }
 
 	/**
-     * @param field_type $end
+     * @param number $tplanned
      */
-    public function setEnd($end)
+    public function setTplanned($tplanned)
     {
-        $this->end = $end;
+        $this->tplanned = $tplanned;
     }
 
 	/**
-     * @param Ambigous <Machine, Article> $artmach
+     * @param number $tactual
+     */
+    public function setTactual($tactual)
+    {
+        $this->tactual = $tactual;
+    }
+
+	/**
+     * @param number $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+	/**
+     * @param Ambigous <Article, Machine> $artmach
      */
     public function setArtmach($artmach)
     {
         $this->artmach = $artmach;
+    }
+    
+	/**
+     * @return the $opos
+     */
+    public function getOpos()
+    {
+        return $this->opos;
+    }
+
+	/**
+     * @param Orderposition $opos
+     */
+    public function setOpos($opos)
+    {
+        $this->opos = $opos;
+    }
+    
+	/**
+     * @return the $assigned_group
+     */
+    public function getAssigned_group()
+    {
+        return $this->assigned_group;
+    }
+
+	/**
+     * @param Group $assigned_group
+     */
+    public function setAssigned_group($assigned_group)
+    {
+        $this->assigned_group = $assigned_group;
     }
 }
 ?>

@@ -9,8 +9,8 @@
 // Requires PHP 5.2.0 or higher.
 //--------------------------------------------------------------------------------------------------
 
-// error_reporting(-1);
-// ini_set('display_errors', 1);
+error_reporting(-1);
+ini_set('display_errors', 1);
 
 // Require our Event class and datetime utilities
 chdir ("../../../");
@@ -252,9 +252,10 @@ if ($_REQUEST["exec"] == "ajax_getJobDataForOverview")
         echo '<table width="100%">';
         echo '<tr>';
         echo '<td>ID</td>';
+        echo '<td>Objekt</td>';
         echo '<td>MA</td>';
         echo '<td>Ticket</td>';
-        echo '<td>gepl. für</td>';
+        echo '<td>Prod. Beginn</td>';
         echo '<td>S-Zeit</td>';
         echo '<td>I-Zeit</td>';
         echo '<td>Status</td>';
@@ -265,13 +266,20 @@ if ($_REQUEST["exec"] == "ajax_getJobDataForOverview")
             echo '<tr>';
             
             echo '<td>#'.$pj->getId().'</td>';
-            echo '<td>'.$pj->getAssigned_user()->getNameAsLine().'</td>';
+            if ($pj->getType()==2)
+                echo '<td>'.$pj->getArtmach()->getName().'</td>';
+            else
+                echo '<td>'.$pj->getArtmach()->getTitle().'</td>';
+            if ($pj->getAssigned_user()>0)
+                echo '<td>'.$pj->getAssigned_user()->getNameAsLine().'</td>';
+            else 
+                echo '<td>'.$pj->getAssigned_group()->getName().'</td>';
             echo '<td><a target="_blank" href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='.$pj->getTicket()->getId().'">#'.$pj->getTicket()->getNumber().'</a></td>';
-            echo '<td>'.date("d.m.Y H:i",$pj->getStart()).' -> '.date("d.m.Y H:i",$pj->getEnd()).'</td>';
-            echo '<td>'.number_format($pj->getPlannedTime(), 2, ",", "").'</td>';
-            if ($pj->getTime()>$pj->getPlannedTime())
+            echo '<td>'.date("d.m.Y H:i",$pj->getTicket()->getDuedate()).'</td>';
+            echo '<td>'.number_format($pj->getTplanned(), 2, ",", "").'</td>';
+            if ($pj->getTactual()>$pj->getTplanned())
                 $style = ' style="background-color: red;"';
-            echo '<td '.$style.'>'.number_format($pj->getTime(), 2, ",", "").'</td>';
+            echo '<td '.$style.'>'.number_format($pj->getTactual(), 2, ",", "").'</td>';
             echo '<td><span style="display: inline-block; vertical-align: top; background-color: '.$pj->getTicket()->getState()->getColorcode().'" class="label">';
             echo $pj->getTicket()->getState()->getTitle().'</span></td>';
             

@@ -500,6 +500,7 @@ class Event {
             $res = $DB->no_result($sql);
             if($res)
             {
+                Notification::removeForObject("Event", $this->getId());
                 unset($this);
                 return true;
             } else

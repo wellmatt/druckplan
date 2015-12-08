@@ -111,9 +111,12 @@ $art_array = Array();
 foreach ($all_comments as $comment){
     if ($comment->getState() > 0 && count($comment->getArticles()) > 0){
         foreach ($comment->getArticles() as $c_article){
-            $art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
-            $art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
-            $art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
+            if ($c_article->getState() > 0)
+            {
+                $art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
+                $art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
+                $art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
+            }
         }
     }
 }
@@ -175,14 +178,15 @@ $totalprice = 0;
 		</tfoot>
 		<?php foreach ($all_comments as $comment){
 		    if ($comment->getState() > 0 && count($comment->getArticles()) > 0 && ($comment->getVisability() == Comment::VISABILITY_PUBLIC || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL)){
-		        foreach ($comment->getArticles() as $c_article){?>
+		        foreach ($comment->getArticles() as $c_article){
+		        if ($c_article->getState()>0){?>
         <tr>
             <td valign="top"><?php echo $c_article->getArticle()->getTitle();?></td>
             <td valign="top"><?php echo printPrice($c_article->getAmount(),2);?></td>
             <td valign="top"><?php echo $comment->getComment();?></td>
             <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
         </tr>
-        <?php }}}?>
+        <?php }}}}?>
     </table>
 </div>
 <br>

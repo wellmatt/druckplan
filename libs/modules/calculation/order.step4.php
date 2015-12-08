@@ -93,6 +93,25 @@ $(document).ready(function() {
 });
 </script>
 
+
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#step4_form').submit();">Speichern</a>
+        <?php if ($order->getArticleid()==0){?>
+        <a href="#" class="menu_item" onclick="askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=<?php echo $order->getId();?>')">Artikel Speichern</a>
+        <?php } elseif ($order->getArticleid()>0){?>
+        <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $order->getArticleid();?>" class="menu_item">Zum Artikel</a>
+        <a href="#" class="menu_item" onclick="askDel('index.php?page=libs/modules/article/article.php&exec=uptfromorder&orderid=<?php echo $order->getId();?>&aid=<?php echo $order->getArticleid();?>')">Artikel aktualisieren</a>
+        <?php }?>
+	    <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
+            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=<?php echo $order->getId();?>')">Löschen</a>
+        <?}?>
+    </div>
+</div>
+
 <div class="box1">
 <table width="100%">
     <colgroup>
@@ -139,7 +158,7 @@ $(document).ready(function() {
 </div>
 <br>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="step4_form">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="step4_form" name="step4_form">
 <input name="step" value="4" type="hidden">
 <input name="exec" value="edit" type="hidden">
 <input name="subexec" value="save" type="hidden">
@@ -902,28 +921,4 @@ $collective = new CollectiveInvoice($order->getCollectiveinvoiceId());?>
 </div>
 <? echo $savemsg; ?>
 <br>
-<div>
-	<table width="100%">
-	    <colgroup>
-	        <col width="50%">
-	        <col width="50%">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <td class="content_row_clear" align="center">
-	        		<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-	        </td>
-	        <td class="content_row_clear" align="right">
-	        	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
-		        		<input type="button" class="buttonRed" onclick="askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=<?php echo $order->getId();?>')" 
-		        				value="<?=$_LANG->get('L&ouml;schen')?>">
-		        <?}?>
-	        </td>
-	    </tr>
-	</table>
-</div>
 </form>

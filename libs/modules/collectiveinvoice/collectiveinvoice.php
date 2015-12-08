@@ -139,10 +139,7 @@ case 'save':
 	$orderpositions = Array(); 
 	$xi=0;
 	$au_suffix=1;
-	//echo "<br/> <br/> <br/> <br/> <br/> <br/>---<br/>---";
-// 	var_dump($_REQUEST["orderpos"]); echo "</br>";
 	foreach ($_REQUEST["orderpos"] as $single_order){
-// 	    var_dump($single_order); echo "</br></br>";
 		if ( !( $_REQUEST["orderpos"][$xi]["id"] == "0" && 			// Wenn in den "Neu"-Feldern nichts drin steht
 				$_REQUEST["orderpos"][$xi]["comment"] == "" &&		// soll er auch nichts speichern
 				$_REQUEST["orderpos"][$xi]["quantity"] == "")){
@@ -168,7 +165,7 @@ case 'save':
 			$newpos->setCollectiveinvoice((int)$collectinv->getId());
 			
 			$tmp_art = new Article($newpos->getObjectid());
-			if ($tmp_art->getIsWorkHourArt())
+			if ($tmp_art->getIsWorkHourArt() || $tmp_art->getOrderid()>0)
 			    $needs_planning = true;
 			
 			//AUftragsnummer anpassen (mit Suffix versehen)

@@ -34,18 +34,19 @@ class Article {
 	private $upt_date;				// Datum, der letzten Aenderung
 	private $upt_user;				// ID des Benutzers, der zuletzt bearbeitet hat
 	private $tax = 19;				// Steuern
-	private $minorder;				// Minimale Bestellmenge
-	private $maxorder;				// Maximale Bestellmenge
-	private $orderunit;				// Verpackungseinheit
-	private	$orderunitweight;		// Gewicht der Verpackungseinheit
-	private $shopCustomerRel;		// Freigabe fuer einen spez. Kunden im Shop
-	private $shopCustomerID;		// ID des freigegebenen Kunden
-	private $isworkhourart;			// Ist es ein Arbeits-Stunden Artikel
+	private $minorder = 0;			// Minimale Bestellmenge
+	private $maxorder = 0;			// Maximale Bestellmenge
+	private $orderunit = 0;			// Verpackungseinheit
+	private	$orderunitweight = 0;	// Gewicht der Verpackungseinheit
+	private $shopCustomerRel = 0;	// Freigabe fuer einen spez. Kunden im Shop
+	private $shopCustomerID = 0;	// ID des freigegebenen Kunden
+	private $isworkhourart = 0;		// Ist es ein Arbeits-Stunden Artikel
 	private $show_shop_price = 1;	// Freigabe fuer den Shop
-	private $shop_needs_upload;     // Datei upload im Warenkorb
+	private $shop_needs_upload = 0; // Datei upload im Warenkorb
 	private $matchcode;             // Artikel Matchcode
 	private $shop_approval;         // Shop Freigabe für BCs und CPs
 	private $tags;                  // Artikel Tags
+	private $orderid = 0;           // Verknuepfte Kalk
 	
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
@@ -117,6 +118,7 @@ class Article {
 				$this->show_shop_price = $r["show_shop_price"];
 				$this->shop_needs_upload = $r["shop_needs_upload"];
 				$this->matchcode = $r["matchcode"];
+				$this->orderid = $r["orderid"];
 				
 				if ($r["tradegroup"] == 0){
 					$this->tradegroup->setTitle(" &ensp; ");
@@ -198,10 +200,10 @@ class Article {
 		$groupid = $this->tradegroup->getId();
 		
 		if($this->id > 0){
-			$sql = "UPDATE article SET
-					title 		= '{$this->title}',  
+			$sql = "UPDATE article SET 
+					title 		= '{$this->title}', 
 					tradegroup 	= {$groupid}, 
-					number		= '{$this->number}',  
+					number		= '{$this->number}', 
 					description = '{$this->desc}', 
 					shoprel 	= {$this->shoprel}, 
 					picture		= '{$this->picture}', 
@@ -213,11 +215,12 @@ class Article {
 					orderunit 	= {$this->orderunit}, 
 					orderunitweight 	= {$this->orderunitweight}, 
 					shop_customer_rel	= {$this->shopCustomerRel}, 
-					shop_customer_id	= {$this->shopCustomerID},
-					show_shop_price		= {$this->show_shop_price},
-					shop_needs_upload	= {$this->shop_needs_upload},
-					isworkhourart		= {$this->isworkhourart},
-					matchcode		    = '{$this->matchcode}' 
+					shop_customer_id	= {$this->shopCustomerID}, 
+					show_shop_price		= {$this->show_shop_price}, 
+					shop_needs_upload	= {$this->shop_needs_upload}, 
+					isworkhourart		= {$this->isworkhourart}, 
+					matchcode		    = '{$this->matchcode}', 
+					orderid             = {$this->orderid} 
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
 		} else {
@@ -225,16 +228,20 @@ class Article {
 					(status, description, title, 
 					tradegroup, crtdate, crtuser, 
 					shoprel, picture, number, tax, 
-					minorder, maxorder, orderunit,  
-					orderunitweight, shop_customer_rel, shop_customer_id, isworkhourart, show_shop_price, shop_needs_upload, matchcode )
+					minorder, maxorder, orderunit, 
+					orderunitweight, shop_customer_rel, 
+					shop_customer_id, isworkhourart, show_shop_price,  
+					shop_needs_upload, matchcode, orderid )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',  
 					{$groupid}, {$now}, {$_USER->getId()}, 
 					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax}, 
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
-					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, '{$this->matchcode}' )";
+					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, 
+					'{$this->matchcode}', {$this->orderid} )";
 			$res = $DB->no_result($sql);
+// 			echo $sql . "</br>";
             
             if($res){
                 $sql = "SELECT max(id) id FROM article WHERE title = '{$this->title}'";
@@ -349,7 +356,7 @@ class Article {
 	{
 		global $DB;
 		$retval = Array();
-		$sql = "SELECT DISTINCT tag FROM article_tags WHERE tag LIKE '{$term}'";
+		$sql = "SELECT DISTINCT tag FROM article_tags WHERE tag LIKE '%{$term}%'"; 
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 			    $retval[] = Array("label" => $r["tag"], "value" => $r["tag"]);
@@ -432,6 +439,23 @@ class Article {
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Article($r["id"]);
+			}
+		}
+		return $retval;
+	}
+	
+	static function getAllArticleIdsForApi($apiid){
+		global $DB;
+		$retval = Array();
+		$sql = "SELECT article.id, article.uptdate
+                FROM
+                apis_objects
+                INNER JOIN article ON apis_objects.object = article.id
+                WHERE article.`status` > 0 AND apis_objects.api = {$apiid} AND apis_objects.type = 1 
+                ORDER BY article.id ASC";
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = Array("id"=>$r["id"],"uptdate"=>$r["uptdate"]);
 			}
 		}
 		return $retval;
@@ -1108,5 +1132,20 @@ class Article {
         $this->tags = $tags;
     }
     
+	/**
+     * @return the $orderid
+     */
+    public function getOrderid()
+    {
+        return $this->orderid;
+    }
+
+	/**
+     * @param number $orderid
+     */
+    public function setOrderid($orderid)
+    {
+        $this->orderid = $orderid;
+    }
 }
 ?>

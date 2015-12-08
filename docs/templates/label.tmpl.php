@@ -21,7 +21,7 @@ $smarty->assign('Amount', (int)$_REQUEST["label_box_amount"]);
 
 $smarty->assign('Title', $_REQUEST["label_title"]);
 
-$smarty->assign('Productdesc',$order->getProduct()->getDescription());
+$smarty->assign('Productdesc','test123'); // $order->getProduct()->getDescription()
 
 $htmldump = $smarty->fetch('string:'.$datei);
 

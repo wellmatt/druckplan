@@ -75,7 +75,7 @@ if ((int)$_REQUEST["cid"] > 0){
                 if ($comment->getModule() == "Ticket")
                 {
                     $tmp_ticket = new Ticket($comment->getObjectid());
-                    $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $_USER->getNameAsLine() . ' bearbeitet</br>';
+                    $logentry = '(#'.$comment->getId().') <a href="#comment_'.$comment->getId().'">Kommentar </a> wurde von ' . $_USER->getNameAsLine() . ' bearbeitet</br>';
                     $ticketlog = new TicketLog();
                     $ticketlog->setCrtusr($_USER);
                     $ticketlog->setDate(time());
@@ -88,7 +88,7 @@ if ((int)$_REQUEST["cid"] > 0){
                     if ($tmp_comment->getModule() == "Ticket")
                     {
                         $tmp_ticket = new Ticket($tmp_comment->getObjectid());
-                        $logentry = '<a href="#comment_'.$comment->getId().'">Kommentar (#'.$comment->getId().')</a> wurde von ' . $_USER->getNameAsLine() . ' bearbeitet</br>';
+                        $logentry = '(#'.$comment->getId().') <a href="#comment_'.$comment->getId().'">Kommentar </a> wurde von ' . $_USER->getNameAsLine() . ' bearbeitet</br>';
                         $ticketlog = new TicketLog();
                         $ticketlog->setCrtusr($_USER);
                         $ticketlog->setDate(time());
@@ -298,6 +298,25 @@ $(function () {
             	$( "#art_"+id ).remove();
     		});
 	}
+	function editArt(id,oldamount)
+	{
+		var amount = prompt("Neue Artikelmenge angeben", oldamount);
+		if (amount != null) {
+			var str = amount.toString();
+			if(!str.match(/^-*[0-9]?[,]?[0-9]+$/)) {
+			    alert("Bitte beschränken Sie die Eingabe auf (0-9+,)");
+			} else {
+		    	$.ajax({
+		    		type: "POST",
+		    		url: "comment.ajax.php",
+		    		data: { ajax_action: "editArt", artid: id, artamount: str }
+		    	    })
+		    		.done(function( msg ) {
+		            	$( "#artamount_"+id ).html(str);
+		            });
+			}
+		}
+	}
 </script>
 
 <div id="tktc_oldcomment" style="display: none;"><?php echo $comment->getComment();?></div>
@@ -382,10 +401,11 @@ $(function () {
             <?php 
                 foreach ($comment->getArticles() as $c_article){
                     if ($c_article->getState() == 1){
-                        echo '<span id="art_'.$c_article->getId().'">'.$c_article->getAmount().'x 
+                        echo '<span id="art_'.$c_article->getId().'"><span id="artamount_'.$c_article->getId().'">'.$c_article->getAmount().'</span>x 
                               <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a>';
                         if ($_USER->isAdmin()){
-                              echo '<img src="../../../images/icons/cross.png" onclick="removeArt('.$c_article->getId().')"/>';
+                              echo '<img src="../../../images/icons/cross.png" onclick="removeArt('.$c_article->getId().')"/>
+                                    <img src="../../../images/icons/pencil.png" onclick="editArt('.$c_article->getId().','.$c_article->getAmount().')"/>';
                         }
                         echo '</span></br>';
                     } elseif ($c_article->getState() == 0 && $_USER->isAdmin()){

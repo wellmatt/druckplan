@@ -34,6 +34,7 @@ require_once 'libs/modules/timer/timer.class.php';
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/basic/cachehandler/cachehandler.class.php';
+require_once 'libs/modules/api/api.class.php';
 
 require_once __DIR__.'/vendor/Horde/Autoloader.php';
 require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';
@@ -68,7 +69,7 @@ if ($_REQUEST["doLogout"] == 1)
     $logouttimer = Timer::getLastUsed((int)$_REQUEST["userid"]);
     
     ?>
-<script language="JavaScript">location.href='index.php'</script>
+    <script language="JavaScript">location.href='index.php'</script>
 <?
 } else
 {
@@ -183,6 +184,11 @@ if ($_USER == false)
 </div>
 <script language="JavaScript">
    // showLoading();
+function sleep(millis, callback) {
+    setTimeout(function()
+            { callback(); }
+    , millis);
+}
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -362,18 +368,7 @@ if ($_USER == false)
                         
             <!-- calendar -->
             <li id='li_calendar' class="dropdown-grid">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, cal_refresh);"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span><span class="caret"></span></a>
-              <div class="dropdown-grid-wrapper" role="menu">
-                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-6">
-                  <li>
-                      <h3 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;"><i class="fa fa-calendar"></i> Kalender</h3>
-							<? 
-								require_once 'libs/modules/organizer/calendar.showday.home.php'; 
-							?>
-                  
-                  </li>
-                </ul>
-              </div>
+              <a href="index.php?page=libs/modules/organizer/calendar.php"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span></a>
             </li>
             <!-- /calendar -->
 

@@ -18,6 +18,7 @@ if ($_REQUEST["exec"] == "getNotifications"){
             $html .= '<td>'.$notification->getCrtmodule().'</td>';
             $html .= '<td>'.date("d.m.Y H:i",$notification->getCrtdate()).'</td>';
             $html .= '<td><a href="index.php?page=libs/modules/notifications/notification.redirect.php&exec=redirect&nid='.$notification->getId().'">'.$notification->getTitle().'</a></td>';
+            $html .= '<td><span class="badge">'.$notification->getCount().'</span></td>';
             $html .= '</tr>';
         }
         $html .= "</table>";

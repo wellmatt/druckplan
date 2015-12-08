@@ -7,6 +7,20 @@
 // ---------------------------------------------------------------------------------
 require_once('libs/modules/businesscontact/businesscontact.class.php');
 
+function printSubTradegroupsForSelect($parentId, $depth){
+    $all_subgroups = Tradegroup::getAllTradegroups($parentId);
+    foreach ($all_subgroups AS $subgroup)
+    {
+        global $x;
+		$x++; ?>
+        <option value="<?=$subgroup->getId()?>">
+				<?for ($i=0; $i<$depth+1;$i++) echo "&emsp;"?>
+				<?= $subgroup->getTitle()?>
+		</option>
+        <? printSubTradegroupsForSelect($subgroup->getId(), $depth+1);
+	}
+}
+
 ?>
 <!-- Lightbox -->
 <link rel="stylesheet" href="jscripts/lightbox/lightbox.css" type="text/css" media="screen" />
@@ -55,15 +69,18 @@ $(document).ready(function() {
 		            null,
 		            { "sortable": false },
 		            null,
-		            null,
-		            <?if($_CONFIG->shopActivation){?>
 		            { "sortable": false },
-		            <?}?>
 		            { "sortable": false }
 		          ],
   		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var tags = document.getElementById('ajax_tags').value;
+			var tg = document.getElementById('ajax_tradegroup').value;
+			var bc = document.getElementById('ajax_bc').value;
+			var cp = document.getElementById('ajax_cp').value;
 		    aoData.push( { "name": "search_tags", "value": tags, } );
+		    aoData.push( { "name": "tradegroup", "value": tg, } );
+		    aoData.push( { "name": "bc", "value": bc, } );
+		    aoData.push( { "name": "cp", "value": cp, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -138,6 +155,32 @@ jQuery(document).ready(function() {
 });
 </script>
 
+<script>
+$(function() {
+   $( "#bc_cp" ).autocomplete({
+        delay: 0,
+        source: 'libs/modules/article/article.ajax.php?ajax_action=search_bc_cp',
+		minLength: 2,
+		dataType: "json",
+        select: function(event, ui) {
+            if (ui.item.type == 1)
+            {
+                $('#ajax_bc').val(ui.item.value);
+                $('#bc_cp').val(ui.item.label);
+            	$('#art_table').dataTable().fnDraw();
+            }
+            else
+            {
+                $('#ajax_cp').val(ui.item.value);
+                $('#bc_cp').val(ui.item.label);
+            	$('#art_table').dataTable().fnDraw();
+            }
+      		return false;
+        }
+    });
+});
+</script>
+
 <table width="100%">
 	<tr>
 		<td width="200" class="content_header">
@@ -165,6 +208,33 @@ jQuery(document).ready(function() {
                     <input name="tags" id="tags" style="width:200px;" class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
                 </td>
             </tr>
+            <tr align="left">
+                <td valing="top">Warengruppe:&nbsp;&nbsp;</td>
+                <td valign="top"> 
+                    <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
+                    <select name="tradegroup" id="tradegroup" style="width:200px;" class="text" onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                    <option value="0">- Alle -</option>
+                    <?php 
+                    $all_tradegroups = Tradegroup::getAllTradegroups();
+                    foreach ($all_tradegroups as $tg)
+                    {?>
+						<option value="<?=$tg->getId()?>">
+						<?=$tg->getTitle()?></option>
+						<? printSubTradegroupsForSelect($tg->getId(), 0);
+					}
+                    ?>
+                    </select>
+                </td>
+            </tr>
+            <tr align="left">
+                <td valing="top">Kunde/Ansprechpartner:&nbsp;&nbsp;</td>
+                <td valign="top"> 
+                    <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
+                    <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
+                    <input name="bc_cp" id="bc_cp" style="width:200px;" onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}" class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                    <img src="images/icons/cross-script.png" class="pointer" onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();" title="Reset">
+                </td>
+            </tr>
         </table>
     </div>
     </br>
@@ -177,10 +247,7 @@ jQuery(document).ready(function() {
                 <th width="80"><?=$_LANG->get('Art.-Nr.')?></th>
                 <th width="80"><?=$_LANG->get('Tags')?></th>
                 <th width="160"><?=$_LANG->get('Warengruppe')?></th>
-                <th width="160"><?=$_LANG->get('zug. Kunde')?></th>
-				<?if($_CONFIG->shopActivation){?>
-					<th width="100"><?=$_LANG->get('Shop-Freigabe')?></th>
-				<?}?>
+				<th width="100"><?=$_LANG->get('Shop-Freigabe')?></th>
                 <th width="120"><?=$_LANG->get('Optionen')?></th>
             </tr>
         </thead>

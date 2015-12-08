@@ -614,6 +614,8 @@ class Document
                     require 'docs/templates/colofferconfirm.tmpl.php';
                 if ($this->type == self::TYPE_INVOICE)
                     require 'docs/templates/colinvoice.tmpl.php';
+                if ($this->type == self::TYPE_LABEL)
+                    require 'docs/templates/label.tmpl.php';
                 if ($this->type == self::TYPE_DELIVERY)
                     require 'docs/templates/coldelivery.tmpl.php';
                 if ($this->type == self::TYPE_INVOICEWARNING)

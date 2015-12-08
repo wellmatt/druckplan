@@ -43,6 +43,7 @@ if($_REQUEST["subexec"] == "clone"){
     $calculations_old = Calculation::getAllCalculations($order, Calculation::ORDER_AMOUNT);
     $order->clearId();
     $order->setProduct($old_product);
+    $order->setArticleid(0);
     $order->save();
     $order_id_new = $order->getId();
     
@@ -79,7 +80,6 @@ if((int)$_REQUEST["createNew"] == 1){
 	$order->setCustomer(new BusinessContact((int)$_REQUEST["order_customer"]));	
 	$tmp_presel_cp = new ContactPerson((int)$_REQUEST["order_contactperson"]);
 	$order->setCustContactperson($tmp_presel_cp);
-// 	$order->setCustContactperson($order->getCustomer()->getMainContactperson());
 	$order->setPaymentTerms($order->getCustomer()->getPaymentTerms());
 	$order->save();
 	
@@ -865,7 +865,9 @@ if((int)$_REQUEST["step"] == 3){
 					$entry->setSpecial_margin((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_special_margin_{$id}"]))));
 					$entry->setSpecial_margin_text($_REQUEST["mach_special_margin_text_{$id}"]);
 
-					$entry->setTime($entry->getMachine()->getRunningTime($entry));
+					if($_REQUEST["mach_time_{$id}"] == ""){ // nicht überschreiben falls manuell gesetzt
+					   $entry->setTime($entry->getMachine()->getRunningTime($entry));
+					}
 					$entry->setPrice($entry->getMachine()->getMachinePrice($entry));
 					
 					$entry->save();

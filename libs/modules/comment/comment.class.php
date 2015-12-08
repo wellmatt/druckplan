@@ -148,6 +148,21 @@ class Comment {
         }
     }
     
+    public static function getCommentCountForObject($module,$objectid)
+    {
+        global $DB;
+        $retval = 0;
+        
+        $sql = "SELECT count(id) as count FROM comments WHERE module = '{$module}' AND objectid = {$objectid}";
+        if($DB->num_rows($sql)){
+            $r = $DB->select($sql);
+            $r = $r[0];
+            $retval = $r["count"];
+        }
+        
+        return $retval;
+    }
+    
     public static function getCommentsForObject($module,$objectid)
     {
         global $DB;

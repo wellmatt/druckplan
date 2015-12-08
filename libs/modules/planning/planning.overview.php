@@ -74,7 +74,6 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
-		            null,
 		            null
 		          ],
 		"aaSorting": [[ 5, "desc" ]],
@@ -84,7 +83,7 @@ $(document).ready(function() {
 		    } );
 		},
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-        	var res = aData[8].split("/");
+        	var res = aData[7].split("/");
         	var pl = parseInt(res[0]);
         	var jobs = parseInt(res[1]);
         	if (pl < jobs)
@@ -132,7 +131,7 @@ $(document).ready(function() {
             timer = setTimeout(function() {
                 clicks = 0;             //after action performed, reset counter
                 timer = null;
-                window.location = 'index.php?page=libs/modules/planning/planning.job.php&type='+aData[7]+'&id='+aData[1]; 
+                window.location = 'index.php?page=libs/modules/planning/planning.job.php&id='+aData[1]; 
             }, DELAY);
 
         } else {
@@ -140,7 +139,7 @@ $(document).ready(function() {
             clearTimeout(timer);    //prevent single-click action
             clicks = 0;             //after action performed, reset counter
             timer = null;
-            var win = window.open('index.php?page=libs/modules/planning/planning.job.php&type='+aData[7]+'&id='+aData[1], '_blank');
+            var win = window.open('index.php?page=libs/modules/planning/planning.job.php&id='+aData[1], '_blank');
             win.focus();
         }
 
@@ -219,7 +218,6 @@ function TableRefresh()
 				<th><?=$_LANG->get('Kunde')?></th>
 				<th><?=$_LANG->get('Fällig')?></th>
 				<th><?=$_LANG->get('Bemerkung')?></th>
-				<th><?=$_LANG->get('Typ')?></th>
 				<th><?=$_LANG->get('verpl. Jobs')?></th>
 			</tr>
 		</thead>
@@ -232,7 +230,6 @@ function TableRefresh()
 				<th><?=$_LANG->get('Kunde')?></th>
 				<th><?=$_LANG->get('Fällig')?></th>
 				<th><?=$_LANG->get('Bemerkung')?></th>
-				<th><?=$_LANG->get('Typ')?></th>
 				<th><?=$_LANG->get('verpl. Jobs')?></th>
 			</tr>
 		</tfoot>

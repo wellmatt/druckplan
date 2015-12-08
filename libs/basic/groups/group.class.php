@@ -178,7 +178,7 @@ class Group {
                   VALUES
                      ('{$this->name}', '{$this->description}', 1, '{$this->rights}')";
          $res = $this->db->no_result($sql);
-         
+//          echo $sql . "</br>";
          if ($res)
          {
             $sql = " SELECT max(id) id FROM groups";

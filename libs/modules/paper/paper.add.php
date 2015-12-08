@@ -290,6 +290,12 @@ function addSupplierRow()
         </td>   
     </tr>
     <tr>
+        <td class="content_row_header"><?=$_LANG->get('100Kg-Preis')?> *</td>
+        <td class="content_row_clear">
+            <input name="paper_100kg" value="" class="text" style="width:300px">
+        </td>   
+    </tr>
+    <tr>
         <td class="content_row_header"><?=$_LANG->get('Preisbasis')?></td>
         <td class="content_row_clear">
             <?=$_LANG->get('Preis')?> 

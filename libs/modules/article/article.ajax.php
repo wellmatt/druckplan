@@ -76,5 +76,21 @@ if ($_REQUEST["ajax_action"] == "search_tags"){
 	echo $retval;
 }
 
+if ($_REQUEST["ajax_action"] == "search_bc_cp"){
+    $retval = Array();
+    $customers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME, " (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%' OR matchcode LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($customers as $c){
+        $retval[] = Array("label" => "GK: " . $c->getNameAsLine(), "value" => $c->getId(), "type" => 1);
+    }
+    
+    $allContactPerson = ContactPerson::getAllContactPersons(NULL, ContactPerson::ORDER_NAME, " AND (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($allContactPerson as $cp){
+        $retval[] = Array("label" => "AP: " . $cp->getNameAsLine(), "value" => $cp->getId(), "type" => 2);
+    }
+    $retval = json_encode($retval);
+    header("Content-Type: application/json");
+    echo $retval;
+}
+
 ?>
 

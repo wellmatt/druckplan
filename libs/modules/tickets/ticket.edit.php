@@ -292,7 +292,7 @@ if($_REQUEST["exec"] == "edit"){
                 $save_ok = $ticketcomment->save();
                 $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
                 if ($save_ok){
-                    $logentry .= 'Neues <a href="#comment_'.$ticketcomment->getId().'">Kommentar (#'.$ticketcomment->getId().')</a> von ' . $ticketcomment->getCrtuser()->getNameAsLine() . '</br>';
+                    $logentry .= '(#'.$ticketcomment->getId().') <a href="#comment_'.$ticketcomment->getId().'">Neues Kommentar </a> von ' . $ticketcomment->getCrtuser()->getNameAsLine() . '</br>';
                     
                     $tmp_array = $_REQUEST["abo_notify"];
                     foreach ($tmp_array as $abouser){
@@ -756,11 +756,6 @@ function callBoxFancyAbo(my_href) {
               <h2><?=$header_title?> 
               <?php if ($ticket->getId()>0){?>
                 <small>#<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></small>
-                <small>
-                    <span style="display: inline-block; vertical-align: top; background-color: <?php echo $ticket->getState()->getColorcode();?>" class="label">
-                        <?php echo $ticket->getState()->getTitle();?>
-    			    </span>
-			    </small>
               <?php }?>
               </h2>
             </div>
@@ -791,7 +786,7 @@ function callBoxFancyAbo(my_href) {
                       </div>
                       <?php 
                       $association_object = $ticket;
-                      $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
+                      $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId(), true);
                       ?>
                       <script type="text/javascript">
                       function removeAsso(id)
@@ -805,7 +800,7 @@ function callBoxFancyAbo(my_href) {
                       </script>
                       <div class="btn-group dropdown">
                       <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
-                        Verknüpfungen <span class="badge"><?php echo count($associations);?></span> <span class="caret"></span>
+                        Verkn. u. Status <span class="badge"><?php echo count($associations);?></span> <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" role="menu">
                         <?php 
@@ -936,17 +931,22 @@ function callBoxFancyAbo(my_href) {
       <tr>
         <td width="25%">Status:</td>
         <td width="25%">
-            <select name="tkt_state" id="tkt_state" style="width:160px" required>
+            <?php 
+            $tmp_tktstate_color = "";
+            if ($ticket->getState()->getId()>0)
+                $tmp_tktstate_color = 'background: '.$ticket->getState()->getColorcode();
+            ?>
+            <select name="tkt_state" id="tkt_state" style="width:160px; <?php echo $tmp_tktstate_color;?>" onChange="this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor" required>
             <?php 
             $tkt_all_states = TicketState::getAllStates();
             foreach ($tkt_all_states as $tkt_state){
                 if ($tkt_state->getId() != 1 || $ticket->getState()->getId() == 1){
                     if ($ticket->getId() == 0 && $tkt_state->getId() == 2){
-                        echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
+                        echo '<option style="background: '.$tkt_state->getColorcode().'" value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
                     } else if ($ticket->getState() == $tkt_state){
-                        echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
+                        echo '<option style="background: '.$tkt_state->getColorcode().'" value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
                     } else {
-                        echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
+                        echo '<option style="background: '.$tkt_state->getColorcode().'" value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
                     }
                 }
             }

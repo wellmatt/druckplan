@@ -45,11 +45,25 @@ class CommentArticle {
     {
         global $DB;
         
-        $sql = "INSERT INTO comments_article
-        (comment_id, state, articleid, amount)
-        VALUES
-        ( {$this->comment_id} , {$this->state}, {$this->article->getId()}, {$this->amount} )";
-        $res = $DB->no_result($sql);
+        if ($this->id>0)
+        {
+            $sql = "UPDATE comments_article SET 
+            comment_id = {$this->comment_id}, 
+            state = {$this->state}, 
+            articleid = {$this->article->getId()}, 
+            amount = {$this->amount} 
+            WHERE id = {$this->id}";
+//             echo $sql;
+            $res = $DB->no_result($sql);
+        } else {
+            $sql = "INSERT INTO comments_article
+            (comment_id, state, articleid, amount)
+            VALUES
+            ( {$this->comment_id} , {$this->state}, {$this->article->getId()}, {$this->amount} )";
+            echo $sql;
+            $res = $DB->no_result($sql);
+        }
+        
         if ($res) {
             return true;
         } else {

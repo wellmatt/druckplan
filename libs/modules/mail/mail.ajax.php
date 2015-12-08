@@ -701,7 +701,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     echo $retval;
 }
 if ($_REQUEST["ajax_action"] == "search_ticket"){
-    $retval = Ticket::getAllTicketsFlatAjax(" WHERE tickets.state > 0 AND (tickets.title LIKE '%{$_REQUEST['term']}%' OR tickets.number LIKE '%{$_REQUEST['term']}%' OR businesscontact.name1 LIKE '%{$_REQUEST['term']}%' OR businesscontact.matchcode LIKE '%{$_REQUEST['term']}%') ");
+    $retval = Ticket::getAllTicketsFlatAjax(" WHERE tickets.state > 0 AND ticket.category != 3 AND (tickets.title LIKE '%{$_REQUEST['term']}%' OR tickets.number LIKE '%{$_REQUEST['term']}%' OR businesscontact.name1 LIKE '%{$_REQUEST['term']}%' OR businesscontact.matchcode LIKE '%{$_REQUEST['term']}%') ");
 	$retval = json_encode($retval);
 	header("Content-Type: application/json");
 	echo $retval;

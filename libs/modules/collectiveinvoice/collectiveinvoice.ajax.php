@@ -178,17 +178,17 @@ if ($_REQUEST["ajax_action"] == "search_position"){
     
     $allArticle = Article::getAllArticle(Article::ORDER_TITLE, " AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%' OR matchcode LIKE '%{$_REQUEST['term']}%') ");
     foreach ($allArticle as $a){
-        $retval[] = Array("type"=> 2, "value" => $a->getId(), "label" => "Artikel: " . $a->getTradegroup()->getTitle() . ": " . $a->getTitle() . " (" . $a->getNumber() . ")");
-    }
-    
-    $allOrders = Order::getAllOrdersByCustomer(Order::ORDER_TITLE,(int)$_REQUEST["bcid"]," AND (title LIKE '%{$_REQUEST['term']}%' OR number LIKE '%{$_REQUEST['term']}%') ");
-    foreach ($allOrders as $a){
-        $retval[] = Array("type"=> 1, "value" => $a->getId(), "label" => "Kalkulation: " . $a->getTitle() . " (" . $a->getNumber() . ")");
+        if ($a->getOrderid()>0)
+            $type = 1;
+        else
+            $type = 2;
+        $orderamounts = $a->getOrderamounts();
+        $retval[] = Array("type"=> $type, "value" => $a->getId(), "label" => "Artikel: " . $a->getTradegroup()->getTitle() . ": " . $a->getTitle() . " (" . $a->getNumber() . ")", "orderamounts"=>$orderamounts, "orderid"=>$a->getOrderid());
     }
     
     $allPersos = Personalizationorder::getAllPersonalizationorders((int)$_REQUEST["bcid"],Personalizationorder::ORDER_TITLE,true);
     foreach ($allPersos as $a){
-        $retval[] = Array("type"=> 3, "value" => $a->getId(), "label" => "Perso: " . $a->getTitle());
+        $retval[] = Array("type"=> 3, "value" => $a->getId(), "label" => "Perso: " . $a->getTitle(), "orderamounts"=>null, "orderid"=>null);
     }
     
     $retval = json_encode($retval);

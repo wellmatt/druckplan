@@ -31,8 +31,7 @@
     </div>
 </div>
 
-<form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form"
-		onsubmit="return checkform(new Array(this.pt_name,this.pt_comment,this.pt_netto_days))">
+<form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form">
 	<input type="hidden" name="exec" value="save">
 	<input type="hidden" name="pay_id" value="<?=$payment->getId()?>">
 	<div class="box1">

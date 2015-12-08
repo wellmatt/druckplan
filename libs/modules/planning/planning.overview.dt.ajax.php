@@ -25,7 +25,7 @@
     global $_LANG;
     
     
-    $aColumns = array( 'null', 'id', 'number', 'title', 'customer', 'deliverydate', 'comment', 'type' );
+    $aColumns = array( 'null', 'id', 'number', 'title', 'customer', 'deliverydate', 'comment' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -117,7 +117,7 @@
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "type" )
+            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" )
             {
                 $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
             }
@@ -148,15 +148,9 @@
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT * FROM ( SELECT DISTINCT
-               orders.id,orders.number,orders.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) AS customer,
-               orders.delivery_date as deliverydate,orders.notes as `comment`,'K' as `type`
-               FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
-               INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-               WHERE orders_calculations.state = 1 AND orders.`status` > 0 
-               UNION
+    $sQuery = "SELECT * FROM ( 
                SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
-               collectiveinvoice.deliverydate,collectiveinvoice.`comment`,'V' as `type`
+               collectiveinvoice.deliverydate,collectiveinvoice.`comment` 
                FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
                WHERE `status` >= 3 AND collectiveinvoice.needs_planning = 1) t1  
                $sWhere
@@ -173,15 +167,9 @@
 //     ";
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.") 
-        FROM ( SELECT DISTINCT
-               orders.id,orders.number,orders.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) AS customer,
-               orders.delivery_date as deliverydate,orders.notes as `comment`,'K' as `type`
-               FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
-               INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-               WHERE orders_calculations.state = 1 AND orders.`status` > 0 
-               UNION
+        FROM ( 
                SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
-               collectiveinvoice.deliverydate,collectiveinvoice.`comment`,'V' as `type`
+               collectiveinvoice.deliverydate,collectiveinvoice.`comment` 
                FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
                WHERE `status` >= 3 AND collectiveinvoice.needs_planning = 1) t1  
         $sWhere
@@ -196,15 +184,9 @@
     /* Total data set length */
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
-        FROM ( SELECT DISTINCT
-        orders.id,orders.number,orders.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) AS customer,
-        orders.delivery_date as deliverydate,orders.notes as `comment`,'K' as `type`
-        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
-        INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-        WHERE orders_calculations.state = 1 AND orders.`status` > 0 
-        UNION
+        FROM ( 
         SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
-        collectiveinvoice.deliverydate,collectiveinvoice.`comment`,'V' as `type`
+        collectiveinvoice.deliverydate,collectiveinvoice.`comment` 
         FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
         WHERE `status` >= 3 AND collectiveinvoice.needs_planning = 1) t1  
     ";
@@ -259,47 +241,44 @@
             {
                 $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
             }
-            else if ( $aColumns[$i] == 'type' )
-            {
-                $row[] = $aRow[ $aColumns[$i] ];
-            }
         }
         $daCount = 0;
         $plCount = 0;
-        if ($aRow['type'] == 'K')
+        
+        $orderpositions = Orderposition::getAllOrderposition($aRow['id']);
+        foreach ($orderpositions as $opos)
         {
-            $order = new Order($aRow['id']);
-            $calcs = Calculation::getAllCalculations($order);
-            foreach ($calcs as $calc)
+            $opos_article = new Article($opos->getObjectid());
+            
+            
+            if ($opos_article->getOrderid()>0)
             {
-                if ($calc->getState())
+                $order = new Order($opos_article->getOrderid());
+                $calcs = Calculation::getAllCalculations($order);
+            
+                foreach ($calcs as $calc)
                 {
-                    $mes = Machineentry::getAllMachineentries($calc->getId());
-                    foreach ($mes as $me)
+                    if ($calc->getState() && $calc->getAmount()==$opos->getQuantity())
                     {
-                        if ($me->getTime()>0)
+                        $mes = Machineentry::getAllMachineentries($calc->getId());
+                        foreach ($mes as $me)
                         {
-                            $daCount += 1;
-                            $tmp_pl = PlanningJob::getAllJobs(" AND object = {$aRow['id']} AND subobject = {$me->getId()}");
-                            if (count($tmp_pl)>0)
-                                $plCount += 1;
-                        }
-                    }
-                }
-            }
-        } else {
-            $daCount = 0;
-            $orderpositions = Orderposition::getAllOrderposition($aRow['id']);
-            foreach ($orderpositions as $opos)
-            {
-                if ($opos->getQuantity()>0)
-                {
-                    $daCount += 1;
-                    $tmp_pl = PlanningJob::getAllJobs(" AND object = {$aRow['id']} AND subobject = {$opos->getId()}");
-                    if (count($tmp_pl)>0)
-                        $plCount += 1;
-                }
-            }
+            	            $opos_pjs = PlanningJob::getAllJobs(" AND object = {$opos->getCollectiveinvoice()} AND type = 2 AND opos = {$opos->getId()} AND artmach = {$me->getMachine()->getId()}");
+            	            if (count($opos_pjs)>0)
+            	                $plCount++;
+            	            
+                            $daCount++;
+	                    }
+	                }
+	            }
+	            
+	            
+	       } else {
+	           $opos_pjs = PlanningJob::getAllJobs(" AND object = {$opos->getCollectiveinvoice()} AND type = 1 AND opos = {$opos->getId()} AND artmach = {$opos_article->getId()}");
+	           if (count($opos_pjs)>0)
+	               $plCount++;
+	           $daCount++;
+	       }
         }
         
         $row[] = $plCount.'/'.$daCount;
