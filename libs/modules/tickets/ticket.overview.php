@@ -166,7 +166,7 @@ $(document).ready(function() {
     } );
 
     var DELAY = 500, clicks = 0, timer = null;
-    $("#ticketstable tbody td:not(:first-child)").live('click', function(e){
+    $("#ticketstable tbody td:not(:first-child,:nth-child(9))").live('click', function(e){
 
         clicks++;  //count clicks
 
@@ -194,6 +194,37 @@ $(document).ready(function() {
     .on("dblclick", function(e){
         e.preventDefault();  //cancel system double-click event
     });
+	$("#ticketstable tbody td:nth-child(9)").live('click', function(e){
+        var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
+        var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
+        var tktid = aData[1];
+
+        callBoxFancytktoverview("libs/modules/tickets/ticket.summary.php?tktid="+tktid);
+    });
+	$("a#hiddenclickertktoverview").fancybox({
+		'type'    : 'iframe',
+		'transitionIn'	:	'elastic',
+		'transitionOut'	:	'elastic',
+		'speedIn'		:	600, 
+		'speedOut'		:	200, 
+		'padding'		:	25, 
+		'margin'        :   25,
+		'scrolling'     :   'no',
+		'width'		    :	1000, 
+		'onComplete'    :   function() {
+                			  $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                		      $('#fancybox-content').height($(this).contents().find('body').height()+30);
+                		      $('#fancybox-wrap').css('top','25px');
+                		    });
+                			},
+		'overlayShow'	:	true,
+		'helpers'		:   { overlay:null, closeClick:true }
+	});
+	function callBoxFancytktoverview(my_href) {
+		var j1 = document.getElementById("hiddenclickertktoverview");
+		j1.href = my_href;
+		$('#hiddenclickertktoverview').trigger('click');
+	}
 
     var detailRows = [];
     $('#ticketstable tbody').on( 'click', 'tr td:first-child', function () {
@@ -397,6 +428,9 @@ function TicketTableRefresh()
 }
 
 </script>
+<div id="hidden_clicker" style="display:none">
+<a id="hiddenclickertktoverview" href="http://www.google.com" >Hidden Clicker</a>
+</div>
 
 <table width="100%">
 	<tr>

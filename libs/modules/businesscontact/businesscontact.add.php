@@ -524,7 +524,14 @@ function commi_checkbox(){
 			        echo $_LANG->get('Interessent');
 			    }
 			    ?>
-			    </span></small></h3>
+			    </span></small>
+			    <?php 
+			    if($businessContact->isSupplier())
+			    {
+			        echo '<small><span style="display: inline-block; vertical-align: top;" class="label label-warning">Lieferant</span></small>';
+			    }
+			    ?>
+			    </h3>
 			</td>
 			<td align="left"></td>
 			<td width="200" class="content_header" align="right"><?=$savemsg?></td>
@@ -1172,6 +1179,7 @@ function commi_checkbox(){
 					<? 	if($cp->getActiveAdress() == 1){ echo $cp->getPhone(); }
 						if($cp->getActiveAdress() == 2){ echo $cp->getAlt_phone(); }
 						if($cp->getActiveAdress() == 3){ echo $cp->getPriv_phone(); }
+						if($cp->getEmail()) echo "</br>".$cp->getEmail();
 					?> &ensp;
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"> &ensp;</td>

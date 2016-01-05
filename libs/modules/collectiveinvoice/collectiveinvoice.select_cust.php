@@ -85,6 +85,7 @@ $(function() {
 			<input type="text" name="search" id="search" style="width:280px" required>
 			<input type="hidden" name="order_customer" id="order_customer" required>
 			<input type="hidden" name="order_contactperson" id="order_contactperson" required>
+			<input type="hidden" name="order_startart" id="order_startart" value="<?php echo $_REQUEST["startart"];?>">
         </td>
     </tr>
     <tr>

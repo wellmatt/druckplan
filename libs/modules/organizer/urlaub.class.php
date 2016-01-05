@@ -70,6 +70,40 @@ class Urlaub {
                 
     }
     
+    static function getAllVacationsForUserInTimeframe($start, $end, $user = null, $state = self::STATE_APPROVED)
+    {
+        
+        global $DB;
+        $retval = Array();
+        
+		$start = explode("-",$start);
+		$end = explode("-",$end);
+
+        $start = mktime(0,0,0, $start[1], $start[2], $start[0]);
+        $end = mktime(0,0,0, $end[1], $end[2], $end[0])+60*60*24;
+        
+        $sql = "SELECT id FROM vacation WHERE 1 = 1 ";
+        if($state > 0)
+            $sql .= " AND state = {$state}";
+        if($user)
+            $sql .= " AND user_id = {$user->getId()}";
+        
+        $sql .= " AND (begin >= {$start} AND end < {$end} OR
+                 begin >= {$start} AND begin < {$end} OR
+                 end >= {$start} AND end < {$end} OR
+                 begin < {$start} AND end >= {$end})";
+//         echo $sql . "</br>";
+
+        if ($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $vacs)
+            {
+                $retval[] = new Urlaub($vacs["id"]);
+            }
+        } 
+        return $retval;
+    }
+    
     static function isVacationOnDay($user, $day, $month, $year)
     {
         global $DB;

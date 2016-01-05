@@ -258,11 +258,63 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=4">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 4){
-                    $tmp_row .= 'lila.gif';
+                    
+                    $pj_state = '';
+                    $pj_title = '';
+                    $pj_all_closed = true;
+                    $pj_all_open = true;
+                    $pj_state_sql = "
+                    SELECT
+                    tickets.id AS tktid,
+                    tickets.title,
+                    tickets.number,
+                    tickets_states.title as tktstate,
+                    tickets_states.id as tktstateid,
+                    CONCAT (`user`.user_firstname,' ',`user`.user_lastname) as user_name,
+                    groups.group_name
+                    FROM
+                    association
+                    INNER JOIN tickets ON association.objectid1 = tickets.id
+                    INNER JOIN tickets_states ON tickets.state = tickets_states.id
+                    LEFT JOIN `user` ON tickets.assigned_user = `user`.id
+                    LEFT JOIN groups ON tickets.assigned_group = groups.id
+                    WHERE association.objectid2 = {$aRow['id']} AND association.module2 = 'CollectiveInvoice' 
+                    ";
+                    $rResultPjState = mysql_query( $pj_state_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+                    while ($data = mysql_fetch_array($rResultPjState)){
+                    $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]); //
+                    if ($data["user_name"] != '')
+                    $pj_title .= ' ('.utf8_encode($data["user_name"]).')';
+                    else
+                    $pj_title .= ' ('.utf8_encode($data["group_name"]).')';
+                    $pj_title .= '
+';
+                    if ($data["tktstateid"] != 3)
+                    $pj_all_closed = false;
+                    if ($data["tktstateid"] != 2)
+                    $pj_all_open = false;
+                    }
+                    if ($pj_all_open && $pj_all_closed == false)
+                    {
+                    $pj_state = 'red.gif';
+                    } elseif ($pj_all_closed && $pj_all_open == false)
+                    {
+                    $pj_state = 'green.gif';
+                    } elseif ($pj_all_closed == false && $pj_all_open == false)
+                    {
+                    $pj_state = 'yellow.gif';
+                    }
+                    
+                    if ($pj_state == '')
+                        $pj_state = 'green.gif';
+                        
+                    $tmp_title = $pj_title;
+                    $tmp_row .= $pj_state;
                 } else {
+                    $tmp_title = 'In Produktion';
                     $tmp_row .= 'black.gif';
                 }
-                $tmp_row .= '" title="In Produktion"></a>';
+                $tmp_row .= '" title="'.$tmp_title.'"></a>';
                 
                 
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=5">';
@@ -275,7 +327,8 @@
                 $tmp_row .= '" title="Erledigt"></a>';
                 
                 
-                $row[] = nl2br($tmp_row);
+//                 $row[] = nl2br($tmp_row);
+                $row[] = $tmp_row;
             }
         }
         $row[] = '<img class="pointer" onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&subexec=copy&ciid='.$aRow[ $aColumns[0] ].'\')" src="images/icons/document-view.png" title="Duplizieren">';

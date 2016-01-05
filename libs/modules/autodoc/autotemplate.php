@@ -14,7 +14,7 @@ $tmp = 'libs/modules/autodoc/default.js';
 
 $editors = array(
     new TmplDefault("Angebot", "coloffer"),
-    new TmplDefault("Angebotsbestätigung", "colofferconfirm"),
+    new TmplDefault("Angebotsbestaetigung", "colofferconfirm"),
     new TmplDefault("Rechnung", "colinvoice"),
     new TmplDefault("Lieferschein", "coldelivery"),
     new TmplDefault("Gutschrift", "revert"),

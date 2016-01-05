@@ -111,8 +111,8 @@ $(document).ready(function() {
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"dom": 'T<"clear">flrtip',
-		"aaSorting": [[ 5, "desc" ]],
-		"order": [[ 5, "desc" ]],
+		"aaSorting": [[ 4, "desc" ]],
+		"order": [[ 4, "desc" ]],
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -139,7 +139,6 @@ $(document).ready(function() {
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"aoColumnDefs": [ { "sType": "uk_date", "aTargets": [ 4 ] } ],
 		"columns": [
-		            null,
 		            null,
 		            null,
 		            null,
@@ -246,7 +245,6 @@ $(document).ready(function() {
 		<tr>
 			<th width="10"><?=$_LANG->get('ID')?></th>
 			<th width="100"><?=$_LANG->get('Nummer')?></th>
-			<th><?=$_LANG->get('Kunde')?></th>
 			<th><?=$_LANG->get('Titel')?></th>
 			<th width="200"><?=$_LANG->get('Fremdleistungen')?></th>
 			<th width="90"><?=$_LANG->get('Angelegt am')?></th>

@@ -107,15 +107,9 @@ $(document).ready(function() {
 					}
     } );
 
-//     $("#ticketstable tbody td").live('click',function(){
-//         var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
-//         var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
-//         document.location='index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='+aData[0];
-//     });
-
 
     var DELAY = 500, clicks = 0, timer = null;
-	$("#ticketstable tbody td").live('click', function(e){
+	$("#ticketstable tbody td:not(:nth-child(8))").live('click', function(e){
 
         clicks++;  //count clicks
 
@@ -143,8 +137,43 @@ $(document).ready(function() {
     .on("dblclick", function(e){
         e.preventDefault();  //cancel system double-click event
     });
+	$("#ticketstable tbody td:nth-child(8)").live('click', function(e){
+        var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
+        var aData = $('#ticketstable').dataTable().fnGetData(aPos[0]);
+        var tktid = aData[0];
+
+        callBoxFancyForMe("http://contilas2.mein-druckplan.de/libs/modules/tickets/ticket.summary.php?tktid="+tktid);
+    });
+	$("a#hiddenclickerforme").fancybox({
+		'type'    : 'iframe',
+		'transitionIn'	:	'elastic',
+		'transitionOut'	:	'elastic',
+		'speedIn'		:	600, 
+		'speedOut'		:	200, 
+		'padding'		:	25, 
+		'margin'        :   25,
+		'scrolling'     :   'no',
+		'width'		    :	1000, 
+		'onComplete'    :   function() {
+                			  $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                		      $('#fancybox-content').height($(this).contents().find('body').height()+30);
+                		      $('#fancybox-wrap').css('top','25px');
+                		    });
+                			},
+		'overlayShow'	:	true,
+		'helpers'		:   { overlay:null, closeClick:true }
+	});
+	function callBoxFancyForMe(my_href) {
+		var j1 = document.getElementById("hiddenclickerforme");
+		j1.href = my_href;
+		$('#hiddenclickerforme').trigger('click');
+	}
 } );
 </script>
+
+<div id="hidden_clicker" style="display:none">
+<a id="hiddenclickerforme" href="http://www.google.com" >Hidden Clicker</a>
+</div>
 
 <table width="100%">
 	<tr>

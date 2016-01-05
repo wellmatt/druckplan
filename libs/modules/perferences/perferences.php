@@ -1,5 +1,6 @@
 ﻿<?php
 require_once('perferences.class.php');
+require_once 'libs/modules/organizer/event_holiday.class.php';
 
 $perf = new Perferences();
 
@@ -34,9 +35,48 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
 	$perf->setMail_domain($_REQUEST["mail_domain"]);
 	$savemsg = getSaveMessage($perf->save());
+	
+    for ($i = 0; $i < count($_REQUEST["holiday"]["id"]);$i++)
+    {
+        $holiday = new HolidayEvent($_REQUEST["holiday"]["id"][$i]);
+        $holiday->setBegin(strtotime($_REQUEST["holiday"]["start"][$i]));
+        $holiday->setEnd(strtotime($_REQUEST["holiday"]["end"][$i]));
+        $holiday->setColor($_REQUEST["holiday"]["color"][$i]);
+        $holiday->setTitle($_REQUEST["holiday"]["title"][$i]);
+        $holiday->save();
+    }
 }
 
+$holidays = HolidayEvent::getAll();
+
 ?>
+
+<link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
+
+<script language="JavaScript">
+$(function() {
+	$('.cal').datetimepicker({
+		 lang:'de',
+		 i18n:{
+		  de:{
+		   months:[
+		    'Januar','Februar','März','April',
+		    'Mai','Juni','Juli','August',
+		    'September','Oktober','November','Dezember',
+		   ],
+		   dayOfWeek:[
+		    "So.", "Mo", "Di", "Mi", 
+		    "Do", "Fr", "Sa.",
+		   ]
+		  }
+		 },
+		 timepicker:true,
+		 format:'d.m.Y H:i'
+	});
+});
+</script>
+	
 <script>
 	$(function() {
 		$( "#tabs" ).tabs({ selected: 0 });
@@ -85,6 +125,49 @@ function addFormatRawRow()
 	document.getElementById('count_formatsraw').value = count;
 }
 
+function addHolidayRow()
+{
+	var obj = document.getElementById('holidays');
+
+	var insert = '<tr>';
+	insert += '<td class="content_row_clear" valign="top">';
+    insert += '#0';
+    insert += '<input type="hidden" name="holiday[id][]" value="0"/>';
+    insert += '</td>';
+	insert += '<td class="content_row_clear" valign="top">';
+	insert += '<input type="text" name="holiday[title][]" value=""/>';
+    insert += '</td>';
+	insert += '<td class="content_row_clear" valign="top">';
+	insert += '<input type="text" class="cal" name="holiday[start][]" value=""/>';
+    insert += '</td>';
+	insert += '<td class="content_row_clear" valign="top">';
+	insert += '<input type="text" class="cal" name="holiday[end][]" value=""/>';
+    insert += '</td>';
+	insert += '<td class="content_row_clear" valign="top">';
+	insert += '<input type="text" name="holiday[color][]" value=""/>';
+    insert += '</td></tr>';
+	
+	obj.insertAdjacentHTML("BeforeEnd", insert);
+	$('.cal').datetimepicker({
+		 lang:'de',
+		 i18n:{
+		  de:{
+		   months:[
+		    'Januar','Februar','März','April',
+		    'Mai','Juni','Juli','August',
+		    'September','Oktober','November','Dezember',
+		   ],
+		   dayOfWeek:[
+		    "So.", "Mo", "Di", "Mi", 
+		    "Do", "Fr", "Sa.",
+		   ]
+		  }
+		 },
+		 timepicker:true,
+		 format:'d.m.Y H:i'
+	});
+}
+
 function deleteFormatRawRow(obj)
 {
 	$(obj).parents("tr").remove();
@@ -118,6 +201,7 @@ function deleteFormatRawRow(obj)
 			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
 			<li><a href="#tabs-4"><? echo $_LANG->get('Datatables');?></a></li>
 			<li><a href="#tabs-5"><? echo $_LANG->get('Mail');?></a></li>
+			<li><a href="#tabs-6"><? echo $_LANG->get('Kalender');?></a></li>
 		</ul>
 
 		<div id="tabs-0">
@@ -265,6 +349,46 @@ function deleteFormatRawRow(obj)
                      <input type="text" name="mail_domain" id="mail_domain" value="<?php echo $perf->getMail_domain();?>"/></br>
                   </td>
                </tr>
+            </table>
+       </div>
+       <div id="tabs-6">
+            Feiertage: <img src="images/icons/plus.png" class="pointer icon-link" onclick="addHolidayRow()">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" id="holidays">
+               <colgroup>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+               </colgroup>
+               <tr>
+                <td class="content_row_clear" valign="top">ID</td>
+                <td class="content_row_clear" valign="top">Titel</td>
+                <td class="content_row_clear" valign="top">Startdatum</td>
+                <td class="content_row_clear" valign="top">Enddatum</td>
+                <td class="content_row_clear" valign="top">Hex-Farbe</td>
+               </tr>
+               <?php if (count($holidays)>0){
+               foreach ($holidays as $holiday){?>
+               <tr>
+                  <td class="content_row_clear" valign="top">
+                     #<?php echo $holiday->getId();?>
+                     <input type="hidden" name="holiday[id][]" value="<?php echo $holiday->getId();?>"/>
+                  </td>
+                  <td class="content_row_clear" valign="top">
+                     <input type="text" name="holiday[title][]" value="<?php echo $holiday->getTitle();?>"/>
+                  </td>
+                  <td class="content_row_clear" valign="top">
+                     <input type="text" class="cal" name="holiday[start][]" value="<?php echo date("d.m.Y H:i",$holiday->getBegin());?>"/>
+                  </td>
+                  <td class="content_row_clear" valign="top">
+                     <input type="text" class="cal" name="holiday[end][]" value="<?php echo date("d.m.Y H:i",$holiday->getEnd());?>"/>
+                  </td>
+                  <td class="content_row_clear" valign="top">
+                     <input type="text" name="holiday[color][]" value="<?php echo $holiday->getColor();?>"/>
+                  </td>
+               </tr>
+               <?php }}?>
             </table>
        </div>
 

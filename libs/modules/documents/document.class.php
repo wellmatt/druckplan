@@ -612,6 +612,8 @@ class Document
                     require 'docs/templates/coloffer.tmpl.php';
                 if ($this->type == self::TYPE_OFFERCONFIRM)
                     require 'docs/templates/colofferconfirm.tmpl.php';
+                if ($this->type == self::TYPE_FACTORY)
+                    require 'docs/templates/factory.tmpl.php';
                 if ($this->type == self::TYPE_INVOICE)
                     require 'docs/templates/colinvoice.tmpl.php';
                 if ($this->type == self::TYPE_LABEL)

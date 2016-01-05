@@ -15,11 +15,8 @@ require_once("libs/basic/groups/group.class.php");
 require_once("libs/basic/clients/client.class.php");
 require_once("libs/basic/translator/translator.class.php");
 require_once("libs/basic/countries/country.class.php");
-// require_once 'libs/modules/attachment/attachment.class.php';
 require_once 'libs/modules/comment/comment.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
-// error_reporting(-1);
-// ini_set('display_errors', 1);
 
 session_start();
 

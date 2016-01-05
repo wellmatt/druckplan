@@ -1223,25 +1223,29 @@ foreach($groups as $group)
             	$schemes = array();
             	$part = Calculation::PAPER_CONTENT;
             	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	foreach ($mach_entry as $me)
+            	if (count($mach_entry)>0)
             	{
-            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-            	    {
-            	        $mach = $me->getMachine();
-            	        $machentry = $me;
-            	    }
-            	}
-            	$product_max = 0;
-            	$product_counted = false;
-            	
-            	include('scheme.php');
-            	if ($tmp_anschnitt > 0){
-            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-            	} else {
-            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	foreach ($mach_entry as $me)
+                	{
+                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+                	    {
+                	        $mach = $me->getMachine();
+                	        $machentry = $me;
+                	    }
+                	}
+                	$product_max = 0;
+                	$product_counted = false;
+                	
+                	if (isset($machentry))
+                	   include('scheme.php');
+                	if ($tmp_anschnitt > 0){
+                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+                	} else {
+                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	}
             	}
 			} ?>
 	      </td>
@@ -1252,26 +1256,30 @@ foreach($groups as $group)
             	$schemes = array();
             	$part = Calculation::PAPER_ADDCONTENT;
             	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	foreach ($mach_entry as $me)
+            	if (count($mach_entry)>0)
             	{
-            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-            	    {
-            	        $mach = $me->getMachine();
-            	        $machentry = $me;
-            	    }
-            	}
-            	$product_max = 0;
-            	$product_counted = false;
-            	
-            	include('scheme.php');
-            	if ($tmp_anschnitt > 0){
-            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-            	} else {
-            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
-            	}
+                	foreach ($mach_entry as $me)
+                	{
+                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+                	    {
+                	        $mach = $me->getMachine();
+                	        $machentry = $me;
+                	    }
+                	}
+                	$product_max = 0;
+                	$product_counted = false;
+
+                	if (isset($machentry))
+                	    include('scheme.php');
+                	if ($tmp_anschnitt > 0){
+                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+                	} else {
+                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	}
+		        }
 			} ?>
 	      </td>
 	      <td class="content_row_clear">
@@ -1281,25 +1289,29 @@ foreach($groups as $group)
             	$schemes = array();
             	$part = Calculation::PAPER_ADDCONTENT2;
             	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	foreach ($mach_entry as $me)
+            	if (count($mach_entry)>0)
             	{
-            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-            	    {
-            	        $mach = $me->getMachine();
-            	        $machentry = $me;
-            	    }
-            	}
-            	$product_max = 0;
-            	$product_counted = false;
-            	
-            	include('scheme.php');
-            	if ($tmp_anschnitt > 0){
-            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-            	} else {
-            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	foreach ($mach_entry as $me)
+                	{
+                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+                	    {
+                	        $mach = $me->getMachine();
+                	        $machentry = $me;
+                	    }
+                	}
+                	$product_max = 0;
+                	$product_counted = false;
+
+                	if (isset($machentry))
+                	    include('scheme.php');
+                	if ($tmp_anschnitt > 0){
+                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+                	} else {
+                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	}
             	}
 			} ?>
 	      </td>
@@ -1310,25 +1322,29 @@ foreach($groups as $group)
             	$schemes = array();
             	$part = Calculation::PAPER_ADDCONTENT3;
             	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	foreach ($mach_entry as $me)
+            	if (count($mach_entry)>0)
             	{
-            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-            	    {
-            	        $mach = $me->getMachine();
-            	        $machentry = $me;
-            	    }
-            	}
-            	$product_max = 0;
-            	$product_counted = false;
-            	
-            	include('scheme.php');
-            	if ($tmp_anschnitt > 0){
-            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-            	} else {
-            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	foreach ($mach_entry as $me)
+                	{
+                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+                	    {
+                	        $mach = $me->getMachine();
+                	        $machentry = $me;
+                	    }
+                	}
+                	$product_max = 0;
+                	$product_counted = false;
+
+                	if (isset($machentry))
+                	    include('scheme.php');
+                	if ($tmp_anschnitt > 0){
+                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+                	} else {
+                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	}
             	}
 			} ?>
 	      </td>
@@ -1339,25 +1355,29 @@ foreach($groups as $group)
             	$schemes = array();
             	$part = Calculation::PAPER_ENVELOPE;
             	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	foreach ($mach_entry as $me)
+            	if (count($mach_entry)>0)
             	{
-            	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-            	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-            	    {
-            	        $mach = $me->getMachine();
-            	        $machentry = $me;
-            	    }
-            	}
-            	$product_max = 0;
-            	$product_counted = false;
-            	
-            	include('scheme.php');
-            	if ($tmp_anschnitt > 0){
-            	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-            	} else {
-            	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-            	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	foreach ($mach_entry as $me)
+                	{
+                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+                	    {
+                	        $mach = $me->getMachine();
+                	        $machentry = $me;
+                	    }
+                	}
+                	$product_max = 0;
+                	$product_counted = false;
+
+                	if (isset($machentry))
+                	    include('scheme.php');
+                	if ($tmp_anschnitt > 0){
+                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
+                	} else {
+                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
+                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
+                	}
             	}
 			} ?>
 	      </td>

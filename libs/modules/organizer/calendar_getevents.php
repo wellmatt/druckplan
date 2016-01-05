@@ -24,6 +24,7 @@ require_once("libs/basic/translator/translator.class.php");
 require_once 'libs/basic/countries/country.class.php';
 require_once("libs/basic/groups/group.class.php");
 require_once("libs/modules/businesscontact/contactperson.class.php");
+require_once 'libs/modules/organizer/urlaub.class.php';
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
@@ -43,8 +44,8 @@ $user = new User($_GET['user']);
 // $range_end = parseDateTime($_GET['end']);
 
 $events = Event::getAllEventsTimeframe($_GET['start'], $_GET['end'], $user, $selectOtherDates = true, $_REQUEST["states"]);
-
-
+$holidays = HolidayEvent::getAllForTimeframe($_GET['start'], $_GET['end']);
+// print_r($holidays);
 // print_r($events);
 
 $output_arrays = Array();
@@ -71,6 +72,31 @@ if($events) {
 		}
 	}
 }
+// Feiertage
+if($holidays)
+{
+    foreach ($holidays as $holiday)
+    {
+//         $holiday = new HolidayEvent();
+		$begin = date("Y-m-d\TH:i:s",$holiday->getBegin());
+		$end = date("Y-m-d\TH:i:s",$holiday->getEnd());
+        $output_arrays[] = Array ("id" => $holiday->getId(), "title" => $holiday->getTitle(), "start" => $begin, "end" => $end, "backgroundColor" => $holiday->getColor(), "editable" => false, "holiday" => true);
+    }
+}
+// Urlaube
+{
+    $urlaube = Urlaub::getAllVacationsForUserInTimeframe($_GET['start'], $_GET['end'], $_USER);
+//     print_r($urlaube);
+    if (count($urlaube)>0)
+    {
+        foreach ($urlaube as $urlaub)
+        {
+		    $begin = date("Y-m-d\TH:i:s",$urlaub->getBegin());
+		    $end = date("Y-m-d\TH:i:s",mktime(23,59,59, date("m",$urlaub->getEnd()), date("d",$urlaub->getEnd()), date("Y",$urlaub->getEnd())));
+            $output_arrays[] = Array ("id" => $urlaub->getId(), "title" => "Urlaub: ".$urlaub->getUser()->getNameAsLine(), "start" => $begin, "end" => $end, "backgroundColor" => "#ff8888", "editable" => false, "holiday" => true);
+        }
+    }
+}
 
 if ($user->getCalBirthday() == 1) {
     $start = explode("-",$_GET['start']);
@@ -90,19 +116,19 @@ if ($user->getCalBirthday() == 1) {
     		$age = (date("md", date("U", mktime(0, 0, 0, $birth_moth, $birth_day, $birth_year))) > date("md")
     			? ((date("Y") - $birth_year) - 1)
     			: (date("Y") - $birth_year));
-    		$age++;
     			
-    		$birthday_title = "Geb.: " . $cp->getNameAsLine2() . " (".$age.")";	
-    			
-    		if ($birth_moth >= date('m',time())) {
-    			if ($birth_day >= date('d',time())) {
+    		if ($birth_moth >= date('n',time())) {
+    		    $birthday_title = "Geb.: " . $cp->getNameAsLine2() . " (".$age.")";
+//     			if ($birth_day >= date('d',time())) {
     				$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time()))), 
     				"allDay" => "true", "editable" => "false", 
     				    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),
     				    "textColor" => '#fff',
     				    "editable" => false);
-    			}
+//     			}
     		} else {
+    		    $age++;
+    		    $birthday_title = "Geb.: " . $cp->getNameAsLine2() . " (".$age.")";
     			$output_arrays[] = Array ("id" => "0", "title" => $birthday_title, "start" => date("Y-m-d\TH:i:s",mktime(12, 0, 0, $birth_moth, $birth_day, date('Y',time())+1)), 
     			"allDay" => "true", "editable" => "false", 
     			    "url" => "index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=".$cp->getId()."&id=".$cp->getBusinessContactId(),

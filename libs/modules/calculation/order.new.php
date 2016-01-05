@@ -65,12 +65,6 @@ $(function() {
    <tr>
       <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Kalkulation anlegen')?></td>
       <td align="right"><?=$savemsg?></td>
-      <td width="200" class="content_header">
-      	<a href="libs/modules/businesscontact/businesscontact.add.fancy.php" id="add_new_client" class="icon-link">
-      		<img src="images/icons/user-business.png" title="<?=$_LANG->get('Neuen Kunden anlegen')?>">
-      		<?=$_LANG->get('Neuen Kunden anlegen')?>
-      	</a>
-      </td>
    </tr>
 </table>
 

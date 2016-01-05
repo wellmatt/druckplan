@@ -116,7 +116,7 @@ $(document).ready(function() {
 
 
     var DELAY = 500, clicks = 0, timer = null;
-	$("#ticketsabotable tbody td").live('click', function(e){
+	$("#ticketsabotable tbody td:not(:nth-child(8))").live('click', function(e){
 
         clicks++;  //count clicks
 
@@ -144,8 +144,43 @@ $(document).ready(function() {
     .on("dblclick", function(e){
         e.preventDefault();  //cancel system double-click event
     });
+	$("#ticketsabotable tbody td:nth-child(8)").live('click', function(e){
+        var aPos = $('#ticketsabotable').dataTable().fnGetPosition(this);
+        var aData = $('#ticketsabotable').dataTable().fnGetData(aPos[0]);
+        var tktid = aData[0];
+
+        callBoxFancyForMeAbo("http://contilas2.mein-druckplan.de/libs/modules/tickets/ticket.summary.php?tktid="+tktid);
+    });
+	$("a#hiddenclickerformeabo").fancybox({
+		'type'    : 'iframe',
+		'transitionIn'	:	'elastic',
+		'transitionOut'	:	'elastic',
+		'speedIn'		:	600, 
+		'speedOut'		:	200, 
+		'padding'		:	25, 
+		'margin'        :   25,
+		'scrolling'     :   'no',
+		'width'		    :	1000, 
+		'onComplete'    :   function() {
+                			  $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                		      $('#fancybox-content').height($(this).contents().find('body').height()+30);
+                		      $('#fancybox-wrap').css('top','25px');
+                		    });
+                			},
+		'overlayShow'	:	true,
+		'helpers'		:   { overlay:null, closeClick:true }
+	});
+	function callBoxFancyForMeAbo(my_href) {
+		var j1 = document.getElementById("hiddenclickerformeabo");
+		j1.href = my_href;
+		$('#hiddenclickerformeabo').trigger('click');
+	}
 } );
 </script>
+
+<div id="hidden_clicker" style="display:none">
+<a id="hiddenclickerformeabo" href="http://www.google.com" >Hidden Clicker</a>
+</div>
 
 <table width="100%">
 	<tr>

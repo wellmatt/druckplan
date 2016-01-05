@@ -50,7 +50,7 @@ $associations = Association::getAssociationsForObject(get_class($association_obj
                     $link_href = Association::getPath($classname);
                     $object_name = Association::getName($object);
                 }
-                echo '<li><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
+                echo '<li><a href="index.php?page='.$link_href.$object->getId().'">';
                 echo '> ' . $object_name;
                 echo '</a>';
                 if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))

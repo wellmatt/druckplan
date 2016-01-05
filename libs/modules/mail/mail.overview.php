@@ -417,7 +417,7 @@ function getSelectedRowsMids()
 	var ids = new Array();
 	table.rows('.selected').indexes().each( function (idx) {
 	    var d = table.row( idx ).data();
-	    ids.push(d[5]);
+	    ids.push(d[6]);
 	} );
 	return ids;
 }

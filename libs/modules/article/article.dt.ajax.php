@@ -96,7 +96,7 @@
         {
             if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "shop_customer" && $aColumns[$i] != "art_picture" && $aColumns[$i] != "article_tags" )
             {
-                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( utf8_decode($_GET['sSearch']) )."%' OR ";
+                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
             }
         }
         $sWhere = substr_replace( $sWhere, "", -3 );
@@ -135,7 +135,7 @@
         $tag_where = "";
         foreach ($tags as $tag)
         {
-            $tag_where .= " OR tag LIKE '{$tag}' ";
+            $tag_where .= " OR tag LIKE '".utf8_decode($tag)."' ";
         }
         $sTagArticles = Array();
         $tQuery = "SELECT article, count(article) as count FROM article_tags WHERE 1=2 {$tag_where} GROUP BY article";
@@ -324,7 +324,7 @@
                 }
                 if(count($tag_rows) > 0){
                     $tags = implode("; ", $tag_rows);
-                    $row[] = $tags;
+                    $row[] = nl2br(htmlentities(utf8_encode($tags)));
                 } else {
                     $row[] = '';
                 }

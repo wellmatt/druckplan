@@ -143,6 +143,8 @@ if ($_REQUEST["delete"])
                 }
             }
             
+            $colinv->setStatus(4);
+            $colinv->save();
         }
     }
 
@@ -228,7 +230,7 @@ function createSelects(id,count,workload)
 	<table width="100%">
 		<tr>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Titel')?></td>
-			<td class="content_row" valign="top"><a target="_blank" href="<?php echo $header_parent_link;?>"><?php echo $header_title;?></a></td>
+			<td class="content_row" valign="top"><a href="<?php echo $header_parent_link;?>"><?php echo $header_title;?></a></td>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Nummer')?></td>
 			<td class="content_row" valign="top"><?php echo $header_number;?></td>
 		</tr>
@@ -241,13 +243,13 @@ function createSelects(id,count,workload)
 		<tr>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Kunde')?></td>
 			<td class="content_row" valign="top">
-			 <a target="_blank" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?php echo $header_businessc->getId();?>">
+			 <a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?php echo $header_businessc->getId();?>">
 			     <?php echo $header_businessc->getNameAsLine();?>
 			 </a>
 			</td>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Kunde Ansprechp.')?></td>
 			<td class="content_row" valign="top">
-			 <a target="_blank" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=<?php echo $header_businesscp->getId();?>&id=<?php echo $header_businessc->getId();?>">
+			 <a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=<?php echo $header_businesscp->getId();?>&id=<?php echo $header_businessc->getId();?>">
 			     <?php echo $header_businesscp->getNameAsLine();?>
 			 </a>
 			</td>

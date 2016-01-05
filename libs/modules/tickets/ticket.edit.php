@@ -818,7 +818,7 @@ function callBoxFancyAbo(my_href) {
                                         $link_href = Association::getPath($classname);
                                         $object_name = Association::getName($object);
                                     }
-                                    echo '<li id="as_'.$as.'"><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
+                                    echo '<li id="as_'.$as.'"><a href="index.php?page='.$link_href.$object->getId().'">';
                                     echo $object_name;
                                     echo '</a>';
                                     if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))

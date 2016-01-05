@@ -77,7 +77,7 @@ class User {
             $this->client = $_USER->getClient();
         }
         
-        $cached = Cachehandler::fromCache("obj_usr_" . $id);
+//         $cached = Cachehandler::fromCache("obj_usr_" . $id);
         if (!is_null($cached))
         {
             $vars = array_keys(get_class_vars(User));
@@ -154,7 +154,7 @@ class User {
                             $this->groups[] = new Group($r["group_id"], false);
                     }
 //                 }
-        		Cachehandler::toCache("obj_usr_".$id, $this);
+//         		Cachehandler::toCache("obj_usr_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)

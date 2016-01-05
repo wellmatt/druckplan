@@ -392,6 +392,9 @@ $(function() {
         <a href="#top" class="menu_item">Seitenanfang</a>
         <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
         <a href="#" class="menu_item" onclick="$('#article_edit').submit();">Speichern</a>
+        <?php if ($article->getId()>0){?>
+        <a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user&startart=<?php echo $article->getId();?>" class="menu_item">Neuer Vorgang</a>
+        <?php }?>
         <?php if ($article->getOrderid()>0){?>
         <a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?php echo $article->getOrderid();?>&step=4" class="menu_item">Zur Kalkulation</a>
         <?php }?>

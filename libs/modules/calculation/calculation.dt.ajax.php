@@ -1,7 +1,7 @@
 <?php
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'number', 'cust_name', 'title', 'fremdleistung', 'crtdat', 'status' );
+    $aColumns = array( 'id', 'number', 'title', 'fremdleistung', 'crtdat', 'status' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -134,10 +134,6 @@
     if ($_GET['end'] != ""){
         $sWhere .= " AND crtdat <= {$_GET['end']} ";
     }
-
-    if ($_GET['cust_id'] != ""){
-        $sWhere .= " AND bcid = {$_GET['cust_id']} ";
-    }
     
     
     /*
@@ -145,9 +141,9 @@
      * Get data to display
      */
     $sQuery = "SELECT * FROM
-               (SELECT orders.id as id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,
-               orders.crtdat,orders.`status`,'1' as type, businesscontact.id as bcid 
-               FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0) a   
+               (SELECT orders.id as id,orders.number,orders.title,
+               orders.crtdat,orders.`status`,'1' as type 
+               FROM orders WHERE orders.`status` > 0) a   
                $sWhere
                $sOrder
                $sLimit";
@@ -163,8 +159,8 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status`,'1' as type, businesscontact.id as bcid 
-        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0) a
+        (SELECT orders.id,orders.number,orders.crtdat,orders.`status`,'1' as type  
+        FROM orders WHERE orders.`status` > 0) a
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -178,8 +174,8 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT orders.id,orders.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,orders.title,orders.crtdat,orders.`status` 
-        FROM orders INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id WHERE orders.`status` > 0) a
+        (SELECT orders.id,orders.number,orders.title,orders.crtdat,orders.`status` 
+        FROM orders WHERE orders.`status` > 0) a
         WHERE status > 0
     ";
 //     var_dump($sQuery);
@@ -204,11 +200,7 @@
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( $aColumns[$i] == 'cust_name' )
-            {
-                $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
-            }
-            else if ( $aColumns[$i] == 'number' )
+            if ( $aColumns[$i] == 'number' )
             {
                 $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
             }

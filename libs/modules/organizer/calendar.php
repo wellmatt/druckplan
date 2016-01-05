@@ -61,7 +61,7 @@ if ($_REQUEST["exec"])
 				callBoxFancy('libs/modules/organizer/calendar.newevent.php?start='+start.unix()+'&end='+end.unix());
 			},
 			eventClick: function(calEvent, jsEvent, view) {
-				if (!calEvent.url) {
+				if (!calEvent.url && !calEvent.holiday) {
 					callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid='+calEvent.id);
 				};
 			},
@@ -117,7 +117,8 @@ if ($_REQUEST["exec"])
 						document.getElementById('errormsg').innerHTML = json;
 					}
 				});
-			}
+			},
+			timeFormat: 'H:mm'
 		});
 		
 	});

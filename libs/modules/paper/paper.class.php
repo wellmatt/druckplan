@@ -28,6 +28,12 @@ class Paper {
     private $weights = Array();
     private $prices = Array();
 	private $supplier = Array();
+	private $dilivermat;
+	private $glue;
+	private $thickness;
+	private $totalweight;
+	private $price_100kg;
+	private $price_1qm;
     
     function __construct($id = 0) {
         global $DB;
@@ -43,6 +49,12 @@ class Paper {
                 $this->name = $res[0]["name"];
                 $this->comment = $res[0]["comment"];
                 $this->priceBase = $res[0]["pricebase"];
+                $this->dilivermat = $res[0]["dilivermat"];
+                $this->glue = $res[0]["glue"];
+                $this->thickness = $res[0]["thickness"];
+                $this->totalweight = $res[0]["totalweight"];
+                $this->price_100kg = $res[0]["price_100kg"];
+                $this->price_1qm = $res[0]["price_1qm"];
                 
                 $sql = "SELECT * FROM papers_weights 
                         WHERE paper_id = {$this->id}
@@ -418,6 +430,12 @@ class Paper {
             $sql = "UPDATE papers SET
                         name = '{$this->name}',
                         comment = '{$this->comment}',
+                        dilivermat = '{$this->dilivermat}',
+                        glue = '{$this->glue}',
+                        thickness = '{$this->thickness}',
+                        totalweight = '{$this->totalweight}',
+                        price_100kg = '{$this->price_100kg}',
+                        price_1qm = '{$this->price_1qm}',
                         pricebase = {$this->priceBase}
                     WHERE
                         id = {$this->id}";
@@ -471,14 +489,16 @@ class Paper {
                              {$p["price"]}, {$p["weight"]})";
                 $DB->no_result($sql);
             }
-            return true;
+            return true; 
             
         } else
         {
             $sql = "INSERT INTO papers 
-                        (name, comment, pricebase)
+                        (name, comment, pricebase, dilivermat, glue, thickness, totalweight, price_100kg, price_1qm)
                     VALUES
-                        ('{$this->name}', '{$this->comment}', {$this->priceBase})";
+                        ('{$this->name}', '{$this->comment}', {$this->priceBase}, 
+                        '{$this->dilivermat}', '{$this->glue}', '{$this->thickness}', '{$this->totalweight}',
+                        '{$this->price_100kg}', '{$this->price_1qm}')";
             $res = $DB->no_result($sql);
             if($res)
             {
@@ -647,6 +667,102 @@ class Paper {
     public function setComment($comment)
     {
         $this->comment = $comment;
+    }
+    
+	/**
+     * @return the $dilivermat
+     */
+    public function getDilivermat()
+    {
+        return $this->dilivermat;
+    }
+
+	/**
+     * @return the $glue
+     */
+    public function getGlue()
+    {
+        return $this->glue;
+    }
+
+	/**
+     * @return the $thickness
+     */
+    public function getThickness()
+    {
+        return $this->thickness;
+    }
+
+	/**
+     * @return the $totalweight
+     */
+    public function getTotalweight()
+    {
+        return $this->totalweight;
+    }
+
+	/**
+     * @param field_type $dilivermat
+     */
+    public function setDilivermat($dilivermat)
+    {
+        $this->dilivermat = $dilivermat;
+    }
+
+	/**
+     * @param field_type $glue
+     */
+    public function setGlue($glue)
+    {
+        $this->glue = $glue;
+    }
+
+	/**
+     * @param field_type $thickness
+     */
+    public function setThickness($thickness)
+    {
+        $this->thickness = $thickness;
+    }
+
+	/**
+     * @param field_type $totalweight
+     */
+    public function setTotalweight($totalweight)
+    {
+        $this->totalweight = $totalweight;
+    }
+    
+	/**
+     * @return the $price_100kg
+     */
+    public function getPrice_100kg()
+    {
+        return $this->price_100kg;
+    }
+
+	/**
+     * @return the $price_1qm
+     */
+    public function getPrice_1qm()
+    {
+        return $this->price_1qm;
+    }
+
+	/**
+     * @param field_type $price_100kg
+     */
+    public function setPrice_100kg($price_100kg)
+    {
+        $this->price_100kg = $price_100kg;
+    }
+
+	/**
+     * @param field_type $price_1qm
+     */
+    public function setPrice_1qm($price_1qm)
+    {
+        $this->price_1qm = $price_1qm;
     }
 }
 ?>

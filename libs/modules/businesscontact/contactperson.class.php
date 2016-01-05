@@ -290,13 +290,16 @@ class ContactPerson {
 	    global $DB;
 	    
 	    $contactPersons = Array();
-	    $sql = " SELECT id, birthdate FROM contactperson WHERE active > 0";
+	    $sql = " SELECT id, birthdate FROM contactperson WHERE active > 0 AND birthdate > 0";
+// 	    echo $sql."</br>";
 	    $res = $DB->select($sql);
 	    if($DB->num_rows($sql))
 	    {
 	        foreach ($res as $r)
 	        {
-	            if (date("m",$r["birthdate"]) >= date("m",$start) && date("m",$r["birthdate"]) <= date("m",$end))
+//                 echo date("n",$r["birthdate"]) .">=" . date("m",$start) . "</br>";
+//                 echo date("n",$r["birthdate"]) .">=" . date("m",$end) . "</br>";
+	            if ((date("n",$r["birthdate"]) >= date("m",$start) && date("n",$r["birthdate"]) <= date("m",$end)) || (date("n",$r["birthdate"])==1 && date("m",$start)==12))
 	                $contactPersons[] = new ContactPerson($r["id"]);
 	        }
 	        return $contactPersons;

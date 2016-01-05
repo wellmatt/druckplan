@@ -505,36 +505,37 @@
                                     LEFT JOIN groups ON tickets.assigned_group = groups.id
                                     WHERE association.objectid1 = {$aRow['id']}
                                     ";
-//                     echo $pj_state_sql."</br>";
                     $rResultPjState = mysql_query( $pj_state_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
                     while ($data = mysql_fetch_array($rResultPjState)){
-                        print_r($data);echo "</br>";
-                        $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]);
+                        $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]); // 
                         if ($data["user_name"] != '')
                             $pj_title .= ' ('.utf8_encode($data["user_name"]).')';
                         else 
                             $pj_title .= ' ('.utf8_encode($data["group_name"]).')';
-                        $pj_title .= '\r\n';
+                        $pj_title .= '
+';
                         if ($data["tktstateid"] != 3)
                             $pj_all_closed = false;
                         if ($data["tktstateid"] != 2)
                             $pj_all_open = false;
                     }
-                    if ($pj_all_open)
+                    if ($pj_all_open && $pj_all_closed == false)
                     {
-                        $pj_state = '<img src="images/status/red_small.gif" title="'.$pj_title.'"/>';
-                    } elseif ($pj_all_closed)
+                        $pj_state = '<img src="images/status/red_small.gif" title=\''.$pj_title.'\'/>';
+                    } elseif ($pj_all_closed && $pj_all_open == false)
                     {
-                        $pj_state = '<img src="images/status/green_small.gif" title="'.$pj_title.'"/>';
+                        $pj_state = '<img src="images/status/green_small.gif" title=\''.$pj_title.'\'/>';
                     } elseif ($pj_all_closed == false && $pj_all_open == false)
                     {
-                        $pj_state = '<img src="images/status/yellow_small.gif" title="'.$pj_title.'"/>';
+                        $pj_state = '<img src="images/status/yellow_small.gif" title=\''.$pj_title.'\'/>';
                     }
                     
                     if ($pj_state == '')
                         $pj_state = '<img src="images/status/green_small.gif" title="Keine Verkn."/>';
                     
-                    $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])))." ".$pj_state;
+                    $commenthtml = "<img class='pointer commentimg' src='images/icons/message_inbox.gif'/>";
+                    
+                    $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])))." ".$pj_state." ".$commenthtml;
                 }
                 else if ( $aColumns[$i] == 'priority' )
                 {

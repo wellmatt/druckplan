@@ -214,7 +214,7 @@ $(document).ready(function() {
     var table_users = $('#table_users').DataTable( {
         "paging": true,
 		"stateSave": true,
-		"pageLength": 10,
+		"pageLength": 20,
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"language": 
 					{
@@ -487,6 +487,14 @@ function add_contactperson(element)
 								$addStr .= '<input type="hidden" name="participant_int[]" id="participant_int_'.$part_int->getId().'" value="'.$part_int->getId().'"></br></span>';
 								echo $addStr;
 							}
+						} elseif ($event->getId() == 0)
+						{
+						    $part_int = $_USER;
+						    $part_users_int[] = $part_int->getId();
+						    $addStr = '<span class="newmailToField" id="span_participant_int_'.$part_int->getId().'"><img src="../../../images/icons/user.png" />&nbsp;'.$part_int->getFirstname().'&nbsp;'.$part_int->getLastname();
+						    $addStr .= '<img src="../../../images/icons/cross-white.png" class="pointer icon-link" onclick="removeParticipant(\'user\', '.$part_int->getId().')" />';
+						    $addStr .= '<input type="hidden" name="participant_int[]" id="participant_int_'.$part_int->getId().'" value="'.$part_int->getId().'"></br></span>';
+						    echo $addStr;
 						}
 					?>
 					</td>

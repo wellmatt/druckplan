@@ -6,6 +6,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
+require_once 'event_holiday.class.php';
 class Event {
     private $id;
     private $user;

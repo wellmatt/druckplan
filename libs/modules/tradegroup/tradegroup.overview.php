@@ -104,7 +104,7 @@ function printSubTradegroups($parentId, $depth){
 					</td>
 				<?}?>
 				<td class="content_row">
-                <a href="index.php?exec=edit&id=<?=$tradegroup->getId()?>"><img src="images/icons/pencil.png"></a>
+                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>"><img src="images/icons/pencil.png"></a>
 				&ensp;
                 <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><img src="images/icons/cross-script.png"></a>            
             </td>

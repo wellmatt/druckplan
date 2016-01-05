@@ -28,6 +28,22 @@ if($collectinv->getId()==0){
 	$collectinv->setCustContactperson($tmp_presel_cp);
 	if ($_REQUEST["order_title"])
 	    $collectinv->setTitle($_REQUEST["order_title"]);
+    if ($_REQUEST["order_startart"] != "")
+    {
+        $tmp_startart = new Article($_REQUEST["order_startart"]);
+        $tmp_orderamounts = json_encode($tmp_startart->getOrderamounts());
+        $tmp_type = 2;
+        if ($tmp_startart->getOrderid()>0)
+            $tmp_type = 1;
+        ?>
+        <script type="text/javascript">
+        $(document).ready(function() {
+        	var orderamounts = new Array(<?php echo implode(',', $tmp_startart->getOrderamounts()); ?>);
+            addPositionRow(<?php echo $tmp_type;?>,<?php echo $tmp_startart->getId();?>,"<?php echo $tmp_startart->getTitle()?>",orderamounts,<?php echo $tmp_startart->getOrderid();?>);
+        });
+        </script>
+        <?php
+    }
 	//Datum und Benutzer setzen, wer erstellt hat
 	$collectinv->setCrtuser($_USER);
 	$collectinv->setCrtdate(time());
@@ -159,6 +175,36 @@ $(document).ready(function() {
     	    );
 } );
 </script>
+<script>
+	$(function() {
+		$("a#hiddenclicker_artframe").fancybox({
+			'type'    : 'iframe',
+			'transitionIn'	:	'elastic',
+			'transitionOut'	:	'elastic',
+			'speedIn'		:	600, 
+			'speedOut'		:	200, 
+			'padding'		:	25, 
+			'margin'        :   25,
+			'scrolling'     :   'no',
+			'width'		    :	1000, 
+			'height'        :   800,
+			'onComplete'    :   function() {
+	                			  $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+// 	                		      $('#fancybox-content').height($(this).contents().find('body').height()+300);
+	                		      $('#fancybox-wrap').css('top','25px');
+	                		    });
+	                			},
+			'overlayShow'	:	true,
+			'helpers'		:   { overlay:null, closeClick:true }
+		});
+	});
+	function callBoxFancyArtFrame(my_href) {
+		var j1 = document.getElementById("hiddenclicker_artframe");
+		j1.href = my_href;
+		$('#hiddenclicker_artframe').trigger('click');
+	}
+</script>
+<div id="hidden_clicker95" style="display:none"><a id="hiddenclicker_artframe" href="http://www.google.com" >Hidden Clicker</a></div>
 
 <script type="text/javascript">
 $(function() {
@@ -242,21 +288,6 @@ function updatePosDetails(id_i){
 	var tmp_type = document.getElementById('orderpos_type_'+id_i).value;
 	var tmp_objid= document.getElementById('orderpos_objid_'+id_i).value;
 
-// 	if(tmp_type == 1){
-// 		tmp_objid= document.getElementById('orderpos_orderid_'+id_i).value;
-// 		$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
-// 			{exec: 'getOrderDetails', orderid: tmp_objid}, 
-// 			 function(data) {
-// 				var teile = data.split("-+-+-");
-// 				document.getElementById('orderpos_objid_'+id_i).value = teile[0];
-// 				document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
-// 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
-// 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
-// 				document.getElementById('orderpos_comment_'+id_i).style.height = 250;
-// 				document.getElementById('orderpos_quantity_'+id_i).value = "1";
-//				document.getElementById('span_totalprice_'+id_i).value = printPriceJs(parseFloat(teile[1]))+" <?=$_USER->getClient()->getCurrency()?>";
-// 		});  
-// 	}
 	if(tmp_type == 1){
 		$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
 			{exec: 'getArticleDetails', articleid: tmp_objid}, 
@@ -267,8 +298,11 @@ function updatePosDetails(id_i){
 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
 				document.getElementById('orderpos_comment_'+id_i).style.height = 100;
+				$('#orderpos_comment_'+id_i+'_ifr').html(teile[3]);
+				tinymce.editors[id_i].setContent(teile[3]);
 				document.getElementById('span_totalprice_'+id_i).value = printPriceJs(parseFloat(teile[1]))+" <?=$_USER->getClient()->getCurrency()?>";
 				updateArticlePrice(id_i);
+				tinymce.editors[id_i].setContent(teile[3]);
 		}); 
 	}
 	if(tmp_type == 2){
@@ -281,9 +315,10 @@ function updatePosDetails(id_i){
 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
 				document.getElementById('orderpos_comment_'+id_i).style.height = 100;
+				$('#orderpos_comment_'+id_i+'_ifr').html(teile[3]);
+				tinymce.editors[id_i].setContent(teile[3]);
 				document.getElementById('orderpos_quantity_'+id_i).value = "1";
 				document.getElementById('span_totalprice_'+id_i).value = printPriceJs(parseFloat(teile[1]))+" <?=$_USER->getClient()->getCurrency()?>";
-				updateArticlePrice(id_i);
 		}); 
 	}
 	if(tmp_type == 3){
@@ -296,6 +331,8 @@ function updatePosDetails(id_i){
 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
 				document.getElementById('orderpos_comment_'+id_i).style.height = 100;
+				$('#orderpos_comment_'+id_i+'_ifr').html(teile[3]);
+				tinymce.editors[id_i].setContent(teile[3]);
 				document.getElementById('orderpos_quantity_'+id_i).value = "1";
 				document.getElementById('span_totalprice_'+id_i).value = printPriceJs(parseFloat(teile[1]))+" <?=$_USER->getClient()->getCurrency()?>";
 		}); 
@@ -328,6 +365,17 @@ function updateDeliveryPrice(){
 	}); 
 }
 
+function addArticle(artid)
+{
+	$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php", 
+			{ajax_action: 'getArtData', artid: artid}, 
+			 function(data) {
+				var data = data[0];
+				addPositionRow(data.type,data.id,data.title,data.orderamounts,data.orderid)
+// 				document.getElementById('colinv_deliverycosts').value = data;
+	}); 
+}
+
 function addPositionRow(type,objectid,label,orderamounts,orderid){
 	$('.dataTables_empty').parent().remove();
 	var count = parseInt($('#poscount').val());
@@ -354,7 +402,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	newrow += '<input type="hidden" name="orderpos['+count+'][obj_id]" id="orderpos_objid_'+count+'" value="'+objectid+'">';
 	newrow += '<input type="hidden" name="orderpos['+count+'][type]" id="orderpos_type_'+count+'" value="'+type+'"></td>';
 	newrow += '<td valign="top" class="content_row"><span id="orderpos_name_'+count+'">'+label+'</br></span>';
-	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" style="width: 440px; height: 100px" ></textarea>';
+	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" class="text poscomment" style="width: 440px; height: 100px" ></textarea>';
 	newrow += '</td><td valign="top" class="content_row">';
 	if (orderamounts.length>0)
 	{
@@ -389,6 +437,27 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
     	updatePosDetails(count);
 }
 </script>
+
+<script>
+	$(function() {
+		$("a#association_hiddenclicker").fancybox({
+			'type'    : 'iframe',
+			'transitionIn'	:	'elastic',
+			'transitionOut'	:	'elastic',
+			'speedIn'		:	600, 
+			'speedOut'		:	200, 
+			'height'		:	350, 
+			'overlayShow'	:	true,
+			'helpers'		:   { overlay:null, closeClick:true }
+		});
+	});
+	function callBoxFancyAsso(my_href) {
+		var j1 = document.getElementById("association_hiddenclicker");
+		j1.href = my_href;
+		$('#association_hiddenclicker').trigger('click');
+	}
+</script>
+<div id="association_hidden_clicker" style="display:none"><a id="association_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
 
 <script>
 	$(function() {
@@ -461,7 +530,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                                         $link_href = Association::getPath($classname);
                                         $object_name = Association::getName($object);
                                     }
-                                    echo '<li id="as_'.$as.'"><a href="index.php?page='.$link_href.$object->getId().'" target="_blank">';
+                                    echo '<li id="as_'.$as.'"><a href="index.php?page='.$link_href.$object->getId().'">';
                                     echo $object_name;
                                     echo '</a>';
                                     if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
@@ -477,6 +546,17 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                       </div>
                       <?php if ($collectinv->getId()>0){?>
                       <button type="button" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>');" class="btn btn-sm btn-default">Vorschau</button>
+                      
+                      <div class="btn-group dropdown" style="margin-left: 0px;">
+                          <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+                            Neu <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $collectinv->getCustomer()->getId();?>&contactperson=<?php echo $collectinv->getCustContactperson()->getId();?>&asso_class=<?php echo get_class($collectinv);?>&asso_object=<?php echo $collectinv->getId()?>');">Ticket erstellen (verknüpft)</a>
+                                </li>
+                          </ul>
+                      </div>
                       <?php }?>
                   </div>
                 </td>
@@ -507,7 +587,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 				<?= $_LANG->get('Firmenname') ?>
 			</td>
 			<td class="content_row_clear">
-				<a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$selected_customer->getId()?>" target="_blank"><?= $selected_customer->getNameAsLine()?></a>			
+				<a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$selected_customer->getId()?>"><?= $selected_customer->getNameAsLine()?></a>			
 			</td>
 			<td class="content_row_header">
 				<?= $_LANG->get('E-Mail') ?>
@@ -891,7 +971,8 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 <div class="box2">
     <div class="box1">
         <b>neue Position:</b>
-        <input type="text" id="add_position" name="add_position"/> <img src="images/icons/plus.png" title="neue manuelle Position" class="pointer" onclick="addPositionRow(0,0,'Manuell',0,0);"/>
+        <img src="images/icons/plus.png" title="neue manuelle Position" class="pointer" onclick="addPositionRow(0,0,'Manuell',0,0);"/> 
+        <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.articleselector.php');"/>
     </div>
     <table id="order_pos" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
             <thead>

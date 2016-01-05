@@ -195,6 +195,19 @@ if ($_REQUEST["ajax_action"] == "search_position"){
     header("Content-Type: application/json");
     echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "getArtData"){
+    $retval = Array();
+
+    $tmp_art = new Article($_REQUEST["artid"]);
+    $type = 2;
+    if ($tmp_art->getOrderid()>0)
+        $type = 1;
+    $retval[] = Array("type"=>$type, "id"=>$tmp_art->getId(),"title"=>$tmp_art->getTitle(),"orderamounts"=>$tmp_art->getOrderamounts(),"orderid"=>$tmp_art->getOrderid());
+    
+    $retval = json_encode($retval);
+    header("Content-Type: application/json");
+    echo $retval;
+}
 
 ?>
 
