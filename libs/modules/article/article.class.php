@@ -41,7 +41,7 @@ class Article {
 	private $shopCustomerRel = 0;	// Freigabe fuer einen spez. Kunden im Shop
 	private $shopCustomerID = 0;	// ID des freigegebenen Kunden
 	private $isworkhourart = 0;		// Ist es ein Arbeits-Stunden Artikel
-	private $show_shop_price = 1;	// Freigabe fuer den Shop
+	private $show_shop_price = 0;	// Freigabe fuer den Shop
 	private $shop_needs_upload = 0; // Datei upload im Warenkorb
 	private $matchcode;             // Artikel Matchcode
 	private $shop_approval;         // Shop Freigabe für BCs und CPs

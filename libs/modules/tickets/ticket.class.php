@@ -19,6 +19,7 @@ require_once 'libs/modules/perferences/perferences.class.php';
 require_once 'libs/modules/tickets/ticket.log.class.php';
 require_once 'libs/modules/calculation/order.class.php';
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
+require_once 'libs/modules/planning/planning.job.class.php';
 
 class Ticket {
     

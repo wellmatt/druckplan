@@ -50,6 +50,21 @@ class CollectiveInvoice{
     
     private $needs_planning = 0;
     private $deliverydate = 0;
+    
+    // Doc texts
+    
+    private $offer_header;
+    private $offer_footer;
+    private $offerconfirm_header;
+    private $offerconfirm_footer;
+    private $factory_header;
+    private $factory_footer;
+    private $delivery_header;
+    private $delivery_footer;
+    private $invoice_header;
+    private $invoice_footer;
+    private $revert_header;
+    private $revert_footer;
 
 	/**
 	 * Konstruktor f�r die Sammelrechnungen
@@ -60,6 +75,7 @@ class CollectiveInvoice{
 		global $DB;
 		global $_USER;
 		
+		$this->resetDocTexts();
 		$this->businesscontact = new BusinessContact();
 		$this->client = new Client();
 		$this->crtuser = new User();
@@ -100,6 +116,20 @@ class CollectiveInvoice{
                 $this->needs_planning = $r["needs_planning"];
                 $this->deliverydate = $r["deliverydate"];
 				$this->ext_comment = $r["ext_comment"];
+				
+				// doc texts
+				$this->offer_header = $r["offer_header"];
+				$this->offer_footer = $r["offer_footer"];
+				$this->offerconfirm_header = $r["offerconfirm_header"];
+				$this->offerconfirm_footer = $r["offerconfirm_footer"];
+				$this->factory_header = $r["factory_header"];
+				$this->factory_footer = $r["factory_footer"];
+				$this->delivery_header = $r["delivery_header"];
+				$this->delivery_footer = $r["delivery_footer"];
+				$this->invoice_header = $r["invoice_header"];
+				$this->invoice_footer = $r["invoice_footer"];
+				$this->revert_header = $r["revert_header"];
+				$this->revert_footer = $r["revert_footer"];
 			}
 		}
 	}//Ende vom Konstruktor
@@ -134,6 +164,20 @@ class CollectiveInvoice{
                     needs_planning = {$this->needs_planning}, 
                     deliverydate = {$this->deliverydate}, 
                     custContactperson = {$this->custContactperson->getId()},
+                    
+                    offer_header = '{$this->offer_header}',
+                    offer_footer = '{$this->offer_footer}',  
+                    offerconfirm_header = '{$this->offerconfirm_header}',  
+                    offerconfirm_footer = '{$this->offerconfirm_footer}',  
+                    factory_header = '{$this->factory_header}',  
+                    factory_footer = '{$this->factory_footer}',  
+                    delivery_header = '{$this->delivery_header}',  
+                    delivery_footer = '{$this->delivery_footer}',  
+                    invoice_header = '{$this->invoice_header}',  
+                    invoice_footer = '{$this->invoice_footer}',  
+                    revert_header = '{$this->revert_header}',  
+                    revert_footer = '{$this->revert_footer}',    
+                    
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
 //             echo $sql . "</br>";
@@ -145,13 +189,19 @@ class CollectiveInvoice{
 				 deliverycosts, comment, businesscontact, client,
 				 deliveryterm, paymentterm, deliveryaddress, invoiceaddress,
 				 intern_contactperson, cust_message, cust_sign, custContactperson,
-				 intent, needs_planning, deliverydate, ext_comment)
+				 intent, needs_planning, deliverydate, ext_comment,
+				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
+				 factory_header, factory_footer, delivery_header, delivery_footer,
+				 invoice_header, invoice_footer, revert_header, revert_footer)
 			VALUES
 				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
 				 {$this->deliveryterm->getId()}, {$this->paymentterm->getId()}, {$this->deliveryaddress->getId()}, {$this->invoiceAddress->getId()},
 				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
-				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate}, '{$this->ext_comment}')";
+				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate}, '{$this->ext_comment}',
+				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
+				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
+				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}')";
 			$res = $DB->no_result($sql);
 //             echo $sql . "</br>";
 			if($res){
@@ -175,6 +225,7 @@ class CollectiveInvoice{
 		if($this->id > 0){
 			$sql = "UPDATE collectiveinvoice SET status = 0 WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+                Notification::removeForObject("CollectiveInvoice", $this->getId());
 				unset($this);
 				return true;
 			} else {
@@ -453,6 +504,80 @@ class CollectiveInvoice{
 		return $retval;
 	}
 	
+	/**
+	 * ... loescht alle aktivierten Attribut-Optionen des Vorgangs
+	 * @return boolean
+	 */
+	public function clearAttributes(){
+		global $DB;
+		$sql = "DELETE FROM collectiveinvoice_attributes WHERE collectiveinvoice_id = {$this->id} ";
+		return $DB->no_result($sql);
+	}
+	
+	/**
+	 * ... liefert Alle aktivierten Optionen inkl. Input von Merkmalen zu einem Vorgang
+	 * 
+	 * @return boolean|Array
+	 */
+	public function getActiveAttributeItemsInput(){
+		global $DB;
+		$retval = Array();
+		$sql = "SELECT * FROM collectiveinvoice_attributes 
+				WHERE 
+				collectiveinvoice_id = {$this->id}";
+		
+		if($DB->num_rows($sql)){
+			$res = $DB->select($sql);
+			foreach ($res AS $r){
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["value"] = $r["value"];
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["inputvalue"] = $r["inputvalue"];
+			}
+		}
+// 		print_r($retval);
+		return $retval;
+	}
+	
+	/**
+	 * ... speichert alle aktivierten Merkmals-Optionen
+	 * 
+	 * @param Array $active_items
+	 */
+	public function saveActiveAttributes($active_items){
+		global $DB;
+		
+		foreach($active_items as $item){
+			if((int)$item["id"] > 0){
+	            $sql = "UPDATE collectiveinvoice_attributes SET
+	                    value = '{$item["value"]}', 
+	                    inputvalue = '{$item["inputvalue"]}' 
+	                    WHERE id = {$item["id"]}";
+	            $DB->no_result($sql);
+	        } else {
+	            $sql = "INSERT INTO collectiveinvoice_attributes
+	                        (value, item_id, attribute_id, collectiveinvoice_id, inputvalue )
+	                    VALUES
+	                        ({$item["value"]}, {$item["item_id"]}, {$item["attribute_id"]}, {$this->id}, '{$item["inputvalue"]}' )";
+	            $DB->no_result($sql);
+	        }
+		}
+	}
+	
+	public function resetDocTexts()
+	{
+	    $offer_header = '';
+	    $offer_footer = '';
+	    $offerconfirm_header = '';
+	    $offerconfirm_footer = '';
+	    $factory_header = '';
+	    $factory_footer = '';
+	    $delivery_header = '';
+	    $delivery_footer = '';
+	    $invoice_header = '';
+	    $invoice_footer = '';
+	    $revert_header = '';
+	    $revert_footer = '';
+	}
+	
 	private function resetId()
 	{
 	    $this->id = 0;
@@ -463,8 +588,8 @@ class CollectiveInvoice{
 	 *  
 	 * @return multitype:OrderPosition
 	 */
-	public function getPositions($softdeleted = false){
-        return Orderposition::getAllOrderposition($this->id, $softdeleted);
+	public function getPositions($softdeleted = false,$relevant = false){
+        return Orderposition::getAllOrderposition($this->id, $softdeleted,$relevant);
 	}
 	
 	public function getCustomer(){
@@ -736,6 +861,199 @@ class CollectiveInvoice{
     {
         $this->ext_comment = $ext_comment;
     }
+    
+    /**
+     * @return the $offer_header
+     */
+    public function getOffer_header()
+    {
+        return $this->offer_header;
+    }
+
+    /**
+     * @return the $offer_footer
+     */
+    public function getOffer_footer()
+    {
+        return $this->offer_footer;
+    }
+
+    /**
+     * @return the $offerconfirm_header
+     */
+    public function getOfferconfirm_header()
+    {
+        return $this->offerconfirm_header;
+    }
+
+    /**
+     * @return the $offerconfirm_footer
+     */
+    public function getOfferconfirm_footer()
+    {
+        return $this->offerconfirm_footer;
+    }
+
+    /**
+     * @return the $factory_header
+     */
+    public function getFactory_header()
+    {
+        return $this->factory_header;
+    }
+
+    /**
+     * @return the $factory_footer
+     */
+    public function getFactory_footer()
+    {
+        return $this->factory_footer;
+    }
+
+    /**
+     * @return the $delivery_header
+     */
+    public function getDelivery_header()
+    {
+        return $this->delivery_header;
+    }
+
+    /**
+     * @return the $delivery_footer
+     */
+    public function getDelivery_footer()
+    {
+        return $this->delivery_footer;
+    }
+
+    /**
+     * @return the $invoice_header
+     */
+    public function getInvoice_header()
+    {
+        return $this->invoice_header;
+    }
+
+    /**
+     * @return the $invoice_footer
+     */
+    public function getInvoice_footer()
+    {
+        return $this->invoice_footer;
+    }
+
+    /**
+     * @return the $revert_header
+     */
+    public function getRevert_header()
+    {
+        return $this->revert_header;
+    }
+
+    /**
+     * @return the $revert_footer
+     */
+    public function getRevert_footer()
+    {
+        return $this->revert_footer;
+    }
+
+    /**
+     * @param field_type $offer_header
+     */
+    public function setOffer_header($offer_header)
+    {
+        $this->offer_header = $offer_header;
+    }
+
+    /**
+     * @param field_type $offer_footer
+     */
+    public function setOffer_footer($offer_footer)
+    {
+        $this->offer_footer = $offer_footer;
+    }
+
+    /**
+     * @param field_type $offerconfirm_header
+     */
+    public function setOfferconfirm_header($offerconfirm_header)
+    {
+        $this->offerconfirm_header = $offerconfirm_header;
+    }
+
+    /**
+     * @param field_type $offerconfirm_footer
+     */
+    public function setOfferconfirm_footer($offerconfirm_footer)
+    {
+        $this->offerconfirm_footer = $offerconfirm_footer;
+    }
+
+    /**
+     * @param field_type $factory_header
+     */
+    public function setFactory_header($factory_header)
+    {
+        $this->factory_header = $factory_header;
+    }
+
+    /**
+     * @param field_type $factory_footer
+     */
+    public function setFactory_footer($factory_footer)
+    {
+        $this->factory_footer = $factory_footer;
+    }
+
+    /**
+     * @param field_type $delivery_header
+     */
+    public function setDelivery_header($delivery_header)
+    {
+        $this->delivery_header = $delivery_header;
+    }
+
+    /**
+     * @param field_type $delivery_footer
+     */
+    public function setDelivery_footer($delivery_footer)
+    {
+        $this->delivery_footer = $delivery_footer;
+    }
+
+    /**
+     * @param field_type $invoice_header
+     */
+    public function setInvoice_header($invoice_header)
+    {
+        $this->invoice_header = $invoice_header;
+    }
+
+    /**
+     * @param field_type $invoice_footer
+     */
+    public function setInvoice_footer($invoice_footer)
+    {
+        $this->invoice_footer = $invoice_footer;
+    }
+
+    /**
+     * @param field_type $revert_header
+     */
+    public function setRevert_header($revert_header)
+    {
+        $this->revert_header = $revert_header;
+    }
+
+    /**
+     * @param field_type $revert_footer
+     */
+    public function setRevert_footer($revert_footer)
+    {
+        $this->revert_footer = $revert_footer;
+    }
+
     
     
 }

@@ -50,14 +50,10 @@ $mailadress = new Emailaddress($_REQUEST["mailid"]);
 
 $server = $mailadress->getHost();
 $port = $mailadress->getPort();
-$user = $mailadress->getAddress();
+$user = $mailadress->getLogin();
 $password = $mailadress->getPassword();
 
 $mail_to = $mailadress->getAddress();
-if (!filter_var($mail_to, FILTER_VALIDATE_EMAIL))
-{
-    $mail_to .= $perf->getMail_domain();
-}
 
 try {
     /* Connect to an IMAP server.

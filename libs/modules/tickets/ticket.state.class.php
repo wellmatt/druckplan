@@ -14,6 +14,10 @@ class TicketState {
     private $protected = 0;
     private $colorcode;
     
+    const STATE_DELETED = 1;
+    const STATE_OPEN = 2;
+    const STATE_CLOSED = 3;
+    
     function __construct($id = 0){
         global $DB;
     

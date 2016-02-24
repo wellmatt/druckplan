@@ -46,7 +46,7 @@ foreach ($articles as $opos)
                 }
                 if ($calc->getPaperAddContent3()->getId()) {
                     $paperstr .= "<br>";
-                    $paperstr .= "<br>" . $_LANG->get('zus. Inhalt 3') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
+                    $paperstr .= "<br>" . $_LANG->get('zus. Inhalt 3') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
                     $paperstr .= $calc->getPaperAddContent3()->getName() . " " . $calc->getPaperAddContent3Weight() . "g";
                 }
                 if ($calc->getPaperEnvelope()->getId()) {

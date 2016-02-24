@@ -73,7 +73,7 @@ class Articlepicture {
 	}
 
 	/**
-	 * Loeschfunktion für Artikel.
+	 * Loeschfunktion fï¿½r Artikel.
 	 * Der Artikel wird nicht entgueltig geloescht, der Status und die Freigabe wird auf 0 gesetzt
 	 *
 	 * @return boolean
@@ -93,29 +93,6 @@ class Articlepicture {
 				return false;
 			}
 		}
-	}
-	
-	function delete()
-	{
-		global $_USER;
-		global $DB;
-		global $_CONFIG;
-	
-		if($this->id > 0){
-			$sql = "DELETE FROM documents WHERE id = {$this->id}";
-			$res = $DB->no_result($sql);
-			if($res){
-				
-				$filename = $_CONFIG->docsBaseDir."/images/products/";
-				$filename .= 'delivery/'.$_USER->getClient()->getId().'.'.$this->hash;
-				
-				// Bild loeschen
-				unlink($filename.".png"); 
-				unset($this);
-			}
-			return false;
-		}
-		return false;
 	}
 	
 	/*************************************************

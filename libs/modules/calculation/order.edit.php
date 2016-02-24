@@ -984,7 +984,7 @@ if((int)$_REQUEST["step"] == 3){
 //     					    echo "setFormat_out_height = " . $tmp_cut_format_out[1] . "</br>";
 					    }
 					    
-// 					    $entry->setCutter_cuts((int)$_REQUEST["mach_cutter_cuts_{$id}"]);
+					    $entry->setCutter_cuts((int)$_REQUEST["mach_cutter_cuts_{$id}"]);
 					    
 					    $entry->setPrice($entry->getMachine()->getMachinePrice($entry));
 					    $entry->save();
@@ -1491,7 +1491,7 @@ if((int)$_REQUEST["step"] == 7){
     </ul>
   </li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a></li>
-  <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li>
+  <!-- <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li> -->
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=7'">Detailierte Übersicht</a></li>
   <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=5'">Druckbogenvorschau</a></li>
   <?php 

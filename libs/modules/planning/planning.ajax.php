@@ -31,10 +31,17 @@ require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/planning/planning.job.class.php';
 require_once 'libs/modules/calculation/calculation.machineentry.class.php';
 require_once 'libs/modules/machines/machine.class.php';
+require_once 'libs/modules/tickets/ticket.class.php';
+session_start();
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 global $_LANG;
+
+// Login
+$_USER = new User();
+$_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+global $_USER;
 
 /**
  * @param array $array
@@ -270,7 +277,7 @@ if ($_REQUEST["exec"] == "ajax_getJobDataForOverview")
                 echo '<td>'.$pj->getArtmach()->getName().'</td>';
             else
                 echo '<td>'.$pj->getArtmach()->getTitle().'</td>';
-            if ($pj->getAssigned_user()>0)
+            if ($pj->getAssigned_user()->getId()>0)
                 echo '<td>'.$pj->getAssigned_user()->getNameAsLine().'</td>';
             else 
                 echo '<td>'.$pj->getAssigned_group()->getName().'</td>';
@@ -331,3 +338,29 @@ if ($_REQUEST["exec"] == "ajax_getJobsForCal")
     
     echo json_encode($output_arrays);
 }
+if ($_REQUEST["exec"] == "ajax_MoveJobs")
+{
+    $jobarr = $_REQUEST["pjtomove"];
+    if (count($jobarr)>0)
+    {
+        foreach ($jobarr as $job => $date)
+        {
+            $tmp_job = new PlanningJob($job);
+            $tmp_job->setStart(strtotime($date));
+            $tmp_job->save();
+            $tmp_ticket = $tmp_job->getTicket();
+            $logentry = 'Fälligkeit von '. date('d.m.Y H:i',$tmp_ticket->getDuedate()) . " >> " . date('d.m.Y H:i',strtotime($date)) . ' über Planungstabelle geändert';
+            $tmp_ticket->setDuedate(strtotime($date));
+            $tmp_ticket->save();
+            $ticketlog = new TicketLog();
+            $ticketlog->setCrtusr($_USER);
+            $ticketlog->setDate(time());
+            $ticketlog->setTicket($tmp_ticket);
+            $ticketlog->setEntry($logentry);
+            $ticketlog->save();
+        }
+    }
+}
+
+
+

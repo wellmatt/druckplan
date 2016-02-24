@@ -24,6 +24,7 @@ if ($_REQUEST["subexec"] == "save")
    $group->setRight(Group::RIGHT_SEE_TARGETTIME, (int)$_REQUEST["right_targettime"]);
    $group->setRight(Group::RIGHT_PARTS_EDIT, (int)$_REQUEST["right_parts_edit"]);
    $group->setRight(Group::RIGHT_ALL_CALENDAR, (int)$_REQUEST["right_all_calendar"]);
+   $group->setRight(Group::RIGHT_SEE_ALL_CALENDAR, (int)$_REQUEST["right_see_all_calendar"]);
    $group->setRight(Group::RIGHT_EDIT_BC, (int)$_REQUEST["right_edit_bc"]);
    $group->setRight(Group::RIGHT_DELETE_BC, (int)$_REQUEST["right_delete_bc"]);
    $group->setRight(Group::RIGHT_EDIT_CP, (int)$_REQUEST["right_edit_cp"]);
@@ -35,6 +36,7 @@ if ($_REQUEST["subexec"] == "save")
    $group->setRight(Group::RIGHT_TICKET_CHANGE_OWNER, (int)$_REQUEST["right_ticket_change_owner"]);
    $group->setRight(Group::RIGHT_ASSO_DELETE, (int)$_REQUEST["right_asso_delete"]);
    $group->setRight(Group::RIGHT_NOTES_BC, (int)$_REQUEST["right_notes_bc"]);
+   $group->setRight(Group::RIGHT_APPROVE_VACATION, (int)$_REQUEST["right_approve_vacation"]);
    $savemsg = getSaveMessage($group->save());
    $savemsg .= $DB->getLastError();  
 }
@@ -120,8 +122,12 @@ $users = User::getAllUser(User::ORDER_LOGIN);
       <td class="content_row_clear"><input type="checkbox" name="right_parts_edit" value="1" <? if($group->hasRight(Group::RIGHT_PARTS_EDIT)) echo "checked";?>></td>
    </tr>
   <tr>
-      <td class="content_row_clear"><?=$_LANG->get('Alle Kalender einsehen')?></td>
+      <td class="content_row_clear"><?=$_LANG->get('Fremde Kalender benutzen / bearbeiten')?></td>
       <td class="content_row_clear"><input type="checkbox" name="right_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_ALL_CALENDAR)) echo "checked";?>></td>
+   </tr>
+  <tr>
+      <td class="content_row_clear"><?=$_LANG->get('Alle Kalender einsehen')?></td>
+      <td class="content_row_clear"><input type="checkbox" name="right_see_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_SEE_ALL_CALENDAR)) echo "checked";?>></td>
    </tr>
   <tr>
       <td class="content_row_clear"><?=$_LANG->get('Geschäftskontakte bearbeiten')?></td>
@@ -167,7 +173,11 @@ $users = User::getAllUser(User::ORDER_LOGIN);
       <td class="content_row_clear"><?=$_LANG->get('Zugriff auf GK-Notizen')?></td>
       <td class="content_row_clear"><input type="checkbox" name="right_notes_bc" value="1" <? if($group->hasRight(Group::RIGHT_NOTES_BC)) echo "checked";?>></td>
    </tr>
-   
+   <tr>
+        <td class="content_row_clear"><?=$_LANG->get('Urlaube genehmingen')?></td>
+        <td class="content_row_clear"><input type="checkbox" name="right_approve_vacation" value="1" <? if($group->hasRight(Group::RIGHT_APPROVE_VACATION)) echo "checked";?>></td>
+   </tr>
+
 </table>
 
 

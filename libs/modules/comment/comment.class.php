@@ -153,7 +153,7 @@ class Comment {
         global $DB;
         $retval = 0;
         
-        $sql = "SELECT count(id) as count FROM comments WHERE module = '{$module}' AND objectid = {$objectid}";
+        $sql = "SELECT count(id) as count FROM comments WHERE module = '{$module}' AND objectid = {$objectid} AND state > 0";
         if($DB->num_rows($sql)){
             $r = $DB->select($sql);
             $r = $r[0];

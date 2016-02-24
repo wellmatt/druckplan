@@ -11,9 +11,9 @@ class Task{
 	private $id = 0;		// ID der Aufgabe
 	private $title;			// Name
 	private $content;		// Inhalt
-	private $due_date;		// Faelligkeitsdatum
+	private $due_date = 0;		// Faelligkeitsdatum
 	private $crt_date;		// Erstelldatum
-	private $prio;		    // Prioritaet
+	private $prio = 5;		    // Prioritaet
 	private $crt_usr;		// Ersteller
 	
 	function __construct($id){

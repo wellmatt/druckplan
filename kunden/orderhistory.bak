@@ -1,0 +1,85 @@
+<? // -------------------------------------------------------------------------------
+// Author:			iPactor GmbH
+// Updated:			11.03.2014
+// Copyright:		2014 by iPactor GmbH. All Rights Reserved.
+// Any unauthorized redistribution, reselling, modifying or reproduction of part
+// or all of the contents in any form is strictly prohibited.
+// ----------------------------------------------------------------------------------
+
+$search_string = $_REQUEST["search_string"];
+
+$all_orders = CollectiveInvoice::getAllCollectiveInvoiceForShop(CollectiveInvoice::ORDER_CRTDATE_DESC, $_BUSINESSCONTACT->getId(), $search_string);
+?>
+
+<div class="box2" style="min-height:180px;">
+<table style="width:100%">
+	<tr>
+		<td width="400px">
+    		<h1><?=$_LANG->get('Ihre Bestellungen');?></h1>
+    	</td>
+    	<td width="200px" align="right">
+    		<form action="index.php" method="post" name="order_search" id="order_search" >
+    			<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
+    			<input name="search_string" type="text" value="<?=$search_string?>" style="width:150px;"/>
+    			<img src="../images/icons/magnifier-left.png" alt="<?=$_LANG->get('Suchen');?>" class="pointer"
+    				 onClick="document.getElementById('order_search').submit()" />
+    		</form>
+    	</td>
+    </tr>
+</table>
+
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+    <colgroup>
+        <col width="120">
+        <col width="120">
+        <col >
+        <col width="220">
+        <col width="80">
+    </colgroup>
+    <? if(count($all_orders) > 0  && $all_orders != false) {?>
+    <tr>
+    	<td class="filerow_header"><?=$_LANG->get('Auftrag-Nr.');?></td>
+        <td class="filerow_header" align="center"><?=$_LANG->get('Bestelldatum');?></td>
+        <td class="filerow_header"><?=$_LANG->get('Positionen');?></td>
+        <td class="filerow_header"><?=$_LANG->get('Lieferadresse');?></td>
+        <td class="filerow_header" align="center"><?=$_LANG->get('Status');?></td>
+    </tr>
+    <?foreach ($all_orders AS $order){ ?>
+	    <tr class="filerow">
+	    	<td class="filerow">
+				<?=$order->getNumber();?>
+	        </td>
+	        <td class="filerow" align="center" style="vertical-align: top;">
+	        	<?if ($order->getCrtdate() > 0) echo date("d.m.Y",$order->getCrtdate()) // - H:i?>
+	        </td>
+	        <td class="filerow" style="vertical-align: top;">
+	        	<? // =$order->getTitle()?> 
+	        <? 	$allpos = $order->getPositions();
+	        	foreach ($allpos AS $pos){ ?>
+	        		<? // =$pos->getTitle(); ?> 
+	        		<?=$pos->getCommentForShop();?>
+	        		<?php 
+	        	    if ($pos->getFile_attach()>0){
+			                $tmp_attach = new Attachment($pos->getFile_attach());
+			                echo '<a href="../'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
+                                  <img src="../images/icons/disk--arrow.png" title="Angehängte Datei herunterladen"> '.$tmp_attach->getOrig_filename().'</a>';
+		            }
+	        		?>
+	        		<br />
+	        <?	} ?>
+	        </td>
+	        <td class="filerow" style="vertical-align: top;">
+	        	<?=$order->getDeliveryaddress()->getAddressAsLine()?>
+	        </td>
+	        <td class="filerow" align="center" style="vertical-align: top;">
+	        	<img src="../images/status/<?=$order->getStatusImage()?>" 
+	        		 title="<?=$order->getStatusDescription()?>" 
+	        		 alt="<?=$order->getStatusDescription()?>">
+	        </td>
+	    </tr>
+    <?	$x++; } 
+    } else {
+		echo '<tr><td class="filerow" colspan="5" align="center"><b>'.$_LANG->get('Keine Bestellungen gefunden').'</b></td></tr>';
+	    }?>
+</table>
+</div>

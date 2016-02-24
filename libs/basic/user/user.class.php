@@ -390,6 +390,9 @@ class User {
      
     function hasRightsByGroup($right)
     {
+        if ($this->isAdmin())
+            return true;
+
         $hasright = false;
         foreach ($this->groups as $g)
             if ($g->hasRight($right))
@@ -959,10 +962,5 @@ class User {
     {
         return $this->calendar_birthdays;
     }
-
-
-
-    
-    
 }
 ?>

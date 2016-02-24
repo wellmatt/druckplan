@@ -7,8 +7,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
-error_reporting(-1);
-ini_set('display_errors', 1);
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 
 chdir("../../../");
 require_once("config.php");
@@ -49,18 +49,26 @@ $users = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
 $_REQUEST["eventid"] = (int)$_REQUEST["eventid"];
 $event = new Event($_REQUEST["eventid"]);
 
+if (($_REQUEST["end"] - $_REQUEST["start"]) == 86400)
+{
+//     echo "monat geklickt!";
+    $starttime = mktime(8,0,0,date('m',$_REQUEST["start"]),date('d',$_REQUEST["start"]),date('Y',$_REQUEST["start"]));
+    $event->setBegin($starttime);
+    $endtime = mktime(9,0,0,date('m',$_REQUEST["start"]),date('d',$_REQUEST["start"]),date('Y',$_REQUEST["start"]));
+    $event->setEnd($endtime);
+}
+
 // Startzeit setzen
 if($event->getBegin() == 0)
-    $event->setBegin($_REQUEST["start"]-7200);
+    $event->setBegin($_REQUEST["start"]); // -3600
 if($event->getEnd() == 0)
-    $event->setEnd($_REQUEST["end"]-7200);
+    $event->setEnd($_REQUEST["end"]);
 
 if ($_REQUEST["delete"])
 {
     $savemsg = getSaveMessage($event->delete());
     $_REQUEST["exec"] = "";
     echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
-    break;
 }
 
 if($_REQUEST["subexec"] == "save")
@@ -87,6 +95,7 @@ if($_REQUEST["subexec"] == "save")
 	
 	$new_int_parts = array_diff($int_partitipants, $tmp_old_int_parts);
 	
+	
 	if (count($event->getParticipantsInt()) > 0 && 
 	    ($event->getBegin() != (int)strtotime($_REQUEST["event_from_date"]) || 
 	    $event->getEnd() != (int)strtotime($_REQUEST["event_to_date"]) ||
@@ -97,8 +106,16 @@ if($_REQUEST["subexec"] == "save")
 	    foreach ($event->getParticipantsInt() as $tmp_int)
 	    {
 	        $tmp_user = new User($tmp_int);
+// 	        echo "Notfy für Teilnehmer: ".$tmp_user->getNameAsLine()."</br>";
 // 	        if ($tmp_user->getId() != $_USER->getId())
-	           Notification::generateNotification($tmp_user, "Event", "ChangeEvent", $_USER->getNameAsLine2(), $event->getId());
+            $notes = Array();
+            if ($event->getBegin() != (int)strtotime($_REQUEST["event_from_date"]) || $event->getEnd() != (int)strtotime($_REQUEST["event_to_date"]))
+                $notes[] = "Zeit";
+            if ($event->getDesc() != trim(addslashes($_REQUEST["event_desc"])))
+                $notes[] = "Beschreibung";
+            if ($event->getAdress() != $_REQUEST["formatted_address"])
+                $notes[] = "Adresse";
+            Notification::generateNotification($tmp_user, "Event", "ChangeEvent", $_USER->getNameAsLine2(), $event->getId(), "", $notes);
 	    }
 	}
 	
@@ -458,7 +475,7 @@ function add_contactperson(element)
 					<td class="content_row_header"><?=$_LANG->get('&Ouml;ffentlich')?></td>
 					<td class="content_row_clear">
 						<input type="radio" name="event_public" value="0" <? if($event->getPublic() == 0) echo "checked"?>> <?=$_LANG->get('Nein')?>
-						<input type="radio" name="event_public" value="1" <? if($event->getPublic() == 1) echo "checked"?>> <?=$_LANG->get('Ja')?>
+						<input type="radio" name="event_public" value="1" <? if($event->getPublic() == 1 || $event->getId() == 0) echo "checked"?>> <?=$_LANG->get('Ja')?>
 					</td>
 				</tr>    
 				<tr>

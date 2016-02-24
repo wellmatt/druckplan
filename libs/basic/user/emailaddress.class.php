@@ -19,6 +19,7 @@ class Emailaddress {
 	private $userID;				// ID des zugehoerigen Benutzers
 	private $status = 1;			// 0 = geloescht, 1 = aktiv
 	private $address;				// E-Mail-Adresse
+	private $login;					// Login Name
 	private $type = 0;				// 0 = lesen, 1 = schreiben, 2 = beides
 	private $password;				// Passwort zur E-Mail-Adresse
 	private $host;					// Serveradresse 
@@ -44,6 +45,7 @@ class Emailaddress {
 				$this->status = $res[0]["status"];
 				$this->userID = $res[0]["user_id"];
 				$this->address = $res[0]["address"];
+				$this->login = $res[0]["login"];
 				$this->password = $res[0]["password"];
 				$this->type = $res[0]["type"];
 				$this->host = $res[0]["host"];
@@ -68,7 +70,8 @@ class Emailaddress {
 			$sql = "UPDATE user_emailaddress SET 
 					status = {$this->status}, 
 					user_id = {$this->userID}, 
-					address	= '{$this->address}',  
+					address	= '{$this->address}',
+					login	= '{$this->login}',
 					password = '{$this->password}', 
 					host = '{$this->host}', 
 					type = {$this->type}, 
@@ -80,15 +83,15 @@ class Emailaddress {
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO user_emailaddress
-					(status, user_id, address, password,
+					(status, user_id, address, login, password,
 					 host, type, port, signature, use_imap, use_ssl)
 					VALUES
-					({$this->status}, {$this->userID}, '{$this->address}', '{$this->password}', 
+					({$this->status}, {$this->userID}, '{$this->address}', '{$this->login}', '{$this->password}',
 					'{$this->host}', {$this->type}, {$this->port}, '{$this->signature}', {$this->useIMAP}, {$this->useSSL} )";
 			$res = $DB->no_result($sql);
 			
 			if($res){
-				$sql = "SELECT max(id) id FROM user_emailaddress WHERE address = '{$this->address}'";
+				$sql = "SELECT max(id) id FROM user_emailaddress WHERE address = '{$this->address}' AND login = '{$this->login}'";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
 				return true;
@@ -242,6 +245,22 @@ class Emailaddress {
 	
 	public function setUseIMAP($useIMAP) {
 		$this->useIMAP = $useIMAP;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLogin()
+	{
+		return $this->login;
+	}
+
+	/**
+	 * @param string $login
+	 */
+	public function setLogin($login)
+	{
+		$this->login = $login;
 	}
 }
 ?>

@@ -60,7 +60,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -182,7 +182,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -274,7 +274,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -316,7 +316,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -358,7 +358,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -400,7 +400,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -442,7 +442,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -485,7 +485,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -528,7 +528,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -575,7 +575,7 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -677,6 +677,10 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     $cps = ContactPerson::getAllContactPersons(null,ContactPerson::ORDER_ID," AND CONCAT(name1,' ',name2) LIKE '%{$_REQUEST["term"]}%' OR email LIKE '%{$_REQUEST["term"]}%' ");
     foreach ($cps as $cp){
         $retval[] = Array("label" => "Ansprechpartner: " . $cp->getNameAsLine() . " (". $cp->getEmail() . ")", "value" => $cp->getEmail());
+        if ($cp->getAlt_email() != "")
+            $retval[] = Array("label" => "Ansprechpartner (Alternativ): " . $cp->getNameAsLine() . " (". $cp->getAlt_email() . ")", "value" => $cp->getAlt_email());
+        if ($cp->getPriv_email() != "")
+            $retval[] = Array("label" => "Ansprechpartner (Privat): " . $cp->getNameAsLine() . " (". $cp->getPriv_email() . ")", "value" => $cp->getPriv_email());
     }
     $users = User::getAllUserFiltered(User::ORDER_ID," AND CONCAT(user_firstname,' ',user_lastname) LIKE '%{$_REQUEST["term"]}%' OR user_email LIKE '%{$_REQUEST["term"]}%' OR login LIKE '%{$_REQUEST["term"]}%' ");
     foreach ($users as $user){
@@ -695,10 +699,175 @@ if ($_REQUEST["exec"] == "getMailBody" && $_REQUEST["mailid"] && $_REQUEST["mail
     $priv_contacts = PrivateContact::getAllPrivateContacts(PrivateContact::ORDER_ID," AND (CONCAT(privatecontacts.name1,' ',privatecontacts.name2) LIKE '%{$_REQUEST["term"]}%' OR privatecontacts.email LIKE '%{$_REQUEST["term"]}%') ",$_USER->getId());
     foreach ($priv_contacts as $priv_contact){
         $retval[] = Array("label" => "Privater Kontakt: " . $priv_contact->getNameAsLine2() . " (". $priv_contact->getEmail() . ")", "value" => $priv_contact->getEmail());
+        if ($priv_contact->getAltEmail() != "" && $priv_contact->getAltEmail() != null)
+            $retval[] = Array("label" => "Privater Kontakt (Alternativ): " . $priv_contact->getNameAsLine2() . " (". $priv_contact->getAltEmail() . ")", "value" => $priv_contact->getAltEmail());
     }
     $retval = json_encode($retval);
     header("Content-Type: application/json");
     echo $retval;
+} else if ($_REQUEST["exec"] == "dropcopy" && $_REQUEST["mailid"] && $_REQUEST["mailbox"] && $_REQUEST["muid"] && $_REQUEST["dest_mailid"] && $_REQUEST["dest_mailbox"]) {
+
+    $mailadress = new Emailaddress($_REQUEST["dest_mailid"]);
+    $server = $mailadress->getHost();
+    $port = $mailadress->getPort();
+    $user = $mailadress->getLogin();
+    $password = $mailadress->getPassword();
+    try {
+        $client_dest = new Horde_Imap_Client_Socket(array(
+            'username' => $user,
+            'password' => $password,
+            'hostspec' => $server,
+            'port' => $port,
+            'secure' => 'ssl',
+            'cache' => array(
+                'backend' => new Horde_Imap_Client_Cache_Backend_Cache(array(
+                    'cacheob' => new Horde_Cache(new Horde_Cache_Storage_File(array(
+                        'dir' => '/tmp/hordecache'
+                    )))
+                ))
+            )
+        ));
+    } catch (Horde_Imap_Client_Exception $e) {
+        fatal_error('Could not connect to Server!');
+    }
+
+    $mailadress = new Emailaddress($_REQUEST["mailid"]);
+
+    $server = $mailadress->getHost();
+    $port = $mailadress->getPort();
+    $user = $mailadress->getLogin();
+    $password = $mailadress->getPassword();
+
+    try {
+        $client = new Horde_Imap_Client_Socket(array(
+            'username' => $user,
+            'password' => $password,
+            'hostspec' => $server,
+            'port' => $port,
+            'secure' => 'ssl',
+            'cache' => array(
+                'backend' => new Horde_Imap_Client_Cache_Backend_Cache(array(
+                    'cacheob' => new Horde_Cache(new Horde_Cache_Storage_File(array(
+                        'dir' => '/tmp/hordecache'
+                    )))
+                ))
+            )
+        ));
+
+        $query = new Horde_Imap_Client_Fetch_Query();
+        $query->structure();
+        $query->envelope();
+
+        $uid = new Horde_Imap_Client_Ids($_REQUEST["muid"]);
+
+        $list = $client->fetch($_REQUEST["mailbox"], $query, array(
+            'ids' => $uid
+        ));
+//        $list->first()->getRawData();
+
+        $mail = new Horde_Mime_Mail();
+        $envelope = $list->first()->getRawData()[9]->serialize();
+
+//        $mail_header = new Horde_Mime_Headers_ContentParam_ContentType('Content-Type','multipart/mixed');
+//        $mail_header->unserialize($envelope);
+//        $mail->addHeaderOb($mail_header);
+
+        $structure = $list->first()->getStructure();
+        $boundary = $structure->getAllContentTypeParameters()["boundary"];
+        $contenttype = $structure->getType();
+        $boundary_orig = $structure->getContentTypeParameter('boundary');
+
+        $parts = $structure->getParts();
+//        prettyPrint($structure);die();
+
+        $basepart = new Horde_Mime_Part();
+        $basepart->setType($contenttype);
+        foreach ($parts as $part) {
+            $id = $part->getMimeId();
+            $query2 = new Horde_Imap_Client_Fetch_Query();
+            $query2->bodyPart($id, array(
+                'decode' => true,
+                'peek' => false
+            ));
+
+            $list2 = $client->fetch($_REQUEST["mailbox"], $query2, array(
+                'ids' => $uid
+            ));
+
+            $message2 = $list2->first();
+            $content = $message2->getBodyPart($id);
+            if (!$message2->getBodyPartDecode($id)) {
+                $part->setContents($content);
+            }
+//            prettyPrint($part);die();
+            $basepart->addPart($part);
+        }
+        $basepart->isBasePart(true);
+        $basepart->setHeaderCharset('UTF-8');
+        $basepart->setMimeId("1");
+        $basepart->addMimeHeaders();
+        $basepart->buildMimeIds($basepart->getMimeId());
+        $basepart->toString();
+        $boundary_base = $basepart->getContentTypeParameter('boundary');
+
+//        $basepart = $structure;
+
+//        prettyPrint($basepart);die();
+
+        $pos_headers = Array('bcc','cc','date','from','in-reply-to','message-id','reply-to','sender','subject','to');
+        foreach ($pos_headers as $pos_header) {
+            if ($list->first()->getEnvelope()->__isset($pos_header))
+            {
+                switch ($pos_header)
+                {
+                    case 'date':
+                        $mail->addHeader($pos_header,date('r',$list->first()->getEnvelope()->__get('date')->__toString()));
+                        break;
+                    case 'from':
+                        $mail->addHeader($pos_header,$list->first()->getEnvelope()->__get('from')->bare_addresses[0]);
+                        break;
+                    case 'to':
+                        $mail->addHeader($pos_header,$list->first()->getEnvelope()->__get('to')->bare_addresses[0]);
+                        break;
+                    default:
+                        $mail->addHeader($pos_header,$list->first()->getEnvelope()->__get($pos_header));
+                        break;
+                }
+            }
+        }
+        $mail->addHeader('MIME-Version','1.0');
+
+        $mail_header = new Horde_Mime_Headers_ContentParam_ContentType('Content-Type','multipart/mixed');
+        $mail_header->unserialize(
+            serialize(
+                array(
+                    '_params'=> Array(
+                        'boundary' => $boundary_base,
+                    ),
+                    '_values'=> Array(
+                        $contenttype,
+                    )
+                )
+            )
+        );
+        $mail->addHeaderOb($mail_header);
+
+        $mail->addHeaderOb(Horde_Mime_Headers_MessageId::create());
+        $mail->addHeaderOb(Horde_Mime_Headers_UserAgent::create());
+
+
+        $mail->setBasePart($basepart);
+//        prettyPrint($mail->getRaw(false));die();
+
+//        prettyPrint($list->first()->getEnvelope());
+//        prettyPrint();
+        $message_array = Array( Array("data"=>Array(Array("t"=>"text","v"=>$mail->getRaw(false)))) );
+        $client_dest->append($_REQUEST["dest_mailbox"], $message_array, Array("create"=>true));
+
+
+    } catch (Horde_Imap_Client_Exception $e) {
+        fatal_error('Could not connect to Server!');
+    }
 }
 if ($_REQUEST["ajax_action"] == "search_ticket"){
     $retval = Ticket::getAllTicketsFlatAjax(" WHERE tickets.state != 1 AND tickets.state != 3 AND (tickets.title LIKE '%{$_REQUEST['term']}%' OR tickets.number LIKE '%{$_REQUEST['term']}%' OR businesscontact.name1 LIKE '%{$_REQUEST['term']}%' OR businesscontact.matchcode LIKE '%{$_REQUEST['term']}%') ");

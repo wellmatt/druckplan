@@ -41,7 +41,7 @@ if($_REQUEST["exec"] == "new"){
         
         $server = $mailadress->getHost();
         $port = $mailadress->getPort();
-        $user = $mailadress->getAddress();
+        $user = $mailadress->getLogin();
         $password = $mailadress->getPassword();
         
         try {
@@ -86,34 +86,63 @@ if($_REQUEST["exec"] == "new"){
             $orig_mail_to = $list->first()->getEnvelope()->to->__toString();
         
             $part = $list->first()->getStructure();
-        
-            $id = $part->findBody('html');
-            $body = $part->getPart($id);
-        
-            $query2 = new Horde_Imap_Client_Fetch_Query();
-            $query2->bodyPart($id, array(
-                'decode' => true,
-                'peek' => false
-            ));
-        
-            $list2 = $client->fetch($_REQUEST["mailbox"], $query2, array(
-                'ids' => $uid
-            ));
-        
-            $message2 = $list2->first();
-            $content = $message2->getBodyPart($id);
-            if (!$message2->getBodyPartDecode($id)) {
-                $body->setContents($content);
-                $content = $body->getContents();
+
+            $map = $part->ContentTypeMap();
+            $mail_attachments = array();
+            foreach ( $map as $key => $value ) {
+                $p = $part->getPart( $key );
+                $disposition = $p->getDisposition();
+                if ( ! in_array( $disposition, array( 'attachment', 'inline' ) ) ) {
+                    continue;
+                }
+                $name = $p->getName();
+                $type = $p->getType();
+                if ( 'inline' === $disposition && 'text/plain' === $type ) {
+                    continue;
+                }
+                $new_attachment = array(
+                    'disposition' => $disposition,
+                    'type' => $p->getPrimaryType(),
+                    'mimetype' => $type,
+                    'mime_id' => $key,
+                    'name' => $name,
+                );
+                $mail_attachments[] = $new_attachment;
             }
-        
-            $content = strip_tags( $content, '<img><p><br><i><b><u><em><strong><strike><font><span><div><style><a>' );
-            $content = trim( $content );
-            $charset = $body->getCharset();
-            if ( 'iso-8859-1' === $charset ) {
-                $content = utf8_encode( $content );
-            } elseif ( function_exists( 'iconv' ) ) {
-                $content = iconv( $charset, 'UTF-8', $content );
+
+            $content = "";
+            $id = $part->findBody('html');
+            if ($id == NULL)
+                $id = $part->findBody();
+            if ($id != NULL)
+            {
+                $body = $part->getPart($id);
+
+                $query2 = new Horde_Imap_Client_Fetch_Query();
+                $query2->bodyPart($id, array(
+                    'decode' => true,
+                    'peek' => false
+                ));
+
+                $list2 = $client->fetch($_REQUEST["mailbox"], $query2, array(
+                    'ids' => $uid
+                ));
+
+                $message2 = $list2->first();
+                $content = $message2->getBodyPart($id);
+                if (!$message2->getBodyPartDecode($id)) {
+                    $body->setContents($content);
+                    $content = $body->getContents();
+                }
+
+                $content = strip_tags( $content, '<img><p><br><i><b><u><em><strong><strike><font><span><div><style><a>' );
+                $content = trim( $content );
+                $charset = $body->getCharset();
+                if ( 'iso-8859-1' === $charset ) {
+                    $content = utf8_encode( $content );
+                } elseif ( function_exists( 'iconv' ) ) {
+                    $content = iconv( $charset, 'UTF-8', $content );
+                }
             }
         
             $signatur = $_USER->getSignature();
@@ -186,6 +215,15 @@ if($_REQUEST["exec"] == "edit"){
         
         $ticket->setTitle($_REQUEST["tkt_title"]);
         if ($_REQUEST["tkt_due"] != "" && $_REQUEST["tkt_due"] != 0){
+            if ($ticket->getDuedate() != strtotime($_REQUEST["tkt_due"]))
+            {
+                $myjob = PlanningJob::getJobForTicket($ticket->getId());
+                if ($myjob->getId()>0)
+                {
+                    $myjob->setStart(strtotime($_REQUEST["tkt_due"]));
+                    $myjob->save();
+                }
+            }
             $ticket->setDuedate(strtotime($_REQUEST["tkt_due"]));
         } else {
             $ticket->setDuedate(0);
@@ -372,6 +410,127 @@ if($_REQUEST["exec"] == "edit"){
                                 }
                             }
                         }
+                    }
+                }
+
+                if ($save_ok &&
+                    $_REQUEST["mail_fetch_attach_mailid"] &&
+                    $_REQUEST["mail_fetch_attach_muid"] &&
+                    $_REQUEST["mail_fetch_attach_mailbox"]) {
+                    $mailadress = new Emailaddress($_REQUEST["mail_fetch_attach_mailid"]);
+
+                    $server = $mailadress->getHost();
+                    $port = $mailadress->getPort();
+                    $user = $mailadress->getLogin();
+                    $password = $mailadress->getPassword();
+
+                    try {
+                        $client = new Horde_Imap_Client_Socket(array(
+                            'username' => $user,
+                            'password' => $password,
+                            'hostspec' => $server,
+                            'port' => $port,
+                            'secure' => 'ssl',
+                            'cache' => array(
+                                'backend' => new Horde_Imap_Client_Cache_Backend_Cache(array(
+                                    'cacheob' => new Horde_Cache(new Horde_Cache_Storage_File(array(
+                                        'dir' => '/tmp/hordecache'
+                                    )))
+                                ))
+                            )
+                        ));
+
+                        $query = new Horde_Imap_Client_Fetch_Query();
+                        $query->structure();
+                        $query->envelope();
+
+                        $uid = new Horde_Imap_Client_Ids($_REQUEST["mail_fetch_attach_muid"]);
+
+                        $list = $client->fetch($_REQUEST["mail_fetch_attach_mailbox"], $query, array(
+                            'ids' => $uid
+                        ));
+
+                        $orig_mail_from = $list->first()->getEnvelope()->from->__toString();
+                        $orig_mail_subject = $list->first()->getEnvelope()->subject;
+                        $orig_mail_date = date("d.m.Y H:i", $list->first()->getEnvelope()->date->__toString());
+                        $orig_mail_to = $list->first()->getEnvelope()->to->__toString();
+
+                        $part = $list->first()->getStructure();
+
+                        $map = $part->ContentTypeMap();
+                        $attachments = array();
+                        foreach ($map as $key => $value) {
+                            $p = $part->getPart($key);
+                            $disposition = $p->getDisposition();
+                            if (!in_array($disposition, array('attachment', 'inline'))) {
+                                continue;
+                            }
+                            $name = $p->getName();
+                            $type = $p->getType();
+                            if ('inline' === $disposition && 'text/plain' === $type) {
+                                continue;
+                            }
+                            $new_attachment = array(
+                                'disposition' => $disposition,
+                                'type' => $p->getPrimaryType(),
+                                'mimetype' => $type,
+                                'mime_id' => $key,
+                                'name' => $name,
+                            );
+                            $attachments[] = $new_attachment;
+                        }
+
+                        if (count($attachments)>0){
+                            foreach ($attachments as $attachment) {
+
+                                $uid = new Horde_Imap_Client_Ids( $_REQUEST["mail_fetch_attach_muid"] );
+                                $mime_id = $attachment["mime_id"];
+
+                                $query = new Horde_Imap_Client_Fetch_Query();
+                                $query->bodyPart( $mime_id, array(
+                                        'decode' => true,
+                                        'peek' => true,
+                                    )
+                                );
+                                $list = $client->fetch( $_REQUEST["mail_fetch_attach_mailbox"], $query, array(
+                                        'ids' => $uid,
+                                    )
+                                );
+                                $message = $list->first();
+
+                                $image_data = $message->getBodyPart( $mime_id );
+                                $image_data_decoded = base64_decode( $image_data );
+
+                                $name = $attachment["name"];
+
+                                $destination = __DIR__."/../../../docs/attachments/";
+
+                                $filename = md5($attachment["name"].time());
+                                $new_filename = $destination.$filename;
+
+                                if(!file_exists($new_filename)) {
+                                    $fh = fopen($new_filename, "w");
+                                    fwrite($fh, $image_data_decoded);
+                                    fclose($fh);
+                                }
+
+                                $tmp_attachment = new Attachment();
+                                $tmp_attachment->setCrtdate(time());
+                                $tmp_attachment->setCrtuser($_USER);
+                                $tmp_attachment->setModule("Comment");
+                                $tmp_attachment->setObjectid($ticketcomment->getId());
+                                $tmp_attachment->setFilename($filename);
+                                $tmp_attachment->setOrig_filename($attachment["name"]);
+                                $save_ok = $tmp_attachment->save();
+                                $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
+                                if ($save_ok === false){
+                                    break;
+                                }
+                            }
+                        }
+
+                    } catch (Horde_Imap_Client_Exception $e) {
+                        fatal_error('Could not connect to Server!');
                     }
                 }
             }
@@ -880,8 +1039,20 @@ function callBoxFancyAbo(my_href) {
   <input type="hidden" name="tktid" value="<?=$ticket->getId()?>">
   <input type="hidden" name="returnhome" value="<?=$_REQUEST["returnhome"]?>">
   <input type="hidden" name="asso_class" value="<?php echo $_REQUEST["asso_class"];?>"> 
-  <input type="hidden" name="asso_object" value="<?php echo $_REQUEST["asso_object"];?>"> 
-  
+  <input type="hidden" name="asso_object" value="<?php echo $_REQUEST["asso_object"];?>">
+
+  <?php
+  if ($_REQUEST["frommail"] == true)
+  {
+      if (count($mail_attachments)>0)
+      {
+          echo '<input type="hidden" name="mail_fetch_attach_mailid" value="'.$_REQUEST["mailid"].'">';
+          echo '<input type="hidden" name="mail_fetch_attach_muid" value="'.$_REQUEST["muid"].'">';
+          echo '<input type="hidden" name="mail_fetch_attach_mailbox" value="'.$_REQUEST["mailbox"].'">';
+      }
+  }
+  ?>
+
   <div class="ticket_header">
   	<table width="100%" border="1">
       <tr>
@@ -1262,7 +1433,19 @@ function callBoxFancyAbo(my_href) {
                           <span>Hinzufügen...</span>
 		                  <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
 		              </span>
-                      <div id="files" class="files"></div>
+                      <div id="files" class="files">
+                          <?php
+                          if ($_REQUEST["frommail"] == true)
+                          {
+                              if (count($mail_attachments)>0)
+                              {
+                                  foreach ($mail_attachments as $mail_attachment) {
+                                      echo "<p>".$mail_attachment["name"]."</p>";
+                                  }
+                              }
+                          }
+                          ?>
+                      </div>
                       <div id="progress" class="progress">
                           <div class="progress-bar progress-bar-success"></div>
                       </div>

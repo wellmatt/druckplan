@@ -112,6 +112,7 @@ if ($_REQUEST["send_shoppingbasket"]){
 	}
 	
 	$save_msg = $shopping_basket->send();
+// 	var_dump($save_msg);
 	
 	// nur wenn erfolgreich gespeichert wurde darf geleert werden
 	if ($save_msg == true){
@@ -152,6 +153,7 @@ if ($_REQUEST["send_shoppingbasket"]){
 		$nachricht->setSubject("Bestellbestätigung");
 		$nachricht->setText($text);
 		$ret = $nachricht->send();
+// 		var_dump($ret);
 		
 		$shopping_basket->clear();
 		$shopping_basket_entrys = Array ();
@@ -306,8 +308,14 @@ function BasketSubmit()
 					<td class="filerow" align="right"><?=printPrice($entry->getPrice())?> &euro; </td>
 					<td class="filerow" align="right">
 						<?	if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-								$ges_price = $entry->getAmount()*$entry->getPrice();
-								$overall_price += $ges_price;   
+						        if ($artic->getOrderid()>0)
+						        {
+    								$ges_price = $entry->getPrice();
+    								$overall_price += $ges_price;
+						        } else {
+    								$ges_price = $entry->getAmount()*$entry->getPrice();
+    								$overall_price += $ges_price;
+						        }   
 							} else if ($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
 								$ges_price = $entry->getPrice();
 								if ($ges_price >0.00){

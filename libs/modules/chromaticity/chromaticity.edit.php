@@ -19,6 +19,7 @@ if($_REQUEST["subexec"] == "save")
     $chr->setColorsBack((int)$_REQUEST["chr_color_back"]);
     $chr->setReversePrinting((int)$_REQUEST["chr_reverse"]);
     $chr->setMarkup((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["chr_markup"]))));
+	$chr->setPricekg(tofloat($_REQUEST["pricekg"]));
     $savemsg = getSaveMessage($chr->save());
 }
 ?>
@@ -73,6 +74,10 @@ if($_REQUEST["subexec"] == "save")
 	        <td class="content_row_header"><?=$_LANG->get('Aufschlag auf Maschinenpreis')?></td>
 	        <td class="content_row_clear"><input name="chr_markup" style="width:60px" class="text" value="<?=printPrice($chr->getMarkup())?>"> %</td>
 	    </tr>
+		<tr>
+			<td class="content_row_header"><?=$_LANG->get('Preis/kg')?></td>
+			<td class="content_row_clear"><input name="pricekg" style="width:60px" class="text" value="<?=printPrice($chr->getPricekg())?>"> €</td>
+		</tr>
 
 	</table>
 </div>

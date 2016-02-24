@@ -37,6 +37,28 @@ if($_REQUEST["subexec"] == "save")
     $client->setBankName3(trim(addslashes($_REQUEST["client_bank_name3"])));
     $client->setBankIban3(trim(addslashes($_REQUEST["client_bank_iban3"])));
     $client->setBankBic3(trim(addslashes($_REQUEST["client_bank_bic3"])));
+
+	$client->setNumberFormatOrder($_REQUEST["number_format_order"]);
+	$client->setNumberCounterOrder($_REQUEST["number_counter_order"]);
+	$client->setNumberFormatColinv($_REQUEST["number_format_colinv"]);
+	$client->setNumberCounterColinv($_REQUEST["number_counter_colinv"]);
+	$client->setNumberFormatOffer($_REQUEST["number_format_offer"]);
+	$client->setNumberCounterOffer($_REQUEST["number_counter_offer"]);
+	$client->setNumberFormatOfferconfirm($_REQUEST["number_format_offerconfirm"]);
+	$client->setNumberCounterOfferconfirm($_REQUEST["number_counter_offerconfirm"]);
+	$client->setNumberFormatDelivery($_REQUEST["number_format_delivery"]);
+	$client->setNumberCounterDelivery($_REQUEST["number_counter_delivery"]);
+	$client->setNumberFormatPaperOrder($_REQUEST["number_format_paper_order"]);
+	$client->setNumberCounterPaperOrder($_REQUEST["number_counter_paper_order"]);
+	$client->setNumberFormatInvoice($_REQUEST["number_format_invoice"]);
+	$client->setNumberCounterInvoice($_REQUEST["number_counter_invoice"]);
+	$client->setNumberFormatRevert($_REQUEST["number_format_revert"]);
+	$client->setNumberCounterRevert($_REQUEST["number_counter_revert"]);
+	$client->setNumberFormatWarning($_REQUEST["number_format_warning"]);
+	$client->setNumberCounterWarning($_REQUEST["number_counter_warning"]);
+	$client->setNumberFormatWork($_REQUEST["number_format_work"]);
+	$client->setNumberCounterWork($_REQUEST["number_counter_work"]);
+
     $savemsg = getSaveMessage($client->save());
     $savemsg .= $DB->getLastError();
 }
@@ -323,5 +345,117 @@ if($_REQUEST["subexec"] == "save")
 	</td>
 </tr>
 </table>
+</div>
+</br>
+<div class="box2">
+	<h3>Nummernkreise</h3>
+	<table width="100%">
+		<tr>
+			<td valign="top">
+				<table width="490px" border="0" cellpadding="0" cellspacing="0">
+					<colgroup>
+						<col width="180">
+						<col>
+						<col>
+					</colgroup>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Betrifft');?></td>
+						<td class="content_row_header"><?=$_LANG->get('Format');?></td>
+						<td class="content_row_header"><?=$_LANG->get('Counter');?></td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Kalkulation');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_order" style="width: 300px" class="text" value="<?=$client->getNumberFormatOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_order" style="width: 300px" class="text" value="<?=$client->getNumberCounterOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Vorgang');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_colinv" style="width: 300px" class="text" value="<?=$client->getNumberFormatColinv()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_colinv" style="width: 300px" class="text" value="<?=$client->getNumberCounterColinv()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Angebot');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_offer" style="width: 300px" class="text" value="<?=$client->getNumberFormatOffer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_offer" style="width: 300px" class="text" value="<?=$client->getNumberCounterOffer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('AB');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_offerconfirm" style="width: 300px" class="text" value="<?=$client->getNumberFormatOfferconfirm()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_offerconfirm" style="width: 300px" class="text" value="<?=$client->getNumberCounterOfferconfirm()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Liefers.');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_delivery" style="width: 300px" class="text" value="<?=$client->getNumberFormatDelivery()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_delivery" style="width: 300px" class="text" value="<?=$client->getNumberCounterDelivery()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Papier Best.');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_paper_order" style="width: 300px" class="text" value="<?=$client->getNumberFormatPaperOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_paper_order" style="width: 300px" class="text" value="<?=$client->getNumberCounterPaperOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Rechnung');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_invoice" style="width: 300px" class="text" value="<?=$client->getNumberFormatInvoice()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_invoice" style="width: 300px" class="text" value="<?=$client->getNumberCounterInvoice()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Gutschrift');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_revert" style="width: 300px" class="text" value="<?=$client->getNumberFormatRevert()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_revert" style="width: 300px" class="text" value="<?=$client->getNumberCounterRevert()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Mahnung');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_warning" style="width: 300px" class="text" value="<?=$client->getNumberFormatWarning()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_warning" style="width: 300px" class="text" value="<?=$client->getNumberCounterWarning()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Tasche');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_work" style="width: 300px" class="text" value="<?=$client->getNumberFormatWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </div>
 </form>

@@ -10,7 +10,8 @@
 require_once 'thirdparty/smarty/Smarty.class.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
 
-$orderpos = $order->getPositions();
+// $orderpos = $order->getPositions();
+$orderpos = $order->getPositions(false,true);
 
 //Gesamtpreis
 $sum = 0;

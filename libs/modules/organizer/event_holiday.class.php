@@ -61,6 +61,15 @@ class HolidayEvent {
             return $retval;
     }
     
+    static function removeAll()
+    {
+        global $DB;
+        global $_USER;
+        
+        $sql = "DELETE FROM events_holidays";
+        $DB->no_result($sql);
+    }
+    
     static function getAll()
     {
         global $DB;
@@ -68,7 +77,6 @@ class HolidayEvent {
         $retval = Array();
     
         $sql = "SELECT id FROM events_holidays 
-                WHERE begin > UNIX_TIMESTAMP() OR end > UNIX_TIMESTAMP() 
                 ORDER BY begin ASC
                 ";
         if ($DB->num_rows($sql))

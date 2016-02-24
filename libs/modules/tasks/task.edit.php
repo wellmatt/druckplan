@@ -68,8 +68,7 @@ $(function() {
     </div>
 </div>
 
-<form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="task_edit" id="task_edit"   
-		onSubmit="return checkForm(new Array(this.task_title, this.task_content))">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="task_edit" id="task_edit">
 	<div class="box1">
 		<input type="hidden" name="exec" value="edit"> 
 		<input type="hidden" name="subexec" value="save"> 
@@ -94,14 +93,14 @@ $(function() {
 				</td>
 			</tr>
 			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Fälligkeit')?> *</td>
+				<td class="content_row_header" valign="top"><?=$_LANG->get('Fälligkeit')?></td>
 				<td class="content_row_clear" valign="top">
                     <input name="task_due_date" id="task_due_date" style="width:100px"
                         value="<? if($task->getDue_date() > 0) echo date('d.m.Y', $task->getDue_date())?>">
 				</td>
 			</tr>
 			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Priorität')?> *</td>
+				<td class="content_row_header" valign="top"><?=$_LANG->get('Priorität')?></td>
 				<td class="content_row_clear" valign="top">
                    <select name="task_prio" style="width:330px" class="text">
                        <option value="0"><?=$_LANG->get('keine Priorität')?></option>

@@ -31,6 +31,21 @@ if ($_REQUEST["exec"] == "save"){
     $privatecontact->setMobil(trim(addslashes($_REQUEST["mobil"])));
     $privatecontact->setFax(trim(addslashes($_REQUEST["fax"])));
     $privatecontact->setWeb(trim(addslashes($_REQUEST["web"])));
+
+	$privatecontact->setAltTitle(trim(addslashes($_REQUEST["alt_title"])));
+	$privatecontact->setAltName1(trim(addslashes($_REQUEST["alt_name1"])));
+	$privatecontact->setAltName2(trim(addslashes($_REQUEST["alt_name2"])));
+	$privatecontact->setAltAddress1(trim(addslashes($_REQUEST["alt_address1"])));
+	$privatecontact->setAltAddress2(trim(addslashes($_REQUEST["alt_address2"])));
+	$privatecontact->setAltZip(trim(addslashes($_REQUEST["alt_zip"])));
+	$privatecontact->setAltCity(trim(addslashes($_REQUEST["alt_city"])));
+	$privatecontact->setAltCountry(new Country (trim(addslashes($_REQUEST["alt_country"]))));
+	$privatecontact->setAltEmail(trim(addslashes($_REQUEST["alt_email"])));
+	$privatecontact->setAltPhone(trim(addslashes($_REQUEST["alt_phone"])));
+	$privatecontact->setAltMobil(trim(addslashes($_REQUEST["alt_mobil"])));
+	$privatecontact->setAltFax(trim(addslashes($_REQUEST["alt_fax"])));
+	$privatecontact->setAltWeb(trim(addslashes($_REQUEST["alt_web"])));
+
     $privatecontact->setComment(trim(addslashes($_REQUEST["comment"])));
     $tmp_busi = new BusinessContact((int)$_REQUEST["customer"]);
     $privatecontact->setBusinessContact($tmp_busi);
@@ -123,7 +138,8 @@ $(function() {
     <b>Kontaktdaten</b>
 	<table>
 		<tr>
-		<td width="400">	
+		<td width="400">
+			Standard:
 			<table width="500">
 				<colgroup>
 					<col width="180px">
@@ -275,8 +291,135 @@ $(function() {
 				<tr>
 					<td class="content_row_header" valign="top"><?=$_LANG->get('Kommentar');?></td>
 					<td class="content_row_clear" id="notify_mail_adr">
-					       <textarea name="comment" style="width: 250px;height: 150px;" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						   <?=$privatecontact->getComment()?></textarea></br>
+					       <textarea name="comment" style="width: 250px;height: 150px;" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$privatecontact->getComment()?></textarea></br>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td width="400" valign="top">
+			Alternativ:
+			<table width="500">
+				<colgroup>
+					<col width="180px">
+					<col width="300px" align="right">
+				</colgroup>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Anrede');?></td>
+					<td class="content_row_clear">
+						<select name="alt_title" style="width: 100px"
+								class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							<option value="">Bitte w&auml;hlen</option>
+							<?php $titles = array("Herr", "Frau", "Dr.", "Prof.");
+							foreach ($titles as $title)
+							{
+								echo '<option value="'.$title.'"';
+								if($privatecontact->getAltTitle() == $title) echo ' selected ="selected"';
+								echo '>'.$title.'</option>';
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Nachname');?></td>
+					<td class="content_row_clear"><input name="alt_name1" style="width: 300px"
+														 class="text" value="<?=$privatecontact->getAltName1()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Vorname');?></td>
+					<td class="content_row_clear"><input name="alt_name2"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltName2()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Adressfeld 1');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_address1"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltAddress1()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Adressfeld 2');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_address2"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltAddress2()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Postleitzahl');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_zip"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltZip()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Stadt');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_city"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltCity()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Land')?></td>
+					<td class="content_row_clear"><select name="alt_country" style="width: 300px"
+														  class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							<? foreach($countries as $c){ ?>
+								<option value="<?=$c->getId()?>"
+									<?if($privatecontact->getAltCountry()->getId() == $c->getId()) echo "selected";?>>
+									<?=$c->getName()?>
+								</option>
+							<?}
+
+							?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Telefon');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_phone"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltPhone()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Fax');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_fax"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltFax()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Mobil');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_mobil"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltMobil()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Email');?>
+					</td>
+					<td class="content_row_clear"><input name="alt_email"
+														 style="width: 300px" class="text" value="<?=$privatecontact->getAltEmail()?>"
+														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Web');?>
+					</td>
+					<td class="content_row_clear" ><input name="alt_web"
+														  style="width: 300px" class="text" value="<?=$privatecontact->getAltWeb()?>"
+														  onfocus="markfield(this,0)" onblur="markfield(this,1)">
 					</td>
 				</tr>
 			</table>

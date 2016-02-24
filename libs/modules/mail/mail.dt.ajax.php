@@ -99,7 +99,7 @@
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     $mailbox = $_REQUEST["mailbox"];
@@ -135,10 +135,24 @@
         if ($sSearch != "")
         {
             $searchquery = new Horde_Imap_Client_Search_Query();
-            $searchquery->text($sSearch,false);
+            
+            $searchquery_text = new Horde_Imap_Client_Search_Query();
+            $searchquery_text->text($sSearch,false);
+
+            $searchquery_from = new Horde_Imap_Client_Search_Query();
+            $searchquery_from->headerText("from",$sSearch);
+
+            $searchquery_to = new Horde_Imap_Client_Search_Query();
+            $searchquery_to->headerText("to",$sSearch);
+
+            $searchquery_subject = new Horde_Imap_Client_Search_Query();
+            $searchquery_subject->headerText("subject",$sSearch);
+            
+            $searchquery->orSearch(Array($searchquery_text,$searchquery_from,$searchquery_to,$searchquery_subject));
         }
         
         $results = $client->search($mailbox, $searchquery, array('sort' => array($sSortDir, $sSort)));
+//         print_r($results);
          
         // $results['match'] contains a Horde_Imap_Client_Ids object, containing the
         // list of UIDs in the INBOX.
@@ -156,6 +170,7 @@
         $query = new Horde_Imap_Client_Fetch_Query();
         $query->flags();
         $query->envelope();
+        $query->structure();
         
         $i_start = (int)$iDisplayStart;
         $i_to = $i_start + (int)$iDisplayLength;
@@ -179,33 +194,71 @@
             $row = Array();
             
             $options = "";
+
+            $options = '
+            <div class="btn-group" role="group">
+                <button type="button" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');" class="btn btn-xs btn-default">Antworten</button>
+                <button type="button" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');" class="btn btn-xs btn-default">Weiterleiten</button>
+                <button type="button" onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');" class="btn btn-xs btn-danger">Löschen</button>
+                <div class="btn-group dropdown" style="margin-left: 0px;">
+                      <button type="button" class="btn btn-xs dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+                        Mehr <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="#" onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();">Verschieben</a>
+                                <a href="#" onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">als ungelesen markieren</a>
+                                <a href="#" onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">als gelesen markieren</a>
+                                <a href="#" onclick="window.open(\'libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');">Drucken</a>
+                                <a href="#" onclick="parent.location.href=\'index.php?page=libs/modules/tickets/ticket.php&exec=new&frommail=true&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\';">Ticket erstellen</a>
+                                <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.tocomment.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');">Ticket Kommentar erstellen</a>
+                            </li>
+                      </ul>
+                </div>
+            </div>
+            ';
+
+
             // Antworten
-            $options .= '<img src="images/icons/mail--pencil.png" title="antworten" class="pointer" 
-                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+//            $options .= '<img src="images/icons/mail--pencil.png" title="antworten" class="pointer"
+//                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
             // Weiterleiten
-            $options .= '<img src="images/icons/mail--arrow.png" title="weiterleiten" class="pointer" 
-                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+//            $options .= '<img src="images/icons/mail--arrow.png" title="weiterleiten" class="pointer"
+//                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
             // Verschieben
-            $options .= '<img src="images/icons/mails.png" title="verschieben" class="pointer" 
-                        onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();"/>&nbsp;';
+//            $options .= '<img src="images/icons/mails.png" title="verschieben" class="pointer"
+//                        onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();"/>&nbsp;';
             // als ungelesen
-            $options .= '<img src="images/icons/mail.png" title="als ungelesen markieren" class="pointer" 
-                        onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
+//            $options .= '<img src="images/icons/mail.png" title="als ungelesen markieren" class="pointer"
+//                        onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
             // als gelesen
-            $options .= '<img src="images/icons/mail-open.png" title="als gelesen markieren" class="pointer" 
-                        onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
+//            $options .= '<img src="images/icons/mail-open.png" title="als gelesen markieren" class="pointer"
+//                        onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
             // drucken
-            $options .= '<a href="libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'" target="_blank">
-                        <img src="images/icons/printer.png" title="Mail drucken" class="pointer"/></a>&nbsp;';
+//            $options .= '<a href="libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'" target="_blank">
+//                        <img src="images/icons/printer.png" title="Mail drucken" class="pointer"/></a>&nbsp;';
             // ticket erstellen
-            $options .= '<img src="images/icons/ticket--plus.png" title="Ticket erstellen" class="pointer" 
-                        onclick="parent.location.href=\'index.php?page=libs/modules/tickets/ticket.php&exec=new&frommail=true&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\';"/>&nbsp;';
+//            $options .= '<img src="images/icons/ticket--plus.png" title="Ticket erstellen" class="pointer"
+//                        onclick="parent.location.href=\'index.php?page=libs/modules/tickets/ticket.php&exec=new&frommail=true&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\';"/>&nbsp;';
             // ticket kommentar
-            $options .= '<img src="images/icons/ticket--arrow.png" title="als Ticket-Kommentar speichern" class="pointer" 
-                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.tocomment.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
+//            $options .= '<img src="images/icons/ticket--arrow.png" title="als Ticket-Kommentar speichern" class="pointer"
+//                        onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.tocomment.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>&nbsp;';
             // löschen
-            $options .= '<img src="images/icons/mail--minus.png" title="löschen" class="pointer"
-                        onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
+//            $options .= '<img src="images/icons/mail--minus.png" title="löschen" class="pointer"
+//                        onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');"/>&nbsp;';
+            
+
+            $part = $list->first()->getStructure();
+            $map = $part->ContentTypeMap();
+            $attachments = Array();
+            foreach ( $map as $key => $value ) {
+                $p = $part->getPart( $key );
+                $disposition = $p->getDisposition();
+                if ( ! in_array( $disposition, array( 'attachment' ) ) ) {
+                    continue;
+                }
+                $attachments[] = $p->getName();
+            }
             
             $row[] = null;
             $mail_from = $list->first()->getEnvelope()->from->__toString();
@@ -214,7 +267,16 @@
             $mail_to = $list->first()->getEnvelope()->to->__toString();
             $mail_to = str_replace(",", "</br>", $mail_to);
             $row[] = $mail_to;
-            $row[] = $list->first()->getEnvelope()->subject;
+            
+            if (count($attachments)>0)
+            {
+                $attach_names = implode('
+', $attachments);
+                $row[] = '<img src="images/icons/attachment.png" title="'.$attach_names.'"> '.$list->first()->getEnvelope()->subject;
+            }
+            else 
+                $row[] = $list->first()->getEnvelope()->subject;
+            
             $row[] = date("d.m.Y H:i",$list->first()->getEnvelope()->date->__toString());
             $row[] = $options;
             $row[] = $uids->ids[$i];

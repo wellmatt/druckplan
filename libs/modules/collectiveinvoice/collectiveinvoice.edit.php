@@ -105,7 +105,7 @@ if (!empty($_REQUEST['subexec']) && $_REQUEST['subexec']){
         Orderposition::saveMultipleOrderpositions($all_positions);
     }
 } // &exec=edit&subexec=movedown&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-
+$attributes = $collectinv->getActiveAttributeItemsInput();
 
 //----------------------------------- Javascript---------------------------------------?>
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -129,7 +129,6 @@ $(document).ready(function() {
 		"order": [[ 0, "asc" ]],
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"columns": [
-		            { "orderable": false, "sortable": false, },
 		            { "orderable": false, "sortable": false, },
 		            { "orderable": false, "sortable": false, },
 		            { "orderable": false, "sortable": false, },
@@ -170,7 +169,8 @@ $(document).ready(function() {
         	    selector:'.poscomment',
         	    menubar: false,
         	    statusbar: false,
-        	    toolbar: false
+        	    toolbar: false,
+        	    resize: true
     	    }
     	    );
 } );
@@ -496,6 +496,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                 <td width="100%" align="left">
                     <div class="btn-group" role="group">
                       <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=docs&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default">Dokumente</button>
+                      <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=notes&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default"><?php if ($collectinv->getId()>0) echo '<span id="notify_count" class="badge">'.Comment::getCommentCountForObject("CollectiveInvoice", $collectinv->getId()).'</span>';?>Notizen</button>
                       <?php 
                       $association_object = $collectinv;
                       $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
@@ -924,6 +925,14 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                 <input name="cust_sign" id="cust_sign" style="width:300px"
                     value="<?=$collectinv->getCustSign()?>">
             </td>
+            <?php if ($collectinv->getId()>0){?>
+			<td class="content_row" valign="top">
+				<?=$_LANG->get('Merkmale')?>
+			</td>
+			<td class="content_row"  valign="top">
+				<span class="pointer" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.attribute.frame.php?ciid=<?php echo $collectinv->getId();?>');"><a>anzeigen</a> (<?php echo count($attributes);?>)</span>
+			</td>
+			<?php }?>
         </tr>
         <tr>
             <td class="content_row" valign="top"><b><?=$_LANG->get('Ansprechpartner')?></b></td>
@@ -984,8 +993,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                     <th>Preis</th>
                     <th>Steuer</th>
                     <th>Betrag</th>
-                    <th>RE-rel.</th>
-                    <th>GS-rel.</th>
+                    <th>Dok.-rel.</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -1084,10 +1092,6 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
     					<td valign="top" class="content_row">
     						<input type="checkbox" value="1" name="orderpos[<?=$i?>][inv_rel]"
     						<?if ($position->getInvrel() == 1) echo "checked";?>>
-    					</td>
-    					<td valign="top" class="content_row">
-    						<input type="checkbox" value="1" name="orderpos[<?=$i?>][rev_rel]"
-    						<?if ($position->getRevrel() == 1) echo "checked";?>>
     					</td>
     					<td valign="top" class="content_row">
                             <?php if ($position->getStatus() == 2){?>

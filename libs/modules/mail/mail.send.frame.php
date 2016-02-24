@@ -84,10 +84,6 @@ if ($_REQUEST["exec"] == "send")
     
     // Set the from address
     $mail_from = $mailadress_send->getAddress();
-    if (!filter_var($mail_from, FILTER_VALIDATE_EMAIL))
-    {
-        $mail_from .= $perf->getMail_domain();
-    }
     $mail->addHeader('From', $mail_from);
     
     // Set the subject of the mail
@@ -106,6 +102,17 @@ if ($_REQUEST["exec"] == "send")
                 $ftype = finfo_file($finfo, 'libs/modules/attachment/files/'.$file);
                 finfo_close($finfo);
                 $mail->addAttachment('libs/modules/attachment/files/'.$file, $file, $ftype);
+            }
+        }
+    }
+    if ($_REQUEST['old_attach']){
+        foreach ($_REQUEST['old_attach'] as $old_attach) {
+            $file = $old_attach;
+            if ($file != ""){
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $ftype = finfo_file($finfo, 'docs/attachments/'.$file);
+                finfo_close($finfo);
+                $mail->addAttachment('docs/attachments/'.$file, $file, $ftype);
             }
         }
     }
@@ -146,10 +153,12 @@ if ($_REQUEST["exec"] == "send")
         foreach ($mail_to as $recipients)
         {
             if ($recipients != "")
-                $mail->addRecipients($recipients);
+                $mail->addHeader('TO', $recipients);
+//                $mail->addRecipients($recipients);
         }
     } else {
-        $mail->addRecipients($mail_to);
+        $mail->addHeader('TO', $mail_to);
+//        $mail->addRecipients($mail_to);
     }
     
     // Send the mail
@@ -160,7 +169,7 @@ if ($_REQUEST["exec"] == "send")
          *   - Use Horde_Imap_Client_Socket_Pop3 (and most likely port 110) to
          *     connect to a POP3 server instead. */
         $client = new Horde_Imap_Client_Socket(array(
-            'username' => $mailadress_send->getAddress(),
+            'username' => $mailadress_send->getLogin(),
             'password' => $mailadress_send->getPassword(),
             'hostspec' => $mailadress_send->getHost(),
             'port' => $mailadress_send->getPort(),
@@ -173,8 +182,11 @@ if ($_REQUEST["exec"] == "send")
                 ))
             )
         ));
+//        prettyPrint($mail->getRaw(false));
+//        die();
 
         $message_array = Array( Array("data"=>Array(Array("t"=>"text","v"=>$mail->getRaw(false)))) );
+//        var_dump($message_array);
         $client->append("contilas-sent", $message_array, Array("create"=>true));
     } catch (Horde_Imap_Client_Exception $e) {
         var_dump($e->details);
@@ -193,6 +205,224 @@ if ($_REQUEST["exec"] == "send")
     echo 'parent.$.fancybox.close();';
     echo '</script>';
     
+}
+
+if ($_REQUEST["exec"] == "save")
+{
+    if ($_REQUEST["debug"] == true)
+    {
+        $_REQUEST["mail_from"] = 47;
+        $_REQUEST["mail_subject"] = "Test";
+        $_REQUEST["mail_text"] = "Test 123";
+        $_REQUEST["mail_to"] = "ascherer@ipactor.de";
+    }
+
+
+    $mailadress_send = new Emailaddress($_REQUEST["mail_from"]);
+
+    $mailer = new Horde_Mail_Transport_Mail();
+
+    $headers = new Horde_Mime_Headers();
+
+    // New Horde MIME_Mail Object
+    $mail = new Horde_Mime_Mail();
+
+    // Set the header date
+    $mail->addHeader('Date', date('r'));
+
+    // Set the from address
+    $mail_from = $mailadress_send->getAddress();
+    $mail->addHeader('From', $mail_from);
+
+    // Set the subject of the mail
+    $mail_subject = $_REQUEST["mail_subject"];
+    $mail->addHeader('Subject', $mail_subject);
+
+    // Set the text message body
+    $mail_text = $_REQUEST["mail_text"];
+    $mail->setHtmlBody($mail_text);
+
+    // Add the file as an attachment, set the file name and what kind of file it is.
+    $mime_parts = Array();
+    if ($_REQUEST['mail_files']) {
+        foreach ($_REQUEST['mail_files'] as $file) {
+            if ($file != ""){
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $ftype = finfo_file($finfo, 'libs/modules/attachment/files/'.$file);
+                finfo_close($finfo);
+                $mail->addAttachment('libs/modules/attachment/files/'.$file, $file, $ftype);
+
+                $part = new Horde_Mime_Part();
+                $part->setType($ftype);
+                $part->setCharset('us-ascii');
+                $part->setDisposition('attachment');
+                $part->setContents(file_get_contents('libs/modules/attachment/files/'.$file));
+                $part->setName($file);
+                $part->setTransferEncoding('base64',false);
+                $mime_parts[] = $part;
+            }
+        }
+    }
+
+    // Add CC
+    $mail_cc = trim($_REQUEST["mail_cc"]);
+    if (!strstr($mail_cc, ",")===false)
+    {
+        $mail_cc = explode(",", $mail_cc);
+        foreach ($mail_cc as $recipients)
+        {
+            if ($recipients != "")
+                $mail->addHeader('CC', $recipients);
+        }
+    } else {
+        $mail->addHeader('CC', $mail_cc);
+    }
+
+    // Add BCC
+    $mail_bcc = trim($_REQUEST["mail_bcc"]);
+    if (!strstr($mail_bcc, ",")===false)
+    {
+        $mail_bcc = explode(",", $mail_bcc);
+        foreach ($mail_bcc as $recipients)
+        {
+            if ($recipients != "")
+                $mail->addHeader('BCC', $recipients);
+        }
+    } else {
+        $mail->addHeader('BCC', $mail_bcc);
+    }
+
+    // Add recipients
+    $mail_to = trim($_REQUEST["mail_to"]);
+    if (!strstr($mail_to, ",")===false)
+    {
+        $mail_to = explode(",", $mail_to);
+        foreach ($mail_to as $recipients)
+        {
+            if ($recipients != "")
+                $mail->addHeader('TO', $recipients);
+//                $mail->addRecipients($recipients);
+        }
+    } else {
+        $mail->addHeader('TO', $mail_to);
+//        $mail->addRecipients($mail_to);
+    }
+
+    try {
+        /* Connect to an IMAP server.
+         *   - Use Horde_Imap_Client_Socket_Pop3 (and most likely port 110) to
+         *     connect to a POP3 server instead. */
+        $client = new Horde_Imap_Client_Socket(array(
+            'username' => $mailadress_send->getLogin(),
+            'password' => $mailadress_send->getPassword(),
+            'hostspec' => $mailadress_send->getHost(),
+            'port' => $mailadress_send->getPort(),
+            'secure' => 'ssl',
+            'cache' => array(
+                'backend' => new Horde_Imap_Client_Cache_Backend_Cache(array(
+                    'cacheob' => new Horde_Cache(new Horde_Cache_Storage_File(array(
+                        'dir' => '/tmp/hordecache'
+                    )))
+                ))
+            )
+        ));
+
+        $mail->addHeaderOb(Horde_Mime_Headers_MessageId::create());
+        $mail->addHeaderOb(Horde_Mime_Headers_UserAgent::create());
+        $mail->addHeaderOb(Horde_Mime_Headers_Date::create());
+
+        $htmlBody = new Horde_Mime_Part();
+        $htmlBody->setType('text/html');
+        $htmlBody->setCharset('UTF-8');
+        $htmlBody->setContents($mail_text);
+        $htmlBody->setDescription(Horde_Mime_Translation::t("HTML Version of Message"));
+        $htmlBody->toString();
+
+        $plainText = Horde_Text_Filter::filter($mail_text, 'Html2text', array('charset' => 'UTF-8', 'wrap' => false));
+
+        $textBody = new Horde_Mime_Part();
+        $textBody->setType('text/plain');
+        $textBody->setCharset('UTF-8');
+        $textBody->setContents($plainText);
+        $textBody->setDescription(Horde_Mime_Translation::t("Plaintext Version of Message"));
+        $flowed = new Horde_Text_Flowed($textBody->getContents(), $textBody->getCharset());
+        $flowed->setDelSp(true);
+        $textBody->setContentTypeParameter('format', 'flowed');
+        $textBody->setContentTypeParameter('DelSp', 'Yes');
+        $textBody->setContents($flowed->toFlowed());
+        $textBody->toString();
+
+        $body = new Horde_Mime_Part();
+        $body->setType('multipart/alternative');
+        $body->addPart($textBody);
+        $body->addPart($htmlBody);
+        $body->setTransferEncoding('binary',false);
+        $body->toString();
+
+        $basepart = new Horde_Mime_Part();
+        $basepart->setType('multipart/mixed');
+        $basepart->addPart($body);
+        $basepart->isBasePart(true);
+
+        if (count($mime_parts)) {
+            foreach ($mime_parts as $mime_part) {
+                $basepart->addPart($mime_part);
+            }
+        }
+        $basepart->setHeaderCharset('UTF-8');
+        $basepart->setMimeId("1");
+        $basepart->addMimeHeaders();
+        $basepart->buildMimeIds($basepart->getMimeId());
+        $basepart->toString();
+        $boundary_base = $basepart->getContentTypeParameter('boundary');
+
+        $mail->setBasePart($basepart);
+        $mail->removeHeader('MIME-Version');
+
+
+
+        $mail_header = new Horde_Mime_Headers_ContentParam_ContentType('Content-Type','multipart/mixed');
+        $mail_header->unserialize(
+            serialize(
+                array(
+                    '_params'=> Array(
+                        'boundary' => $boundary_base,
+                    ),
+                    '_values'=> Array(
+                        'multipart/mixed',
+                    )
+                )
+            )
+        );
+//        prettyPrint($mail_header);
+//        die();
+
+        $mail->addHeaderOb($mail_header);
+
+//        prettyPrint($basepart);
+//        echo '</br>';
+//        prettyPrint($mail->getRaw(false));
+//        die();
+
+        $message_array = Array( Array("data"=>Array(Array("t"=>"text","v"=>$mail->getRaw(false)))) );
+        $client->append("contilas-draft", $message_array, Array("create"=>true));
+    } catch (Horde_Imap_Client_Exception $e) {
+        var_dump($e->details);
+        echo "</br>";
+    }
+
+    if ($_REQUEST['mail_files']) {
+        foreach ($_REQUEST['mail_files'] as $file) {
+            if ($file != ""){
+                unlink('libs/modules/attachment/files/'.$file);
+            }
+        }
+    }
+
+    echo '<script type="text/javascript">';
+    echo 'parent.$.fancybox.close();';
+    echo '</script>';
+
 }
 
 if (count($mailadresses)>0)
@@ -242,7 +472,7 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
     
     $server = $mailadress->getHost();
     $port = $mailadress->getPort();
-    $user = $mailadress->getAddress();
+    $user = $mailadress->getLogin();
     $password = $mailadress->getPassword();
     
     try {
@@ -288,7 +518,65 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
         $orig_mail_to = $list->first()->getEnvelope()->to->__toString();
     
         $part = $list->first()->getStructure();
-    
+
+//        if ($_REQUEST["preset"] == "FW")
+//        {
+
+            $map = $part->ContentTypeMap();
+            $attachments = array();
+            foreach ( $map as $key => $value ) {
+                $p = $part->getPart( $key );
+                $disposition = $p->getDisposition();
+                if ( ! in_array( $disposition, array( 'attachment', 'inline' ) ) ) {
+                    continue;
+                }
+                $name = $p->getName();
+                $type = $p->getType();
+                if ( 'inline' === $disposition && 'text/plain' === $type ) {
+                    continue;
+                }
+                $new_attachment = array(
+                    'disposition' => $disposition,
+                    'type' => $p->getPrimaryType(),
+                    'mimetype' => $type,
+                    'mime_id' => $key,
+                    'name' => $name,
+                );
+
+
+                $filename = $_REQUEST["mailid"].'_'.$_REQUEST["muid"].'_'.$name;
+                if(!file_exists("docs/attachments/".$filename)) {
+                    $uid = new Horde_Imap_Client_Ids( $_REQUEST["muid"] );
+                    $mime_id = $new_attachment["mime_id"];
+
+                    $query = new Horde_Imap_Client_Fetch_Query();
+                    $query->bodyPart( $mime_id, array(
+                            'decode' => true,
+                            'peek' => true,
+                        )
+                    );
+                    $list = $client->fetch( $_REQUEST["mailbox"], $query, array(
+                            'ids' => $uid,
+                        )
+                    );
+                    $message = $list->first();
+
+                    $image_data = $message->getBodyPart( $mime_id );
+                    $image_data_decoded = base64_decode( $image_data );
+
+                    $p = $part->getPart( $mime_id );
+                    $name = $p->getName();
+
+                    $filename = $_REQUEST["mailid"].'_'.$_REQUEST["muid"].'_'.$name;
+                    $fh = fopen("docs/attachments/".$filename, "w");
+                    fwrite($fh, $image_data_decoded);
+                    fclose($fh);
+                }
+                $new_attachment['filename'] = $filename;
+                $attachments[] = $new_attachment;
+            }
+//        }
+
         $id = $part->findBody('html');
         
         $content = "";
@@ -596,9 +884,10 @@ $(function () {
 
 <div style="width: 100%; overflow: hidden;">
     <div class="row col-xs-12">
-      <div class="col-xs-4"><img src="../../../images/icons/mail--plus.png"><span style="font-size: 13px"><?=$_LANG->get('eMail')?></span></div>
-      <div class="col-xs-4" style="text-align: right;"><?=$savemsg?></div>
-      <div class="col-xs-4" style="text-align: right;"><span onclick="$('#mail_form').submit();" class="btn btn-success">Senden</span></div>
+        <div class="col-xs-4"><img src="../../../images/icons/mail--plus.png"><span style="font-size: 13px"><?=$_LANG->get('eMail')?></span></div>
+        <div class="col-xs-4" style="text-align: right;"><?=$savemsg?></div>
+        <div class="col-xs-2" style="text-align: right;"><span onclick="$('#exec').val('save');$('#mail_form').submit();" class="btn btn-success">Speichern</span></div>
+        <div class="col-xs-2" style="text-align: right;"><span onclick="$('#mail_form').submit();" class="btn btn-info">Senden</span></div>
     </div>
     </br>
     </br>
@@ -619,10 +908,6 @@ $(function () {
                       $first = true;
                       foreach ($mail_servers as $mail_server)
                       {
-                          if (!filter_var($mail_server["mail"], FILTER_VALIDATE_EMAIL))
-                          {
-                              $mail_server["mail"] = $mail_server["mail"] . $perf->getMail_domain();
-                          }
                           if ($first)
                           {
                               echo '<option selected value="'.$mail_server["mailid"].'">'.$mail_server["mail"].'</option>';
@@ -713,7 +998,16 @@ $(function () {
                           <span>Hinzufügen...</span>
                           <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
                       </span>
-                      <div id="files" class="files"></div>
+                      <div id="files" class="files">
+                          <?php
+                          if (($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE") && count($attachments))
+                          {
+                              foreach ($attachments as $attachment) {
+                                  echo '<p>'.$attachment['name'].'<input type="hidden" name="old_attach[]" value="'.$attachment["filename"].'"><img class="pointer" onclick="$(this).parent().remove();" src="../../../images/icons/cross.png"/></p>';
+                              }
+                          }
+                          ?>
+                      </div>
                       <div id="progress" class="progress">
                           <div class="progress-bar progress-bar-success"></div>
                       </div>

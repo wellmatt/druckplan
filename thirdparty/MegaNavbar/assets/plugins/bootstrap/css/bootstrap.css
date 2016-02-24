@@ -6249,3 +6249,8 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+
+.ui-state-hover {
+  background: green;
+}

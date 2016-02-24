@@ -194,7 +194,6 @@
      */
     $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title 
                FROM article 
-               LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
                LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
                $sWhere
                $sOrder
@@ -209,7 +208,6 @@
     $sQuery = "
         SELECT COUNT(article.id)
                FROM article 
-               LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
                LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
         $sWhere
     ";
@@ -223,7 +221,6 @@
     $sQuery = "
         SELECT COUNT(article.id) 
         FROM article 
-        LEFT JOIN article_pictures ON article_pictures.articleid = article.id 
         LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
         WHERE status = 1
     ";

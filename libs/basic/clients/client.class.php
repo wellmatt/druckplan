@@ -55,6 +55,29 @@ class Client {
     private $bankName3;
     private $bankIban3;
     private $bankBic3;
+
+    // numbers + counter
+
+    private $number_format_order;
+    private $number_counter_order;
+    private $number_format_colinv;
+    private $number_counter_colinv;
+    private $number_format_offer;
+    private $number_counter_offer;
+    private $number_format_offerconfirm;
+    private $number_counter_offerconfirm;
+    private $number_format_delivery;
+    private $number_counter_delivery;
+    private $number_format_paper_order;
+    private $number_counter_paper_order;
+    private $number_format_invoice;
+    private $number_counter_invoice;
+    private $number_format_revert;
+    private $number_counter_revert;
+    private $number_format_warning;
+    private $number_counter_warning;
+    private $number_format_work;
+    private $number_counter_work;
      
     function __construct($id = 0) {
         global $DB;
@@ -115,6 +138,28 @@ class Client {
                 $this->bankName3 = $res[0]["client_bank3"];
                 $this->bankBic3 = $res[0]["client_bic3"];
                 $this->bankIban3 = $res[0]["client_iban3"];
+
+                $this->number_format_order = $res[0]["number_format_order"];
+                $this->number_counter_order = $res[0]["number_counter_order"];
+                $this->number_format_colinv = $res[0]["number_format_colinv"];
+                $this->number_counter_colinv = $res[0]["number_counter_colinv"];
+                $this->number_format_offer = $res[0]["number_format_offer"];
+                $this->number_counter_offer = $res[0]["number_counter_offer"];
+                $this->number_format_offerconfirm = $res[0]["number_format_offerconfirm"];
+                $this->number_counter_offerconfirm = $res[0]["number_counter_offerconfirm"];
+                $this->number_format_delivery = $res[0]["number_format_delivery"];
+                $this->number_counter_delivery = $res[0]["number_counter_delivery"];
+                $this->number_format_paper_order = $res[0]["number_format_paper_order"];
+                $this->number_counter_paper_order = $res[0]["number_counter_paper_order"];
+                $this->number_format_invoice = $res[0]["number_format_invoice"];
+                $this->number_counter_invoice = $res[0]["number_counter_invoice"];
+                $this->number_format_revert = $res[0]["number_format_revert"];
+                $this->number_counter_revert = $res[0]["number_counter_revert"];
+                $this->number_format_warning = $res[0]["number_format_warning"];
+                $this->number_counter_warning = $res[0]["number_counter_warning"];
+                $this->number_format_work = $res[0]["number_format_work"];
+                $this->number_counter_work = $res[0]["number_counter_work"];
+
         		Cachehandler::toCache("obj_client_".$id, $this);
             }
         }
@@ -175,7 +220,29 @@ class Client {
             client_iban2 = '{$this->bankIban2}', 
             client_bank3 = '{$this->bankName3}', 
             client_bic3  = '{$this->bankBic3}', 
-			client_iban3 = '{$this->bankIban3}' 
+			client_iban3 = '{$this->bankIban3}',
+
+            number_format_order  = '{$this->number_format_order}',
+            number_counter_order  = '{$this->number_counter_order}',
+            number_format_colinv  = '{$this->number_format_colinv}',
+            number_counter_colinv  = '{$this->number_counter_colinv}',
+            number_format_offer  = '{$this->number_format_offer}',
+            number_counter_offer  = '{$this->number_counter_offer}',
+            number_format_offerconfirm  = '{$this->number_format_offerconfirm}',
+            number_counter_offerconfirm  = '{$this->number_counter_offerconfirm}',
+            number_format_delivery  = '{$this->number_format_delivery}',
+            number_counter_delivery  = '{$this->number_counter_delivery}',
+            number_format_paper_order  = '{$this->number_format_paper_order}',
+            number_counter_paper_order  = '{$this->number_counter_paper_order}',
+            number_format_invoice  = '{$this->number_format_invoice}',
+            number_counter_invoice  = '{$this->number_counter_invoice}',
+            number_format_revert  = '{$this->number_format_revert}',
+            number_counter_revert  = '{$this->number_counter_revert}',
+            number_format_warning  = '{$this->number_format_warning}',
+            number_counter_warning  = '{$this->number_counter_warning}',
+            number_format_work  = '{$this->number_format_work}',
+            number_counter_work  = '{$this->number_counter_work}'
+
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
         } else
@@ -188,7 +255,13 @@ class Client {
             client_ustid, client_country, active, client_decimal, client_thousand, 
             client_currency, client_taxes, client_margin, 
             client_bank2, client_bic2, client_iban2, 
-            client_bank3, client_bic3, client_iban3 )
+            client_bank3, client_bic3, client_iban3,
+            number_format_order, number_counter_order, number_format_colinv,
+            number_counter_colinv, number_format_offer, number_counter_offer,
+            number_format_offerconfirm, number_counter_offerconfirm, number_format_delivery,
+            number_counter_delivery, number_format_paper_order, number_counter_paper_order,
+            number_format_invoice, number_counter_invoice, number_format_revert, number_counter_revert,
+            number_format_warning, number_counter_warning, number_format_work, number_counter_work)
             VALUES
             ('{$this->name}', '{$this->street1}', '{$this->street2}', '{$this->street3}',
             '{$this->postcode}', '{$this->city}', '{$this->phone}', '{$this->fax}', '{$this->email}',
@@ -197,7 +270,14 @@ class Client {
             '{$this->ustid}', {$this->country->getId()}, {$this->active}, '{$this->decimal}', '{$this->thousand}',
             '{$this->currency}', {$this->taxes}, {$this->margin}, 
             '{$this->bankName2}', '{$this->bankBic2}', '{$this->bankIban2}', 
-            '{$this->bankName3}', '{$this->bankBic3}', '{$this->bankIban3}' )";
+            '{$this->bankName3}', '{$this->bankBic3}', '{$this->bankIban3}',
+            '{$this->number_format_order}','{$this->number_counter_order}','{$this->number_format_colinv}',
+            '{$this->number_counter_colinv}','{$this->number_format_offer}','{$this->number_counter_offer}',
+            '{$this->number_format_offerconfirm}','{$this->number_counter_offerconfirm}','{$this->number_format_delivery}',
+            '{$this->number_counter_delivery}','{$this->number_format_paper_order}','{$this->number_counter_paper_order}',
+            '{$this->number_format_invoice}','{$this->number_counter_invoice}','{$this->number_format_revert}',
+            '{$this->number_counter_revert}','{$this->number_format_warning}','{$this->number_counter_warning}',
+            '{$this->number_format_work}','{$this->number_counter_work}')";
             $res = $DB->no_result($sql);
              
             if ($res)
@@ -740,6 +820,324 @@ class Client {
         return $this->active;
     }
 
-	
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatOrder()
+    {
+        return $this->number_format_order;
+    }
+
+    /**
+     * @param mixed $number_format_order
+     */
+    public function setNumberFormatOrder($number_format_order)
+    {
+        $this->number_format_order = $number_format_order;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterOrder()
+    {
+        return $this->number_counter_order;
+    }
+
+    /**
+     * @param mixed $number_counter_order
+     */
+    public function setNumberCounterOrder($number_counter_order)
+    {
+        $this->number_counter_order = $number_counter_order;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatColinv()
+    {
+        return $this->number_format_colinv;
+    }
+
+    /**
+     * @param mixed $number_format_colinv
+     */
+    public function setNumberFormatColinv($number_format_colinv)
+    {
+        $this->number_format_colinv = $number_format_colinv;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterColinv()
+    {
+        return $this->number_counter_colinv;
+    }
+
+    /**
+     * @param mixed $number_counter_colinv
+     */
+    public function setNumberCounterColinv($number_counter_colinv)
+    {
+        $this->number_counter_colinv = $number_counter_colinv;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatOffer()
+    {
+        return $this->number_format_offer;
+    }
+
+    /**
+     * @param mixed $number_format_offer
+     */
+    public function setNumberFormatOffer($number_format_offer)
+    {
+        $this->number_format_offer = $number_format_offer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterOffer()
+    {
+        return $this->number_counter_offer;
+    }
+
+    /**
+     * @param mixed $number_counter_offer
+     */
+    public function setNumberCounterOffer($number_counter_offer)
+    {
+        $this->number_counter_offer = $number_counter_offer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatOfferconfirm()
+    {
+        return $this->number_format_offerconfirm;
+    }
+
+    /**
+     * @param mixed $number_format_offerconfirm
+     */
+    public function setNumberFormatOfferconfirm($number_format_offerconfirm)
+    {
+        $this->number_format_offerconfirm = $number_format_offerconfirm;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterOfferconfirm()
+    {
+        return $this->number_counter_offerconfirm;
+    }
+
+    /**
+     * @param mixed $number_counter_offerconfirm
+     */
+    public function setNumberCounterOfferconfirm($number_counter_offerconfirm)
+    {
+        $this->number_counter_offerconfirm = $number_counter_offerconfirm;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatDelivery()
+    {
+        return $this->number_format_delivery;
+    }
+
+    /**
+     * @param mixed $number_format_delivery
+     */
+    public function setNumberFormatDelivery($number_format_delivery)
+    {
+        $this->number_format_delivery = $number_format_delivery;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterDelivery()
+    {
+        return $this->number_counter_delivery;
+    }
+
+    /**
+     * @param mixed $number_counter_delivery
+     */
+    public function setNumberCounterDelivery($number_counter_delivery)
+    {
+        $this->number_counter_delivery = $number_counter_delivery;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatPaperOrder()
+    {
+        return $this->number_format_paper_order;
+    }
+
+    /**
+     * @param mixed $number_format_paper_order
+     */
+    public function setNumberFormatPaperOrder($number_format_paper_order)
+    {
+        $this->number_format_paper_order = $number_format_paper_order;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterPaperOrder()
+    {
+        return $this->number_counter_paper_order;
+    }
+
+    /**
+     * @param mixed $number_counter_paper_order
+     */
+    public function setNumberCounterPaperOrder($number_counter_paper_order)
+    {
+        $this->number_counter_paper_order = $number_counter_paper_order;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatInvoice()
+    {
+        return $this->number_format_invoice;
+    }
+
+    /**
+     * @param mixed $number_format_invoice
+     */
+    public function setNumberFormatInvoice($number_format_invoice)
+    {
+        $this->number_format_invoice = $number_format_invoice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterInvoice()
+    {
+        return $this->number_counter_invoice;
+    }
+
+    /**
+     * @param mixed $number_counter_invoice
+     */
+    public function setNumberCounterInvoice($number_counter_invoice)
+    {
+        $this->number_counter_invoice = $number_counter_invoice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatRevert()
+    {
+        return $this->number_format_revert;
+    }
+
+    /**
+     * @param mixed $number_format_revert
+     */
+    public function setNumberFormatRevert($number_format_revert)
+    {
+        $this->number_format_revert = $number_format_revert;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterRevert()
+    {
+        return $this->number_counter_revert;
+    }
+
+    /**
+     * @param mixed $number_counter_revert
+     */
+    public function setNumberCounterRevert($number_counter_revert)
+    {
+        $this->number_counter_revert = $number_counter_revert;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatWarning()
+    {
+        return $this->number_format_warning;
+    }
+
+    /**
+     * @param mixed $number_format_warning
+     */
+    public function setNumberFormatWarning($number_format_warning)
+    {
+        $this->number_format_warning = $number_format_warning;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterWarning()
+    {
+        return $this->number_counter_warning;
+    }
+
+    /**
+     * @param mixed $number_counter_warning
+     */
+    public function setNumberCounterWarning($number_counter_warning)
+    {
+        $this->number_counter_warning = $number_counter_warning;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatWork()
+    {
+        return $this->number_format_work;
+    }
+
+    /**
+     * @param mixed $number_format_work
+     */
+    public function setNumberFormatWork($number_format_work)
+    {
+        $this->number_format_work = $number_format_work;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterWork()
+    {
+        return $this->number_counter_work;
+    }
+
+    /**
+     * @param mixed $number_counter_work
+     */
+    public function setNumberCounterWork($number_counter_work)
+    {
+        $this->number_counter_work = $number_counter_work;
+    }
 }
 ?>

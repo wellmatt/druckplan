@@ -569,6 +569,14 @@ class Document
                 $format[0] = 106;
                 $format[1] = 60;
                 $pdf = new TCPDF('L','mm',$format);
+            } elseif ($this->type == self::TYPE_FACTORY){
+                $pdf = new TCPDF('L','mm',$format);
+                $pref= new Perferences();                   
+                $pdf->SetPrintHeader(false);
+                $pdf->SetPrintFooter(false);
+                $pdf->setPageOrientation('L', TRUE, $pref->getPdf_margin_bottom());
+                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
+                $pdf->AddPage();
             } else {
                 $pref= new Perferences();
                 if ($version == self::VERSION_EMAIL)

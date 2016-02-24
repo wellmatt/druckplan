@@ -18,6 +18,7 @@ class Chromaticity {
     private $colorsBack = 0;
     private $reversePrinting = 0;
     private $markup = 0.0;
+    private $pricekg = 0;
     
     function __construct($id = 0)
     {
@@ -35,6 +36,7 @@ class Chromaticity {
                 $this->colorsBack = $r["colors_back"];
                 $this->reversePrinting = $r["reverse_printing"];
                 $this->markup = $r["markup"];
+                $this->pricekg = $r["pricekg"];
             }
         }
     }
@@ -64,16 +66,17 @@ class Chromaticity {
                         colors_front = {$this->colorsFront},
                         colors_back = {$this->colorsBack},
                         reverse_printing = {$this->reversePrinting},
-                        markup = {$this->markup}
+                        markup = {$this->markup},
+                        pricekg = {$this->pricekg}
                     WHERE id = {$this->id}";
             return $DB->no_result($sql);
         } else
         {
             $sql = "INSERT INTO chromaticities
-                        (name, colors_front, colors_back, reverse_printing, markup)
+                        (name, colors_front, colors_back, reverse_printing, markup, pricekg)
                     VALUES
                         ('{$this->name}', {$this->colorsFront}, {$this->colorsBack},
-                         {$this->reversePrinting}, {$this->markup})";
+                         {$this->reversePrinting}, {$this->markup}, {$this->pricekg})";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -165,6 +168,24 @@ class Chromaticity {
     {
         $this->markup = $markup;
     }
+
+    /**
+     * @return int
+     */
+    public function getPricekg()
+    {
+        return $this->pricekg;
+    }
+
+    /**
+     * @param int $pricekg
+     */
+    public function setPricekg($pricekg)
+    {
+        $this->pricekg = $pricekg;
+    }
+
+
 }
 
 ?>

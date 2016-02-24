@@ -60,7 +60,7 @@ class CommentArticle {
             (comment_id, state, articleid, amount)
             VALUES
             ( {$this->comment_id} , {$this->state}, {$this->article->getId()}, {$this->amount} )";
-            echo $sql;
+//             echo $sql;
             $res = $DB->no_result($sql);
         }
         

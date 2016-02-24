@@ -81,12 +81,31 @@ class PlanningJob {
         $retval = Array();
     
         $sql = "SELECT id FROM planning_jobs WHERE state > 0 {$filter}";
+//         echo $sql."</br>";
     
         if($DB->num_rows($sql))
         {
             foreach ($DB->select($sql) as $r)
             {
                 $retval[] = new PlanningJob($r["id"]);
+            }
+        }
+        return $retval;
+    }
+
+    static function getJobForTicket($ticketid, $filter = null)
+    {
+        global $DB;
+        $retval = new PlanningJob();
+    
+        $sql = "SELECT id FROM planning_jobs WHERE state > 0 AND ticket = {$ticketid} {$filter}";
+//         echo $sql."</br>";
+    
+        if($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $r)
+            {
+                $retval = new PlanningJob($r["id"]);
             }
         }
         return $retval;
@@ -128,7 +147,7 @@ class PlanningJob {
         elseif ($this->type == PlanningJob::TYPE_K)
         {
             $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getName();
-            $comm = Order::generateSummary($this->object->getId());
+            $comm = Order::generateSummary($this->subobject->getId());
         }
         $ticket->setCustomer($this->object->getCustomer());
         $ticket->setCustomer_cp($this->object->getCustContactperson());
@@ -188,6 +207,7 @@ class PlanningJob {
         
         if ($this->id > 0) {
             $sql = "UPDATE planning_jobs SET " . $set . " WHERE id = {$this->id}";
+//             echo $sql."</br>";
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO planning_jobs SET " . $set . " ";

@@ -5,17 +5,25 @@ $mailsettings = false;
 $savemsg = "";
 $mail_servers = Array();
 
+$unique_logins = Array();
+
 if (count($mailadresses)>0)
 {
     foreach ($mailadresses as $mailadress)
     {
+		if (!in_array($mailadress->getLogin(),$unique_logins))
+		{
+			$unique_logins[] = $mailadress->getLogin();
+		} else {
+			continue;
+		}
         
         try {
             /* Connect to an IMAP server.
              *   - Use Horde_Imap_Client_Socket_Pop3 (and most likely port 110) to
              *     connect to a POP3 server instead. */
             $client = new Horde_Imap_Client_Socket(array(
-                'username' => $mailadress->getAddress(),
+                'username' => $mailadress->getLogin(),
                 'password' => $mailadress->getPassword(),
                 'hostspec' => $mailadress->getHost(),
                 'port' => $mailadress->getPort(),
@@ -143,7 +151,7 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
-		            null
+					{sortable: false, searchable: false}
 		          ],
 		"aaSorting": [[ 3, "desc" ]],
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
@@ -156,10 +164,26 @@ $(document).ready(function() {
 		    } );
 		},
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                    if ( aData[6] == 0 )
-                    {
-                      $(nRow).addClass('highlight');
-                    }
+			if ( aData[7] == 0 )
+			{
+				$(nRow).addClass('highlight');
+			}
+			$(nRow).addClass('dragmail');
+			$(nRow).attr('muid',aData[6]);
+			$(nRow).attr('mailbox',$('#mailbox').val());
+			$(nRow).attr('mailid',$('#mailid').val());
+			$(nRow).draggable(
+				{
+					opacity: 0.6,
+					revert: "invalid",
+					helper: "clone",
+					cursor: "move",
+					start: function(event, ui){
+						ui.helper.children('td:first-child').remove();
+						ui.helper.children('td:last-child').remove();
+					}
+				}
+			);
         },
 		"language": 
 					{
@@ -186,7 +210,7 @@ $(document).ready(function() {
 						}
 					}
     } );
-    
+
     // Array to track the ids of the details displayed rows
     var detailRows = [];
  
@@ -367,6 +391,31 @@ function mail_delete_multiple()
     	}
 	}
 }
+function drop_move(from_muid,from_mailbox,from_mailid,targ_mailbox,targ_mailid)
+{
+	$.ajax({
+		type: "GET",
+		url: "libs/modules/mail/mail.ajax.php",
+		data: { exec: "dropcopy", mailid: from_mailid, mailbox: from_mailbox, muid: from_muid, dest_mailbox: targ_mailbox, dest_mailid: targ_mailid },
+		success: function(data)
+		{
+			var r = confirm('Mail wurde nach "'+targ_mailbox+'" kopiert,\nSoll die ursprüngliche eMail gelöscht werden?');
+			if (r == true) {
+				$.ajax({
+					type: "GET",
+					url: "libs/modules/mail/mail.ajax.php",
+					data: { exec: "delete", mailid: from_mailid, mailbox: from_mailbox, muid: from_muid },
+					success: function(data)
+					{
+
+					}
+				});
+			}
+			MailTableRefresh();
+			return;
+		}
+	});
+}
 function mail_move()
 {
 	var table = $('#mailtable').DataTable();
@@ -429,7 +478,6 @@ function getSelectedRows()
 		var d = table.row( id ).data();
 	    idx.push(id);
 	} );
-//     alert(idx.length);
 	return idx;
 }
 function MailBoxSelectPopup()
@@ -457,6 +505,28 @@ $(document).ready(function(){
 });
 
 </script>
+
+<script>
+	$(document).ready(function(){
+		$( ".folderspan" ).droppable({
+			activeClass: "ui-state-default",
+			hoverClass: "ui-state-hover",
+			accept: ":not(.ui-sortable-helper)",
+			drop: function( event, ui ) {
+				alert('Mail wird kopiert, einen Augenblick...');
+				var muid = ui.draggable.attr('muid');
+				var mailbox = ui.draggable.attr('mailbox');
+				var mailid = ui.draggable.attr('mailid');
+				var targ_mailbox = $(this).attr('mailbox');
+				var targ_mailid = $(this).attr('mailid');
+				drop_move(muid,mailbox,mailid,targ_mailbox,targ_mailid);
+				$(ui).remove();
+			}
+		});
+	});
+</script>
+
+
 <script>
 	$(function() {
 		$("a#newmail_hiddenclicker").fancybox({
@@ -466,7 +536,7 @@ $(document).ready(function(){
 			'speedIn'		:	600, 
 			'speedOut'		:	200, 
 			'width'         :   1024,
-			'height'		:	768, 
+			'height'		:	800,
 		    'scrolling'     :   'yes',
 // 			'overlayShow'	:	true,
 // 		    'fitToView'     :   true,
@@ -533,18 +603,23 @@ $(document).ready(function(){
             echo '<div class="box2">';
             echo '<ul class="list-unstyled">';
             echo '<span class="label label-info" style="text-align: right;">'.$mail_server["mail"].'</span></br></br>';
-            
-            $folders = $mail_server["imap"]->listMailboxes('*',Horde_Imap_Client::MBOX_SUBSCRIBED_EXISTS,Array("flat"=>false,"recursivematch"=>true,"attributes"=>true,"children"=>true));
-            
+
+			unset($folders);
+			try {
+				$folders = $mail_server["imap"]->listMailboxes('*',Horde_Imap_Client::MBOX_SUBSCRIBED_EXISTS,Array("flat"=>false,"recursivematch"=>true,"attributes"=>true,"children"=>true));
+			} catch (Horde_Imap_Client_Exception $e) {
+
+			}
+
             foreach ($folders as $key => $value)
             {
                 if ($key == "INBOX" && $first)
                 {
-                    echo '<li><span onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default label-success pointer">'.$key.'</span></li>';
+                    echo '<li><span mailid="'.$mail_server["mailid"].'" mailbox="'.$key.'" onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default label-success pointer">'.$key.'</span></li>';
                     $first = false;
                 }
                 else
-                    echo '<li><span onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default pointer">'.$key.'</span></li>';
+                    echo '<li><span mailid="'.$mail_server["mailid"].'" mailbox="'.$key.'" onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default pointer">'.$key.'</span></li>';
             }
 
             echo '</ul>';

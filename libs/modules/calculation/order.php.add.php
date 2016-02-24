@@ -8,7 +8,7 @@
 
 // Zusaetzlicher Inhalt 2
 if ($order->getProduct()->getHasAddContent2()) {?>
-    <h1><?=$_LANG->get('zus. Inhalt 2')?></h1>
+    <h1><?=$_LANG->get('Inhalt 3')?></h1>
     <div class="box2">
         <table width="100%">
             <colgroup>
@@ -17,7 +17,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
             </colgroup>
                 <tr>
                     <td class="content_row_header" style="color:gray;">
-                    	<?= $_LANG->get('zus. Inhalt 2 - Material') ?>
+                    	<?= $_LANG->get('Inhalt 3') ?>
                     </td>
                     <td class="content_row_clear">
                         <div id="additional2_paper"> 
@@ -53,7 +53,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                 </tr>
                 <tr id="tr_addcontent2_weight"<? if ($calc->getPaperAddContent2()->getId() == 0)
                             echo ' style="display:none"'; ?>>
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('zus. Inhalt 2 - Gewicht') ?>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 3 Gewicht') ?>
                     </td>
                     <td class="content_row_clear">
                         <div id="additional2_paperweight"> 
@@ -78,31 +78,9 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                     </td>
                 </tr>
 
-                <tr id="tr_addcontent2_chromaticity"<? if ($calc->getPaperAddContent2()->getId() == 0)
-                            echo ' style="display:none"'; ?>>
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('zus. Inhalt 2 - Farbigkeit') ?>
-                    </td>
-                    <td class="content_row_clear">
-                        <div id="additional2_paperchroma"> <?
-                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                            $prod = new Product($_REQUEST["product"]);
-                            foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                echo '<input type="button"';
-                                if ($calc->getChromaticitiesAddContent2()->getId() == $pc->getId()){
-                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-								}
-                                echo ' class="selectbutton" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '" 
-									onclick="clickAdd2PaperChromaticity(this.id)">' . "\n";
-                            }
-                        }
-                        ?>
-                        </div> 
-                    </td>
-                </tr>
-
                 <tr id="tr_addcontent2_pages"<? if ($calc->getPaperAddContent2()->getId() == 0)
                             echo ' style="display:none"'; ?>>
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('zus. Inhalt 2 - Seitenanzahl') ?>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 3 bedr. Seiten') ?>
                     </td>
                     <td class="content_row_clear">
                         <div id="additional2_paperpages"> 
@@ -124,7 +102,29 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                         </div> 
                     </td>
 
-    		</tr>
+    		  </tr>
+
+                <tr id="tr_addcontent2_chromaticity"<? if ($calc->getPaperAddContent2()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 3 Farbigkeit') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="additional2_paperchroma"> <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            $prod = new Product($_REQUEST["product"]);
+                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                echo '<input type="button"';
+                                if ($calc->getChromaticitiesAddContent2()->getId() == $pc->getId()){
+                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+								}
+                                echo ' class="selectbutton" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '" 
+									onclick="clickAdd2PaperChromaticity(this.id)">' . "\n";
+                            }
+                        }
+                        ?>
+                        </div> 
+                    </td>
+                </tr>
 		</table>
 	</div>
        <br>
@@ -133,7 +133,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
 
 // Zusaetzlicher Inhalt 3
 if ($order->getProduct()->getHasAddContent3()) {?>
-    <h1><?=$_LANG->get('zus. Inhalt 3')?></h1>
+    <h1><?=$_LANG->get('Inhalt 4')?></h1>
     <div class="box2">
         <table width="100%">
             <colgroup>
@@ -142,7 +142,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
             </colgroup>
                 <tr>
                     <td class="content_row_header" style="color:gray;">
-                    	<?= $_LANG->get('zus. Inhalt 3 - Material') ?>
+                    	<?= $_LANG->get('Inhalt 4') ?>
                     </td>
                     <td class="content_row_clear">
                         <div id="additional3_paper"> 
@@ -178,7 +178,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                 </tr>
                 <tr id="tr_addcontent3_weight"<? if ($calc->getPaperAddContent3()->getId() == 0)
                             echo ' style="display:none"'; ?>>
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('zus. Inhalt 3 - Gewicht') ?>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 4 Gewicht') ?>
                     </td>
                     <td class="content_row_clear">
                         <div id="additional3_paperweight"> 
@@ -203,31 +203,9 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                     </td>
                 </tr>
 
-                <tr id="tr_addcontent3_chromaticity"<? if ($calc->getPaperAddContent3()->getId() == 0)
-                            echo ' style="display:none"'; ?>>
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('zus. Inhalt 3 - Farbigkeit') ?>
-                    </td>
-                    <td class="content_row_clear">
-                        <div id="additional3_paperchroma"> <?
-                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                            $prod = new Product($_REQUEST["product"]);
-                            foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                echo '<input type="button"';
-                                if ($calc->getChromaticitiesAddContent3()->getId() == $pc->getId()){
-                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-								}
-                                echo ' class="selectbutton" id="33_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '" 
-									onclick="clickAdd3PaperChromaticity(this.id)">' . "\n";
-                            }
-                        }
-                        ?>
-                        </div> 
-                    </td>
-                </tr>
-
                 <tr id="tr_addcontent3_pages"<? if ($calc->getPaperAddContent3()->getId() == 0)
                             echo ' style="display:none"'; ?>>
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('zus. Inhalt 3 - Seitenanzahl') ?>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 4 bedr. Seiten') ?>
                     </td>
                     <td class="content_row_clear">
                         <div id="additional3_paperpages"> 
@@ -249,7 +227,29 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                         </div> 
                     </td>
 
-    		</tr>
+    		  </tr>
+
+                <tr id="tr_addcontent3_chromaticity"<? if ($calc->getPaperAddContent3()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 4 Farbigkeit') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="additional3_paperchroma"> <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            $prod = new Product($_REQUEST["product"]);
+                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                echo '<input type="button"';
+                                if ($calc->getChromaticitiesAddContent3()->getId() == $pc->getId()){
+                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+								}
+                                echo ' class="selectbutton" id="33_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '" 
+									onclick="clickAdd3PaperChromaticity(this.id)">' . "\n";
+                            }
+                        }
+                        ?>
+                        </div> 
+                    </td>
+                </tr>
 		</table>
 	</div>
        <br>

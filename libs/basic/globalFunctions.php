@@ -327,4 +327,57 @@ function round_up ( $value, $precision ) {
     $pow = pow ( 10, $precision ); 
     return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow; 
 } 
+
+function GetDays($sStartDate, $sEndDate, $format = "d.m.Y"){
+    // Firstly, format the provided dates.
+    // This function works best with YYYY-MM-DD
+    // but other date formats will work thanks
+    // to strtotime().
+    $sStartDate = date('Y-m-d', strtotime($sStartDate));
+    $sEndDate = date('Y-m-d', strtotime($sEndDate));
+
+    // Start the variable off with the start date
+    $aDays[] = date($format,strtotime($sStartDate));
+
+    // Set a 'temp' variable, sCurrentDate, with
+    // the start date - before beginning the loop
+    $sCurrentDate = $sStartDate;
+
+    // While the current date is less than the end date
+    while($sCurrentDate < $sEndDate){
+        // Add a day to the current date
+        $sCurrentDate = date('Y-m-d', strtotime("+1 day", strtotime($sCurrentDate)));
+
+        // Add this new day to the aDays array
+        $aDays[] = date($format,strtotime($sCurrentDate));
+    }
+
+    // Once the loop has finished, return the
+    // array of days.
+    return $aDays;
+}
+
+
+function break_array($array, $page_size) {
+
+    $arrays = array();
+    $i = 0;
+
+    foreach ($array as $index => $item) {
+        if ($i++ % $page_size == 0) {
+            $arrays[] = array();
+            $current = & $arrays[count($arrays)-1];
+        }
+        $current[] = $item;
+    }
+
+    return $arrays;
+}
+
+function prettyPrint($a) {
+	echo "<pre>";
+	print_r($a);
+	echo "</pre>";
+}
+
 ?>

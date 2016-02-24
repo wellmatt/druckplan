@@ -25,6 +25,8 @@ require_once 'libs/basic/countries/country.class.php';
 require_once("libs/basic/groups/group.class.php");
 require_once("libs/modules/businesscontact/contactperson.class.php");
 require_once 'libs/modules/organizer/urlaub.class.php';
+require_once 'libs/modules/vacation/vacation.entry.class.php';
+require_once 'libs/modules/vacation/vacation.user.class.php';
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
@@ -36,6 +38,7 @@ if (!isset($_GET['start']) || !isset($_GET['end']) || !isset($_GET['user'])) {
 }
 
 $user = new User($_GET['user']);
+$usercal = $_REQUEST["usercal"];
 
 // Parse the start/end parameters.
 // These are assumed to be ISO8601 strings with no time nor timezone, like "2013-12-29".
@@ -68,7 +71,10 @@ if($events) {
 				    "url" => "index.php?page=libs/modules/calculation/order.php&exec=edit&id=".$event->getOrder()->getId()."&step=4", "textColor" => '#fff', "editable" => false);
 			}
 		} else {
-			$output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end);
+		    if ($event->getPublic())
+		        $output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end, "backgroundColor" => "#1f698e");
+		    else 
+		        $output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end);
 		}
 	}
 }
@@ -84,16 +90,53 @@ if($holidays)
     }
 }
 // Urlaube
+if (in_array("99993", $_REQUEST["states"]))
 {
-    $urlaube = Urlaub::getAllVacationsForUserInTimeframe($_GET['start'], $_GET['end'], $_USER);
-//     print_r($urlaube);
-    if (count($urlaube)>0)
     {
-        foreach ($urlaube as $urlaub)
+//        $urlaube = Urlaub::getAllVacationsForUserInTimeframe($_GET['start'], $_GET['end'], $_USER);
+		$urlaube = VacationEntry::getAllForTimeframe($_GET['start'], $_GET['end']);
+    //     print_r($urlaube);
+        if ($urlaube)
         {
-		    $begin = date("Y-m-d\TH:i:s",$urlaub->getBegin());
-		    $end = date("Y-m-d\TH:i:s",mktime(23,59,59, date("m",$urlaub->getEnd()), date("d",$urlaub->getEnd()), date("Y",$urlaub->getEnd())));
-            $output_arrays[] = Array ("id" => $urlaub->getId(), "title" => "Urlaub: ".$urlaub->getUser()->getNameAsLine(), "start" => $begin, "end" => $end, "backgroundColor" => "#ff8888", "editable" => false, "holiday" => true);
+            foreach ($urlaube as $urlaub)
+            {
+    		    $begin = date("Y-m-d\TH:i:s",$urlaub->getStart());
+    		    $end = date("Y-m-d\TH:i:s",$urlaub->getEnd());
+                $output_arrays[] = Array ("id" => $urlaub->getId(), "title" => "Urlaub: ".$urlaub->getUser()->getNameAsLine(), "start" => $begin, "end" => $end, "backgroundColor" => "#ff8888", "editable" => false, "holiday" => true);
+            }
+        }
+    }
+}
+
+if (count($usercal)>0)
+{
+    foreach ($usercal as $foreigncal)
+    {
+        $foreignuser = new User($foreigncal);
+        $events = Event::getAllEventsTimeframe($_GET['start'], $_GET['end'], $foreignuser, $selectOtherDates = true, $_REQUEST["states"]);
+        
+        if($events) {
+            foreach ($events as $event) {
+                $begin = date("Y-m-d\TH:i:s",$event->getBegin());
+                $end = date("Y-m-d\TH:i:s",$event->getEnd());
+                if(strpos($event->getTitle(),"[TICKET]")!==false) {
+                    if ($user->getCalTickets() == 1) {
+                        $output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "end" => $end,
+                            "url" => "index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$event->getTicket()->getId(),
+                            "backgroundColor" => $event->getTicket()->getState()->getColorcode(),
+                            "textColor" => '#fff',
+                            "editable" => false,
+                            "foreign" => true);
+                    }
+                } elseif(strpos($event->getTitle(),"[AUFTRAG]")!==false) {
+                    if ($user->getCalOrders() == 1) {
+                        $output_arrays[] = Array ("id" => $event->getId(), "title" => $event->getTitle(), "start" => $begin, "allDay" => "true",
+                            "url" => "index.php?page=libs/modules/calculation/order.php&exec=edit&id=".$event->getOrder()->getId()."&step=4", "textColor" => '#fff', "editable" => false, "foreign" => true, "backgroundColor" => "#2a96cc");
+                    }
+                } else {
+                    $output_arrays[] = Array ("id" => $event->getId(), "title" => $foreignuser->getNameAsLine(), "start" => $begin, "end" => $end, "foreign" => true, "editable" => false, "backgroundColor" => "#2a96cc");
+                }
+            }
         }
     }
 }
@@ -114,8 +157,8 @@ if ($user->getCalBirthday() == 1) {
     		$birth_year = date('Y',$birthdate);
     		
     		$age = (date("md", date("U", mktime(0, 0, 0, $birth_moth, $birth_day, $birth_year))) > date("md")
-    			? ((date("Y") - $birth_year) - 1)
-    			: (date("Y") - $birth_year));
+    			? ((date("Y") - $birth_year))
+    			: (date("Y") - $birth_year) +1);
     			
     		if ($birth_moth >= date('n',time())) {
     		    $birthday_title = "Geb.: " . $cp->getNameAsLine2() . " (".$age.")";

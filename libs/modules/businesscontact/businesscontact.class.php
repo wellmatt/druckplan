@@ -114,18 +114,11 @@ class BusinessContact {
         $this->paymentTerms = new PaymentTerms();
         $this->supervisor = new User();
         $this->salesperson = new User();
-        
-        if (isset($_USER) && get_class($_USER) == "User"){
-	        $this->country = $_USER->getClient()->getCountry();
-	        $this->alt_country = $_USER->getClient()->getCountry();
-	        $this->priv_country = $_USER->getClient()->getCountry();
-	        $this->language = $_USER->getLang();
-        } else {
-        	$this->country = new Country(55); // Auf Deutschland setzen
-	        $this->alt_country = new Country(55); // Auf Deutschland setzen
-	        $this->priv_country = new Country(55); // Auf Deutschland setzen
-        	$this->language = new Translator(22); // Auf Deutsch setzen
-        }
+
+		$this->country = new Country(55); // Auf Deutschland setzen
+		$this->alt_country = new Country(55); // Auf Deutschland setzen
+		$this->priv_country = new Country(55); // Auf Deutschland setzen
+		$this->language = new Translator(22); // Auf Deutsch setzen
         
 
 //         $cached = Cachehandler::fromCache("obj_bc_" . $id);

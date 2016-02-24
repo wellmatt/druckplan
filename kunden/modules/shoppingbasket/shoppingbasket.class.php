@@ -201,7 +201,7 @@ class Shoppingbasket{
 	        $col_inv->setExt_comment($this->note);
 	        $col_inv->setTitle($_LANG->get("Bestellung aus dem Kunden-Portal"));
 	        $col_inv->setPaymentterm($busicon->getPaymentTerms());
-	        $col_inv->setDeliveryaddressById($address);
+	        $col_inv->setInvoiceAddress($tmp_inv_ad);
 	        $col_inv->setClient(new Client(1));
 	        
 	        if ($_SESSION["login_type"]	== "contactperson"){
@@ -242,7 +242,7 @@ class Shoppingbasket{
 	                
 	                
     	            foreach ($this->entrys AS $entry){
-    	                if ($entry->getDeliveryAdressID() == $deli_address) {
+    	                if ($entry->getDeliveryAdressID() == $deli_address && $entry->getInvoiceAdressID() == $address) {
         	                $tmp_order_pos =  new Orderposition();
         	                $tmp_order_pos->setPrice($entry->getPrice());
         	                $tmp_order_pos->setObjectid($entry->getId());
@@ -251,7 +251,10 @@ class Shoppingbasket{
         	        
         	                if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
         	                    $tmp_article = new Article($entry->getId());
-        	                    $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
+        	                    if ($tmp_article->getOrderid()>0)
+        	                        $tmp_order_pos->setType(Orderposition::TYPE_ORDER);
+        	                    else 
+        	                        $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
         	                    $tax = $tmp_article->getTax();
         	                    $tmp_order_pos->setTax($tax);
         	                    $tmp_order_pos->setComment($tmp_article->getDesc());

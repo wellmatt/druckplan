@@ -210,12 +210,13 @@ class Nachricht
     public function send()
     {
         $mail_obj =& Mail::factory('mail');
+        global $_USER;
         global $DB;
         $ret = true;
         if ($this->from == null)
             $this->from == $_USER;
         
-        // Falls kein Empfänger angegeben ist, abbrechen
+        // Falls kein Empfï¿½nger angegeben ist, abbrechen
         if (count($this->to) == 0)
             return false;
         
@@ -225,57 +226,17 @@ class Nachricht
         if ($this->created == 0)
             $this->created = time();
         
-        // Nachricht anlegen
-        $sql = "INSERT INTO msg
-                    (from_id, subject, text, created)
-                VALUES
-                    ({$this->getFrom()->getId()}, '{$this->subject}',
-                     '{$this->text}', {$this->created})";
-        $res = $DB->no_result($sql);
         
-        if ($res)
+        if ($ret)
         {
             $sql = "SELECT max(id) cc FROM msg";
             $thisid = $DB->select($sql);
             $this->id = $thisid[0]["cc"];
 
-            // Anhänge abspeichern
-            foreach($this->attachments as $at)
-            {
-                $sql = "INSERT INTO msg_docs
-                (msg_id, document_id)
-                VALUES
-                ({$this->id}, {$at->getId()})";
-                $DB->no_result($sql);
-            }
-            
-          
-            // Beim Absender unter Gesendet einsortieren
-            $paus = MsgFolder::getIdForName("Postausgang", $this->from);
-            $sql = "INSERT INTO msg_in_folder
-                        (msg_id, user_id, folder_id, gelesen, geantwortet)
-                    VALUES
-                        ({$this->id}, {$this->from->getId()}, {$paus}, 1, 0)";
-            if(!$DB->no_result($sql))
-                return false;
-
-            // Beim Empfänger unter Posteingang einsortieren
+            // Beim Empfï¿½nger unter Posteingang einsortieren
             foreach($this->to as $to) {
                 if(is_a($to, "User"))
                 {
-                    // Standardordner anlegen
-                    MsgFolder::checkFolders($to);
-                    $pein = MsgFolder::getIdForName("Posteingang", $to);
-                    $sql = "INSERT INTO msg_in_folder
-                                (msg_id, user_id, folder_id, gelesen, geantwortet)
-                            VALUES
-                                ({$this->id}, {$to->getId()}, {$pein}, 0, 0)";
-    
-                    if (!$DB->no_result($sql))
-                        return false;
-
-
-                    
                     if($to->getForwardMail())
                     {
                         $mailtext = 'Hallo '.$to->getFirstname().' '.$to->getLastname().'<br><br>';
@@ -292,16 +253,6 @@ class Nachricht
                 {
                     foreach($to->getMembers() as $m)
                     {
-                        // Standardordner anlegen
-                        MsgFolder::checkFolders($m);
-                        $pein = MsgFolder::getIdForName("Posteingang", $m);
-                        $sql = "INSERT INTO msg_in_folder
-                                    (msg_id, user_id, folder_id, gelesen, geantwortet)
-                                VALUES
-                                    ({$this->id}, {$m->getId()}, {$pein}, 0, 0)";
-                        
-                        if (!$DB->no_result($sql))
-                            return false;
                         
                         if($m->getForwardMail())
                         {

@@ -61,7 +61,7 @@ if ($_REQUEST["exec"])
 				callBoxFancy('libs/modules/organizer/calendar.newevent.php?start='+start.unix()+'&end='+end.unix());
 			},
 			eventClick: function(calEvent, jsEvent, view) {
-				if (!calEvent.url && !calEvent.holiday) {
+				if (!calEvent.url && !calEvent.holiday && !calEvent.foreign) {
 					callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid='+calEvent.id);
 				};
 			},
@@ -76,6 +76,14 @@ if ($_REQUEST["exec"])
 			    		states.push(this.value);
 		    		}
 		    	});
+			    var usercal = [];
+		    	$('.chkb_usercal').each(function( index ) {
+		    		if ( $( this ).prop( "checked" ) )
+		    		{
+		    			usercal.push(this.value);
+		    		}
+		    	});
+		    	
 		        $.ajax({
 		            url: 'libs/modules/organizer/calendar_getevents.php',
 		            dataType: 'json',
@@ -83,7 +91,8 @@ if ($_REQUEST["exec"])
 	 					user: strUser,
 		                start: start.format('YYYY-MM-DD'),
 		                end: end.format('YYYY-MM-DD'),
-		                states: states
+		                states: states,
+		                usercal: usercal
 		            },
 		            success: function (eventstring) {
                         callback(eventstring);
@@ -192,7 +201,7 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
                                 	?>
                                 	</br>
                                 	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
-                                	Benutzer: <select name="sel_user" id="sel_user" style="width:150px" onchange="refetchEvents();" class="text">
+                                	Kalender benutzten als: <select name="sel_user" id="sel_user" style="width:150px" onchange="refetchEvents();" class="text">
                                 		<? foreach ($users as $user) {?>
                                 		<option value="<?=$user->getId()?>" 
                                 		<?
@@ -210,6 +219,43 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
                                 }
                                 ?>
                             </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" onclick="refetchEvents();" value="99993" class="chkb_legend"/> Urlaub anzeigen</td>
+                        </tr>
+                        <?php if ($_USER->hasRightsByGroup(Group::RIGHT_SEE_ALL_CALENDAR) || $_USER->isAdmin()) { ?>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Kalender überlappen mit:</td>
+                        </tr>
+                        <tr>
+                            <?php 
+                            foreach ($users as $user){
+                                if ($user->getId() != $_USER->getId())
+                                    echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="'.$user->getId().'" class="chkb_usercal"/>'.$user->getNameAsLine().'</td></tr>';
+                            }
+                            ?>
+                        </tr>
+                        <?php } ?>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Legende:</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><a style="background-color:#1f698e" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Öffentlich</span></div></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><a style="background-color:#3a87ad" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Privat</span></div></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><a style="background-color:#2a96cc" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Fremd</span></div></a></td>
                         </tr>
                     </table>
                 </td>

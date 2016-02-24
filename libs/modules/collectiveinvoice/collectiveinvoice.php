@@ -195,6 +195,9 @@ case 'save':
 case 'docs':
 	require_once 'collectiveinvoice.documents.php';
 	break;
+case 'notes':
+	require_once 'collectiveinvoice.notes.php';
+	break;
 case 'setState':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();

@@ -15,7 +15,8 @@ class Group {
    const RIGHT_DETAILED_CALCULATION = 4; // Ausführliche Kalkulation anzeigen
    const RIGHT_SEE_TARGETTIME = 8; // Darf Sollzeiten sehen
    const RIGHT_PARTS_EDIT = 16; // Darf Teilauftr#ge planen
-   const RIGHT_ALL_CALENDAR = 32; // Darf alle Kalender einsehen
+   const RIGHT_ALL_CALENDAR = 32; // Darf alle Kalender bearbeiten
+   const RIGHT_SEE_ALL_CALENDAR = 131072; // Darf alle Kalender einsehen
    const RIGHT_EDIT_BC = 64; // Darf Geschäftskontakte bearbeiten
    const RIGHT_DELETE_BC = 128; // Darf Geschäftskontakte löschen
    const RIGHT_EDIT_CP = 256; // Darf Geschäftskontakte bearbeiten
@@ -27,6 +28,7 @@ class Group {
    const RIGHT_TICKET_CHANGE_OWNER = 16384;
    const RIGHT_ASSO_DELETE = 32768;
    const RIGHT_NOTES_BC = 65536;
+   const RIGHT_APPROVE_VACATION = 262144;
    
    function __construct($id = 0, $adduser = true)
    {

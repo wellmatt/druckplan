@@ -34,6 +34,20 @@ class PrivateContact {
 	private $comment;
 	private $birthdate = 0;
 	private $access = Array();
+
+	private $alt_title;
+	private $alt_name1;
+	private $alt_name2;
+	private $alt_address1;
+	private $alt_address2;
+	private $alt_zip;
+	private $alt_city;
+	private $alt_country;
+	private $alt_phone;
+	private $alt_mobil;
+	private $alt_fax;
+	private $alt_email;
+	private $alt_web;
 	
 	function __construct($id = 0){
         global $DB;
@@ -42,12 +56,14 @@ class PrivateContact {
 
         if ($_USER != NULL){
         	$this->country = $_USER->getClient()->getCountry();
+			$this->alt_country = $_USER->getClient()->getCountry();
         } else {
         	$this->country = new Country(55);
+			$this->alt_country = new Country(55);
         }
         $this->crtuser = new User();
         
-        $cached = Cachehandler::fromCache("obj_prvtc_" . $id);
+//        $cached = Cachehandler::fromCache("obj_prvtc_" . $id);
         if (!is_null($cached))
         {
             $vars = array_keys(get_class_vars(get_class($this)));
@@ -91,6 +107,20 @@ class PrivateContact {
                 $this->web = $res[0]["web"];
                 $this->comment = $res[0]["comment"];
                 $this->birthdate = $res[0]["birthdate"];
+
+				$this->alt_title = $res[0]["alt_title"];
+				$this->alt_name1 = $res[0]["alt_name1"];
+				$this->alt_name2 = $res[0]["alt_name2"];
+				$this->alt_address1 = $res[0]["alt_address1"];
+				$this->alt_address2 = $res[0]["alt_address2"];
+				$this->alt_zip = $res[0]["alt_zip"];
+				$this->alt_city = $res[0]["alt_city"];
+				$this->alt_country = new Country ($res[0]["alt_country"]);
+				$this->alt_phone = $res[0]["alt_phone"];
+				$this->alt_mobil = $res[0]["alt_mobil"];
+				$this->alt_fax = $res[0]["alt_fax"];
+				$this->alt_email = $res[0]["alt_email"];
+				$this->alt_web = $res[0]["alt_web"];
                 
                 $sql = "SELECT * FROM privatecontacts_access WHERE prvtc_id = {$id}";
                 $tmp_prvt_access = Array();
@@ -101,7 +131,7 @@ class PrivateContact {
                 }
                 $this->access = $tmp_prvt_access;
 				
-                Cachehandler::toCache("obj_prvtc_".$id, $this);
+//                Cachehandler::toCache("obj_prvtc_".$id, $this);
                 return true;
             } else if ($DB->num_rows($sql) > 1)
             {
@@ -110,6 +140,97 @@ class PrivateContact {
             }
         }
     }
+
+	public function save()
+	{
+		global $DB;
+		global $_USER;
+		$this->crtuser = $_USER;
+
+		if ($this->id > 0)
+		{
+			$sql = " UPDATE privatecontacts SET
+            active = '{$this->active}',
+            businesscontact = '{$this->businessContactId}',
+            title = '{$this->title}',
+            name1 = '{$this->name1}',
+            name2 = '{$this->name2}',
+            address1 = '{$this->address1}',
+            address2 = '{$this->address2}',
+            zip = '{$this->zip}',
+            city = '{$this->city}',
+            country = '{$this->country->getId()}',
+            phone = '{$this->phone}',
+            mobil = '{$this->mobil}',
+            fax = '{$this->fax}',
+            email = '{$this->email}',
+            web = '{$this->web}',
+        	birthdate = '{$this->birthdate}',
+
+			alt_title = '{$this->alt_title}',
+        	alt_name1 = '{$this->alt_name1}',
+        	alt_name2 = '{$this->alt_name2}',
+        	alt_address1 = '{$this->alt_address1}',
+        	alt_address2 = '{$this->alt_address2}',
+        	alt_zip = '{$this->alt_zip}',
+        	alt_city = '{$this->alt_city}',
+        	alt_country = '{$this->alt_country->getId()}',
+        	alt_phone = '{$this->alt_phone}',
+        	alt_mobil = '{$this->alt_mobil}',
+        	alt_fax = '{$this->alt_fax}',
+        	alt_email = '{$this->alt_email}',
+        	alt_web = '{$this->alt_web}',
+
+            comment = '{$this->comment}'
+			WHERE id = {$this->id}";
+			$res = $DB->no_result($sql);
+		}
+		else
+		{
+			$sql = " INSERT INTO privatecontacts
+            (crtuser, active, businesscontact, title, name1, name2, address1, address2,
+            zip, city, country, phone, mobil,
+            fax, email, web, birthdate, comment,
+            alt_title, alt_name1, alt_name2, alt_address1, alt_address2, alt_zip, alt_city, alt_country,
+            alt_phone, alt_mobil, alt_fax, alt_email, alt_web)
+            VALUES
+            ({$_USER->getId()}, '{$this->active}', '{$this->businessContactId}', '{$this->title}', '{$this->name1}', '{$this->name2}', '{$this->address1}', '{$this->address2}',
+			'{$this->zip}', '{$this->city}',  '{$this->country->getId()}',  '{$this->phone}', '{$this->mobil}',
+            '{$this->fax}', '{$this->email}', '{$this->web}', '{$this->birthdate}', '{$this->comment}',
+            '{$this->alt_title}', '{$this->alt_name1}', '{$this->alt_name2}', '{$this->alt_address1}', '{$this->alt_address2}',
+            '{$this->alt_zip}', '{$this->alt_city}', '{$this->alt_country->getId()}', '{$this->alt_phone}',
+            '{$this->alt_mobil}', '{$this->alt_fax}', '{$this->alt_email}', '{$this->alt_web}')";
+			$res = $DB->no_result($sql);
+
+			if ($res)
+			{
+				$sql = " SELECT max(id) id FROM privatecontacts";
+				$thisid = $DB->select($sql);
+				$this->id = $thisid[0]["id"];
+			}
+		}
+
+
+		$sql = "DELETE FROM privatecontacts_access WHERE prvtc_id = {$this->id}";
+		$DB->no_result($sql);
+
+		foreach ($this->access as $access_user){
+			$sql = "INSERT INTO privatecontacts_access
+		    (prvtc_id, userid)
+		    VALUES ( {$this->id}, {$access_user->getId()} )";
+			$DB->no_result($sql);
+		}
+
+//		Cachehandler::removeCache("obj_prvtc_".$this->id);
+		if($res)
+		{
+//			Cachehandler::toCache("obj_prvtc_".$this->id, $this);
+			return true;
+		}
+		else
+			return false;
+
+	}
     
     /**
      * Liefert den Namen wie folgt: Anrede Nachname, Vorname 
@@ -227,77 +348,6 @@ class PrivateContact {
     	return $privatecontacts;
 	}
 	
-	public function save()
-	{
-		global $DB;
-		global $_USER;
-		$this->crtuser = $_USER;
-		
-		if ($this->id > 0)
-		{
-			$sql = " UPDATE privatecontacts SET
-            active = '{$this->active}',
-            businesscontact = '{$this->businessContactId}',
-            title = '{$this->title}',
-            name1 = '{$this->name1}',
-            name2 = '{$this->name2}',
-            address1 = '{$this->address1}',
-            address2 = '{$this->address2}',
-            zip = '{$this->zip}',
-            city = '{$this->city}',
-            country = '{$this->country->getId()}',
-            phone = '{$this->phone}',
-            mobil = '{$this->mobil}',
-            fax = '{$this->fax}',
-            email = '{$this->email}',
-            web = '{$this->web}', 
-        	birthdate = '{$this->birthdate}', 
-            comment = '{$this->comment}' 
-			WHERE id = {$this->id}";
-			$res = $DB->no_result($sql);
-		}
-		else
-		{
-			$sql = " INSERT INTO privatecontacts
-            (crtuser, active, businesscontact, title, name1, name2, address1, address2, 
-            zip, city, country, phone, mobil, 
-            fax, email, web, birthdate, comment )
-            VALUES
-            ({$_USER->getId()}, '{$this->active}', '{$this->businessContactId}', '{$this->title}', '{$this->name1}', '{$this->name2}', '{$this->address1}', '{$this->address2}', 
-			'{$this->zip}', '{$this->city}',  '{$this->country->getId()}',  '{$this->phone}', '{$this->mobil}',
-            '{$this->fax}', '{$this->email}', '{$this->web}', '{$this->birthdate}', '{$this->comment}' )";
-			$res = $DB->no_result($sql);
-			
-			if ($res)
-            {
-                $sql = " SELECT max(id) id FROM privatecontacts";
-                $thisid = $DB->select($sql);
-                $this->id = $thisid[0]["id"];
-            }
-		}
-		
-
-		$sql = "DELETE FROM privatecontacts_access WHERE prvtc_id = {$this->id}";
-		$DB->no_result($sql);
-		
-		foreach ($this->access as $access_user){
-		    $sql = "INSERT INTO privatecontacts_access
-		    (prvtc_id, userid)
-		    VALUES ( {$this->id}, {$access_user->getId()} )";
-		    $DB->no_result($sql);
-		}
-
-		Cachehandler::removeCache("obj_prvtc_".$this->id);
-		if($res)
-		{
-		    Cachehandler::toCache("obj_prvtc_".$this->id, $this);
-			return true;
-		}
-		else
-			return false;
-		
-	}
-	
 	public function delete(){
 		global $DB;
 		$sql = "UPDATE privatecontacts SET active = 0 WHERE id = {$this->id}";
@@ -305,7 +355,7 @@ class PrivateContact {
 		unset($this);
 		if($res)
 		{
-		    Cachehandler::removeCache("obj_prvtc_".$this->id);
+//		    Cachehandler::removeCache("obj_prvtc_".$this->id);
 			return true;
 		}
 		else
@@ -484,16 +534,6 @@ class PrivateContact {
 	{
 	    $this->fax = $fax;
 	}
-	public function getAlt_mobil()
-	{
-	    return $this->alt_mobil;
-	}
-
-	public function setAlt_mobil($alt_mobil)
-	{
-	    $this->alt_mobil = $alt_mobil;
-	}
-
 
 	public function getEmail()
 	{
@@ -582,6 +622,213 @@ class PrivateContact {
     {
         $this->access = $access;
     }
-    
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltName1()
+	{
+		return $this->alt_name1;
+	}
+
+	/**
+	 * @param mixed $alt_name1
+	 */
+	public function setAltName1($alt_name1)
+	{
+		$this->alt_name1 = $alt_name1;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltName2()
+	{
+		return $this->alt_name2;
+	}
+
+	/**
+	 * @param mixed $alt_name2
+	 */
+	public function setAltName2($alt_name2)
+	{
+		$this->alt_name2 = $alt_name2;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltAddress1()
+	{
+		return $this->alt_address1;
+	}
+
+	/**
+	 * @param mixed $alt_address1
+	 */
+	public function setAltAddress1($alt_address1)
+	{
+		$this->alt_address1 = $alt_address1;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltAddress2()
+	{
+		return $this->alt_address2;
+	}
+
+	/**
+	 * @param mixed $alt_address2
+	 */
+	public function setAltAddress2($alt_address2)
+	{
+		$this->alt_address2 = $alt_address2;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltZip()
+	{
+		return $this->alt_zip;
+	}
+
+	/**
+	 * @param mixed $alt_zip
+	 */
+	public function setAltZip($alt_zip)
+	{
+		$this->alt_zip = $alt_zip;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltCity()
+	{
+		return $this->alt_city;
+	}
+
+	/**
+	 * @param mixed $alt_city
+	 */
+	public function setAltCity($alt_city)
+	{
+		$this->alt_city = $alt_city;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltCountry()
+	{
+		return $this->alt_country;
+	}
+
+	/**
+	 * @param mixed $alt_country
+	 */
+	public function setAltCountry($alt_country)
+	{
+		$this->alt_country = $alt_country;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltPhone()
+	{
+		return $this->alt_phone;
+	}
+
+	/**
+	 * @param mixed $alt_phone
+	 */
+	public function setAltPhone($alt_phone)
+	{
+		$this->alt_phone = $alt_phone;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltMobil()
+	{
+		return $this->alt_mobil;
+	}
+
+	/**
+	 * @param mixed $alt_mobil
+	 */
+	public function setAltMobil($alt_mobil)
+	{
+		$this->alt_mobil = $alt_mobil;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltFax()
+	{
+		return $this->alt_fax;
+	}
+
+	/**
+	 * @param mixed $alt_fax
+	 */
+	public function setAltFax($alt_fax)
+	{
+		$this->alt_fax = $alt_fax;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltEmail()
+	{
+		return $this->alt_email;
+	}
+
+	/**
+	 * @param mixed $alt_email
+	 */
+	public function setAltEmail($alt_email)
+	{
+		$this->alt_email = $alt_email;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltWeb()
+	{
+		return $this->alt_web;
+	}
+
+	/**
+	 * @param mixed $alt_web
+	 */
+	public function setAltWeb($alt_web)
+	{
+		$this->alt_web = $alt_web;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAltTitle()
+	{
+		return $this->alt_title;
+	}
+
+	/**
+	 * @param mixed $alt_title
+	 */
+	public function setAltTitle($alt_title)
+	{
+		$this->alt_title = $alt_title;
+	}
 }
 ?>

@@ -26,8 +26,9 @@ class Attribute{
 	private $objectid;			// ID des zugehoerigen Objekts
 	private $title;				// Name des Attributes
 	private $comment;			// Inhalt des Attributes
-	private $enable_customer;	// Aktivierung fuer Geschaeftskontakte
-	private $enable_contact;	// Aktivierung fuer Kontaktpersonen
+	private $enable_customer = 0;	// Aktivierung fuer Geschaeftskontakte
+	private $enable_contact = 0;	// Aktivierung fuer Kontaktpersonen
+	private $enable_colinv = 0;	    // Aktivierung fuer Vorgänge
 	
 	function __construct($id){
 		global $DB;
@@ -51,6 +52,7 @@ class Attribute{
 				$this->comment = $res["comment"];
 				$this->enable_contact = $res["enable_contacts"];
 				$this->enable_customer = $res["enable_customer"];
+				$this->enable_colinv = $res["enable_colinv"];
 			}
 		}
 		
@@ -66,6 +68,7 @@ class Attribute{
                     comment = '{$this->comment}', 
                     enable_contacts = {$this->enable_contact},
                     enable_customer = {$this->enable_customer},
+                    enable_colinv = {$this->enable_colinv},
                     state = {$this->state}
                     WHERE id = {$this->id}";
 
@@ -73,10 +76,10 @@ class Attribute{
         } else {
             $sql = "INSERT INTO attributes
                         (state, title, comment, crtdate, crtuser, 
-                         enable_contacts, enable_customer)
+                         enable_contacts, enable_customer, enable_colinv)
                     VALUES
                         (1, '{$this->title}', '{$this->comment}', UNIX_TIMESTAMP(), {$_USER->getId()}, 
-            			 {$this->enable_contact}, {$this->enable_customer} )";
+            			 {$this->enable_contact}, {$this->enable_customer}, {$this->enable_colinv} )";
             $res = $DB->no_result($sql);
 
             if($res) {
@@ -166,6 +169,30 @@ class Attribute{
 				WHERE
 				state > 0
 				AND enable_contacts = 1
+				ORDER BY {$order} ";
+	
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = new Attribute($r["id"]);
+			}
+		}
+		return $retval;
+	}
+	
+	/**
+	 * ... liefert alle Attribute, die fuer Vorgänge freigeschaltet sind
+	 *
+	 * @param String $order: Sortierung
+	 * @return multitype:Attribute
+	 */
+	static function getAllAttributesForCollectiveinvoice($order = self::ORDER_TITLE){
+		$retval = Array();
+		global $DB;
+	
+		$sql = "SELECT id FROM attributes
+				WHERE
+				state > 0
+				AND enable_colinv = 1
 				ORDER BY {$order} ";
 	
 		if($DB->num_rows($sql)){
@@ -373,5 +400,21 @@ class Attribute{
 	{
 	    $this->enable_contact = $enable_contact;
 	}
+	
+    /**
+     * @return the $enable_colinv
+     */
+    public function getEnable_colinv()
+    {
+        return $this->enable_colinv;
+    }
+
+    /**
+     * @param field_type $enable_colinv
+     */
+    public function setEnable_colinv($enable_colinv)
+    {
+        $this->enable_colinv = $enable_colinv;
+    }
 }
 ?>

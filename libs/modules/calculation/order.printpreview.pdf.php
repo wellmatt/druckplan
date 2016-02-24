@@ -418,11 +418,11 @@ $pdf->y = $mach_top - 160;
 		"fontSize"     => 28, "cols" => Array		(	 	"Eigenschaft"   => Array("width" => "350", "justification" => "right"),
 															"Wert"          => Array("width" => "600", "justification" => "left")
 		));
- $data[] = Array(	"Eigenschaft"		=> "Kunde: ",
-					"Wert" 				=> $order->getCustomer()->getNameAsLine());
+//  $data[] = Array(	"Eigenschaft"		=> "Kunde: ",
+// 					"Wert" 				=> $order->getCustomer()->getNameAsLine());
 					
- $data[] = Array(	"Eigenschaft"		=> "Anschrift: ",
-					"Wert" 				=> $order->getCustomer()->getAddress1() . "\n" .  $order->getCustomer()->getAddress2() . "\n" .  $order->getCustomer()->getZip() . " " .  $order->getCustomer()->getCity() . "\n");
+//  $data[] = Array(	"Eigenschaft"		=> "Anschrift: ",
+// 					"Wert" 				=> $order->getCustomer()->getAddress1() . "\n" .  $order->getCustomer()->getAddress2() . "\n" .  $order->getCustomer()->getZip() . " " .  $order->getCustomer()->getCity() . "\n");
 					
  if($order->getCrtdat() > 0)
 	$crt_date = date('d.m.Y', $order->getCrtdat());
@@ -437,11 +437,11 @@ $pdf->y = $mach_top - 160;
  else
 	$delivery_date = "";
 
- $data[] = Array(	"Eigenschaft"		=> "Lieferdatum: ",
-					"Wert" 				=> $delivery_date);
+//  $data[] = Array(	"Eigenschaft"		=> "Lieferdatum: ",
+// 					"Wert" 				=> $delivery_date);
 					
- $data[] = Array(	"Eigenschaft"		=> "Sachbearbeiter: ",
-					"Wert" 				=> $order->getInternContact()->getNameAsLine());
+//  $data[] = Array(	"Eigenschaft"		=> "Sachbearbeiter: ",
+// 					"Wert" 				=> $order->getInternContact()->getNameAsLine());
 					
  $data[] = Array(	"Eigenschaft"		=> "Maschine: ",
 					"Wert" 				=> $mach->getName());
@@ -486,7 +486,7 @@ $pdf->y = $mach_top - 160;
 					"Wert" 				=> $order->getProduct()->getName());
 					
  $data[] = Array(	"Eigenschaft"		=> "Gesch. Format: ",
-					"Wert" 				=> $product_width_closed . "x" . $product_width_closed);
+					"Wert" 				=> $product_width_closed . "x" . $product_height_closed);
 					
  $data[] = Array(	"Eigenschaft"		=> "Offenes Format: ",
 					"Wert" 				=> $product_width . "x" . $product_height);

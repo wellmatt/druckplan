@@ -369,7 +369,7 @@ function createSelects(id,count,workload)
                                    <td class="content_row" valign="top"><?php echo $me->getMachine()->getName();?></td>
                                    <td class="content_row" valign="top">
                                         <input type="text" name="crt_job[<?php echo $x;?>][start]" 
-                              			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> text format-d-m-y divider-dot"
+                              			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
                                			value="<?php echo date('d.m.Y H:i');?>" style="width:100px;"/>
                			           </td>
                        			   <td class="content_row" valign="top"><?php echo printPrice($me->getTime(),2);?></td>
@@ -413,7 +413,7 @@ function createSelects(id,count,workload)
                        <td class="content_row" valign="top"><?php echo $opos_article->getTitle();?></td>
                        <td class="content_row" valign="top">
                             <input type="text" name="crt_job[<?php echo $x;?>][start]" 
-                  			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> text format-d-m-y divider-dot"
+                  			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot" 
                    			value="<?php echo date('d.m.Y H:i');?>" readonly style="width:100px; background-color:#EBEBE4;border:1px solid #ABADB3;padding:2px 1px;color:rgb(84, 84, 84);"/>
     		           </td>
               		   <td class="content_row" valign="top"><?php echo printPrice($opos->getQuantity(),2);?></td>

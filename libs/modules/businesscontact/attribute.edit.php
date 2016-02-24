@@ -11,6 +11,7 @@ if($_REQUEST["subexec"] == "save"){
 	$attribute->setTitle(trim(addslashes($_REQUEST["attribute_title"])));
 	$attribute->setEnable_customer((int)$_REQUEST["enable_cust"]);
 	$attribute->setEnable_contact((int)$_REQUEST["enable_contact"]);
+	$attribute->setEnable_colinv((int)$_REQUEST["enable_colinv"]);
 	$savemsg = getSaveMessage($attribute->save()).$DB->getLastError();
 	
 	$attribute_items = Array();
@@ -91,6 +92,10 @@ function addAttibuteItem()
 			</td>
 		</tr>
 		<tr>
+			<td class="content_row_header"><?=$_LANG->get('ID')?></td>
+			<td class="content_row_clear"><?=$attribute->getId()?></td>
+		</tr>
+		<tr>
 			<td class="content_row_header"><?=$_LANG->get('Sichtbar beim Kunden')?></td>
 			<td class="content_row_clear">
 				<input name="enable_cust" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
@@ -104,6 +109,13 @@ function addAttibuteItem()
 					<? if ($attribute->getEnable_contact()) echo "checked";?> >
 			</td>
 		</tr>	
+		<tr>
+			<td class="content_row_header"><?=$_LANG->get('Sichtbar beim Vorgang')?></td>
+			<td class="content_row_clear">
+				<input name="enable_colinv" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
+					<? if ($attribute->getEnable_colinv()) echo "checked";?> >
+			</td>
+		</tr>	
 	</table>
 </div> 
 <br/>
@@ -114,12 +126,14 @@ function addAttibuteItem()
 	<table id="table_items">
 		<colgroup>
         	<col width="40">
+        	<col width="40">
         	<col width="160">
         	<col width="40">
         	<col>
     	</colgroup>
 		<tr>
 			<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
+			<td class="content_row_header"><?=$_LANG->get('ID')?></td>
 			<td class="content_row_header"><?=$_LANG->get('Titel')?>*</td>
 			<td class="content_row_header"><?=$_LANG->get('Input')?>**</td>
 			<td class="content_row_header">
@@ -137,6 +151,9 @@ function addAttibuteItem()
 			<tr>
 				<td class="content_row_clear">
 					<?=$y+1?>
+				</td>
+				<td class="content_row_clear">
+					<?=$all_items[$y]["id"]?>
 				</td>
 				<td class="content_row_clear">
 					<input name="item_id_<?=$y+1?>" type="hidden" value="<?=$all_items[$y]["id"]?>"/>

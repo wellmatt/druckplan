@@ -49,7 +49,7 @@ phpFastCache::$config = array(
 
 
 // temporary disabled phpFastCache
-phpFastCache::$disabled = false;
+phpFastCache::$disabled = true;
 
 
 

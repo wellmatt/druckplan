@@ -33,9 +33,9 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setPdf_margin_bottom(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_bottom"])));
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
-	$perf->setMail_domain($_REQUEST["mail_domain"]);
 	$savemsg = getSaveMessage($perf->save());
 	
+	HolidayEvent::removeAll();
     for ($i = 0; $i < count($_REQUEST["holiday"]["id"]);$i++)
     {
         $holiday = new HolidayEvent($_REQUEST["holiday"]["id"][$i]);
@@ -200,8 +200,7 @@ function deleteFormatRawRow(obj)
 			<li><a href="#tabs-2"><? echo $_LANG->get('PDF');?></a></li>
 			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
 			<li><a href="#tabs-4"><? echo $_LANG->get('Datatables');?></a></li>
-			<li><a href="#tabs-5"><? echo $_LANG->get('Mail');?></a></li>
-			<li><a href="#tabs-6"><? echo $_LANG->get('Kalender');?></a></li>
+			<li><a href="#tabs-5"><? echo $_LANG->get('Kalender');?></a></li>
 		</ul>
 
 		<div id="tabs-0">
@@ -338,20 +337,6 @@ function deleteFormatRawRow(obj)
             </table>
        </div>
        <div id="tabs-5">
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-               <colgroup>
-                  <col width="180">
-                  <col>
-               </colgroup>
-               <tr>
-                  <td class="content_row_header" valign="top">Mail Domain:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="mail_domain" id="mail_domain" value="<?php echo $perf->getMail_domain();?>"/></br>
-                  </td>
-               </tr>
-            </table>
-       </div>
-       <div id="tabs-6">
             Feiertage: <img src="images/icons/plus.png" class="pointer icon-link" onclick="addHolidayRow()">
             <table width="100%" border="0" cellpadding="0" cellspacing="0" id="holidays">
                <colgroup>
@@ -385,7 +370,7 @@ function deleteFormatRawRow(obj)
                      <input type="text" class="cal" name="holiday[end][]" value="<?php echo date("d.m.Y H:i",$holiday->getEnd());?>"/>
                   </td>
                   <td class="content_row_clear" valign="top">
-                     <input type="text" name="holiday[color][]" value="<?php echo $holiday->getColor();?>"/>
+                     <input type="text" name="holiday[color][]" value="<?php echo $holiday->getColor();?>"/><img src="images/icons/cross-script.png" class="pointer icon-link" onclick="$(this).parent().parent().remove();">
                   </td>
                </tr>
                <?php }}?>

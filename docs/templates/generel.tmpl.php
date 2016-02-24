@@ -17,6 +17,7 @@ if ($smarty == NULL || is_a($smarty, 'Smarty') == FALSE)
     $smarty = new Smarty();
 
 $smarty->registerPlugin("function", "PrintPrice", "smarty_function_printPrice");
+$smarty->registerPlugin("function", "PrintPrice2", "smarty_function_printPrice2");
 
 $smarty->registerPlugin("function", "ReplaceLn", "smarty_function_replace_ln");
 
@@ -92,6 +93,8 @@ if (1 == 1) { // is_a($order, "Order")
     
     $smarty->assign('Order', $order);
     
+    $smarty->assign('OrderAttributes', $order->getActiveAttributeItemsInput());
+    
     $date = new DateTime();
     $date->setTimestamp($order->getCrtdat());
     $smarty->assign('OrderCreation', $date->format('d.m.Y'));
@@ -111,6 +114,8 @@ if (1 == 1) { // is_a($order, "Order")
     
     $smarty->assign('Customer', $order->getCustomer());
     
+    $smarty->assign('CustomerAttributes', $order->getCustomer()->getActiveAttributeItemsInput());
+    
     $smarty->assign('CustomerId', $order->getCustomer()
         ->getId());
     
@@ -126,12 +131,10 @@ if (1 == 1) { // is_a($order, "Order")
     $smarty->assign('CustomerAddressSD', str_replace("\n", "<br />", $order->getCustomer()
         ->getAddressAsLine()));
     
-    if ($order->getInvoiceAddress() >0)
+    if ($order->getInvoiceAddress()->getId() >0)
     {
-        $smarty->assign('CustomerName', $order->getInvoiceAddress()
-            ->getNameAsLine());
-        $smarty->assign('CustomerAddress', str_replace("\n", "<br />", $order->getInvoiceAddress()
-            ->getAddressAsLine()));
+        $smarty->assign('CustomerName', $order->getInvoiceAddress()->getNameAsLine());
+        $smarty->assign('CustomerAddress', str_replace("\n", "<br />", $order->getInvoiceAddress()->getAddressAsLine()));
     }
     
     $smarty->assign('CustomerEmail', $order->getCustomer()

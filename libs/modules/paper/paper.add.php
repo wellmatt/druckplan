@@ -121,6 +121,8 @@ if($_REQUEST["subexec"] == "save")
     $paper->setTotalweight(trim(addslashes($_REQUEST["paper_totalweight"])));
     $paper->setPrice_100kg(trim(addslashes($_REQUEST["paper_100kg"])));
     $paper->setPrice_1qm(trim(addslashes($_REQUEST["paper_1qm"])));
+    $paper->setVolume(trim(addslashes($_REQUEST["paper_volume"])));
+    $paper->setRolle(trim(addslashes($_REQUEST["paper_rolle"])));
     
     $paper->setWeights($weights);
     $paper->setSizes($sizes);
@@ -377,19 +379,31 @@ function addSupplierRow()
         </td>
 		</tr>
 		<tr>		
-			<td class="content_row_header"><?=$_LANG->get('100Kg-Preis')?> *
+			<td class="content_row_header"><?=$_LANG->get('100Kg-Preis')?>
 			<td class="content_row_clear">
 				<input name="paper_100kg" value="<?php echo $paper->getPrice_100kg();?>" class="text" style="width:300px"><br>
 				<class="content_row_header"><?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?> 
 			</td>
 		</tr> 
 		<tr>		
-			<td class="content_row_header"><?=$_LANG->get('1qm-Preis')?> *
+			<td class="content_row_header"><?=$_LANG->get('1qm-Preis')?>
 			<td class="content_row_clear">
 				<input name="paper_1qm" value="<?php echo $paper->getPrice_1qm();?>" class="text" style="width:300px"><br>
 				<class="content_row_header"><?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?> 
 			</td>
-		</tr> 
+		</tr>
+    <tr>
+        <td class="content_row_header"><?=$_LANG->get('Volumen')?>
+        <td class="content_row_clear">
+            <input name="paper_volume" value="<?php echo $paper->getVolume();?>" class="text" style="width:300px">
+        </td>
+    </tr>
+    <tr>
+        <td class="content_row_header"><?=$_LANG->get('Rolle')?>
+        <td class="content_row_clear">
+            <input name="paper_rolle" value="1" <?php if ($paper->getRolle()) echo ' checked ';?> type="checkbox">
+        </td>
+    </tr>
     <!--<tr>
         <td class="content_row_header"><?=$_LANG->get('Verf&uuml;gbare Gr&ouml;&szlig;en')?> <?=$_LANG->get('(BxH)')?></td>
         <td class="content_row_clear" id="td-size">

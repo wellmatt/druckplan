@@ -168,12 +168,15 @@ class Notification {
         }
     }
      
-    public static function generateNotification($touser, $crtmodule, $type, $reference, $objectid, $group = ""){
+    public static function generateNotification($touser, $crtmodule, $type, $reference, $objectid, $group = "", $notes = Array()){
         global $_USER;
+        if ($touser->getId() == $_USER->getId() && $type != "NewOrderShop")
+            return true;
         $tmp_notification = self::checkUnreadNotification($touser->getId(), $crtmodule, $objectid);
         if ($tmp_notification->getId()>0)
         {
             $tmp_notification->setCount($tmp_notification->getCount()+1);
+            $tmp_notification->setState(1);
         }
         $tmp_notification->setObjectid($objectid);
         $tmp_notification->setUser($touser);
@@ -197,7 +200,13 @@ class Notification {
                         $tmp_notification->save();
                         break;
                     case "ChangeEvent":
-                        $tmp_notification->setTitle("Terminänderung von \"".$reference."\"");
+                        if (count($notes)>0)
+                        {
+                            $notes = implode(", ", $notes);
+                            $tmp_notification->setTitle("Terminänderung von \"".$reference."\" ( ".$notes." )");
+                        } else {
+                            $tmp_notification->setTitle("Terminänderung von \"".$reference."\"");
+                        }
                         $tmp_notification->setPath("index.php?page=libs/modules/organizer/calendar.php&exec=showevent&id=".$objectid);
                         $tmp_notification->setCrtmodule($crtmodule);
                         $tmp_notification->save();

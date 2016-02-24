@@ -6,10 +6,60 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 
-$search_string = $_REQUEST["search_string"];
-
-$all_orders = CollectiveInvoice::getAllCollectiveInvoiceForShop(CollectiveInvoice::ORDER_CRTDATE_DESC, $_BUSINESSCONTACT->getId(), $search_string);
 ?>
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="../css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="../jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="../jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.bootstrap.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var ordhistable = $('#ordhistable').DataTable( {
+			"processing": true,
+			"bServerSide": true,
+			"sAjaxSource": "orderhistory.dt.ajax.php?customerid=<?php echo $busicon->getId();?>",
+			"paging": true,
+			"stateSave": false,
+			"pageLength": "10",
+			"aaSorting": [[ 1, "desc" ]],
+			"dom": 'flrtip',
+			"lengthMenu": [ [10, 25], [10, 25] ],
+			"columns": [
+				null,
+				null,
+				{ "sortable": false, "searchable": false },
+				{ "searchable": false },
+				{ "searchable": false },
+				null
+			],
+			"language":
+			{
+				"emptyTable":     "Keine Daten vorhanden",
+				"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+				"infoEmpty": 	  "Keine Seiten vorhanden",
+				"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+				"infoPostFix":    "",
+				"thousands":      ".",
+				"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+				"loadingRecords": "Lade...",
+				"processing":     "Verarbeite...",
+				"search":         "Suche:",
+				"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+				"paginate": {
+					"first":      "Erste",
+					"last":       "Letzte",
+					"next":       "N&auml;chste",
+					"previous":   "Vorherige"
+				},
+				"aria": {
+					"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+					"sortDescending": ": aktivieren um absteigend zu sortieren"
+				}
+			}
+		} );
+	} );
+</script>
 
 <div class="box2" style="min-height:180px;">
 <table style="width:100%">
@@ -18,68 +68,20 @@ $all_orders = CollectiveInvoice::getAllCollectiveInvoiceForShop(CollectiveInvoic
     		<h1><?=$_LANG->get('Ihre Bestellungen');?></h1>
     	</td>
     	<td width="200px" align="right">
-    		<form action="index.php" method="post" name="order_search" id="order_search" >
-    			<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
-    			<input name="search_string" type="text" value="<?=$search_string?>" style="width:150px;"/>
-    			<img src="../images/icons/magnifier-left.png" alt="<?=$_LANG->get('Suchen');?>" class="pointer"
-    				 onClick="document.getElementById('order_search').submit()" />
-    		</form>
     	</td>
     </tr>
 </table>
 
-<table cellpadding="2" cellspacing="0" border="0" width="100%">
-    <colgroup>
-        <col width="120">
-        <col width="120">
-        <col >
-        <col width="220">
-        <col width="80">
-    </colgroup>
-    <? if(count($all_orders) > 0  && $all_orders != false) {?>
-    <tr>
-    	<td class="filerow_header"><?=$_LANG->get('Auftrag-Nr.');?></td>
-        <td class="filerow_header" align="center"><?=$_LANG->get('Bestelldatum');?></td>
-        <td class="filerow_header"><?=$_LANG->get('Positionen');?></td>
-        <td class="filerow_header"><?=$_LANG->get('Lieferadresse');?></td>
-        <td class="filerow_header" align="center"><?=$_LANG->get('Status');?></td>
-    </tr>
-    <?foreach ($all_orders AS $order){ ?>
-	    <tr class="filerow">
-	    	<td class="filerow">
-				<?=$order->getNumber();?>
-	        </td>
-	        <td class="filerow" align="center" style="vertical-align: top;">
-	        	<?if ($order->getCrtdate() > 0) echo date("d.m.Y",$order->getCrtdate()) // - H:i?>
-	        </td>
-	        <td class="filerow" style="vertical-align: top;">
-	        	<? // =$order->getTitle()?> 
-	        <? 	$allpos = $order->getPositions();
-	        	foreach ($allpos AS $pos){ ?>
-	        		<? // =$pos->getTitle(); ?> 
-	        		<?=$pos->getCommentForShop();?>
-	        		<?php 
-	        	    if ($pos->getFile_attach()>0){
-			                $tmp_attach = new Attachment($pos->getFile_attach());
-			                echo '<a href="../'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
-                                  <img src="../images/icons/disk--arrow.png" title="Angehängte Datei herunterladen"> '.$tmp_attach->getOrig_filename().'</a>';
-		            }
-	        		?>
-	        		<br />
-	        <?	} ?>
-	        </td>
-	        <td class="filerow" style="vertical-align: top;">
-	        	<?=$order->getDeliveryaddress()->getAddressAsLine()?>
-	        </td>
-	        <td class="filerow" align="center" style="vertical-align: top;">
-	        	<img src="../images/status/<?=$order->getStatusImage()?>" 
-	        		 title="<?=$order->getStatusDescription()?>" 
-	        		 alt="<?=$order->getStatusDescription()?>">
-	        </td>
-	    </tr>
-    <?	$x++; } 
-    } else {
-		echo '<tr><td class="filerow" colspan="5" align="center"><b>'.$_LANG->get('Keine Bestellungen gefunden').'</b></td></tr>';
-	    }?>
+<table cellpadding="2" cellspacing="0" border="0" width="100%" id="ordhistable" class="stripe hover row-border order-column">
+	<thead>
+		<tr>
+			<td>Auftrag-Nr.</td>
+			<td align="center">Bestelldatum</td>
+			<td>Positionen</td>
+			<td>Lieferadresse</td>
+			<td>Rechnungsadresse</td>
+			<td align="center">Status</td>
+		</tr>
+	</thead>
 </table>
 </div>

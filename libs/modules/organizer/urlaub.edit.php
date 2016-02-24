@@ -161,7 +161,7 @@ $(function() {
         <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
         <?php if($vacation->getState() != Urlaub::STATE_APPROVED || $_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_URLAUB)){?>
             <a href="#" class="menu_item" onclick="$('#vacation_form').submit();">Speichern</a>
-            <a href="#" class="menu_item_delete" onclick="askDel(\'index.php?page='.$_REQUEST['page'].'&exec=delvacation&id='.$vacation->getId().'\')">Löschen</a>
+            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?php echo $_REQUEST['page'];?>&exec=delvacation&id=<?php echo $vacation->getId();?>')">Löschen</a>
         <?php } ?>
     </div>
 </div>

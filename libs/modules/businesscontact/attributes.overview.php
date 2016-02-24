@@ -40,11 +40,13 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 			<col width="60px">
 			<col width="60px">
 			<col width="60px">
+			<col width="60px">
 		</colgroup>
 		<tr>
 			<td class="content_row_header"><?= $_LANG->get('Name');?></td>
 			<td class="content_row_header" align="center"><?= $_LANG->get('Bei Kunden');?></td>
-			<td class="content_row_header" align="center"><?= $_LANG->get('Bei Kontaktpersonen');?></td>
+			<td class="content_row_header" align="center"><?= $_LANG->get('Bei Ansprechpartner');?></td>
+			<td class="content_row_header" align="center"><?= $_LANG->get('Bei Vorgängen');?></td>
 			<td class="content_row_header" align="center"><?= $_LANG->get('Optionen');?></td>
 		</tr>
 	<?	$x=0;
@@ -54,20 +56,22 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 					<?=$attribute->getTitle()?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-					<img src="images/status/
 						<? if ($attribute->getEnable_contact() == 1){
-								echo "red_small.gif";
-							} else {
-								echo "green_small.gif";
-							} ?>">
+								echo "<img src='images/icons/tick.png'>";
+							}
+							?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-					<img src="images/status/
 						<? if ($attribute->getEnable_customer() == 1 ){
-								echo "red_small.gif";
-							} else {
-								echo "green_small.gif";
-							} ?>">
+								echo "<img src='images/icons/tick.png'>";
+							}
+							?>
+				</td>
+				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
+						<? if ($attribute->getEnable_colinv() == 1 ){
+								echo "<img src='images/icons/tick.png'>";
+							}
+							?>
 				</td>
 				<td class="content_row" align="center">
 					<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><img src="images/icons/pencil.png"></a>

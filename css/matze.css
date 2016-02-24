@@ -1,0 +1,20 @@
+div.calc_detail_box4 {
+    background-color: #f7f7f7;
+    padding: 10px;
+    -moz-border-radius: 15px;
+    -khtml-border-radius: 15px;
+    border-radius: 15px;
+    border:  2px solid #00BFFF;
+    border-style: solid;
+
+
+    /*width: 1300px;*/
+}
+
+div.calc_detail_box4 tr.color1 {
+    background-color: #ffffff;
+}
+
+div.calc_detail_box4 tr.color2 {
+    background-color: #f9f9f9;
+}

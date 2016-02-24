@@ -1010,6 +1010,7 @@ class Machine
                     diff_id = {$diff_id} AND
                     value <= {$val}
                 ORDER BY value DESC";
+//         echo $sql . "</br>";
         if($DB->num_rows($sql))
         {
             $res = $DB->select($sql);

@@ -63,12 +63,15 @@ class Orderposition{
 	 * @param int $collectiveId : Id einer Sammelrechnung
 	 * @return Array : Orderposition
 	 */
-	static function getAllOrderposition($collectiveId,$softdeleted = false){
+	static function getAllOrderposition($collectiveId,$softdeleted = false,$relevant = false){
 		global $DB;
+		$status = '';
 		if ($softdeleted)
 		    $status = " AND status > 0 ";
 		else
 		    $status = " AND status = 1 ";
+		if ($relevant)
+		    $status .= " AND inv_rel > 0 ";
 		$sql = "SELECT id FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveId} {$status}";
 		$orderpos = Array();
 		if($DB->no_result($sql)){
@@ -214,13 +217,13 @@ class Orderposition{
 	public function getCommentForShop(){
 		global $_LANG;
 		$retval = "";
-		if ($this->type == self::TYPE_ARTICLE){
-			$tmp_art = new Article($this->objectid);
-			$retval = $tmp_art->getNumber()." - ".$tmp_art->getTitle()." (".$this->quantity.$_LANG->get('Stk.').")";
-		}
 		if ($this->type == self::TYPE_PERSONALIZATION){
 			$tmp_perso = new Personalizationorder($this->objectid);
-			$retval = $tmp_perso->getTitle()." (".$tmp_perso->getAmount().$_LANG->get('Stk.').")";
+//			var_dump($tmp_perso);
+			$retval = $tmp_perso->getTitle()." (".$tmp_perso->getAmount().'Stk.'.")";
+		} else {
+			$tmp_art = new Article($this->objectid);
+			$retval = $tmp_art->getNumber()." - ".$tmp_art->getTitle()." (".$this->quantity.'Stk.'.")";
 		}
 		return $retval;
 	}

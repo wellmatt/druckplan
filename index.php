@@ -136,6 +136,7 @@ if ($_USER == false)
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" type="text/css" href="./css/main.css" />
+<link rel="stylesheet" type="text/css" href="./css/matze.css" />
 <link rel="stylesheet" type="text/css" href="./css/ticket.css" />
 <link rel="stylesheet" type="text/css" href="./css/menu.css" />
 <link rel="stylesheet" type="text/css" href="./css/main.print.css" media="print"/>
@@ -144,6 +145,7 @@ if ($_USER == false)
 <link type="text/css" href="jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
 <script type="text/javascript" src="jscripts/jquery/js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="jscripts/jquery/js/jquery.blockUI.js"></script>
 <script language="JavaScript" src="./jscripts/jquery/local/jquery.ui.datepicker-<?=$_LANG->getCode()?>.js"></script>
 <script type="text/javascript" src="jscripts/jquery.validate.min.js"></script>
 <script type="text/javascript" src="jscripts/moment/moment-with-locales.min.js"></script>
@@ -242,8 +244,15 @@ function sleep(millis, callback) {
 
           <ul class="nav navbar-nav navbar-left">
             
+            
             <!-- divider -->
             <li class="divider"></li>
+            
+            <!-- Ticketliste -->
+            <li>
+              <a href="index.php?page=libs/modules/tickets/ticket.php"><i class="fa"></i>&nbsp;<span class="hidden-sm">Ticketliste</span></a>
+            </li>
+            <!-- /Ticketliste -->
           
             <? require_once('./libs/basic/menu/menu.php'); ?>
           

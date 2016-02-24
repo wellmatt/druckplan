@@ -7,7 +7,7 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 
-// Vorbearbeitungsfunktion für Smarty
+// Vorbearbeitungsfunktion fï¿½r Smarty
 
 function ckeditor_to_smarty($file)
 {
@@ -34,6 +34,15 @@ function smarty_function_printPrice($params, Smarty_Internal_Template $template)
         return "";
     }
     return printPrice($params['var']);
+}
+
+function smarty_function_printPrice2($params, Smarty_Internal_Template $template)
+{    
+    if (empty($params['var'])) {
+        trigger_error("missing 'var' parameter");
+        return "";
+    }
+    return printPrice($params['var'],1);
 }
 
 function smarty_function_replace_ln($params, Smarty_Internal_Template $template)

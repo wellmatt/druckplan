@@ -34,6 +34,8 @@ class Paper {
 	private $totalweight;
 	private $price_100kg;
 	private $price_1qm;
+    private $volume;
+    private $rolle;
     
     function __construct($id = 0) {
         global $DB;
@@ -55,6 +57,8 @@ class Paper {
                 $this->totalweight = $res[0]["totalweight"];
                 $this->price_100kg = $res[0]["price_100kg"];
                 $this->price_1qm = $res[0]["price_1qm"];
+                $this->price_1qm = $res[0]["volume"];
+                $this->rolle = $res[0]["rolle"];
                 
                 $sql = "SELECT * FROM papers_weights 
                         WHERE paper_id = {$this->id}
@@ -191,7 +195,7 @@ class Paper {
         return $price;
     }
     
-    function getAvailablePaperSizesForMachine($machine, $minWidth = 0, $minHeight = 0)
+    function getAvailablePaperSizesForMachine($machine, $minWidth = 0, $minHeight = 0, $rolle = 0, $productheight = 0)
     {
         global $DB;
         $sqlsizes = Array();
@@ -205,14 +209,19 @@ class Paper {
         AND (( width <= {$machine->getPaperSizeWidth()} AND height <= {$machine->getPaperSizeHeight()})
             OR (width <= {$machine->getPaperSizeHeight()} AND height <= {$machine->getPaperSizeWidth()}))
         AND (( width >= {$machine->getPaperSizeMinWidth()} AND height >= {$machine->getPaperSizeMinHeight()})
-            OR (width >= {$machine->getPaperSizeMinHeight()} AND height >= {$machine->getPaperSizeMinWidth()}))
-        AND (( width >= {$minWidth} AND height >= {$minHeight})
-            OR (width >= {$minHeight} AND height >= {$minWidth}))";
+            OR (width >= {$machine->getPaperSizeMinHeight()} AND height >= {$machine->getPaperSizeMinWidth()}))";
+        if ($rolle == 0)
+            $sql = "AND (( width >= {$minWidth} AND height >= {$minHeight}) OR (width >= {$minHeight} AND height >= {$minWidth}))";
     
 //         echo $sql;
         if($DB->num_rows($sql))
             $sqlsizes = $DB->select($sql);
 
+        if ($rolle == 1)
+            for ($i = 0; $i < count($sqlsizes); $i++)
+                $sqlsizes[$i]["height"] = $productheight;
+
+//        print_r($sqlsizes);
         return $sqlsizes;
     }
     
@@ -230,6 +239,8 @@ class Paper {
                         OR (width <= {$machine->getPaperSizeHeight()} AND height <= {$machine->getPaperSizeWidth()}))
                     AND (( width >= {$machine->getPaperSizeMinWidth()} AND height >= {$machine->getPaperSizeMinHeight()})
                         OR (width >= {$machine->getPaperSizeMinHeight()} AND height >= {$machine->getPaperSizeMinWidth()}))";
+
+//        echo $sql;
 
         if($DB->num_rows($sql))
         {
@@ -250,7 +261,6 @@ class Paper {
             $size["height"] = $sqlsizes[$idx]["height"];
             $size["width"] = $sqlsizes[$idx]["width"]; 
         }
-            
         return $size;
     }
     
@@ -436,10 +446,13 @@ class Paper {
                         totalweight = '{$this->totalweight}',
                         price_100kg = '{$this->price_100kg}',
                         price_1qm = '{$this->price_1qm}',
+                        volume = '{$this->volume}',
+                        rolle = {$this->rolle},
                         pricebase = {$this->priceBase}
                     WHERE
                         id = {$this->id}";
             $DB->no_result($sql);
+//            echo $sql;
 
             $sql = "DELETE FROM papers_sizes WHERE paper_id = {$this->id}";
             $DB->no_result($sql);
@@ -764,5 +777,38 @@ class Paper {
     {
         $this->price_1qm = $price_1qm;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getVolume()
+    {
+        return $this->volume;
+    }
+
+    /**
+     * @param mixed $volume
+     */
+    public function setVolume($volume)
+    {
+        $this->volume = $volume;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRolle()
+    {
+        return $this->rolle;
+    }
+
+    /**
+     * @param mixed $rolle
+     */
+    public function setRolle($rolle)
+    {
+        $this->rolle = $rolle;
+    }
+
 }
 ?>
