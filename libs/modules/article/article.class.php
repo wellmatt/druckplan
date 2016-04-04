@@ -549,19 +549,22 @@ class Article {
 		return $retval;
 	}
 	
-	static function getAllShopArticleByCustomerAndCp($cust_id, $cp_id, $order = self::ORDER_ID){
+	static function getAllShopArticleByCustomerAndCp($cust_id, $cp_id, $filter = null){
 		global $DB;
 		$retval = Array();
-		
-		$sql = "SELECT DISTINCT id FROM
-                (
-                SELECT id FROM article WHERE
-                status > 0 AND shoprel = 1
-                UNION ALL
-                SELECT article as id FROM article_shop_approval WHERE 
-                (bc = {$cust_id} OR cp = {$cp_id})
-                ) t1
-                ORDER BY id ASC";
+
+		$sql = "SELECT DISTINCT id, title FROM
+				(
+				SELECT article.id, article.title FROM article WHERE
+				status > 0 AND article.shoprel = 1
+				UNION ALL
+				SELECT article_shop_approval.article as id, article.title FROM article_shop_approval
+				INNER JOIN article ON article_shop_approval.article = article.id
+				WHERE
+				(article_shop_approval.bc = {$cust_id} OR article_shop_approval.cp = {$cp_id})
+				) t1
+				{$filter}
+				ORDER BY id ASC";
 		
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){

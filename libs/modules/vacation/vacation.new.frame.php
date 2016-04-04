@@ -221,10 +221,10 @@ $(function() {
 			<td class="content_row_header" valign="top"><?=$_LANG->get('Typ')?></td>
 			<td class="content_row_clear">
 				<select name="vac_type" class="text" style="width:200px;">
-					<option value="<? echo VacationEntry::TYPE_URLAUB;?>" <?php if ($vacation->getState() == VacationEntry::TYPE_URLAUB) echo ' selected ';?>>Urlaub</option>
-					<option value="<? echo VacationEntry::TYPE_KRANKHEIT;?>" <?php if ($vacation->getState() == VacationEntry::TYPE_KRANKHEIT) echo ' selected ';?>>Krankheit</option>
-					<option value="<? echo VacationEntry::TYPE_UEBERSTUNDEN;?>" <?php if ($vacation->getState() == VacationEntry::TYPE_UEBERSTUNDEN) echo ' selected ';?>>Überstunden</option>
-					<option value="<? echo VacationEntry::TYPE_SONSTIGES;?>" <?php if ($vacation->getState() == VacationEntry::TYPE_SONSTIGES) echo ' selected ';?>>Sonstiges</option>
+					<option value="<? echo VacationEntry::TYPE_URLAUB;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_URLAUB) echo ' selected ';?>>Urlaub</option>
+					<option value="<? echo VacationEntry::TYPE_KRANKHEIT;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_KRANKHEIT) echo ' selected ';?>>Krankheit</option>
+					<option value="<? echo VacationEntry::TYPE_UEBERSTUNDEN;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_UEBERSTUNDEN) echo ' selected ';?>>Überstunden</option>
+					<option value="<? echo VacationEntry::TYPE_SONSTIGES;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_SONSTIGES) echo ' selected ';?>>Sonstiges</option>
 				</select>
 			</td>
 		</tr>

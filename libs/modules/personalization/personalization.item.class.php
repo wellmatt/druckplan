@@ -66,7 +66,7 @@ class Personalizationitem {
 				$this->width = $r["width"];
 				$this->height = $r["height"];
 				$this->boxtype = $r["boxtype"];
-				$this->peronalid = $r["personal_id"];
+				$this->peronalid = $r["personalization_id"];
 				$this->textsize = $r["text_size"];
 				$this->justification = $r["justification"];
 				$this->font = $r["font"];
@@ -176,7 +176,7 @@ class Personalizationitem {
 	 * Funktion liefert alle aktiven Eingabefelder einer Personalisierug nach angegebener Reighenfolge
 	 *
 	 * @param STRING $order Reihenfolge, in der die Eingbelfelder sortiert werden
-	 * @return Array : Personalizationitem
+	 * @return Personalizationitem[]
 	 */
 	static function getAllPersonalizationitems($personalid, $order = self::ORDER_TITLE, $site = self::SITE_FRONT){
 		global $DB;
@@ -229,6 +229,12 @@ class Personalizationitem {
 	    return $this->xpos;
 	}
 
+	public function getXposAbsolute()
+	{
+		$perso = new Personalization($this->peronalid);
+		return $this->xpos + $perso->getAnschnitt();
+	}
+
 	public function setXpos($xpos)
 	{
 	    $this->xpos = $xpos;
@@ -237,6 +243,12 @@ class Personalizationitem {
 	public function getYpos()
 	{
 	    return $this->ypos;
+	}
+
+	public function getYposAbsolute()
+	{
+		$perso = new Personalization($this->peronalid);
+		return $this->ypos + $perso->getAnschnitt();
 	}
 
 	public function setYpos($ypos)

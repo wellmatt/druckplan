@@ -2,7 +2,7 @@
 
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'picture', 'title', 'bname', 'atitle', 'hidden' );
+    $aColumns = array( 'id', 'preview', 'title', 'bname', 'atitle', 'hidden' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -135,7 +135,7 @@
     $sQuery = "SELECT * FROM
                ( SELECT 
                personalization.id,
-               personalization.picture,
+               personalization.preview,
                personalization.title,
                CONCAT(businesscontact.name1, ' ',businesscontact.name2) as bname,
                businesscontact.id as bid,
@@ -159,7 +159,7 @@
         SELECT COUNT(id) FROM
                ( SELECT 
                personalization.id,
-               personalization.picture,
+               personalization.preview,
                personalization.title,
                CONCAT(businesscontact.name1, ' ',businesscontact.name2) as bname,
                businesscontact.id as bid,
@@ -207,10 +207,10 @@
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( $aColumns[$i] == 'picture' )
+            if ( $aColumns[$i] == 'preview' )
             {
                 if ($aRow[$aColumns[$i]] != NULL && $aRow[$aColumns[$i]] !=""){
-					$row[] = '<img src="images/products/'.$aRow[$aColumns[$i]].'" width="100px">&nbsp;';
+					$row[] = '<img src="docs/personalization/'.$aRow[$aColumns[$i]].'" width="100px">&nbsp;';
         		} else {
         			$row[] = '<img src="images/icons/image.png" title="Kein Bild hinterlegt" alt="Bild">';
         		}

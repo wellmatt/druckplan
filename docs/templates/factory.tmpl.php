@@ -109,6 +109,8 @@ foreach ($articles as $opos)
                         $temp["Type"] = $me->getMachine()->getType();
                         $tmp_addtext_fl = "";
                         $temp["Position"] = $me->getMachine()->getName();
+                        $temp["ME"] = $me;
+                        $temp["Calc"] = $calc;
         
                         $temp["Plates"] = "";
                         if($me->getMachine()->getType() == Machine::TYPE_CTP) {
@@ -224,7 +226,7 @@ $htmldump = $smarty->fetch('string:' . $datei);
 
 // var_dump($htmltemp);
 
-$pdf->SetMargins($pref->getPdf_margin_left(), $pref->getPdf_margin_top(), $pref->getPdf_margin_right(), TRUE);
+//$pdf->SetMargins($pref->getPdf_margin_left(), $pref->getPdf_margin_top(), $pref->getPdf_margin_right(), TRUE);
 // $pdf->AddPage();
 
 $pdf->writeHTML($htmldump);

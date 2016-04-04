@@ -337,11 +337,11 @@ if((int)$_REQUEST["step"] == 2){
 						// Zuschussbogen multipliziert Anzahl Druckplatten
 						// $calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($me));
 						// Zuschussbogen prozentual zu der Papiermenge
-						
+
 // 						$calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_CONTENT) / 100); //Zuschuss
-						
-						$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateSetCount($me));
-						
+
+						$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+
 						$calc->save();
 					}
 					if($calc->getPagesAddContent())
@@ -408,9 +408,9 @@ if((int)$_REQUEST["step"] == 2){
 						// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($me));
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 ); //Zuschuss
-						
-						$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateSetCount($me));
-						
+
+						$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+
 						$calc->save();
 					}
 					if($calc->getPagesEnvelope())
@@ -481,13 +481,13 @@ if((int)$_REQUEST["step"] == 2){
 						//$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($me));
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100); //Zuschuss
-						
-						$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateSetCount($me));
+
+						$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
 
 						$calc->save();
 					}
-					
-					// fuer den 2. zus. Inhalt 
+
+					// fuer den 2. zus. Inhalt
 					if($calc->getPagesAddContent2())
 					{
 						$color_possible= false; //Pruefen, ob die Standart-Maschine die Farbe kann
@@ -539,25 +539,25 @@ if((int)$_REQUEST["step"] == 2){
 								}
 							}
 						}
-					
+
 						$sizes = $calc->getPaperAddContent2()->getMaxPaperSizeForMachine($m);
-					
+
 						// Update Papersize
 						$calc->setPaperAddContent2Height($sizes["height"]);
 						$calc->setPaperAddContent2Width($sizes["width"]);
 						$calc->save();
-					
+
 						// Update Paper Grant
 						// Zuschussbogen multipliziert Anzahl Druckplatten
 						// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($me));
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 ); //Zuschuss
-						
-						$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateSetCount($me));
-					
+
+						$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+
 						$calc->save();
 					}
-					
+
 					// fuer den 3. zus. Inhalt
 					if($calc->getPagesAddContent3())
 					{
@@ -610,26 +610,26 @@ if((int)$_REQUEST["step"] == 2){
 								}
 							}
 						}
-							
+
 						$sizes = $calc->getPaperAddContent3()->getMaxPaperSizeForMachine($m);
-							
+
 						// Update Papersize
 						$calc->setPaperAddContent3Height($sizes["height"]);
 						$calc->setPaperAddContent3Width($sizes["width"]);
 						$calc->save();
-							
+
 						// Update Paper Grant
 						// Zuschussbogen multipliziert Anzahl Druckplatten
 						// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($me));
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 ); //Zuschuss
-						
-						$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateSetCount($me));
-							
+
+						$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+
 						$calc->save();
 					}
 					unset($sizes);
-				} else if($m->getType() == Machine::TYPE_FOLDER)
+				} else if($m->getType() == Machine::TYPE_FOLDER) // Falzmaschine
 				{
 					if($calc->getPagesContent())
 					{
@@ -642,6 +642,7 @@ if((int)$_REQUEST["step"] == 2){
 						$me->save();
 						$me->setTime($me->getMachine()->getRunningTime($me));
 						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
 						$me->save();
 					}
 
@@ -656,6 +657,7 @@ if((int)$_REQUEST["step"] == 2){
 						$me->save();
 						$me->setTime($me->getMachine()->getRunningTime($me));
 						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
 						$me->save();
 					}
 
@@ -670,6 +672,7 @@ if((int)$_REQUEST["step"] == 2){
 						$me->save();
 						$me->setTime($me->getMachine()->getRunningTime($me));
 						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
 						$me->save();
 					}
 					if($calc->getPagesAddContent2())
@@ -683,6 +686,7 @@ if((int)$_REQUEST["step"] == 2){
 						$me->save();
 						$me->setTime($me->getMachine()->getRunningTime($me));
 						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
 						$me->save();
 					}
 					if($calc->getPagesAddContent3())
@@ -696,6 +700,86 @@ if((int)$_REQUEST["step"] == 2){
 						$me->save();
 						$me->setTime($me->getMachine()->getRunningTime($me));
 						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
+						$me->save();
+					}
+				} else if($m->getType() == Machine::TYPE_CUTTER) // Schneidemaschine
+				{
+					if($calc->getPagesContent())
+					{
+						$me = new Machineentry();
+						$me->setMachine($m);
+						$me->setMachineGroup($m->getGroup()->getId());
+						$me->setCalcId($calc->getId());
+						$me->setPart(Calculation::PAPER_CONTENT);
+						$me->setTime(0);
+						$me->save();
+						$me->setTime($me->getMachine()->getRunningTime($me));
+						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
+						$me->setCutter_cuts($me->calcCuts());
+						$me->save();
+					}
+
+					if($calc->getPagesAddContent())
+					{
+						$me = new Machineentry();
+						$me->setMachine($m);
+						$me->setMachineGroup($m->getGroup()->getId());
+						$me->setCalcId($calc->getId());
+						$me->setPart(Calculation::PAPER_ADDCONTENT);
+						$me->setTime(0);
+						$me->save();
+						$me->setTime($me->getMachine()->getRunningTime($me));
+						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
+						$me->setCutter_cuts($me->calcCuts());
+						$me->save();
+					}
+
+					if($calc->getPagesEnvelope())
+					{
+						$me = new Machineentry();
+						$me->setMachine($m);
+						$me->setMachineGroup($m->getGroup()->getId());
+						$me->setCalcId($calc->getId());
+						$me->setPart(Calculation::PAPER_ENVELOPE);
+						$me->setTime(0);
+						$me->save();
+						$me->setTime($me->getMachine()->getRunningTime($me));
+						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
+						$me->setCutter_cuts($me->calcCuts());
+						$me->save();
+					}
+					if($calc->getPagesAddContent2())
+					{
+						$me = new Machineentry();
+						$me->setMachine($m);
+						$me->setMachineGroup($m->getGroup()->getId());
+						$me->setCalcId($calc->getId());
+						$me->setPart(Calculation::PAPER_ADDCONTENT2);
+						$me->setTime(0);
+						$me->save();
+						$me->setTime($me->getMachine()->getRunningTime($me));
+						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
+						$me->setCutter_cuts($me->calcCuts());
+						$me->save();
+					}
+					if($calc->getPagesAddContent3())
+					{
+						$me = new Machineentry();
+						$me->setMachine($m);
+						$me->setMachineGroup($m->getGroup()->getId());
+						$me->setCalcId($calc->getId());
+						$me->setPart(Calculation::PAPER_ADDCONTENT3);
+						$me->setTime(0);
+						$me->save();
+						$me->setTime($me->getMachine()->getRunningTime($me));
+						$me->setPrice($me->getMachine()->getMachinePrice($me));
+						$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
+						$me->setCutter_cuts($me->calcCuts());
 						$me->save();
 					}
 				} else
@@ -713,7 +797,7 @@ if((int)$_REQUEST["step"] == 2){
 					if($m->getType() == Machine::TYPE_CTP)
 						$ctps[] = $me->getId();
 				}
-			} 
+			}
 
 			//----------Falzmaschinen----------
 			if ($m->getType() == Machine::TYPE_FOLDER && $calc->getPagesEnvelope() > 4 && ! Machineentry::entryExists($calc->getId(), $m->getId()))
@@ -728,6 +812,7 @@ if((int)$_REQUEST["step"] == 2){
 				$me->save();
 				$me->setTime($me->getMachine()->getRunningTime($me));
 				$me->setPrice($me->getMachine()->getMachinePrice($me));
+				$me->setFoldtype(new Foldtype((int)$_REQUEST["h_folding"]));
 				$me->save();
 			}
 		}
@@ -869,7 +954,7 @@ if((int)$_REQUEST["step"] == 3){
 					   $entry->setTime($entry->getMachine()->getRunningTime($entry));
 					}
 					$entry->setPrice($entry->getMachine()->getMachinePrice($entry));
-					
+
 					$entry->save();
 
 					// Falls Druckmaschine -> Papiergroesse setzen
@@ -892,7 +977,7 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_CONTENT) / 100); //Zuschuss
-								$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateSetCount($entry));
+								$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
 							} else {
 								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -909,7 +994,7 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100); //Zuschuss
-								$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateSetCount($entry));
+								$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
 							} else {
 								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -926,7 +1011,7 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100); //Zuschuss
-								$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateSetCount($entry));
+								$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
 							} else { 
 								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -943,7 +1028,7 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100); //Zuschuss
-								$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateSetCount($entry));
+								$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
 							} else {
 								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -960,7 +1045,7 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100); //Zuschuss
-								$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateSetCount($entry));
+								$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
 							} else {
 								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -1007,6 +1092,19 @@ if((int)$_REQUEST["step"] == 3){
 						// $entry->set
 					}
 
+					if ($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+						$entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+					{
+						if ($_REQUEST["mach_labelcount_{$id}"]){
+							$entry->setLabelcount($_REQUEST["mach_labelcount_{$id}"]);
+							$entry->save();
+						}
+						if ($_REQUEST["mach_rollcount_{$id}"]){
+							$entry->setRollcount($_REQUEST["mach_rollcount_{$id}"]);
+							$entry->save();
+						}
+					}
+
 					//echo $DB->getLastError();
 				}
 			}
@@ -1021,6 +1119,11 @@ if((int)$_REQUEST["step"] == 3){
 				if($me->getMachine()->getType() != Machine::TYPE_MANUELL)
 				{
 					$me->setTime($me->getMachine()->getRunningTime($me));
+					$me->save();
+				}
+				if ($me->getMachine()->getType() == Machine::TYPE_CUTTER)
+				{
+					$me->setCutter_cuts($me->calcCuts());
 					$me->save();
 				}
 			}

@@ -431,7 +431,7 @@ $(function() {
 			<tr>
                 <td class="content_row_header"><?=$_LANG->get('Provision (%)')?></td>
                 <td class="content_row_clear">
-                    <input class="text" style="width:80px" name="discount"
+                    <input class="text" style="width:80px" name="provision"
                            value="<?=$commissionContact->getProvision()?>"> %
                 </td>
             </tr>

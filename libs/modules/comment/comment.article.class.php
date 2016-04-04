@@ -119,7 +119,7 @@ class CommentArticle {
     }
 
 	/**
-     * @return the $article
+     * @return Article
      */
     public function getArticle()
     {

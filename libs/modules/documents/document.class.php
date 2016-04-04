@@ -6,10 +6,12 @@
    // Any unauthorized redistribution, reselling, modifying or reproduction of part
    // or all of the contents in any form is strictly prohibited.
    // ----------------------------------------------------------------------------------
-   
+
+require_once 'libs/modules/personalization/persopdf.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
 require_once 'thirdparty/tcpdf/contilas.tcpdf.php';
 require_once 'libs/modules/perferences/perferences.class.php';
+require_once 'document.format.class.php';
 
 class Document
 {
@@ -492,8 +494,11 @@ class Document
         
         // Init pdffile
         if ($this->type == self::TYPE_PERSONALIZATION || $this->type == self::TYPE_PERSONALIZATION_ORDER) {
-            
-            if ($order->getFormatwidth() > $order->getFormatheight()) {
+
+            $pdf_width = $order->getFormatwidth() + $order->getAnschnitt()*2;
+            $pdf_height = $order->getFormatheight() + $order->getAnschnitt()*2;
+
+            if ($pdf_width > $pdf_height) {
                 $direction = 'L';
             } else {
                 $direction = 'P';
@@ -501,28 +506,21 @@ class Document
             Global $_BASEDIR;
             
             $format = Array(
-                $order->getFormatwidth(),
-                $order->getFormatheight()
+                $pdf_width,
+                $pdf_height
             );
             
-            $pdf = new TCPDF($direction, 'mm', $format, true, 'UTF-8', false);
+            $pdf = new PersoPDF($direction, 'mm', $format, true, 'UTF-8', false);
             $pdf->SetPrintHeader(false);
             $pdf->SetPrintFooter(false);
-            $pdf->AddPage();
-            
+
             if ($version == self::VERSION_EMAIL){
-                $bMargin = $pdf->getBreakMargin();
-                $auto_page_break = $pdf->getAutoPageBreak();
-                $pdf->SetAutoPageBreak(false, 0);
-                $img_path = "images/products/" . $order->getPicture();
-                $img_file = $_BASEDIR . $img_path;
-                $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
-                $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
-                $pdf->setPageMark();
-                $pdf->SetPrintHeader(false);
+                $pdf->setHeaderfile('docs/personalization/'.$order->getPicture());
+                $pdf->SetPrintHeader(true);
                 $pdf->SetPrintFooter(false);
+                $pdf->AddPage();
             }
-            
+
             if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
                 if ($this->type == self::TYPE_PERSONALIZATION) {
                     require 'docs/templates/personalization.tmpl.php';
@@ -531,27 +529,20 @@ class Document
                     require 'docs/templates/personalization.order.tmpl.php';
                 }
             }
-            
+
             if ($order->getType() == 1)
             {
                 $this->setReverse(1);
-                $pdf->AddPage();
                 $pdf->SetPrintHeader(false);
                 $pdf->SetPrintFooter(false);
-                
+
                 if ($version == self::VERSION_EMAIL){
-                    $bMargin = $pdf->getBreakMargin();
-                    $auto_page_break = $pdf->getAutoPageBreak();
-                    $pdf->SetAutoPageBreak(false, 0);
-                    $img_path = "images/products/" . $order->getPicture2();
-                    $img_file = $_BASEDIR . $img_path;
-                    $pdf->Image($img_file, 0, 0, $order->getFormatwidth(), $order->getFormatheight(), 'JPEG', '', '', false, 300, '', false, false, 0);
-                    $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
-                    $pdf->setPageMark();
-                    $pdf->SetPrintHeader(false);
+                    $pdf->setHeaderfile('docs/personalization/'.$order->getPicture2());
+                    $pdf->SetPrintHeader(true);
                     $pdf->SetPrintFooter(false);
+                    $pdf->AddPage();
                 }
-                
+
                 if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
                     if ($this->type == self::TYPE_PERSONALIZATION) {
                         require 'docs/templates/personalization.tmpl.php';
@@ -563,37 +554,57 @@ class Document
             }
             
         } else {
-            
-            // Normale Dokumente oder Label
-            if ($this->type == self::TYPE_LABEL) {
-                $format[0] = 106;
-                $format[1] = 60;
-                $pdf = new TCPDF('L','mm',$format);
-            } elseif ($this->type == self::TYPE_FACTORY){
-                $pdf = new TCPDF('L','mm',$format);
-                $pref= new Perferences();                   
+
+            $docformat = DocumentFormat::getForDocType($this->type);
+            $format[0] = $docformat->getWidth();
+            $format[1] = $docformat->getHeight();
+
+            if ($version == self::VERSION_EMAIL)
+            {
+                $pdf = new TCPDF_BG($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
+                $pdf->SetPrintFooter(false);
+            }
+            else
+            {
+                $pdf = new TCPDF($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
                 $pdf->SetPrintHeader(false);
                 $pdf->SetPrintFooter(false);
-                $pdf->setPageOrientation('L', TRUE, $pref->getPdf_margin_bottom());
-                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
-                $pdf->AddPage();
-            } else {
-                $pref= new Perferences();
-                if ($version == self::VERSION_EMAIL)
-                {
-                    $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
-                    $pdf->SetPrintFooter(false);
-                }
-                else
-                {
-                    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);                    
-                    $pdf->SetPrintHeader(false);
-                    $pdf->SetPrintFooter(false);
-                }
-                $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
-                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
-                $pdf->AddPage();
             }
+            $pdf->setPageOrientation($docformat->getOrientation(), TRUE, $docformat->getMarginBottom());
+            $pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
+            $pdf->AddPage();
+
+
+            // Normale Dokumente oder Label
+//            if ($this->type == self::TYPE_LABEL) {
+//                $format[0] = 106;
+//                $format[1] = 60;
+//                $pdf = new TCPDF('L','mm',$format);
+//            } elseif ($this->type == self::TYPE_FACTORY){
+//                $pdf = new TCPDF('L','mm',$format);
+//                $pref= new Perferences();
+//                $pdf->SetPrintHeader(false);
+//                $pdf->SetPrintFooter(false);
+//                $pdf->setPageOrientation('L', TRUE, $pref->getPdf_margin_bottom());
+//                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
+//                $pdf->AddPage();
+//            } else {
+//                $pref= new Perferences();
+//                if ($version == self::VERSION_EMAIL)
+//                {
+//                    $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
+//                    $pdf->SetPrintFooter(false);
+//                }
+//                else
+//                {
+//                    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+//                    $pdf->SetPrintHeader(false);
+//                    $pdf->SetPrintFooter(false);
+//                }
+//                $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
+//                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
+//                $pdf->AddPage();
+//            }
         }
         
         // apply specific template
@@ -648,8 +659,7 @@ class Document
         if ($this->preview == 0)
             $pdf->Output($filename, 'F');
         else {
-            $pdf->Output($filename, 'I');
-            exit();
+            $pdf->Output($filename, 'F');
         } 
 
         return $this->hash;

@@ -579,9 +579,9 @@ $(document).ready(function(){
     <div class="col-md-12" align="right">
         <div class="btn-group" role="group">
           <button type="button" onclick="callBoxFancyNewMail('libs/modules/mail/mail.send.frame.php');"; class="btn btn-sm btn-default">Neue Mail</button>
-          <button type="button" onclick="mail_markasread_multiple();" class="btn btn-sm btn-default">Als gelesen markieren</button>
-          <button type="button" onclick="mail_markasunread_multiple();" class="btn btn-sm btn-default">Als ungelesen markieren</button>
-          <button type="button" onclick="MailBoxSelectPopup();" class="btn btn-sm btn-default">verschieben</button>
+<!--          <button type="button" onclick="mail_markasread_multiple();" class="btn btn-sm btn-default">Als gelesen markieren</button>-->
+<!--          <button type="button" onclick="mail_markasunread_multiple();" class="btn btn-sm btn-default">Als ungelesen markieren</button>-->
+<!--          <button type="button" onclick="MailBoxSelectPopup();" class="btn btn-sm btn-default">verschieben</button>-->
           <button type="button" onclick="mail_delete_multiple();" class="btn btn-sm btn-danger">Löschen</button>
         </div>
     </div>

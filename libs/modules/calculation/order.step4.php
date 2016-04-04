@@ -546,13 +546,28 @@ foreach ($calculations as $c){
                     <td class="content_row_clear">&nbsp;</td>
                     <? foreach($calculations as $calc) { ?>
                         <td class="content_row_clear value">
-                            <?=printBigInt($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant())?> <?=$_LANG->get('B&ouml;gen')?>
-                            <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
-                            <?=$_USER->getClient()->getCurrency()?>
+                            <?php
+                            if ($calc->getPaperContent()->getRolle() != 1){
+                                ?>
+                                <?=printBigInt($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant())?> <?=$_LANG->get('B&ouml;gen')?>
+                                <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                                <?php
+                            } else {
+                                ?>
+                                <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/10000,2)?> <?=$_LANG->get('Laufmeter')?>
+                                <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                                <?php
+                            }
+                            ?>
                         </td>
                     <? } ?>
                 </tr>
 
+
+                <?php
+                if ($calc->getPaperContent()->getRolle() != 1){?>
                 <tr class="color1">
                     <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                     <? foreach($calculations as $calc) { ?>
@@ -561,7 +576,7 @@ foreach ($calculations as $c){
                         </td>
                     <? } ?>
                 </tr>
-
+                <?php } ?>
 
                 <tr class="color2">
                     <td class="content_row_clear"><?=$_LANG->get('Farbe Inhalt 1')?></td>

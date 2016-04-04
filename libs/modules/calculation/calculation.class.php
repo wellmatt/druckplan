@@ -24,6 +24,9 @@ class Calculation
     const PAPER_ENVELOPE 	= 3;
     const PAPER_ADDCONTENT2 = 4;
     const PAPER_ADDCONTENT3 = 5;
+
+    const PRODUCT_ROWS = 1;
+    const PRODUCT_COLS = 2;
     
     private $id;
     private $orderId = 0;
@@ -251,7 +254,12 @@ class Calculation
             }
         }
     }
-    
+
+    /**
+     * @param $order
+     * @param string $itemorder
+     * @return Calculation[]
+     */
     static function getAllCalculations($order, $itemorder = self::ORDER_ID)
     {
         global $DB;
@@ -520,12 +528,13 @@ class Calculation
         else
             $anz_rows = 1;
         if ($height_closed < $height && $height_closed != 0 )
-            $anz_rows = floor(ceil($height * 1.01) / $height_closed);
+            $anz_cols = floor(ceil($height * 1.01) / $height_closed);
         else
             $anz_cols = 1;
         
         // Maschine fuer ausgewaehlten Papiertyp
         $mach = Machineentry::getMachineForPapertype($ptype, $this->id);
+//        print_r($mach);
         if($mach)
         {
             $calc = new Calculation($mach[0]->getCalcId());
@@ -539,6 +548,7 @@ class Calculation
             	$chr = $calc->getChromaticitiesAddContent2();
             else if ($mach[0]->getPart() == Calculation::PAPER_ADDCONTENT3)
             	$chr = $calc->getChromaticitiesAddContent3();
+//            print_r($chr);
             
             if($chr->getReversePrinting())
                 $duplex = 2;
@@ -566,27 +576,168 @@ class Calculation
             }
         
             // Papier um nicht bedruckbaren Bereich verkleinern
-            $paperH = $paperH - $mach[0]->getMachine()->getBorder_bottom() - $mach[0]->getMachine()->getBorder_top() - $_CONFIG->farbRandBreite;
+            $paperH = $paperH - $mach[0]->getMachine()->getBorder_bottom() - $mach[0]->getMachine()->getBorder_top() - $tmp_farbrand;
             $paperW = $paperW - $mach[0]->getMachine()->getBorder_left() - $mach[0]->getMachine()->getBorder_right();
+
+//            echo '$width:' . $width . '</br>';
+//            echo '$height:' . $height . '</br>';
+//            echo '$height_closed:' . $height_closed . '</br>';
+//            echo '$width_closed:' . $width_closed . '</br>';
+//            echo '$paperH:' . $paperH . '</br>';
+//            echo '$paperW:' . $paperW . '</br>';
     
             // Ausrechnen
-            $productRows = floor($paperH / ($height + $_CONFIG->anschnitt * 2));
-            $productCols = floor($paperW / ($width + $_CONFIG->anschnitt * 2));
+            $productRows = floor($paperH / ($height + $tmp_anschnitt * 2));
+            $productCols = floor($paperW / ($width + $tmp_anschnitt * 2));
             $productPerPaper1 = $productCols * $productRows;
             
-            $productCols = floor($paperW / ($height + $_CONFIG->anschnitt * 2));
-            $productRows = floor($paperH / ($width + $_CONFIG->anschnitt * 2));
+            $productCols = floor($paperW / ($height + $tmp_anschnitt * 2));
+            $productRows = floor($paperH / ($width + $tmp_anschnitt * 2));
             $productPerPaper2 = $productCols * $productRows;
+
+//            echo '$anz_cols:' . $anz_cols . '</br>';
+//            echo '$anz_rows:' . $anz_rows . '</br>';
+//            echo '$duplex:' . $duplex . '</br>';
                         
             if($productPerPaper1 > $productPerPaper2)
                 $rv = $productPerPaper1 * $anz_cols * $anz_rows * $duplex;
             else 
                 $rv = $productPerPaper2 * $anz_cols * $anz_rows * $duplex;
-            
+
+//            echo '$productPerPaper1:' . $productPerPaper1 . '</br>';
+//            echo '$productPerPaper2:' . $productPerPaper2 . '</br>';
+
+//            echo 'produkte: ' . $rv . '</br>';
             return $rv;
         } else
+//            echo 'produkte: 0</br>';
             return 0;
     }
+
+    function getPaperSize($ptype)
+    {
+        if($ptype == Calculation::PAPER_CONTENT)
+            return Array('paperH'=>$this->paperContentHeight,'paperW'=>$this->paperContentWidth);
+        else if ($ptype == Calculation::PAPER_ADDCONTENT)
+            return Array('paperH'=>$this->paperAddContentHeight,'paperW'=>$this->paperAddContentWidth);
+        elseif($ptype == Calculation::PAPER_ENVELOPE)
+            return Array('paperH'=>$this->paperEnvelopeHeight,'paperW'=>$this->paperEnvelopeWidth);
+        else if ($ptype == Calculation::PAPER_ADDCONTENT2)
+            return Array('paperH'=>$this->paperAddContent2Height,'paperW'=>$this->paperAddContent2Width);
+        else if ($ptype == Calculation::PAPER_ADDCONTENT3)
+            return Array('paperH'=>$this->paperAddContent3Height,'paperW'=>$this->paperAddContent3Width);
+        else
+            return false;
+    }
+
+    function getPaperWeight($ptype)
+    {
+//        prettyPrint($ptype);
+        if($ptype == Calculation::PAPER_CONTENT)
+            return $this->paperContentWeight;
+        else if ($ptype == Calculation::PAPER_ADDCONTENT)
+            return $this->paperAddContentWeight;
+        elseif($ptype == Calculation::PAPER_ENVELOPE)
+            return $this->paperEnvelopeWeight;
+        else if ($ptype == Calculation::PAPER_ADDCONTENT2)
+            return $this->paperAddContent2Weight;
+        else if ($ptype == Calculation::PAPER_ADDCONTENT3)
+            return $this->paperAddContent3Weight;
+        else
+            return false;
+    }
+
+    public function getAnschnitt($ptype)
+    {
+        if($ptype == Calculation::PAPER_CONTENT){
+            return $this->getCutContent();
+        } else if ($ptype == Calculation::PAPER_ADDCONTENT){
+            return $this->getCutAddContent();
+        } else if ($ptype == Calculation::PAPER_ADDCONTENT2){
+            return $this->getCutAddContent2();
+        } else if ($ptype == Calculation::PAPER_ADDCONTENT3){
+            return $this->getCutAddContent3();
+        } elseif($ptype == Calculation::PAPER_ENVELOPE){
+            return $this->getCutEnvelope();
+        }
+        return false;
+    }
+
+    /**
+     * @param $ptype
+     * @return array|bool
+     */
+    function getProductsPerRow($ptype)
+    {
+        $debug = false;
+        global $_CONFIG;
+        $psize = self::getPaperSize($ptype);
+        $paperH = $psize["paperH"];
+        $paperW = $psize["paperW"];
+
+        if($ptype != Calculation::PAPER_ENVELOPE){
+            $width = $this->productFormatWidthOpen;
+            $height = $this->productFormatHeightOpen;
+        } else {
+            $width = $this->envelopeWidthOpen;
+            $height = $this->envelopeHeightOpen;
+        }
+
+        $mach = Machineentry::getMachineForPapertype($ptype, $this->id);
+        if($mach)
+        {
+            $calc = new Calculation($mach[0]->getCalcId());
+
+            $tmp_anschnitt = 0;
+            if($ptype == Calculation::PAPER_CONTENT){
+                $tmp_anschnitt = $calc->getCutContent();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT){
+                $tmp_anschnitt = $calc->getCutAddContent();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT2){
+                $tmp_anschnitt = $calc->getCutAddContent2();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT3){
+                $tmp_anschnitt = $calc->getCutAddContent3();
+            } elseif($ptype == Calculation::PAPER_ENVELOPE){
+                $tmp_anschnitt = $calc->getCutEnvelope();
+            }
+
+            // Farbrand (Farbkontrollstreifen) setzen
+            $tmp_farbrand = $_CONFIG->farbRandBreite;
+            if($calc->getColorControl() == 0){
+                // Wenn der Farbrand in der Kalkulation ausgestellt ist
+                $tmp_farbrand = 0;
+            }
+
+            $paperH = $paperH - $mach[0]->getMachine()->getBorder_bottom() - $mach[0]->getMachine()->getBorder_top() - $tmp_farbrand;
+            $paperW = $paperW - $mach[0]->getMachine()->getBorder_left() - $mach[0]->getMachine()->getBorder_right();
+
+            $productRows1 = floor($paperH / ($height + $tmp_anschnitt * 2));
+            $productCols1 = floor($paperW / ($width + $tmp_anschnitt * 2));
+            $productPerPaper1 = $productCols1 * $productRows1;
+            $productCols2 = floor($paperW / ($height + $tmp_anschnitt * 2));
+            $productRows2 = floor($paperH / ($width + $tmp_anschnitt * 2));
+            $productPerPaper2 = $productCols2 * $productRows2;
+
+            if ($debug){
+                echo '$productRows1: '.$productRows1.'</br>';
+                echo '$productCols1: '.$productCols1.'</br>';
+                echo '$productPerPaper1: '.$productPerPaper1.'</br>';
+                echo '$productCols2: '.$productCols2.'</br>';
+                echo '$productRows2: '.$productRows2.'</br>';
+                echo '$productPerPaper2: '.$productPerPaper2.'</br>';
+            }
+
+            if($productPerPaper1 > $productPerPaper2)
+                $retval = Array('rows'=>$productRows1,'cols'=>$productCols1);
+            else
+                $retval = Array('rows'=>$productRows2,'cols'=>$productCols2);
+
+            return $retval;
+        } else
+            return false;
+    }
+
+
     
     public function getPlateCount($machineEntry = null) {
         $plates = 0;
@@ -653,6 +804,7 @@ class Calculation
             {
                 $calc = new Calculation($machineEntry->getCalcId());
                 $order = new Order($calc->getOrderId());
+                $tmp_plates = 0;
                 
                 if($machineEntry->getPart() == Calculation::PAPER_CONTENT)
                     $chr = $calc->getChromaticitiesContent();

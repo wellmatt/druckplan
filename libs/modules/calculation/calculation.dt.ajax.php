@@ -223,9 +223,9 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=1">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 1){
-                    $tmp_row .= 'red.gif';
+                    $tmp_row .= 'red.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Vorgang angelegt"></a>';
 
@@ -233,9 +233,9 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=2">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 2){
-                    $tmp_row .= 'orange.gif';
+                    $tmp_row .= 'orange.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Vorgang gesendet"></a>';
 
@@ -243,9 +243,9 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=3">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 3){
-                    $tmp_row .= 'yellow.gif';
+                    $tmp_row .= 'yellow.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Vorgang angenommen"></a>';
 
@@ -253,9 +253,9 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=4">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 4){
-                    $tmp_row .= 'lila.gif';
+                    $tmp_row .= 'lila.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="In Produktion"></a>';
 
@@ -263,9 +263,9 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=5">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 5){
-                    $tmp_row .= 'green.gif';
+                    $tmp_row .= 'green.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Erledigt"></a>';
                 
@@ -283,10 +283,10 @@
                                      WHERE orders_machines.supplier_status > 0 AND orders_calculations.state = 1 AND orders.id = '.$aRow[ $aColumns[0] ];
                 $rAttributes = mysql_query( $sQueryAttributes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
                 while ($data = mysql_fetch_row($rAttributes)){
-            		if($data[0] == 0){ $status = "TODO"; $img="red.gif";};
-            		if($data[0] == 1){ $status = "Bestellt"; $img="orange.gif";};
-            		if($data[0] == 2){ $status = "In Produktion"; $img="lila.gif";};
-            		if($data[0] == 3){ $status = "Im Haus"; $img="green.gif";};
+                    if($data[0] == 0){ $status = "TODO"; $img="red.svg";};
+                    if($data[0] == 1){ $status = "Bestellt"; $img="orange.svg";};
+                    if($data[0] == 2){ $status = "In Produktion"; $img="lila.svg";};
+                    if($data[0] == 3){ $status = "Im Haus"; $img="green.svg";};
             		
             		$title = $status." \n";
             		if ($data[1] > 0 ) $title .= utf8_encode($data[2])."\n";

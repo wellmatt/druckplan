@@ -1,16 +1,9 @@
 <?php
 class Perferences {
-   private $id;
    
    // Kalk
-   private $ZuschussProDP; // Zuschuss pro Druckplatte
-   private $calc_detailed_printpreview;
-   
-   // PDF
-   private $pdf_margin_top;
-   private $pdf_margin_left;
-   private $pdf_margin_right;
-   private $pdf_margin_bottom;
+   private $ZuschussProDP = 0; // Zuschuss pro Druckplatte
+   private $calc_detailed_printpreview = 0;
    
    // Formats
    
@@ -22,12 +15,12 @@ class Perferences {
    
    // Datatables
    
-   private $dt_show_default;
-   private $dt_state_save;
+   private $dt_show_default = 20;
+   private $dt_state_save = 1;
    
    // Mail
    
-   private $mail_domain;
+   private $mail_domain = '';
 
    function __construct()
    {
@@ -40,10 +33,6 @@ class Perferences {
            $r = $r[0];
            $this->ZuschussProDP = $r["zuschussprodp"];
            $this->calc_detailed_printpreview = $r["calc_detailed_printpreview"];
-           $this->pdf_margin_top = $r["pdf_margin_top"];
-           $this->pdf_margin_left = $r["pdf_margin_left"];
-           $this->pdf_margin_right = $r["pdf_margin_right"];
-           $this->pdf_margin_bottom = $r["pdf_margin_bottom"];
            $this->default_ticket_id = $r["default_ticket_id"];
            $this->dt_show_default = (int)$r["dt_show_default"];
            $this->dt_state_save = (bool)$r["dt_state_save"];
@@ -84,14 +73,10 @@ class Perferences {
        $sql = "UPDATE perferences SET
                zuschussprodp 	= '{$this->ZuschussProDP}',
                calc_detailed_printpreview 	= '{$this->calc_detailed_printpreview}',
-               pdf_margin_top 	= '{$this->pdf_margin_top}',
-               pdf_margin_left 	= '{$this->pdf_margin_left}',
-               pdf_margin_right 	= '{$this->pdf_margin_right}',
                default_ticket_id 	= {$this->default_ticket_id},
                dt_show_default 	= {$this->dt_show_default},
                dt_state_save 	= {$tmp_dt_state_save},
-               mail_domain 	= '{$this->mail_domain}',
-               pdf_margin_bottom 	= '{$this->pdf_margin_bottom}'
+               mail_domain 	= '{$this->mail_domain}'
               ";
        return $DB->no_result($sql);
    	}
@@ -127,71 +112,7 @@ class Perferences {
     {
         $this->calc_detailed_printpreview = $calc_detailed_printpreview;
     }
-    
-	/**
-     * @return the $pdf_margin_top
-     */
-    public function getPdf_margin_top()
-    {
-        return $this->pdf_margin_top;
-    }
 
-	/**
-     * @return the $pdf_margin_left
-     */
-    public function getPdf_margin_left()
-    {
-        return $this->pdf_margin_left;
-    }
-
-	/**
-     * @return the $pdf_margin_right
-     */
-    public function getPdf_margin_right()
-    {
-        return $this->pdf_margin_right;
-    }
-
-	/**
-     * @return the $pdf_margin_bottom
-     */
-    public function getPdf_margin_bottom()
-    {
-        return $this->pdf_margin_bottom;
-    }
-
-	/**
-     * @param field_type $pdf_margin_top
-     */
-    public function setPdf_margin_top($pdf_margin_top)
-    {
-        $this->pdf_margin_top = $pdf_margin_top;
-    }
-
-	/**
-     * @param field_type $pdf_margin_left
-     */
-    public function setPdf_margin_left($pdf_margin_left)
-    {
-        $this->pdf_margin_left = $pdf_margin_left;
-    }
-
-	/**
-     * @param field_type $pdf_margin_right
-     */
-    public function setPdf_margin_right($pdf_margin_right)
-    {
-        $this->pdf_margin_right = $pdf_margin_right;
-    }
-
-	/**
-     * @param field_type $pdf_margin_bottom
-     */
-    public function setPdf_margin_bottom($pdf_margin_bottom)
-    {
-        $this->pdf_margin_bottom = $pdf_margin_bottom;
-    }
-    
 	/**
      * @return the $formats_raw
      */

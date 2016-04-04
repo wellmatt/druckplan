@@ -161,7 +161,6 @@ class Notification {
         $sql = "DELETE FROM notifications 
                 WHERE crtmodule = '{$crtmodule}' AND objectid = {$objectid}";
         if ($DB->no_result($sql)) {
-            unset($this);
             return true;
         } else {
             return false;
@@ -215,6 +214,12 @@ class Notification {
                 break;
             case "Ticket":
                 switch ($type){
+                    case "Change":
+                        $tmp_notification->setTitle("Änderung von ".$_USER->getNameAsLine()." in Ticket #".$reference);
+                        $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);
+                        $tmp_notification->setCrtmodule($crtmodule);
+                        $tmp_notification->save();
+                        break;
                     case "Comment":
                         $tmp_notification->setTitle("Neues Kommentar von ".$_USER->getNameAsLine()." in Ticket #".$reference);
                         $tmp_notification->setPath("index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=".$objectid);

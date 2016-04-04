@@ -107,6 +107,7 @@ if($_REQUEST["subexec"] == "save")
     $machine->setBreaks_time((int)$_REQUEST["breaks_time"]);
     
     $machine->setColor($_REQUEST["machine_color"]);
+	$machine->setMaxstacksize($_REQUEST["machine_maxstacksize"]);
 
     $quser_list = Array();
     if ($_REQUEST["qusr"]){
@@ -567,6 +568,7 @@ if ($machine->getId() > 0){
 							<option value="<?=Machine::TYPE_CTP?>" <? if($machine->getType() == Machine::TYPE_CTP) echo "selected";?>><?=$_LANG->get('Computer To Plate')?></option>
 							<option value="<?=Machine::TYPE_FOLDER?>" <? if($machine->getType() == Machine::TYPE_FOLDER) echo "selected";?>><?=$_LANG->get('Falzmaschine')?></option>
 							<option value="<?=Machine::TYPE_CUTTER?>" <? if($machine->getType() == Machine::TYPE_CUTTER) echo "selected";?>><?=$_LANG->get('Schneidemaschine')?></option>
+							<option value="<?=Machine::TYPE_LASERCUTTER?>" <? if($machine->getType() == Machine::TYPE_LASERCUTTER) echo "selected";?>><?=$_LANG->get('Stanze / Laser-Stanze')?></option>
 							<option value="<?=Machine::TYPE_LAGENFALZ?>" <? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo "selected";?>><?=$_LANG->get('Lagenfalz-/Zusammentragmaschine')?></option>
 							<option value="<?=Machine::TYPE_SAMMELHEFTER?>" <? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo "selected";?>><?=$_LANG->get('Sammelhefter')?></option>
 							<option value="<?=Machine::TYPE_MANUELL?>" <? if($machine->getType() == Machine::TYPE_MANUELL) echo "selected";?>><?=$_LANG->get('Manuelle Arbeit')?></option>
@@ -642,6 +644,12 @@ if ($machine->getId() > 0){
 					<td class="content_row_clear" valign="top">
 						<input id="machine_DPHeight" name="machine_DPHeight" value="<?=printPrice($machine->getDPHeight(),4)?>" style="width:60px;text-align:right;" class="text"> x 
 						<input id="machine_DPWidth" name="machine_DPWidth" value="<?=printPrice($machine->getDPWidth(),4)?>" style="width:60px;text-align:right;" class="text"> mm
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header" valign="top">Max Stapelhöhe (mm)</td>
+					<td class="content_row_clear" valign="top">
+						<input id="machine_maxstacksize" name="machine_maxstacksize" value="<?=$machine->getMaxstacksize();?>" style="width:60px;text-align:right;" class="text">
 					</td>
 				</tr>
 			</table>
@@ -896,6 +904,9 @@ if ($machine->getId() > 0){
                 <option value="<?=Machine::UNIT_PERHOUR_AUFLAGE?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_AUFLAGE) echo "selected"?>><?=$_LANG->get('Auflagen')?></option>
                 <option value="<?=Machine::UNIT_PERHOUR_SEITEN?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_SEITEN) echo "selected"?>><?=$_LANG->get('Seiten')?></option>
                 <option value="<?=Machine::UNIT_PERHOUR_DRUCKPLATTEN?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_DRUCKPLATTEN) echo "selected"?>><?=$_LANG->get('Druckplatten')?></option>
+				<option value="<?=Machine::UNIT_PERHOUR_MM?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_MM) echo "selected"?>><?=$_LANG->get('mm')?></option>
+				<option value="<?=Machine::UNIT_PERHOUR_M?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_M) echo "selected"?>><?=$_LANG->get('Laufmeter')?></option>
+				<option value="<?=Machine::UNIT_PERHOUR_CUTS?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_CUTS) echo "selected"?>><?=$_LANG->get('Schnitte')?></option>
             </select> <? } ?>
             <?=$_LANG->get('pro Stunde')?>
             <? if($first) { ?>            
@@ -912,6 +923,9 @@ if ($machine->getId() > 0){
                 <option value="<?=Machine::UNIT_PERHOUR_AUFLAGE?>"><?=$_LANG->get('Auflagen')?></option>
                 <option value="<?=Machine::UNIT_PERHOUR_SEITEN?>"><?=$_LANG->get('Seiten')?></option>
                 <option value="<?=Machine::UNIT_PERHOUR_DRUCKPLATTEN?>"><?=$_LANG->get('Druckplatten')?></option>
+				<option value="<?=Machine::UNIT_PERHOUR_MM?>"><?=$_LANG->get('mm')?></option>
+				<option value="<?=Machine::UNIT_PERHOUR_M?>"><?=$_LANG->get('Laufmeter')?></option>
+				<option value="<?=Machine::UNIT_PERHOUR_CUTS?>"><?=$_LANG->get('Schnitte')?></option>
             </select>
             <?=$_LANG->get('pro Stunde')?>
             <img src="images/icons/plus.png" class="pointer icon-link" onclick="addUnitsPerHour()">

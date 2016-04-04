@@ -235,14 +235,14 @@ class BusinessContact {
             }
         }
     }
-    
-    /**
-     * Liefert alle BusinessContacts des Systems
-     * 
-     * @param unknown_type $order : Reihenfolge
-     * @param unknown_type $filter : Filter
-     * @return multitype:BusinessContact
-     */
+
+	/**
+	 * Liefert alle BusinessContacts des Systems
+	 * @param string $order
+	 * @param string $filter
+	 * @param int $loader
+	 * @return BusinessContact[]
+	 */
     public static function getAllBusinessContacts($order = self::ORDER_ID, $filter = self::FILTER_ALL, $loader = self::LOADER_FULL){
     	global $_USER;
     	global $DB;
@@ -614,12 +614,13 @@ class BusinessContact {
 		            '{$this->comment}', {$this->language->getID()}, {$this->discount}, '{$this->iban}', '{$this->bic}',  
 		            '{$this->paymentTerms->getId()}', '{$this->lectorId}', {$this->ticketenabled}, {$this->articleenabled}, 
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
-		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},  
+		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
 		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()} )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			echo $DB->getLastError();
 // 			echo "</br>" . $sql . "</br>";
+//			prettyPrint($sql);
 			if ($res)
             {
                 $sql = " SELECT max(id) id FROM businesscontact";
@@ -858,6 +859,9 @@ class BusinessContact {
 	    return $this->name1;
 	}
 
+	/**
+	 * @param string $name1
+	 */
 	public function setName1($name1)
 	{
 	    $this->name1 = $name1;

@@ -1,116 +1,149 @@
-<table border="0" cellpadding="1" cellspacing="1" style="height:11px; width:450px">
+<table border="0" cellpadding="1" cellspacing="1" style="width:100%">
 	<tbody>
 		<tr>
-			<td><span style="font-size:10px">Kundendaten:</span></td>
-			<td style="text-align:right"><span style="font-size:16px">Drucktasche: {$Id}</span></td>
+			<td style="width:50%"><strong><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Vorgang: {$Order-&gt;getNumber()}</span></span></strong></td>
+			<td style="text-align:right"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Datum:</span></span></td>
+			<td style="text-align: right"><span style="font-family:arial,text-align:right,helvetica,sans-serif"><span style="font-size:11px">{$CurrentDate}</span></span></td>
+		</tr>
+		<tr>
+			<td style="width:50%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Tasche: {$Id}</span></span></td>
+			<td style="text-align:right"><strong><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Liefertermin: </span></span></strong></td>
+			<td style="text-align: right"><strong><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$DelivDate}</span></span></strong></td>
 		</tr>
 	</tbody>
 </table>
-<!-- {foreach $Container as $Con} -->
 
-<table border="0" cellpadding="0" cellspacing="1" style="height:17px; width:450px">
+
+<table border="0" cellpadding="1" cellspacing="1" style="width:100%">
 	<tbody>
 		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Kunde</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerName}</span></td>
+			<td style="width:34%">
+			<p><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">{$CustomerName}<br />
+			{$ContactPerson-&gt;getNameAsLine3()}<br />
+			{$Customer-&gt;getAddress1()} {$Customer-&gt;getAddress2()}<br />
+			{$Customer-&gt;getZip()} {$Customer-&gt;getCity()}<br />
+			{$Customer-&gt;getCountry()-&gt;getName()}</span></span></p>
+			</td>
+			<td style="text-align:left; width:33%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:10px"><strong>Auftrag: {$Order-&gt;getTitle()}</strong></span></span></td>
+			<td style="width:33%">
+			<p style="text-align:right"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">Kunden-Nr. {$Customer-&gt;getCustomernumber()}</span></span><br />
+			<span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">Angebot Nr: {$Order-&gt;getNumber()}</span></span><br />
+			<span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">Sachbearbeiter: {$Order-&gt;getinternContact()-&gt;getNameAsLine()}<br />
+			<span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif"><!-- {if $OrderAttributes.52_306.inputvalue != ""} -->{$OrderAttributes.52_306.inputvalue}<!-- {/if} --></span></span></span></span></p>
+			</td>
 		</tr>
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Adresse</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerAddress}</span></td>
-		</tr>
-		<!-- {if Trim($Con.CustomerEmail) != '' } -->
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">E-Mail</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerEmail}</span></td>
-		</tr>
-		<!-- {/if} --><!-- {if Trim($Con.CustomerPhone) != '' } -->
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Telefon</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerPhone}</span></td>
-		</tr>
-		<!-- {/if} --><!-- {if Trim($Con.CustomerFax) != '' } -->
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Fax</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerFax}</span></td>
-		</tr>
-		<!-- {/if} --><!-- {if Trim($Con.CustomerWebsite) != '' } -->
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Website</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerWebsite}</span></td>
-		</tr>
-		<!-- {/if} --><!-- {if Trim($Con.CustomerName) != '' } -->
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Bemerkung</span></td>
-			<td><span style="font-size:10px">{$Con.CustomerName}</span></td>
-		</tr>
-		<!-- {/if} -->
 	</tbody>
 </table>
 
-<p><span style="font-size:8px">&nbsp;</span></p>
 
-<hr />
-<table border="0" cellpadding="0" cellspacing="1" style="height:19px; width:450px">
+<!-- {foreach $Drs as $Container} --><!-- {foreach $Container as $Con} -->
+<table border="0" cellpadding="1" cellspacing="1" style="background-color:#D6D6E6; height:11px; width:100%">
 	<tbody>
 		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Auftr&auml;gstitel</span></td>
-			<td><span style="font-size:10px">{$Con.OrderTitle}</span></td>
-		</tr>
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Produkt</span></td>
-			<td><span style="font-size:10px">{$Con.ProductName}</span></td>
-		</tr>
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Material</span></td>
-			<td><span style="font-size:10px">{$Con.Material}</span></td>
-		</tr>
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Farben</span></td>
-			<td><span style="font-size:10px">{$Con.Color}</span></td>
-		</tr>
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:130px"><span style="font-size:10px">Liefertermin</span></td>
-			<td><span style="font-size:10px">{$Con.DeliveryDate}</span></td>
+			<td><strong><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Artikel</span></span></strong></td>
 		</tr>
 	</tbody>
 </table>
 
-<hr />
-<p><span style="font-size:8px">&nbsp;</span></p>
+<table border="0" cellpadding="1" cellspacing="1" style="width:100%">
+	<thead>
+		<tr>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:center; width:5%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Pos.</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:lcentral; width:30%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Beschreibung</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:central; width:15%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Menge</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:central; width:50%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px"><br/>Auftragsinformationen</span></span></th>
+		</tr>
+	</thead>
+	<tbody><!-- {foreach $Articles as $Pos} -->
+		<tr>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:center; width:5%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos@iteration}</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:30%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:15%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px"><br/>Auflage: {(ceil($Pos-&gt;getQuantity()))}<br/>Druckbogen: {(ceil($Con["Calc"]->getPaperCount(Calculation::PAPER_CONTENT)))}<br/>Zuschuss: {(ceil($Con["Calc"]->getPaperContentGrant()))}<br/>Brutto-Bogen: {(ceil($Con["Calc"]->getPaperContentGrant()) + ($Con["Calc"]->getPaperCount(Calculation::PAPER_CONTENT)))}</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:50%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px"><br/>Auftragsart:<!--{if $OrderAttributes.50_293.value != ""}-->Neudruck<!--{/if}-->
+                        <!--{if $OrderAttributes.50_294.value != ""}-->Nachdruck<!--{/if}-->
+                        <!--{if $OrderAttributes.50_295.value != ""}-->Nachdruck mit Änderungen<!--{/if}--> <br/>
+                                                Daten:<!--{if $OrderAttributes.47_285.value != ""}-->per FTP<!--{/if}--><!--{if $OrderAttributes.47_286.value != ""}-->per DVD<!--{/if}-->
+                                                                        <!--{if $OrderAttributes.47_287.value != ""}-->per Mail<!--{/if}--><br />
+                                                                                                  Korrektur: <!--{if $OrderAttributes.52_300.value != ""}-->Ja<!--{/if}-->
+                                                                                                                                                           <!--{if $OrderAttributes.52_301.value != ""}-->Nein<!--{/if}--><br/>
+                                                                                                                                                           Korrekturoptionen:<!--{if $OrderAttributes.53_302.inputvalue != ""}-->$OrderAttributes.53_302.inputvalue<!--{/if}--><!--{if $OrderAttributes.53_303.inputvalue != ""}-->$OrderAttributes.53_303.inputvalue<!--{/if}-->
+                                                                                                                                                                                                           <!--{if $OrderAttributes.53_304.inputvalue != ""}-->$OrderAttributes.53_304.inputvalue<!--{/if}-->
+                                                                                                                                                                                                           <!--{if $OrderAttributes.53_305.inputvalue != ""}-->$OrderAttributes.53_305.inputvalue<!--{/if}--><br/>
+                                                                                                                                                                                                           Korrekturläufe:<!--{if $OrderAttributes.54_306.inputvalue != ""}-->$OrderAttributes.54_306.inputvalue<!--{/if}--><!--{if $OrderAttributes.54_307.inputvalue != ""}-->$OrderAttributes.53_307.inputvalue<!--{/if}-->
+                                                                                                                                                                                                                                                           <!--{if $OrderAttributes.54_308.inputvalue != ""}-->$OrderAttributes.54_308.inputvalue<!--{/if}-->
+                                                                                                                                                                                                                                                           <!--{if $OrderAttributes.54_309.inputvalue != ""}-->$OrderAttributes.54_309.inputvalue<!--{/if}--></span></span></th>
+		</tr>
+		<!-- {/foreach} --><!-- {/foreach} --><!-- {/foreach} -->
+	</tbody>
+</table>
+<!-- {foreach $Drs as $Container} --><!-- {foreach $Container as $Con} -->
 
-<table border="0" cellpadding="0" cellspacing="1" style="height:28px; width:450px">
-	<tbody><!-- {foreach $Con.Type as $Type} -->
+<table border="0" cellpadding="1" cellspacing="1" style="background-color:#D6D6E6; height:11px; width:100%">
+	<tbody>
 		<tr>
-			<td style="width:150px"><strong><span style="font-size:10px">{$Type.Name}</span></strong></td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td><strong><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Material</span></span></strong></td>
 		</tr>
-		<!-- {foreach $Type.Machine as $Mg} -->
-		<tr>
-			<td style="width:15px">&nbsp;</td>
-			<td style="width:140px"><span style="font-size:10px">{$Mg.Position}</span></td>
-			<td style="width:70px"><span style="font-size:10px">{$Mg.Date}</span></td>
-			<td style="width:140px"><span style="font-size:10px">{$Mg.Comment}</span></td>
-			<td style="text-align:right; width:70px"><span style="font-size:10px">{$Mg.Time} Min.</span></td>
-		</tr>
-		<!-- {/foreach} --><!-- {/foreach} -->
 	</tbody>
 </table>
 
-<hr />
-<p><span style="font-size:8px">&nbsp;</span></p>
-<!-- {/foreach} -->
+<table border="0" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:45%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Papiersorte Inhalt 1</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:12,5%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Bogengröße</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:12,5%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Rohbogen</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:10%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">G NETTO</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:10%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Farbe Gesamt</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:10%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Platten</span></span></th>
+
+		</tr>
+		<tr>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:45%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Con["Calc"]->getPaperContent()->getName()}</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:12,5%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Con["Calc"]->getPaperContentWidth()} X {$Con["Calc"]->getPaperContentHeight()}</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:12,5%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Con["Calc"]->getFormat_in_content()}</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:10%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{(($Con["Calc"]->getPaperContentWidth() * $Con["Calc"]->getPaperContentHeight()) * (($Con["Calc"]->getPaperContentWeight()/10000 /100) * ($Con["Calc"]->getAmount()/10000)))} KG</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:10%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{(ceil($Con["Calc"]->getProductFormatWidth()) * ($Con["Calc"]->getProductFormatHeight() / 1000000) * ($Con["Calc"]->getAmount()) * (1.4 * 0.5 / 1000) * (($Con["Calc"]->getChromaticitiesContent()->getColorsBack() + $Con["Calc"]->getChromaticitiesContent()->getColorsFront())))} Kg</span></span></th>
+            <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:10%"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{($Con["Calc"]->getPlateCount($me))}</span></span></th>
+		</tr>
+	</tbody>
+</table>
+
+
+<table border="0" cellpadding="1" cellspacing="1" style="background-color:#D6D6E6; height:11px; width:100%">
+	<tbody>
+		<tr>
+			<td><strong><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Produktion:</span></span></strong></td>
+		</tr>
+	</tbody>
+</table>
+
+<table border="1" cellpadding="0" cellspacing="1" style="background-color:#DEDEDE; height:28px; width:100%">
+	<tbody>
+	<table cellpadding="0" cellspacing="0" border="1" width="100%">
+        <colgroup>
+            <col width="15%">
+            <col width="45%">
+            <col width="40%">
+        </colgroup>
+        <!--{foreach $Con.Type as $Type}-->
+            <!--{foreach $Type.Machine as $Mg}-->
+                <tr>
+                    <th scope="col" style="background-color:rgb(0, 0, 0, 0); text-align:left; width:15%">
+                        <span style="font-size:11px">{$Type.Name}</span>
+                    </th>
+                    <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:left; width:45%">
+                        <span style="font-size:11px">{$Mg.Position}</span>
+                    </th>
+                    <th scope="col" style="border-color:rgb(0, 0, 0, 0); text-align:center; width:40%">
+                        <span style="font-size:11px">{$Mg.Comment}<br>
+                        <!--{if $Mg["ME"]->getMachine()->getType() == 5}-->Schnitte: {$Mg["ME"]->calcCuts()}<!--{/if}-->
+                        </span>
+                    </th>
+                </tr>
+            <!-- {/foreach} -->
+        <!-- {/foreach} -->
+	</tbody>
+</table>
+
+<!-- {/foreach} --><!-- {/foreach} -->
+

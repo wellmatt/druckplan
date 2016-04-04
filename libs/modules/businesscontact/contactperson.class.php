@@ -64,6 +64,7 @@ class ContactPerson {
 	private $enabledTickets;			// Freigabe fuer Tickets im Kundenportal
 	private $enabledPersonalization; 	// Freigabe fuer Personalisierungen im Kundenportal
 	private $enabledArtikel;			// Freigabe fuer Artikel im Kundenportal
+	private $enabledMarketing;			// Freigabe fuer Marketingplan im Kundenportal
 	
 	private $notifymailadr = Array(); // f�r gesonderte Benachrichtigungs Mails bei Bestellungen
 	
@@ -144,6 +145,7 @@ class ContactPerson {
                     $this->enabledArtikel = $res[0]["enabled_article"];
                     $this->enabledTickets = $res[0]["enabled_ticket"];
                     $this->enabledPersonalization = $res[0]["enabled_personalization"];
+					$this->enabledMarketing = $res[0]["enabled_marketing"];
                 
                     $this->alt_name1 = $res[0]["alt_name1"];
                     $this->alt_name2 = $res[0]["alt_name2"];
@@ -446,7 +448,8 @@ class ContactPerson {
             priv_email = '{$this->priv_email}',
             enabled_article = {$this->enabledArtikel}, 
             enabled_ticket = {$this->enabledTickets}, 
-            enabled_personalization = {$this->enabledPersonalization},  
+            enabled_personalization = {$this->enabledPersonalization},
+            enabled_marketing = {$this->enabledMarketing},
         	birthdate = '{$this->birthdate}', 
 		    notifymailadr = '{$tmp_notify_mail_adr}', 
             comment = '{$this->comment}' 
@@ -464,7 +467,7 @@ class ContactPerson {
             priv_city, priv_country, priv_phone, priv_fax, priv_mobil,  
             priv_email, comment, main_contact, active_adress,
             shop_login, shop_pass, 
-            enabled_article, enabled_ticket, enabled_personalization, birthdate, notifymailadr )
+            enabled_article, enabled_ticket, enabled_personalization, birthdate, notifymailadr, enabled_marketing )
             VALUES
             ('{$this->active}', '{$this->businessContactId}', '{$this->title}', '{$this->name1}', '{$this->name2}', '{$this->address1}', '{$this->address2}', 
 			'{$this->zip}', '{$this->city}',  '{$this->country->getId()}',  '{$this->phone}', '{$this->mobil}',
@@ -474,7 +477,7 @@ class ContactPerson {
             '{$this->priv_city}', '{$this->priv_country->getId()}', '{$this->priv_phone}', '{$this->priv_fax}', '{$this->priv_mobil}', 
 			'{$this->priv_email}', '{$this->comment}', {$this->isMainContact}, {$this->activeAdress}, 
 			'{$this->shopLogin}', '{$this->shopPassword}', 
-			 {$this->enabledArtikel}, {$this->enabledTickets}, {$this->enabledPersonalization}, '{$this->birthdate}', '{$tmp_notify_mail_adr}' )";
+			 {$this->enabledArtikel}, {$this->enabledTickets}, {$this->enabledPersonalization}, '{$this->birthdate}', '{$tmp_notify_mail_adr}', {$this->enabledMarketing} )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			
 			if ($res)
@@ -1221,7 +1224,20 @@ class ContactPerson {
         $this->categories_cancreate = $categories_cancreate;
     }
 
-    
-    
+	/**
+	 * @return mixed
+	 */
+	public function getEnabledMarketing()
+	{
+		return $this->enabledMarketing;
+	}
+
+	/**
+	 * @param mixed $enabledMarketing
+	 */
+	public function setEnabledMarketing($enabledMarketing)
+	{
+		$this->enabledMarketing = $enabledMarketing;
+	}
 }
 ?>

@@ -721,7 +721,7 @@ if ((int)$_REQUEST["persoid"] > 0){
 			    <?foreach ($all_persos AS $perso){ ?>
 			    <tr class="filerow">
 					<td class="filerow">
-						<img src="../images/products/<?=$perso->getPicture()?>" alt="..." width="80px">
+						<img src="../docs/personalization/<?=$perso->getPreview()?>" alt="..." width="80px">
 					</td>
 			        <td class="filerow"><?=$perso->getTitle()?></td>
 			        <td class="filerow">

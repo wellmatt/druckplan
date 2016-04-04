@@ -54,6 +54,9 @@ class Machineentry {
     private $special_margin_text;               // Manueller Aufschlag (Text)
     
     private $foldtype;
+
+    private $labelcount = 0;
+    private $rollcount = 0;
     
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
@@ -98,6 +101,8 @@ class Machineentry {
 				$this->special_margin = $r["special_margin"];
 				$this->special_margin_text = $r["special_margin_text"];
 				$this->foldtype = new Foldtype((int)$r["foldtype"]);
+                $this->labelcount = $r["labelcount"];
+                $this->rollcount = $r["rollcount"];
             }
         }
     }
@@ -219,6 +224,8 @@ class Machineentry {
         				special_margin = {$this->special_margin},
         				special_margin_text = '{$this->special_margin_text}',
         				foldtype = {$this->foldtype->getId()},
+        				rollcount = {$this->rollcount},
+        				labelcount = {$this->labelcount},
         				umschl_umst = {$this->umschlUmst},
         				umschl = {$this->umschl},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
@@ -229,7 +236,7 @@ class Machineentry {
                     WHERE id = {$this->id}";
 //                     if ($this->id == 16)
 //                         echo $sql . "</br>";
-                    
+//            prettyPrint($sql);
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO orders_machines SET {$set}";
@@ -238,6 +245,7 @@ class Machineentry {
 //                         echo $sql . "</br>";
 //             echo $sql . "</br>";
             // error_log(" --X-- ".$sql." --- ".$DB->getLastError()." --- <br>");
+//            prettyPrint($sql);
             if($res)
             {
                 $sql = "SELECT max(id) id FROM orders_machines WHERE calc_id = {$this->calcId}";
@@ -258,6 +266,7 @@ class Machineentry {
                 WHERE part = {$ptype}
                     AND calc_id = {$calcId}";
 
+//        echo $sql . "</br>";
         if ($DB->num_rows($sql))
         {
             foreach($DB->select($sql) as $r)
@@ -280,6 +289,119 @@ class Machineentry {
                 return true;
             }
             return false;
+        }
+    }
+
+    public function calcStacks()
+    {
+        $calc = new Calculation($this->calcId);
+        $psize = $calc->getPaperSize($this->part);
+        $paperH = $psize["paperH"];
+        $paperW = $psize["paperW"];
+//        echo 'Rechnung: '.$calc->getPaperCount($this->getPart()).' * (('.$paperW.' * '.$paperH.' / 10000) * ('.$calc->getPaperWeight($this->part).'/1000))</br>';
+        $stacksize = $calc->getPaperCount($this->getPart()) * (($paperW * $paperH / 10000) * ($calc->getPaperWeight($this->part)/1000));
+//        echo $stacksize.'/'.$this->machine->getMaxstacksize().'</br>';
+        return ceil($stacksize/$this->machine->getMaxstacksize());
+    }
+
+    public function calcCuts()
+    {
+        $calc = new Calculation($this->calcId);
+        $productsper = $calc->getProductsPerRow($this->part);
+        if ($productsper){
+            $rows = $productsper["rows"];
+            $cols = $productsper["cols"];
+            if ($rows>0 && $cols>0){
+                if ($rows==1 && $cols==1){
+                    return 4;
+                } else {
+                    if ($calc->getAnschnitt($this->part)>0){
+                        $ret = ($rows * 2 + $cols * 2);
+                    } else {
+                        $ret = ($rows-1 + $cols-1) + 4;
+                    }
+                    return $ret;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getMyFoldscheme()
+    {
+        $calc = new Calculation($this->calcId);
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return $calc->getFoldschemeContent();
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return $calc->getFoldschemeAddContent();
+                break;
+            case 3: // PAPER_ENVELOPE
+                return $calc->getFoldschemeEnvelope();
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return $calc->getFoldschemeAddContent2();
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return $calc->getFoldschemeAddContent3();
+                break;
+        }
+    }
+
+    public function getMyPlateCount()
+    {
+        if ($this->machine->getType() == Machine::TYPE_CTP){
+            $calc = new Calculation($this->calcId);
+            return $calc->getPlateCount($this);
+        } else
+            return 0;
+    }
+
+    public function getMyGrant()
+    {
+        $calc = new Calculation($this->calcId);
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return $calc->getPaperContentGrant();
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return $calc->getPaperAddContentGrant();
+                break;
+            case 3: // PAPER_ENVELOPE
+                return $calc->getPaperEnvelopeGrant();
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return $calc->getPaperAddContent2Grant();
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return $calc->getPaperAddContent3Grant();
+                break;
+        }
+    }
+
+    public function getMyPages()
+    {
+        $calc = new Calculation($this->calcId);
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return $calc->getPagesContent();
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return $calc->getPagesAddContent();
+                break;
+            case 3: // PAPER_ENVELOPE
+                return $calc->getPagesEnvelope();
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return $calc->getPagesAddContent2();
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return $calc->getPagesAddContent3();
+                break;
         }
     }
 
@@ -662,6 +784,38 @@ class Machineentry {
     public function setChromaticity($chromaticity)
     {
         $this->chromaticity = $chromaticity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRollcount()
+    {
+        return $this->rollcount;
+    }
+
+    /**
+     * @param int $rollcount
+     */
+    public function setRollcount($rollcount)
+    {
+        $this->rollcount = $rollcount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLabelcount()
+    {
+        return $this->labelcount;
+    }
+
+    /**
+     * @param int $labelcount
+     */
+    public function setLabelcount($labelcount)
+    {
+        $this->labelcount = $labelcount;
     }
 
     

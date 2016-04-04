@@ -90,12 +90,13 @@
     if ( isset($_GET['sSearch']) && $_GET['sSearch'] != "" )
     {
         $_GET['sSearch'] = utf8_decode($_GET['sSearch']);
+        // $_GET['sSearch'] = $_GET['sSearch'];
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
             if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "fremdleistung" && $aColumns[$i] != "crtdat" && $aColumns[$i] != "status" && $aColumns[$i] != "type" )
             {
-                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( utf8_decode($_GET['sSearch']) )."%' OR ";
+                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
             }
         }
         $sWhere = substr_replace( $sWhere, "", -3 );
@@ -121,11 +122,11 @@
     
     if ( $sWhere == "" )
     {
-        $sWhere = " WHERE status > 0 ";
+        $sWhere = " WHERE `status` > 0 ";
     }
     else
     {
-        $sWhere .= " AND status > 0 ";
+        $sWhere .= " AND `status` > 0 ";
     }
     
     if ($_GET['start'] != ""){
@@ -138,21 +139,29 @@
     if ($_GET['cust_id'] != ""){
         $sWhere .= " AND bcid = {$_GET['cust_id']} ";
     }
+
+    if ( isset($_GET['filter_attrib']) && $_GET['filter_attrib'] != "0" ){
+        $tmp_attrib_filter = explode("|",$_GET['filter_attrib']);
+        $sWhere .= " AND collectiveinvoice_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND collectiveinvoice_attributes.item_id = ".$tmp_attrib_filter[1]." ";
+    }
     
     
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT * FROM
+    $sQuery = "SELECT id,number,cust_name,title,crtdate,`status`,bcid FROM
                (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,
-               collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid 
-               FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a   
+               collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid, collectiveinvoice_attributes.attribute_id as caid, collectiveinvoice_attributes.item_id as caiid
+               FROM collectiveinvoice
+               LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
+               INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+               ) a
                $sWhere
                $sOrder
                $sLimit";
     
-//     var_dump($sQuery);
+    // var_dump($sQuery);
     
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      
@@ -164,11 +173,14 @@
         SELECT COUNT(".$sIndexColumn.")
         FROM   
         (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
-        collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid 
-        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid, collectiveinvoice_attributes.attribute_id as caid, collectiveinvoice_attributes.item_id as caiid
+        FROM collectiveinvoice
+        LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
+        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+        ) a
         $sWhere
     ";
-//     var_dump($sQuery);
+    // var_dump($sQuery);
 
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
     $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
@@ -180,10 +192,12 @@
         SELECT COUNT(".$sIndexColumn.")
         FROM   
         (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
-        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        FROM collectiveinvoice
+        LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
+        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id) a
         WHERE status > 0
     ";
-//     var_dump($sQuery);
+    // var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
     $aResultTotal = mysql_fetch_array($rResultTotal);
     $iTotal = $aResultTotal[0];
@@ -206,7 +220,7 @@
         {
             if ( $aColumns[$i] == 'cust_name' )
             {
-                $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
             else if ( $aColumns[$i] == 'number' )
             {
@@ -214,7 +228,7 @@
             }
             else if ( $aColumns[$i] == 'title' )
             {
-                $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
             else if ( $aColumns[$i] == 'id' )
             {
@@ -231,27 +245,27 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=1">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 1){
-                    $tmp_row .= 'red.gif';
+                    $tmp_row .= 'red.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Vorgang angelegt"></a>';
 
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=2">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 2){
-                    $tmp_row .= 'orange.gif';
+                    $tmp_row .= 'orange.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Vorgang gesendet"></a>';
                 
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=3">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 3){
-                    $tmp_row .= 'yellow.gif';
+                    $tmp_row .= 'yellow.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Vorgang angenommen"></a>';
                 
@@ -296,23 +310,23 @@
                     }
                     if ($pj_all_open && $pj_all_closed == false)
                     {
-                    $pj_state = 'red.gif';
+                        $pj_state = 'lila.svg';
                     } elseif ($pj_all_closed && $pj_all_open == false)
                     {
-                    $pj_state = 'green.gif';
+                        $pj_state = 'green.svg';
                     } elseif ($pj_all_closed == false && $pj_all_open == false)
                     {
-                    $pj_state = 'yellow.gif';
+                        $pj_state = 'yellow.svg';
                     }
                     
                     if ($pj_state == '')
-                        $pj_state = 'green.gif';
+                        $pj_state = 'green.svg';
                         
                     $tmp_title = $pj_title;
                     $tmp_row .= $pj_state;
                 } else {
                     $tmp_title = 'In Produktion';
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="'.$tmp_title.'"></a>';
                 
@@ -320,9 +334,9 @@
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=5">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 5){
-                    $tmp_row .= 'green.gif';
+                    $tmp_row .= 'green.svg';
                 } else {
-                    $tmp_row .= 'black.gif';
+                    $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="Erledigt"></a>';
                 
@@ -331,7 +345,7 @@
                 $row[] = $tmp_row;
             }
         }
-        $row[] = '<img class="pointer" onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&subexec=copy&ciid='.$aRow[ $aColumns[0] ].'\')" src="images/icons/document-view.png" title="Duplizieren">';
+        $row[] = '<img class="pointer" onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&subexec=copy&ciid='.$aRow[ $aColumns[0] ].'\')" src="images/icons/document-view.svg" title="Duplizieren">';
 
         $output['aaData'][] = $row;
     }

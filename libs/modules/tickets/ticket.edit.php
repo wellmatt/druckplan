@@ -174,10 +174,12 @@ if($_REQUEST["exec"] == "edit"){
             $logentry .= "Titel: " . $ticket->getTitle() . " >> " . $_REQUEST["tkt_title"] . "</br>";
         if ($ticket->getDuedate() != strtotime($_REQUEST["tkt_due"]))
         {
-            if ($_REQUEST["tkt_due"] != "")
-                $logentry .= "Fälligkeit: " . date('d.m.Y H:i',$ticket->getDuedate()) . " >> " . date('d.m.Y H:i',$_REQUEST["tkt_due"]) . "</br>";
+            if ($_REQUEST["tkt_due"] != "" && $ticket->getDuedate() > 0)
+                $logentry .= "Fälligkeit: " . date('d.m.Y H:i',$ticket->getDuedate()) . " >> " . date('d.m.Y H:i',strtotime($_REQUEST["tkt_due"])) . "</br>";
+            elseif ($ticket->getDuedate() == 0 && $_REQUEST["tkt_due"] != "")
+                $logentry .= "Fälligkeit: ohne Fälligkeit >> " . date('d.m.Y H:i',strtotime($_REQUEST["tkt_due"])) . "</br>";
             else
-                $logentry .= "Fälligkeit: " . date('d.m.Y H:i',$ticket->getDuedate()) . " >> ohne Fälligkeit</br>";
+                $logentry .= "Fälligkeit: " . date('d.m.Y H:i',strtotime($ticket->getDuedate())) . " >> ohne Fälligkeit</br>";
         }
         $newcustomer = new BusinessContact($_REQUEST["tkt_customer_id"]);
         if ($ticket->getCustomer()->getId() != $_REQUEST["tkt_customer_id"])
@@ -294,6 +296,7 @@ if($_REQUEST["exec"] == "edit"){
                     }
                     if ($grmem->getId() != $_USER->getId()){
                         Notification::generateNotification($grmem, get_class($ticket), "AssignGroup", $ticket->getNumber(), $ticket->getId(), $ticket->getAssigned_group()->getName());
+                        $logentry .= 'Benachrichtigung generiert für User: ' . $grmem->getNameAsLine() . '</br>';
                     }
                 }
             } else if ($assigned == "user")
@@ -308,6 +311,7 @@ if($_REQUEST["exec"] == "edit"){
                 }
                 if ($ticket->getAssigned_user()->getId() != $_USER->getId()){
                     Notification::generateNotification($ticket->getAssigned_user(), get_class($ticket), "Assign", $ticket->getNumber(), $ticket->getId());
+                    $logentry .= 'Benachrichtigung generiert für User: ' . $ticket->getAssigned_user()->getNameAsLine() . '</br>';
                 }
             }
         }
@@ -331,7 +335,7 @@ if($_REQUEST["exec"] == "edit"){
                 $savemsg = getSaveMessage($save_ok)." ".$DB->getLastError();
                 if ($save_ok){
                     $logentry .= '(#'.$ticketcomment->getId().') <a href="#comment_'.$ticketcomment->getId().'">Neues Kommentar </a> von ' . $ticketcomment->getCrtuser()->getNameAsLine() . '</br>';
-                    
+
                     $tmp_array = $_REQUEST["abo_notify"];
                     foreach ($tmp_array as $abouser){
                         $tmp_user = new User($abouser);
@@ -533,6 +537,30 @@ if($_REQUEST["exec"] == "edit"){
                         fatal_error('Could not connect to Server!');
                     }
                 }
+            } else {
+                $tmp_array = $_REQUEST["abo_notify"];
+                foreach ($tmp_array as $abouser){
+                    $tmp_user = new User($abouser);
+                    if (!Abonnement::hasAbo($ticket,$tmp_user)){
+                        $abo = new Abonnement();
+                        $abo->setAbouser($tmp_user);
+                        $abo->setModule(get_class($ticket));
+                        $abo->setObjectid($ticket->getId());
+                        $abo->save();
+                        $logentry .= 'Abonnement hinzugefügt: ' . $tmp_user->getNameAsLine() . '</br>';
+                    }
+                    if ($tmp_user->getId() != $_USER->getId())
+                    {
+                        Notification::generateNotification($tmp_user, get_class($ticket), "Change", $ticket->getNumber(), $ticket->getId());
+                        $logentry .= 'Benachrichtigung generiert für User: ' . $tmp_user->getNameAsLine() . '</br>';
+                    }
+                }
+//                $abos = Abonnement::getAbonnementsForObject(get_class($ticket), $ticket->getId());
+//                foreach ($abos as $abo) {
+//                    if ($abo->getAbouser()->getId() != $_USER->getId())
+//                        $logentry .= 'Benachrichtigung generiert für User: ' . $abo->getAbouser()->getNameAsLine() . '</br>';
+//                }
+//                Notification::generateNotificationsFromAbo(get_class($ticket), "Change", $ticket->getNumber(), $ticket->getId());
             }
             if ($logentry != "")
             {
@@ -1058,7 +1086,17 @@ function callBoxFancyAbo(my_href) {
       <tr>
         <td width="25%">Titel:</td>
         <td width="25%">
-            <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $ticket->getTitle();?>" style="width:160px" required/>
+            <?php
+            if ($ticket->getId() == 0 && $_REQUEST["tkt_title"]){
+                ?>
+                <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $_REQUEST["tkt_title"];?>" style="width:160px" required/>
+                <?php
+            } else {
+                ?>
+                <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $ticket->getTitle();?>" style="width:160px" required/>
+                <?php
+            }
+            ?>
         </td>
         <td width="15%">Kunde:</td>
         <td width="35%">
@@ -1257,7 +1295,8 @@ function callBoxFancyAbo(my_href) {
         </td>
         <td width="25%">Gepl. Zeit:</td>
         <td width="25%">
-            <input type="text" id="tkt_planned_time" name="tkt_planned_time" value="<?php echo printPrice($ticket->getPlanned_time(),2);?>" style="width:60px<?php if ($ticket->getTotal_time()>0 && $ticket->getTotal_time()>$ticket->getPlanned_time()) echo ' ;background-color: red; ';?>"/> Std. <?php if ($ticket->getTotal_time()>0) echo ' (Ist: '.printPrice($ticket->getTotal_time(),2).')';?>
+            <input type="text" id="tkt_planned_time" name="tkt_planned_time" value="<?php echo printPrice($ticket->getPlanned_time(),2);?>" style="width:60px<?php if ($ticket->getTotal_time()>0 && $ticket->getTotal_time()>$ticket->getPlanned_time()) echo ' ;background-color: red; ';?>"/><span>
+            Timer: <?php echo printPrice($ticket->getTotal_time(),2);?> / Artikel: <?php if ($ticket->getTimeFromArticles()-$ticket->getTotal_time()>0) echo printPrice($ticket->getTimeFromArticles()-$ticket->getTotal_time(),2); else echo '0,00';?> / Gesamt: <?php echo printPrice($ticket->getTimeFromArticles(),2);?></span>
         </td>
       </tr>
     </table>

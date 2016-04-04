@@ -138,7 +138,7 @@ if ($_REQUEST["exec"] == "addMachineRow") {
     echo '<td class="content_row" id="td-cost-'.$x.'">&nbsp;';
     echo '</td>';
     echo '<td class="content_row">';
-        echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addRow(' . $group . ')"> ';
+        echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow(' . $group . ')"> ';
         echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow(' . $x . ')"> ';
     echo '</td>';
     echo '</tr>';
@@ -185,7 +185,7 @@ if ($_REQUEST["exec"] == "addArticleRow") {
 	echo '<td class="content_row_clear" id="art_cost_'.$y.'">';
 	echo '</td>';
 	echo '<td class="content_row_clear">';
-		echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addArticleRow()">';
+        echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addArticleRow()">';
 		echo ' '.'<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteArticleRow('.$y.')">';
 	echo '</td>';
 	echo '</tr>';
@@ -401,16 +401,26 @@ if($_REQUEST["exec"] == "updateAvailPapers")
     
     if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||$mach-->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
     {
+//        if ($partId == Calculation::PAPER_CONTENT)
+//            $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+//        else if ($partId == Calculation::PAPER_ADDCONTENT)
+//            $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+//        else if ($partId == Calculation::PAPER_ENVELOPE)
+//            $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach, $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen());
+//        else if ($partId == Calculation::PAPER_ADDCONTENT2)
+//        	$sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+//        else if ($partId == Calculation::PAPER_ADDCONTEN3)
+//        	$sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
         if ($partId == Calculation::PAPER_CONTENT)
-            $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+            $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperContent()->getRolle(), $calc->getProductFormatHeightOpen());
         else if ($partId == Calculation::PAPER_ADDCONTENT)
-            $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+            $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent()->getRolle(), $calc->getProductFormatHeightOpen());
         else if ($partId == Calculation::PAPER_ENVELOPE)
-            $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach, $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen());
+            $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach, $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen(), $calc->getPaperEnvelope()->getRolle(), $calc->getProductFormatHeightOpen());
         else if ($partId == Calculation::PAPER_ADDCONTENT2)
-        	$sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
-        else if ($partId == Calculation::PAPER_ADDCONTEN3)
-        	$sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+            $sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent2()->getRolle(), $calc->getProductFormatHeightOpen());
+        else if ($partId == Calculation::PAPER_ADDCONTENT3)
+            $sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent3()->getRolle(), $calc->getProductFormatHeightOpen());
     
         echo '<select name="mach_papersize_'.$x.'" style="width:80px">';
         foreach($sizes as $s)

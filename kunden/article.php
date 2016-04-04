@@ -211,11 +211,19 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			</div>
 		</form>
 <?		} else { // ---------- Auflistung der freigegeben Artikel fuer dieses Kunden ------------------------
-			$all_article = Article::getAllShopArticleByCustomerAndCp((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]);
+			if ($_REQUEST["search"])
+				$all_article = Article::getAllShopArticleByCustomerAndCp((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]," WHERE title LIKE '%{$_REQUEST["search"]}%'");
+			else
+				$all_article = Article::getAllShopArticleByCustomerAndCp((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]);
+//			prettyPrint($_REQUEST["search"]);
 // 			var_dump($all_article);
 			?>
 			<div class="box2" style="min-height:180px;">
-			<b>Artikel</b>
+			<b>Artikel</b><br>
+			<form action="index.php?pid=60" method="get">
+				<input type="hidden" name="pid" value="60">
+				Suche: <input type="text" name="search" id="search" style="width: 200px;"><button type="submit">Suchen</button>
+			</form>
 			<table cellpadding="2" cellspacing="0" border="0" width="100%">
 			<colgroup>
 			<col width="100">

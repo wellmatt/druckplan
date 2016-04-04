@@ -56,13 +56,13 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 					<?=$attribute->getTitle()?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-						<? if ($attribute->getEnable_contact() == 1){
+						<? if ($attribute->getEnable_customer() == 1){
 								echo "<img src='images/icons/tick.png'>";
 							}
 							?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-						<? if ($attribute->getEnable_customer() == 1 ){
+						<? if ($attribute->getEnable_contact() == 1 ){
 								echo "<img src='images/icons/tick.png'>";
 							}
 							?>

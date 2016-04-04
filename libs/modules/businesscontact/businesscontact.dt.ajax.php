@@ -167,7 +167,7 @@
         $sLimit
     ";
     
-//     var_dump($sQuery);
+    // var_dump($sQuery);
     
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      

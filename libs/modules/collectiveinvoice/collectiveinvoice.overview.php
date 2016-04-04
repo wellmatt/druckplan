@@ -7,6 +7,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
+require_once ('libs/modules/businesscontact/attribute.class.php');
+$all_attributes = Attribute::getAllAttributesForCollectiveinvoice();
 
 ?>
 <!-- DataTables -->
@@ -71,6 +73,7 @@ $(document).ready(function() {
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var iMin = document.getElementById('ajax_date_min').value;
 			var iMax = document.getElementById('ajax_date_max').value;
+			aoData.push( { "name": "filter_attrib", "value": $('#filter_attrib').val() } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    $.getJSON( sSource, aoData, function (json) {
@@ -119,6 +122,9 @@ $(document).ready(function() {
         var aData = $('#colinv').dataTable().fnGetData(aPos[0]);
     	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
     });
+	$('#filter_attrib').on("change", function () {
+		$('#colinv').dataTable().fnDraw();
+	});
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	$('#date_min').datepicker(
@@ -127,7 +133,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
@@ -140,7 +146,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
@@ -156,12 +162,12 @@ $(document).ready(function() {
       <td><?=$savemsg?></td>
       <?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
       <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php"><img src="images/icons/arrow-join.png">
+      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php"><img src="images/icons/arrow-join.svg">
       	<span style="font-size:13px"><?=$_LANG->get('Vorgänge Zusammenführen')?></span></a>
       </td>
       <?php }?>
       <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user"><img src="images/icons/calculator--plus.png">
+      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user"><img src="images/icons/details_open.svg">
       	<span style="font-size:13px"><?=$_LANG->get('Vorgang hinzuf&uuml;gen')?></span></a>
    </tr>
 </table>
@@ -182,6 +188,18 @@ $(document).ready(function() {
                 bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
                 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
             </td>
+			<td valign="left">
+				Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" style="width:110px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+					<?
+					foreach ($all_attributes AS $attribute){
+						$allitems = $attribute->getItems();
+						foreach ($allitems AS $item){ ?>
+							<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
+						<? }
+					} ?>
+				</select>
+			</td>
         </tr>
     </table>
 </div>

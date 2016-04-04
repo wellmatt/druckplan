@@ -10,8 +10,9 @@ class TCPDF_BG extends TCPDF {
         $this->SetAutoPageBreak(false, 0);
         // set bacground image
         $img_file = 'docs/templates/briefbogen.jpg';
-//         $img_file = dirname(__FILE__).'/examples/images/logo_example.jpg';
-        $this->Image($img_file, 0, 0, 210, 297, 'JPEG', '', '', false, 300, '', false, false, 0);
+        $tmp_width = $this->fwPt / $this->k;
+        $tmp_height = $this->fhPt / $this->k;
+        $this->Image($img_file, 0, 0, $tmp_width, $tmp_height, 'JPEG', '', '', false, 300, '', false, false, 0);
         // restore auto-page-break status
         $this->SetAutoPageBreak($auto_page_break, $bMargin);
         // set the starting point for the page content

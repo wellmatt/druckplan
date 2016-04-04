@@ -27,10 +27,6 @@ if ($_REQUEST["exec"] == "save")
 	
 	$perf->setZuschussProDP(str_replace(",",".",str_replace(".","",$_REQUEST["zuschussprodp"])));
 	$perf->setCalc_detailed_printpreview($_REQUEST["calc_detailed_printpreview"]);
-	$perf->setPdf_margin_top(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_top"])));
-	$perf->setPdf_margin_left(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_left"])));
-	$perf->setPdf_margin_right(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_right"])));
-	$perf->setPdf_margin_bottom(str_replace(",",".",str_replace(".","",$_REQUEST["pdf_margin_bottom"])));
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
 	$savemsg = getSaveMessage($perf->save());
@@ -197,7 +193,6 @@ function deleteFormatRawRow(obj)
 		<ul>
 			<li><a href="#tabs-0"><? echo $_LANG->get('Allgemein');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation');?></a></li>
-			<li><a href="#tabs-2"><? echo $_LANG->get('PDF');?></a></li>
 			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
 			<li><a href="#tabs-4"><? echo $_LANG->get('Datatables');?></a></li>
 			<li><a href="#tabs-5"><? echo $_LANG->get('Kalender');?></a></li>
@@ -237,38 +232,6 @@ function deleteFormatRawRow(obj)
                   <td class="content_row_header" valign="top">Detailierte Druckbogenvorschau:</td>
                   <td class="content_row_clear">
                      <input type="checkbox" name="calc_detailed_printpreview" id="calc_detailed_printpreview" value="1" <? if ($perf->getCalc_detailed_printpreview()) echo "checked"; ?>/>
-                  </td>
-               </tr>
-            </table>
-       </div>
-       <div id="tabs-2">
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-               <colgroup>
-                  <col width="180">
-                  <col>
-               </colgroup>
-               <tr>
-                  <td class="content_row_header" valign="top">Margin Top:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="pdf_margin_top" id="pdf_margin_top" value="<?=str_replace(".",",",$perf->getPdf_margin_top());?>" />
-                  </td>
-               </tr>
-               <tr>
-                  <td class="content_row_header" valign="top">Margin Left:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="pdf_margin_left" id="pdf_margin_left" value="<?=str_replace(".",",",$perf->getPdf_margin_left());?>" />
-                  </td>
-               </tr>
-               <tr>
-                  <td class="content_row_header" valign="top">Margin Right:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="pdf_margin_right" id="pdf_margin_right" value="<?=str_replace(".",",",$perf->getPdf_margin_right());?>" />
-                  </td>
-               </tr>
-               <tr>
-                  <td class="content_row_header" valign="top">Margin Bottom:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="pdf_margin_bottom" id="pdf_margin_bottom" value="<?=str_replace(".",",",$perf->getPdf_margin_bottom());?>" />
                   </td>
                </tr>
             </table>

@@ -521,17 +521,17 @@
                     }
                     if ($pj_all_open && $pj_all_closed == false)
                     {
-                        $pj_state = '<img src="images/status/red_small.gif" title=\''.$pj_title.'\'/>';
+                        $pj_state = '<img src="images/status/red_small.svg" title=\''.$pj_title.'\'/>';
                     } elseif ($pj_all_closed && $pj_all_open == false)
                     {
-                        $pj_state = '<img src="images/status/green_small.gif" title=\''.$pj_title.'\'/>';
+                        $pj_state = '<img src="images/status/green_small.svg" title=\''.$pj_title.'\'/>';
                     } elseif ($pj_all_closed == false && $pj_all_open == false)
                     {
-                        $pj_state = '<img src="images/status/yellow_small.gif" title=\''.$pj_title.'\'/>';
+                        $pj_state = '<img src="images/status/yellow_small.svg" title=\''.$pj_title.'\'/>';
                     }
-                    
+
                     if ($pj_state == '')
-                        $pj_state = '<img src="images/status/green_small.gif" title="Keine Verkn."/>';
+                        $pj_state = '<img src="images/status/green_small.svg" title="Keine Verkn."/>';
                     
                     $commenthtml = "<img class='pointer commentimg' src='images/icons/message_inbox.gif'/>";
                     

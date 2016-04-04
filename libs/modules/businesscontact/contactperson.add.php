@@ -52,6 +52,7 @@ if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Group::RIGHT_EDIT
     $contactperson->setEnabledTickets((int)$_REQUEST["shop_tickets"]);		
     $contactperson->setEnabledPersonalization((int)$_REQUEST["shop_personalization"]);
     $contactperson->setEnabledArtikel((int)$_REQUEST["shop_article"]);
+	$contactperson->setEnabledMarketing((int)$_REQUEST["shop_marketing"]);
     
     if((int)$_REQUEST["main_contact"] == 1){
     	ContactPerson::clearMainContact($contactperson->getBusinessContact()->getId());
@@ -596,6 +597,15 @@ $(function() {
 						<input name="shop_article" type="checkbox" value="1" 
 								<?if($contactperson->getEnabledArtikel()) echo 'checked="checked"'; ?>
 								onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Marketing');?>
+					</td>
+					<td class="content_row_clear" >
+						<input name="shop_marketing" type="checkbox" value="1"
+							<?if($contactperson->getEnabledMarketing()) echo 'checked="checked"'; ?>
+							   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 					</td>
 				</tr>
 			</table>

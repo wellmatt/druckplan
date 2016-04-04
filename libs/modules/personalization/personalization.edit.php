@@ -31,6 +31,16 @@ if($_REQUEST["subexec"] == "save"){
 	
 	$perso->setFormatheight((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["perso_format_height"]))));
 	$perso->setFormatwidth((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["perso_format_width"]))));
+	$perso->setAnschnitt((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["perso_format_anschnitt"]))));
+
+	if($_FILES)
+	{
+		$filename = $_USER->getClient()->getId().'.perpv_'.md5(time().$_FILES["preview"]["name"]).".jpg";
+		if(move_uploaded_file($_FILES["preview"]["tmp_name"], "docs/personalization/".$filename))
+		{
+			$perso->setPreview($filename);
+		}
+	}
 		
 	$save_retval = $perso->save();
 	$savemsg = getSaveMessage($save_retval);
@@ -109,17 +119,6 @@ if($_REQUEST["subexec"] == "save"){
 	$hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
 	$doc->setName("PERSO");
 	$doc->save();
-	
-// 	if ($perso->getType() == 1){
-// 		$doc = new Document();
-// 		$doc->setRequestId($perso->getId());
-// 		$doc->setRequestModule(Document::REQ_MODULE_PERSONALIZATION);
-// 		$doc->setType(Document::TYPE_PERSONALIZATION);
-// 		$doc->setReverse(1);
-// 		$hash = $doc->createDoc(Document::VERSION_EMAIL, false, false);
-// 		$doc->setName("PERSO");
-// 		$doc->save();
-// 	}
 }
 
 $all_article = Article::getAllArticle(Article::ORDER_TITLE);
@@ -314,7 +313,7 @@ function addPriceRow()
 </div>
 
 <form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="perso_edit" id="perso_edit"   
-		onSubmit="return checkform(new Array(this.perso_title))">
+		onSubmit="return checkform(new Array(this.perso_title))" enctype="multipart/form-data">
 	<? // -------------------- Pesonalisierungdetails ------------------------------------------ ?>
 	<div class="box1">
 		<input type="hidden" name="exec" value="edit"> 
@@ -334,20 +333,6 @@ function addPriceRow()
 				<input id="perso_title" name="perso_title" type="text" class="text" 
 					value="<?=$perso->getTitle()?>" style="width: 370px">
 				</td>
-				<td class="content_row_header" >
-					<?=$_LANG->get('Hintergrund (Vorderseite)')?>
-				</td>
-				<td  class="content_row_clear" rowspan="2" valign="top"> 
-					<a  href="libs/modules/personalization/personalization.iframe.php?picture=1" id="picture_select" class="products"
-							><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a>
-				</td>
-				<td id="td_picture1" class="content_row_clear" rowspan="2">
-					<?if ($perso->getPicture()!= NULL && $perso->getPicture() !=""){?>
-						<img src="./images/products/<?=$perso->getPicture()?>" width="120px">&nbsp;
-	        		<?} else {?>
-	        			&nbsp; ...
-	        		<? } ?>	
-				</td>	
 			</tr>
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('Kommentar (intern)')?></td>
@@ -366,20 +351,6 @@ function addPriceRow()
 								<?if ($perso->getArticle()->getId() == $art->getId()) echo "selected" ?>><?= $art->getTitle()?></option>
 					<?	}?>
 					</select>
-				</td>
-				<td class="content_row_header" >
-					<?=$_LANG->get('Hintergrund (R&uuml;ckseite)')?>
-				</td>
-				<td  class="content_row_clear" rowspan="4"> 
-					<a  href="libs/modules/personalization/personalization.iframe.php?picture=2" id="picture_select2" class="products"
-							><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a>
-				</td>
-				<td id="td_picture2" class="content_row_clear" rowspan="4">
-					<?if ($perso->getPicture2()!= NULL && $perso->getPicture2() !=""){?>
-						<img src="./images/products/<?=$perso->getPicture2()?>" width="120px">&nbsp;
-	        		<?} else {?>
-	        			&nbsp; ...
-	        		<? } ?>	
 				</td>
 			</tr>
 			<tr>
@@ -404,30 +375,26 @@ function addPriceRow()
 				</td>
 			</tr>
 			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Breite')?> &amp; <?=$_LANG->get('H&ouml;he')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Breite')?> &amp; <?=$_LANG->get('H&ouml;he')?> <?=$_LANG->get('(Endformat)')?></td>
 				<td class="content_row_clear">
-					<!-- select id="perso_format" name="perso_format" style="width: 80px">
-							<option <?if ($perso->getFormat() == "A4") echo "selected" ?> value="A4"><?=$_LANG->get('A4');?></option>
-							<option <?if ($perso->getFormat() == "A5") echo "selected" ?> value="A5"><?=$_LANG->get('A5');?></option>
-							<option <?if ($perso->getFormat() == "A6") echo "selected" ?> value="A6"><?=$_LANG->get('A6');?></option>
-							<option <?if ($perso->getFormat() == "A7") echo "selected" ?> value="A7"><?=$_LANG->get('A7');?></option>
-							<option <?if ($perso->getFormat() == "A8") echo "selected" ?> value="A8"><?=$_LANG->get('A8');?></option>
-					</select-->
 					<input id="perso_format_width" name="perso_format_width" type="text" class="text" 
 							value="<?=printPrice($perso->getFormatwidth())?>" style="width: 50px"> 
 					&ensp; <b> X </b>&ensp; 
 					<input id="perso_format_height" name="perso_format_height" type="text" class="text" 
 							value="<?=printPrice($perso->getFormatheight())?>" style="width: 50px"> mm
 					&emsp;
-					<!-- select id="perso_customer" name="perso_direction" style="width: 122px">
-							<option <?if ($perso->getDirection() == 0) echo "selected" ?> value="0"><?=$_LANG->get('Hochformat');?></option>
-							<option <?if ($perso->getDirection() == 1) echo "selected" ?> value="1"><?=$_LANG->get('Querformat');?></option>
-					</select-->
+				</td>
+			</tr>
+			<tr>
+				<td class="content_row_header"><?=$_LANG->get('Anschnitt')?></td>
+				<td class="content_row_clear">
+					<input id="perso_format_anschnitt" name="perso_format_anschnitt" type="text" class="text"
+						   value="<?=printPrice($perso->getAnschnitt())?>" style="width: 50px"> mm
 				</td>
 			</tr>
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('Zeile f&uuml;r Zeile')?></td>
-				<td class="content_row">
+				<td class="content_row_clear">
 					<select name="perso_linebyline" id="perso_linebyline">
 					  <!-- <option value="0" <? if($perso->getLineByLine() == 0) echo 'selected="selected"';?>>Standard</option> -->
 					  <option value="1" <? if($perso->getLineByLine() == 1) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von oben)</option>
@@ -437,7 +404,7 @@ function addPriceRow()
 			</tr>
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('Im Shop versteckt?')?></td>
-				<td class="content_row">
+				<td class="content_row_clear">
 					<input type="checkbox" name="perso_hidden" value="1" <?php if ($perso->getHidden() == "1"){echo " checked ";}?> />
 				</td>
 			</tr>
@@ -445,7 +412,6 @@ function addPriceRow()
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Angelegt von')?></td>
 					<td class="content_row_clear">
-						<?// var_dump($perso->getCrt_user()); ?>
 						<?=$perso->getCrtuser()->getNameAsLine()?>
 					</td>
 				</tr>
@@ -472,6 +438,47 @@ function addPriceRow()
 				<?} // Ende if(geaendert gesetzt) ?>
 			<?} // Ende if(neuer Artikel) ?>
 		</table>
+		<table>
+			<tr>
+				<td class="content_row_header" >
+					<?=$_LANG->get('Hintergrund (Vorderseite)')?></br>
+					<a  href="libs/modules/personalization/personalization.iframe.php?picture=1" id="picture_select" class="products"
+					><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a>
+				</td>
+				<td id="td_picture1" class="content_row_clear">
+					<?if ($perso->getPicture()!= NULL && $perso->getPicture() !=""){?>
+						<iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$perso->getPicture()?>" style="overflow:hidden;"></iframe>
+					<?} else {?>
+						&nbsp; ...
+					<? } ?>
+				</td>
+				<td class="content_row_header" >
+					<?=$_LANG->get('Hintergrund (R&uuml;ckseite)')?></br>
+					<a  href="libs/modules/personalization/personalization.iframe.php?picture=2" id="picture_select2" class="products"
+					><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a>
+				</td>
+				<td id="td_picture2" class="content_row_clear">
+					<?if ($perso->getPicture2()!= NULL && $perso->getPicture2() !=""){?>
+						<iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$perso->getPicture2()?>" style="overflow:hidden;"></iframe>
+					<?} else {?>
+						&nbsp; ...
+					<? } ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="content_row_header" >
+					<?=$_LANG->get('Vorschaubild')?></br>
+					<input type="file" id="preview" name="preview" width="80px"></a>
+				</td>
+				<td id="td_preview" class="content_row_clear">
+					<?if ($perso->getPreview()!= NULL && $perso->getPreview() !=""){?>
+						<img width="400" height="300" src="docs/personalization/<?=$perso->getPreview()?>"></img>
+					<?} else {?>
+						&nbsp;
+					<? } ?>
+				</td>
+			</tr>
+		</table>
 	</div>
 
 <?if ($_REQUEST["exec"] != "new"){ 
@@ -495,9 +502,8 @@ function addPriceRow()
 					
 					$obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
 					$obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
-					?>			 
-					<object data="./docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf" type="application/pdf" 
-							width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
+					?>
+					<iframe width="<?=$obj_width?>" height="<?=$obj_height?>" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$tmp_id?>.per_<?=$hash?>_e.pdf" style="overflow:hidden;"></iframe>
 				<? } ?>
 			</td>
 		</tr>
@@ -557,7 +563,7 @@ function addPriceRow()
 		<? 	
 		if (count($all_items) > 0 && $all_items != FALSE){
 			$y=1;
-			foreach ($all_items as $item){?>
+			foreach ($all_items as $item){ $item->getXposAbsolute();?>
 				<tr>
 					<td class="content_row">
 					    <input type="number" name="item_sort_<?=$y?>" value="<?=$item->getSort()?>" style="width: 30px"/>
@@ -690,7 +696,7 @@ function addPriceRow()
 		</table>
 		<br/>
 		* <?=$_LANG->get('Eingabefeld wird gel&ouml;scht, falls Breite u. H&ouml;he = 0')?> <br/>
-		** <?=$_LANG->get('x- und y-Position ausgehend von der linken oberen Ecke')?> 
+		** <?=$_LANG->get('x- und y-Position ausgehend von der linken oberen Ecke + Anschnitt')?>
 	</div>
 	<br/>
 	<? // ---------------------------------------- Preisstaffeln ----------------------------------------------------------------------- ?>

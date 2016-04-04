@@ -875,6 +875,8 @@ function clickContentChromaticity(id)
                            value="<?= $calc->getProductFormatHeightOpen() ?>"> <?=$_LANG->get('mm')?>
 					<?= $_LANG->get('offenes Format') ?>
                 </td>
+                <td>Bitte beachten Sie bei einer Kalkulation von Rollenprodukten folgendes:<br/>
+                    HÃ¶he und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
             </tr>
 
             <?

@@ -41,6 +41,7 @@ class DBMysql {
    
    // select-anweisung
    function select($sql) {
+//      echo $sql . "</br>";
       $retval = Array();
       $res = mysql_query($sql, $this->conn);
       if ($res) {
@@ -55,6 +56,7 @@ class DBMysql {
    
    // falls keine Daten ausgelesen werden
    function no_result($sql) {
+//      echo $sql . "</br>";
       $res = mysql_query($sql);
       if ($res)
          return true;
@@ -64,6 +66,7 @@ class DBMysql {
    
    // num_rows
    function num_rows($sql) {
+//      echo $sql . "</br>";
       $res = mysql_query($sql, $this->conn);
       if ($res)
          return mysql_num_rows($res);

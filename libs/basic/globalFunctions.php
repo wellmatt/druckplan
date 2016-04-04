@@ -81,13 +81,13 @@ function getOrderStatus($status, $formated = false)
     {
         switch((int)$status)
         {
-            case 1: return "<font color='red'><b>".$_LANG->get('Vorgang angelegt')."</b></font>"; break;
-            case 2: return "<font color='darkorange'><b>".$_LANG->get('Vorgang gesendet')."</b></font>"; break;
-            case 3: return "<font color='gray'><b>".$_LANG->get('Vorgang angenommen')."</b></font>"; break;
-            case 4: return "<font color='blue'><b>".$_LANG->get('In Produktion')."</b></font>"; break;
-            case 5: return "<font color='green'><b>".$_LANG->get('Erledigt')."</b></font>"; break;
-            default: return "<font color='red'><b>".$_LANG->get('Unbekannt')."</b></font>"; break;
-        }
+			case 1: return "<font color='FF6E6E'><b>".$_LANG->get('Vorgang angelegt')."</b></font>"; break;
+			case 2: return "<font color='dFFB92C'><b>".$_LANG->get('Vorgang gesendet')."</b></font>"; break;
+			case 3: return "<font color='FFDA3E'><b>".$_LANG->get('Vorgang angenommen')."</b></font>"; break;
+			case 4: return "<font color='FB71FF'><b>".$_LANG->get('In Produktion')."</b></font>"; break;
+			case 5: return "<font color='71FF9C'><b>".$_LANG->get('Erledigt')."</b></font>"; break;
+			default: return "<font color='6e6e6d'><b>".$_LANG->get('Unbekannt')."</b></font>"; break;
+		}
     }
     else
     {
@@ -107,13 +107,13 @@ function getTicketStatus1($status, $formated = false){ 		// Allgemein
 	global $_LANG;
 	if($formated){
 		switch((int)$status){
-			case 0: return "<font color='black'><b>".$_LANG->get('Aus')."</b></font>"; break;
-			case 1: return "<font color='green'><b>".$_LANG->get('Offen')."</b></font>"; break;
-			case 2: return "<font color='orange'><b>".$_LANG->get('R&uuml;cksprache')."</b></font>"; break;
-			case 3: return "<font color='blue'><b>".$_LANG->get('Chat')."</b></font>"; break;
-			case 4: return "<font color='blue'><b>".$_LANG->get('TODO')."</b></font>"; break;
-			case 11: return "<font color='gray'><b>".$_LANG->get('Archiv')."</b></font>"; break;
-			default: return "<font color='black'><b>".$_LANG->get('Unbekannt')."</b></font>"; break;
+			case 0: return "<font color='71FF9C'><b>".$_LANG->get('Aus')."</b></font>"; break;
+			case 1: return "<font color='FFDA3E'><b>".$_LANG->get('Offen')."</b></font>"; break;
+			case 2: return "<font color='dFFB92C'><b>".$_LANG->get('R&uuml;cksprache')."</b></font>"; break;
+			case 3: return "<font color='92CEFF'><b>".$_LANG->get('Chat')."</b></font>"; break;
+			case 4: return "<font color='B71FF'><b>".$_LANG->get('TODO')."</b></font>"; break;
+			case 11: return "<font color='776358'><b>".$_LANG->get('Archiv')."</b></font>"; break;
+			default: return "<font color='6e6e6d'><b>".$_LANG->get('Unbekannt')."</b></font>"; break;
 		}
 	} else {
 		switch((int)$status){

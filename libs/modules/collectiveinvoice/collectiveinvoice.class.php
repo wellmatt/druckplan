@@ -326,10 +326,12 @@ class CollectiveInvoice{
 	public static function duplicate($id)
 	{
 	    $col = new CollectiveInvoice((int)$id);
+		$attribs = $col->getActiveAttributeItemsInput();
 	    $newcol = $col;
 	    $newcol->resetId();
 	    $newcol->setTitle($newcol->getTitle() . " Kopie");
 	    $newcol->save();
+		$newcol->saveActiveAttributes($attribs);
 	    
 	    $newops = Array();
 	    $ops = Orderposition::getAllOrderposition((int)$id);

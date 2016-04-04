@@ -286,6 +286,12 @@ class Orderposition{
 	public function getComment(){
 		return $this->comment;
 	}
+
+	public function getCommentClean(){
+		$ret = str_replace('<p>','',$this->comment);
+		$ret = str_replace('</p>','',$ret);
+		return $ret;
+	}
 	
 	public function setComment($comment){
 		$this->comment = $comment;

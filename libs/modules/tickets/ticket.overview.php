@@ -269,7 +269,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
@@ -283,7 +283,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
@@ -298,7 +298,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_cl_date_min').val(moment($('#date_cl_min').val(), "DD-MM-YYYY").unix());
@@ -312,7 +312,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_cl_date_max').val(moment($('#date_cl_max').val(), "DD-MM-YYYY").unix()+86340);
@@ -326,7 +326,7 @@ $(document).ready(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
 	            showOn: "button",
-	            buttonImage: "images/icons/calendar-blue.png",
+				buttonImage: "images/icons/calendar-blue.svg",
 	            buttonImageOnly: true,
 	            onSelect: function(selectedDate) {
 	                $('#ajax_date_due_min').val(moment($('#date_due_min').val(), "DD-MM-YYYY").unix());
@@ -340,7 +340,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+			buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_due_max').val(moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340);
@@ -442,7 +442,7 @@ function TicketTableRefresh()
 		</td>
 		<td class="content_header" align="right"><a
 			href="index.php?page=<?=$_REQUEST['page']?>&exec=new"
-			class="icon-link"><img src="images/icons/ticket--plus.png"> <span
+			class="icon-link"><img src="images/icons/details_open.svg"> <span
 				style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
 		</td>
 	</tr>

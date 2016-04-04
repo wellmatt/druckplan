@@ -26,8 +26,8 @@ if ($perso->getLineByLine() == 0) {
 
 	foreach ($all_items as $item){
 		
-		$xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
-		$ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
+		$xpos 	= $item->getXposAbsolute();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+		$ypos 	= $item->getYposAbsolute();		    // y-Pos der Ecke links unten
 		$width	= $item->getWidth();		// Breite
 		$height	= $item->getHeight();		// Hoehe
 		$size	= $item->getTextsize();		// Schriftgroesse
@@ -66,8 +66,8 @@ if ($perso->getLineByLine() == 0) {
         foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
             if ($item->getGroup() == $group) {
                 if ($item->getDependencyID() == 0) {    // erstes fix object links
-                    $xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
-                    $ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
+                    $xpos 	= $item->getXposAbsolute();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+                    $ypos 	= $item->getYposAbsolute();		    // y-Pos der Ecke links unten
                     $width	= $item->getWidth();		// Breite
                     $height	= $item->getHeight();		// Hoehe
                     $size	= $item->getTextsize();		// Schriftgroesse
@@ -116,8 +116,8 @@ if ($perso->getLineByLine() == 0) {
                                 $subwidth	= $subitem->getWidth();
                                 $subheight	= $subitem->getHeight();
                                 $subsize	= $subitem->getTextsize();
-                                $subxpos = $subitem->getXpos();
-                                $subypos = $subitem->getYpos();
+                                $subxpos = $subitem->getXposAbsolute();
+                                $subypos = $subitem->getYposAbsolute();
                                 $pdf->SetTextColor($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
                                 $spacing = $subitem->getSpacing();
                                 $tmp_font = new PersoFont($subitem->getFont());
@@ -177,8 +177,8 @@ if ($perso->getLineByLine() == 0) {
         foreach(Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) as $group){
             if ($item->getGroup() == $group) {
                 if ($item->getDependencyID() == 0) {    // erstes fix object links
-                    $xpos 	= $item->getXpos();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
-                    $ypos 	= $item->getYPos();		    // y-Pos der Ecke links unten
+                    $xpos 	= $item->getXposAbsolute();		    // x-Pos der Ecke links unten		cm * 72 dpi / 2,54 = Pixel (bei 72 dpi)
+                    $ypos 	= $item->getYposAbsolute();		    // y-Pos der Ecke links unten
                     $width	= $item->getWidth();		// Breite
                     $height	= $item->getHeight();		// Hoehe
                     $size	= $item->getTextsize();		// Schriftgroesse
@@ -227,8 +227,8 @@ if ($perso->getLineByLine() == 0) {
                                 $subwidth	= $subitem->getWidth();
                                 $subheight	= $subitem->getHeight();
                                 $subsize	= $subitem->getTextsize();
-                                $subxpos = $subitem->getXpos();
-                                $subypos = $subitem->getYpos();
+                                $subxpos = $subitem->getXposAbsolute();
+                                $subypos = $subitem->getYposAbsolute();
                                 $pdf->SetTextColor($subitem->getColor_c(),$subitem->getColor_m(),$subitem->getColor_y(),$subitem->getColor_k());
                                 $spacing = $subitem->getSpacing();
                                 $tmp_font = new PersoFont($subitem->getFont());

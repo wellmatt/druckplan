@@ -39,7 +39,7 @@ if($_REQUEST["exec"] == "copy")
 
 if($_REQUEST["subexec"] == "save")
 {
-	echo "Papierpreis in €: " . $_REQUEST['paper_100kg'] . "</br>";
+//	echo "Papierpreis in €: " . $_REQUEST['paper_100kg'] . "</br>";
     $sizes = Array();
     $weights = Array();
     $prices = Array();
@@ -99,10 +99,10 @@ if($_REQUEST["subexec"] == "save")
 	for ($i = 0; $i < $_REQUEST["supplier_counter"]; $i++) {
 		if ($_REQUEST["supplier_".$i] != "") {
 			if (count($supplier) > 0 && !in_array($_REQUEST["supplier_".$i],$supplier)) {
-				$supplier[] = $_REQUEST["supplier_".$i];
+				$supplier[] = Array('id'=>$_REQUEST["supplier_".$i],'descr'=>$_REQUEST["supplier_descr_".$i]);
 			}
 			else if (count($supplier) == 0) {
-				$supplier[] = $_REQUEST["supplier_".$i];
+                $supplier[] = Array('id'=>$_REQUEST["supplier_".$i],'descr'=>$_REQUEST["supplier_descr_".$i]);
 			}
 		}
 	}
@@ -255,7 +255,10 @@ function addSupplierRow()
 	insert += '<? 	foreach ($allcustomer as $cust){?>';
 	insert += '<option value="<?=$cust->getId()?>"><?=str_replace("'", "\'", $cust->getNameAsLine())?></option>';
 	insert += '<?	} //Ende ?>';
-	insert += '</select><img src="images/icons/cross-white.png" class="pointer" onclick="removeOption("supplier", '+count+')"></td></tr>';
+    insert += '</select>Papierbez. b. Lief.: <input name="supplier_descr_'+count+'" id="supplier_descr_'+count+'" value="" style="width: 500px;">';
+	insert += '<img src="images/icons/cross-white.png" class="pointer" onclick="removeOption("supplier", '+count+')"></td></tr>';
+
+
 	
     obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('supplier_counter').value = count + 1;
@@ -449,7 +452,7 @@ function addSupplierRow()
         <col>
     </colgroup>
     <? $i = 0; foreach($paper->getSupplier() as $s) { 
-	$tmp_supplier = new BusinessContact($s);
+	$tmp_supplier = new BusinessContact($s['id']);
 	?>
     <tr id="supplier_tr_<?=$i?>">
         <td class="content_row_clear">
@@ -460,6 +463,7 @@ function addSupplierRow()
 						<?if ($tmp_supplier->getId() == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine()?></option>
 			<?	} //Ende ?>
 			</select>
+            Papierbez. b. Lief.: <input name="supplier_descr_<?=$i?>" id="supplier_descr_<?=$i?>" value="<?php echo $s['descr'];?>" style="width: 500px;">
 			<img src="images/icons/cross-white.png" class="pointer" onclick="removeOption('supplier', <?=$i?>)">
         </td>
     </tr>

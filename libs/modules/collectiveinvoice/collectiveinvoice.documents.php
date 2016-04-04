@@ -155,6 +155,9 @@ if ($_REQUEST["subexec"] == "send")
                   <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default">Zurück</button>
                 </div>
             </td>
+			<td width="100%" align="right">
+				<h1><?=$_LANG->get('Dokumentenverwaltung')?></h1>
+			</td>
     	</tr>
     </tbody>
 </table>
@@ -267,12 +270,12 @@ if ($_REQUEST["subexec"] == "send")
 <div class="box2">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <colgroup>
-    <col width="160">
-    <col>
-    <col width="50">
-    <col width="150">
-    <col width="100">
-    <col width="250">
+	<col width="10%">
+	<col width="25%">
+	<col width="5%">
+	<col width="10%">
+	<col width="10%">
+	<col width="15%">
 </colgroup>
 <tr>
     <td class="content_row_header"><?=$_LANG->get('Typ')?></td>
@@ -280,7 +283,7 @@ if ($_REQUEST["subexec"] == "send")
     <td class="content_row_header"><?=$_LANG->get('Versch.')?></td>
     <td class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
     <td class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
-    <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+	<td class="content_row_header"><?=$_LANG->get('Dokumente')?></td>
 </tr>
 
 <? 
@@ -301,9 +304,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>
@@ -324,7 +327,7 @@ if(count($docs) > 0){
 	    				<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
 	    			</ul>
 				</td>
-				<td width="40%">
+				<td width="30%">
 					<ul class="postnav_text_del">
 						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
 					</ul>
@@ -378,9 +381,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>
@@ -457,9 +460,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>
@@ -527,9 +530,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>
@@ -603,9 +606,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>
@@ -678,9 +681,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>
@@ -755,9 +758,9 @@ if(count($docs) > 0){
 		</td>
 		<td class="content_row_clear">
 		<? 	if($doc->getSent())
-	    	    echo '<img src="images/status/green_small.gif">';
-	    	else
-	        	echo '<img src="images/status/red_small.gif">'; ?>
+				echo '<img src="images/status/green_small.svg">';
+			else
+				echo '<img src="images/status/red_small.svg">'; ?>
 	    </td>
 		<td class="content_row_clear">
 			<?=$doc->getCreateUser()->getNameAsLine()?>

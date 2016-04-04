@@ -125,7 +125,12 @@ class Abonnement {
         
         return $retstring;
     }
-    
+
+    /**
+     * @param $module
+     * @param $objectid
+     * @return Abonnement[]
+     */
     public static function getAbonnementsForObject($module,$objectid)
     {
         global $DB;

@@ -5,6 +5,8 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ---------------------------------------------------------------------------------
+//error_reporting(-1);
+//ini_set('display_errors', 1);
 chdir("../../../");
 require_once("config.php");
 require_once("libs/basic/mysql.php");
@@ -36,14 +38,14 @@ $picture = (int)$_REQUEST["picture"];
 
 if($_FILES)
 {
-    $filename = md5(time().$_FILES["picture"]["name"]).".jpg";
-    if(move_uploaded_file($_FILES["picture"]["tmp_name"], "images/products/".$filename))
+    $filename = $_USER->getClient()->getId().'.perbg_'.md5(time().$_FILES["picture"]["name"]).".pdf";
+    if(move_uploaded_file($_FILES["picture"]["tmp_name"], "docs/personalization/".$filename))
     {
         ?>
         <script language="javascript">
             parent.document.getElementById('perso_picture<?=$picture?>').value = '<?=$filename?>';
             // parent.document.getElementById('picture_origname').value = '<?=$_FILES["picture"]["name"] ?>';
-            parent.document.getElementById('td_picture<?=$picture?>').innerHTML = '<img src="images/products/<?=$filename?>" width="120px"> <br/><br/> Neues Bild - Bitte speichern';
+            parent.document.getElementById('td_picture<?=$picture?>').innerHTML = '<iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$filename?>" style="overflow:hidden;"></iframe> <br/><br/> Neues Bild - Bitte speichern';
             parent.$.fancybox.close();
         </script>
         <?
@@ -66,7 +68,7 @@ if($_FILES)
 	<hr/>
 	<b><?=$_LANG->get('Oder Bild hochladen');?>:</b--><br/>
 	<input type="hidden" name="picture" value="<?=$picture?>" />
-    <input type="file" name="picture">
+    <input type="file" name="picture" accept="application/pdf">
     <input type="submit" value="<?=$_LANG->get('Ausw&auml;hlen')?>">
 </form>
 <b><?=$_LANG->get('Hinweis')?>:</b> <?=$_LANG->get('Bilder ohne Interlacing empfolen. Andernfalls kann es zu Darstellungsfehlern kommen.')?>

@@ -38,6 +38,8 @@ class Personalization {
 	private $type = 0;			// Type wird nun fuer ein- bzw. zweiseitig benutzt (ab 10.03.2014)
 	private $linebyline = 0;	// Fix Positions links und rechts, rest wird darunter Zeile für Zeile eingerückt
 	private $hidden = 0;        // Perso im Shop versteckt?
+	private $anschnitt = 0;		// Anschnitt in mm
+	private $preview = '';		// Vorschaubild
 
 	/**
 	 * Konstruktor einer Personalisierung, falls id > 0 wird die entsprechende Personalisierung aus der DB geholt
@@ -63,14 +65,16 @@ class Personalization {
 				$this->picture = $r["picture"];
 				$this->picture2 = $r["picture2"];
 				$this->article = new Article($r["article"]);
-				$this->customer= new BusinessContact($r["customer"]);
-				$this->direction= $r["direction"];
-				$this->format= $r["format"];
-				$this->formatwidth= $r["format_width"];
-				$this->formatheight= $r["format_height"];
-				$this->type= $r["type"];
-				$this->linebyline= $r["linebyline"];
-				$this->hidden= $r["hidden"];
+				$this->customer = new BusinessContact($r["customer"]);
+				$this->direction = $r["direction"];
+				$this->format = $r["format"];
+				$this->formatwidth = $r["format_width"];
+				$this->formatheight = $r["format_height"];
+				$this->type = $r["type"];
+				$this->linebyline = $r["linebyline"];
+				$this->hidden = $r["hidden"];
+				$this->anschnitt = $r["anschnitt"];
+				$this->preview = $r["preview"];
 					
 				if ($r["crtuser"] != 0 && $r["crtuser"] != "" ){
 					$this->crt_user = new User($r["crtuser"]);
@@ -118,6 +122,8 @@ class Personalization {
 					format_width = {$this->formatwidth}, 
 					format_height = {$this->formatheight},
 					hidden = {$this->hidden},
+					anschnitt = {$this->anschnitt},
+					preview = '{$this->preview}',
 					linebyline = {$this->linebyline} 
                     WHERE id = {$this->id}";
 // 			echo $sql . "</br>";
@@ -127,12 +133,13 @@ class Personalization {
 					(status, comment, title, type, 
 					crtdate, crtuser, article, format,  
 					customer, picture, direction,
-					format_width, format_height, picture2, linebyline, hidden )
+					format_width, format_height, picture2, linebyline, hidden, anschnitt, preview )
 					VALUES
 					({$this->status}, '{$this->comment}', '{$this->title}', {$this->type},  
 					 {$now}, {$_USER->getId()}, {$this->article->getId()}, '{$this->format}', 
 					 {$this->customer->getId()}, '{$this->picture}', {$this->direction},  
-					 {$this->formatwidth}, {$this->formatheight}, '{$this->picture2}', {$this->linebyline}, {$this->hidden} )";
+					 {$this->formatwidth}, {$this->formatheight}, '{$this->picture2}',
+					 {$this->linebyline}, {$this->hidden}, {$this->anschnitt}, '{$this->preview}' )";
 			$res = $DB->no_result($sql);
             
             if($res){
@@ -549,6 +556,38 @@ class Personalization {
     {
         $this->hidden = $hidden;
     }
+
+	/**
+	 * @return float
+	 */
+	public function getAnschnitt()
+	{
+		return $this->anschnitt;
+	}
+
+	/**
+	 * @param float $anschnitt
+	 */
+	public function setAnschnitt($anschnitt)
+	{
+		$this->anschnitt = $anschnitt;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPreview()
+	{
+		return $this->preview;
+	}
+
+	/**
+	 * @param string $preview
+	 */
+	public function setPreview($preview)
+	{
+		$this->preview = $preview;
+	}
 	
 }
 ?>

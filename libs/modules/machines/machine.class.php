@@ -36,11 +36,15 @@ class Machine
     const TYPE_LAGENFALZ = 8;
     const TYPE_SAMMELHEFTER = 9;
     const TYPE_DRUCKMASCHINE_ROLLENOFFSET = 10;
+    const TYPE_LASERCUTTER = 11;
 
     const UNIT_PERHOUR_BOGEN = 1;
     const UNIT_PERHOUR_AUFLAGE = 2;
     const UNIT_PERHOUR_SEITEN = 3;
     const UNIT_PERHOUR_DRUCKPLATTEN = 4;
+    const UNIT_PERHOUR_MM = 5;
+    const UNIT_PERHOUR_M = 6;
+    const UNIT_PERHOUR_CUTS = 7;
     
     const DIFFICULTY_GAMMATUR = 1;
     const DIFFICULTY_STATIONS = 2;
@@ -88,6 +92,7 @@ class Machine
     private $timeTrimmer = 0;
     private $timeStacker = 0;
     private $cutprice = 0;
+    private $maxstacksize = 0;
 	
 	private $internaltext;
 	private $hersteller;
@@ -162,6 +167,7 @@ class Machine
                 $this->breaks = $r["breaks"];
                 $this->breaks_time = $r["breaks_time"];
                 $this->color = $r["color"];
+                $this->maxstacksize = $r["maxstacksize"];
                 
                 // Arbeiter
                 $tmp_qusrs = Array();
@@ -390,6 +396,7 @@ class Machine
                 breaks = {$this->breaks},
                 breaks_time = {$this->breaks_time},
                 umschl_umst = {$this->umschlUmst},
+                maxstacksize = {$this->maxstacksize},
                 color = '{$this->color}', ";
         
         if($this->id > 0)
@@ -586,16 +593,26 @@ class Machine
                     AND machine_id = {$this->id}
                 ORDER BY units_amount DESC
                 LIMIT 1";
-
+//        echo $sql;
         $res = $DB->select($sql);
 
         return $res[0]["units_amount"];
     }
-    
+
+    /**
+     * @param $machineEntry Machineentry
+     * @return float|int
+     */
     function getRunningTime($machineEntry)
     {
+        $debug = false;
         $calc = new Calculation($machineEntry->getCalcId());
         $time = 0;
+
+        if ($debug){
+            echo '</br></br>'.$machineEntry->getMachine()->getName().':</br></br>';
+        }
+
         
         // ----------------------------------------------------------------------------------
         // Reine Laufzeit
@@ -608,7 +625,11 @@ class Machine
             } else if($this->unit == Machine::UNIT_PERHOUR_BOGEN)
             {
                 if($machineEntry->getPart() > 0)
-                    $time = 60 / $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) * $calc->getPaperCount($machineEntry->getPart());
+                    $time = 60 / $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) * $calc->getAmount();
+                    if ($debug)
+                    {
+                        echo '$time = 60 / ' . $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) . ' * ' . $calc->getAmount() . '</br>';
+                    }
                 else
                 {
                     $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
@@ -619,6 +640,10 @@ class Machine
             } else if($this->unit == Machine::UNIT_PERHOUR_AUFLAGE)
             {
                 $time = 60 / $this->getUnitsPerHour($calc->getAmount()) * $calc->getAmount();
+                if ($debug)
+                {
+                    echo '$time = 60 / ' . $this->getUnitsPerHour($calc->getAmount()) . ' * ' . $calc->getAmount() . '</br>';
+                }
             } else if($this->unit == Machine::UNIT_PERHOUR_SEITEN)
             {
                 if($machineEntry->getPart() == Calculation::PAPER_CONTENT)
@@ -637,9 +662,33 @@ class Machine
                              + $calc->getPagesAddContent3() + $calc->getPagesEnvelope();
                     $time = 60 / $this->getUnitsPerHour($pages) * $pages;
                 }
-                
+            } else if($this->unit == Machine::UNIT_PERHOUR_MM)
+            {
+                $time = (($calc->getProductFormatHeightOpen() * 2 + $calc->getProductFormatWidthOpen() * 2) * $calc->getAmount())/$this->getUnitsPerHour(0)/60;
+                if ($debug)
+                {
+                    echo '$time = (('.$calc->getProductFormatHeightOpen().' * 2 + '.$calc->getProductFormatWidthOpen().' * 2) * '.$calc->getAmount().')/'.$this->getUnitsPerHour(0).'/60 </br>';
+                }
+            } else if($this->unit == Machine::UNIT_PERHOUR_M)
+            {
+                $time = (($calc->getProductFormatHeightOpen()/1000) * $calc->getAmount())/$this->getUnitsPerHour(0)/60;
+                if ($debug)
+                {
+                    echo '$time = (('.$calc->getProductFormatHeightOpen().' /1000) * '.$calc->getAmount().')/'.$this->getUnitsPerHour(0).'/60 </br>';
+                }
+            } else if($this->unit == Machine::UNIT_PERHOUR_CUTS)
+            {
+                $time = (60 / $this->getUnitsPerHour($machineEntry->calcCuts() * $machineEntry->calcStacks())) * $machineEntry->calcCuts() * $machineEntry->calcStacks();
+                if ($debug)
+                {
+                    echo '$time = (60 / '.$this->getUnitsPerHour($machineEntry->calcCuts() * $machineEntry->calcStacks()).') * '.$machineEntry->calcCuts().' * '.$machineEntry->calcStacks().' </br>';
+                }
             }
-            
+
+
+            if ($debug) {
+                echo 'Zeit vor Erschwernissen: ' . $time . '</br>';
+            }
             // Apply Difficulty factor
             foreach ($this->difficulties as $difficulty){
                 if($difficulty["unit"] == self::DIFFICULTY_GAMMATUR)
@@ -703,8 +752,12 @@ class Machine
                 {
             		if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER){
             		    if ($machineEntry->getFoldtype()->getId() > 0){
-            		        $diff_breaks = $machineEntry->getFoldtype()->getBreaks();
-            		        $diff = $this->getDifficultyByValue($diff_breaks, $difficulty["id"]);
+                            $diff_breaks = $machineEntry->getFoldtype()->getBreaks();
+                            $diff = $this->getDifficultyByValue($diff_breaks, $difficulty["id"]);
+                            if ($debug)
+                            {
+                                echo '$time = '.$time.' * (1 + ('.$diff.' / 100)) + '.$diff_breaks.' * '.($machineEntry->getMachine()->getBreaks_time()).'</br>';
+                            }
             		        $time = $time * (1 + ($diff / 100)) + $diff_breaks * ($machineEntry->getMachine()->getBreaks_time());
             		    }
             		}
@@ -734,6 +787,9 @@ class Machine
                 
                 
                 
+            }
+            if ($debug) {
+                echo 'Zeit nach Erschwernissen: ' . $time . '</br>';
             }
 
             
@@ -799,9 +855,15 @@ class Machine
         }
         
         if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER)
-        {   
-            $time += ($this->breaks * $this->breaks_time);
+        {
+            $foldtype = $machineEntry->getFoldtype();
+            if ($foldtype->getId()>0)
+                $time += ($foldtype->getBreaks() * $this->breaks_time);
         }
+        if ($debug){
+            echo 'Zeit nach Brüchen: ' .$time . '</br>';
+        }
+
         
         // END Maschinenspezifische Zuschl�ge
         // -------------------------------------------------------------------------
@@ -809,6 +871,10 @@ class Machine
         
         // Grundzeit
         $time += $this->timeBase;
+        if ($debug){
+            echo 'Endzeit inkl. Grundzeit: ' .$time . '</br>';
+        }
+
         return $time;
     }
 
@@ -1597,7 +1663,20 @@ class Machine
         $this->runninghours = $runninghours;
     }
 
-    
-    
+    /**
+     * @return int
+     */
+    public function getMaxstacksize()
+    {
+        return $this->maxstacksize;
+    }
+
+    /**
+     * @param int $maxstacksize
+     */
+    public function setMaxstacksize($maxstacksize)
+    {
+        $this->maxstacksize = $maxstacksize;
+    }
 }
 ?>

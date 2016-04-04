@@ -186,7 +186,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+            buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
@@ -199,7 +199,7 @@ $(document).ready(function() {
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
             showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
+            buttonImage: "images/icons/calendar-blue.svg",
             buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
@@ -214,8 +214,8 @@ $(document).ready(function() {
       <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Kalkulationen')?></td>
       <td><?=$savemsg?></td>
       <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/calculator--plus.png">
-      	<span style="font-size:13px"><?=$_LANG->get('Kalkulation hinzuf&uuml;gen')?></span></a>
+          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/details_open.svg">
+          <span style="font-size:13px"><?=$_LANG->get('Kalkulation hinzuf&uuml;gen')?></span></a>
       </td>
    </tr>
 </table>

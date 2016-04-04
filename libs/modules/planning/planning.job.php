@@ -54,6 +54,7 @@ if ($_REQUEST["delete"])
 
     if ($_REQUEST["subexec"]=="save")
     {
+//        echo '<pre>';print_r($_REQUEST);echo '</pre>';
         if ($_REQUEST["crt_job"])
         {
             $tickets = Array();
@@ -66,11 +67,13 @@ if ($_REQUEST["delete"])
                     $pj->setType($job["type"]);
                     $pj->setObject(new CollectiveInvoice((int)$job["object"]));
                     $pj->setOpos(new Orderposition((int)$job["opos"]));
-                    $pj->setSubobject(new Article((int)$job["subobject"]));
-                    if ($pj->getType() == PlanningJob::TYPE_V)
+                    if ($pj->getType() == PlanningJob::TYPE_V) {
+                        $pj->setSubobject(new Article((int)$job["subobject"]));
                         $pj->setArtmach(new Article((int)$job["artmach"]));
-                    else
+                    } else {
+                        $pj->setSubobject(new Order((int)$job["subobject"]));
                         $pj->setArtmach(new Machine((int)$job["artmach"]));
+                    }
                     $pj->setTplanned(tofloat($job["workers"]["load"][$i]));
                     $pj->setStart(strtotime($job["start"]));
                     if (substr($job["workers"]["assigned"][$i], 0, 2) == "u_"){
@@ -80,6 +83,7 @@ if ($_REQUEST["delete"])
                         $pj->setAssigned_group(new Group((int)substr($job["workers"]["assigned"][$i], 2)));
                         $assigned = "group";
                     }
+//                    print_r($pj); die();
                     $pj->createMyTicket();
                     $pj->save();
                     $ticketlist['"'.$job["opos"].'"'][] = $pj->getTicket()->getId();

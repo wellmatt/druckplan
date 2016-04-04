@@ -93,7 +93,7 @@ class Paper {
                     $i = 0;
                     foreach($DB->select($sql) as $r)
                     {
-                        $this->supplier[$i] = $r["supplier_id"];
+                        $this->supplier[$i] = Array('id'=>$r["supplier_id"],'descr'=>$r["description"]);
                         $i++;
                     }
                 }
@@ -177,6 +177,17 @@ class Paper {
                     LIMIT 1";
             $res = $DB->select($sql);
             $price = ($weight * $res[0]["price"]) / 100;
+        } elseif ($this->rolle == 1) {
+            $sql = "SELECT price FROM papers_prices
+                    WHERE (size_width = {$this->selectedSize["width"]})
+                            OR (size_width = {$this->selectedSize["height"]})
+                        AND weight_from = {$this->selectedWeight}
+                        AND quantity_from <= {$amount}
+                        AND paper_id = {$this->id}
+                    ORDER BY quantity_from desc, price
+                    LIMIT 1";
+            $res = $DB->select($sql);
+            $price = $amount * $res[0]["price"] / 1000;
         } else
         {
             $sql = "SELECT price FROM papers_prices 
@@ -192,6 +203,7 @@ class Paper {
             $res = $DB->select($sql);
             $price = $amount * $res[0]["price"] / 1000;
         }
+//        echo $sql;
         return $price;
     }
     
@@ -211,7 +223,7 @@ class Paper {
         AND (( width >= {$machine->getPaperSizeMinWidth()} AND height >= {$machine->getPaperSizeMinHeight()})
             OR (width >= {$machine->getPaperSizeMinHeight()} AND height >= {$machine->getPaperSizeMinWidth()}))";
         if ($rolle == 0)
-            $sql = "AND (( width >= {$minWidth} AND height >= {$minHeight}) OR (width >= {$minHeight} AND height >= {$minWidth}))";
+            $sql .= "AND (( width >= {$minWidth} AND height >= {$minHeight}) OR (width >= {$minHeight} AND height >= {$minWidth}))";
     
 //         echo $sql;
         if($DB->num_rows($sql))
@@ -470,9 +482,9 @@ class Paper {
             foreach($this->supplier as $s)
             {
                 $sql = "INSERT INTO papers_supplier 
-                            (paper_id, supplier_id)
+                            (paper_id, supplier_id, description)
                         VALUES
-                            ({$this->id}, {$s})";
+                            ({$this->id}, {$s['id']}, '{$s['descr']}')";
                 $DB->no_result($sql);
             }
 

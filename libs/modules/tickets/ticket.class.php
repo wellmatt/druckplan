@@ -323,7 +323,170 @@ class Ticket {
     
         return $retval;
     }
-    
+
+    /**
+     * @return float
+     */
+    public function getTimeFromArticles()
+    {
+        $all_comments = Comment::getCommentsForObjectSummary(get_class($this),$this->id);
+        $total = 0.0;
+        foreach ($all_comments as $comment){
+            if ($comment->getState() > 0 && count($comment->getArticles()) > 0){
+                foreach ($comment->getArticles() as $c_article){
+                    if ($c_article->getState() > 0)
+                    {
+                        if ($c_article->getArticle()->getIsWorkHourArt())
+                            $total += $c_article->getAmount();
+                    }
+                }
+            }
+        }
+        return $total;
+    }
+
+    public static function StatisticsTicketStates($from,$to)
+    {
+        global $DB;
+        $retval = false;
+        $where = "";
+        if ($from & $to){
+            $where .= " WHERE ";
+            $where .= " tickets.crtdate <= {$to}";
+            $where .= " AND ";
+            $where .= " tickets.crtdate >= {$from}";
+        }
+        $sql = "SELECT
+                tickets_states.title,
+                count(tickets.id) as amount
+                FROM
+                tickets_states
+                INNER JOIN tickets ON tickets_states.id = tickets.state
+                {$where}
+                GROUP BY
+                tickets_states.id";
+
+        if($DB->num_rows($sql)){
+            $retval = Array();
+            foreach($DB->select($sql) as $r){
+                $retval[] = Array('label'=>$r["title"],'data'=>$r["amount"]);
+            }
+        }
+        return $retval;
+    }
+
+    public static function StatisticsTicketCategories($from,$to)
+    {
+        global $DB;
+        $retval = false;
+        $where = "";
+        if ($from & $to){
+            $where .= " WHERE ";
+            $where .= " tickets.crtdate <= {$to}";
+            $where .= " AND ";
+            $where .= " tickets.crtdate >= {$from}";
+        }
+        $sql = "SELECT
+                tickets_categories.title,
+                count(tickets.id) as amount
+                FROM
+                tickets_categories
+                INNER JOIN tickets ON tickets_categories.id = tickets.category
+                {$where}
+                GROUP BY
+                tickets_categories.id";
+
+        if($DB->num_rows($sql)){
+            $retval = Array();
+            foreach($DB->select($sql) as $r){
+                $retval[] = Array('label'=>$r["title"],'data'=>$r["amount"]);
+            }
+        }
+        return $retval;
+    }
+
+    public static function StatisticsTicketWorkload($from,$to)
+    {
+        global $DB;
+        $retval = false;
+        $where = "";
+        if ($from & $to){
+            $where .= " AND ";
+            $where .= " tickets.crtdate <= {$to}";
+            $where .= " AND ";
+            $where .= " tickets.crtdate >= {$from}";
+        }
+        $sql = "SELECT
+                `user`.login,
+                SUM(comments_article.amount) as total
+                FROM
+                tickets
+                INNER JOIN comments ON comments.objectid = tickets.id
+                INNER JOIN comments_article ON comments_article.comment_id = comments.id
+                INNER JOIN article ON comments_article.articleid = article.id
+                INNER JOIN `user` ON comments.crtuser = `user`.id
+                WHERE
+                comments.state = 1 AND
+                comments_article.state = 1 AND
+                tickets.state > 1 AND
+                article.`status` > 0
+                {$where}
+                GROUP BY `user`.id";
+//        echo $sql;
+        if($DB->num_rows($sql)){
+            $retval = Array();
+            foreach($DB->select($sql) as $r){
+                $retval[] = Array('label'=>$r["login"],'data'=>$r["total"]);
+            }
+        }
+        return $retval;
+    }
+
+    public static function StatisticsTicketWorkloadUser(User $user,$from,$to)
+    {
+        global $DB;
+        $retval = false;
+        $where = "";
+        if ($from & $to){
+            $where .= " AND ";
+            $where .= " comments.crtdate <= {$to}";
+            $where .= " AND ";
+            $where .= " comments.crtdate >= {$from}";
+        }
+        $sql = "SELECT
+                tickets.id,
+                tickets.title,
+                businesscontact.name1 as bc,
+                tickets.number,
+                tickets.duedate,
+                tickets.planned_time,
+                SUM(comments_article.amount) as curr_time
+                FROM
+                tickets
+                INNER JOIN comments ON comments.objectid = tickets.id
+                INNER JOIN comments_article ON comments_article.comment_id = comments.id
+                INNER JOIN article ON comments_article.articleid = article.id
+                INNER JOIN businesscontact ON tickets.customer = businesscontact.id
+                WHERE
+                article.isworkhourart = 1 AND
+                comments.state = 1 AND
+                article.`status` = 1 AND
+                tickets.state > 1 AND
+                comments.module = 'Ticket' AND
+                comments.crtuser = {$user->getId()}
+                {$where}
+                GROUP BY
+                tickets.id
+                ";
+        if($DB->num_rows($sql)){
+            $retval = Array();
+            foreach($DB->select($sql) as $r){
+                $retval[] = $r;
+            }
+        }
+        return $retval;
+    }
+
 	/**
      * @return the $id
      */

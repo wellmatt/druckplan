@@ -67,6 +67,7 @@ $machines = Machine::getAllMachines(Machine::ORDER_GROUP_NAME);
                 <? if($m->getType() == Machine::TYPE_CTP) echo $_LANG->get('Computer To Plate')?>
                 <? if($m->getType() == Machine::TYPE_FOLDER) echo $_LANG->get('Falzmaschine')?>
                 <? if($m->getType() == Machine::TYPE_CUTTER) echo $_LANG->get('Schneidemaschine')?>
+                <? if($m->getType() == Machine::TYPE_LASERCUTTER) echo $_LANG->get('Stanze / Laser-Stanze')?>
                 <? if($m->getType() == Machine::TYPE_LAGENFALZ) echo $_LANG->get('Lagenfalz-/Zusammentragmaschine')?>
                 <? if($m->getType() == Machine::TYPE_SAMMELHEFTER) echo $_LANG->get('Sammelhefter')?>
                 <? if($m->getType() == Machine::TYPE_MANUELL) echo $_LANG->get('Manuelle Arbeit')?>

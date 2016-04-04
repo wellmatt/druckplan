@@ -99,6 +99,9 @@ if ($_SESSION["login_type"] == "businesscontact"){
 	if($_CONTACTPERSON->getEnabledTickets() == 1){
 		$enabled_tickets = "on";
 	}
+	if($_CONTACTPERSON->getEnabledMarketing() == 1){
+		$enabled_marketing = "on";
+	}
 	$login_type_str = $_CONTACTPERSON->getNameAsLine3();
 }
 
@@ -225,6 +228,10 @@ if ($_REQUEST["exec"] == "register_tmp"){
 		                    	<li class="menu <?if($_REQUEST["pid"] == 60) echo "active";?>" onclick="location.href='index.php?pid=60'"
 		                    	style="width:115px;">Artikel</li>
 		                    <?} ?>
+							<?if($enabled_marketing == "on"){?>
+								<li class="menu <?if($_REQUEST["pid"] == 100) echo "active";?>" onclick="location.href='index.php?pid=100'"
+									style="width:115px;">Marketing</li>
+							<?} ?>
 		                    <li class="menu <?if($_REQUEST["pid"] == 90) echo "active";?>" onclick="location.href='index.php?pid=90'"
 		                    	style="width:115px;">Historie</li>
 		                </ul>
@@ -241,6 +248,7 @@ if ($_REQUEST["exec"] == "register_tmp"){
 		                case 60: require_once('kunden/article.php'); break;
 		                case 80: require_once('kunden/modules/shoppingbasket/shoppingbasket.php'); break;
 		                case 90: require_once('kunden/orderhistory.php'); break;
+						case 100: require_once('kunden/marketing.php'); break;
 		                default: require_once 'kunden/files.php'; break;
 		            }            
 		            ?>

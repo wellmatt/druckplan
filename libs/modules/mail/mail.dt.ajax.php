@@ -197,21 +197,21 @@
 
             $options = '
             <div class="btn-group" role="group">
-                <button type="button" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');" class="btn btn-xs btn-default">Antworten</button>
-                <button type="button" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');" class="btn btn-xs btn-default">Weiterleiten</button>
-                <button type="button" onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');" class="btn btn-xs btn-danger">Löschen</button>
+                <img src="images/icons/arrow-turn-180-left.svg" title="Antworten" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>
                 <div class="btn-group dropdown" style="margin-left: 0px;">
                       <button type="button" class="btn btn-xs dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
                         Mehr <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" role="menu">
                             <li>
+                                <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>Weiterleiten</a>
                                 <a href="#" onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();">Verschieben</a>
                                 <a href="#" onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">als ungelesen markieren</a>
                                 <a href="#" onclick="mail_markasread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">als gelesen markieren</a>
                                 <a href="#" onclick="window.open(\'libs/modules/mail/mail.print.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');">Drucken</a>
                                 <a href="#" onclick="parent.location.href=\'index.php?page=libs/modules/tickets/ticket.php&exec=new&frommail=true&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\';">Ticket erstellen</a>
                                 <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.tocomment.php?mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');">Ticket Kommentar erstellen</a>
+                                <a href="#" onclick="mail_delete(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">Löschen</a>
                             </li>
                       </ul>
                 </div>
@@ -272,7 +272,7 @@
             {
                 $attach_names = implode('
 ', $attachments);
-                $row[] = '<img src="images/icons/attachment.png" title="'.$attach_names.'"> '.$list->first()->getEnvelope()->subject;
+                $row[] = '<img src="images/icons/attachment.svg" title="'.$attach_names.'"> '.$list->first()->getEnvelope()->subject;
             }
             else 
                 $row[] = $list->first()->getEnvelope()->subject;

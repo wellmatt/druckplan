@@ -546,15 +546,31 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                       </ul>
                       </div>
                       <?php if ($collectinv->getId()>0){?>
-                      <button type="button" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>');" class="btn btn-sm btn-default">Vorschau</button>
-                      
+
+					  <div class="btn-group dropdown" style="margin-left: 0px;">
+						  <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+							  Vorschau <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu" role="menu">
+							  <li>
+								  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=1');">Angebot</a>
+                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=2');">Auftragsbestätigung</a>
+                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=5');">Auftragstasche</a>
+                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=3');">Lieferschein</a>
+                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=15');">Etiketten</a>
+                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=4');">Rechnung</a>
+                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=7');">Gutschrift</a>
+							  </li>
+						  </ul>
+					  </div>
+
                       <div class="btn-group dropdown" style="margin-left: 0px;">
                           <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
                             Neu <span class="caret"></span>
                           </button>
                           <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="#" onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $collectinv->getCustomer()->getId();?>&contactperson=<?php echo $collectinv->getCustContactperson()->getId();?>&asso_class=<?php echo get_class($collectinv);?>&asso_object=<?php echo $collectinv->getId()?>');">Ticket erstellen (verknüpft)</a>
+                                    <a href="#" onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $collectinv->getCustomer()->getId();?>&contactperson=<?php echo $collectinv->getCustContactperson()->getId();?>&asso_class=<?php echo get_class($collectinv);?>&asso_object=<?php echo $collectinv->getId()?>&tkt_title=<?php echo $collectinv->getNumber().' - '.$collectinv->getTitle();?>');">Ticket erstellen (verknüpft)</a>
                                 </li>
                           </ul>
                       </div>
@@ -582,7 +598,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 			<col width="350">
 			<col width="180">
 			<col width="300">
-		<colgroup>
+		</colgroup>
 		<tr>
 			<td class="content_row_header">
 				<?= $_LANG->get('Firmenname') ?>
@@ -691,7 +707,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 			<col width="350">
 			<col width="180">
 			<col width="300">
-		<colgroup>
+		</colgroup>
 		<tr>
 			<td class="content_header"><?= $_LANG->get('Vorgangstitel')?></td>
 			<td class="content_row_clear" colspan="3">

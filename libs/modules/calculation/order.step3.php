@@ -550,7 +550,7 @@ foreach($groups as $group)
 	}
     if(count($groupmachs)){
         ?>
-        <h1><?=$group->getName()?></h1>
+		<h2><?=$group->getName()?></h2>
         <div class="box2">
             <table width="100%" id="table_group_<?=$group->getId()?>">
                 <colgroup>
@@ -686,7 +686,7 @@ foreach($groups as $group)
                       	    echo '<option value="0">&lt; '.$_LANG->get('Bitte w&auml;hlen').' &gt;</option>';
                       	    foreach($foldtypes as $ft)
                       	    {
-                      	        if ($mach->getMachine()->getBreaks() <= $ft->getBreaks()){
+                      	        if ($mach->getMachine()->getBreaks() >= $ft->getBreaks()){
                       	            echo '<option value="'.$ft->getId().'" ';
                       	            if($mach->getFoldtype()->getId() == $ft->getId()) echo "selected";
                       	            echo '>'.$ft->getName().'</option>';
@@ -851,16 +851,11 @@ foreach($groups as $group)
                     <?	} else if ($mach->getMachine()->getType() == Machine::TYPE_CUTTER ||
                                    $mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL || 
                                    $mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) { // added by ascherer 22.07.14  // temp remove  && $group->getName() == "Verarbeitung"
-//                             echo $_LANG->get('Schnitte: ');
-//                             echo '<input type="text" name="mach_cutter_cuts_'.$x.'" id="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" style="width:80px">&nbsp;';
-//                             echo $_LANG->get('Angeschnitten: ');
-//                             echo '<input type="checkbox" name="mach_cutter_precut_'.$x.'" value="1" onchange="angeschnitten('.$x.',this);">';
                             if($mach->getMachine()->getType() == Machine::TYPE_CUTTER) // added by ascherer 22.07.14 // temp remove  && $group->getName() == "Verarbeitung"
                             {
                                 echo $_LANG->get('Schnitte: ');
                                 echo '<input type="text" name="mach_cutter_cuts_'.$x.'" id="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" style="width:80px">&nbsp;';
-                                echo $_LANG->get('Angeschnitten: ');
-                                echo '<input type="checkbox" name="mach_cutter_precut_'.$x.'" value="1" onchange="angeschnitten('.$x.',this);">';
+								echo 'Stapel: '.$mach->calcStacks().'</br>';
                             }
 							echo "<tr><td align='top'>";
 							echo $_LANG->get('Laufrichtung: ');
@@ -879,8 +874,18 @@ foreach($groups as $group)
 							echo 'schmale Bahn</option>';
 							echo '</select>';
 							echo "</td></tr>";
-// 							echo "<tr><td>&nbsp;</td></tr>";
-// 							echo "<tr><td>&nbsp;</td></tr>";
+							if ($mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $mach->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL){
+								if ($calc->getPaperContent()->getRolle() == 1)
+								{
+									echo '<tr><td>';
+									echo 'Etiketten pro Rolle: <input class="text" name="mach_labelcount_'.$x.'" style="width:80px;" type="text"
+											value="'.$mach->getLabelcount().'">';
+									echo '</td></tr><tr><td>';
+									echo 'Laufmeter pro Rolle: <input class="text" name="mach_rollcount_'.$x.'" style="width:80px;" type="text"
+											value="'.$mach->getRollcount().'">';
+									echo '</td></tr>';
+								}
+							}
 						} else {
                     		echo "<tr><td>&nbsp;</td></tr>";
                     	}
@@ -958,7 +963,7 @@ foreach($groups as $group)
                             echo printPrice($mach->getPrice())." ".$_USER->getClient()->getCurrency();
                         echo '</td>';
                         echo '<td class="content_row">';
-                            echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addRow('.$group->getId().')"> ';
+							echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow('.$group->getId().')"> ';
                             echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow('.$x.')"> ';
                         echo '</td>';
                         
@@ -1010,7 +1015,7 @@ foreach($groups as $group)
                         echo '<td class="content_row_clear" id="td-cost-'.$x.'">';
                         echo '</td>';
                         echo '<td class="content_row_clear">';
-                            echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addRow('.$group->getId().')"> ';
+							echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow('.$group->getId().')"> ';
                             echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow('.$x.')"> ';
                         echo '</td>';
                     echo '</tr>';
@@ -1024,7 +1029,7 @@ foreach($groups as $group)
     <? } ?>
 <? } ?>
 
-<h1><?=$_LANG->get('Zus. Optionen')?></h1>
+<h2><?=$_LANG->get('Verarbeitungsoptionen')?></h2>
 <div class="box2">
 <table width="100%">
 	<colgroup>
@@ -1050,7 +1055,7 @@ foreach($groups as $group)
 </table>
 </div>
 
-<h1><?=$_LANG->get('Schneideoptionen')?></h1>
+<h2><?=$_LANG->get('Schneideoptionen')?></h2>
 <div class="box2">
 <table width="100%">
 	<colgroup>
@@ -1176,176 +1181,6 @@ foreach($groups as $group)
 		<?	} ?>	
 		</td>
 	</tr>
-	<tr>
-		<td class="content_row_header" valign="top">
-			<?=$_LANG->get('Schnitte Endv.')?>
-		</td>
-	      <td class="content_row_clear">
-		<? 	if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
-				echo '<b>Inhalt 1:</b>'; 
-				
-            	$schemes = array();
-            	$part = Calculation::PAPER_CONTENT;
-            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	if (count($mach_entry)>0)
-            	{
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
-                	$product_max = 0;
-                	$product_counted = false;
-                	
-                	if (isset($machentry))
-                	   include('scheme.php');
-                	if ($tmp_anschnitt > 0){
-                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-                	} else {
-                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
-                	}
-            	}
-			} ?>
-	      </td>
-	      <td class="content_row_clear">
-		<? 	if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) {
-				echo '<b>Inhalt 2:</b>'; 
-				
-            	$schemes = array();
-            	$part = Calculation::PAPER_ADDCONTENT;
-            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	if (count($mach_entry)>0)
-            	{
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
-                	$product_max = 0;
-                	$product_counted = false;
-
-                	if (isset($machentry))
-                	    include('scheme.php');
-                	if ($tmp_anschnitt > 0){
-                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-                	} else {
-                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
-                	}
-		        }
-			} ?>
-	      </td>
-	      <td class="content_row_clear">
-		<? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent2()->getId() > 0) {
-				echo '<b>Inhalt 3:</b>'; 
-				
-            	$schemes = array();
-            	$part = Calculation::PAPER_ADDCONTENT2;
-            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	if (count($mach_entry)>0)
-            	{
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
-                	$product_max = 0;
-                	$product_counted = false;
-
-                	if (isset($machentry))
-                	    include('scheme.php');
-                	if ($tmp_anschnitt > 0){
-                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-                	} else {
-                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
-                	}
-            	}
-			} ?>
-	      </td>
-	      <td class="content_row_clear">
-		<? 	if ($calc->getPagesAddContent3() > 0 && $calc->getPaperAddContent3()->getId() > 0) {
-				echo '<b>Inhalt 4:</b>'; 
-				
-            	$schemes = array();
-            	$part = Calculation::PAPER_ADDCONTENT3;
-            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	if (count($mach_entry)>0)
-            	{
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
-                	$product_max = 0;
-                	$product_counted = false;
-
-                	if (isset($machentry))
-                	    include('scheme.php');
-                	if ($tmp_anschnitt > 0){
-                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-                	} else {
-                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
-                	}
-            	}
-			} ?>
-	      </td>
-	      <td class="content_row_clear">
-		<? 	if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) {
-				echo '<b>Umschlag:</b>'; 
-				
-            	$schemes = array();
-            	$part = Calculation::PAPER_ENVELOPE;
-            	$mach_entry = Machineentry::getMachineForPapertype($part, $calc->getId());
-            	if (count($mach_entry)>0)
-            	{
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
-                	$product_max = 0;
-                	$product_counted = false;
-
-                	if (isset($machentry))
-                	    include('scheme.php');
-                	if ($tmp_anschnitt > 0){
-                	        echo '</br>Berechnung mit Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1)*2 + (($product_rows-1))*2) . '</br>';
-                	} else {
-                	        echo '</br>Berechnung <u>ohne</u> Zwischenschnitt</br>';
-                	        echo 'Schnitte gesamt: ' . (4 + ($product_per_line-1) + ($product_rows-1)) . '</br>';
-                	}
-            	}
-			} ?>
-	      </td>
-	</tr>	
 	<tr>
 		<td class="content_row_header" valign="top">
 			<?=$_LANG->get('Nutzen Rohb.')?>
@@ -1534,7 +1369,7 @@ $all_pos		= $calc->getPositions();
 $sum_prices		= 0;
 $sum_costs		= 0;
 ?>
-<h1><?=$_LANG->get('Zus. Positionen')?></h1>
+<h2><?=$_LANG->get('Manuelle Positionen // Artikel // Tätigkeiten')?></h2>
 <div class="box2">
 	<table width="100%" cellspacing="0" cellpadding="0">
 		<colgroup>
@@ -1767,11 +1602,6 @@ $sum_costs		= 0;
 			</tr>
 			<tr>
 				<td colspan="3"> &ensp;	</td>
-				<td colspan="2" align="right">
-					<b><?=$_LANG->get('Erl&ouml;s')?>:</b> <?=printPrice(($sum_prices-$sum_costs), 2);?> 
-					<?= $_USER->getClient()->getCurrency()?>
-					&emsp; &emsp;
-				</td>
 				<td align="right">
 					<b><?=$_LANG->get('Summe EK')?>:</b> <?=printPrice($sum_costs, 2);?> 
 					<?= $_USER->getClient()->getCurrency()?>
@@ -1783,6 +1613,11 @@ $sum_costs		= 0;
 					&ensp;
 					 <?=printPrice($sum_prices, 2);?> 
 					<?= $_USER->getClient()->getCurrency()?>
+				</td>
+				<td colspan="2" align="right">
+					<b><?=$_LANG->get('Erl&ouml;s')?>:</b> <?=printPrice(($sum_prices-$sum_costs), 2);?>
+					<?= $_USER->getClient()->getCurrency()?>
+					&emsp; &emsp;
 				</td>
 			</tr>
 	</table>
