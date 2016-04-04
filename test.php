@@ -43,7 +43,7 @@ if ($_USER == false){
     die("Login failed");
 }
 
-
+$test = 1;
 
 
 //class Test extends Model {
