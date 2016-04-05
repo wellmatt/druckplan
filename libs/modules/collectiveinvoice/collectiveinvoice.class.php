@@ -52,6 +52,7 @@ class CollectiveInvoice{
     private $deliverydate = 0;
     
     // Doc texts
+
     
     private $offer_header;
     private $offer_footer;

@@ -1704,13 +1704,13 @@ function callBoxFancyAbo(my_href) {
                                 </td>
                               </tr>
                               <?php }?>
-                              <?php if (count($comment->getArticles()) > 0){?>
+                              <?php if (count($subcom->getArticles()) > 0){?>
                               <tr>
                                 <td width="25%">Artikel:</td>
                                 <td colspan="2">
                                     <?php 
-                                        foreach ($comment->getArticles() as $c_article){
-                                            echo '<span>'.$c_article->getAmount().'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a></span></br>';
+                                        foreach ($subcom->getArticles() as $sub_article){
+                                            echo '<span>'.$sub_article->getAmount().'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$sub_article->getArticle()->getId().'">'.$sub_article->getArticle()->getTitle().'</a></span></br>';
                                         }
                                     ?>
                                     &nbsp;

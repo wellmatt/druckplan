@@ -20,8 +20,7 @@ if ($_REQUEST["exec"] == "combine" && $_REQUEST["comb_ids"])
     $comb_colinv = CollectiveInvoice::combineColInvs($ids);
     if ($comb_colinv !== false){
         echo '<script language="JavaScript">
-              document.location.href = 
-              "http://contilas2.mein-druckplan.de/index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='.$comb_colinv->getId().'";
+              document.location.href = "index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='.$comb_colinv->getId().'";
               </script>';
     }
 }
