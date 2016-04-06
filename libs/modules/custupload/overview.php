@@ -81,8 +81,6 @@ function askDel(myurl)
 </table>
 <? 
 	foreach($customers as $cust){
-
-		/** TODO: Das hier m�sste noch in OO-Programmierung umgebaut werden **/
 	    $sql = "SELECT * FROM ftpcustuploads
 	            WHERE ftp_cust_id = {$cust->getId()}
 	            ORDER BY ftp_crtdat DESC";

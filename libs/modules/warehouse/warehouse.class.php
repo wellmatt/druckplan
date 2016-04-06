@@ -265,8 +265,6 @@ class Warehouse{
 	 * @return boolean
 	 */
 	static function hasGroupRight($userId){
-		
-		// TODO  definitiv ueberarbeiten
 		global $DB;
         global $_USER;
 		$ret = true;  // normalerweise immer false !

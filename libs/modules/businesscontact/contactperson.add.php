@@ -236,7 +236,7 @@ $(function() {
 	<div class="box1">
 	<table>
 		<tr>
-		<td width="400">	
+		<td width="400">
 			<table width="500">
 				<colgroup>
 					<col width="180px">
@@ -248,7 +248,7 @@ $(function() {
 					  <select name="title" style="width: 100px"
 						class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<option value="">Bitte w&auml;hlen</option>
-							<?php $titles = array("Herr", "Frau", "Dr.", "Prof.");
+							<?php $titles = array("Herr", "Herrn", "Frau", "Dr.", "Prof.");
 							foreach ($titles as $title)
 							{
 							  echo '<option value="'.$title.'"';

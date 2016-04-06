@@ -218,7 +218,6 @@ addEventListener("message", receiveMessage, false);
 		</td>
 		<td id="total_time" width="120px" align="right" valign="middle"></td>
 		<!-- td>
-			<? /*** TODO: Zeitmessung als CSV-Export in den neuen Ordner docs/csv_files schreiben und verlinken **/?> 
 			<a href="" >
 			<img src="images/icons/printer.png" title="<?=$_LANG->get('Zeiten exportieren');?>" id="img_timer_print" 
 				 alt="<?=$_LANG->get('Zeiten exportieren');?>" class="pointer">

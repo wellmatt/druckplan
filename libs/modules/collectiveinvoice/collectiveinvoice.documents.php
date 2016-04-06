@@ -80,7 +80,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
     $collectinv->save();
 }
 /*
- * Datei per Mail verschicken		//TODO checken !!!
+ * Datei per Mail verschicken
 */
 $_REQUEST["mail_subject"] = trim($_REQUEST["mail_subject"]);
 $_REQUEST["mail_body"] = trim($_REQUEST["mail_body"]);

@@ -184,17 +184,17 @@ $(document).ready(function() {
 
 <div class="box1">
     <div class="box2">
-    Ausgewählte Vorgänge:</br>
+    Ausgewählte Vorgänge:<br>
     <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="form_comb_colinv">
         <input 	type="hidden" name="exec" value="combine">
         <span id="sel_colinv"></span>
-        </br>
-        </br>
-        <input id="btn_submit" class="button" style="display: none" type="submit" value="Zusammenführen"/></br>
+        <br>
+        <br>
+        <input id="btn_submit" class="button" style="display: none" type="submit" value="Zusammenführen"/><br>
         Kopfdaten werden vom ersten ausgewählten Vorgang übernommen!
         </div>
     </form>
-    </br>
+    <br>
     <div class="box2">
         <table>
             <tr align="left">
@@ -227,7 +227,7 @@ $(document).ready(function() {
             </tr>
         </table>
     </div>
-    </br>
+    <br>
     <table id="comb_colinv" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
     	<thead>
     		<tr>

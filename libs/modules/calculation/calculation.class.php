@@ -939,15 +939,22 @@ class Calculation
     public function getSummaryPrice()
     {
         $sum = $this->getSubTotal();
+
+        $sum += ($this->getChromaticitiesContent()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesContent()->getColorsBack() + $this->getChromaticitiesContent()->getColorsFront())));
+        $sum += ($this->getChromaticitiesAddContent()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesAddContent()->getColorsBack() + $this->getChromaticitiesAddContent()->getColorsFront())));
+        $sum += ($this->getChromaticitiesAddContent2()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesAddContent2()->getColorsBack() + $this->getChromaticitiesAddContent2()->getColorsFront())));
+        $sum += ($this->getChromaticitiesAddContent3()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesAddContent3()->getColorsBack() + $this->getChromaticitiesAddContent3()->getColorsFront())));
+        $sum += ($this->getChromaticitiesEnvelope()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesEnvelope()->getColorsBack() + $this->getChromaticitiesEnvelope()->getColorsFront())));
+
         $sum += $sum * $this->getMargin() / 100; // Mage
         $sum -= $sum * $this->getDiscount() / 100; // Rabatt
         $sum += $this->getAddCharge(); // Sonstiger Auf/Abschlag
         return $sum;
-        
     }
     
     public function getSubTotal(){
     	$sum = 0;
+        $machines = Array();
     	
         $me = Machineentry::getAllMachineentries($this->getId());
         foreach($me as $m){

@@ -7,7 +7,7 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
-// Alten Auftrag löschen?
+// Alten Auftrag lï¿½schen?
 if($_REQUEST["lector_overwrite"] == "new")
 {
     $scheds = Schedule::searchByJobNumber(trim(addslashes($_REQUEST["lector_jobnumber"])));
@@ -317,9 +317,9 @@ if (count(Schedule::searchByJobNumber(trim(addslashes($_REQUEST["lector_jobnumbe
                         if(strpos(strtoupper($parts[$z]["JOBDESC"]), "COMPUTER TO PLATE") === false)
                         {
     
-                            // Umschreiben Digitaldruck Klick + Std.Satz- Preis -> Schwarz weiß Digitaldruck Klick + Std.Satz- Preis
+                            // Umschreiben Digitaldruck Klick + Std.Satz- Preis -> Schwarz weiï¿½ Digitaldruck Klick + Std.Satz- Preis
                             if(strpos($scheds[$y]["COLOURS"], "1/1") !== false && $mach->getName() == "Digitaldruck Klick + Std.Satz- Preis")
-                                $mach = Machine::getMachineByName("Schwarz weiß Digitaldruck  Klick + Std.Satz- Preis");
+                                $mach = Machine::getMachineByName("Schwarz weiï¿½ Digitaldruck  Klick + Std.Satz- Preis");
                             
                             // Umschreiben SM 102-4 -> SM 102-5 falls Lack
                             if(strpos($scheds[$y]["COLOURS"], "4/4") !== false && strpos(strtolower($scheds[$y]["COLOURS"]), "lack") !== false && $mach->getName() == "SM 102-4")
@@ -338,10 +338,10 @@ if (count(Schedule::searchByJobNumber(trim(addslashes($_REQUEST["lector_jobnumbe
                     }
                 
                     //----------------------------------------------------------------------------------
-                    // Teilaufträge zusammenführen
+                    // Teilauftrï¿½ge zusammenfï¿½hren
                     //----------------------------------------------------------------------------------
     
-                    // TODO Teilaufträge zusammenführen
+                    // TODO Teilauftraege zusammenfuehren
                 }
                 else
                 {  ?>

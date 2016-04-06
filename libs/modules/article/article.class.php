@@ -584,7 +584,6 @@ class Article {
 	static function getAllShopArticleSearch($search_str, $order = self::ORDER_ID){
 		global $DB;
 		$retval = Array();
-		//TODO String in teile aufteilen falls nach mehreren Worten gesucht wird
 		$sql = "SELECT id FROM article WHERE
 				status > 0 AND
 				shoprel = 1 AND

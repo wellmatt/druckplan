@@ -234,7 +234,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_timecolorchange').style.display = 'none';
 	    document.getElementById('tr_machine_paperperhour').style.display = '';
 	    document.getElementById('tr_machine_chromaticity').style.display = '';
-	    document.getElementById('tr_machine_finish').style.display = 'none';
+		document.getElementById('tr_machine_finish').style.display = '';
 	    document.getElementById('tr_machine_umschl_umst').style.display = 'none';	//gln
 	    document.getElementById('tr_machine_setup_stations').style.display = 'none';
 	    document.getElementById('tr_machine_anz_stations').style.display = 'none';
@@ -853,7 +853,7 @@ if ($machine->getId() > 0){
         </table>
         </td>
     </tr>
-    <tr id="tr_machine_finish" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
+    <tr id="tr_machine_finish" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;"?>">
         <td class="content_row_header" valign="top"><?=$_LANG->get('Option Lack verf&uuml;gbar')?></td>
         <td class="content_row_clear">
             <table cellspacing="0" cellpadding="0">

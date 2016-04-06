@@ -65,7 +65,7 @@ if ($_REQUEST["exec"] == "searchPositions") {
 
 		echo '<option value=""> &lt; '.$_LANG->get('Bitte  w&auml;hlen...').'&gt;</option>';
 		foreach ($all_persos AS $perso){
-			echo '<option value="'.$perso->getId().'">'.$perso->getTitle().'</option>';			// TODO TESTEN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			echo '<option value="'.$perso->getId().'">'.$perso->getTitle().'</option>';
 		}
 	}
 }

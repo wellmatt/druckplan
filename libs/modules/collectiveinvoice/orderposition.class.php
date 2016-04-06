@@ -61,7 +61,7 @@ class Orderposition{
 	 * ...liefert alle Eintraege/Auftragspositionen einer Sammelrechnung
 	 * 
 	 * @param int $collectiveId : Id einer Sammelrechnung
-	 * @return Array : Orderposition
+	 * @return Orderposition[]
 	 */
 	static function getAllOrderposition($collectiveId,$softdeleted = false,$relevant = false){
 		global $DB;

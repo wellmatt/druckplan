@@ -191,7 +191,6 @@ class ScheduleMachine {
     
     public static function getOpenScheduledDays($machineId = 0, $limit = 10)
     {
-        //FIXME Bindet noch mehr Tabellen ein, jedoch nur modulintern
         global $DB;
         $retval = Array();
         $sql = "SELECT t1.deadline

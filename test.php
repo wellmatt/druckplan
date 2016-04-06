@@ -35,61 +35,30 @@ $_LANG = $_USER->getLang();
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-class TestWupp
-{
 
-    private $id;
-    private $name;
-    private $a;
-    private $b;
 
-    /**
-     * @param int $test
-     * @param string $test2
-     */
-    public function test123($test = 0, $test2 = '')
-    {
 
+function GetMonth($sStartDate, $sEndDate){
+
+    $sStartDate = date('Y-m-d', strtotime($sStartDate));
+    $sEndDate = date('Y-m-d', strtotime($sEndDate));
+    // dem $aDays Array das erste Datum hinzufügen
+    $aDays[] = date('Y-m-d',strtotime($sStartDate));
+    // $sCurrentDate auf das Startdatum setzen
+    $sCurrentDate = $sStartDate;
+    // Schleife die solange läuft bis das $sCurrentDate nicht mehr kleiner als das Enddatum ist
+    while($sCurrentDate < $sEndDate){
+        // auf $sCurrentDate +1 Monat draufrechnen
+        $sCurrentDate = date('Y-m-d', strtotime("+1 month", strtotime($sCurrentDate)));
+        // das $sCurrentDate dem $aDays Array hinzufügen
+        $aDays[] = date('Y-m-d',strtotime($sCurrentDate));
     }
-
-    /**
-     * @param int $test
-     * @return bool
-     */
-    public function test321($test = 0)
-    {
-        return true;
-    }
-
-    /**
-     * @param $timestamp
-     * @return int
-     */
-    public static function ColinvCountDay($timestamp)
-    {
-        global $DB;
-        $count = 0;
-
-        $start = mktime(0, 0, 0, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
-        $end = mktime(23, 59, 59, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
-
-        $sql = "SELECT count(id) as count FROM `collectiveinvoice`
-                where crtdate >= {$start}
-                and crtdate <= {$end}";
-
-        if ($DB->no_result($sql)) {
-            $result = $DB->select($sql);
-            $r = $result[0];
-            $count = $r['count'];
-        }
-        return $count;
-    }
+    return $aDays;
 }
 
-$tage = Array(1452678017,1452579011);
 
-foreach ($tage as $item) {
-    $retval = TestWupp::ColinvCountDay($item);
-    echo 'Tag: '.date('d-m-Y',$item).' // Anzahl: '.$retval;
-    echo '</br>';
-}
+$start = 1451645980;
+$end = 1470045580;
+
+prettyPrint(GetMonth(date('d.m.Y',$start),date('d.m.Y',$end)));
+

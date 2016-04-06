@@ -326,11 +326,14 @@ class CollectiveInvoice{
 	
 	public static function duplicate($id)
 	{
+		global $_USER;
 	    $col = new CollectiveInvoice((int)$id);
 		$attribs = $col->getActiveAttributeItemsInput();
+		$newnumber = $_USER->getClient()->createOrderNumber(Client::NUMBER_COLINV);
 	    $newcol = $col;
 	    $newcol->resetId();
 	    $newcol->setTitle($newcol->getTitle() . " Kopie");
+		$newcol->setNumber($newnumber);
 	    $newcol->save();
 		$newcol->saveActiveAttributes($attribs);
 	    
@@ -563,6 +566,58 @@ class CollectiveInvoice{
 	            $DB->no_result($sql);
 	        }
 		}
+	}
+
+	/**
+	 * Gibt die Gesamt-Netto-Summe des Auftrags zurück
+	 * @return float
+	 */
+	public function getTotalNetSum()
+	{
+		$sum = 0;
+		$mypositions = Orderposition::getAllOrderposition($this->getId());
+		foreach ($mypositions as $myposition) {
+			if ($myposition->getType() == 2){
+				$sum += $myposition->getNetto();
+			}
+		}
+		return $sum;
+	}
+
+	/**
+	 * Gibt die Gesamt-Brutto-Summe des Auftrags zurück
+	 * @return float
+	 */
+	public function getTotalGrossSum()
+	{
+		$sum = 0;
+		$mypositions = Orderposition::getAllOrderposition($this->getId());
+		foreach ($mypositions as $myposition) {
+			if ($myposition->getType() == 2){
+				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
+			}
+		}
+		return $sum;
+	}
+
+	/**
+	 * Gibt die Gesamt-Summe des EKs des Auftrags zurück
+	 * @return float
+	 * TODO: Funktion schreiben
+	 */
+	public function getTotalPrimeSum()
+	{
+
+	}
+
+	/**
+	 * Gibt die Gewinn-Summe des Auftrags zurück
+	 * @return float
+	 * TODO: Funktion schreiben
+	 */
+	public function getTotalProfit()
+	{
+
 	}
 	
 	public function resetDocTexts()

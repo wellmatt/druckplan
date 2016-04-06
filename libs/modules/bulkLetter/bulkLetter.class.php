@@ -21,7 +21,7 @@ class Bulkletter{
 	const DOCTYPE_EMAIL			= 2;
 	
 	private $id = 0;				// ID
-	private $status = 1;			// 1 = erstellt, 2 = Versandfertig, 3=Verschickt		// TODO: Erste Idee
+	private $status = 1;			// 1 = erstellt, 2 = Versandfertig, 3=Verschickt
 	private $title;					// Titel // Betreff
 	private $text;					// Eigentliches Anschreiben
 	private $crt_date;				// Erstelldatum

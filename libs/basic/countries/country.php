@@ -6,8 +6,6 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
-//TODO Verscuhen mit weniger Datenbank-Operationen auszukommen
-
 $all_country = Country::getEveryCountry();
 $anz_country = count($all_country);
 $savemsg = "";

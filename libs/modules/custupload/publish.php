@@ -40,7 +40,7 @@ if($_FILES){
 }*/
 
 
-/***	//	TODO: 	KUNDEN benachrichtigen einbauen !! Dazu auch die libs/module/businesscontacts/customer.ajax anpassen
+/**
 
 if ($_REQUEST["exec"] == "publish" && $_FILES['datei']['error'] == 0){
 	chdir ("../..");

@@ -89,7 +89,7 @@ class ScheduleMachineUsertime {
         $ticket->setCategory(new TicketCategory(4));
         $ticket->setState(new TicketState(2));
         $ticket->setPriority(new TicketPriority(9));
-        $ticket->setSource(Ticket::SOURCE_JOB); // TODO: hardcoded
+        $ticket->setSource(Ticket::SOURCE_JOB);
         $save_ok = $ticket->save();
         if ($save_ok)
             $this->ticket = $ticket;
