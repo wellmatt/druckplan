@@ -4,6 +4,10 @@ require_once 'libs/modules/organizer/event_holiday.class.php';
 
 $perf = new Perferences();
 
+if ($_REQUEST["exec"] == "mergeArticles"){
+	Article::mergePriceSeperation();
+}
+
 if ($_REQUEST["exec"] == "save")
 {
 	if($_FILES){
@@ -196,6 +200,7 @@ function deleteFormatRawRow(obj)
 			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
 			<li><a href="#tabs-4"><? echo $_LANG->get('Datatables');?></a></li>
 			<li><a href="#tabs-5"><? echo $_LANG->get('Kalender');?></a></li>
+			<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen');?></a></li>
 		</ul>
 
 		<div id="tabs-0">
@@ -339,5 +344,9 @@ function deleteFormatRawRow(obj)
                <?php }}?>
             </table>
        </div>
+		<div id="tabs-6">
+			Spezielle Update Funktionen:<br>
+			<button class="btn-danger" onclick="location.href='index.php?page=libs/modules/perferences/perferences.php&exec=mergeArticles';">Artikel Preisstaffeln zusammenführen</button>
+		</div>
 
 </form>

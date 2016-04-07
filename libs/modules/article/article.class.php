@@ -7,6 +7,7 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 require_once 'libs/modules/tradegroup/tradegroup.class.php';
+require_once 'libs/modules/article/article.pricescale.class.php';
 
 class Article {
 
@@ -60,39 +61,8 @@ class Article {
 	function __construct($id = 0){
 		global $DB;
 		global $_USER;
-		$this->tradegroup = new Tradegroup(0);
 
-// 		$cached = Cachehandler::fromCache("obj_article_" . $id);
-// 		if (!is_null($cached))
-// 		{
-// 		    $this->id = $cached->getId();
-// 		    $this->status = $cached->getStatus();
-// 		    $this->shoprel = $cached->getShoprel();
-// 		    $this->title = $cached->getTitle();
-// 		    $this->desc = $cached->getDesc();
-// 		    $this->picture = $cached->getPicture();
-// 		    $this->number = $cached->getNumber();
-// 		    $this->tax = $cached->getTax();
-// 		    $this->minorder = $cached->getMinorder();
-// 		    $this->maxorder = $cached->getMaxorder();
-// 		    $this->orderunit = $cached->getOrderunit();
-// 		    $this->orderunitweight = $cached->getOrderunitweight();
-// 		    $this->tradegroup = $cached->getTradegroup();
-// 		    $this->shopCustomerID = $cached->getShopCustomerID();
-// 		    $this->shopCustomerRel = $cached->getShopCustomerRel();
-// 		    $this->isworkhourart = $cached->getIsWorkHourArt();
-// 		    $this->show_shop_price = $cached->getShowShopPrice();
-// 		    $this->shop_needs_upload = $cached->getShop_needs_upload();
-// 		    $this->crt_user = $cached->getCrt_user();
-// 		    $this->crt_date = $cached->getCrt_date();
-// 		    $this->upt_user = $cached->getUpt_user();
-// 		    $this->upt_date = $cached->getUpt_date();
-// 		    $this->qualified_users = $cached->getQualified_users();
-// 		    $this->orderamounts = $cached->getOrderamounts();
-// 		    $this->matchcode = $cached->getMatchcode();
-// 		    $this->shop_approval = $cached->getShop_approval();
-// // 		    echo "Object loaded from Cache...</br>";
-// 		}
+		$this->tradegroup = new Tradegroup(0);
 		
 		if ($id > 0){ //  && is_null($cached)
 			$sql = "SELECT * FROM article WHERE id = {$id}";
@@ -351,6 +321,45 @@ class Article {
 			}
 		}
 	}
+
+	public static function mergePriceSeperation()
+	{
+		global $DB;
+		$sql = "SELECT * FROM article_pricescale LIMIT 1";
+		if(!$DB->num_rows($sql)){
+			$sql = "SELECT * FROM article_costs";
+			if($DB->num_rows($sql)){
+				foreach($DB->select($sql) as $r){
+					$create = [
+						'article'=>$r["sep_articleid"],
+						'type'=>2,
+						'min'=>$r["sep_min"],
+						'max'=>$r["sep_max"],
+						'price'=>$r["sep_price"],
+						'supplier'=>0
+					];
+					$pricescale = new PriceScale(0,$create);
+					$pricescale->save();
+				}
+			}
+
+			$sql = "SELECT * FROM article_seperation";
+			if($DB->num_rows($sql)){
+				foreach($DB->select($sql) as $r){
+					$create = [
+						'article'=>$r["sep_articleid"],
+						'type'=>1,
+						'min'=>$r["sep_min"],
+						'max'=>$r["sep_max"],
+						'price'=>$r["sep_price"],
+						'supplier'=>0
+					];
+					$pricescale = new PriceScale(0,$create);
+					$pricescale->save();
+				}
+			}
+		}
+	}
 	
 	public static function searchTags($term)
 	{
@@ -384,8 +393,9 @@ class Article {
 	/**
      * Suchfunktion fuer Artikel. Sucht in Titel und Auftragsnummer.
 	 * 
-	 * @param STING $str
-	 * @return Array : Article
+	 * @param string $search
+	 * @param string $order
+	 * @return Article[]
 	 */
 	static function searchArticleByTitleNumber($search, $order = self::ORDER_NUMBER){
 		global $DB;
@@ -604,42 +614,47 @@ class Article {
 	/**
 	 * Funktion speichert eine Preisstaffelung eines Artikels
 	 *
-	 * @param int $min : St�ckzahl, von dem der Preis gilt
-	 * @param int $max : St�ckzahl, bis zu der der Preis gilt
-	 * @param float $price : Preis der f�r diese Staffelung gilt
+	 * @param int $min : Stueckzahl, von dem der Preis gilt
+	 * @param int $max : Stueckzahl, bis zu der der Preis gilt
+	 * @param float $price : Preis der fuer diese Staffelung gilt
 	 */
 	function savePrice($min, $max, $price){
-		global $DB;
-		$sql = "INSERT INTO article_seperation
-				(sep_articleid, sep_min, sep_max, sep_price)
-				VALUES
-				({$this->id}, {$min}, {$max}, {$price})";
-		$DB->no_result($sql);
+		$create = [
+			'article'=>$this->getId(),
+			'min'=>$min,
+			'max'=>$max,
+			'price'=>$price,
+			'type'=>1
+		];
+		$pricescale = new PriceScale(0, $create);
+		$pricescale->save();
 	}
 	
 	/**
 	* Loeschfunktion fuer alle Preisstaffelungen
 	*/
 	function deltePriceSeperations(){
-		global $DB;
-			$sql = "DELETE FROM article_seperation
-			WHERE sep_articleid = {$this->id}";
-		$DB->no_result($sql);
-		//echo mysql_error();
+		PriceScale::deleteAllForArticle($this,PriceScale::TYPE_SELL);
 	}
 	
 	/**
 	 * Funktion liefert alle Preisstaffelungen eines Artikels als Array
 	 */
 	public function getPrices(){
-		global $DB;
 		$retval = Array();
-		$sql = "SELECT * FROM article_seperation WHERE sep_articleid = {$this->id} ORDER BY sep_min";
-		if($DB->num_rows($sql)){
-			foreach($DB->select($sql) as $r){
-				$retval[] = $r;
+
+		$pricescales = PriceScale::getAllForArticle($this,PriceScale::TYPE_SELL);
+		if ($pricescales){
+			foreach ($pricescales as $pricescale) {
+				$retval[] = [
+					'sep_articleid' => $pricescale->getArticle()->getId(),
+					'sep_min' => $pricescale->getMin(),
+					'sep_max' => $pricescale->getMax(),
+					'sep_price' => $pricescale->getPrice()
+				];
 			}
 		}
+
 		return $retval;
 	}
 	
@@ -650,26 +665,11 @@ class Article {
 	
 	/**
 	 * Funktion liefert einen Preis zu einer bestimmten Menge
+	 * @param int $amount
+	 * @return float
 	 */
 	public function getPrice($amount){
-		global $DB;
-		$sql = "SELECT * FROM article_seperation WHERE 
-				sep_articleid = ".$this->id." AND
-				sep_min <= ".$amount." AND
-				".$amount." <= sep_max 
-				ORDER BY sep_min";
-		if($DB->num_rows($sql)){
-			$res = $DB->select($sql);
-			$retval = $res[0]["sep_price"];
-		} else {
-			// Wenn kein Wert zwischen MIN und MAX, nehme den groessten der zugehoerigen Preise
-			$sql = "SELECT * FROM article_seperation
-					WHERE sep_articleid = ".$this->id."
-					ORDER BY sep_max DESC LIMIT 0, 1";
-			$res = $DB->select($sql);
-			return $res[0]["sep_price"];
-		}
-		return $retval;
+		return PriceScale::getPriceForAmount($this,$amount);
 	}
 	
 	/**************************************** EK-Preise ****************************************************/
@@ -679,40 +679,48 @@ class Article {
 	 *
 	 * @param int $min : Stueckzahl, von dem der Preis gilt
 	 * @param int $max : Stueckzahl, bis zu der der Preis gilt
-	 * @param float $price : Preis der f�r diese Staffelung gilt
+	 * @param int $supplier : Lieferanten ID
+	 * @param float $price : Preis der fuer diese Staffelung gilt
 	 */
-	function saveCost($min, $max, $price){
-		global $DB;
-		$sql = "INSERT INTO article_costs
-				(sep_articleid, sep_min, sep_max, sep_price)
-				VALUES
-				({$this->id}, {$min}, {$max}, {$price})";
-		$DB->no_result($sql);
+	function saveCost($min, $max, $price, $supplier){
+		$create = [
+			'article'=>$this->getId(),
+			'min'=>$min,
+			'max'=>$max,
+			'price'=>$price,
+			'type'=>2,
+			'supplier'=>$supplier
+		];
+		$pricescale = new PriceScale(0, $create);
+		$pricescale->save();
 	}
 
 	/**
 		* Loeschfunktion fuer alle EK-Preisstaffelungen
 		*/
 	function delteCostSeperations(){
-		global $DB;
-		$sql = "DELETE FROM article_costs
-				WHERE sep_articleid = {$this->id}";
-		$DB->no_result($sql);
-		//echo mysql_error();
+		PriceScale::deleteAllForArticle($this,PriceScale::TYPE_BUY);
 	}
 
 	/**
 	 * Funktion liefert alle EK-Preisstaffelungen eines Artikels als Array
 	 */
 	public function getCosts(){
-		global $DB;
 		$retval = Array();
-		$sql = "SELECT * FROM article_costs WHERE sep_articleid = {$this->id} ORDER BY sep_min";
-		if($DB->num_rows($sql)){
-			foreach($DB->select($sql) as $r){
-				$retval[] = $r;
+
+		$pricescales = PriceScale::getAllForArticle($this,PriceScale::TYPE_BUY);
+		if ($pricescales){
+			foreach ($pricescales as $pricescale) {
+				$retval[] = [
+					'sep_articleid' => $pricescale->getArticle()->getId(),
+					'sep_min' => $pricescale->getMin(),
+					'sep_max' => $pricescale->getMax(),
+					'sep_price' => $pricescale->getPrice(),
+					'supplier' => $pricescale->getSupplier()->getId()
+				];
 			}
 		}
+
 		return $retval;
 	}
 
@@ -723,28 +731,11 @@ class Article {
 
 	/**
 	 * Funktion liefert einen EK-Preis zu einer bestimmten Menge
+	 * @param int $amount
+	 * @return float
 	 */
 	public function getCost($amount){
-		global $DB;
-		$sql = "SELECT * FROM article_costs 
-				WHERE
-				sep_articleid = ".$this->id." AND
-				sep_min <= ".$amount." AND
-				".$amount." <= sep_max
-				ORDER BY sep_min";
-		if($DB->num_rows($sql)){
-			$res = $DB->select($sql);
-			$retval = $res[0]["sep_price"];
-		} else {
-			// Wenn kein Wert zwischen MIN und MAX, nehme den groessten der zugehoerigen Preise
-			$sql = "SELECT * FROM article_costs
-					WHERE 
-					sep_articleid = ".$this->id."
-					ORDER BY sep_max DESC LIMIT 0, 1";
-			$res = $DB->select($sql);
-			return $res[0]["sep_price"];
-		}
-		return $retval;
+		return PriceScale::getPriceForAmount($this,$amount,PriceScale::TYPE_BUY);
 	}
 	
 	/*********************************** Artikelbilder ************************************************/

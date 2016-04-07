@@ -82,6 +82,7 @@ class Client {
     function __construct($id = 0) {
         global $DB;
         global $_USER;
+
         $this->country = new Country(22);
         
         $cached = Cachehandler::fromCache("obj_client_" . $id);

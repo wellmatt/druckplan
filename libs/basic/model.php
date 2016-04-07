@@ -106,6 +106,94 @@ class Model {
     }
 
     /**
+     * Gibt ein Array aus Objekten zurück bei dem die angegebene Spalte dem angegebenen Wert entspricht
+     *
+     * $filterarray format: Array( Array('column'=>'Spalte','operator'=>'>','value'=>'0') )
+     * $filterarray: falls operator nicht angegeben dann wird = genutzt
+     * $filterarray: es kann ein Array angegeben werden um die Rückgabe zu sortieren Array('orderby'=>Spalte,'oderbydir'=>'desc')
+     *
+     * @param $filterarray
+     * @return array
+     */
+    public static function fetch($filterarray, $single = 0)
+    {
+        global $DB;
+        $retval = [];
+        $class = get_called_class();
+        $filter = [];
+        $orderby = [];
+        $limit = '';
+
+        if ($single == 1)
+            $limit = ' LIMIT 1 ';
+
+        $tmp_obj = new $class();
+        $table = $tmp_obj->_table;
+
+        if ($filterarray){
+            foreach ($filterarray as $array) {
+                if ($array){
+                    if (array_key_exists('column',$array) && array_key_exists('operator',$array) && array_key_exists('value',$array)){
+                        if (property_exists($class, $array['column'])){
+                            $filter[] = ' '.$array['column']." {$array['operator']} "."'{$array['value']}' ";
+                        }
+                    } elseif (array_key_exists('column',$array) && array_key_exists('value',$array)){
+                        if (property_exists($class, $array['column'])){
+                            $filter[] = ' '.$array['column']." = "."'{$array['value']}' ";
+                        }
+                    } elseif (array_key_exists('orderby',$array) && array_key_exists('orderbydir',$array)){
+                        if (property_exists($class, $array['orderby'])){
+                            if ($array['orderbydir'] == 'asc' || $array['orderbydir'] == 'desc')
+                                $orderby[] = ' '.$array['orderby'].' '.$array['orderbydir'].' ';
+                        }
+                    } elseif (array_key_exists('orderby',$array)){
+                        if (property_exists($class, $array['orderby'])){
+                            $orderby[] = ' '.$array['orderby'].' asc ';
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count($orderby)>0)
+            $orderby = ' ORDER BY ' . implode(',',$orderby);
+        else
+            $orderby = '';
+
+        if (count($filter)>0){
+            $filter = implode(' AND ',$filter);
+            $sql = "SELECT id FROM {$table} WHERE {$filter} {$orderby} {$limit}";
+            if ($DB->num_rows($sql)){
+                foreach($DB->select($sql) as $r){
+                    $obj = new $class($r['id']);
+                    /* @var $obj $class */
+                    $retval[] = $obj;
+                }
+                return $retval;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Gibt ein Objekten zurück bei dem die angegebene Spalte dem angegebenen Wert entspricht
+     *
+     * $filterarray format: Array( Array('column'=>'Spalte','operator'=>'>','value'=>'0') )
+     * $filterarray: falls operator nicht angegeben dann wird = genutzt
+     * $filterarray: es kann ein Array angegeben werden um die Rückgabe zu sortieren Array('orderby'=>Spalte,'oderbydir'=>'desc')
+     *
+     * @param $filterarray
+     * @return object
+     */
+    public static function fetchSingle($filterarray)
+    {
+        return self::fetch($filterarray,1);
+    }
+
+    /**
      * @return int
      */
     public function getId()

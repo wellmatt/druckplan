@@ -44,6 +44,8 @@ if($_REQUEST["subexec"] == "clone"){
     $order->clearId();
     $order->setProduct($old_product);
     $order->setArticleid(0);
+	$newnumber = $_USER->getClient()->createOrderNumber(Client::NUMBER_ORDER);
+	$order->setNumber($newnumber);
     $order->save();
     $order_id_new = $order->getId();
     

@@ -17,7 +17,6 @@ if ($_REQUEST["exec"] != "fromorder")
 
 $all_tradegroups = Tradegroup::getAllTradegroups(0);
 
-
 if($_REQUEST["exec"] == "copy"){
 	$old_article = new Article($_REQUEST["aid"]);
 	$allprices = $old_article->getPrices(); 		//Damit Preise korrekt kopiert werden
@@ -128,15 +127,37 @@ if($_REQUEST["subexec"] == "save"){
 	for ($i=0 ; $i <= $allprice_seperations ; $i++){
 		$min = (int)$_REQUEST["article_costprice_min_".$i];
 		$max = (int)$_REQUEST["article_costprice_max_".$i];
+		$supplier = (int)$_REQUEST["article_costprice_supplier_".$i];
 		$price = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["article_costprice_price_".$i])));
 		if ($price > 0){
-			$article->saveCost($min, $max, $price);
+			$article->saveCost($min, $max, $price, $supplier);
 		}
 	}
-	
-	if ($_REQUEST["new_picture"] != 0 && $_REQUEST["new_picture"] != NULL){
-		$article->addPicture($_REQUEST["new_picture"]);
-	}
+
+    if (isset($_FILES['file']['name'])) {
+        $j = 0;     // Variable for indexing uploaded image.
+        for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+            $target_path = "./images/products/";     // Declaring Path for uploaded images.
+            // Loop to get individual element from the array
+            $validextensions = array("jpeg", "jpg", "png");      // Extensions which are allowed.
+            $ext = explode('.', basename($_FILES['file']['name'][$i]));   // Explode file name from dot(.)
+            $file_extension = end($ext); // Store extensions in the variable.
+            $filename = md5(time().$_FILES["file"]["name"][$i]) . "." . $ext[count($ext) - 1];
+            $target_path = $target_path . $filename;     // Set the target path with a new name of image.
+            $j = $j + 1;      // Increment the number of uploaded images according to the files in array.
+            if (in_array($file_extension, $validextensions)) {
+                if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
+                    // If file moved to uploads folder.
+                    $savemsg .= '<br>' .$j. ').<span id="noerror">Bild erfolgreich hochgeladen!.</span><br/>';
+                    $article->addPicture($filename);
+                } else {     //  If File Was Not Moved.
+                    $savemsg .= '<br>' .$j. ').<span id="error">Bitte erneut versuchen!.</span><br/>';
+                }
+            } else {     //   If File Size And File Type Was Incorrect.
+                $savemsg .= '<br>' .$j. ').<span id="error">***Ungültige Dateierweiterung***</span><br/>';
+            }
+        }
+    }
 	
 	// API Zuordnung
 	
@@ -148,7 +169,7 @@ if($_REQUEST["subexec"] == "save"){
 	   $tmp_api_obj->setObject($article->getId());
 	   $tmp_api_obj->save();   
 	}
-	
+
 	// Damit die gespeicherten Werte auch angezeigt werden
 	$article = new Article($article->getId());
 }
@@ -160,7 +181,7 @@ if($article->getId() > 0){
 
 $allprices = $article->getPrices();
 $allcostprices = $article->getCosts();
-$allcustomer = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME);
+$allsupplier = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME,' supplier = 1 ');
 
 /****************************** PHP-Funktionen ***********************************************************************/
 
@@ -184,95 +205,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 
 //var_dump($article);
 ?>
-<script language="javascript">
-$(document).ready(function(){
-	$('#article_isworkhourart').change(function() {
-	        $('#qusers').toggle();  
-	    });
-	});
-</script>
-<script language="javascript">
-function addPriceRow()
-{
-	var obj = document.getElementById('table-prices');
-	var count = parseInt(document.getElementById('count_quantity').value) + 1;
-	var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="article_price_min_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
-	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="article_price_max_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
-	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="article_price_price_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
-	insert += '</td></tr>';
-	obj.insertAdjacentHTML("BeforeEnd", insert);
-	document.getElementById('count_quantity').value = count;
-}
-
-function addCostRow()
-{
-	var obj = document.getElementById('table_prices_cost');
-	var count = parseInt(document.getElementById('count_quantity_cost').value) + 1;
-	var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="article_costprice_min_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
-	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="article_costprice_max_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
-	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="article_costprice_price_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
-	insert += '</td></tr>';
-	obj.insertAdjacentHTML("BeforeEnd", insert);
-	document.getElementById('count_quantity_cost').value = count;
-}
-
-function checkArticleNumber(obj){
-	var thisnumber = '<?=$article->getNumber()?>';
-	var newnumber  = document.getElementById('article_number').value;
-
-	<?//Erst ueberpruefen ob Art-Nr leer ist, dann ob vorhanden?>
-	if (newnumber == ""){
-		return checkform(obj);
-	}
-
-	if (thisnumber != newnumber){
-		$.post("libs/modules/article/article.ajax.php", 
-				{exec: 'checkArticleNumber', newnumber : newnumber}, 
-				 function(data) {
-					 data = data.substring(0,2);
-					if(data == "DA"){
-						alert('<?=$_LANG->get('Artikelnummer bereits vergeben!') ?>');
-						document.getElementById('article_number').focus();
-						return false;
-					} else {
-						if (checkform(obj)==true){
-							document.getElementById('article_edit').submit();
-						}
-					}
-				});
-	} else {
-		return checkform(obj);
-	}
-	return false;
-}
-
-function addOrderAmount()
-{
-    var amount = prompt("Bitte Bestellmenge angeben", "");
-    
-    if (amount != null) {
-    	$("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>');
-    }
-}
-</script>
 
 <!-- FancyBox -->
 <script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
@@ -284,88 +216,6 @@ function addOrderAmount()
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <!-- <link rel="stylesheet" type="text/css" href="jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" media="screen" /> -->
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("a#picture_select").fancybox({
-		    'type'    : 'iframe'
-		});
-	    tinymce.init(
-    	    {
-        	    selector:'.artdesc',
-        	    menubar: false,
-        	    statusbar: false,
-        	    toolbar: false
-    	    }
-	    );
-	});
-</script>
-
-<script language="JavaScript">
-    $(function() {
-    	$( "#shop_add_customer" ).autocomplete({
-      		 source: "libs/modules/article/article.ajax.php?ajax_action=search_customer",
-      		 minLength: 2,
-      		 focus: function( event, ui ) {
-      		 $( "#shop_add_customer" ).val( ui.item.label );
-      		 return false;
-      		 },
-      		 select: function( event, ui ) {
-          		 var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
-           		 newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></td></tr>';
-            	 $("#shop_appr_bcs tr:last").after(newRow);
-          		 return false;
-          	 }
-  		});
-    	$( "#shop_add_customer_cp" ).autocomplete({
-    		 source: "libs/modules/article/article.ajax.php?ajax_action=search_customer_cp",
-    		 minLength: 2,
-    		 focus: function( event, ui ) {
-    		 $( "#shop_add_customer_cp" ).val( ui.item.label );
-    		 return false;
-    		 },
-    		 select: function( event, ui ) {
-          		 var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
-           		 newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></td></tr>';
-            	 $("#shop_appr_cps tr:last").after(newRow);
-        		 return false;
-        	 }
-		});
-    });
-</script>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-    jQuery("#article_tags").tagit({
-        singleField: true,
-        singleFieldNode: $('#article_tags'),
-        singleFieldDelimiter: ";",
-        allowSpaces: true,
-        minLength: 2,
-        removeConfirmation: true,
-        tagSource: function( request, response ) {
-            $.ajax({
-                url: "libs/modules/article/article.ajax.php?ajax_action=search_tags", 
-                data: { term:request.term },
-                dataType: "json",
-                success: function( data ) {
-                    response( $.map( data, function( item ) {
-                        return {
-                            label: item.label,
-                            value: item.value
-                        }
-                    }));
-                }
-            });
-        }
-    });
-});
-</script>
-
-<script type="text/javascript">
-$(function() {
-    $('#article_edit').validate();
-});
-</script>
 
 <table width="100%">
 	<tr>
@@ -404,503 +254,745 @@ $(function() {
     </div>
 </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post"
-	name="article_edit" id="article_edit"
-	onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="article_edit" id="article_edit" onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))" enctype="multipart/form-data">
 	<input type="hidden" name="exec" value="edit"> 
 	<input type="hidden" name="subexec" value="save"> 
 	<input type="hidden" name="fromorder" value="<?php if ($_REQUEST["fromorder"]) echo "1"; else echo "0";?>"> 
 	<input type="hidden" name="aid" value="<?=$article->getId()?>">
-	
-	<div style="overflow: hidden;">
-		<div style="width: 50%; float: left;">
-    	<? // -------------------- Atikeldetails --------------------------------------------------- ?>
-    	<div class="box1" style="min-height: 380px;">
-				<b>Kopfdaten</b> 
-    		
-    		<? // Fuer die ein neues Bild ?>
-    		<input type="hidden" name="new_picture" id="new_picture" value="">
-				<input type="hidden" name="new_picture_origname"
-					id="new_picture_origname" value="">
 
-				<table width="100%">
-					<colgroup>
-						<col width="180">
-						<col>
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-						<td class="content_row_clear"><input id="article_title"
-							name="article_title" type="text" class="text"
-							value="<?=$article->getTitle()?>" style="width: 370px"></td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Artikelnummer')?> *</td>
-						<td class="content_row_clear"><input id="article_number"
-							name="article_number" type="text" class="text"
-							value="<?=$article->getNumber()?>" style="width: 180px"></td>
-					</tr>
-					<?php if ($article->getId()>0){?>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Artikel-ID')?> *</td>
-						<td class="content_row_clear"><?=$article->getId()?></td>
-					</tr>
-					<?php }?>
-					<tr>
-    					<?php 
-    					   $tags = $article->getTags();
-    					   if (count($tags)>0)
-    					       $tags = implode(";", $tags);
-    					?>
-						<td class="content_row_header"><?=$_LANG->get('Tags')?></td>
-						<td class="content_row_clear"><input id="article_tags"
-							name="article_tags" type="text" class="text"
-							value="<?php echo $tags; ?>" style="width: 180px"></td>
-					</tr>
-					<tr>
-						<td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung')?></td>
-						<td class="content_row_clear"><textarea id="article_desc"
-								name="article_desc" rows="4" cols="50" class="text artdesc"><?=stripslashes($article->getDesc())?></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Warengruppe')?></td>
-						<td class="content_row_clear"><select id="article_tradegroup"
-							name="article_tradegroup" style="width: 170px" required>
-								<!-- <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option> -->
-    					<?if ($article->getTradegroup() == NULL){
-    						foreach ($all_tradegroups as $tg){
-    							echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
-    						} 
-    					} else {
-    						foreach ($all_tradegroups as $tg){?>
-    							<option value="<?=$tg->getId()?>"
-									<?if ($article->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
-    						<?	printSubTradegroupsForSelect($tg->getId(), 0);
-    						} //Ende foreach($all_tradegroups)
-    					}//Ende else?>
-    				</select></td>
-					</tr>
-					<tr>
-						<td colspan="2">&emsp;</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Arbeitszeit Artikel')?></td>
-						<td class="content_row_clear"><input id="article_isworkhourart"
-							name="article_isworkhourart" class="text" type="checkbox"
-							value="1"
-							<?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>></td>
-					</tr>
-					<!-- 
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Bestellmengen')?> (Min/Max)</td>
-						<td class="content_row_clear"><input id="article_minorder"
-							name="article_minorder" type="text" class="text"
-							value="<?=$article->getMinorder()?>" style="width: 80px">
-    					<?=$_LANG->get('Stk.');?> 
-    					<input id="article_maxorder" name="article_maxorder"
-							type="text" class="text" value="<?=$article->getMaxorder()?>"
-							style="width: 80px">
-    					<?=$_LANG->get('Stk.');?> 
-    				</td>
-					</tr> -->
-					<tr valign="top">
-						<td class="content_row_header"><?=$_LANG->get('Mögl. Bestellmengen (Shop)')?></td>
-						<td class="content_row_clear">
-						  <div id="orderamounts">
-        					   <?php 
-        					   foreach ($article->getOrderamounts() as $orderamount)
-        					   {
-        					       echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
+	<input type="hidden" name="new_picture" id="new_picture" value="">
+	<input type="hidden" name="new_picture_origname" id="new_picture_origname" value="">
+
+	<div class="row">
+		<? // -------------------- Atikel Kopfdaten --------------------------------------------------- ?>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Kopfdaten</h3>
+				  </div>
+				  <div class="panel-body">
+					  <table width="100%">
+						  <colgroup>
+							  <col width="180">
+							  <col>
+						  </colgroup>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
+							  <td class="content_row_clear"><input id="article_title"
+																   name="article_title" type="text" class="text"
+																   value="<?=$article->getTitle()?>" style="width: 370px"></td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Artikelnummer')?> *</td>
+							  <td class="content_row_clear"><input id="article_number"
+																   name="article_number" type="text" class="text"
+																   value="<?=$article->getNumber()?>" style="width: 180px"></td>
+						  </tr>
+						  <?php if ($article->getId()>0){?>
+							  <tr>
+								  <td class="content_row_header"><?=$_LANG->get('Artikel-ID')?> *</td>
+								  <td class="content_row_clear"><?=$article->getId()?></td>
+							  </tr>
+						  <?php }?>
+						  <tr>
+							  <?php
+							  $tags = $article->getTags();
+							  if (count($tags)>0)
+								  $tags = implode(";", $tags);
+							  ?>
+							  <td class="content_row_header"><?=$_LANG->get('Tags')?></td>
+							  <td class="content_row_clear"><input id="article_tags"
+																   name="article_tags" type="text" class="text"
+																   value="<?php echo $tags; ?>" style="width: 180px"></td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung')?></td>
+							  <td class="content_row_clear"><textarea id="article_desc" name="article_desc" rows="4" cols="50" class="text artdesc"><?=stripslashes($article->getDesc())?></textarea>
+							  </td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Warengruppe')?></td>
+							  <td class="content_row_clear"><select id="article_tradegroup"
+																	name="article_tradegroup" style="width: 170px" required>
+									  <!-- <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option> -->
+									  <?if ($article->getTradegroup() == NULL){
+										  foreach ($all_tradegroups as $tg){
+											  echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
+										  }
+									  } else {
+										  foreach ($all_tradegroups as $tg){?>
+											  <option value="<?=$tg->getId()?>"
+												  <?if ($article->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
+											  <?	printSubTradegroupsForSelect($tg->getId(), 0);
+										  } //Ende foreach($all_tradegroups)
+									  }//Ende else?>
+								  </select></td>
+						  </tr>
+						  <tr>
+							  <td colspan="2">&emsp;</td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Arbeitszeit Artikel')?></td>
+							  <td class="content_row_clear"><input id="article_isworkhourart"
+																   name="article_isworkhourart" class="text" type="checkbox"
+																   value="1"
+									  <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>></td>
+						  </tr>
+						  <tr valign="top">
+							  <td class="content_row_header"><?=$_LANG->get('Mögl. Bestellmengen (Shop)')?></td>
+							  <td class="content_row_clear">
+								  <div id="orderamounts">
+									  <?php
+									  foreach ($article->getOrderamounts() as $orderamount)
+									  {
+										  echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
                                          <img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>';
-        					   }
-        					   ?>
-    					   </div>
-        				   <img src="images/icons/plus.png"	class="pointer icon-link" title="Bestellmenge hinzufügen" onclick="addOrderAmount();">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Verpackungseinheit/-gewicht')?></td>
-						<td class="content_row_clear"><input id="article_orderunit"
-							name="article_orderunit" type="text" class="text"
-							value="<?=$article->getOrderunit()?>" style="width: 80px">
-    					<?=$_LANG->get('Stk.');?>  
-    					<input id="article_orderunitweight"
-							name="article_orderunitweight" type="text" class="text"
-							value="<?=printPrice($article->getOrderunitweight(), 4)?>"
-							style="text-align: right; width: 80px">
-    					<?=$_LANG->get('Kg.');?> 
-    				</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Umsatzsteuer')?> *</td>
-						<td class="content_row_clear"><input id="article_tax"
-							name="article_tax" type="text" class="text"
-							value="<?=printPrice($article->getTax())?>" style="width: 184px">
-							%</td>
-					</tr>
-					<tr>
-						<td colspan="2">&emsp;</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Lagerplatz')?></td>
-						<td class="content_row_clear">
-    				<? 	$output = "";
-    					foreach ($warehouses as $stock){
-    						$output .= $stock->getName()."(".$stock->getAmount()." Stk.)".", ";
-    					} 
-    					$output = substr( $output , 0, -2);
-    					echo $output;
-    					?>
-    				</td>
-					</tr>
-					<tr>
-						<td colspan="2">&emsp;</td>
-					</tr>
-    			<?if ($article->getId() != 0 && $article->getCrt_user() != 0){// Ersteller nur beim Bearbeiten ausgeben?>
-    				<tr>
-						<td class="content_row_header"><?=$_LANG->get('Angelegt')?></td>
-						<td class="content_row_clear">
-    						<?=date('d.m.Y - H:i', $article->getCrt_date())?> <?=$_LANG->get('Uhr')?>
-    						<?=$_LANG->get('von')?>
-    						<?// var_dump($article->getCrt_user()); ?>
-    						<?=$article->getCrt_user()->getFirstname()?> <?=$article->getCrt_user()->getLastname()?>
-    					</td>
+									  }
+									  ?>
+								  </div>
+								  <img src="images/icons/plus.png"	class="pointer icon-link" title="Bestellmenge hinzufügen" onclick="addOrderAmount();">
+							  </td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Verpackungseinheit/-gewicht')?></td>
+							  <td class="content_row_clear"><input id="article_orderunit"
+																   name="article_orderunit" type="text" class="text"
+																   value="<?=$article->getOrderunit()?>" style="width: 80px">
+								  <?=$_LANG->get('Stk.');?>
+								  <input id="article_orderunitweight"
+										 name="article_orderunitweight" type="text" class="text"
+										 value="<?=printPrice($article->getOrderunitweight(), 4)?>"
+										 style="text-align: right; width: 80px">
+								  <?=$_LANG->get('Kg.');?>
+							  </td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Umsatzsteuer')?> *</td>
+							  <td class="content_row_clear"><input id="article_tax"
+																   name="article_tax" type="text" class="text"
+																   value="<?=printPrice($article->getTax())?>" style="width: 184px">
+								  %</td>
+						  </tr>
+						  <tr>
+							  <td colspan="2">&emsp;</td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Lagerplatz')?></td>
+							  <td class="content_row_clear">
+								  <? 	$output = "";
+								  foreach ($warehouses as $stock){
+									  $output .= $stock->getName()."(".$stock->getAmount()." Stk.)".", ";
+								  }
+								  $output = substr( $output , 0, -2);
+								  echo $output;
+								  ?>
+							  </td>
+						  </tr>
+						  <tr>
+							  <td colspan="2">&emsp;</td>
+						  </tr>
+						  <?if ($article->getId() != 0 && $article->getCrt_user() != 0){?>
+							  <tr>
+								  <td class="content_row_header"><?=$_LANG->get('Angelegt')?></td>
+								  <td class="content_row_clear">
+									  <?=date('d.m.Y - H:i', $article->getCrt_date())?> <?=$_LANG->get('Uhr')?>
+									  <?=$_LANG->get('von')?>
+									  <?// var_dump($article->getCrt_user()); ?>
+									  <?=$article->getCrt_user()->getFirstname()?> <?=$article->getCrt_user()->getLastname()?>
+								  </td>
 
-					</tr>
-    				<?if ($article->getUpt_user() != 0 && $article->getUpt_date() != 0){
-    						// Ge�ndert von/am nur bei bearbeiteten Artikeln ausgeben?>
-    				<tr>
-						<td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert von')?></td>
-						<td class="content_row_clear">
-    						<?=date('d.m.Y - H:i', $article->getUpt_date())?> <?=$_LANG->get('Uhr')?>
-    						<?=$_LANG->get('von')?>
-    						<?=$article->getUpt_user()->getFirstname()?> <?=$article->getUpt_user()->getLastname()?>
-    					</td>
-					</tr>
-    				<?} // Ende if(geaendert gesetzt) ?>
-    			<?} // Ende if(neuer Artikel) ?>
-    		</table>
+							  </tr>
+							  <?if ($article->getUpt_user() != 0 && $article->getUpt_date() != 0){?>
+								  <tr>
+									  <td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert von')?></td>
+									  <td class="content_row_clear">
+										  <?=date('d.m.Y - H:i', $article->getUpt_date())?> <?=$_LANG->get('Uhr')?>
+										  <?=$_LANG->get('von')?>
+										  <?=$article->getUpt_user()->getFirstname()?> <?=$article->getUpt_user()->getLastname()?>
+									  </td>
+								  </tr>
+							  <?}?>
+						  <?}?>
+					  </table>
+				  </div>
 			</div>
-			</br>
-        <? // -------------------- Artikelbilder --------------------------------------------------- ?>
-    	<div class="box1" style="min-height: 380px;">
-				<b>Artikelbilder</b>
-				<table width="100%">
-					<colgroup>
-						<col width="200">
-						<col width="200">
-					</colgroup>
-					<tr>
-						<td class="content_row_header" colspan="2" id="td_picture_show">
-    				<?=$_LANG->get('Artikelbilder')?>  &emsp; &emsp;
-    				<a href="libs/modules/article/picture.iframe.php"
-							id="picture_select" class="products"><input type="button"
-								width="80px" class="button"
-								value="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></a>
-						</td>
-					</tr>
-					<tr>
-						<td id="td_newpicture" colspan="2">&ensp;</td>
-					</tr>
-    		<?/****?>
-    		<tr>
-    			<td align="left">
-    				<?if ($article->getPicture()!= NULL && $article->getPicture() !=""){?>
-    					<img src="images/products/<?=$article->getPicture()?>" width="130px">
-    					
-    					<a onclick="askDel('index.php?exec=edit&subexec=deletepic&aid=<?=$article->getId()?>&picid=<?$picture[$x]["id"]?>')"
-    						href="#"><img src="images/icons/cross-script.png" title="<?=$_LANG->get(' Bild l&ouml;schen')?>"></a>
-            		<?} else {?>
-            			&nbsp; ...
-            		<? } ?>	
-    			</td>
-    			<td align="right">&ensp;</td>
-    		</tr><?****/?>
-    	</table>
-				<br />
-    	
-    	<? $x=0;
-    	if ($all_pictures>0){
-    	foreach ($all_pictures AS $pic){
-    		?>
-    		<img src="images/products/<?=$pic["url"]?>" width="130px"> <a
-					onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=deletepic&aid=<?=$article->getId()?>&picid=<?=$pic["id"]?>')"
-					class="icon-link" href="#"><img src="images/icons/cross-script.png"
-					title="<?=$_LANG->get(' Bild l&ouml;schen')?>"></a>
-    		&ensp; 
-    	<?	$x++;
-    	}}?>
-    	</div>
-			</br>
 		</div>
-		<div style="width: 50%; float: right;">
-    	<?// Ab hier Preisstaffeln ein geben ?>
-    	<input type="hidden" name="count_quantity" id="count_quantity"
-				value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
-			<div class="box1" style="min-height: 180px;">
-				<b>VK-Preisstaffeln</b>
-				<table id="table-prices">
-					<colgroup>
-						<col width="40">
-						<col width="80">
-						<col width="120">
-						<col width="120">
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Von')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-					</tr>
-    			<?
-    			$x = count($allprices);
-    			if ($x < 1){
-    				//$allprices[] = new Array
-    				$x++;
-    			}
-    			for ($y=0; $y < $x ; $y++){ ?>
-    				<tr>
-						<td class="content_row_clear">
-    					<?=$y+1?>
-    					</td>
-						<td class="content_row_clear"><input
-							name="article_price_min_<?=$y?>" class="text" type="text"
-							value="<?=$allprices[$y][sep_min]?>" style="width: 50px">
-    						<?=$_LANG->get('Stk.')?>
-    					</td>
-						<td class="content_row_clear"><input
-							name="article_price_max_<?=$y?>" class="text" type="text"
-							value="<?=$allprices[$y][sep_max]?>" style="width: 50px">
-    						<?=$_LANG->get('Stk.')?>
-    					</td>
-						<td class="content_row_clear"><input
-							name="article_price_price_<?=$y?>" class="text" type="text"
-							value="<?=printPrice($allprices[$y][sep_price])?>"
-							style="width: 50px">
-    						<?=$_USER->getClient()->getCurrency()?>
-    						&nbsp;&nbsp;&nbsp;
-    						<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-    							echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()">';
-    						}?> 
-    					</td>
-					</tr>
-    			<? } //Ende alle Preis-Staffeln?>
-    		</table>
-				<br />* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
-				<br />* <?=$_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis')?>
-    	</div>
-			</br>
-    	<?// Ab hier Preisstaffeln (EK) ein geben ?>
-    	<input type="hidden" name="count_quantity_cost"
-				id="count_quantity_cost"
-				value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
-			<div class="box1" style="min-height: 180px;">
-				<b>EK-Preisstaffeln</b>
-				<table id="table_prices_cost">
-					<colgroup>
-						<col width="40">
-						<col width="80">
-						<col width="120">
-						<col width="120">
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Von')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-					</tr>
-    			<?
-    			$x = count($allcostprices);
-    			if ($x < 1){
-    				//$allprices[] = new Array
-    				$x++;
-    			}
-    			for ($y=0; $y < $x ; $y++){ ?>
-    				<tr>
-						<td class="content_row_clear">
-    					<?=$y+1?>
-    					</td>
-						<td class="content_row_clear"><input
-							name="article_costprice_min_<?=$y?>" class="text" type="text"
-							value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
-    						<?=$_LANG->get('Stk.')?>
-    					</td>
-						<td class="content_row_clear"><input
-							name="article_costprice_max_<?=$y?>" class="text" type="text"
-							value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
-    						<?=$_LANG->get('Stk.')?>
-    					</td>
-						<td class="content_row_clear"><input
-							name="article_costprice_price_<?=$y?>" class="text" type="text"
-							value="<?=printPrice($allcostprices[$y][sep_price])?>"
-							style="width: 50px">
-    						<?=$_USER->getClient()->getCurrency()?>
-    						&nbsp;&nbsp;&nbsp;
-    						<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-    							echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
-    						}?> 
-    					</td>
-					</tr>
-    			<? } //Ende alle Preis-Staffeln?>
-    		</table>
-				<br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
-    	</div>
-			</br>
-			<div id="qusers" class="box1" style="min-height: 180px; <?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
-				<b>Arbeiter</b>
-				<table width="100%" cellpadding="0" cellspacing="0" border="0">
-        	    <?php 
-        	    $all_users = User::getAllUser();
-        	    $qid_arr = Array();
-        	    foreach ($article->getQualified_users() as $qid)
-        	    {
-        	        $qid_arr[] = $qid->getId();
-        	    }
-        	    $qi = 0;
-        	    foreach ($all_users as $qusr){
-        	       if ($qi==0) echo '<tr>';
-        	       ?>
-        		   <td class="content_row_header" valign="top" width="20%"><input
-						type="checkbox" name="qusr[]"
-						<?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?>
-						value="<?php echo $qusr->getId();?>" /> 
-        		   <?php echo $qusr->getNameAsLine();?></td>
-        		   <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
-        		<?php $qi++;}?>
-        	</table>
+		<? // -------------------- Artikel Bilder --------------------------------------------------- ?>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Bilder</h3>
+				  </div>
+				  <div class="panel-body">
+                      <?php
+                      if ($all_pictures)
+                          $picarray = break_array($all_pictures,4);
+                      else
+                          $picarray = [];
+                      ?>
+                      <table>
+                          <?php
+                          if ($all_pictures>0) {
+                              foreach ($picarray as $item) {
+                                  echo '<tr>';
+                                  foreach ($item as $picture) {
+                                      echo '<td>';
+                                      echo '<img src="images/products/' . $picture["url"] . '" width="130px" height="82px">' .
+                                          '<a onclick="askDel(\'index.php?page=' . $_REQUEST['page'] . '&exec=edit&subexec=deletepic&aid=' . $article->getId() . '&picid=' . $picture["id"] . '\')"' .
+                                          'class="icon-link" href="#"><img src="images/icons/cross-script.png"' .
+                                          'title="' . $_LANG->get(' Bild l&ouml;schen') . '" style="margin-left: -15px; margin-bottom: 66px;"></a>';
+                                      echo '</td>';
+                                  }
+                                  echo '</tr>';
+                              }
+                          }
+                          ?>
+                      </table>
+                      <br>
+                      <div id="filediv">
+                          <input name="file[]" type="file" id="file"/>
+                      </div>
+                      <br>
+                      <input type="button" id="add_more" class="btn-sm" value="mehr Bilder hinzufügen"/>
+                      <input type="button" value="Hochladen" name="upload" id="upload" class="btn-sm btn-success" onclick="$('#article_edit').submit();"/>
+				  </div>
 			</div>
-			</br>
-			<div id="qusers" class="box1" style="min-height: 180px;">
-				<b>Shop</b>
-				<table width="100%" cellpadding="0" cellspacing="0" border="0">
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Shop: Preis anzeigen')?></td>
-						<td class="content_row_clear"><input id="article_show_shop_price"
-							name="article_show_shop_price" class="text" type="checkbox"
-							value="1"
-							<?if ($article->getShowShopPrice() == 1) echo "checked"; ?>></td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Shop: Datei Upload')?></td>
-						<td class="content_row_clear"><input
-							id="article_shop_needs_upload" name="article_shop_needs_upload"
-							class="text" type="checkbox" value="1"
-							<?if ($article->getShop_needs_upload() == 1) echo "checked"; ?>>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Freigegeben für alle')?></td>
-						<td class="content_row_clear"><input id="article_shoprel"
-							name="article_shoprel" class="text" type="checkbox" value="1"
-							<?if ($article->getShoprel() == 1) echo "checked"; ?>></td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Benutzerdefinierte-Freigabe')?></td>
-						<td class="content_row_clear"></td>
-					</tr>
-					<tr>
-						<td class="content_row_header" colspan="2">
-							<table width="100%" cellpadding="0" cellspacing="0" border="0"
-								id="shop_appr_bcs">
-								<thead>
-									<tr>
-										<td class="content_row_header"><?=$_LANG->get('Geschäfskontakte')?></td>
-									</tr>
-								</thead>
-                			<?php 
-                			$shop_appr = $article->getShop_approval(); 
-                			if (count($shop_appr["BCs"])>0){
-                			    foreach ($shop_appr["BCs"] as $shop_appr_bc)
-                			    {
-                        			$tmp_bc = new BusinessContact($shop_appr_bc)?>
-                        			<tr>
-									<td class="content_row_clear">
-                        				    <?php echo $tmp_bc->getNameAsLine();?> <img
-										src="images/icons/cross.png" class="pointer"
-										onclick="$(this).parent().remove();;" /> <input type="hidden"
-										name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId()?>" />
-									</td>
-								</tr>
-                			<?php }?>
-                			<?php }?>
-    				    </table> Hinzufügen: <input type="text"
-							id="shop_add_customer" value="" style="width: 300px" />
-							<table width="100%" cellpadding="0" cellspacing="0" border="0"
-								id="shop_appr_cps">
-								<thead>
-									<tr>
-										<td class="content_row_header"><?=$_LANG->get('Ansprechpartner')?></td>
-									</tr>
-								</thead>
-                			<?php 
-                			$shop_appr = $article->getShop_approval(); 
-                			if (count($shop_appr["CPs"])>0){
-                			    foreach ($shop_appr["CPs"] as $shop_appr_cp)
-                			    {
-                        			$tmp_cp = new ContactPerson($shop_appr_cp)?>
-                        			<tr>
-									<td class="content_row_clear">
-                        				    <?php echo $tmp_cp->getNameAsLine();?> <img
-										src="images/icons/cross.png" class="pointer"
-										onclick="$(this).parent().remove();" /> <input type="hidden"
-										name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
-									</td>
-								</tr>
-                			<?php }?>
-                			<?php }?>
-    				    </table> Hinzufügen: <input type="text"
-							id="shop_add_customer_cp" value="" style="width: 300px" />
-						</td>
-					</tr>
-				</table>
-			</div>
-			</br>
-			<div id="apis" class="box1" style="min-height: 180px;">
-				<b>API-Zuordnung</b></br>&nbsp;
-				<table width="100%" cellpadding="0" cellspacing="0" border="0">
-				    <?php 
-				    $api_objects = APIObject::getAllForObject($article->getId(), API::TYPE_ARTICLE);
-				    if (count($api_objects)>0){
-				        foreach ($api_objects as $api_object)
-				        {
-				            $api = new API($api_object->getApi());
-				            ?>
-        					<tr>
-        						<td class="content_row_header"><?php echo $api->getTitle();?> 
-        						<a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><img src="images/icons/cross.png" class="pointer"/></a></td>
-        					</tr>
-				            <?php     
-				        }
-				    } else {
-				        echo '<tr><td>keine Zuordnungen vorhanden!</td></tr>';
-				    }
-				    ?>
-				    <tr><td><hr></td></tr>
-				    <?php 
-				    $all_apis = API::getAllApisByType(API::TYPE_ARTICLE);
-				    if (count($all_apis)>0){
-				    ?>
-				    <tr>
-				        <td class="content_row_header">
-				            Neue Zuordnung: 
-				            <select name="api_new" id="api_new">
-				                <option value="0">Api wählen</option>
-				                <?php 
-				                foreach ($all_apis as $api)
-				                {
-				                    ?>
-				                    <option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
-				                    <?php    
-				                }
-				                ?>
-				            </select>
-				        </td>
-				    </tr>
-				    <?php }?>
-				</table>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Shop Einstellungen</h3>
+				  </div>
+				  <div class="panel-body">
+					  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Shop: Preis anzeigen')?></td>
+							  <td class="content_row_clear"><input id="article_show_shop_price"
+																   name="article_show_shop_price" class="text" type="checkbox"
+																   value="1"
+									  <?if ($article->getShowShopPrice() == 1) echo "checked"; ?>></td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Shop: Datei Upload')?></td>
+							  <td class="content_row_clear"><input
+									  id="article_shop_needs_upload" name="article_shop_needs_upload"
+									  class="text" type="checkbox" value="1"
+									  <?if ($article->getShop_needs_upload() == 1) echo "checked"; ?>>
+							  </td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Freigegeben für alle')?></td>
+							  <td class="content_row_clear"><input id="article_shoprel"
+																   name="article_shoprel" class="text" type="checkbox" value="1"
+									  <?if ($article->getShoprel() == 1) echo "checked"; ?>></td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Benutzerdefinierte-Freigabe')?></td>
+							  <td class="content_row_clear"></td>
+						  </tr>
+						  <tr>
+							  <td class="content_row_header" colspan="2">
+								  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+										 id="shop_appr_bcs">
+									  <thead>
+									  <tr>
+										  <td class="content_row_header"><?=$_LANG->get('Geschäfskontakte')?></td>
+									  </tr>
+									  </thead>
+									  <?php
+									  $shop_appr = $article->getShop_approval();
+									  if (count($shop_appr["BCs"])>0){
+										  foreach ($shop_appr["BCs"] as $shop_appr_bc)
+										  {
+											  $tmp_bc = new BusinessContact($shop_appr_bc)?>
+											  <tr>
+												  <td class="content_row_clear">
+													  <?php echo $tmp_bc->getNameAsLine();?> <img
+														  src="images/icons/cross.png" class="pointer"
+														  onclick="$(this).parent().remove();;" /> <input type="hidden"
+																										  name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId()?>" />
+												  </td>
+											  </tr>
+										  <?php }?>
+									  <?php }?>
+								  </table> Hinzufügen: <input type="text"
+															  id="shop_add_customer" value="" style="width: 300px" />
+								  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+										 id="shop_appr_cps">
+									  <thead>
+									  <tr>
+										  <td class="content_row_header"><?=$_LANG->get('Ansprechpartner')?></td>
+									  </tr>
+									  </thead>
+									  <?php
+									  $shop_appr = $article->getShop_approval();
+									  if (count($shop_appr["CPs"])>0){
+										  foreach ($shop_appr["CPs"] as $shop_appr_cp)
+										  {
+											  $tmp_cp = new ContactPerson($shop_appr_cp)?>
+											  <tr>
+												  <td class="content_row_clear">
+													  <?php echo $tmp_cp->getNameAsLine();?> <img
+														  src="images/icons/cross.png" class="pointer"
+														  onclick="$(this).parent().remove();" /> <input type="hidden"
+																										 name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
+												  </td>
+											  </tr>
+										  <?php }?>
+									  <?php }?>
+								  </table> Hinzufügen: <input type="text"
+															  id="shop_add_customer_cp" value="" style="width: 300px" />
+							  </td>
+						  </tr>
+					  </table>
+				  </div>
 			</div>
 		</div>
 	</div>
-	<br />
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Preisstaffeln VK</h3>
+				  </div>
+				  <div class="panel-body">
+					  <input type="hidden" name="count_quantity" id="count_quantity" value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
+					  <b>VK-Preisstaffeln</b>
+					  <table id="table-prices">
+						  <colgroup>
+							  <col width="40">
+							  <col width="80">
+							  <col width="120">
+							  <col width="120">
+						  </colgroup>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Von')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
+						  </tr>
+						  <?
+						  $x = count($allprices);
+						  if ($x < 1){
+							  //$allprices[] = new Array
+							  $x++;
+						  }
+						  for ($y=0; $y < $x ; $y++){ ?>
+							  <tr>
+								  <td class="content_row_clear">
+									  <?=$y+1?>
+								  </td>
+								  <td class="content_row_clear"><input
+										  name="article_price_min_<?=$y?>" class="text" type="text"
+										  value="<?=$allprices[$y][sep_min]?>" style="width: 50px">
+									  <?=$_LANG->get('Stk.')?>
+								  </td>
+								  <td class="content_row_clear"><input
+										  name="article_price_max_<?=$y?>" class="text" type="text"
+										  value="<?=$allprices[$y][sep_max]?>" style="width: 50px">
+									  <?=$_LANG->get('Stk.')?>
+								  </td>
+								  <td class="content_row_clear"><input
+										  name="article_price_price_<?=$y?>" class="text" type="text"
+										  value="<?=printPrice($allprices[$y][sep_price])?>"
+										  style="width: 50px">
+									  <?=$_USER->getClient()->getCurrency()?>
+									  &nbsp;&nbsp;&nbsp;
+									  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+										  echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()">';
+									  }?>
+								  </td>
+							  </tr>
+						  <? } //Ende alle Preis-Staffeln?>
+					  </table>
+					  <br />* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
+					  <br />* <?=$_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis')?>
+				  </div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Preisstaffeln EK</h3>
+				  </div>
+				  <div class="panel-body">
+					  <input type="hidden" name="count_quantity_cost"	id="count_quantity_cost" value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
+					  <table id="table_prices_cost">
+						  <colgroup>
+							  <col width="40">
+							  <col width="80">
+							  <col width="120">
+							  <col width="120">
+						  </colgroup>
+						  <tr>
+							  <td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Von')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
+						  </tr>
+						  <?
+						  $x = count($allcostprices);
+						  if ($x < 1){
+							  //$allprices[] = new Array
+							  $x++;
+						  }
+						  for ($y=0; $y < $x ; $y++){ ?>
+							  <tr>
+								  <td class="content_row_clear">
+									  <?=$y+1?>
+								  </td>
+								  <td class="content_row_clear"><input
+										  name="article_costprice_min_<?=$y?>" class="text" type="text"
+										  value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
+									  <?=$_LANG->get('Stk.')?>
+								  </td>
+								  <td class="content_row_clear"><input
+										  name="article_costprice_max_<?=$y?>" class="text" type="text"
+										  value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
+									  <?=$_LANG->get('Stk.')?>
+								  </td>
+								  <td class="content_row_clear">
+									  <select name="article_costprice_supplier_<?=$y?>" style="width:200px">
+										  <?php
+										  foreach ($allsupplier as $supplier){
+											  if ($article->getId()>0){
+												  if ($allcostprices[$y]['supplier'] == $supplier->getId()){
+													  echo '<option value="'.$supplier->getId().'" selected>'.$supplier->getNameAsLine().'</option>';
+												  } else {
+													  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
+												  }
+											  } else {
+												  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
+											  }
+										  }
+										  ?>
+									  </select>
+								  </td>
+								  <td class="content_row_clear"><input
+										  name="article_costprice_price_<?=$y?>" class="text" type="text"
+										  value="<?=printPrice($allcostprices[$y][sep_price])?>"
+										  style="width: 50px">
+									  <?=$_USER->getClient()->getCurrency()?>
+									  &nbsp;&nbsp;&nbsp;
+									  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+										  echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
+									  }?>
+								  </td>
+							  </tr>
+						  <? } //Ende alle Preis-Staffeln?>
+					  </table>
+					  <br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
+				  </div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6" id="qusers" style="<?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Qualifizierte Benutzer</h3>
+				  </div>
+				  <div class="panel-body">
+					  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+						  <?php
+						  $all_users = User::getAllUser();
+						  $qid_arr = Array();
+						  foreach ($article->getQualified_users() as $qid)
+						  {
+							  $qid_arr[] = $qid->getId();
+						  }
+						  $qi = 0;
+						  foreach ($all_users as $qusr){
+							  if ($qi==0) echo '<tr>';
+							  ?>
+							  <td class="content_row_header" valign="top" width="20%"><input
+									  type="checkbox" name="qusr[]"
+									  <?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?>
+									  value="<?php echo $qusr->getId();?>" />
+								  <?php echo $qusr->getNameAsLine();?></td>
+							  <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
+							  <?php $qi++;}?>
+					  </table>
+				  </div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">API</h3>
+				  </div>
+				  <div class="panel-body">
+					  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+						  <?php
+						  $api_objects = APIObject::getAllForObject($article->getId(), API::TYPE_ARTICLE);
+						  if (count($api_objects)>0){
+							  foreach ($api_objects as $api_object)
+							  {
+								  $api = new API($api_object->getApi());
+								  ?>
+								  <tr>
+									  <td class="content_row_header"><?php echo $api->getTitle();?>
+										  <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><img src="images/icons/cross.png" class="pointer"/></a></td>
+								  </tr>
+								  <?php
+							  }
+						  } else {
+							  echo '<tr><td>keine Zuordnungen vorhanden!</td></tr>';
+						  }
+						  ?>
+						  <tr><td><hr></td></tr>
+						  <?php
+						  $all_apis = API::getAllApisByType(API::TYPE_ARTICLE);
+						  if (count($all_apis)>0){
+							  ?>
+							  <tr>
+								  <td class="content_row_header">
+									  Neue Zuordnung:
+									  <select name="api_new" id="api_new">
+										  <option value="0">Api wählen</option>
+										  <?php
+										  foreach ($all_apis as $api)
+										  {
+											  ?>
+											  <option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
+											  <?php
+										  }
+										  ?>
+									  </select>
+								  </td>
+							  </tr>
+						  <?php }?>
+					  </table>
+				  </div>
+			</div>
+		</div>
+	</div>
 </form>
+
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        tinymce.init(
+            {
+                selector:'#article_desc',
+                menubar: false,
+                statusbar: false,
+                toolbar: false
+            }
+        );
+    });
+</script>
+
+<script language="javascript">
+    $(document).ready(function(){
+        $('#article_isworkhourart').change(function() {
+            $('#qusers').toggle();
+        });
+    });
+</script>
+
+<script language="javascript">
+    function addPriceRow()
+    {
+        var obj = document.getElementById('table-prices');
+        var count = parseInt(document.getElementById('count_quantity').value) + 1;
+        var insert = '<tr><td class="content_row_clear">'+count+'</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<input name="article_price_min_'+count+'" class="text" type="text"';
+        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<input name="article_price_max_'+count+'" class="text" type="text"';
+        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<input name="article_price_price_'+count+'" class="text" type="text"';
+        insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
+        insert += '</td></tr>';
+        obj.insertAdjacentHTML("BeforeEnd", insert);
+        document.getElementById('count_quantity').value = count;
+    }
+
+    function addCostRow()
+    {
+        var obj = document.getElementById('table_prices_cost');
+        var count = parseInt(document.getElementById('count_quantity_cost').value) + 1;
+        var insert = '<tr><td class="content_row_clear">'+count+'</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<input name="article_costprice_min_'+count+'" class="text" type="text"';
+        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<input name="article_costprice_max_'+count+'" class="text" type="text"';
+        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<select name="article_costprice_supplier_'+count+'" style="width:200px">';
+        <?php foreach ($allsupplier as $supplier){?>
+        insert += '<option value="<?=$supplier->getId()?>"><?=$supplier->getNameAsLine()?></option>';
+        <?}?>
+        insert += '</select>';
+        insert += '</td>';
+        insert += '<td class="content_row_clear">';
+        insert += '<input name="article_costprice_price_'+count+'" class="text" type="text"';
+        insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
+        insert += '</td></tr>';
+        obj.insertAdjacentHTML("BeforeEnd", insert);
+        document.getElementById('count_quantity_cost').value = count;
+    }
+
+    function checkArticleNumber(obj){
+        var thisnumber = '<?=$article->getNumber()?>';
+        var newnumber  = document.getElementById('article_number').value;
+
+        <?//Erst ueberpruefen ob Art-Nr leer ist, dann ob vorhanden?>
+        if (newnumber == ""){
+            return checkform(obj);
+        }
+
+        if (thisnumber != newnumber){
+            $.post("libs/modules/article/article.ajax.php",
+                {exec: 'checkArticleNumber', newnumber : newnumber},
+                function(data) {
+                    data = data.substring(0,2);
+                    if(data == "DA"){
+                        alert('<?=$_LANG->get('Artikelnummer bereits vergeben!') ?>');
+                        document.getElementById('article_number').focus();
+                        return false;
+                    } else {
+                        if (checkform(obj)==true){
+                            document.getElementById('article_edit').submit();
+                        }
+                    }
+                });
+        } else {
+            return checkform(obj);
+        }
+        return false;
+    }
+
+    function addOrderAmount()
+    {
+        var amount = prompt("Bitte Bestellmenge angeben", "");
+
+        if (amount != null) {
+            $("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>');
+        }
+    }
+</script>
+
+<script language="JavaScript">
+    $(function() {
+        $( "#shop_add_customer" ).autocomplete({
+            source: "libs/modules/article/article.ajax.php?ajax_action=search_customer",
+            minLength: 2,
+            focus: function( event, ui ) {
+                $( "#shop_add_customer" ).val( ui.item.label );
+                return false;
+            },
+            select: function( event, ui ) {
+                var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
+                newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></td></tr>';
+                $("#shop_appr_bcs tr:last").after(newRow);
+                return false;
+            }
+        });
+        $( "#shop_add_customer_cp" ).autocomplete({
+            source: "libs/modules/article/article.ajax.php?ajax_action=search_customer_cp",
+            minLength: 2,
+            focus: function( event, ui ) {
+                $( "#shop_add_customer_cp" ).val( ui.item.label );
+                return false;
+            },
+            select: function( event, ui ) {
+                var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
+                newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></td></tr>';
+                $("#shop_appr_cps tr:last").after(newRow);
+                return false;
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#article_tags").tagit({
+            singleField: true,
+            singleFieldNode: $('#article_tags'),
+            singleFieldDelimiter: ";",
+            allowSpaces: true,
+            minLength: 2,
+            removeConfirmation: true,
+            tagSource: function( request, response ) {
+                $.ajax({
+                    url: "libs/modules/article/article.ajax.php?ajax_action=search_tags",
+                    data: { term:request.term },
+                    dataType: "json",
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label: item.label,
+                                value: item.value
+                            }
+                        }));
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(function() {
+        $('#article_edit').validate();
+    });
+</script>
+
+<script type="text/javascript">
+    var abc = 0;      // Declaring and defining global increment variable.
+    $(document).ready(function() {
+//  To add new input file field dynamically, on click of "Add More Files" button below function will be executed.
+        $('#add_more').click(function() {
+            $(this).before($("<div/>", {
+                id: 'filediv'
+            }).fadeIn('slow').append($("<input/>", {
+                name: 'file[]',
+                type: 'file',
+                id: 'file'
+            }), $("<br/>")));
+        });
+// Following function will executes on change event of file input to select different file.
+        $('body').on('change', '#file', function() {
+            if (this.files && this.files[0]) {
+                abc += 1; // Incrementing global variable by 1.
+                var z = abc - 1;
+                var x = $(this).parent().find('#previewimg' + z).remove();
+                $(this).before("<div id='abcd" + abc + "' class='abcd'><img id='previewimg" + abc + "' src='' width='130px' height='82px'/></div>");
+                var reader = new FileReader();
+                reader.onload = imageIsLoaded;
+                reader.readAsDataURL(this.files[0]);
+                $(this).hide();
+                $("#abcd" + abc).append($("<img/>", {
+                    id: 'img',
+                    src: 'images/icons/cross-script.png',
+                    alt: 'delete',
+                    style: 'margin-left: -15px; margin-bottom: 66px;'
+                }).click(function() {
+                    $(this).parent().parent().remove();
+                }));
+            }
+        });
+// To Preview Image
+        function imageIsLoaded(e) {
+            $('#previewimg' + abc).attr('src', e.target.result);
+        };
+        $('#upload').click(function(e) {
+            var name = $(":file").val();
+            if (!name) {
+                alert("First Image Must Be Selected");
+                e.preventDefault();
+            }
+        });
+    });
+</script>
