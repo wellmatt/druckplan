@@ -7,6 +7,22 @@
  *
  */
 require_once 'libs/modules/statistics/statistics.class.php';
+require_once 'libs/basic/globalFunctions.php';
+
+$monate = array(1=>"Januar",
+    2=>"Februar",
+    3=>"M&auml;rz",
+    4=>"April",
+    5=>"Mai",
+    6=>"Juni",
+    7=>"Juli",
+    8=>"August",
+    9=>"September",
+    10=>"Oktober",
+    11=>"November",
+    12=>"Dezember");
+
+
 
 
 function printSubTradegroupsForSelect($parentId, $depth)
@@ -126,35 +142,48 @@ if ($_REQUEST["stat_tradegroup"]) {
             <button type="submit">Refresh</button>
         </div>
     </div>
+    <br>&nbsp;</br>
 </form>
 
 
 <div class="row">
     <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Pro Tag</div>
+            <div class="panel-heading"><div align="center">Pro Tag</div></div>
             <div class="panel-body">
-                <table id="table_colinv" class="stripe hover row-border order-column" style="width: auto" width="100%">
+                <table id="table_colinv_day" class="stripe hover row-border order-column" style="width: auto" width="100%">
                     <thead>
                     <tr>
-                        <td style="width: 20px;">ID#</td>
-                        <td style="width: 80px;">Nummer</td>
-                        <td style="width: 1600px;">Titel</td>
+                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
+                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
+                        <td style="width: 80px;"><u><h5>Netto</h5></u></td>
+                        <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+
                     </tr>
                     </thead>
+
                     <?php
                     $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
                     foreach ($days as $day) {
                         $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                         if (count($retval) > 0) {
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td></tr>';
+                            $nettotal = 0;
+                            $grosstotal = 0;
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
                                 echo "<td>{$item->getNumber()}</td>";
                                 echo "<td>{$item->getTitle()}</td>";
+                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
+                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
                                 echo '</tr>';
+                                $nettotal += $item->getTotalNetSum();
+                                $grosstotal += $item->getTotalGrossSum();
+
                             }
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                         }
                     }
                     ?>
@@ -164,29 +193,37 @@ if ($_REQUEST["stat_tradegroup"]) {
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Pro Tag</div>
+            <div class="panel-heading"><div align="center">Monat</div></div>
             <div class="panel-body">
-                <table id="table_colinv" class="stripe hover row-border order-column" style="width: auto" width="100%">
+                <table id="table_colinv_month" class="stripe hover row-border order-column" style="width: auto" width="100%">
                     <thead>
                     <tr>
-                        <td style="width: 20px;">ID#</td>
-                        <td style="width: 80px;">Nummer</td>
-                        <td style="width: 1600px;">Titel</td>
+                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
+                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
+                        <td style="width: 80px;"><u><h5>Netto</h5></u></td>
+                        <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
                     </tr>
                     </thead>
                     <?php
-                    $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
-                    foreach ($days as $day) {
-                        $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                    $months = GetMonths(date('Y-m-d', $start), date('Y-m-d', $end));
+                    foreach ($months as $month) {
+                        $retval = Statistics::ColinvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+//                        prettyPrint($month);
                         if (count($retval) > 0) {
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td></tr>';
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // Anzahl: ' . count($retval) . '</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
                                 echo "<td>{$item->getNumber()}</td>";
                                 echo "<td>{$item->getTitle()}</td>";
+                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
+                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
                                 echo '</tr>';
+                                $nettotal += $item->getTotalNetSum();
+                                $grosstotal += $item->getTotalGrossSum();
                             }
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                         }
                     }
                     ?>
@@ -196,29 +233,36 @@ if ($_REQUEST["stat_tradegroup"]) {
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Pro Tag</div>
+            <div class="panel-heading"><div align="center">Jahr</div></div>
             <div class="panel-body">
-                <table id="table_colinv" class="stripe hover row-border order-column" style="width: auto" width="100%">
+                <table id="table_colinv_year" class="stripe hover row-border order-column" style="width: auto" width="100%">
                     <thead>
                     <tr>
-                        <td style="width: 20px;">ID#</td>
-                        <td style="width: 80px;">Nummer</td>
-                        <td style="width: 1600px;">Titel</td>
+                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
+                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
+                        <td style="width: 80px;"><u><h5>Netto</h5></u></td>
+                        <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
                     </tr>
                     </thead>
                     <?php
-                    $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
-                    foreach ($days as $day) {
-                        $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                    $years = GetYears(date('Y-m-d', $start), date('Y-m-d', $end));
+                    foreach ($years as $year) {
+                        $retval = Statistics::ColinvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                         if (count($retval) > 0) {
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td></tr>';
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
                                 echo "<td>{$item->getNumber()}</td>";
                                 echo "<td>{$item->getTitle()}</td>";
+                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
+                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
                                 echo '</tr>';
+                                $nettotal += $item->getTotalNetSum();
+                                $grosstotal += $item->getTotalGrossSum();
                             }
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                         }
                     }
                     ?>
@@ -231,7 +275,53 @@ if ($_REQUEST["stat_tradegroup"]) {
 
 <script>
     $(function () {
-        var table_colinv = $('#table_colinv').DataTable({
+        var table_colinv_day = $('#table_colinv_day').DataTable({
+            "dom": 'rti',
+            "ordering": false,
+            "order": [],
+            "paging": false,
+            "language": {
+                "emptyTable": "Keine Daten vorhanden",
+                "info": "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": "Keine Seiten vorhanden",
+                "infoFiltered": "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix": "",
+                "thousands": ".",
+                "lengthMenu": "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing": "Verarbeite...",
+                "search": "Suche:",
+                "zeroRecords": "Keine passenden Eintr&auml;ge gefunden",
+                "aria": {
+                    "sortAscending": ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        });
+        var table_colinv_month = $('#table_colinv_month').DataTable({
+            "dom": 'rti',
+            "ordering": false,
+            "order": [],
+            "paging": false,
+            "language": {
+                "emptyTable": "Keine Daten vorhanden",
+                "info": "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": "Keine Seiten vorhanden",
+                "infoFiltered": "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix": "",
+                "thousands": ".",
+                "lengthMenu": "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing": "Verarbeite...",
+                "search": "Suche:",
+                "zeroRecords": "Keine passenden Eintr&auml;ge gefunden",
+                "aria": {
+                    "sortAscending": ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        });
+        var table_colinv_year = $('#table_colinv_year').DataTable({
             "dom": 'rti',
             "ordering": false,
             "order": [],
@@ -281,6 +371,25 @@ if ($_REQUEST["stat_tradegroup"]) {
                 $('#stat_article').val(ui.item.value);
             }
         });
+        $("#search_tradegroup").autocomplete({
+            delay: 0,
+            source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_article',
+            minLength: 2,
+            dataType: "json",
+            select: function (event, ui) {
+                $('#stat_tradegroup').val(ui.item.value);
+            }
+        });
+            $("#search_status").autocomplete({
+            delay: 0,
+            source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_article',
+            minLength: 2,
+            dataType: "json",
+            select: function (event, ui) {
+                $('#stat_status').val(ui.item.value);
+            }
+        });
+
         $('#stat_from').datetimepicker({
             lang: 'de',
             i18n: {

@@ -357,6 +357,42 @@ function GetDays($sStartDate, $sEndDate, $format = "d.m.Y"){
     return $aDays;
 }
 
+function GetMonths($sStartDate, $sEndDate){
+
+	$sStartDate = date('Y-m-d', strtotime($sStartDate));
+	$sEndDate = date('Y-m-d', strtotime($sEndDate));
+	// dem $aDays Array das erste Datum hinzufügen
+	$aDays[] = date('Y-m-d',strtotime($sStartDate));
+	// $sCurrentDate auf das Startdatum setzen
+	$sCurrentDate = $sStartDate;
+	// Schleife die solange läuft bis das $sCurrentDate nicht mehr kleiner als das Enddatum ist
+	while($sCurrentDate < $sEndDate){
+		// auf $sCurrentDate +1 Monat draufrechnen
+		$sCurrentDate = date('Y-m-d', strtotime("+1 month", strtotime($sCurrentDate)));
+		// das $sCurrentDate dem $aDays Array hinzufügen
+		$aDays[] = date('Y-m-d',strtotime($sCurrentDate));
+	}
+	return $aDays;
+}
+
+function GetYears($sStartDate, $sEndDate){
+
+	$sStartDate = date('Y-m-d', strtotime($sStartDate));
+	$sEndDate = date('Y-m-d', strtotime($sEndDate));
+	// dem $aDays Array das erste Datum hinzufügen
+	$aDays[] = date('Y-m-d',strtotime($sStartDate));
+	// $sCurrentDate auf das Startdatum setzen
+	$sCurrentDate = $sStartDate;
+	// Schleife die solange läuft bis das $sCurrentDate nicht mehr kleiner als das Enddatum ist
+	while($sCurrentDate < $sEndDate){
+		// auf $sCurrentDate +1 Monat draufrechnen
+		$sCurrentDate = date('Y-m-d', strtotime("+1 year", strtotime($sCurrentDate)));
+		// das $sCurrentDate dem $aDays Array hinzufügen
+		$aDays[] = date('Y-m-d',strtotime($sCurrentDate));
+	}
+	return $aDays;
+}
+
 
 function break_array($array, $page_size) {
 
