@@ -22,7 +22,7 @@ $monate = array(1=>"Januar",
     11=>"November",
     12=>"Dezember");
 
-
+// TODO: Test123
 
 
 function printSubTradegroupsForSelect($parentId, $depth)
@@ -147,7 +147,7 @@ if ($_REQUEST["stat_tradegroup"]) {
 
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading"><div align="center">Pro Tag</div></div>
             <div class="panel-body">
@@ -181,17 +181,21 @@ if ($_REQUEST["stat_tradegroup"]) {
                                 echo '</tr>';
                                 $nettotal += $item->getTotalNetSum();
                                 $grosstotal += $item->getTotalGrossSum();
+                                $nettotalge += $item->getTotalNetSum();
+                                $grosstotalge += $item->getTotalGrossSum();
 
                             }
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+
                         }
                     }
+                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Gesamt Summe: </td><td>' .printPrice($nettotalge,2). '</td><td>' .printPrice($grosstotalge,2). '</td></tr>';
                     ?>
                 </table>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading"><div align="center">Monat</div></div>
             <div class="panel-body">
@@ -203,15 +207,18 @@ if ($_REQUEST["stat_tradegroup"]) {
                         <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                         <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                         <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+
                     </tr>
                     </thead>
+
                     <?php
                     $months = GetMonths(date('Y-m-d', $start), date('Y-m-d', $end));
                     foreach ($months as $month) {
                         $retval = Statistics::ColinvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
-//                        prettyPrint($month);
                         if (count($retval) > 0) {
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // Anzahl: ' . count($retval) . '</td></tr>';
+                            $nettotal = 0;
+                            $grosstotal = 0;
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . '//' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
@@ -222,16 +229,23 @@ if ($_REQUEST["stat_tradegroup"]) {
                                 echo '</tr>';
                                 $nettotal += $item->getTotalNetSum();
                                 $grosstotal += $item->getTotalGrossSum();
+                                $nettotalge1 += $item->getTotalNetSum();
+                                $grosstotalge1 += $item->getTotalGrossSum();
+
                             }
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+
                         }
                     }
+                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Gesamt Summe: </td><td>' .printPrice($nettotalge1,2). '</td><td>' .printPrice($grosstotalge1,2). '</td></tr>';
                     ?>
                 </table>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+</div>
+    <div class="row">
+    <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading"><div align="center">Jahr</div></div>
             <div class="panel-body">
@@ -243,14 +257,18 @@ if ($_REQUEST["stat_tradegroup"]) {
                         <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                         <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                         <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+
                     </tr>
                     </thead>
+
                     <?php
                     $years = GetYears(date('Y-m-d', $start), date('Y-m-d', $end));
                     foreach ($years as $year) {
                         $retval = Statistics::ColinvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                         if (count($retval) > 0) {
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td></tr>';
+                            $nettotal = 0;
+                            $grosstotal = 0;
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
@@ -259,12 +277,25 @@ if ($_REQUEST["stat_tradegroup"]) {
                                 echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                 echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
                                 echo '</tr>';
+
                                 $nettotal += $item->getTotalNetSum();
                                 $grosstotal += $item->getTotalGrossSum();
+                                $nettotalge2 += $item->getTotalNetSum();
+                                $grosstotalge2 += $item->getTotalGrossSum();
+
+
+
                             }
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+
                         }
+
                     }
+                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Gesamt Summe: </td><td>' .printPrice($nettotalge2,2). '</td><td>' .printPrice($grosstotalge2,2). '</td></tr>';
+
+
+
+
                     ?>
                 </table>
             </div>
@@ -298,6 +329,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                 }
             }
         });
+
         var table_colinv_month = $('#table_colinv_month').DataTable({
             "dom": 'rti',
             "ordering": false,
@@ -321,6 +353,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                 }
             }
         });
+
         var table_colinv_year = $('#table_colinv_year').DataTable({
             "dom": 'rti',
             "ordering": false,

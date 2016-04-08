@@ -180,4 +180,46 @@ class Statistics {
     {
 
     }
+    public static function Maschstat(){
+
+        global $DB;
+        date_default_timezone_set('Europe/Berlin');
+        $retval = [];
+
+        $sql = "SELECT
+            machines.id,
+            machines.`name`,
+            SUM(planning_jobs.tplanned) as zeitsoll,
+            SUM(planning_jobs.tactual) as zeitist,
+            SUM(collectiveinvoice_orderposition.price) as auftragswert,
+            count(planning_jobs.id) as anzahlauftraege
+            FROM
+            planning_jobs
+            INNER JOIN collectiveinvoice_orderposition ON planning_jobs.opos = collectiveinvoice_orderposition.id
+            INNER JOIN machines ON planning_jobs.artmach = machines.id
+            WHERE
+            planning_jobs.type = 2 AND
+            planning_jobs.state = 1
+            GROUP BY machines.id ";
+
+
+            if ($DB->no_result($sql)) {
+                foreach($DB->select($sql) as $r){
+                    $retval[] = $r;
+                }
+            }
+            return $retval;
+
+
+
+
+
+
+}
+
+
+
+
+
+
 }
