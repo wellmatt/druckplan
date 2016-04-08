@@ -1,4 +1,11 @@
 <?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
 
 class Model {
 
@@ -113,6 +120,7 @@ class Model {
      * $filterarray: es kann ein Array angegeben werden um die Rückgabe zu sortieren Array('orderby'=>Spalte,'oderbydir'=>'desc')
      *
      * @param $filterarray
+     * @param int $single
      * @return array
      */
     public static function fetch($filterarray, $single = 0)

@@ -47,102 +47,118 @@ if ($_REQUEST["exec"] == "edit"){
     </div>
 </div>
 
-<table width="100%">
-    <tr>
-        <td width="150" class="content_header"><span style="font-size: 13px"><?=$header_title?></span></td>
-        <td width="250" class="content_header" align="right">
-            <?=$savemsg?>
-        </td>
-    </tr>
-</table>
-<br />
+<?php if (isset($savemsg)) { ?>
+<div class="alert">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	<strong>Hinweis!</strong> <?=$savemsg?>
+</div>
+<?php } ?>
 
-<form id="storagearea_form" name="storagearea_form" method="post">
-    <input type="hidden" id="id" name="id" value="<?=$storagearea->getId()?>" />
-    <input type="hidden" id="exec" name="exec" value="edit" />
-    <input type="hidden" id="subexec" name="subexec" value="save" />
-    <div class="box1">
-        <table border="0" cellpadding="3" cellspacing="1" width="100%">
-            <colgroup>
-                <col width="130">
-                <col>
-            </colgroup>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Lagerplatzname')?>: </td>
-                <td class="content_row_clear">
-                    <input type="text" id="st_name" name="st_name" style="width:200px" value="<?=$storagearea->getName()?>"
-                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                </td>
-            </tr>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Beschreibung')?>:</td>
-                <td class="content_row_clear">
-			<textarea rows="8" cols="80" type="text" id="st_description" name="st_description"
-                      class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$storagearea->getDescription()?></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Ort')?>: </td>
-                <td class="content_row_clear">
-                    <input type="text" id="st_location" name="st_location" style="width:200px" value="<?=$storagearea->getLocation()?>"
-                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                </td>
-            </tr>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Gang')?>: </td>
-                <td class="content_row_clear">
-                    <input type="text" id="st_corridor" name="st_corridor" style="width:200px" value="<?=$storagearea->getCorridor()?>"
-                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                </td>
-            </tr>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Regal')?>: </td>
-                <td class="content_row_clear">
-                    <input type="text" id="st_shelf" name="st_shelf" style="width:200px" value="<?=$storagearea->getShelf()?>"
-                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                </td>
-            </tr>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Reihe')?>: </td>
-                <td class="content_row_clear">
-                    <input type="text" id="st_line" name="st_line" style="width:200px" value="<?=$storagearea->getLine()?>"
-                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                </td>
-            </tr>
-            <tr>
-                <td class="content_header"><?=$_LANG->get('Ebene')?>: </td>
-                <td class="content_row_clear">
-                    <input type="text" id="st_layer" name="st_layer" style="width:200px" value="<?=$storagearea->getLayer()?>"
-                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                </td>
-            </tr>
-        </table>
+<div class="row">
+    <div class="col-md-12">
+    	<div class="panel panel-default">
+    		  <div class="panel-heading">
+    				<h3 class="panel-title"><?=$header_title?></h3>
+    		  </div>
+    		  <div class="panel-body">
+    				<form action="index.php?page=<?=$_REQUEST['page']?>" id="storagearea_form" name="storagearea_form" method="post" role="form" class="form-horizontal">
+                        <input type="hidden" id="id" name="id" value="<?=$storagearea->getId()?>" />
+                        <input type="hidden" id="exec" name="exec" value="edit" />
+                        <input type="hidden" id="subexec" name="subexec" value="save" />
+
+                        <table border="0" cellpadding="3" cellspacing="1" width="100%">
+                            <colgroup>
+                                <col width="130">
+                                <col>
+                            </colgroup>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Lagerplatzname')?>: </td>
+                                <td class="content_row_clear">
+                                    <input type="text" id="st_name" name="st_name" style="width:200px" value="<?=$storagearea->getName()?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Beschreibung')?>:</td>
+                                <td class="content_row_clear">
+			                    <textarea rows="8" cols="80" type="text" id="st_description" name="st_description"
+                                    class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$storagearea->getDescription()?></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Ort')?>: </td>
+                                <td class="content_row_clear">
+                                    <input type="text" id="st_location" name="st_location" style="width:200px" value="<?=$storagearea->getLocation()?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Gang')?>: </td>
+                                <td class="content_row_clear">
+                                    <input type="text" id="st_corridor" name="st_corridor" style="width:200px" value="<?=$storagearea->getCorridor()?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Regal')?>: </td>
+                                <td class="content_row_clear">
+                                    <input type="text" id="st_shelf" name="st_shelf" style="width:200px" value="<?=$storagearea->getShelf()?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Reihe')?>: </td>
+                                <td class="content_row_clear">
+                                    <input type="text" id="st_line" name="st_line" style="width:200px" value="<?=$storagearea->getLine()?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Ebene')?>: </td>
+                                <td class="content_row_clear">
+                                    <input type="text" id="st_layer" name="st_layer" style="width:200px" value="<?=$storagearea->getLayer()?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <?php if ($storagearea->getId()>0){ ?>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Belegung')?>: </td>
+                                <td class="content_row_clear"><?php echo StoragePosition::getAllocationForArea($storagearea);?>%</td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+    				</form>
+    		  </div>
+    	</div>
     </div>
-    <?php if ($storagearea->getId()>0){ ?>
-    <div class="box2">
-        <div class="box1">
-            <b>neue Position:</b>
-            <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.article.frame.php?stid=<?php echo $storagearea->getId();?>');"/>
+</div>
+<?php if ($storagearea->getId()>0){ ?>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+        	  <div class="panel-heading">
+        			<h3 class="panel-title">Lagerpositionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.article.frame.php?stid=<?php echo $storagearea->getId();?>');"/></h3>
+        	  </div>
+        	  <div class="panel-body" id="storagepositionbox">
+        	  </div>
         </div>
-        <table id="order_pos" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Kunde</th>
-                <th>Lagermenge</th>
-                <th>Mindestmenge</th>
-                <th>Verantwortlicher</th>
-                <th>Beschreibung</th>
-                <th>Bemerkung</th>
-                <th>Versandart</th>
-                <th>Verpackungsart</th>
-                <th>Belegung</th>
-            </tr>
-            </thead>
-        </table>
     </div>
-    <?php } ?>
-</form>
+</div>
+<?php } ?>
+
+
+<script>
+    $(function(){
+        load_content();
+    });
+    function unblock(){
+        $('#storagepositionbox').unblock();
+    }
+    function load_content(){
+        $('#storagepositionbox').block({ message: '<h3><img src="images/page/busy.gif"/> einen Augenblick...</h3>' });
+        $('#storagepositionbox').load( "libs/modules/storage/storage.edit.positions.php?area="+$('#id').val(), null, unblock );
+    }
+</script>
 
 <script language="JavaScript">
     $(document).ready(function () {

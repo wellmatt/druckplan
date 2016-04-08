@@ -453,6 +453,15 @@ if($_REQUEST["subexec"] == "save")
 							<input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</td>
 					</tr>
+					<tr>
+						<td class="content_row_header"><?=$_LANG->get('Lief. Bestellung');?></td>
+						<td class="content_row_clear">
+							<input name="number_format_work" style="width: 300px" class="text" value="<?=$client->getNumberFormatSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td class="content_row_clear">
+							<input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>

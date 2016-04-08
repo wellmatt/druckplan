@@ -6,11 +6,11 @@
  *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
  *
  */
-require_once 'libs/modules/storage/storage.area.class.php';
+require_once 'libs/modules/suporder/suporder.class.php';
 
 if ($_REQUEST["exec"] == "delete"){
-    $del_area = new StorageArea($_REQUEST["id"]);
-    $del_area->delete();
+    $del_order = new SupOrder($_REQUEST["id"]);
+    $del_order->delete();
 }
 ?>
 <!-- DataTables -->
@@ -27,32 +27,38 @@ if ($_REQUEST["exec"] == "delete"){
     <tr>
         <td width="150" class="content_header"><img
                 src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <span
-                style="font-size: 13px"><?=$_LANG->get('Lagerpl&auml;tze')?></span></td>
+                style="font-size: 13px"><?=$_LANG->get('Lief. Bestellungen')?></span></td>
         <td width="250" class="content_header" align="right">
             <?=$savemsg?>
         </td>
         <td class="content_header" align="right"><a
-                href="index.php?page=libs/modules/storage/storage.edit.php&exec=new"
+                href="index.php?page=libs/modules/suporder/suporder.edit.php&exec=new"
                 class="icon-link"><img src="images/icons/details_open.svg"> <span
-                    style="font-size: 13px"><?=$_LANG->get('Lagerplatz erstellen')?></span></a>
+                    style="font-size: 13px"><?=$_LANG->get('Bestellung erstellen')?></span></a>
         </td>
     </tr>
 </table>
 <br />
 <div class="box1">
-    <table id="storagetable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+    <table id="supordertable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
         <thead>
         <tr>
             <th><?=$_LANG->get('ID')?></th>
-            <th><?=$_LANG->get('Name')?></th>
-            <th><?=$_LANG->get('Belegung')?></th>
+            <th><?=$_LANG->get('Nummer')?></th>
+            <th><?=$_LANG->get('Titel')?></th>
+            <th><?=$_LANG->get('Lieferant')?></th>
+            <th><?=$_LANG->get('Status')?></th>
+            <th><?=$_LANG->get('Datum')?></th>
         </tr>
         </thead>
         <tfoot>
         <tr>
             <th><?=$_LANG->get('ID')?></th>
-            <th><?=$_LANG->get('Name')?></th>
-            <th><?=$_LANG->get('Belegung')?></th>
+            <th><?=$_LANG->get('Nummer')?></th>
+            <th><?=$_LANG->get('Titel')?></th>
+            <th><?=$_LANG->get('Lieferant')?></th>
+            <th><?=$_LANG->get('Status')?></th>
+            <th><?=$_LANG->get('Datum')?></th>
         </tr>
         </tfoot>
     </table>
@@ -60,10 +66,10 @@ if ($_REQUEST["exec"] == "delete"){
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var storagetable = $('#storagetable').DataTable( {
+        var supordertable = $('#supordertable').DataTable( {
             "processing": true,
             "bServerSide": true,
-            "sAjaxSource": "libs/modules/storage/storage.dt.ajax.php",
+            "sAjaxSource": "libs/modules/suporder/suporder.dt.ajax.php",
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
@@ -84,6 +90,9 @@ if ($_REQUEST["exec"] == "delete"){
             },
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
             "columns": [
+                null,
+                null,
+                null,
                 null,
                 null,
                 null
@@ -114,10 +123,10 @@ if ($_REQUEST["exec"] == "delete"){
             }
         } );
 
-        $("#storagetable tbody td").live('click',function(){
-            var aPos = $('#storagetable').dataTable().fnGetPosition(this);
-            var aData = $('#storagetable').dataTable().fnGetData(aPos[0]);
-            document.location='index.php?page=libs/modules/storage/storage.edit.php&exec=edit&id='+aData[0];
+        $("#supordertable tbody td").live('click',function(){
+            var aPos = $('#supordertable').dataTable().fnGetPosition(this);
+            var aData = $('#supordertable').dataTable().fnGetData(aPos[0]);
+            document.location='index.php?page=libs/modules/suporder/suporder.edit.php&exec=edit&id='+aData[0];
         });
     } );
 </script>

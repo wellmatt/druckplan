@@ -9,7 +9,7 @@
 
 require_once '../../../config.php';
 
-$aColumns = array( 'id', 'name', 'alloc' );
+$aColumns = array( 'id', 'number', 'title', 'suppliername', 'status', 'crtdate' );
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = "id";
@@ -133,13 +133,15 @@ for ( $i=0 ; $i<count($aColumns) ; $i++ )
  * Get data to display
  */
 $sQuery = "SELECT
-            storage_areas.id,
-            storage_areas.`name`,
-            COALESCE(SUM(storage_positions.allocation),0) as alloc
+            suporders.id,
+            suporders.number,
+            suporders.title,
+            suporders.`status`,
+            suporders.crtdate,
+            businesscontact.name1 as suppliername
             FROM
-            storage_areas
-            LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
-            GROUP BY storage_areas.id
+            suporders
+            INNER JOIN businesscontact ON suporders.supplier = businesscontact.id
            $sWhere
            $sOrder
            $sLimit
@@ -150,8 +152,8 @@ $sQuery = "SELECT
 $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 
 /* Data set length after filtering */
-$sQuery = "SELECT COUNT(storage_areas.id)
-           FROM storage_areas
+$sQuery = "SELECT COUNT(suporders.id)
+           FROM suporders
            $sWhere";
 //     var_dump($sQuery);
 $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -160,8 +162,8 @@ $iFilteredTotal = $aResultFilterTotal[0];
 
 
 /* Total data set length */
-$sQuery = "SELECT COUNT(storage_areas.id)
-           FROM storage_areas";
+$sQuery = "SELECT COUNT(suporders.id)
+           FROM suporders";
 //     var_dump($sQuery);
 $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 $aResultTotal = mysql_fetch_array($rResultTotal);
@@ -187,9 +189,32 @@ while ( $aRow = mysql_fetch_array( $rResult ) )
         {
             /* do not print the id */
             $row[] = $aRow[ $aColumns[$i] ];
-        } elseif ( $aColumns[$i] == 'alloc')
+        } elseif ( $aColumns[$i] == 'crtdate')
         {
-            $row[] = $aRow[ $aColumns[$i] ].'%';
+            $row[] = date('d.m.Y H:i',$aRow[ $aColumns[$i] ]);
+        } elseif ( $aColumns[$i] == 'status')
+        {
+            switch ($aRow[$aColumns[$i]]){
+                case 1:
+                    $status = 'Offen';
+                    break;
+                case 2:
+                    $status = 'Bestellt';
+                    break;
+                case 3:
+                    $status = 'Ware Eingegangen';
+                    break;
+                case 4:
+                    $status = 'Bezahlt';
+                    break;
+                case 5:
+                    $status = 'Erledigt';
+                    break;
+                default:
+                    $status = 'Unbekannt';
+                    break;
+            }
+            $row[] = $status;
         }
         else
         {

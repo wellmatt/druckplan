@@ -21,6 +21,7 @@ class Client {
     const NUMBER_WORK = 8; // Drucktasche
     const NUMBER_PAPER_ORDER = 9; // Papier Bestellung
     const NUMBER_COLINV = 10;
+    const NUMBER_SUPORDER = 11;
      
     private $id;
     private $name;
@@ -78,6 +79,8 @@ class Client {
     private $number_counter_warning;
     private $number_format_work;
     private $number_counter_work;
+    private $number_format_suporder;
+    private $number_counter_suporder;
      
     function __construct($id = 0) {
         global $DB;
@@ -160,6 +163,8 @@ class Client {
                 $this->number_counter_warning = $res[0]["number_counter_warning"];
                 $this->number_format_work = $res[0]["number_format_work"];
                 $this->number_counter_work = $res[0]["number_counter_work"];
+                $this->number_format_suporder = $res[0]["number_format_suporder"];
+                $this->number_counter_suporder = $res[0]["number_counter_suporder"];
 
         		Cachehandler::toCache("obj_client_".$id, $this);
             }
@@ -242,7 +247,9 @@ class Client {
             number_format_warning  = '{$this->number_format_warning}',
             number_counter_warning  = '{$this->number_counter_warning}',
             number_format_work  = '{$this->number_format_work}',
-            number_counter_work  = '{$this->number_counter_work}'
+            number_counter_work  = '{$this->number_counter_work}',
+            number_format_suporder  = '{$this->number_format_suporder}',
+            number_counter_suporder  = '{$this->number_counter_suporder}'
 
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -262,7 +269,8 @@ class Client {
             number_format_offerconfirm, number_counter_offerconfirm, number_format_delivery,
             number_counter_delivery, number_format_paper_order, number_counter_paper_order,
             number_format_invoice, number_counter_invoice, number_format_revert, number_counter_revert,
-            number_format_warning, number_counter_warning, number_format_work, number_counter_work)
+            number_format_warning, number_counter_warning, number_format_work, number_counter_work,
+            number_format_suporder, number_counter_suporder)
             VALUES
             ('{$this->name}', '{$this->street1}', '{$this->street2}', '{$this->street3}',
             '{$this->postcode}', '{$this->city}', '{$this->phone}', '{$this->fax}', '{$this->email}',
@@ -278,7 +286,7 @@ class Client {
             '{$this->number_counter_delivery}','{$this->number_format_paper_order}','{$this->number_counter_paper_order}',
             '{$this->number_format_invoice}','{$this->number_counter_invoice}','{$this->number_format_revert}',
             '{$this->number_counter_revert}','{$this->number_format_warning}','{$this->number_counter_warning}',
-            '{$this->number_format_work}','{$this->number_counter_work}')";
+            '{$this->number_format_work}','{$this->number_counter_work}', '{$this->number_format_suporder}','{$this->number_counter_suporder}')";
             $res = $DB->no_result($sql);
              
             if ($res)
@@ -352,6 +360,10 @@ class Client {
             case self::NUMBER_WORK:
                 $ffield = 'number_format_work';
                 $nfield = 'number_counter_work';
+                break;
+            case self::NUMBER_SUPORDER:
+                $ffield = 'number_format_suporder';
+                $nfield = 'number_counter_suporder';
                 break;
         }
         
@@ -1140,5 +1152,39 @@ class Client {
     {
         $this->number_counter_work = $number_counter_work;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterSuporder()
+    {
+        return $this->number_counter_suporder;
+    }
+
+    /**
+     * @param mixed $number_counter_suporder
+     */
+    public function setNumberCounterSuporder($number_counter_suporder)
+    {
+        $this->number_counter_suporder = $number_counter_suporder;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberFormatSuporder()
+    {
+        return $this->number_format_suporder;
+    }
+
+    /**
+     * @param mixed $number_format_suporder
+     */
+    public function setNumberFormatSuporder($number_format_suporder)
+    {
+        $this->number_format_suporder = $number_format_suporder;
+    }
+
+
 }
 ?>

@@ -19,6 +19,19 @@ class StorageArea extends Model {
     public $line = '';
     public $layer = '';
 
+
+    /**
+     * Override default delete to also delete all associated StoragePositions
+     */
+    public function delete()
+    {
+        $positions = StoragePosition::getAllForArea($this);
+        foreach ($positions as $position) {
+            $position->delete();
+        }
+        parent::delete();
+    }
+
     /**
      * @return string
      */

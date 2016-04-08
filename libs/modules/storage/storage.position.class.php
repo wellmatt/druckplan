@@ -33,6 +33,38 @@ class StoragePosition extends Model
     }
 
     /**
+     * @param StorageArea $storagearea
+     * @return StoragePosition[]
+     */
+    public static function getAllForArea(StorageArea $storagearea)
+    {
+        $retval = self::fetch([
+            [
+                'column'=>'area',
+                'value'=>$storagearea->getId()
+            ]
+        ]);
+        return $retval;
+    }
+
+    /**
+     * Holt die aktuelle Belegung des Lagerplatzes aus der DB
+     * @param StorageArea $storageArea
+     * @return int
+     */
+    public static function getAllocationForArea(StorageArea $storageArea)
+    {
+        global $DB;
+        $retval = 0;
+        $sql = "SELECT SUM(allocation) as allocation FROM storage_positions WHERE area = {$storageArea->getId()}";
+        if($DB->num_rows($sql)){
+            $r = $DB->select($sql);
+            $retval = $r[0]['allocation'];
+        }
+        return $retval;
+    }
+
+    /**
      * @return StorageArea
      */
     public function getArea()

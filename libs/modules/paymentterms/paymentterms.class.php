@@ -23,7 +23,7 @@ class PaymentTerms{
 	private $shoprel = 0;
 	
 	/**
-	 * Konstruktor für die Zahlungsbedingung-Klasse
+	 * Konstruktor fï¿½r die Zahlungsbedingung-Klasse
 	 * 
 	 * @param int $id
 	 */
@@ -76,10 +76,10 @@ class PaymentTerms{
 
 	
 	/**
-	 * Funktion für die Abfrage aller Zahlungsbedingungen/Zahlungsarten
+	 * Funktion fï¿½r die Abfrage aller Zahlungsbedingungen/Zahlungsarten
 	 * ohne die ActiveVoodoo Klasse
 	 * 
-	 * @return Liste von PaimentTerm-Objekten
+	 * @return PaymentTerms[]
 	 */
 	public static function getAllPaymentTerms(){
 		global $DB;
@@ -95,7 +95,7 @@ class PaymentTerms{
 	}
 	
 	/**
-	 * Speicherfunktion für Zahlungsbedingungen
+	 * Speicherfunktion fï¿½r Zahlungsbedingungen
 	 * 
 	 * @return boolean
 	 */
@@ -132,7 +132,7 @@ class PaymentTerms{
 	}
 	
 	/**
-	 * Löschfunktion für Zahlungsbedingungen
+	 * Lï¿½schfunktion fï¿½r Zahlungsbedingungen
 	 * 
 	 * @return boolean
 	 */
@@ -151,7 +151,7 @@ class PaymentTerms{
 	}
 	
 	/**
-	 * Funktion liefert alle Zahlungsmethoden, die für den Shop freigegeben sind
+	 * Funktion liefert alle Zahlungsmethoden, die fï¿½r den Shop freigegeben sind
 	 * 
 	 * @return Array von PaymentTerms
 	 */

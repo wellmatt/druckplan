@@ -170,7 +170,7 @@ class User {
      * Gibt array aller Benutzer aus
      * @param String $order
      * @param int $client
-     * @return Array:User
+     * @return User[]
      */
     static function getAllUser($order = self::ORDER_NAME, $client = 0)
     {
