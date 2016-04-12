@@ -46,7 +46,8 @@ class Statistics {
                 LEFT JOIN `user` ON collectiveinvoice.crtuser = `user`.id
                 LEFT JOIN article ON collectiveinvoice_orderposition.object_id = article.id
                 LEFT JOIN tradegroup ON article.tradegroup = tradegroup.id
-                WHERE collectiveinvoice_orderposition.type = 2
+                WHERE collectiveinvoice_orderposition.type IN (2,1)
+                AND collectiveinvoice_orderposition.`status` = 1
                 AND collectiveinvoice.`status` > 0
                 AND collectiveinvoice.crtdate >= {$start}
                 AND collectiveinvoice.crtdate <= {$end}
@@ -98,7 +99,8 @@ class Statistics {
                 LEFT JOIN `user` ON collectiveinvoice.crtuser = `user`.id
                 LEFT JOIN article ON collectiveinvoice_orderposition.object_id = article.id
                 LEFT JOIN tradegroup ON article.tradegroup = tradegroup.id
-                WHERE collectiveinvoice_orderposition.type = 2
+                WHERE collectiveinvoice_orderposition.type IN (2,1)
+                AND collectiveinvoice_orderposition.`status` = 1
                 AND collectiveinvoice.`status` > 0
                 AND collectiveinvoice.crtdate >= {$start}
                 AND collectiveinvoice.crtdate <= {$end}
@@ -150,7 +152,8 @@ class Statistics {
                 LEFT JOIN `user` ON collectiveinvoice.crtuser = `user`.id
                 LEFT JOIN article ON collectiveinvoice_orderposition.object_id = article.id
                 LEFT JOIN tradegroup ON article.tradegroup = tradegroup.id
-                WHERE collectiveinvoice_orderposition.type = 2
+                WHERE collectiveinvoice_orderposition.type IN (2,1)
+                AND collectiveinvoice_orderposition.`status` = 1
                 AND collectiveinvoice.`status` > 0
                 AND collectiveinvoice.crtdate >= {$start}
                 AND collectiveinvoice.crtdate <= {$end}
@@ -182,45 +185,48 @@ class Statistics {
     }
 
     /**
+     * @param int $start
+     * @param int $end
+     * @param int $mgroup
      * @return array
      */
-    public static function Maschstat(){
-
+    public static function Maschstat($start, $end, $mgroup)
+    {
         global $DB;
         date_default_timezone_set('Europe/Berlin');
         $retval = [];
 
-
+        $where = "";
+        if ($mgroup != 0){
+            $where .= " AND machines.group = {$mgroup} ";
+        }
 
         $sql = "SELECT
-            machines.id,
-            machines.`name`,
-            SUM(planning_jobs.tplanned) as zeitsoll,
-            SUM(planning_jobs.tactual) as zeitist,
-            SUM(collectiveinvoice_orderposition.price) as auftragswert,
-            count(planning_jobs.id) as anzahlauftraege
-            FROM
-            planning_jobs
-            INNER JOIN collectiveinvoice_orderposition ON planning_jobs.opos = collectiveinvoice_orderposition.id
-            INNER JOIN machines ON planning_jobs.artmach = machines.id
-            WHERE
-            planning_jobs.type = 2 AND
-            planning_jobs.state = 1
-            GROUP BY machines.id ";
+                machines.id,
+                machines.`name`,
+                SUM(planning_jobs.tplanned) as zeitsoll,
+                SUM(planning_jobs.tactual) as zeitist,
+                SUM(collectiveinvoice_orderposition.price) as auftragswert,
+                count(planning_jobs.id) as anzahlauftraege
+                FROM
+                planning_jobs
+                INNER JOIN collectiveinvoice_orderposition ON planning_jobs.opos = collectiveinvoice_orderposition.id
+                INNER JOIN machines ON planning_jobs.artmach = machines.id
+                WHERE
+                planning_jobs.type = 2 AND
+                planning_jobs.state = 1 AND
+                planning_jobs.start <= {$end} AND
+                planning_jobs.start >= {$start}
+                {$where}
+                GROUP BY machines.id ";
+//        prettyPrint($sql);
 
-
-            if ($DB->no_result($sql)) {
-                foreach($DB->select($sql) as $r){
-                    $retval[] = $r;
-                }
+        if ($DB->no_result($sql)) {
+            foreach($DB->select($sql) as $r){
+                $retval[] = $r;
             }
-            return $retval;
-
-
-
-
-
-
+        }
+        return $retval;
 }
 
 

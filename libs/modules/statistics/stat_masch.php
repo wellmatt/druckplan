@@ -3,14 +3,33 @@
  *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
  *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
  *  * Proprietary and confidential
- *  * Written by Christian Schroeer <cschroeer@ipactor.de>, 2016
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
  *
  */
-
 require_once 'libs/modules/statistics/statistics.class.php';
 require_once 'libs/basic/globalFunctions.php';
+require_once 'libs/modules/machines/machinegroup.class.php';
 
+$stat_mgroup = 0;
+
+$start = mktime(0, 0, 0, date('m', time()), 1, date('Y', time()));
+$end = mktime(0, 0, 0, date('m', time()), cal_days_in_month(CAL_GREGORIAN, date('m', time()), date('Y', time())), date('Y', time()));
+
+
+if ($_REQUEST["stat_from"]) {
+    $start = strtotime($_REQUEST["stat_from"]);
+}
+if ($_REQUEST["stat_to"]) {
+    $end = strtotime($_REQUEST["stat_to"]);
+}
+if ($_REQUEST["stat_mgroup"]) {
+    $stat_mgroup = $_REQUEST["stat_mgroup"];
+}
+
+$machstats = Statistics::Maschstat($start, $end, $stat_mgroup);
+$mgroups = MachineGroup::getAllMachineGroups();
 ?>
+
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <!-- DataTables -->
@@ -24,90 +43,91 @@ require_once 'libs/basic/globalFunctions.php';
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv" id="stat_colinv"
-      enctype="multipart/form-data">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_mach" id="stat_mach" enctype="multipart/form-data">
     <div class="row">
-        <div class="col-md-1">Von:</div>
-        <div class="col-md-3">
-            <input type="text" style="width:220px" id="stat_from" name="stat_from"
-                   class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-                   value="<? echo date('d.m.Y', $start); ?>"/>
-        </div>
-        <div class="col-md-1">Bis:</div>
-        <div class="col-md-3">
-            <input type="text" style="width:220px" id="stat_to" name="stat_to"
-                   class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-                   value="<? echo date('d.m.Y', $end); ?>"/>
-        </div>
-        <div class="col-md-1">Status:</div>
-        <div class="col-md-3">
-            <select name="stat_status" style="width:220px">
-                <option value="0">- Alle -</option>
-                <option value="1">Angelegt</option>
-                <option value="2">Gesendet u. Bestellt</option>
-                <option value="3">angenommen</option>
-                <option value="4">In Produktion</option>
-                <option value="5">Erledigt</option>
-            </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1">Artikel:</div>
-        <div class="col-md-3">
-            <input type="text" name="search_article" id="search_article" style="width:220px">
-            <input type="hidden" name="stat_article" id="stat_article">
-        </div>
-        <div class="col-md-1">
-            <button type="submit">Refresh</button>
-        </div>
-    </div>
-    <br>&nbsp;</br>
-</form>
-
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><div align="center"></div></div>
-            <div class="panel-body">
-                <table id="table_masch" class="stripe hover row-border order-column" style="width: auto" width="100%">
-                    <thead>
-                    <tr>
-                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
-                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
-                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
-
-                    </tr>
-                    </thead>
-
-                    <?php
-                    $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
-                    foreach ($days as $day) {
-                        $retval = Statistics::Maschstat(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
-                        if (count($retval) > 0) {
-
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
-                            foreach ($retval as $item) {
-                                echo '<tr>';
-                                echo "<td>{$item->getId()}</td>";
-                                echo "<td>{$item->getNumber()}</td>";
-                                echo "<td>{$item->getTitle()}</td>";
-                                echo '</tr>';
-                            }
-
-                        }
-                    }
-
-                    ?>
-                </table>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Maschinenstatistik</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel panel-default">
+                          <div class="panel-heading">
+                                <h3 class="panel-title">Filter
+                                    <span class="pull-right">
+                                        <button class="btn btn-xs btn-success" onclick="$('#stat_mach').submit();">
+                                            Refresh
+                                        </button>
+                                    </span>
+                                </h3>
+                          </div>
+                          <div class="panel-body">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-1 control-label">Von</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" name="stat_from" id="stat_from" value="<?php echo date('d.m.Y',$start);?>" placeholder="">
+                                        </div>
+                                        <label for="" class="col-sm-1 control-label">Bis</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" name="stat_to" id="stat_to" value="<?php echo date('d.m.Y',$end);?>" placeholder="">
+                                        </div>
+                                        <label for="" class="col-sm-1 control-label">Gruppe</label>
+                                        <div class="col-sm-3">
+                                            <select name="stat_mgroup" id="stat_mgroup" class="form-control">
+                                                <option value="0">- Alle -</option>
+                                                <?php
+                                                foreach ($mgroups as $item) {
+                                                    if ($item->getId() == $stat_mgroup){
+                                                        echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+                                                    } else {
+                                                        echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                          </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="machtable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th>Name</th>
+                                    <th>Soll</th>
+                                    <th>Ist</th>
+                                    <th>Wert</th>
+                                    <th>Anz. Auftr.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($machstats as $machstat) {?>
+                                <tr>
+                                    <td><?php echo $machstat['id'];?></td>
+                                    <td><?php echo $machstat['name'];?></td>
+                                    <td><?php echo printPrice($machstat['zeitsoll'],2);?></td>
+                                    <td><?php echo printPrice($machstat['zeitist'],2);?></td>
+                                    <td><?php echo printPrice($machstat['auftragswert'],2);?></td>
+                                    <td><?php echo $machstat['anzahlauftraege'];?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <script>
     $(function () {
-        var table_colinv_day = $('#table_masch').DataTable({
+        var machtable = $('#machtable').DataTable({
             "dom": 'rti',
             "ordering": false,
             "order": [],
@@ -130,7 +150,12 @@ require_once 'libs/basic/globalFunctions.php';
                 }
             }
         });
+    });
+</script>
 
+
+<script>
+    $(function () {
         $('#stat_from').datetimepicker({
             lang: 'de',
             i18n: {
@@ -149,6 +174,11 @@ require_once 'libs/basic/globalFunctions.php';
             timepicker: false,
             format: 'd.m.Y'
         });
+    });
+</script>
+
+<script>
+    $(function () {
         $('#stat_to').datetimepicker({
             lang: 'de',
             i18n: {

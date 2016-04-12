@@ -41,7 +41,11 @@ class MachineGroup
             }
         }
     }
-    
+
+    /**
+     * @param string $order
+     * @return MachineGroup[]
+     */
     static function getAllMachineGroups($order = self::ORDER_POSITION)
     {
         $retval = Array();

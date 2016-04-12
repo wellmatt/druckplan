@@ -18,6 +18,11 @@ class StorageArea extends Model {
     public $shelf = '';
     public $line = '';
     public $layer = '';
+    public $prio = 1;
+
+    const PRIO_LOW = 0;
+    const PRIO_MED = 1;
+    const PRIO_HIG = 2;
 
 
     /**
@@ -30,6 +35,92 @@ class StorageArea extends Model {
             $position->delete();
         }
         parent::delete();
+    }
+
+    public static function getAll(){
+        $retval = self::fetch();
+        return $retval;
+    }
+
+    /**
+     * Liefert nur Lagerplaetze in dem sich angegebener Artikel befindet
+     * @param Article $article
+     * @return array
+     */
+    public static function getStoragesPrioArticle(Article $article){
+        global $DB;
+        $exept = [];
+        $prio = [];
+        $other = [];
+
+        $sql = "SELECT DISTINCT
+                storage_areas.id,
+                COALESCE(SUM(storage_positions.allocation),0) as alloc,
+                storage_positions.id as posid
+                FROM
+                storage_areas
+                LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
+                WHERE
+                storage_positions.article = {$article->getId()}
+                HAVING SUM(storage_positions.allocation) < 100";
+
+        if($DB->no_result($sql)){
+            $result = $DB->select($sql);
+            foreach($result as $r){
+                $exept[] = $r["id"];
+                $prio[] = ['id'=>$r['id'],'alloc'=>$r['alloc'],'posid'=>$r['posid']];
+            }
+        }
+
+        if (count($exept)>0)
+            $exept = ' WHERE storage_areas.id NOT IN ('.implode(',',$exept).')';
+        else
+            $exept = '';
+
+        $sql2 =    "SELECT storage_areas.id,
+                    COALESCE(SUM(storage_positions.allocation),0) as alloc
+                    FROM
+                    storage_areas
+                    LEFT OUTER JOIN storage_positions ON storage_areas.id = storage_positions.area
+                    {$exept}
+                    GROUP BY storage_areas.id";
+
+        if($DB->no_result($sql2)){
+            $result = $DB->select($sql2);
+            foreach($result as $r){
+                $other[] = ['id'=>$r['id'],'alloc'=>$r['alloc']];
+            }
+        }
+
+        $retval = ['prio'=>$prio,'other'=>$other];
+        return $retval;
+    }
+
+    /**
+     * Liefert nur Lagerplaetze in dem sich angegebener Artikel befindet
+     * @param Article $article
+     * @return StorageArea[]
+     */
+    public static function getStoragesForArticle(Article $article){
+        global $DB;
+        $retval = [];
+
+        $sql = "SELECT DISTINCT
+                storage_areas.id
+                FROM
+                storage_areas
+                INNER JOIN storage_positions ON storage_areas.id = storage_positions.area
+                WHERE
+                storage_positions.article = {$article->getId()}
+                ORDER BY storage_areas.prio DESC";
+
+        if($DB->no_result($sql)){
+            $result = $DB->select($sql);
+            foreach($result as $r){
+                $retval[] = new StorageArea($r["id"]);
+            }
+        }
+        return $retval;
     }
 
     /**
@@ -142,5 +233,21 @@ class StorageArea extends Model {
     public function setLayer($layer)
     {
         $this->layer = $layer;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrio()
+    {
+        return $this->prio;
+    }
+
+    /**
+     * @param int $prio
+     */
+    public function setPrio($prio)
+    {
+        $this->prio = $prio;
     }
 }

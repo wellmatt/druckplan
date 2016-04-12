@@ -148,11 +148,11 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
                                 <td class="content_header"><?=$_LANG->get('Status')?>: </td>
                                 <td class="content_row_clear">
                                     <select id="status" name="status" style="width:300px">
-                                        <option value="1">Offen</option>
-                                        <option value="2">Bestellt</option>
-                                        <option value="3">Ware Eingegangen</option>
-                                        <option value="4">Bezahlt</option>
-                                        <option value="5">Erledigt</option>
+                                        <option value="1" <?php if ($suporder->getStatus() == 1) echo ' selected ';?>>Offen</option>
+                                        <option value="2" <?php if ($suporder->getStatus() == 2) echo ' selected ';?>>Bestellt</option>
+                                        <option value="3" <?php if ($suporder->getStatus() == 3) echo ' selected ';?>>Ware Eingegangen</option>
+                                        <option value="4" <?php if ($suporder->getStatus() == 4) echo ' selected ';?>>Bezahlt</option>
+                                        <option value="5" <?php if ($suporder->getStatus() == 5) echo ' selected ';?>>Erledigt</option>
                                     </select>
                                 </td>
                             </tr>

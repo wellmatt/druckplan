@@ -40,6 +40,20 @@ class SupOrder extends Model {
     }
 
     /**
+     * @return SupOrder[]
+     */
+    public static function getAllOrdered()
+    {
+        $retval = self::fetch([
+            [
+                'column'=>'status',
+                'value'=>2
+            ]
+        ]);
+        return $retval;
+    }
+
+    /**
      * Gibt den String zu einem int Status zurueck
      * @param int $status
      * @return string

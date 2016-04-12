@@ -123,7 +123,7 @@ class Model {
      * @param int $single
      * @return array
      */
-    public static function fetch($filterarray, $single = 0)
+    public static function fetch($filterarray = Array(), $single = 0)
     {
         global $DB;
         $retval = [];
@@ -182,8 +182,19 @@ class Model {
                 return [];
             }
         } else {
-            return [];
+            $sql = "SELECT id FROM {$table} {$orderby} {$limit}";
+            if ($DB->num_rows($sql)){
+                foreach($DB->select($sql) as $r){
+                    $obj = new $class($r['id']);
+                    /* @var $obj $class */
+                    $retval[] = $obj;
+                }
+                return $retval;
+            } else {
+                return [];
+            }
         }
+        return [];
     }
 
     /**

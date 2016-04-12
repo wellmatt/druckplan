@@ -50,6 +50,7 @@ class CollectiveInvoice{
     
     private $needs_planning = 0;
     private $deliverydate = 0;
+	private $rdyfordispatch = 0;		// Ware bereit zur Lieferung
     
     // Doc texts
 
@@ -117,6 +118,7 @@ class CollectiveInvoice{
                 $this->needs_planning = $r["needs_planning"];
                 $this->deliverydate = $r["deliverydate"];
 				$this->ext_comment = $r["ext_comment"];
+				$this->rdyfordispatch = $r["rdyfordispatch"];
 				
 				// doc texts
 				$this->offer_header = $r["offer_header"];
@@ -165,6 +167,7 @@ class CollectiveInvoice{
                     needs_planning = {$this->needs_planning}, 
                     deliverydate = {$this->deliverydate}, 
                     custContactperson = {$this->custContactperson->getId()},
+                    rdyfordispatch = {$this->rdyfordispatch},
                     
                     offer_header = '{$this->offer_header}',
                     offer_footer = '{$this->offer_footer}',  
@@ -190,7 +193,7 @@ class CollectiveInvoice{
 				 deliverycosts, comment, businesscontact, client,
 				 deliveryterm, paymentterm, deliveryaddress, invoiceaddress,
 				 intern_contactperson, cust_message, cust_sign, custContactperson,
-				 intent, needs_planning, deliverydate, ext_comment,
+				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
 				 invoice_header, invoice_footer, revert_header, revert_footer)
@@ -199,7 +202,7 @@ class CollectiveInvoice{
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
 				 {$this->deliveryterm->getId()}, {$this->paymentterm->getId()}, {$this->deliveryaddress->getId()}, {$this->invoiceAddress->getId()},
 				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
-				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate}, '{$this->ext_comment}',
+				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate}, '{$this->ext_comment}', {$this->rdyfordispatch},
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
 				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}')";
@@ -367,6 +370,24 @@ class CollectiveInvoice{
 			$collectiveinvoice = new CollectiveInvoice((int)$row[0]["id"]);
 		}
 		return $collectiveinvoice;
+	}
+
+	/**
+	 * Liefert alle Sammelrechnungen die bereit zur Lieferung sind
+	 *
+	 * @return CollectiveInvoice[]
+	 */
+	public static function getAllRdyForDispatch(){
+		global $DB;
+		$sql = "SELECT * FROM collectiveinvoice WHERE status > 0 AND rdyfordispatch = 1";
+		$collectiveInvoices = Array();
+		if($DB->no_result($sql)){
+			$result = $DB->select($sql);
+			foreach($result as $r){
+				$collectiveInvoices[] = new CollectiveInvoice($r["id"]);
+			}
+		}
+		return $collectiveInvoices;
 	}
 	
 	/**
@@ -1112,7 +1133,20 @@ class CollectiveInvoice{
         $this->revert_footer = $revert_footer;
     }
 
-    
-    
+	/**
+	 * @return int
+	 */
+	public function getRdyfordispatch()
+	{
+		return $this->rdyfordispatch;
+	}
+
+	/**
+	 * @param int $rdyfordispatch
+	 */
+	public function setRdyfordispatch($rdyfordispatch)
+	{
+		$this->rdyfordispatch = $rdyfordispatch;
+	}
 }
 ?>

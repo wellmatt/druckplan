@@ -61,6 +61,10 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShowShopPrice((int)$_REQUEST["article_show_shop_price"]);
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
 	$article->setMatchcode($_REQUEST["article_matchcode"]);
+	if ($_REQUEST['usesstorage'])
+		$article->setUsesstorage($_REQUEST["usesstorage"]);
+	else
+		$article->setUsesstorage(0);
 	
 	if ($_REQUEST["article_tags"])
 	{
@@ -134,30 +138,32 @@ if($_REQUEST["subexec"] == "save"){
 		}
 	}
 
-    if (isset($_FILES['file']['name'])) {
-        $j = 0;     // Variable for indexing uploaded image.
-        for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
-            $target_path = "./images/products/";     // Declaring Path for uploaded images.
-            // Loop to get individual element from the array
-            $validextensions = array("jpeg", "jpg", "png");      // Extensions which are allowed.
-            $ext = explode('.', basename($_FILES['file']['name'][$i]));   // Explode file name from dot(.)
-            $file_extension = end($ext); // Store extensions in the variable.
-            $filename = md5(time().$_FILES["file"]["name"][$i]) . "." . $ext[count($ext) - 1];
-            $target_path = $target_path . $filename;     // Set the target path with a new name of image.
-            $j = $j + 1;      // Increment the number of uploaded images according to the files in array.
-            if (in_array($file_extension, $validextensions)) {
-                if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
-                    // If file moved to uploads folder.
-                    $savemsg .= '<br>' .$j. ').<span id="noerror">Bild erfolgreich hochgeladen!.</span><br/>';
-                    $article->addPicture($filename);
-                } else {     //  If File Was Not Moved.
-                    $savemsg .= '<br>' .$j. ').<span id="error">Bitte erneut versuchen!.</span><br/>';
-                }
-            } else {     //   If File Size And File Type Was Incorrect.
-                $savemsg .= '<br>' .$j. ').<span id="error">***Ungültige Dateierweiterung***</span><br/>';
-            }
-        }
-    }
+	if ($_FILES){
+		if (isset($_FILES['file']['name'])) {
+			$j = 0;     // Variable for indexing uploaded image.
+			for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+				$target_path = "./images/products/";     // Declaring Path for uploaded images.
+				// Loop to get individual element from the array
+				$validextensions = array("jpeg", "jpg", "png");      // Extensions which are allowed.
+				$ext = explode('.', basename($_FILES['file']['name'][$i]));   // Explode file name from dot(.)
+				$file_extension = end($ext); // Store extensions in the variable.
+				$filename = md5(time().$_FILES["file"]["name"][$i]) . "." . $ext[count($ext) - 1];
+				$target_path = $target_path . $filename;     // Set the target path with a new name of image.
+				$j = $j + 1;      // Increment the number of uploaded images according to the files in array.
+				if (in_array($file_extension, $validextensions)) {
+					if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
+						// If file moved to uploads folder.
+						$savemsg .= '<br>' .$j. ').<span id="noerror">Bild erfolgreich hochgeladen!.</span><br/>';
+						$article->addPicture($filename);
+					} else {     //  If File Was Not Moved.
+						$savemsg .= '<br>' .$j. ').<span id="error">Bitte erneut versuchen!.</span><br/>';
+					}
+				} else {     //   If File Size And File Type Was Incorrect.
+					$savemsg .= '<br>' .$j. ').<span id="error">***Ungültige Dateierweiterung***</span><br/>';
+				}
+			}
+		}
+	}
 	
 	// API Zuordnung
 	
@@ -175,9 +181,6 @@ if($_REQUEST["subexec"] == "save"){
 }
 
 $all_pictures = $article->getAllPictures();
-if($article->getId() > 0){
-	$warehouses = Warehouse::getAllStocksByArticle($article->getId());
-}
 
 $allprices = $article->getPrices();
 $allcostprices = $article->getCosts();
@@ -375,18 +378,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 						  </tr>
 						  <tr>
 							  <td colspan="2">&emsp;</td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Lagerplatz')?></td>
-							  <td class="content_row_clear">
-								  <? 	$output = "";
-								  foreach ($warehouses as $stock){
-									  $output .= $stock->getName()."(".$stock->getAmount()." Stk.)".", ";
-								  }
-								  $output = substr( $output , 0, -2);
-								  echo $output;
-								  ?>
-							  </td>
 						  </tr>
 						  <tr>
 							  <td colspan="2">&emsp;</td>
@@ -764,6 +755,28 @@ function printSubTradegroupsForSelect($parentId, $depth){
 						  <?php }?>
 					  </table>
 				  </div>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Lager</h3>
+				</div>
+				<div class="panel-body">
+					<table width="100%" cellpadding="0" cellspacing="0" border="0">
+						<colgroup>
+							<col width="80">
+							<col>
+						</colgroup>
+						<tr>
+							<td class="content_row_header"><?=$_LANG->get('Lagerartikel')?></td>
+							<td class="content_row_clear">
+								<input id="usesstorage" name="usesstorage" class="text" type="checkbox" value="1"
+									<?if ($article->getUsesstorage() == 1) echo "checked"; ?>>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

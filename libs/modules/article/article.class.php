@@ -48,6 +48,7 @@ class Article {
 	private $shop_approval;         // Shop Freigabe für BCs und CPs
 	private $tags;                  // Artikel Tags
 	private $orderid = 0;           // Verknuepfte Kalk
+	private $usesstorage = 0;		// Lagerartikel
 	
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
@@ -89,6 +90,7 @@ class Article {
 				$this->shop_needs_upload = $r["shop_needs_upload"];
 				$this->matchcode = $r["matchcode"];
 				$this->orderid = $r["orderid"];
+				$this->usesstorage = $r["usesstorage"];
 				
 				if ($r["tradegroup"] == 0){
 					$this->tradegroup->setTitle(" &ensp; ");
@@ -189,7 +191,8 @@ class Article {
 					show_shop_price		= {$this->show_shop_price}, 
 					shop_needs_upload	= {$this->shop_needs_upload}, 
 					isworkhourart		= {$this->isworkhourart}, 
-					matchcode		    = '{$this->matchcode}', 
+					matchcode		    = '{$this->matchcode}',
+					usesstorage		    = {$this->usesstorage},
 					orderid             = {$this->orderid} 
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
@@ -201,7 +204,7 @@ class Article {
 					minorder, maxorder, orderunit, 
 					orderunitweight, shop_customer_rel, 
 					shop_customer_id, isworkhourart, show_shop_price,  
-					shop_needs_upload, matchcode, orderid )
+					shop_needs_upload, matchcode, orderid, usesstorage )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',  
 					{$groupid}, {$now}, {$_USER->getId()}, 
@@ -209,7 +212,7 @@ class Article {
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
 					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, 
-					'{$this->matchcode}', {$this->orderid} )";
+					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage} )";
 			$res = $DB->no_result($sql);
 // 			echo $sql . "</br>";
             
@@ -1140,5 +1143,21 @@ class Article {
     {
         $this->orderid = $orderid;
     }
+
+	/**
+	 * @return int
+	 */
+	public function getUsesstorage()
+	{
+		return $this->usesstorage;
+	}
+
+	/**
+	 * @param int $usesstorage
+	 */
+	public function setUsesstorage($usesstorage)
+	{
+		$this->usesstorage = $usesstorage;
+	}
 }
 ?>

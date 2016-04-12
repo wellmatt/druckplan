@@ -17,6 +17,7 @@ if ($_REQUEST["subexec"] == "save"){
         'shelf' => $_REQUEST["st_shelf"],
         'line' => $_REQUEST["st_line"],
         'layer' => $_REQUEST["st_layer"],
+        'prio' => $_REQUEST['st_prio'],
     ];
     $storagearea = new StorageArea((int)$_REQUEST["id"], $array);
     $storagearea->save();
@@ -118,6 +119,16 @@ if ($_REQUEST["exec"] == "edit"){
                                 <td class="content_row_clear">
                                     <input type="text" id="st_layer" name="st_layer" style="width:200px" value="<?=$storagearea->getLayer()?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content_header"><?=$_LANG->get('Priorit&auml;t')?>: </td>
+                                <td class="content_row_clear">
+                                    <select id="st_prio" name="st_prio" style="width:200px">
+                                        <option value="0" <?php if ($storagearea->getPrio() == 0) echo ' selected ';?>>Niedrig</option>
+                                        <option value="1" <?php if ($storagearea->getPrio() == 1) echo ' selected ';?>>Mittel</option>
+                                        <option value="2" <?php if ($storagearea->getPrio() == 2) echo ' selected ';?>>Hoch</option>
+                                    </select>
                                 </td>
                             </tr>
                             <?php if ($storagearea->getId()>0){ ?>

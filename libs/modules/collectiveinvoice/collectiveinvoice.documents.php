@@ -40,8 +40,11 @@ if($_REQUEST["createDoc"]){
         $doc->setType(Document::TYPE_LABEL);
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
-    if($_REQUEST["createDoc"] == "delivery")
-        $doc->setType(Document::TYPE_DELIVERY);
+    if($_REQUEST["createDoc"] == "delivery") {
+		$doc->setType(Document::TYPE_DELIVERY);
+		$collectinv->setRdyfordispatch(1);
+		$collectinv->save();
+	}
     if($_REQUEST["createDoc"] == "invoice")
     {
         $doc->setType(Document::TYPE_INVOICE);

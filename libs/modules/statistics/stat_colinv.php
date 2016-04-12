@@ -76,236 +76,251 @@ if ($_REQUEST["stat_tradegroup"]) {
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv" id="stat_colinv"
-      enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-1">Von:</div>
-        <div class="col-md-3">
-            <input type="text" style="width:220px" id="stat_from" name="stat_from"
-                   class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-                   value="<? echo date('d.m.Y', $start); ?>"/>
-        </div>
-        <div class="col-md-1">Bis:</div>
-        <div class="col-md-3">
-            <input type="text" style="width:220px" id="stat_to" name="stat_to"
-                   class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-                   value="<? echo date('d.m.Y', $end); ?>"/>
-        </div>
-        <div class="col-md-1">Status:</div>
-        <div class="col-md-3">
-            <select name="stat_status" style="width:220px">
-                <option value="0">- Alle -</option>
-                <option value="1">Angelegt</option>
-                <option value="2">Gesendet u. Bestellt</option>
-                <option value="3">angenommen</option>
-                <option value="4">In Produktion</option>
-                <option value="5">Erledigt</option>
-            </select>
-        </div>
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv" id="stat_colinv" enctype="multipart/form-data">
+    <div class="panel panel-default">
+          <div class="panel-heading">
+                <h3 class="panel-title">Auftragsstatistik</h3>
+          </div>
+          <div class="panel-body">
+                <div class="panel panel-default">
+                      <div class="panel-heading">
+                            <h3 class="panel-title">Filter</h3>
+                      </div>
+                      <div class="panel-body">
+                          <div class="row">
+                              <div class="form-group">
+                                  <label for="" class="col-sm-1 control-label">Von</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" id="stat_from" name="stat_from"
+                                             class="form-control text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+                                             value="<? echo date('d.m.Y', $start); ?>"/>
+                                  </div>
+                                  <label for="" class="col-sm-1 control-label">Bis</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" id="stat_to" name="stat_to"
+                                             class="form-control text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+                                             value="<? echo date('d.m.Y', $end); ?>"/>
+                                  </div>
+                                  <label for="" class="col-sm-1 control-label">Status</label>
+                                  <div class="col-sm-3">
+                                      <select name="stat_status" id="" class="form-control">
+                                          <option value="0">- Alle -</option>
+                                          <option value="1">Angelegt</option>
+                                          <option value="2">Gesendet u. Bestellt</option>
+                                          <option value="3">angenommen</option>
+                                          <option value="4">In Produktion</option>
+                                          <option value="5">Erledigt</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="form-group">
+                                  <label for="" class="col-sm-1 control-label">Kunde</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" class="form-control" name="search_customer"
+                                             id="search_customer">
+                                      <input type="hidden" name="stat_customer" id="stat_customer">
+                                  </div>
+                                  <label for="" class="col-sm-1 control-label">Warengruppe</label>
+                                  <div class="col-sm-3">
+                                      <select name="stat_tradegroup" id="stat_tradegroup" class="form-control">
+                                          <option value="0">- Alle -</option>
+                                          <?php
+                                          $all_tradegroups = Tradegroup::getAllTradegroups();
+                                          foreach ($all_tradegroups as $tg) {
+                                              ?>
+                                              <option value="<?= $tg->getId() ?>">
+                                                  <?= $tg->getTitle() ?></option>
+                                              <? printSubTradegroupsForSelect($tg->getId(), 0);
+                                          }
+                                          ?>
+                                      </select>
+                                  </div>
+                                  <label for="" class="col-sm-1 control-label">Artikel</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" class="form-control" name="search_article" id="search_article">
+                                      <input type="hidden" name="stat_article" id="stat_article">
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="form-group">
+                                  <label for="" class="col-sm-1 control-label">Benutzer</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" class="form-control" name="search_user" id="search_user">
+                                      <input type="hidden" name="stat_user" id="stat_user">
+                                  </div>
+                                  <div class="col-md-offset-6 col-md-2">
+                                      <button class="btn btn-sm btn-success" type="submit">Refresh</button>
+                                  </div>
+                              </div>
+                          </div>
+                          <br>
+
+                          <div class="row">
+                              <div class="col-md-6">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading"><div align="center">Pro Tag</div></div>
+                                      <div class="panel-body">
+                                          <table id="table_colinv_day" class="stripe hover row-border order-column" style="width: auto" width="100%">
+                                              <thead>
+                                              <tr>
+                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>
+                                                  <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                                                  <td style="width: 200px;"><u><h5>Titel</h5></u></td>
+                                                  <td style="width: 80px;"><u><h5>Netto</h5></u></td>
+                                                  <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+
+                                              </tr>
+                                              </thead>
+
+                                              <?php
+                                              $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
+                                              foreach ($days as $day) {
+                                                  $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                                                  if (count($retval) > 0) {
+                                                      $nettotal = 0;
+                                                      $grosstotal = 0;
+                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                                                      foreach ($retval as $item) {
+                                                          echo '<tr>';
+                                                          echo "<td>{$item->getId()}</td>";
+                                                          echo "<td>{$item->getNumber()}</td>";
+                                                          echo "<td>{$item->getTitle()}</td>";
+                                                          echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
+                                                          echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
+                                                          echo '</tr>';
+                                                          $nettotal += $item->getTotalNetSum();
+                                                          $grosstotal += $item->getTotalGrossSum();
+                                                          $nettotalge += $item->getTotalNetSum();
+                                                          $grosstotalge += $item->getTotalGrossSum();
+
+                                                      }
+                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Tag: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+
+                                                  }
+                                              }
+                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge,2). '</td><td>' .printPrice($grosstotalge,2). '</td></tr>';
+                                              ?>
+                                          </table>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-md-6">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading"><div align="center">Monat</div></div>
+                                      <div class="panel-body">
+                                          <table id="table_colinv_month" class="stripe hover row-border order-column" style="width: auto" width="100%">
+                                              <thead>
+                                              <tr>
+                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>
+                                                  <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                                                  <td style="width: 200px;"><u><h5>Titel</h5></u></td>
+                                                  <td style="width: 80px;"><u><h5>Netto</h5></u></td>
+                                                  <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+
+                                              </tr>
+                                              </thead>
+
+                                              <?php
+                                              $months = GetMonths(date('Y-m-d', $start), date('Y-m-d', $end));
+                                              foreach ($months as $month) {
+                                                  $retval = Statistics::ColinvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                                                  if (count($retval) > 0) {
+                                                      $nettotal = 0;
+                                                      $grosstotal = 0;
+                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                                                      foreach ($retval as $item) {
+                                                          echo '<tr>';
+                                                          echo "<td>{$item->getId()}</td>";
+                                                          echo "<td>{$item->getNumber()}</td>";
+                                                          echo "<td>{$item->getTitle()}</td>";
+                                                          echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
+                                                          echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
+                                                          echo '</tr>';
+                                                          $nettotal += $item->getTotalNetSum();
+                                                          $grosstotal += $item->getTotalGrossSum();
+                                                          $nettotalge1 += $item->getTotalNetSum();
+                                                          $grosstotalge1 += $item->getTotalGrossSum();
+
+                                                      }
+                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Monat: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+
+                                                  }
+                                              }
+                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge1,2). '</td><td>' .printPrice($grosstotalge1,2). '</td></tr>';
+                                              ?>
+                                          </table>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-6">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading"><div align="center">Jahr</div></div>
+                                      <div class="panel-body">
+                                          <table id="table_colinv_year" class="stripe hover row-border order-column" style="width: auto" width="100%">
+                                              <thead>
+                                              <tr>
+                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>
+                                                  <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                                                  <td style="width: 200px;"><u><h5>Titel</h5></u></td>
+                                                  <td style="width: 80px;"><u><h5>Netto</h5></u></td>
+                                                  <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+
+                                              </tr>
+                                              </thead>
+
+                                              <?php
+                                              $years = GetYears(date('Y-m-d', $start), date('Y-m-d', $end));
+                                              foreach ($years as $year) {
+                                                  $retval = Statistics::ColinvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                                                  if (count($retval) > 0) {
+                                                      $nettotal = 0;
+                                                      $grosstotal = 0;
+                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                                                      foreach ($retval as $item) {
+                                                          echo '<tr>';
+                                                          echo "<td>{$item->getId()}</td>";
+                                                          echo "<td>{$item->getNumber()}</td>";
+                                                          echo "<td>{$item->getTitle()}</td>";
+                                                          echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
+                                                          echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
+                                                          echo '</tr>';
+
+                                                          $nettotal += $item->getTotalNetSum();
+                                                          $grosstotal += $item->getTotalGrossSum();
+                                                          $nettotalge2 += $item->getTotalNetSum();
+                                                          $grosstotalge2 += $item->getTotalGrossSum();
+
+
+
+                                                      }
+                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Jahr: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+
+                                                  }
+
+                                              }
+                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge2,2). '</td><td>' .printPrice($grosstotalge2,2). '</td></tr>';
+
+
+
+
+                                              ?>
+                                          </table>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                    </div>
+                </div>
+          </div>
     </div>
-    <div class="row">
-        <div class="col-md-1">Kunde:</div>
-        <div class="col-md-3">
-            <input type="text" name="search_customer" id="search_customer" style="width:220px">
-            <input type="hidden" name="stat_customer" id="stat_customer">
-        </div>
-        <div class="col-md-1">Warengruppe:</div>
-        <div class="col-md-3">
-            <select name="stat_tradegroup" id="stat_tradegroup" style="width:220px;" class="text"
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                <option value="0">- Alle -</option>
-                <?php
-                $all_tradegroups = Tradegroup::getAllTradegroups();
-                foreach ($all_tradegroups as $tg) {
-                    ?>
-                    <option value="<?= $tg->getId() ?>">
-                        <?= $tg->getTitle() ?></option>
-                    <? printSubTradegroupsForSelect($tg->getId(), 0);
-                }
-                ?>
-            </select>
-        </div>
-        <div class="col-md-1">Artikel:</div>
-        <div class="col-md-3">
-            <input type="text" name="search_article" id="search_article" style="width:220px">
-            <input type="hidden" name="stat_article" id="stat_article">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1">Benutzer:</div>
-        <div class="col-md-3">
-            <input type="text" name="search_user" id="search_user" style="width:220px">
-            <input type="hidden" name="stat_user" id="stat_user">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-3"></div>
-        <div class="col-md-3"></div>
-        <div class="col-md-3">
-            <button type="submit">Refresh</button>
-        </div>
-    </div>
-    <br>&nbsp;</br>
 </form>
 
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><div align="center">Pro Tag</div></div>
-            <div class="panel-body">
-                <table id="table_colinv_day" class="stripe hover row-border order-column" style="width: auto" width="100%">
-                    <thead>
-                    <tr>
-                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
-                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
-                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
-                        <td style="width: 80px;"><u><h5>Netto</h5></u></td>
-                        <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
-
-                    </tr>
-                    </thead>
-
-                    <?php
-                    $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
-                    foreach ($days as $day) {
-                        $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
-                        if (count($retval) > 0) {
-                            $nettotal = 0;
-                            $grosstotal = 0;
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
-                            foreach ($retval as $item) {
-                                echo '<tr>';
-                                echo "<td>{$item->getId()}</td>";
-                                echo "<td>{$item->getNumber()}</td>";
-                                echo "<td>{$item->getTitle()}</td>";
-                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
-                                echo '</tr>';
-                                $nettotal += $item->getTotalNetSum();
-                                $grosstotal += $item->getTotalGrossSum();
-                                $nettotalge += $item->getTotalNetSum();
-                                $grosstotalge += $item->getTotalGrossSum();
-
-                            }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Tag: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
-                        }
-                    }
-                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge,2). '</td><td>' .printPrice($grosstotalge,2). '</td></tr>';
-                    ?>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><div align="center">Monat</div></div>
-            <div class="panel-body">
-                <table id="table_colinv_month" class="stripe hover row-border order-column" style="width: auto" width="100%">
-                    <thead>
-                    <tr>
-                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
-                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
-                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
-                        <td style="width: 80px;"><u><h5>Netto</h5></u></td>
-                        <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
-
-                    </tr>
-                    </thead>
-
-                    <?php
-                    $months = GetMonths(date('Y-m-d', $start), date('Y-m-d', $end));
-                    foreach ($months as $month) {
-                        $retval = Statistics::ColinvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
-                        if (count($retval) > 0) {
-                            $nettotal = 0;
-                            $grosstotal = 0;
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
-                            foreach ($retval as $item) {
-                                echo '<tr>';
-                                echo "<td>{$item->getId()}</td>";
-                                echo "<td>{$item->getNumber()}</td>";
-                                echo "<td>{$item->getTitle()}</td>";
-                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
-                                echo '</tr>';
-                                $nettotal += $item->getTotalNetSum();
-                                $grosstotal += $item->getTotalGrossSum();
-                                $nettotalge1 += $item->getTotalNetSum();
-                                $grosstotalge1 += $item->getTotalGrossSum();
-
-                            }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Monat: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
-                        }
-                    }
-                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge1,2). '</td><td>' .printPrice($grosstotalge1,2). '</td></tr>';
-                    ?>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-    <div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><div align="center">Jahr</div></div>
-            <div class="panel-body">
-                <table id="table_colinv_year" class="stripe hover row-border order-column" style="width: auto" width="100%">
-                    <thead>
-                    <tr>
-                        <td style="width: 10px;"><u><h5>ID</h5></u></td>
-                        <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
-                        <td style="width: 200px;"><u><h5>Titel</h5></u></td>
-                        <td style="width: 80px;"><u><h5>Netto</h5></u></td>
-                        <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
-
-                    </tr>
-                    </thead>
-
-                    <?php
-                    $years = GetYears(date('Y-m-d', $start), date('Y-m-d', $end));
-                    foreach ($years as $year) {
-                        $retval = Statistics::ColinvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
-                        if (count($retval) > 0) {
-                            $nettotal = 0;
-                            $grosstotal = 0;
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
-                            foreach ($retval as $item) {
-                                echo '<tr>';
-                                echo "<td>{$item->getId()}</td>";
-                                echo "<td>{$item->getNumber()}</td>";
-                                echo "<td>{$item->getTitle()}</td>";
-                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
-                                echo '</tr>';
-
-                                $nettotal += $item->getTotalNetSum();
-                                $grosstotal += $item->getTotalGrossSum();
-                                $nettotalge2 += $item->getTotalNetSum();
-                                $grosstotalge2 += $item->getTotalGrossSum();
-
-
-
-                            }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Jahr: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
-                        }
-
-                    }
-                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge2,2). '</td><td>' .printPrice($grosstotalge2,2). '</td></tr>';
-
-
-
-
-                    ?>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <script>
