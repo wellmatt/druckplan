@@ -180,11 +180,17 @@ class Statistics {
     {
 
     }
+
+    /**
+     * @return array
+     */
     public static function Maschstat(){
 
         global $DB;
         date_default_timezone_set('Europe/Berlin');
         $retval = [];
+
+
 
         $sql = "SELECT
             machines.id,

@@ -1,3 +1,16 @@
+<?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Christian Schroeer <cschroeer@ipactor.de>, 2016
+ *
+ */
+
+require_once 'libs/modules/statistics/statistics.class.php';
+require_once 'libs/basic/globalFunctions.php';
+
+?>
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <!-- DataTables -->
@@ -26,22 +39,15 @@
                    class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
                    value="<? echo date('d.m.Y', $end); ?>"/>
         </div>
-    </div>
         <div class="col-md-1">Status:</div>
-        <div class="col-md-1">Maschinengruppe:</div>
         <div class="col-md-3">
-            <select name="stat_tradegroup" id="stat_tradegroup" style="width:220px;" class="text"
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)">
+            <select name="stat_status" style="width:220px">
                 <option value="0">- Alle -</option>
-                <?php
-                $all_tradegroups = Tradegroup::getAllTradegroups();
-                foreach ($all_tradegroups as $tg) {
-                    ?>
-                    <option value="<?= $tg->getId() ?>">
-                        <?= $tg->getTitle() ?></option>
-                    <? printSubTradegroupsForSelect($tg->getId(), 0);
-                }
-                ?>
+                <option value="1">Angelegt</option>
+                <option value="2">Gesendet u. Bestellt</option>
+                <option value="3">angenommen</option>
+                <option value="4">In Produktion</option>
+                <option value="5">Erledigt</option>
             </select>
         </div>
     </div>
@@ -62,7 +68,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-default">
-            <div class="panel-heading"><div align="center">Pro Tag</div></div>
+            <div class="panel-heading"><div align="center"></div></div>
             <div class="panel-body">
                 <table id="table_masch" class="stripe hover row-border order-column" style="width: auto" width="100%">
                     <thead>
@@ -79,16 +85,13 @@
                     foreach ($days as $day) {
                         $retval = Statistics::Maschstat(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                         if (count($retval) > 0) {
-                            $nettotal = 0;
-                            $grosstotal = 0;
+
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
                                 echo "<td>{$item->getNumber()}</td>";
                                 echo "<td>{$item->getTitle()}</td>";
-                                echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
                                 echo '</tr>';
                             }
 

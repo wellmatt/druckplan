@@ -22,7 +22,6 @@ $monate = array(1=>"Januar",
     11=>"November",
     12=>"Dezember");
 
-// TODO: Test123
 
 
 function printSubTradegroupsForSelect($parentId, $depth)
@@ -92,18 +91,6 @@ if ($_REQUEST["stat_tradegroup"]) {
                    class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
                    value="<? echo date('d.m.Y', $end); ?>"/>
         </div>
-        <div class="col-md-1">Kunde:</div>
-        <div class="col-md-3">
-            <input type="text" name="search_customer" id="search_customer" style="width:220px">
-            <input type="hidden" name="stat_customer" id="stat_customer">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1">Benutzer:</div>
-        <div class="col-md-3">
-            <input type="text" name="search_user" id="search_user" style="width:220px">
-            <input type="hidden" name="stat_user" id="stat_user">
-        </div>
         <div class="col-md-1">Status:</div>
         <div class="col-md-3">
             <select name="stat_status" style="width:220px">
@@ -114,6 +101,13 @@ if ($_REQUEST["stat_tradegroup"]) {
                 <option value="4">In Produktion</option>
                 <option value="5">Erledigt</option>
             </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">Kunde:</div>
+        <div class="col-md-3">
+            <input type="text" name="search_customer" id="search_customer" style="width:220px">
+            <input type="hidden" name="stat_customer" id="stat_customer">
         </div>
         <div class="col-md-1">Warengruppe:</div>
         <div class="col-md-3">
@@ -131,14 +125,24 @@ if ($_REQUEST["stat_tradegroup"]) {
                 ?>
             </select>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-1">Artikel:</div>
         <div class="col-md-3">
             <input type="text" name="search_article" id="search_article" style="width:220px">
             <input type="hidden" name="stat_article" id="stat_article">
         </div>
-        <div class="col-md-1">
+    </div>
+    <div class="row">
+        <div class="col-md-1">Benutzer:</div>
+        <div class="col-md-3">
+            <input type="text" name="search_user" id="search_user" style="width:220px">
+            <input type="hidden" name="stat_user" id="stat_user">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
             <button type="submit">Refresh</button>
         </div>
     </div>
@@ -185,11 +189,11 @@ if ($_REQUEST["stat_tradegroup"]) {
                                 $grosstotalge += $item->getTotalGrossSum();
 
                             }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Tag: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
 
                         }
                     }
-                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Gesamt Summe: </td><td>' .printPrice($nettotalge,2). '</td><td>' .printPrice($grosstotalge,2). '</td></tr>';
+                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge,2). '</td><td>' .printPrice($grosstotalge,2). '</td></tr>';
                     ?>
                 </table>
             </div>
@@ -218,7 +222,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                         if (count($retval) > 0) {
                             $nettotal = 0;
                             $grosstotal = 0;
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . '//' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                             foreach ($retval as $item) {
                                 echo '<tr>';
                                 echo "<td>{$item->getId()}</td>";
@@ -233,11 +237,11 @@ if ($_REQUEST["stat_tradegroup"]) {
                                 $grosstotalge1 += $item->getTotalGrossSum();
 
                             }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Monat: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
 
                         }
                     }
-                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Gesamt Summe: </td><td>' .printPrice($nettotalge1,2). '</td><td>' .printPrice($grosstotalge1,2). '</td></tr>';
+                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge1,2). '</td><td>' .printPrice($grosstotalge1,2). '</td></tr>';
                     ?>
                 </table>
             </div>
@@ -286,12 +290,12 @@ if ($_REQUEST["stat_tradegroup"]) {
 
 
                             }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Jahr: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
 
                         }
 
                     }
-                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Gesamt Summe: </td><td>' .printPrice($nettotalge2,2). '</td><td>' .printPrice($grosstotalge2,2). '</td></tr>';
+                    echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge2,2). '</td><td>' .printPrice($grosstotalge2,2). '</td></tr>';
 
 
 
