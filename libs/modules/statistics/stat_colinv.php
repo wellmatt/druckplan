@@ -180,8 +180,6 @@ if ($_REQUEST["stat_tradegroup"]) {
                                               foreach ($days as $day) {
                                                   $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                                   if (count($retval) > 0) {
-                                                      $nettotal = 0;
-                                                      $grosstotal = 0;
                                                       echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
@@ -193,15 +191,10 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                           echo '</tr>';
                                                           $nettotal += $item->getTotalNetSum();
                                                           $grosstotal += $item->getTotalGrossSum();
-                                                          $nettotalge += $item->getTotalNetSum();
-                                                          $grosstotalge += $item->getTotalGrossSum();
-
                                                       }
-                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Tag: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
                                                   }
                                               }
-                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge,2). '</td><td>' .printPrice($grosstotalge,2). '</td></tr>';
+                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                                               ?>
                                           </table>
                                       </div>
@@ -241,15 +234,10 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                           echo '</tr>';
                                                           $nettotal += $item->getTotalNetSum();
                                                           $grosstotal += $item->getTotalGrossSum();
-                                                          $nettotalge1 += $item->getTotalNetSum();
-                                                          $grosstotalge1 += $item->getTotalGrossSum();
-
                                                       }
-                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Monat: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
                                                   }
                                               }
-                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge1,2). '</td><td>' .printPrice($grosstotalge1,2). '</td></tr>';
+                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                                               ?>
                                           </table>
                                       </div>
@@ -292,18 +280,12 @@ if ($_REQUEST["stat_tradegroup"]) {
 
                                                           $nettotal += $item->getTotalNetSum();
                                                           $grosstotal += $item->getTotalGrossSum();
-                                                          $nettotalge2 += $item->getTotalNetSum();
-                                                          $grosstotalge2 += $item->getTotalGrossSum();
-
-
 
                                                       }
-                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">Summe pro Jahr: </td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
                                                   }
 
                                               }
-                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotalge2,2). '</td><td>' .printPrice($grosstotalge2,2). '</td></tr>';
+                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
 
 
 

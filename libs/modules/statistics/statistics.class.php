@@ -229,6 +229,15 @@ class Statistics {
         return $retval;
 }
 
+    /**
+     * @param $start
+     * @param $end
+     * @param $businesscontact
+     * @param $tradegroup
+     * @param $article
+     * @param $status
+     * @return array
+     */
     public static function Calcstat( $start, $end, $businesscontact, $tradegroup, $article, $status)
     {
 

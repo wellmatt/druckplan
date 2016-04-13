@@ -88,28 +88,6 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" name="stat_to" id="stat_to" value="<?php echo date('d.m.Y',$end);?>" placeholder="">
                                     </div>
-                                    <label for="" class="col-sm-1 control-label">Kunde</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="search_customer"
-                                               id="search_customer">
-                                        <input type="hidden" name="stat_customer" id="stat_customer">
-                                    </div>
-                                    <label for="" class="col-sm-1 control-label">Artikel</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="search_article" id="search_article">
-                                        <input type="hidden" name="stat_article" id="stat_article">
-                                    </div>
-                                    <label for="" class="col-sm-1 control-label">Status</label>
-                                    <div class="col-sm-3">
-                                        <select name="stat_status" id="" class="form-control">
-                                            <option value="0">- Alle -</option>
-                                            <option value="1">Angelegt</option>
-                                            <option value="2">Gesendet u. Bestellt</option>
-                                            <option value="3">angenommen</option>
-                                            <option value="4">In Produktion</option>
-                                            <option value="5">Erledigt</option>
-                                        </select>
-                                    </div>
                                     <label for="" class="col-sm-1 control-label">Warengruppe</label>
                                     <div class="col-sm-3">
                                         <select name="stat_tradegroup" id="stat_tradegroup" class="form-control">
@@ -124,6 +102,28 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                             }
                                             ?>
                                         </select>
+                                    </div>
+                                    <label for="" class="col-sm-1 control-label">Kunde</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="search_customer"
+                                               id="search_customer">
+                                        <input type="hidden" name="stat_customer" id="stat_customer">
+                                    </div>
+                                    <label for="" class="col-sm-1 control-label">Status</label>
+                                    <div class="col-sm-3">
+                                        <select name="stat_status" id="" class="form-control">
+                                            <option value="0">- Alle -</option>
+                                            <option value="1">Angelegt</option>
+                                            <option value="2">Gesendet u. Bestellt</option>
+                                            <option value="3">angenommen</option>
+                                            <option value="4">In Produktion</option>
+                                            <option value="5">Erledigt</option>
+                                        </select>
+                                    </div>
+                                    <label for="" class="col-sm-1 control-label">Artikel</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="search_article" id="search_article">
+                                        <input type="hidden" name="stat_article" id="stat_article">
                                     </div>
                                 </div>
                             </div>
@@ -153,8 +153,14 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                     <td><?php echo printPrice($calstat['wert'],2);?></td>
                                     <td><?php echo printPrice($calstat ['steuer'],2);?></td>
                                 </tr>
-                            <?php } ?>
                             </tbody>
+                            <?php
+                            $nettotal += $calstat['wert'];
+                            $grosstotal += $calstat ['steuer'];
+                            } ?>
+                            <?php
+                            echo '<tr><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
+                            ?>
                         </table>
                     </div>
                 </div>

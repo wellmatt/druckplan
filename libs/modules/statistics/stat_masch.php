@@ -115,7 +115,12 @@ $mgroups = MachineGroup::getAllMachineGroups();
                                     <td><?php echo printPrice($machstat['auftragswert'],2);?></td>
                                     <td><?php echo $machstat['anzahlauftraege'];?></td>
                                 </tr>
-                            <?php } ?>
+                                <?php
+                                $nettotal += $machstat['auftragswert'];
+                            } ?>
+                            <?php
+                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td></td></tr>';
+                            ?>
                             </tbody>
                         </table>
                     </div>
