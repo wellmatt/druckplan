@@ -116,7 +116,7 @@ class Statistics {
         }
         return $retval;
     }
-    public static function ColinvCountYear($timestamp, $businesscontact, $user, $article, $tradegroup, $status )
+    public static function ColinvCountYear($timestamp, $businesscontact, $user, $article, $tradegroup, $status)
     {
         global $DB;
         date_default_timezone_set('Europe/Berlin');
@@ -228,6 +228,59 @@ class Statistics {
         }
         return $retval;
 }
+
+    public static function Calcstat( $start, $end, $businesscontact, $tradegroup, $article, $status)
+    {
+
+        global $DB;
+        date_default_timezone_set('Europe/Berlin');
+        $retval = [];
+
+        $where = "";
+        if ($businesscontact != 0){
+            $where .= " AND businesscontact.id = {$businesscontact} ";
+        }
+        if ($tradegroup != 0){
+            $where .= " AND tradegroup.id = {$tradegroup} ";
+        }
+        if ($article != 0){
+            $where .= " AND article.id = {$article} ";
+        }
+        if ($status != 0){
+            $where .= " AND collectiveinvoice.`status` = {$status} ";
+        }
+
+
+
+       $sql ="SELECT
+        businesscontact.id,
+        count(collectiveinvoice.id) as anzauft,
+        SUM(collectiveinvoice_orderposition.price) as wert,
+        SUM(collectiveinvoice_orderposition.price/100*collectiveinvoice_orderposition.tax) as steuer
+        FROM
+        businesscontact
+        INNER JOIN collectiveinvoice ON collectiveinvoice.businesscontact = businesscontact.id
+        INNER JOIN collectiveinvoice_orderposition ON collectiveinvoice.id= collectiveinvoice_orderposition.collectiveinvoice
+        INNER JOIN article ON collectiveinvoice_orderposition.object_id = article.id
+        INNER JOIN tradegroup ON article.tradegroup = tradegroup.id
+        WHERE collectiveinvoice_orderposition.type IN (2,1)
+                AND collectiveinvoice_orderposition.`status` = 1
+                AND collectiveinvoice.`status` > 0
+                AND collectiveinvoice.crtdate >= {$start}
+        AND collectiveinvoice.crtdate <= {$end}
+        {$where}
+        GROUP BY businesscontact.id";
+
+//      prettyPrint($sql);
+
+
+        if ($DB->no_result($sql)) {
+            foreach($DB->select($sql) as $r){
+                $retval[] = $r;
+            }
+        }
+        return $retval;
+    }
 
 
 
