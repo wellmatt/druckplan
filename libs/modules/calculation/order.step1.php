@@ -43,107 +43,58 @@ function checkCalc(product)
 	
 }
 </script>
-<div class="box1">
-<table width="100%">
-    <colgroup>
-        <col width="10%">
-        <col width="23%">
-        <col width="10%">
-        <col width="23%">
-        <col width="10%">
-        <col>
-    </colgroup>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Kundennummer')?>:</td>
-        <td class="content_row_clear"><?=$order->getCustomer()->getCustomernumber()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Vorgang')?>:</td>
-        <td class="content_row_clear"><?=$order->getCustomer()->getId()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Auftrag')?>:</td>
-        <td class="content_row_clear"><?=$order->getNumber()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Telefon')?></td>
-        <td class="content_row_clear"><?=$order->getCustomer()->getPhone()?></td>
-    </tr>
-    <tr>
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Name')?>:</td>
-        <td class="content_row_clear" valign="top"><?=nl2br($order->getCustomer()->getNameAsLine())?></td>
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Adresse')?>:</td>
-        <td class="content_row_clear"  valign="top"><?=nl2br($order->getCustomer()->getAddressAsLine())?></td>
-        <td class="content_row_header"  valign="top"><?=$_LANG->get('E-Mail')?></td>
-        <td class="content_row_clear" valign="top"><?=$order->getCustomer()->getEmail()?></td>
-    </tr>
-</table>
+
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">Produktauswahl</h3>
+	  </div>
+	  <div class="panel-body">
+          <div class="row">
+              <?
+              foreach($products_nonindi as $p)
+              {
+                  ?>
+                  <div class="col-md-2">
+                      <div class="panel panel-default" style="height: 150px;">
+                          <div class="panel-heading">
+                              <h3 class="panel-title"><?=$p->getName()?></h3>
+                          </div>
+                          <div class="panel-body">
+                              <img src="images/products/<?=$p->getPicture()?>" class="pointer" onclick="checkCalc(<?=$p->getId()?>)">
+                          </div>
+                      </div>
+                  </div>
+                  <?
+              }
+              ?>
+          </div>
+	  </div>
 </div>
-<br>
-<h1><?=$_LANG->get('Produktauswahl')?></h1>
-<div class="box1">
-    <table width="100%" cellpadding="0" cellspacing="0">
-        <colgroup>
-            <col width="163">
-            <col width="163">
-            <col width="164">
-            <col width="163">
-            <col width="163">
-            <col width="164">
-        </colgroup>
-        <tr>
-            <? $x = 1;
-            foreach($products_nonindi as $p)
-            {
-                ?>
-                <td class="content_row_clear" align="center" style="height:130px" valign="bottom">
-                    <!--  a href="index.php?exec=edit&id=<?=$order->getId()?>&selProduct=<?=$p->getId()?>&delCalc=1&step=1"-->
-                     <img src="images/products/<?=$p->getPicture()?>" class="pointer" onclick="checkCalc(<?=$p->getId()?>)">
-                    <!--  /a-->
-                    <div class="producttitle"><?=$p->getName()?></div>
-                </td>
-                <?
-                if($x % 6 == 0)
-                    echo '</tr><tr>';
-                $x++; 
-            } 
-            
-            for($i = $x; $i <= 6; $i++)
-                echo '<td class="content_row_clear">&nbsp;</td>';
-                
-            ?>
-        </tr>
-    </table>
-</div>
-<p>&nbsp;</p>
-<?php if(!empty($individualProducts)) : ?>
-<h1><?=$_LANG->get('Individuelle Produkte')?></h1>
-<div class="box1">
-    <table width="100%" cellpadding="0" cellspacing="0">
-        <colgroup>
-            <col width="163">
-            <col width="163">
-            <col width="164">
-            <col width="163">
-            <col width="163">
-            <col width="164">
-        </colgroup>
-        <tr>
-            <? $x = 1;
+<?php if(!empty($individualProducts)){ ?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Individuelle Produkte</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <?
             foreach($individualProducts as $p)
             {
                 ?>
-                <td class="content_row_clear" align="center" style="height:130px" valign="bottom">
-                    <!--  a href="index.php?exec=edit&id=<?=$order->getId()?>&selProduct=<?=$p->getId()?>&delCalc=1&step=1"-->
-                     <img src="images/products/<?=$p->getPicture()?>" class="pointer" onclick="checkCalc(<?=$p->getId()?>)">
-                    <!--  /a-->
-                    <div class="producttitle"><?=$p->getName()?></div>
-                </td>
+                <div class="col-md-2">
+                    <div class="panel panel-default" style="height: 150px;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><?=$p->getName()?></h3>
+                        </div>
+                        <div class="panel-body">
+                            <img src="images/products/<?=$p->getPicture()?>" class="pointer" onclick="checkCalc(<?=$p->getId()?>)">
+                        </div>
+                    </div>
+                </div>
                 <?
-                if($x % 6 == 0)
-                    echo '</tr><tr>';
-                $x++; 
-            } 
-            
-            for($i = $x; $i <= 6; $i++)
-                echo '<td class="content_row_clear">&nbsp;</td>';
-                
+            }
             ?>
-        </tr>
-    </table>
+        </div>
+    </div>
 </div>
-<?php endif; ?>
+<?php } ?>

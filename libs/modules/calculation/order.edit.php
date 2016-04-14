@@ -914,36 +914,61 @@ if((int)$_REQUEST["step"] == 3){
 					$entry->setFinishing(new Finishing((int)$_REQUEST["mach_finishing_{$id}"]));
 					//gln, umschlagen/umstuelpen
 					$entry->setUmschlagenUmstuelpen((int)$_REQUEST["umschl_umst_{$id}"]);
-					$entry->setUmschl((int)$_REQUEST["umschl_{$id}"]);
-					$entry->setUmst((int)$_REQUEST["umst_{$id}"]);
+
+					if (isset($_REQUEST["umschl_{$id}"]))
+						$entry->setUmschl((int)$_REQUEST["umschl_{$id}"]);
+					if (isset($_REQUEST["umst_{$id}"]))
+						$entry->setUmst((int)$_REQUEST["umst_{$id}"]);
+
 					//error_log($id." umschlumst ".$_REQUEST["umschl_umst_{$id}"]);
 					$entry->setInfo(trim(addslashes($_REQUEST["mach_info_{$id}"])));
 
 					$entry->setColor_detail(trim(addslashes($_REQUEST["mach_color_detail_{$id}"])));
-					
+
+					$entry->save();
 					if($entry->getMachine()->getPriceBase() == Machine::PRICE_VARIABEL){
 						$entry->setPrice((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_manprice_{$id}"]))));
 						//error_log("Tada ".$id." __ ".$_REQUEST["mach_id_{$id}"]." _ ".$_REQUEST["mach_manprice_{$id}"]." ---");
 					} else {
 						$entry->setPrice($entry->getMachine()->getMachinePrice($entry));
 					}
+					$entry->save();
 					
 					// Erweiterung der Fremdleistungen uebernehmen
-					$entry->setSupplierPrice((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_supplierprice_{$id}"]))));
-					$entry->setSupplierID((int)$_REQUEST["mach_supplierid_{$id}"]);
-					$entry->setSupplierStatus((int)$_REQUEST["mach_supplierstatus_{$id}"]);
-					$entry->setSupplierInfo(trim(addslashes($_REQUEST["mach_supplierinfo_{$id}"])));
-					if($_REQUEST["mach_senddate_{$id}"] != ""){
-						$tmp_date = explode('.', trim(addslashes($_REQUEST["mach_senddate_{$id}"])));
-						$tmp_date = mktime(2,0,0,$tmp_date[1],$tmp_date[0],$tmp_date[2]);
+
+					if (isset($_REQUEST["mach_supplierprice_{$id}"]))
+						$entry->setSupplierPrice((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_supplierprice_{$id}"]))));
+
+					if (isset($_REQUEST["mach_supplierid_{$id}"]))
+						$entry->setSupplierID((int)$_REQUEST["mach_supplierid_{$id}"]);
+
+					if (isset($_REQUEST["mach_supplierstatus_{$id}"]))
+						$entry->setSupplierStatus((int)$_REQUEST["mach_supplierstatus_{$id}"]);
+
+					if (isset($_REQUEST["mach_supplierinfo_{$id}"]))
+						$entry->setSupplierInfo(trim(addslashes($_REQUEST["mach_supplierinfo_{$id}"])));
+
+					if (isset($_REQUEST["mach_senddate_{$id}"]))
+					{
+						if($_REQUEST["mach_senddate_{$id}"] != ""){
+							$tmp_date = explode('.', trim(addslashes($_REQUEST["mach_senddate_{$id}"])));
+							$tmp_date = mktime(2,0,0,$tmp_date[1],$tmp_date[0],$tmp_date[2]);
+						} else {
+							$tmp_date = 0;
+						}
 					} else {
 						$tmp_date = 0;
 					}
 					$entry->setSupplierSendDate($tmp_date);
-					//error_log(" --- ".$id." - ".$_REQUEST["mach_supplierid_{$id}"]." --- ");
-					if($_REQUEST["mach_receivedate_{$id}"] != ""){
-						$tmp_date = explode('.', trim(addslashes($_REQUEST["mach_receivedate_{$id}"])));
-						$tmp_date = mktime(2,0,0,$tmp_date[1],$tmp_date[0],$tmp_date[2]);
+
+					if (isset($_REQUEST["mach_receivedate_{$id}"]))
+					{
+						if($_REQUEST["mach_receivedate_{$id}"] != ""){
+							$tmp_date = explode('.', trim(addslashes($_REQUEST["mach_receivedate_{$id}"])));
+							$tmp_date = mktime(2,0,0,$tmp_date[1],$tmp_date[0],$tmp_date[2]);
+						} else {
+							$tmp_date = 0;
+						}
 					} else {
 						$tmp_date = 0;
 					}
@@ -952,12 +977,6 @@ if((int)$_REQUEST["step"] == 3){
 					$entry->setSpecial_margin((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_special_margin_{$id}"]))));
 					$entry->setSpecial_margin_text($_REQUEST["mach_special_margin_text_{$id}"]);
 
-					if($_REQUEST["mach_time_{$id}"] == ""){ // nicht überschreiben falls manuell gesetzt
-					   $entry->setTime($entry->getMachine()->getRunningTime($entry));
-					}
-					$entry->setPrice($entry->getMachine()->getMachinePrice($entry));
-
-					$entry->save();
 
 					// Falls Druckmaschine -> Papiergroesse setzen
 					if ($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL 
@@ -971,7 +990,6 @@ if((int)$_REQUEST["step"] == 3){
 							// Update Papersize
 							$calc->setPaperContentHeight($sizes[1]);
 							$calc->setPaperContentWidth($sizes[0]);
-							$calc->save();
 
 							// Update Grant Paper
 							if($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){
@@ -983,13 +1001,11 @@ if((int)$_REQUEST["step"] == 3){
 							} else {
 								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
-							$calc->save();
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT)
 						{
 							// Update Papersize
 							$calc->setPaperAddContentHeight($sizes[1]);
 							$calc->setPaperAddContentWidth($sizes[0]);
-							$calc->save();
 							// Update Grant Paper
 							if($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){
 								// Zuschussbogen multipliziert Anzahl Druckplatten
@@ -1000,13 +1016,11 @@ if((int)$_REQUEST["step"] == 3){
 							} else {
 								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
-							$calc->save();
 						} else if ($entry->getPart() == Calculation::PAPER_ENVELOPE)
 						{
 							// Update Papersize
 							$calc->setPaperEnvelopeHeight($sizes[1]);
 							$calc->setPaperEnvelopeWidth($sizes[0]);
-							$calc->save();
 							// Update Grant Paper
 							if($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){
 								// Zuschussbogen multipliziert Anzahl Druckplatten
@@ -1017,13 +1031,11 @@ if((int)$_REQUEST["step"] == 3){
 							} else { 
 								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
-							$calc->save();
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT2)
 						{
 							// Update Papersize
 							$calc->setPaperAddContent2Height($sizes[1]);
 							$calc->setPaperAddContent2Width($sizes[0]);
-							$calc->save();
 							// Update Grant Paper
 							if($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){
 								// Zuschussbogen multipliziert Anzahl Druckplatten
@@ -1034,13 +1046,11 @@ if((int)$_REQUEST["step"] == 3){
 							} else {
 								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
-							$calc->save();
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT3)
 						{
 							// Update Papersize
 							$calc->setPaperAddContent3Height($sizes[1]);
 							$calc->setPaperAddContent3Width($sizes[0]);
-							$calc->save();
 							// Update Grant Paper
 							if($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){
 								// Zuschussbogen multipliziert Anzahl Druckplatten
@@ -1051,7 +1061,6 @@ if((int)$_REQUEST["step"] == 3){
 							} else {
 								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
-							$calc->save();
 						}
 
 						unset($sizes);
@@ -1074,7 +1083,6 @@ if((int)$_REQUEST["step"] == 3){
 					    $entry->setCutter_cuts((int)$_REQUEST["mach_cutter_cuts_{$id}"]);
 					    
 					    $entry->setPrice($entry->getMachine()->getMachinePrice($entry));
-					    $entry->save();
 					}
 					
 					if ($entry->getMachine()->getType() == Machine::TYPE_CUTTER ||
@@ -1082,12 +1090,10 @@ if((int)$_REQUEST["step"] == 3){
 					    $entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
 					{
 					    $entry->setRoll_dir((int)$_REQUEST["mach_roll_dir_{$id}"]);
-					    $entry->save();
 					}
 					
 					if ($entry->getMachine()->getType() == Machine::TYPE_FOLDER){
 					    $entry->setFoldtype(new Foldtype((int)$_REQUEST["mach_foldtype_{$id}"]));
-					    $entry->save();
 					}
 					
 					if ($entry->getMachine()->getType() == Machine::TYPE_OTHER){
@@ -1097,22 +1103,18 @@ if((int)$_REQUEST["step"] == 3){
 					if ($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
 						$entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
 					{
-						if ($_REQUEST["mach_labelcount_{$id}"]){
+						if (isset($_REQUEST["mach_labelcount_{$id}"]))
 							$entry->setLabelcount($_REQUEST["mach_labelcount_{$id}"]);
-							$entry->save();
-						}
-						if ($_REQUEST["mach_rollcount_{$id}"]){
+
+						if (isset($_REQUEST["mach_rollcount_{$id}"]))
 							$entry->setRollcount($_REQUEST["mach_rollcount_{$id}"]);
-							$entry->save();
-						}
 					}
 
-					//echo $DB->getLastError();
+					$calc->save();
+					$entry->save();
 				}
 			}
 		}
-		
-		
 
 		if($calc->getCalcAutoValues())
 			// Zeiten kalkulieren
@@ -1130,13 +1132,13 @@ if((int)$_REQUEST["step"] == 3){
 				}
 			}
 
-			
-			/*
-			 * TODO: Muss hier nicht eher nach dem Preistyp geschaut werden, nicht nach dem Maschinentyp
-			 * 		 "Preis variabel" mit Maschinentyp "Andere" wird immer mit 0 ueberschrieben
-			 * ODER: Es muss die Funktion getMachinePrice angepasst werden
-			 */
-			
+
+		/*
+         * TODO: Muss hier nicht eher nach dem Preistyp geschaut werden, nicht nach dem Maschinentyp
+         * 		 "Preis variabel" mit Maschinentyp "Andere" wird immer mit 0 ueberschrieben
+         * ODER: Es muss die Funktion getMachinePrice angepasst werden
+         */
+
 		// Preise kalkulieren
 		foreach(Machineentry::getAllMachineentries($calc->getId()) as $me){
 			if($me->getMachine()->getType() != Machine::TYPE_MANUELL){
@@ -1144,63 +1146,7 @@ if((int)$_REQUEST["step"] == 3){
 				$me->save();
 			}
 		}
-			
-		/****
-		$new_artlist = Array();
-		$art_amounts = Array();
-		$art_scales = Array();
-		$number_of_article = (int)$_REQUEST["number_of_article"];
-		if ($number_of_article > 0){
-			for($i=0; $i<$number_of_article; $i++){
-				$tmp_id = (int)$_REQUEST['calcart_id_'.$i];
-				$tmp_amount = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST['art_amount_'.$i])));				
-				$tmp_scale = (int)$_REQUEST['art_scale_'.$i];
-				if($tmp_id != "" && $tmp_id != 0){
-					$art_amounts[$tmp_id] = $tmp_amount;
-					$art_scales[$tmp_id] = $tmp_scale;
-					$new_artlist[] = new Article($tmp_id); 
-				}
-			}
-		}
-		$calc->setArticles($new_artlist);
-		$calc->setArticleamounts($art_amounts);
-		$calc->setArticlescales($art_scales);
-		**/
-		
-		$xi=0;
-		$calc_pos = Array();
-		foreach ($_REQUEST["orderpos"] as $single_order){
-			if ( !( $_REQUEST["orderpos"][$xi]["id"] == "0" && 			// Wenn in den "Neu"-Feldern nichts drin steht
-					$_REQUEST["orderpos"][$xi]["comment"] == "" &&		// soll er auch nichts speichern
-					$_REQUEST["orderpos"][$xi]["quantity"] == "")){
-					
-				$newpos = new CalculationPosition((int)$_REQUEST["orderpos"][$xi]["id"]);
-				//Daten passend konvertieren
-				$tmp_price = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["orderpos"][$xi]["price"])));
-				$tmp_cost = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["orderpos"][$xi]["cost"])));
-					
-				$newpos->setPrice($tmp_price);
-				$newpos->setCost($tmp_cost);
-				$newpos->setComment(trim(addslashes($_REQUEST["orderpos"][$xi]["comment"])));
-				$newpos->setQuantity((int)$_REQUEST["orderpos"][$xi]["quantity"]);
-				$newpos->setType((int)$_REQUEST["orderpos"][$xi]["type"]);
-				$newpos->setInvrel((int)$_REQUEST["orderpos"][$xi]["inv_rel"]);
-				$newpos->setScale((int)$_REQUEST["orderpos"][$xi]["scale"]);
-// 				echo '<h1>'.(int)$_REQUEST["orderpos"][$xi]["scale"].'</h1></br>';
-// 				$newpos->setScale(CalculationPosition::SCALE_PER_PIECE);
-				$newpos->setObjectid((int)$_REQUEST["orderpos"][$xi]["obj_id"]);
-				$newpos->setTax((int)$_REQUEST["orderpos"][$xi]["tax"]);
-				$newpos->setCalculationid((int)$calc->getId());
-				$newpos->setShowQuantity((int)$_REQUEST["orderpos"][$xi]["show_doc_quantity"]);
-				$newpos->setShowPrice((int)$_REQUEST["orderpos"][$xi]["show_doc_price"]);
-				
-				$calc_pos[] = $newpos;
-				$xi++;
-			}
-		}
-		//Positionen der Rechnung speichern
-		CalculationPosition::saveMultipleCalculationpositions($calc_pos);
-		echo $DB->getLastError();
+
 		
 		$calc->save();
 		echo $DB->getLastError();
@@ -1565,49 +1511,65 @@ if((int)$_REQUEST["step"] == 7){
 
 <link rel="stylesheet" href="css/order.css" type="text/css" />
 
-<ul class="nav nav-pills">
-  <li class="menu_order"><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=1'">Produktauswahl</a></li>
-  <li class="dropdown">
-    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Produktkonfiguration <b class="caret"></b></a>
-    <ul class="dropdown-menu">
-    <?php 
-        $menu_counter = 0;
-        foreach (Calculation::getAllCalculations($order) as $tmp_menu_calc){
-            echo '<li><a href="#"  onclick="location.href=\'index.php?page='.$_REQUEST['page'].'&id='.$_REQUEST['id'].'&calc_id='.$tmp_menu_calc->getId().'&exec=edit&step=2\'">';
-            echo '#' . $menu_counter . ' ' . $tmp_menu_calc->getTitle() . " ( Aufl. " . $tmp_menu_calc->getAmount() . " ) ";
-            echo '</a></li>';
-            $menu_counter++;
-        }
-    ?>
-    </ul>
-  </li>
-  <li class="dropdown">
-    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Fertigungsprozess <b class="caret"></b></a>
-    <ul class="dropdown-menu">
-    <?php 
-        $menu_counter = 0;
-        foreach (Calculation::getAllCalculations($order) as $tmp_menu_calc){
-            echo '<li><a href="#"  onclick="location.href=\'index.php?page='.$_REQUEST['page'].'&id='.$_REQUEST['id'].'&calc_id='.$tmp_menu_calc->getId().'&exec=edit&step=3\'">';
-            echo '#' . $menu_counter . ' ' . $tmp_menu_calc->getTitle() . " ( Aufl. " . $tmp_menu_calc->getAmount() . " ) ";
-            echo '</a></li>';
-            $menu_counter++;
-        }
-    ?>
-    </ul>
-  </li>
-  <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a></li>
-  <!-- <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li> -->
-  <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=7'">Detailierte Übersicht</a></li>
-  <li><a href="#" onclick="location.href='index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST['id'] ?>&exec=edit&step=5'">Druckbogenvorschau</a></li>
-  <?php 
-  if ($order->getId() > 0){
-      // Associations
-      $association_object = $order;
-      include 'libs/modules/associations/association.include.php';
-      //-> END Associations
-  }
-  ?>
-</ul> 
+<div class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="menu_order"><a href="#"
+										  onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=1'">Produktauswahl</a>
+				</li>
+				<li class="dropdown">
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle">Produktkonfiguration <b
+							class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<?php
+						$menu_counter = 0;
+						foreach (Calculation::getAllCalculations($order) as $tmp_menu_calc) {
+							echo '<li><a href="#"  onclick="location.href=\'index.php?page=' . $_REQUEST['page'] . '&id=' . $_REQUEST['id'] . '&calc_id=' . $tmp_menu_calc->getId() . '&exec=edit&step=2\'">';
+							echo '#' . $menu_counter . ' ' . $tmp_menu_calc->getTitle() . " ( Aufl. " . $tmp_menu_calc->getAmount() . " ) ";
+							echo '</a></li>';
+							$menu_counter++;
+						}
+						?>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle">Fertigungsprozess <b
+							class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<?php
+						$menu_counter = 0;
+						foreach (Calculation::getAllCalculations($order) as $tmp_menu_calc) {
+							echo '<li><a href="#"  onclick="location.href=\'index.php?page=' . $_REQUEST['page'] . '&id=' . $_REQUEST['id'] . '&calc_id=' . $tmp_menu_calc->getId() . '&exec=edit&step=3\'">';
+							echo '#' . $menu_counter . ' ' . $tmp_menu_calc->getTitle() . " ( Aufl. " . $tmp_menu_calc->getAmount() . " ) ";
+							echo '</a></li>';
+							$menu_counter++;
+						}
+						?>
+					</ul>
+				</li>
+				<li><a href="#"
+					   onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a>
+				</li>
+				<!-- <li><a href="#" onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li> -->
+				<li><a href="#"
+					   onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=7'">Detailierte
+						Übersicht</a></li>
+				<li><a href="#"
+					   onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=5'">Druckbogenvorschau</a>
+				</li>
+				<?php
+				if ($order->getId() > 0) {
+					// Associations
+					$association_object = $order;
+					include 'libs/modules/associations/association.include.php';
+					//-> END Associations
+				}
+				?>
+			</ul>
+		</div>
+	</div>
+</div>
 
 
 <div class="orderMainform">

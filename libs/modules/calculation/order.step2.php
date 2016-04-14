@@ -733,51 +733,6 @@ function clickContentChromaticity(id)
 
 </script>
 
-<div class="box1">
-    <table width="100%">
-        <colgroup>
-            <col width="10%">
-            <col width="23%">
-            <col width="10%">
-            <col width="23%">
-            <col width="10%">
-            <col>
-        </colgroup>
-        <tr>
-            <td class="content_row_header"><?= $_LANG->get('Kundennummer') ?>:</td>
-            <td class="content_row_clear"><?= $order->getCustomer()->getCustomernumber() ?></td>
-            <td class="content_row_header"><?= $_LANG->get('Vorgang') ?>:</td>
-			<td class="content_row_clear"><?= $order->getCustomer()->getId() ?></td>
-            <td class="content_row_header"><?= $_LANG->get('Auftrag') ?>:</td>
-            <td class="content_row_clear"><?= $order->getNumber() ?></td>
-            <td class="content_row_header"><?= $_LANG->get('Telefon') ?></td>
-            <td class="content_row_clear"><?= $order->getCustomer()->getPhone() ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="content_row_header" valign="top"><?= $_LANG->get('Name') ?>:</td>
-            <td class="content_row_clear" valign="top"><?= nl2br($order->getCustomer()->getNameAsLine()) ?>
-            </td>
-            <td class="content_row_header" valign="top"><?= $_LANG->get('Adresse') ?>:</td>
-            <td class="content_row_clear" valign="top"><?= nl2br($order->getCustomer()->getAddressAsLine()) ?>
-            </td>
-            <td class="content_row_header" valign="top"><?= $_LANG->get('E-Mail') ?>
-            </td>
-            <td class="content_row_clear" valign="top"><?= $order->getCustomer()->getEmail() ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="content_row_header" valign="top"><?= $_LANG->get('Produkt') ?>:</td>
-            <td class="content_row_clear" valign="top"><?= $order->getProduct()->getName() ?>
-            </td>
-            <td class="content_row_header" valign="top"><?= $_LANG->get('Beschreibung') ?>:</td>
-            <td class="content_row_clear" valign="top" colspan="3"><?= $order->getProduct()->getDescription() ?>
-            </td>
-        </tr>
-    </table>
-</div>
-<br>
-
 <div id="fl_menu">
 	<div class="label">Quick Move</div>
 	<div class="menu">

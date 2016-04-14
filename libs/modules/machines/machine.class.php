@@ -613,28 +613,32 @@ class Machine
             echo '</br></br>'.$machineEntry->getMachine()->getName().':</br></br>';
         }
 
-        
         // ----------------------------------------------------------------------------------
         // Reine Laufzeit
         if(count($this->unitsPerHour) > 0)
         {
-            
             if($this->unit == Machine::UNIT_PERHOUR_DRUCKPLATTEN)
             {
                 $time = (60 / $this->getUnitsPerHour($calc->getPlateCount())) * $calc->getPlateCount();
+                if ($debug)
+                {
+                    echo '$time = 60 / '.$this->getUnitsPerHour($calc->getPlateCount()).' * '.$calc->getPlateCount().'</br>';
+                }
             } else if($this->unit == Machine::UNIT_PERHOUR_BOGEN)
             {
                 if($machineEntry->getPart() > 0)
-                    $time = 60 / $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) * $calc->getAmount();
+                    $time = 60 / ($this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart(),$machineEntry)) / $calc->getPaperCount($machineEntry->getPart(),$machineEntry));
                     if ($debug)
                     {
-                        echo '$time = 60 / ' . $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) . ' * ' . $calc->getAmount() . '</br>';
+                        echo '$time = 60 / ('.$this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart(),$machineEntry)).' / '.$calc->getPaperCount($machineEntry->getPart(),$machineEntry).') </br>';
+                        echo 'zu Druckende Seiten (Auflage*Umfang/Produkte pro Seite) = '. $calc->getPaperCount($machineEntry->getPart(),$machineEntry) . '</br>';
+                        echo 'Produkte pro Seite = ' . $calc->getProductsPerPaperForMe($machineEntry->getPart(),$machineEntry).'</br>';
                     }
                 else
                 {
-                    $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
-                               + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2)+ $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
-                               + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
+                    $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT,$machineEntry)
+                               + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2)+ $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3,$machineEntry)
+                               + $calc->getPaperCount(Calculation::PAPER_ENVELOPE,$machineEntry);
                     $time = 60 / $this->getUnitsPerHour($papers) * $papers;
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_AUFLAGE)
@@ -859,9 +863,9 @@ class Machine
             $foldtype = $machineEntry->getFoldtype();
             if ($foldtype->getId()>0)
                 $time += ($foldtype->getBreaks() * $this->breaks_time);
-        }
-        if ($debug){
-            echo 'Zeit nach Brüchen: ' .$time . '</br>';
+            if ($debug){
+                echo 'Zeit nach Brüchen: ' .$time . '</br>';
+            }
         }
 
         
@@ -889,7 +893,7 @@ class Machine
             $price = $this->price * $calc->getPlateCount();
         } else if($this->priceBase == self::PRICE_DPSQUAREMETER)
         {
-            // Preis nach m�
+            // Preis nach m2
             $all_machines = Machineentry::getAllMachineentries($calc->getId());
             
             
@@ -965,7 +969,8 @@ class Machine
 	            $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesEnvelope());	//gln
             }
             //$price = $this->price * $machineEntry->getTime();
-            $price = $this->price * $machineEntry->getTime() + $papers * $clickpr;	//gln
+            if (isset($papers)) // temp fix ascherer fuer bescheuerte programmierung von gln
+                $price = $this->price * $machineEntry->getTime() + $papers * $clickpr;	//gln
 			//echo "clickpr".$clickpr." ";
         } else if($this->priceBase == self::PRICE_SQUAREMETER)
         {

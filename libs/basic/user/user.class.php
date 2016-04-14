@@ -78,6 +78,7 @@ class User {
         }
         
 //         $cached = Cachehandler::fromCache("obj_usr_" . $id);
+        $cached = null;
         if (!is_null($cached))
         {
             $vars = array_keys(get_class_vars(User));

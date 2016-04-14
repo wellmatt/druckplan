@@ -122,6 +122,7 @@ class BusinessContact {
         
 
 //         $cached = Cachehandler::fromCache("obj_bc_" . $id);
+		$cached = null;
         if (!is_null($cached))
         {
             $vars = array_keys(get_class_vars(get_class($this)));

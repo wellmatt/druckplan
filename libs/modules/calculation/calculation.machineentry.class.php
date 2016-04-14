@@ -106,7 +106,13 @@ class Machineentry {
             }
         }
     }
-    
+
+    /**
+     * @param $calcId
+     * @param string $order
+     * @param int $filterGroup
+     * @return Machineentry[]
+     */
     static function getAllMachineentries($calcId, $order = self::ORDER_ID, $filterGroup = 0)
     {
         global $DB;
@@ -118,6 +124,7 @@ class Machineentry {
             if($filterGroup > 0)
                 $sql .= " AND machine_group = {$filterGroup}";
             $sql .= " ORDER BY {$order}";
+//            prettyPrint($sql);
             
             if ($DB->num_rows($sql))
             {
@@ -294,20 +301,32 @@ class Machineentry {
 
     public function calcStacks()
     {
+        $debug = false;
+        if ($debug)
+            echo '<b>Debug für MachineEntry::calcStacks()</b></br>';
         $calc = new Calculation($this->calcId);
         $psize = $calc->getPaperSize($this->part);
         $paperH = $psize["paperH"];
         $paperW = $psize["paperW"];
-//        echo 'Rechnung: '.$calc->getPaperCount($this->getPart()).' * (('.$paperW.' * '.$paperH.' / 10000) * ('.$calc->getPaperWeight($this->part).'/1000))</br>';
-        $stacksize = $calc->getPaperCount($this->getPart()) * (($paperW * $paperH / 10000) * ($calc->getPaperWeight($this->part)/1000));
-//        echo $stacksize.'/'.$this->machine->getMaxstacksize().'</br>';
-        return ceil($stacksize/$this->machine->getMaxstacksize());
+        $stacksize = $calc->getPaperCount($this->getPart(),$this) * (($paperW * $paperH / 100000) * ($calc->getPaperWeight($this->part)/1000));
+        if ($debug) {
+            echo '$stacksize = Bogen * ((PapierBreite * PapierHoehe  / 100000) * (Grammatur / 1000))</br>';
+            echo '$stacksize = ' . $calc->getPaperCount($this->getPart(), $this) . ' * ((' . $paperW . ' * ' . $paperH . ' / 10000) * (' . $calc->getPaperWeight($this->part) . '/1000))</br>';
+            echo '$stacksize = ' . $stacksize . '</br>';
+            echo '$stacksize = $stacksize / MaxStapelHoehe</br>';
+            echo '$stacksize = '.$stacksize.'/'.$this->machine->getMaxstacksize().'</br>';
+        }
+        $stacksize = ceil($stacksize/$this->machine->getMaxstacksize());
+        if ($debug){
+            echo 'Stapel = '.$stacksize.'</br>';
+        }
+        return $stacksize;
     }
 
     public function calcCuts()
     {
         $calc = new Calculation($this->calcId);
-        $productsper = $calc->getProductsPerRow($this->part);
+        $productsper = $calc->getProductsPerRowForMe($this->part, $this);
         if ($productsper){
             $rows = $productsper["rows"];
             $cols = $productsper["cols"];

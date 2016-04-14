@@ -458,31 +458,315 @@ class Calculation
                 return false;
         }
     }
-    
-    public function getPaperCount($papertype)
+
+    public static function contentArray()
     {
-        $productsPerPaper = $this->getProductsPerPaper($papertype);
 
-        // Papiertyp nicht angegeben
-        if($productsPerPaper == 0)
+        $contents = [
+            [
+                'name'=>'Inhalt 1',
+                'id'=>'getPaperContent',
+                'weight'=>'getPaperContentWeight',
+                'chr'=>'getChromaticitiesContent',
+                'width'=>'getPaperContentWidth',
+                'height'=>'getPaperContentHeight',
+                'pages'=>'getPagesContent',
+                'grant'=>'getPaperContentGrant',
+            ],
+            [
+                'name'=>'Inhalt 2',
+                'id'=>'getPaperAddContent',
+                'weight'=>'getPaperAddContentWeight',
+                'chr'=>'getChromaticitiesAddContent',
+                'width'=>'getPaperAddContentWidth',
+                'height'=>'getPaperAddContentHeight',
+                'pages'=>'getPagesAddContent',
+                'grant'=>'getPaperAddContentGrant',
+            ],
+            [
+                'name'=>'Inhalt 3',
+                'id'=>'getPaperAddContent2',
+                'weight'=>'getPaperAddContent2Weight',
+                'chr'=>'getChromaticitiesAddContent2',
+                'width'=>'getPaperAddContent2Width',
+                'height'=>'getPaperAddContent2Height',
+                'pages'=>'getPagesAddContent2',
+                'grant'=>'getPaperAddContent2Grant',
+            ],
+            [
+                'name'=>'Inhalt 4',
+                'id'=>'getPaperAddContent3',
+                'weight'=>'getPaperAddContent3Weight',
+                'chr'=>'getChromaticitiesAddContent3',
+                'width'=>'getPaperAddContent3Width',
+                'height'=>'getPaperAddContent3Height',
+                'pages'=>'getPagesAddContent3',
+                'grant'=>'getPaperAddContent3Grant',
+            ],
+            [
+                'name'=>'Umschlag',
+                'id'=>'getPaperEnvelope',
+                'weight'=>'getPaperEnvelopeWeight',
+                'chr'=>'getChromaticitiesEnvelope',
+                'width'=>'getPaperEnvelopeWidth',
+                'height'=>'getPaperEnvelopeHeight',
+                'pages'=>'getPagesEnvelope',
+                'grant'=>'getPaperEnvelopeGrant',
+            ],
+        ];
+        return $contents;
+    }
+    
+    public function getPaperCount($papertype, Machineentry $me = null)
+    {
+        if ($me == null){
+            $productsPerPaper = $this->getProductsPerPaper($papertype);
+
+            // Papiertyp nicht angegeben
+            if($productsPerPaper == 0)
+                return 0;
+
+            if ($papertype == Calculation::PAPER_CONTENT)
+            {
+                return ceil($this->amount * $this->pagesContent / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ADDCONTENT)
+            {
+                return ceil($this->amount * $this->pagesAddContent / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ENVELOPE)
+            {
+                return ceil($this->amount * $this->pagesEnvelope / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ADDCONTENT2)
+            {
+                return ceil($this->amount * $this->pagesAddContent2 / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ADDCONTENT3)
+            {
+                return ceil($this->amount * $this->pagesAddContent3 / $productsPerPaper);
+            }
+        } else {
+
+            $productsPerPaper = $this->getProductsPerPaper($papertype);
+
+            // Papiertyp nicht angegeben
+            if($productsPerPaper == 0)
+                return 0;
+
+            if ($papertype == Calculation::PAPER_CONTENT)
+            {
+                return ceil($this->amount * $this->pagesContent / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ADDCONTENT)
+            {
+                return ceil($this->amount * $this->pagesAddContent / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ENVELOPE)
+            {
+                return ceil($this->amount * $this->pagesEnvelope / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ADDCONTENT2)
+            {
+                return ceil($this->amount * $this->pagesAddContent2 / $productsPerPaper);
+            } else if($papertype == Calculation::PAPER_ADDCONTENT3)
+            {
+                return ceil($this->amount * $this->pagesAddContent3 / $productsPerPaper);
+            }
+        }
+    }
+
+
+    /**
+     * liefert Array mit details zu verwendeten inhalten / umschlag
+     * @return array
+     */
+    public function getDetails()
+    {
+        $retval = [];
+
+        if ($this->getPaperContent()->getId()>0){
+            $data = [];
+            $data['paper'] = self::PAPER_CONTENT;
+            $data['name'] = 'Inhalt 1';
+            $data['material'] = $this->getPaperContent()->getName();
+            $data['gewicht'] = $this->getPaperContentWeight();
+            $data['umfang'] = $this->getPagesContent();
+            $data['farbigkeit'] = $this->getChromaticitiesContent()->getName();
+            $data['offen'] = $this->getProductFormatWidthOpen() . ' x ' . $this->getProductFormatHeightOpen() . ' mm';
+            $retval[] = $data;
+        }
+        if ($this->getPaperAddContent()->getId()>0){
+            $data = [];
+            $data['paper'] = self::PAPER_ADDCONTENT;
+            $data['name'] = 'Inhalt 2';
+            $data['material'] = $this->getPaperAddContent()->getName();
+            $data['gewicht'] = $this->getPaperAddContentWeight();
+            $data['umfang'] = $this->getPagesAddContent();
+            $data['farbigkeit'] = $this->getChromaticitiesAddContent()->getName();
+            $data['offen'] = $this->getProductFormatWidthOpen() . ' x ' . $this->getProductFormatHeightOpen() . ' mm';
+            $retval[] = $data;
+        }
+        if ($this->getPaperAddContent2()->getId()>0){
+            $data = [];
+            $data['paper'] = self::PAPER_ADDCONTENT2;
+            $data['name'] = 'Inhalt 3';
+            $data['material'] = $this->getPaperAddContent2()->getName();
+            $data['gewicht'] = $this->getPaperAddContent2Weight();
+            $data['umfang'] = $this->getPagesAddContent2();
+            $data['farbigkeit'] = $this->getChromaticitiesAddContent2()->getName();
+            $data['offen'] = $this->getProductFormatWidthOpen() . ' x ' . $this->getProductFormatHeightOpen() . ' mm';
+            $retval[] = $data;
+        }
+        if ($this->getPaperAddContent3()->getId()>0){
+            $data = [];
+            $data['paper'] = self::PAPER_ADDCONTENT3;
+            $data['name'] = 'Inhalt 4';
+            $data['material'] = $this->getPaperAddContent3()->getName();
+            $data['gewicht'] = $this->getPaperAddContent3Weight();
+            $data['umfang'] = $this->getPagesAddContent3();
+            $data['farbigkeit'] = $this->getChromaticitiesAddContent3()->getName();
+            $data['offen'] = $this->getProductFormatWidthOpen() . ' x ' . $this->getProductFormatHeightOpen() . ' mm';
+            $retval[] = $data;
+        }
+        if ($this->getPaperEnvelope()->getId()>0){
+            $data = [];
+            $data['paper'] = self::PAPER_ENVELOPE;
+            $data['name'] = 'Umschlag';
+            $data['material'] = $this->getPaperEnvelope()->getName();
+            $data['gewicht'] = $this->getPaperEnvelopeWeight();
+            $data['umfang'] = $this->getPagesEnvelope();
+            $data['farbigkeit'] = $this->getChromaticitiesEnvelope()->getName();
+            $data['offen'] = $this->getEnvelopeWidthOpen() . ' x ' . $this->getEnvelopeHeightOpen() . ' mm ';
+            $retval[] = $data;
+        }
+        return $retval;
+    }
+
+    /**
+     * @param int $ptype
+     * @param Machineentry $me
+     * @return float|int
+     */
+    function getProductsPerPaperForMe($ptype, Machineentry $me)
+    {
+        global $_CONFIG;
+        // Papiergroesse auswaehlen
+        if($ptype == Calculation::PAPER_CONTENT)
+        {
+            $paperH = $this->paperContentHeight;
+            $paperW = $this->paperContentWidth;
+        } else if ($ptype == Calculation::PAPER_ADDCONTENT)
+        {
+            $paperH = $this->paperAddContentHeight;
+            $paperW = $this->paperAddContentWidth;
+        } elseif($ptype == Calculation::PAPER_ENVELOPE)
+        {
+            $paperH = $this->paperEnvelopeHeight;
+            $paperW = $this->paperEnvelopeWidth;
+        } else if ($ptype == Calculation::PAPER_ADDCONTENT2)
+        {
+            $paperH = $this->paperAddContent2Height;
+            $paperW = $this->paperAddContent2Width;
+        } else if ($ptype == Calculation::PAPER_ADDCONTENT3)
+        {
+            $paperH = $this->paperAddContent3Height;
+            $paperW = $this->paperAddContent3Width;
+        }
+
+        if($ptype != Calculation::PAPER_ENVELOPE)
+        {
+            $width = $this->productFormatWidthOpen;
+            $height = $this->productFormatHeightOpen;
+        } else {
+            $width = $this->envelopeWidthOpen;
+            $height = $this->envelopeHeightOpen;
+        }
+        $width_closed     = $this->productFormatWidth;
+        $height_closed     = $this->productFormatHeight;
+
+        // Wie oft geschlossenes Format in offenem Format?
+        if ($width_closed < $width && $width_closed != 0 )
+            $anz_rows = floor(ceil($width * 1.01) / $width_closed);
+        else
+            $anz_rows = 1;
+        if ($height_closed < $height && $height_closed != 0 )
+            $anz_cols = floor(ceil($height * 1.01) / $height_closed);
+        else
+            $anz_cols = 1;
+
+        // Maschine fuer ausgewaehlten Papiertyp
+        $mach = $me;
+        if($mach)
+        {
+            $calc = $this;
+            if($mach->getPart() == Calculation::PAPER_CONTENT)
+                $chr = $calc->getChromaticitiesContent();
+            else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT)
+                $chr = $calc->getChromaticitiesAddContent();
+            else if($mach->getPart() == Calculation::PAPER_ENVELOPE)
+                $chr = $calc->getChromaticitiesEnvelope();
+            else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2)
+                $chr = $calc->getChromaticitiesAddContent2();
+            else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
+                $chr = $calc->getChromaticitiesAddContent3();
+//            print_r($chr);
+
+            if($chr->getReversePrinting())
+                $duplex = 2;
+            else
+                $duplex = 1;
+            // Anschnitt setzen
+            $tmp_anschnitt = $_CONFIG->anschnitt;
+            if($ptype == Calculation::PAPER_CONTENT){
+                $tmp_anschnitt = $calc->getCutContent();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT){
+                $tmp_anschnitt = $calc->getCutAddContent();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT2){
+                $tmp_anschnitt = $calc->getCutAddContent2();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT3){
+                $tmp_anschnitt = $calc->getCutAddContent3();
+            } elseif($ptype == Calculation::PAPER_ENVELOPE){
+                $tmp_anschnitt = $calc->getCutEnvelope();
+            }
+
+            // Farbrand (Farbkontrollstreifen) setzen
+            $tmp_farbrand = $_CONFIG->farbRandBreite;
+            if($calc->getColorControl() == 0){
+                // Wenn der Farbrand in der Kalkulation ausgestellt ist
+                $tmp_farbrand = 0;
+            }
+
+            // Papier um nicht bedruckbaren Bereich verkleinern
+            $paperH = $paperH - $mach->getMachine()->getBorder_bottom() - $mach->getMachine()->getBorder_top() - $tmp_farbrand;
+            $paperW = $paperW - $mach->getMachine()->getBorder_left() - $mach->getMachine()->getBorder_right();
+
+//            echo '$width:' . $width . '</br>';
+//            echo '$height:' . $height . '</br>';
+//            echo '$height_closed:' . $height_closed . '</br>';
+//            echo '$width_closed:' . $width_closed . '</br>';
+//            echo '$paperH:' . $paperH . '</br>';
+//            echo '$paperW:' . $paperW . '</br>';
+
+            // Ausrechnen
+            $productRows = floor($paperH / ($height + $tmp_anschnitt * 2));
+            $productCols = floor($paperW / ($width + $tmp_anschnitt * 2));
+            $productPerPaper1 = $productCols * $productRows;
+
+            $productCols = floor($paperW / ($height + $tmp_anschnitt * 2));
+            $productRows = floor($paperH / ($width + $tmp_anschnitt * 2));
+            $productPerPaper2 = $productCols * $productRows;
+
+//            echo '$anz_cols:' . $anz_cols . '</br>';
+//            echo '$anz_rows:' . $anz_rows . '</br>';
+//            echo '$duplex:' . $duplex . '</br>';
+
+            if($productPerPaper1 > $productPerPaper2)
+                $rv = $productPerPaper1 * $anz_cols * $anz_rows * $duplex;
+            else
+                $rv = $productPerPaper2 * $anz_cols * $anz_rows * $duplex;
+
+//            echo '$productPerPaper1:' . $productPerPaper1 . '</br>';
+//            echo '$productPerPaper2:' . $productPerPaper2 . '</br>';
+
+//            echo 'produkte: ' . $rv . '</br>';
+            return $rv;
+        } else
+//            echo 'produkte: 0</br>';
             return 0;
-
-        if ($papertype == Calculation::PAPER_CONTENT)
-        {
-            return ceil($this->amount * $this->pagesContent / $productsPerPaper);
-        } else if($papertype == Calculation::PAPER_ADDCONTENT)
-        {
-            return ceil($this->amount * $this->pagesAddContent / $productsPerPaper);
-        } else if($papertype == Calculation::PAPER_ENVELOPE)
-        {
-            return ceil($this->amount * $this->pagesEnvelope / $productsPerPaper);
-        } else if($papertype == Calculation::PAPER_ADDCONTENT2)
-        {
-            return ceil($this->amount * $this->pagesAddContent2 / $productsPerPaper);
-        } else if($papertype == Calculation::PAPER_ADDCONTENT3)
-        {
-            return ceil($this->amount * $this->pagesAddContent3 / $productsPerPaper);
-        }            
     }
 
     function getProductsPerPaper($ptype)
@@ -665,6 +949,79 @@ class Calculation
 
     /**
      * @param $ptype
+     * @param Machineentry $mach
+     * @return array|bool
+     */
+    function getProductsPerRowForMe($ptype, Machineentry $mach)
+    {
+        $debug = false;
+        global $_CONFIG;
+        $psize = self::getPaperSize($ptype);
+        $paperH = $psize["paperH"];
+        $paperW = $psize["paperW"];
+
+        if($ptype != Calculation::PAPER_ENVELOPE){
+            $width = $this->productFormatWidthOpen;
+            $height = $this->productFormatHeightOpen;
+        } else {
+            $width = $this->envelopeWidthOpen;
+            $height = $this->envelopeHeightOpen;
+        }
+
+        if($mach)
+        {
+            $tmp_anschnitt = 0;
+            if($ptype == Calculation::PAPER_CONTENT){
+                $tmp_anschnitt = $this->getCutContent();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT){
+                $tmp_anschnitt = $this->getCutAddContent();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT2){
+                $tmp_anschnitt = $this->getCutAddContent2();
+            } else if ($ptype == Calculation::PAPER_ADDCONTENT3){
+                $tmp_anschnitt = $this->getCutAddContent3();
+            } elseif($ptype == Calculation::PAPER_ENVELOPE){
+                $tmp_anschnitt = $this->getCutEnvelope();
+            }
+
+            // Farbrand (Farbkontrollstreifen) setzen
+            $tmp_farbrand = $_CONFIG->farbRandBreite;
+            if($this->getColorControl() == 0){
+                // Wenn der Farbrand in der Kalkulation ausgestellt ist
+                $tmp_farbrand = 0;
+            }
+
+            $paperH = $paperH - $mach->getMachine()->getBorder_bottom() - $mach->getMachine()->getBorder_top() - $tmp_farbrand;
+            $paperW = $paperW - $mach->getMachine()->getBorder_left() - $mach->getMachine()->getBorder_right();
+
+            $productRows1 = floor($paperH / ($height + $tmp_anschnitt * 2));
+            $productCols1 = floor($paperW / ($width + $tmp_anschnitt * 2));
+            $productPerPaper1 = $productCols1 * $productRows1;
+            $productCols2 = floor($paperW / ($height + $tmp_anschnitt * 2));
+            $productRows2 = floor($paperH / ($width + $tmp_anschnitt * 2));
+            $productPerPaper2 = $productCols2 * $productRows2;
+
+            if ($debug){
+                echo $mach->getMachine()->getName().'</br>';
+                echo '$productRows1: '.$productRows1.'</br>';
+                echo '$productCols1: '.$productCols1.'</br>';
+                echo '$productPerPaper1: '.$productPerPaper1.'</br>';
+                echo '$productCols2: '.$productCols2.'</br>';
+                echo '$productRows2: '.$productRows2.'</br>';
+                echo '$productPerPaper2: '.$productPerPaper2.'</br></br>';
+            }
+
+            if($productPerPaper1 > $productPerPaper2)
+                $retval = Array('rows'=>$productRows1,'cols'=>$productCols1);
+            else
+                $retval = Array('rows'=>$productRows2,'cols'=>$productCols2);
+
+            return $retval;
+        } else
+            return false;
+    }
+
+    /**
+     * @param $ptype
      * @return array|bool
      */
     function getProductsPerRow($ptype)
@@ -739,11 +1096,12 @@ class Calculation
 
 
     
-    public function getPlateCount($machineEntry = null) {
+    public function getPlateCount(Machineentry $machineEntry = null) {
         $plates = 0;
         if($machineEntry == null)
         {
             $machEntries = Machineentry::getAllMachineentries($this->getId());
+//            prettyPrint(count($machEntries));
 
             foreach ($machEntries as $me)
             {

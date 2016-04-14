@@ -118,78 +118,37 @@ if ($_REQUEST["exec"] == "addMachineRow") {
         if ($m->getGroup()->getId() == $group)
             $groupmachs[] = $m;
 
-    echo '<tr id="tr_mach_' . $x . '">';
-    echo '<td class="content_row">';
-    echo '<input type="hidden" name="mach_group_' . $x . '" value="' . $group . '">';
-    echo '<select name="mach_id_' . $x . '" style="width:280px" class="text" id="mach_id_'.$x.'" onchange="updateMachineProps('.$x.', this.value)">';
+
+
+    echo '<tr id="tr_mach_'.$x.'">';
+    echo '<td>';
+    echo '<input type="hidden" name="mach_group_'.$x.'" value="'.$group.'">';
+    echo '<select name="mach_id_'.$x.'" class="form-control" id="mach_id_'.$x.'" onchange="updateMachineProps('.$x.', this.value)">';
     echo '<option value=""></option>';
-    foreach ($groupmachs as $gm) {
-        echo '<option value="' . $gm->getId() . '" ';
-        echo '>' . $gm->getName() . '</option>';
+    foreach ($groupmachs as $gm)
+    {
+        echo '<option value="'.$gm->getId().'" ';
+        echo '>'.$gm->getName().'</option>';
+
     }
     echo '</select>';
     echo '</td>';
-    echo '<td class="content_row"><input class="text" style="width:40px" name="mach_time_' . $x . '" value=""> '.$_LANG->get('min.').'</td>';
-    echo '<td class="content_row" id="td-machopts-'.$x.'">&nbsp;';
+    echo '<td><input class="form-control" name="mach_time_'.$x.'" value="" placeholder="Min."></td>';
+    echo '<td id="td-machparts-'.$x.'"></td>';
+    echo '<td id="td-machopts-'.$x.'">';
     echo '<select name="mach_part_'.$x.'" style="display:none"></select>';
     echo '</td>';
-    echo '<td class="content_row" id="td-papersize-'.$x.'">&nbsp;';
+    echo '<td id="td-papersize-'.$x.'">';
     echo '</td>';
-    echo '<td class="content_row" id="td-cost-'.$x.'">&nbsp;';
+    echo '<td id="td-cost-'.$x.'">';
     echo '</td>';
-    echo '<td class="content_row">';
-        echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow(' . $group . ')"> ';
-        echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow(' . $x . ')"> ';
+    echo '<td>';
+    echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow('.$group.')"> ';
+    echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow('.$x.')"> ';
     echo '</td>';
-    echo '</tr>';
-    echo '<tr id="tr_mach_'.$x.'_1">';
-    echo '<td colspan="2" class="content_row_clear">Hinweise: ';
-    echo '<input name="mach_info_'.$x.'" id="mach_info_'.$x.'" style="width:300px" class="text">';
-    echo '</td>';
-    echo '<td colspan="3" class="content_row_clear">&nbsp;</td>';
     echo '</tr>';
 }
 
-if ($_REQUEST["exec"] == "addArticleRow") {
-	$all_article = Article::getAllArticle();
-	
-	$y = (int) $_REQUEST["idy"];
-	$_REQUEST["orderId"] = (int) $_REQUEST["orderId"];
-	$order = new Order($_REQUEST["orderId"]);
-	$calc = new Calculation((int)$_REQUEST["calcId"]);
-	
-	echo '<tr id="tr_calcart_'.$y.'">';
-	echo '<td class="content_row_header" width="290" valign="top">';
-		echo '<select name="calcart_id_'.$y.'" style="width:280px" class="text" ';
-		echo ' id="calcart_id_'.$y.'" onchange="updateArticle('.$y.')"> ';
-			echo '<option value=""></option>';
-			foreach ($all_article as $art){
-				echo '<option value="'.$art->getId().'" ';
-				echo '>'.$art->getTitle().'</option>';
-			}
-		echo '</select>';
-	echo '</td>';
-	echo '<td class="content_row_clear">';
-		echo '<input name="art_amount_'.$y.'" id="art_amount_'.$y.'" class="text" style="width:40px;" ';
-		echo ' onchange="updateArticle('.$y.')" >';
-		echo ' '.$_LANG->get('Stk.');
-	echo '</td>';
-	echo '<td class="content_row_clear">';
-		echo '<select name="art_scale_'.$y.'" style="width:120px" class="text"';
-				echo 'id="art_scale_'.$y.'" onchange="updateArticle('.$y.')" >';
-			echo '<option value="0">'.$_LANG->get('pro Kalkulation').'</option>';
-			echo '<option value="1">'.$_LANG->get('pro St&uuml;ck').'</option>';
-		echo '</select>';
-	echo '</td>';
-	echo '<td class="content_row_clear">&ensp;</td>';
-	echo '<td class="content_row_clear" id="art_cost_'.$y.'">';
-	echo '</td>';
-	echo '<td class="content_row_clear">';
-        echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addArticleRow()">';
-		echo ' '.'<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteArticleRow('.$y.')">';
-	echo '</td>';
-	echo '</tr>';
-}
 
 if ($_REQUEST["exec"] == "calculateArticlePrice"){
 	$calc = new Calculation((int)$_REQUEST["calcId"]);
@@ -211,64 +170,51 @@ if ($_REQUEST["exec"] == "calculateArticlePrice"){
 	}
 }
 
+if ($_REQUEST["exec"] == "updatePossibleParts") {
+    $x = (int)$_REQUEST["idx"];
+    $mach = new Machine((int)$_REQUEST["machId"]);
+    $calc = new Calculation((int)$_REQUEST["calcId"]);
+    $contents = $calc->getDetails();
+
+    if( $mach->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+        $mach->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET ||
+        $mach->getType() == Machine::TYPE_FOLDER ||
+        $mach->getType() == Machine::TYPE_CUTTER ||
+        $mach->getType() == Machine::TYPE_LASERCUTTER)
+    {
+        echo '<div class="form-group">';
+        echo '<select name="mach_part_'.$x.'" id="mach_part_'.$x.'" onchange="updateAvailPapers('.$x.')" class="form-control">';
+        foreach ($contents as $item) {
+            echo '<option value="'.$item['paper'].'" ';
+            if($partId == $item['paper']) echo 'selected';
+            echo '>'.$item['name'].'</option>';
+        }
+        echo '</select></div>';
+    }
+}
+
 if ($_REQUEST["exec"] == "updateMachineProps") {
     $x = (int) $_REQUEST["idx"];
     $mach = new Machine((int) $_REQUEST["machId"]);
     $calc = new Calculation((int)$_REQUEST["calcId"]);
     $partId = (int)$_REQUEST["partId"];
-    
-    if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL || $mach->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET
-            || $mach->getType() == Machine::TYPE_FOLDER)
-    {
-        echo '<select name="mach_part_'.$x.'" style="width:120px" class="text" onchange="updateAvailPapers('.$x.')">';
-        
-        if($calc->getPaperContent()->getId())
-        {
-            echo '<option value="'.Calculation::PAPER_CONTENT.'" ';
-            if ($partId == 1) echo "selected";
-            echo '>'.$_LANG->get('Inhalt').'</option>';
-        }
-        
-        if($calc->getPaperAddContent()->getId())
-        {
-            echo '<option value="'.Calculation::PAPER_ADDCONTENT.'" ';
-            if ($partId == 2) echo "selected";
-            echo '>'.$_LANG->get('zus. Inhalt').'</option>';
-        }
-        
-        if($calc->getPaperEnvelope()->getId())
-        {
-            echo '<option value="'.Calculation::PAPER_ENVELOPE.'" ';
-            if ($partId == 3) echo "selected";
-            echo '>'.$_LANG->get('Umschlag').'</option>';
-        }
-        
-        if($calc->getPaperAddContent2()->getId())
-        {
-        	echo '<option value="'.Calculation::PAPER_ADDCONTENT2.'" ';
-        	if ($partId == 4) echo "selected";
-        	echo '>'.$_LANG->get('zus. Inhalt 2').'</option>';
-        }
-        
-        if($calc->getPaperAddContent3()->getId())
-        {
-        	echo '<option value="'.Calculation::PAPER_ADDCONTENT3.'" ';
-        	if ($partId == 5) echo "selected";
-        	echo '>'.$_LANG->get('zus. Inhalt 3').'</option>';
-        }
-        echo '</select> ';
-    }
-    
+
     // Falls Maschine manuell berechnet wird, Feld anzeigen
-    if ($mach->getPriceBase() == Machine::PRICE_VARIABEL) {
-        echo $_LANG->get('Preis') . ': <input name="mach_price_' . $x . '" style="width:60px;" value="'.printPrice($mach->getPrice()).'"> ' . $_USER->getClient()->getCurrency();
+    if($mach->getPriceBase() == Machine::PRICE_VARIABEL)
+    {
+        echo '<div class="col-md-4"><div class="form-group">';
+        echo '<label class="control-label">Preis</label><div class="input-group">';
+        echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
+        echo '<span class="input-group-addon">€</span></div></div></div>';
     }
+
     // Option Lack
     if($mach->getFinish())
     {
         $finishings = Finishing::getAllFinishings();
-    
-        echo '<select name="mach_finishing_'.$x.'" style="width:120px" class="text">';
+        echo '<div class="col-md-4"><div class="form-group">';
+        echo '<label class="control-label">Lack</label><div class="input-group">';
+        echo '<select name="mach_finishing_'.$x.'" id="mach_finishing_'.$x.'" class="form-control">';
         echo '<option value="0">'.$_LANG->get('kein Lack').'</option>';
         foreach($finishings as $f)
         {
@@ -276,51 +222,58 @@ if ($_REQUEST["exec"] == "updateMachineProps") {
             echo '>'.$f->getName().'</option>';
         }
         echo '</select>';
+        echo '</div></div></div>';
     }
 
-   //gln hier!!!!!!!!!!!!!!!!!! umschlagen/umstuelpen anzeigen
-    //if($mach->getUmschlUmst())
-    //{
-	//	echo $_LANG->get('umschlagen/umst&uuml;lpen');
-	//}
-    if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET && $mach->getUmschlUmst() > 0)
+
+    // Umschlagen / Umstuelpen
+    if ($mach->getUmschlUmst() > 0)
     {
-		echo $_LANG->get('umschlagen/umst&uuml;lpen');
-		echo '<input type="checkbox" name="umschl_umst_'.$x.'" value="1" checked="';
-		if($mach->getUmschlUmst()) echo 'checked';
-		echo '">';
-		//echo '</td>';
+        echo '<div class="col-md-4"><div class="form-group">';
+        echo '<div class="checkbox"><label>';
+        echo '<input type="checkbox" onchange="switchUmschUmst('.$x.');" id="umschl_'.$x.'" name="umschl_'.$x.'" value="1">';
+        echo ' Umschlagen</label></div></div></div>';
+
+        echo '<div class="col-md-4"><div class="form-group">';
+        echo '<div class="checkbox"><label>';
+        echo '<input type="checkbox" onchange="switchUmschUmst('.$x.');" id="umst_'.$x.'" name="umst_'.$x.'" value="1">';
+        echo ' Umst&uuml;lpen</label></div></div></div>';
+        echo '<input type="hidden" id="umschl_umst_'.$x.'" name="umschl_umst_'.$x.'" value="0">';
     }
     
     // Falls Sammelhefter -> Falzbogenschema auswaehlen
     if($mach->getType() == Machine::TYPE_SAMMELHEFTER)
     {
         $schemes = $calc->getAvailableFoldschemes();
-        echo $_LANG->get('Falzb&ouml;gen')." ".$_LANG->get('Inhalt')." ";
-        echo '<select name="foldscheme_content" style="width:120px" class="text">';
-        foreach($schemes[1] as $scheme)
-        {
-            $str = '';
-            if($scheme[16])
-                $str .= $scheme[16]." x 16, ";
-            if($scheme[8])
-                $str .= $scheme[8]." x 8, ";
-            if($scheme[4])
-                $str .= $scheme[4]." x 4, ";
-    
-            $str = substr($str, 0, -2);
-            $val = preg_replace("/ /", '', $str);
-    
-            echo '<option value="'.$val.'" ';
-            if($calc->getFoldschemeContent() == $val) echo "selected";
-            echo '>'.$str.'</option>';
+
+        if($calc->getPagesContent()){
+            echo '<div class="col-md-4"><div class="form-group">';
+            echo '<label class="control-label">Inhalt 1</label><div class="input-group">';
+            echo '<select name="foldscheme_content" class="form-control">';
+            foreach($schemes[1] as $scheme)
+            {
+                $str = '';
+                if($scheme[16])
+                    $str .= $scheme[16]." x 16, ";
+                if($scheme[8])
+                    $str .= $scheme[8]." x 8, ";
+                if($scheme[4])
+                    $str .= $scheme[4]." x 4, ";
+
+                $str = substr($str, 0, -2);
+                $val = preg_replace("/ /", '', $str);
+
+                echo '<option value="'.$val.'" ';
+                if($calc->getFoldschemeContent() == $val) echo "selected";
+                echo '>'.$str.'</option>';
+            }
+            echo '</select>';
+            echo '</div></div></div>';
         }
-        echo '</select><br>';
-    
-        if($calc->getPagesAddContent())
-        {
-            echo $_LANG->get('zus. Inhalt')." ";
-            echo '<select name="foldscheme_addcontent" style="width:120px" class="text">';
+        if($calc->getPagesAddContent()){
+            echo '<div class="col-md-4"><div class="form-group">';
+            echo '<label class="control-label">Inhalt 2</label><div class="input-group">';
+            echo '<select name="foldscheme_addcontent" class="form-control">';
             foreach($schemes[2] as $scheme)
             {
                 $str = '';
@@ -330,65 +283,67 @@ if ($_REQUEST["exec"] == "updateMachineProps") {
                     $str .= $scheme[8]." x 8, ";
                 if($scheme[4])
                     $str .= $scheme[4]." x 4, ";
-    
+
                 $str = substr($str, 0, -2);
                 $val = preg_replace("/ /", '', $str);
-    
+
                 echo '<option value="'.$val.'" ';
                 if($calc->getFoldschemeAddContent() == $val) echo "selected";
                 echo '>'.$str.'</option>';
             }
             echo '</select>';
+            echo '</div></div></div>';
         }
-        if($calc->getPagesAddContent2())
-        {
-        	echo $_LANG->get('zus. Inhalt 2')." ";
-        	echo '<select name="foldscheme_addcontent2" style="width:120px" class="text">';
-        	foreach($schemes[4] as $scheme)
-        	{
-        		$str = '';
-        		if($scheme[16])
-        			$str .= $scheme[16]." x 16, ";
-        		if($scheme[8])
-        			$str .= $scheme[8]." x 8, ";
-        		if($scheme[4])
-        			$str .= $scheme[4]." x 4, ";
-        
-        		$str = substr($str, 0, -2);
-        		$val = preg_replace("/ /", '', $str);
-        
-        		echo '<option value="'.$val.'" ';
-        		if($calc->getFoldschemeAddContent2() == $val) echo "selected";
-        		echo '>'.$str.'</option>';
-        	}
-        	echo '</select>';
+        if($calc->getPagesAddContent2()){
+            echo '<div class="col-md-4"><div class="form-group">';
+            echo '<label class="control-label">Inhalt 3</label><div class="input-group">';
+            echo '<select name="foldscheme_addcontent2" class="form-control">';
+            foreach($schemes[4] as $scheme)
+            {
+                $str = '';
+                if($scheme[16])
+                    $str .= $scheme[16]." x 16, ";
+                if($scheme[8])
+                    $str .= $scheme[8]." x 8, ";
+                if($scheme[4])
+                    $str .= $scheme[4]." x 4, ";
+
+                $str = substr($str, 0, -2);
+                $val = preg_replace("/ /", '', $str);
+
+                echo '<option value="'.$val.'" ';
+                if($calc->getFoldschemeAddContent2() == $val) echo "selected";
+                echo '>'.$str.'</option>';
+            }
+            echo '</select>';
+            echo '</div></div></div>';
         }
-        if($calc->getPagesAddContent3())
-        {
-        	echo $_LANG->get('zus. Inhalt 3')." ";
-        	echo '<select name="foldscheme_addcontent3" style="width:120px" class="text">';
-        	foreach($schemes[5] as $scheme)
-        	{
-        		$str = '';
-        		if($scheme[16])
-        			$str .= $scheme[16]." x 16, ";
-        		if($scheme[8])
-        			$str .= $scheme[8]." x 8, ";
-        		if($scheme[4])
-        			$str .= $scheme[4]." x 4, ";
-        
-        		$str = substr($str, 0, -2);
-        		$val = preg_replace("/ /", '', $str);
-        
-        		echo '<option value="'.$val.'" ';
-        		if($calc->getFoldschemeAddContent3() == $val) echo "selected";
-        		echo '>'.$str.'</option>';
-        	}
-        	echo '</select>';
+        if($calc->getPagesAddContent3()){
+            echo '<div class="col-md-4"><div class="form-group">';
+            echo '<label class="control-label">Inhalt 3</label><div class="input-group">';
+            echo '<select name="foldscheme_addcontent3" class="form-control">';
+            foreach($schemes[5] as $scheme)
+            {
+                $str = '';
+                if($scheme[16])
+                    $str .= $scheme[16]." x 16, ";
+                if($scheme[8])
+                    $str .= $scheme[8]." x 8, ";
+                if($scheme[4])
+                    $str .= $scheme[4]." x 4, ";
+
+                $str = substr($str, 0, -2);
+                $val = preg_replace("/ /", '', $str);
+
+                echo '<option value="'.$val.'" ';
+                if($calc->getFoldschemeAddContent3() == $val) echo "selected";
+                echo '>'.$str.'</option>';
+            }
+            echo '</select>';
+            echo '</div></div></div>';
         }
     
     }
-    echo '&nbsp;';
 }
 
 // Bogenformat Auswahl updaten
@@ -399,18 +354,9 @@ if($_REQUEST["exec"] == "updateAvailPapers")
     $partId = (int)$_REQUEST["partId"];
     $calc = new Calculation((int)$_REQUEST["calcId"]);
     
-    if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||$mach-->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+    if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||$mach->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
     {
-//        if ($partId == Calculation::PAPER_CONTENT)
-//            $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
-//        else if ($partId == Calculation::PAPER_ADDCONTENT)
-//            $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
-//        else if ($partId == Calculation::PAPER_ENVELOPE)
-//            $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach, $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen());
-//        else if ($partId == Calculation::PAPER_ADDCONTENT2)
-//        	$sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
-//        else if ($partId == Calculation::PAPER_ADDCONTEN3)
-//        	$sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen());
+        echo '<div class="form-group">';
         if ($partId == Calculation::PAPER_CONTENT)
             $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperContent()->getRolle(), $calc->getProductFormatHeightOpen());
         else if ($partId == Calculation::PAPER_ADDCONTENT)
@@ -421,25 +367,25 @@ if($_REQUEST["exec"] == "updateAvailPapers")
             $sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent2()->getRolle(), $calc->getProductFormatHeightOpen());
         else if ($partId == Calculation::PAPER_ADDCONTENT3)
             $sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent3()->getRolle(), $calc->getProductFormatHeightOpen());
-    
-        echo '<select name="mach_papersize_'.$x.'" style="width:80px">';
-        foreach($sizes as $s)
-        {
-            echo '<option value="'.$s["width"].'x'.$s["height"].'" ';
-            if($partId == Calculation::PAPER_CONTENT)
-                if ($s["width"].'x'.$s["height"] == $calc->getPaperContentWidth().'x'.$calc->getPaperContentHeight()) echo 'selected';
-            if($partId == Calculation::PAPER_ADDCONTENT)
-                if ($s["width"].'x'.$s["height"] == $calc->getPaperAddContentWidth().'x'.$calc->getPaperAddContentHeight()) echo 'selected';
-            if($partId == Calculation::PAPER_ENVELOPE)
-                if ($s["width"].'x'.$s["height"] == $calc->getPaperEnvelopeWidth().'x'.$calc->getPaperEnvelopeHeight()) echo 'selected';
-            if($partId == Calculation::PAPER_ADDCONTENT2)
-            	if ($s["width"].'x'.$s["height"] == $calc->getPaperAddContent2Width().'x'.$calc->getPaperAddContent2Height()) echo 'selected';
-            if($partId == Calculation::PAPER_ADDCONTENT3)
-            	if ($s["width"].'x'.$s["height"] == $calc->getPaperAddContent3Width().'x'.$calc->getPaperAddContent3Height()) echo 'selected';
+
+        echo '<select name="mach_papersize_' . $x . '" class="form-control">';
+        foreach ($sizes as $s) {
+            echo '<option value="' . $s["width"] . 'x' . $s["height"] . '" ';
+            if ($partId == Calculation::PAPER_CONTENT)
+                if ($s["width"] . 'x' . $s["height"] == $calc->getPaperContentWidth() . 'x' . $calc->getPaperContentHeight()) echo 'selected';
+            if ($partId == Calculation::PAPER_ADDCONTENT)
+                if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContentWidth() . 'x' . $calc->getPaperAddContentHeight()) echo 'selected';
+            if ($partId == Calculation::PAPER_ENVELOPE)
+                if ($s["width"] . 'x' . $s["height"] == $calc->getPaperEnvelopeWidth() . 'x' . $calc->getPaperEnvelopeHeight()) echo 'selected';
+            if ($partId == Calculation::PAPER_ADDCONTENT2)
+                if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContent2Width() . 'x' . $calc->getPaperAddContent2Height()) echo 'selected';
+            if ($partId == Calculation::PAPER_ADDCONTENT3)
+                if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContent3Width() . 'x' . $calc->getPaperAddContent3Height()) echo 'selected';
             echo '>';
-            echo $s["width"].' x '.$s["height"].'</option>';
+            echo $s["width"] . ' x ' . $s["height"] . '</option>';
         }
         echo '</select>';
+        echo '</div>';
     }
     echo '&nbsp;';
 }

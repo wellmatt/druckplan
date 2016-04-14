@@ -97,6 +97,9 @@ if ($_USER == false)
 } else
 {
 
+//    if ($_USER->getLogin() != "ascherer")
+//        die('contilas2 ist im Wartungsmodus (13.04.2016 by A.Scherer)');
+
     /* Logindaten merken?
      * Daten werden für 365 Tage gemerkt
     */
