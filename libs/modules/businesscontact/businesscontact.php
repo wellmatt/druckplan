@@ -58,6 +58,8 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <!-- <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.columnFilter.js"></script> -->
 <script type="text/javascript">
+
+
 $(document).ready(function() {
     var bcon_table = $('#bcon_table').DataTable( {
         // "scrollY": "600px",
@@ -67,7 +69,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"dom": 'T<"clear">flrtip',        
+		"dom": 'T<"clear">flrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -94,7 +96,7 @@ $(document).ready(function() {
 		            { "sortable": false },
 		            { "sortable": false }
 		          ],
-		"language": 
+		"language":
 					{
 						"emptyTable":     "Keine Daten vorhanden",
 						"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",

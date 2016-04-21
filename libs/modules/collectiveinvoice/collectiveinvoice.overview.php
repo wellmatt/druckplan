@@ -156,65 +156,78 @@ $(document).ready(function() {
 	
 } );
 </script>
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorg&auml;nge')?></td>
-      <td><?=$savemsg?></td>
-      <?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
-      <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php"><img src="images/icons/arrow-join.svg">
-      	<span style="font-size:13px"><?=$_LANG->get('Vorgänge Zusammenführen')?></span></a>
-      </td>
-      <?php }?>
-      <td width="200" class="content_header" align="right">
-      	<a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user"><img src="images/icons/details_open.svg">
-      	<span style="font-size:13px"><?=$_LANG->get('Vorgang hinzuf&uuml;gen')?></span></a>
-   </tr>
-</table>
-
-<div class="box1">
-
-<div class="box2">
-    <table>
-        <tr align="left">
-            <td>Datum Filter:&nbsp;&nbsp;</td>
-            <td valign="left">
-                <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
-                <input name="date_min" id="date_min" style="width:70px;" class="text" 
-                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-            </td>
-            <td valign="left">
-                <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
-                bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
-                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-            </td>
-			<td valign="left">
-				Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" style="width:110px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<?
-					foreach ($all_attributes AS $attribute){
-						$allitems = $attribute->getItems();
-						foreach ($allitems AS $item){ ?>
-							<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
-						<? }
-					} ?>
-				</select>
-			</td>
-        </tr>
-    </table>
-</div>
-</br>
-<table id="colinv" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-	<thead>
-		<tr>
-			<th width="10"><?=$_LANG->get('ID')?></th>
-			<th width="100"><?=$_LANG->get('Nummer')?></th>
-			<th><?=$_LANG->get('Kunde')?></th>
-			<th><?=$_LANG->get('Titel')?></th>
-			<th width="90"><?=$_LANG->get('Angelegt am')?></th>
-			<th width="150"><?=$_LANG->get('Status')?></th>
-			<th width="80"><?=$_LANG->get('Optionen')?></th>
-		</tr>
-	</thead>
-</table>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Vorgänge
+				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
+				<span class="pull-right">
+					<img src="images/icons/arrow-join.svg">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">
+						<?=$_LANG->get('Vorgänge Zusammenführen') ?>
+					</button>
+				</span>
+				<?php }?>
+				<span class="pull-right">
+					<img src="images/icons/details_open.svg">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
+						<?=$_LANG->get('Vorgang hinzuf&uuml;gen') ?>
+					</button>
+				</span>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Filter
+				</h3>
+			</div>
+			<div class="panel-body">
+				<table>
+					<tr align="left">
+						<td>Datum Filter:&nbsp;&nbsp;</td>
+						<td valign="left">
+							<input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+							<input name="date_min" id="date_min" style="width:70px;" class="text"
+								   onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+						</td>
+						<td valign="left">
+							<input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+							bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+						</td>
+						<td valign="left">
+							Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" style="width:110px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+								<?
+								foreach ($all_attributes AS $attribute){
+									$allitems = $attribute->getItems();
+									foreach ($allitems AS $item){ ?>
+										<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
+									<? }
+								} ?>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	</br>
+	<div class="table-responsive">
+		<table id="colinv" class="table table-hover">
+			<thead>
+			<tr>
+				<th width="10"><?=$_LANG->get('ID')?></th>
+				<th width="100"><?=$_LANG->get('Nummer')?></th>
+				<th><?=$_LANG->get('Kunde')?></th>
+				<th><?=$_LANG->get('Titel')?></th>
+				<th width="90"><?=$_LANG->get('Angelegt am')?></th>
+				<th width="150"><?=$_LANG->get('Status')?></th>
+				<th width="80"><?=$_LANG->get('Optionen')?></th>
+			</tr>
+			</thead>
+		</table>
+	</div>
 </div>

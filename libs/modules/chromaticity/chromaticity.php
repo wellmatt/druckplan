@@ -21,14 +21,42 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
 } else
 {
     $chromaticities = Chromaticity::getAllChromaticities(Chromaticity::ORDER_NAME);
-?>
+?><div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Farbigkeit</h3>
+    </div>
+    <div class="panel-heading">
+        <h3 class="panel-title">Farbigkeit hinzuf&uuml;gen</h3>
+    </div>
+    <div class="table-responsive">
+        <br>
+        <table id="cp_table" class="table table-hover">
+            <thead>
+            <tr>
+                <td class="content_row_header"><?=$_LANG->get('ID')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Bezeichnung')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Vorderseite')?></td>
+                <td class="content_row_header"><?=$_LANG->get('R&uuml;ckseite')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Sch&ouml;n-/Widerdruck')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Aufschlag')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
 
 <table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Farbigkeit')?></td>
-      <td><?=$savemsg?></td>
-      <td width="200" class="content_header" align="right"><a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit"><img src="images/icons/color--plus.png"> <?=$_LANG->get('Farbigkeit hinzuf&uuml;gen')?></a></td>
-   </tr>
+    <tr>
+        <td width="200" class="content_header"><img
+                src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Farbigkeit')?>
+        </td>
+        <td><?=$savemsg?></td>
+        <td width="200" class="content_header" align="right"><a class="icon-link"
+                                                                href="index.php?page=<?=$_REQUEST['page']?>&exec=edit"><img
+                    src="images/icons/color--plus.png"> <?=$_LANG->get('Farbigkeit hinzuf&uuml;gen')?>
+            </a></td>
+    </tr>
 </table>
 <div class="box1">
 <table width="100%"	border="0" cellpadding="0" cellspacing="0">

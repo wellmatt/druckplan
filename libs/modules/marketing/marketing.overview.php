@@ -31,14 +31,12 @@ $marketjobs = Marketing::getAllForList($curr_list);
         <td class="content_header" align="right">
             <a href="libs/modules/marketing/marketing.full.php" target="_blank" class="icon-link">
                 <span style="font-size: 13px"><?= $_LANG->get('In neuem Fenster öffnen') ?></span>
-            </a>
-        </td>
+        </td></a>
         <td class="content_header" align="right">
             <a href="index.php?page=libs/modules/marketing/marketing.edit.php&exec=new&list=<?=$curr_list?>" class="icon-link">
                 <img src="images/icons/ticket--plus.png">
                 <span style="font-size: 13px"><?= $_LANG->get('Eintrag erstellen') ?></span>
-            </a>
-        </td>
+        </td> </a>
     </tr>
 </table>
 </br>

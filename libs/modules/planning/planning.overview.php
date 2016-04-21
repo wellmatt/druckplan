@@ -196,42 +196,43 @@ function TableRefresh()
 	$('#planning_table').dataTable().fnDraw(); 
 }
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Planungsübersicht
+			</h3>
+	  </div>
+	  <div class="panel-body">
+	  </div>
 
-<div class="row">
-  <div class="col-md-4">
-    <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-    <span style="font-size: 13px"><?=$_LANG->get('Planungsübersicht')?></span>
-  </div>
-  <div class="col-md-4" style="text-align: right;"><?=$savemsg?></div>
-</div>
 </br>
 
-
-<div class="box1">
-	<table id="planning_table" width="100%" cellpadding="0" cellspacing="0" class="display stripe hover row-border order-column">
-		<thead>
-			<tr>
-			    <th></th>
-				<th><?=$_LANG->get('ID')?></th>
-				<th><?=$_LANG->get('Auftrag')?></th>
-				<th><?=$_LANG->get('Titel')?></th>
-				<th><?=$_LANG->get('Kunde')?></th>
-				<th><?=$_LANG->get('Fällig')?></th>
-				<th><?=$_LANG->get('Bemerkung')?></th>
-				<th><?=$_LANG->get('verpl. Jobs')?></th>
-			</tr>
-		</thead>
-		<tfoot>
-			<tr>
-			    <th></th>
-				<th><?=$_LANG->get('ID')?></th>
-				<th><?=$_LANG->get('Auftrag')?></th>
-				<th><?=$_LANG->get('Titel')?></th>
-				<th><?=$_LANG->get('Kunde')?></th>
-				<th><?=$_LANG->get('Fällig')?></th>
-				<th><?=$_LANG->get('Bemerkung')?></th>
-				<th><?=$_LANG->get('verpl. Jobs')?></th>
-			</tr>
-		</tfoot>
-	</table>
+	<div class="table-responsive">
+		<table id="planning_table"class="table table-hover">
+			<thead>
+				<tr>
+					<th></th>
+					<th><?=$_LANG->get('ID')?></th>
+					<th><?=$_LANG->get('Auftrag')?></th>
+					<th><?=$_LANG->get('Titel')?></th>
+					<th><?=$_LANG->get('Kunde')?></th>
+					<th><?=$_LANG->get('Fällig')?></th>
+					<th><?=$_LANG->get('Bemerkung')?></th>
+					<th><?=$_LANG->get('verpl. Jobs')?></th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th></th>
+					<th><?=$_LANG->get('ID')?></th>
+					<th><?=$_LANG->get('Auftrag')?></th>
+					<th><?=$_LANG->get('Titel')?></th>
+					<th><?=$_LANG->get('Kunde')?></th>
+					<th><?=$_LANG->get('Fällig')?></th>
+					<th><?=$_LANG->get('Bemerkung')?></th>
+					<th><?=$_LANG->get('verpl. Jobs')?></th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 </div>

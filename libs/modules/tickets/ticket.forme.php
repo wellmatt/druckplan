@@ -170,31 +170,24 @@ $(document).ready(function() {
 	}
 } );
 </script>
-
 <div id="hidden_clicker" style="display:none">
-<a id="hiddenclickerforme" href="http://www.google.com" >Hidden Clicker</a>
+	<a id="hiddenclickerforme" href="http://www.google.com" >Hidden Clicker</a>
 </div>
-
-<table width="100%">
-	<tr>
-		<td width="250" class="content_header">
-			<img src="images/icons/clipboard-task.png"> 
-			<span style="font-size: 13px"><?=$_LANG->get('Meine Tickets')?></span>
-		</td>
-		<td width="150" class="content_header" align="right">
-		<?=$savemsg?>
-		</td>
-		<td class="content_header" align="right">
-		  <a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> 
-		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
-		</td>
-	</tr>
-</table>
-
-
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Meine Tickets
+				<span class="pull-right">
+					<img src="images/icons/ticket--plus.png">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=new';">
+						<?=$_LANG->get('Ticket erstellen') ?>
+					</button>
+				</span>
+			</h3>
+	  </div>
 <br/>
-<div class="box1">
-	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+	<div class="table-responsive">
+	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column table-hover">
         <thead>
             <tr>
                 <th><?=$_LANG->get('ID')?></th>
@@ -226,4 +219,5 @@ $(document).ready(function() {
 			</tr>
 		</tfoot>
 	</table>
+	</div>
 </div>

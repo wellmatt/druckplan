@@ -177,56 +177,48 @@ $(document).ready(function() {
 	}
 } );
 </script>
-
 <div id="hidden_clicker" style="display:none">
-<a id="hiddenclickerformeabo" href="http://www.google.com" >Hidden Clicker</a>
+	<a id="hiddenclickerformeabo" href="http://www.google.com" >Hidden Clicker</a>
 </div>
-
-<table width="100%">
-	<tr>
-		<td width="250" class="content_header">
-			<img src="images/icons/clipboard-task.png"> 
-			<span style="font-size: 13px"><?=$_LANG->get('Meine Abonnements')?></span> <small>(nicht direkt beteiligt)</small>
-		</td>
-		<td width="150" class="content_header" align="right">
-		<?=$savemsg?>
-		</td>
-	</tr>
-</table>
-
-
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Meine Abonnements
+			</h3>
+	  </div>
 <br/>
-<div class="box1">
-	<table id="ticketsabotable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-        <thead>
-            <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('#')?></th>
-                <th><?=$_LANG->get('Kategorie')?></th>
-                <th><?=$_LANG->get('Datum')?></th>
-                <th><?=$_LANG->get('erst. von')?></th>
-                <th><?=$_LANG->get('Fällig')?></th>
-                <th><?=$_LANG->get('Betreff')?></th>
-                <th><?=$_LANG->get('Status')?></th>
-                <th><?=$_LANG->get('Von')?></th>
-                <th><?=$_LANG->get('Priorität')?></th>
-                <th><?=$_LANG->get('Zugewiesen an')?></th>
-            </tr>
-        </thead>
-		<tfoot>
-			<tr>
-				<th><?=$_LANG->get('ID')?></th>
-				<th><?=$_LANG->get('#')?></th>
-				<th><?=$_LANG->get('Kategorie')?></th>
-				<th><?=$_LANG->get('Datum')?></th>
-				<th><?=$_LANG->get('erst. von')?></th>
-				<th><?=$_LANG->get('Fällig')?></th>
-				<th><?=$_LANG->get('Betreff')?></th>
-				<th><?=$_LANG->get('Status')?></th>
-				<th><?=$_LANG->get('Von')?></th>
-				<th><?=$_LANG->get('Priorität')?></th>
-				<th><?=$_LANG->get('Zugewiesen an')?></th>
-			</tr>
-		</tfoot>
-	</table>
+	<div class="table-responsive">
+		<table id="ticketsabotable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column table-hover">
+			<thead>
+				<tr>
+					<th><?=$_LANG->get('ID')?></th>
+					<th><?=$_LANG->get('#')?></th>
+					<th><?=$_LANG->get('Kategorie')?></th>
+					<th><?=$_LANG->get('Datum')?></th>
+					<th><?=$_LANG->get('erst. von')?></th>
+					<th><?=$_LANG->get('Fällig')?></th>
+					<th><?=$_LANG->get('Betreff')?></th>
+					<th><?=$_LANG->get('Status')?></th>
+					<th><?=$_LANG->get('Von')?></th>
+					<th><?=$_LANG->get('Priorität')?></th>
+					<th><?=$_LANG->get('Zugewiesen an')?></th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th><?=$_LANG->get('ID')?></th>
+					<th><?=$_LANG->get('#')?></th>
+					<th><?=$_LANG->get('Kategorie')?></th>
+					<th><?=$_LANG->get('Datum')?></th>
+					<th><?=$_LANG->get('erst. von')?></th>
+					<th><?=$_LANG->get('Fällig')?></th>
+					<th><?=$_LANG->get('Betreff')?></th>
+					<th><?=$_LANG->get('Status')?></th>
+					<th><?=$_LANG->get('Von')?></th>
+					<th><?=$_LANG->get('Priorität')?></th>
+					<th><?=$_LANG->get('Zugewiesen an')?></th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 </div>

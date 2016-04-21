@@ -84,7 +84,16 @@ if ($_REQUEST["stat_tradegroup"]) {
           <div class="panel-body">
                 <div class="panel panel-default">
                       <div class="panel-heading">
-                            <h3 class="panel-title">Filter</h3>
+                            <h3 class="panel-title">Filter
+                                  <span class="pull-right">
+                                                <button class="btn btn-xs btn-success" onclick="$('#stat_colinv').submit();">
+                                                    Refresh
+                                                </button>
+                                                 <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
+                                                     Drucken
+                                                 </button>
+                                  </span>
+                            </h3>
                       </div>
                       <div class="panel-body">
                           <div class="row">
@@ -150,9 +159,6 @@ if ($_REQUEST["stat_tradegroup"]) {
                                   <div class="col-sm-3">
                                       <input type="text" class="form-control" name="search_user" id="search_user">
                                       <input type="hidden" name="stat_user" id="stat_user">
-                                  </div>
-                                  <div class="col-md-offset-6 col-md-2">
-                                      <button class="btn btn-sm btn-success" type="submit">Refresh</button>
                                   </div>
                               </div>
                           </div>
@@ -462,4 +468,6 @@ if ($_REQUEST["stat_tradegroup"]) {
         });
     });
 </script>
-
+{$order->getDeliverydate()
+"<? echo date('d.m.Y', $order); ?>
+}

@@ -229,16 +229,18 @@ class Statistics {
         return $retval;
 }
 
+
     /**
      * @param $start
      * @param $end
+     * @param $user
      * @param $businesscontact
      * @param $tradegroup
      * @param $article
      * @param $status
      * @return array
      */
-    public static function Calcstat( $start, $end, $businesscontact, $tradegroup, $article, $status)
+    public static function Calcstat( $start, $end, $businesscontact, $user, $article, $tradegroup, $status )
     {
 
         global $DB;
@@ -248,6 +250,9 @@ class Statistics {
         $where = "";
         if ($businesscontact != 0){
             $where .= " AND businesscontact.id = {$businesscontact} ";
+        }
+        if ($user != 0){
+            $where .= " AND `user`.id = {$user} ";
         }
         if ($tradegroup != 0){
             $where .= " AND tradegroup.id = {$tradegroup} ";

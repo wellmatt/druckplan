@@ -58,6 +58,9 @@ $mgroups = MachineGroup::getAllMachineGroups();
                                         <button class="btn btn-xs btn-success" onclick="$('#stat_mach').submit();">
                                             Refresh
                                         </button>
+                                         <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
+                                             Drucken
+                                         </button>
                                     </span>
                                 </h3>
                           </div>

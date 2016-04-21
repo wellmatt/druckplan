@@ -85,25 +85,23 @@ $(document).ready(function() {
     });
 } );
 </script>
-<table width="100%">
-<tr>
-        <td width="220" class="content_header">
-            <img src="images/icons/user-detective.png"> <span style="font-size: 13px"><?=$_LANG->get('Private Kontakte')?></span>
-		</td>
-		<td align="right">
-		    <img src="images/icons/plus.png"> <span onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0'" style="font-size: 13px"><?=$_LANG->get('Neuer Kontakt')?></span></a>
-		</td>
-	</tr>
-</table>
-<div class="box1">
-	<table id="cp_table" width="100%" class="stripe hover row-border order-column">
-        <thead>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Private Kontakte</h3>
+        <td align="right">
+            <img src="images/icons/plus.png"> <span onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0'" style="font-size: 13px"
+    </div>
+    <div class="table-responsive">
+        <br>
+        <table id="cp_table" class="table table-hover">
+            <thead>
             <tr>
                 <th width="10">ID</th>
                 <th>Name</th>
                 <th>Firma</th>
-                <th>Benutzer</th>
+                <th width="80">Optionen</th>
             </tr>
-        </thead>
-	</table>
+            </thead>
+        </table>
+    </div>
 </div>

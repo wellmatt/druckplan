@@ -34,6 +34,9 @@ if ($_REQUEST["stat_from"]) {
 if ($_REQUEST["stat_to"]) {
     $end = strtotime($_REQUEST["stat_to"]);
 }
+if ($_REQUEST["stat_user"]) {
+    $stat_user = $_REQUEST["stat_user"];
+}
 if ($_REQUEST["stat_customer"]) {
     $stat_customer = $_REQUEST["stat_customer"];
 }
@@ -43,7 +46,7 @@ if ($_REQUEST["stat_status"]) {
 if ($_REQUEST["stat_tradegroup"]) {
     $stat_tradegroup = $_REQUEST["stat_tradegroup"];
 }
-$calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $article, $status);
+$calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $user,  $article, $status);
 
 ?>
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -74,6 +77,9 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                         <button class="btn btn-xs btn-success" onclick="$('#stat_calc').submit();">
                                             Refresh
                                         </button>
+                                         <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
+                                             Drucken
+                                         </button>
                                     </span>
                             </h3>
                         </div>
@@ -87,6 +93,23 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                     <label for="" class="col-sm-1 control-label">Bis</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" name="stat_to" id="stat_to" value="<?php echo date('d.m.Y',$end);?>" placeholder="">
+                                    </div>
+                                    <label for="" class="col-sm-1 control-label">Status</label>
+                                    <div class="col-sm-3">
+                                        <select name="stat_status" id="" class="form-control">
+                                            <option value="0">- Alle -</option>
+                                            <option value="1">Angelegt</option>
+                                            <option value="2">Gesendet u. Bestellt</option>
+                                            <option value="3">angenommen</option>
+                                            <option value="4">In Produktion</option>
+                                            <option value="5">Erledigt</option>
+                                        </select>
+                                    </div>
+                                    <label for="" class="col-sm-1 control-label">Kunde</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="search_customer"
+                                               id="search_customer">
+                                        <input type="hidden" name="stat_customer" id="stat_customer">
                                     </div>
                                     <label for="" class="col-sm-1 control-label">Warengruppe</label>
                                     <div class="col-sm-3">
@@ -103,27 +126,15 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                             ?>
                                         </select>
                                     </div>
-                                    <label for="" class="col-sm-1 control-label">Kunde</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="search_customer"
-                                               id="search_customer">
-                                        <input type="hidden" name="stat_customer" id="stat_customer">
-                                    </div>
-                                    <label for="" class="col-sm-1 control-label">Status</label>
-                                    <div class="col-sm-3">
-                                        <select name="stat_status" id="" class="form-control">
-                                            <option value="0">- Alle -</option>
-                                            <option value="1">Angelegt</option>
-                                            <option value="2">Gesendet u. Bestellt</option>
-                                            <option value="3">angenommen</option>
-                                            <option value="4">In Produktion</option>
-                                            <option value="5">Erledigt</option>
-                                        </select>
-                                    </div>
                                     <label for="" class="col-sm-1 control-label">Artikel</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" name="search_article" id="search_article">
                                         <input type="hidden" name="stat_article" id="stat_article">
+                                    </div>
+                                    <label for="" class="col-sm-1 control-label">Benutzer</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="search_user" id="search_user">
+                                        <input type="hidden" name="stat_user" id="stat_user">
                                     </div>
                                 </div>
                             </div>
