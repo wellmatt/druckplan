@@ -69,7 +69,7 @@ class CollectiveInvoice{
     private $revert_footer;
 
 	/**
-	 * Konstruktor f�r die Sammelrechnungen
+	 * Konstruktor fuer die Sammelrechnungen
 	 * 
 	 * @param int $id
 	 */

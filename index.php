@@ -471,9 +471,8 @@ function sleep(millis, callback) {
     </nav>
 <!--   </div> -->
 
-<div class="content">
+<div class="content" style="border: none;"> <!-- content -->
 <!-- 	<div class="container"> -->
-<!-- 	   <center> -->
 		<?
 		if ($_REQUEST['page']) {
 			require_once($_REQUEST['page']);
@@ -481,7 +480,6 @@ function sleep(millis, callback) {
 			require_once('./libs/basic/home.php');
 		}
 		?>
-<!--        </center> -->
 <!-- 	</div> -->
 </div>
 
