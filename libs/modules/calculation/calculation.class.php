@@ -60,6 +60,7 @@ class Calculation
     private $margin = 0;
     private $discount = 0;
     private $calcAutoValues = 1;
+    private $calcDebug = 0;
     private $chromaticitiesContent = null;
     private $chromaticitiesAddContent = null;
     private $chromaticitiesEnvelope = null;
@@ -175,6 +176,7 @@ class Calculation
                 $this->discount = $r["discount"];
                 $this->state = $r["state"];
                 $this->calcAutoValues = $r["calc_auto_values"];
+                $this->calcDebug = $r["calc_debug"];
                 $this->chromaticitiesContent= new Chromaticity($r["chromaticities_content"]);
                 $this->chromaticitiesAddContent= new Chromaticity($r["chromaticities_addcontent"]);
                 $this->chromaticitiesEnvelope= new Chromaticity($r["chromaticities_envelope"]);
@@ -359,6 +361,7 @@ class Calculation
                         chromaticities_envelope = {$this->chromaticitiesEnvelope->getId()},
                         state = {$this->state},
                         calc_auto_values = {$this->calcAutoValues},
+                        calc_debug = {$this->calcDebug},
                         text_processing = '{$this->textProcessing}',
                         foldscheme_content = '{$this->foldschemeContent}',
                         foldscheme_addcontent = '{$this->foldschemeAddContent}',
@@ -472,6 +475,7 @@ class Calculation
                 'height'=>'getPaperContentHeight',
                 'pages'=>'getPagesContent',
                 'grant'=>'getPaperContentGrant',
+                'const'=>Calculation::PAPER_CONTENT,
             ],
             [
                 'name'=>'Inhalt 2',
@@ -482,6 +486,7 @@ class Calculation
                 'height'=>'getPaperAddContentHeight',
                 'pages'=>'getPagesAddContent',
                 'grant'=>'getPaperAddContentGrant',
+                'const'=>Calculation::PAPER_ADDCONTENT,
             ],
             [
                 'name'=>'Inhalt 3',
@@ -492,6 +497,7 @@ class Calculation
                 'height'=>'getPaperAddContent2Height',
                 'pages'=>'getPagesAddContent2',
                 'grant'=>'getPaperAddContent2Grant',
+                'const'=>Calculation::PAPER_ADDCONTENT2,
             ],
             [
                 'name'=>'Inhalt 4',
@@ -502,6 +508,7 @@ class Calculation
                 'height'=>'getPaperAddContent3Height',
                 'pages'=>'getPagesAddContent3',
                 'grant'=>'getPaperAddContent3Grant',
+                'const'=>Calculation::PAPER_ADDCONTENT3,
             ],
             [
                 'name'=>'Umschlag',
@@ -512,6 +519,7 @@ class Calculation
                 'height'=>'getPaperEnvelopeHeight',
                 'pages'=>'getPagesEnvelope',
                 'grant'=>'getPaperEnvelopeGrant',
+                'const'=>Calculation::PAPER_ENVELOPE,
             ],
         ];
         return $contents;
@@ -1216,6 +1224,7 @@ class Calculation
     
     public function getPlateSetCount($machineEntry = null) {
         $platesets = 0;
+        $tmp_platesets = 0;
         if($machineEntry == null)
         {
             $machEntries = Machineentry::getAllMachineentries($this->getId());
@@ -2378,6 +2387,22 @@ class Calculation
     public function setFormat_in_envelope($format_in_envelope)
     {
         $this->format_in_envelope = $format_in_envelope;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCalcDebug()
+    {
+        return $this->calcDebug;
+    }
+
+    /**
+     * @param int $calcDebug
+     */
+    public function setCalcDebug($calcDebug)
+    {
+        $this->calcDebug = $calcDebug;
     }
 }
 ?>

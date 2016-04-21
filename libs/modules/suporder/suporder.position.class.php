@@ -29,13 +29,23 @@ class SupOrderPosition extends Model
      */
     public static function getAllForSupOrder(SupOrder $supOrder)
     {
+        $positions = [];
+
         $retval = self::fetch([
             [
                 'column'=>'suporder',
                 'value'=>$supOrder->getId()
             ]
         ]);
-        return $retval;
+
+        if ($retval){
+            foreach ($retval as $position) {
+                if ($position->getArticle()->getUsesstorage())
+                    $positions[] = $position;
+            }
+        }
+
+        return $positions;
     }
 
     /**

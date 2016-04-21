@@ -7,12 +7,7 @@
  *
  */
 
-$tmp_positions = SupOrderPosition::getAllForSupOrder($origin);
-$positions = [];
-foreach ($tmp_positions as $position) {
-    if ($position->getArticle()->getUsesstorage())
-        $positions[] = $position;
-}
+$positions = SupOrderPosition::getAllForSupOrder($origin);
 ?>
 
 <?php foreach ($positions as $position) {
@@ -40,7 +35,7 @@ foreach ($tmp_positions as $position) {
                       <b>Eingegangen:</b> <span id="book_amount_<?php echo $position->getId();?>"><?php echo $position->getAmount();?></span>
                   </div>
                   <div class="col-md-6">
-                      <b>zu Buchen:</b> <span class="" id="tobook_<?php echo $position->getId();?>"><?php echo $position->getAmount();?></span>
+                      <b>zu Buchen:</b> <span class="" id="tobook_<?php echo $position->getId();?>"><?php echo StorageBookEnrty::calcutateToBookAmount($position);?></span>
                   </div>
               </div>
               <br>
@@ -49,7 +44,7 @@ foreach ($tmp_positions as $position) {
                   <div class="col-md-12">
                       <div class="panel panel-default">
                           <div class="panel-heading">
-                              <h3 class="panel-title">Artikellager mit freier Belegung</h3>
+                              <h3 class="panel-title">Bestandslager mit freier Belegung</h3>
                           </div>
                           <div class="panel-body">
                                   <div class="row">
@@ -73,11 +68,21 @@ foreach ($tmp_positions as $position) {
                                               <?php echo $this_position->getAllocation();?>%
                                           </div>
                                           <div class="col-md-3">
-                                              <input type="text" name="" id="" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
+                                              <input type="text" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][amount]" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
                                           </div>
                                           <div class="col-md-3">
                                               <div class="input-group">
-                                                  <input type="number" min="1" max="<?php echo 100-$storage['alloc'];?>" class="form-control numberBox">
+                                                  <div class="input-group-btn">
+                                                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
+                                                      <ul class="dropdown-menu">
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,0);">0%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,25);">25%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,50);">50%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,75);">75%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
+                                                      </ul>
+                                                  </div>
+                                                  <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
                                                   <span class="input-group-addon">%</span>
                                               </div>
                                           </div>
@@ -117,11 +122,21 @@ foreach ($tmp_positions as $position) {
                                               &nbsp;
                                           </div>
                                           <div class="col-md-3">
-                                              <input type="text" name="" id="" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
+                                              <input type="text" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][amount]" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
                                           </div>
                                           <div class="col-md-3">
                                               <div class="input-group">
-                                                  <input type="number" min="1" max="<?php echo 100-$storage['alloc'];?>" class="form-control numberBox">
+                                                  <div class="input-group-btn">
+                                                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
+                                                      <ul class="dropdown-menu">
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,0);">0%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,25);">25%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,50);">50%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,75);">75%</a></li>
+                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
+                                                      </ul>
+                                                  </div>
+                                                  <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
                                                   <span class="input-group-addon">%</span>
                                               </div>
                                           </div>
@@ -138,6 +153,14 @@ foreach ($tmp_positions as $position) {
 <?php } ?>
 
 <script>
+    function setAlloc(posid,stid,perc){
+        var input = $('#book_alloc_'+posid+'_'+stid);
+        if (perc <= parseInt(input.attr('max'))){
+            input.val(perc);
+        } else {
+            input.val(input.attr('max'));
+        }
+    }
     $(function () {
         $( ".numberBox" ).change(function() {
             var max = parseInt($(this).attr('max'));
@@ -154,19 +177,25 @@ foreach ($tmp_positions as $position) {
     });
     $(document).on('change', '.bookinput', function(e){
         var id = $(this).attr('data-bookid');
+        console.log('ID: '+id);
         var amount = $('#book_amount_'+id).text();
+        console.log('amount: '+amount);
         var now = 0;
         var inputs = $('.tobook_'+id);
 
-        if (amount-$(this).val()<0){
+        if (amount - parseInt($(this).val()) < 0){
             $(this).val(0);
             alert('Anzahl Buchungen > Eingegangene Anzahl!');
         }
 
-        inputs.each(function( index ) {
-            now = now + $(this).val();
+        inputs.each(function( index, ele ) {
+            if (isNaN(parseInt($(ele).val())) == false){
+                now = now + parseInt($(ele).val());
+                console.log('now+ : '+ parseInt($(ele).val()));
+            }
         });
         var result = amount - now;
+        console.log('result: '+ result);
         $('#tobook_'+id).text(result);
         if (result == 0)
             $('#heading_'+id).css('background-color','#dff0d8');

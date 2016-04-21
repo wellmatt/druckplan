@@ -459,7 +459,7 @@ foreach ($calculations as $c){
                                   <?php
                                   if ($calc->getPaperContent()->getRolle() != 1){
                                       ?>
-                                      <?=printBigInt($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant())?> <?=$_LANG->get('B&ouml;gen')?>
+                                      <?=printBigInt($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant())?> <?=$_LANG->get('Bogen')?>
                                       <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
                                       <?=$_USER->getClient()->getCurrency()?>
                                       <?php
@@ -482,7 +482,7 @@ foreach ($calculations as $c){
                               <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                               <? foreach($calculations as $calc) { ?>
                                   <td class="content_row_clear value">
-                                      <input name="grant_content_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperContentGrant())?>"> <?=$_LANG->get('B&ouml;gen')?>
+                                      <input name="grant_content_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperContentGrant())?>"> <?=$_LANG->get('Bogen')?>
                                   </td>
                               <? } ?>
                           </tr>
@@ -503,7 +503,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 1')?></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printPrice($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront())))?>
+                                  <?=printPrice($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_CONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront())))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
                           <? } ?>
@@ -532,7 +532,7 @@ foreach ($calculations as $c){
 
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant())?> <?=$_LANG->get('B&ouml;gen')?>
+                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant())?> <?=$_LANG->get('Bogen')?>
                                   <?=printPrice($calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
@@ -544,7 +544,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <input name="grant_addcontent_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContentGrant())?>"> <?=$_LANG->get('B&ouml;gen')?>
+                                  <input name="grant_addcontent_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContentGrant())?>"> <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -564,7 +564,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 2')?></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printPrice($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront())))?>
+                                  <?=printPrice($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront())))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
                           <? } ?>
@@ -589,7 +589,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear">&nbsp;</td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant())?> <?=$_LANG->get('B&ouml;gen')?>
+                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant())?> <?=$_LANG->get('Bogen')?>
                                   <?=printPrice($calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
@@ -601,7 +601,7 @@ foreach ($calculations as $c){
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
                                   <input name="grant_addcontent2_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContent2Grant())?>">
-                                  <?=$_LANG->get('B&ouml;gen')?>
+                                  <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -621,7 +621,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 3')?></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printPrice($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront())))?>
+                                  <?=printPrice($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront())))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
                           <? } ?>
@@ -644,7 +644,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear">&nbsp;</td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant())?> <?=$_LANG->get('B&ouml;gen')?>
+                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant())?> <?=$_LANG->get('Bogen')?>
                                   <?=printPrice($calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
@@ -656,7 +656,7 @@ foreach ($calculations as $c){
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
                                   <input name="grant_addcontent3_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContent3Grant())?>">
-                                  <?=$_LANG->get('B&ouml;gen')?>
+                                  <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -676,7 +676,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 4')?></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printPrice($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront())))?>
+                                  <?=printPrice($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront())))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
                           <? } ?>
@@ -701,7 +701,7 @@ foreach ($calculations as $c){
 
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant())?> <?=$_LANG->get('B&ouml;gen')?>
+                                  <?=printBigInt($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant())?> <?=$_LANG->get('Bogen')?>
                                   <?=printPrice($calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
@@ -712,7 +712,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <input name="grant_envelope_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperEnvelopeGrant())?>"> <?=$_LANG->get('B&ouml;gen')?>
+                                  <input name="grant_envelope_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperEnvelopeGrant())?>"> <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -732,7 +732,7 @@ foreach ($calculations as $c){
                           <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Umschlag')?></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <?=printPrice($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront())))?>
+                                  <?=printPrice($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ENVELOPE))*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront())))?>
                                   <?=$_USER->getClient()->getCurrency()?>
                               </td>
                           <? } ?>

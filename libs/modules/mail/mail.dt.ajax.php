@@ -197,13 +197,13 @@
 
             $options = '
             <div class="btn-group" role="group">
-                <img src="images/icons/arrow-turn-180-left.svg" title="Antworten" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>
                 <div class="btn-group dropdown" style="margin-left: 0px;">
                       <button type="button" class="btn btn-xs dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
                         Mehr <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" role="menu">
                             <li>
+                                <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>Antworten</a>
                                 <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>Weiterleiten</a>
                                 <a href="#" onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();">Verschieben</a>
                                 <a href="#" onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">als ungelesen markieren</a>

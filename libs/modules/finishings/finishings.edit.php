@@ -19,71 +19,56 @@ if($_REQUEST["subexec"] == "save")
 	$savemsg = getSaveMessage($finishing->save()).$DB->getLastError();
 }
 ?>
-<table width="100%">
-<tr>
-<td width="200" class="content_header">
-<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Lacke hinzuf&uuml;gen')?>
-<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Lacke &auml;ndern')?>
-<?if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Lacke kopieren')?>
-</td>
-<td align="right"><?=$savemsg?></td>
-</tr>
-</table>
 
 <div id="fl_menu">
 	<div class="label">Quick Move</div>
 	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#paper_form').submit();">Speichern</a>
-    </div>
+		<a href="#top" class="menu_item">Seitenanfang</a>
+		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+		<a href="#" class="menu_item" onclick="$('#paper_form').submit();">Speichern</a>
+	</div>
 </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form" onSubmit="return checkform(new Array(this.finishing_name))">
-	<div class="box1">
-		<input name="exec" value="edit" type="hidden">
-		<input type="hidden" name="subexec" value="save">
-		<input name="id" value="<?=$finishing->getId()?>" type="hidden">
-		<table width="100%">
-		    <colgroup>
-		        <col width="200">
-		        <col>
-		    </colgroup>
-		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Name')?> *</td>
-		        <td class="content_row_clear">
-		            <input id="finishing_name" name="finishing_name" value="<?=$finishing->getName()?>" class="text" style="width:300px">
-		        </td>
-		     <td valign="top">
-				<table width="500" cellpadding="0" cellspacing="0" border="0">
-				    <colgroup>
-				        <col width="180">
-				        <col>
-				    </colgroup>
-				    <? if($finishing->getLectorId() != 0) { ?>
-				    <tr>
-				        <td class="content_row_header"><span class="error"><?=$_LANG->get('Importiert von Lector')?></span></td>
-				        <td class="content_row_clear">
-				            Lector-ID: <?=$finishing->getLectorId()?>
-				        </td>
-				    </tr>
-				    <? } ?>
-				</table>      
-		    </tr>
-		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-		        <td class="content_row_clear">
-		            <input name="finishing_beschreibung" value="<?=$finishing->getBeschreibung()?>" class="text" style="width:300px">      
-		        </td>   
-		    </tr>
-		     <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Kosten')?></td>
-		        <td class="content_row_clear">
-		            <input name="finishing_kosten" value="<?=printPrice($finishing->getKosten())?>" class="text" style="width:60px"> <?=$_USER->getClient()->getCurrency() ?>      
-		        </td>   
-		    </tr>
-		</table>
-	</div>
-<br/>
-</form>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Lacke hinzuf&uuml;gen')?>
+				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Lacke &auml;ndern')?>
+				<?if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Lacke kopieren')?>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form"
+				class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.finishing_name))">
+			  <input name="exec" value="edit" type="hidden">
+			  <input type="hidden" name="subexec" value="save">
+			  <input name="id" value="<?=$finishing->getId()?>" type="hidden">
+
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Name</label>
+				  <div class="col-sm-10">
+					  <input type="text" class="form-control" id="finishing_name" name="finishing_name" value="<?=$finishing->getName()?>" placeholder="bitte Lacknamen eintragen...">
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Beschreibung</label>
+				  <div class="col-sm-10">
+					  <input type="text" class="form-control" id="finishing_beschreibung" name="finishing_beschreibung" value="<?=$finishing->getBeschreibung()?>" placeholder="Beschreibung">
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Kosten</label>
+				  <div class="col-sm-10">
+					  <div class="input-group">
+						  <input type="text" class="form-control" id="finishing_kosten" name="finishing_kosten" value="<?=printPrice($finishing->getKosten())?>" placeholder="bitte Lacknamen eintragen...">
+						  <span class="input-group-addon">€</span>
+					  </div>
+				  </div>
+			  </div>
+
+		  </form>
+	  </div>
+</div>

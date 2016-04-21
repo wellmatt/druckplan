@@ -868,6 +868,7 @@ if((int)$_REQUEST["step"] == 3){
 	if($_REQUEST["subexec"] == "save")
 	{
 		$calc->setCalcAutoValues((int)$_REQUEST["auto_calc_values"]);
+		$calc->setCalcDebug((int)$_REQUEST["debug_calc"]);
 		$calc->setTextProcessing(trim(addslashes($_REQUEST["text_processing"])));
 		$calc->setColorControl((int)$_REQUEST["color_control"]);
 		$calc->setCutContent((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["cut_content"]))));
@@ -1109,6 +1110,9 @@ if((int)$_REQUEST["step"] == 3){
 						if (isset($_REQUEST["mach_rollcount_{$id}"]))
 							$entry->setRollcount($_REQUEST["mach_rollcount_{$id}"]);
 					}
+
+					if (isset($_REQUEST["mach_dopnutz_{$id}"]))
+						$entry->setDoubleutilization($_REQUEST["mach_dopnutz_{$id}"]);
 
 					$calc->save();
 					$entry->save();

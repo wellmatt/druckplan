@@ -15,11 +15,11 @@ if ($_REQUEST['obj']){
     $header = '';
     if ($_REQUEST['type']){
         $type = $_REQUEST['type'];
-        if ($type == 1) {
+        if ($type == StorageGoods::TYPE_SUPORDER) {
             $header = 'Wareneingang';
             $origin = new SupOrder($obj);
         }
-        if ($type == 2) {
+        if ($type == StorageGoods::TYPE_COLINV) {
             $header = 'Warenausgang';
             $origin = new CollectiveInvoice($obj);
         }
@@ -27,6 +27,49 @@ if ($_REQUEST['obj']){
 } else {
     die ('Kein Objekt erhalten');
 }
+
+if ($_REQUEST["exec"] == "save"){
+    if ($_REQUEST["book"]){
+        foreach ($_REQUEST["book"] as $posid => $areas) {
+            if ($posid>0){
+                if ($type == StorageGoods::TYPE_SUPORDER)
+                    $position = new SupOrderPosition($posid);
+                elseif ($type == StorageGoods::TYPE_COLINV)
+                    $position = new SupOrderPosition($posid);
+                else break;
+
+                $article = $position->getArticle();
+
+                foreach ($areas as $aid => $entry) {
+                    if ($aid > 0){
+                        $area = new StorageArea($aid);
+                        $amount = $entry["amount"];
+                        $alloc = $entry["alloc"];
+                        if ($amount > 0 && $alloc > 0){
+                            $array = [
+                                "area" => $area->getId(),
+                                "article" => $article->getId(),
+                                "type" => $type,
+                                "origin" => $origin->getId(),
+                                "origin_pos" => $position->getId(),
+                                "amount" => $amount,
+                                "alloc" => $alloc,
+                                "crtdate" => time(),
+                                "crtuser" => $_USER->getId(),
+                            ];
+                            $book_entry = new StorageBookEnrty(0, $array);
+                            $ret = $book_entry->save();
+                            if ($ret)
+                                $book_entries[] = $book_entry;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+$book_entries = StorageBookEnrty::getAllForOrigin($origin);
 
 ?>
 
@@ -46,6 +89,41 @@ if ($_REQUEST['obj']){
     </div>
 <?php } ?>
 
+<?php if (count($book_entries)>0){ ?>
+    <div class="panel panel-default">
+          <div class="panel-heading">
+                <h3 class="panel-title">Erstellte Buchungen für <?php echo $origin->getNumber();?></h3>
+          </div>
+        <br>
+        <div class="table-responsive">
+        	<table class="table table-hover">
+        		<thead>
+        			<tr>
+        				<th>ID</th>
+                        <th>Lager</th>
+                        <th>Artikel</th>
+                        <th>Anzahl</th>
+                        <th>Belegung</th>
+                        <th>Datum</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+                    <?php foreach ($book_entries as $booke){ ?>
+        			<tr>
+        				<td><?php echo $booke->getId();?></td>
+                        <td><?php echo $booke->getArea()->getName();?></td>
+                        <td><?php echo $booke->getArticle()->getTitle();?></td>
+                        <td><?php echo $booke->getAmount();?></td>
+                        <td><?php echo $booke->getAlloc();?>%</td>
+                        <td><?php echo date('d.m.y H:i',$booke->getCrtdate());?></td>
+        			</tr>
+                    <?php } ?>
+        		</tbody>
+        	</table>
+        </div>
+    </div>
+<?php } ?>
+
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -55,6 +133,8 @@ if ($_REQUEST['obj']){
             <div class="panel-body">
 
                 <form action="index.php?page=<?=$_REQUEST['page']?>" id="goods_create" name="goods_create" method="post" role="form" class="form-horizontal">
+                    <input type="hidden" id="obj" name="obj" value="<?=$obj?>" />
+                    <input type="hidden" id="type" name="type" value="<?=$type?>" />
                     <input type="hidden" id="origin" name="origin" value="<?=$origin->getId()?>" />
                     <input type="hidden" id="exec" name="exec" value="save" />
 
@@ -72,17 +152,17 @@ if ($_REQUEST['obj']){
                             <td class="content_row_clear"><?php echo $origin->getSupplier()->getNameAsLine();?></td>
                         </tr>
                     </table>
-                </form>
-                <br>
-                <div id="positions">
-                    <?php
-                    if ($type == 1){
-                        include "storage.goods.create.in.php";
-                    } elseif ($type == 2){
+                    <br>
+                    <div id="positions">
+                        <?php
+                        if ($type == 1){
+                            include "storage.goods.create.in.php";
+                        } elseif ($type == 2){
 
-                    }
-                    ?>
-                </div>
+                        }
+                        ?>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

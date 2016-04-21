@@ -272,7 +272,7 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                           $format_in = explode("x", $calc->getFormat_in_content());
                                           $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
                                           $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth()));
-                                          $roh2 = ceil($sheets_content / $roh);
+                                          $roh2 = ceil(($calc->getPaperCount($me->getPart())+$calc->getPaperContentGrant()) / $roh);
                                           ?>
                                           <tr>
                                               <td>Inhalt 1</td>
@@ -295,9 +295,9 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                   case Calculation::PAPER_ADDCONTENT:
                                       if ($calc->getFormat_in_addcontent() != "") {
                                           $format_in = explode("x", $calc->getFormat_in_addcontent());
-                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth());
                                           $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContentHeight() * $calc->getPaperAddContentWidth()));
-                                          $roh2 = ceil($sheets_addcontent / $roh);
+                                          $roh2 = ceil(($calc->getPaperCount($me->getPart())+$calc->getPaperAddContentGrant()) / $roh);
                                           ?>
                                           <tr>
                                               <td>Inhalt 2</td>
@@ -320,9 +320,9 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                   case Calculation::PAPER_ADDCONTENT2:
                                       if ($calc->getFormat_in_addcontent2() != "") {
                                           $format_in = explode("x", $calc->getFormat_in_addcontent2());
-                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width());
                                           $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent2Height() * $calc->getPaperAddContent2Width()));
-                                          $roh2 = ceil($sheets_addcontent2 / $roh);
+                                          $roh2 = ceil(($calc->getPaperCount($me->getPart())+$calc->getPaperAddContent2Grant()) / $roh);
                                           ?>
                                           <tr>
                                               <td>Inhalt 3</td>
@@ -345,9 +345,9 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                   case Calculation::PAPER_ADDCONTENT3:
                                       if ($calc->getFormat_in_addcontent3() != "") {
                                           $format_in = explode("x", $calc->getFormat_in_addcontent3());
-                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width());
                                           $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperAddContent3Height() * $calc->getPaperAddContent3Width()));
-                                          $roh2 = ceil($sheets_addcontent3 / $roh);
+                                          $roh2 = ceil(($calc->getPaperCount($me->getPart())+$calc->getPaperAddContent3Grant()) / $roh);
                                           ?>
                                           <tr>
                                               <td>Inhalt 4</td>
@@ -370,9 +370,9 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                   case Calculation::PAPER_ENVELOPE:
                                       if ($calc->getFormat_in_envelope() != "") {
                                           $format_in = explode("x", $calc->getFormat_in_envelope());
-                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperContentHeight() * $calc->getPaperContentWidth());
+                                          $roh_schnitte = ((int)$format_in[0] * (int)$format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth());
                                           $roh = floor(($format_in[0] * $format_in[1]) / ($calc->getPaperEnvelopeHeight() * $calc->getPaperEnvelopeWidth()));
-                                          $roh2 = ceil($sheets_envelope / $roh);
+                                          $roh2 = ceil(($calc->getPaperCount($me->getPart())+$calc->getPaperEnvelopeGrant()) / $roh);
                                           ?>
                                           <tr>
                                               <td>Umschlag</td>
@@ -441,16 +441,16 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                                   Produktformat offen
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?= $calc->getProductsPerPaper(Calculation::PAPER_CONTENT) ?></span>
-                                                  Nutze pro Bogen
+                                                  <span class="badge"><?= $calc->getProductsPerPaper($content['const']) ?></span>
+                                                  Nutzen pro Bogen
                                               </li>
                                               <li class="list-group-item">
                                                   <span class="badge">
                                                       <?php
                                                       if ($calc->$content['chr']()->getReversePrinting() == 0 AND $calc->$content['chr']()->getColorsBack() == 1) {
-                                                          echo printBigInt(ceil($calc->$content['pages']() / ($calc->getProductsPerPaper(Calculation::PAPER_CONTENT) * 2) * $calc->getAmount()));
+                                                          echo printBigInt(ceil($calc->$content['pages']() / ($calc->getProductsPerPaper($content['const']) * 2) * $calc->getAmount()));
                                                       } else {
-                                                          echo printBigInt(ceil($calc->$content['pages']() / $calc->getProductsPerPaper(Calculation::PAPER_CONTENT) * $calc->getAmount()));
+                                                          echo printBigInt(ceil($calc->$content['pages']() / $calc->getProductsPerPaper($content['const']) * $calc->getAmount()));
                                                       } ?>
                                                   </span>
                                                   Druckleistung insgesamt
@@ -460,7 +460,7 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                                   Zuschuss
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printBigInt($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant());?></span>
+                                                  <span class="badge"><?php echo printBigInt($calc->getPaperCount($content['const']) + $calc->$content['grant']());?></span>
                                                   Druckbogen insgesamt
                                               </li>
                                               <li class="list-group-item">
@@ -472,19 +472,19 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                                   Papiergewicht pro Stück
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getAmount()) * (1.4 * 0.5 / 1000));?></span>
+                                                  <span class="badge"><?php echo printPrice(($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000));?></span>
                                                   kg pro Farbton
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice((($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->$content['chr']()->getColorsBack() + $calc->$content['chr']()->getColorsFront())));?>kg</span>
+                                                  <span class="badge"><?php echo printPrice((($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->$content['chr']()->getColorsBack() + $calc->$content['chr']()->getColorsFront())));?>kg</span>
                                                   Farbe Gesamt
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->$content['chr']()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getAmount()) * (1.4 * 0.5 / 1000))));?>€</span>
+                                                  <span class="badge"><?php echo printPrice(($calc->$content['chr']()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000))));?>€</span>
                                                   Farbe Kosten pro Farbe
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->$content['chr']()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->$content['chr']()->getColorsBack() + $calc->$content['chr']()->getColorsFront()))));?>€</span>
+                                                  <span class="badge"><?php echo printPrice(($calc->$content['chr']()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->$content['chr']()->getColorsBack() + $calc->$content['chr']()->getColorsFront()))));?>€</span>
                                                   Farbe Kosten Gesamt
                                               </li>
                                           </ul>
@@ -524,7 +524,7 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                                               </li>
                                               <li class="list-group-item">
                                       <span class="badge"><?php echo printPrice($calc->$content['id']()->getSumPrice(
-                                              ceil($calc->$content['pages']() / $calc->getProductsPerPaper(Calculation::PAPER_CONTENT) * $calc->getAmount())));?>€</span>
+                                              ceil($calc->$content['pages']() / $calc->getProductsPerPaper($content['const']) * $calc->getAmount())));?>€</span>
                                                   Preis
                                               </li>
                                               <li class="list-group-item">
@@ -560,7 +560,18 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
                       </div>
                   </div>
               </div>
-
+              <?php
+              if ($calc->getPaperContent()->getId()>0)
+                  $sheets_color1 = ($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront())));
+              if ($calc->getPaperAddContent()->getId()>0)
+                  $sheets_color2 = ($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPagesAddContent() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT) * $calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront())));
+              if ($calc->getPaperAddContent2()->getId()>0)
+                  $sheets_color3 = ($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPagesAddContent2() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2) * $calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront())));
+              if ($calc->getPaperAddContent3()->getId()>0)
+                  $sheets_color4 = ($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPagesAddContent3() / $calc->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3) * $calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront())));
+              if ($calc->getPaperEnvelope()->getId()>0)
+                  $sheets_envelope = ($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getAmount()) * (1.4 * 0.5 / 1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront())));
+              ?>
               <div class="panel panel-success">
                   <div class="panel-heading">
                       <h3 class="panel-title">Kosten / Ertragsaufstellung</h3>
@@ -606,7 +617,7 @@ foreach (Calculation::getAllCalculations($order) as $calc) {
 
 
 <script>
-    $(document).on('click', '.panel-heading span.clickable', function(e){
+    $(document).on('click', '.panel-heading span.clickable', function(){
         var $this = $(this);
         if(!$this.hasClass('panel-collapsed')) {
             $this.parents('.panel').find('.slidepanel').slideUp();

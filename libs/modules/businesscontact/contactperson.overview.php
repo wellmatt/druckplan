@@ -80,22 +80,22 @@ $(document).ready(function() {
     } );
 } );
 </script>
-<table width="100%">
-<tr>
-<td width="220" class="content_header">
-<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <span style="font-size: 13px"><?=$_LANG->get('Ansprechpartner')?></span>
-		</td>
-	</tr>
-</table>
-<div class="box1">
-	<table id="cp_table" width="100%" class="stripe hover row-border order-column">
-        <thead>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Ansprechpartner</h3>
+    </div>
+    <div class="table-responsive">
+        <br>
+        <table id="cp_table" class="table table-hover">
+            <thead>
             <tr>
                 <th width="10">ID</th>
                 <th>Name</th>
                 <th>Firma</th>
                 <th width="80">Optionen</th>
             </tr>
-        </thead>
-	</table>
+            </thead>
+        </table>
+    </div>
 </div>

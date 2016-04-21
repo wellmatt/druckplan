@@ -12,12 +12,12 @@ class User {
     const USER_NORMAL = 1;
     const USER_ADMIN = 32768;
     const USER_SUPERADMIN = 16384;
-     
+
     const ORDER_ID 			= " id ";
     const ORDER_LOGIN 		= " login ";
     const ORDER_NAME 		= " user_firstname, user_lastname ";
-    const ORDER_NAME_LEVEL 	= " user_lastname, user_level ";    
-     
+    const ORDER_NAME_LEVEL 	= " user_lastname, user_level ";
+
     private $id = 0;
     private $login;
     private $firstname;
@@ -224,6 +224,7 @@ class User {
     static function getAllUserFiltered($order = self::ORDER_ID, $filter = null)
     {
         global $DB;
+
         $users = Array();
 
         $sql = " SELECT id FROM user 

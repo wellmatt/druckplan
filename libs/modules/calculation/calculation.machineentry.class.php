@@ -57,6 +57,7 @@ class Machineentry {
 
     private $labelcount = 0;
     private $rollcount = 0;
+    private $doubleutilization = 0;             // Doppelter Nutzen
     
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
@@ -103,6 +104,7 @@ class Machineentry {
 				$this->foldtype = new Foldtype((int)$r["foldtype"]);
                 $this->labelcount = $r["labelcount"];
                 $this->rollcount = $r["rollcount"];
+                $this->doubleutilization = $r["doubleutilization"];
             }
         }
     }
@@ -235,6 +237,7 @@ class Machineentry {
         				labelcount = {$this->labelcount},
         				umschl_umst = {$this->umschlUmst},
         				umschl = {$this->umschl},
+        				doubleutilization = {$this->doubleutilization},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
         if($this->id > 0)
         {
@@ -837,7 +840,20 @@ class Machineentry {
         $this->labelcount = $labelcount;
     }
 
-    
-    
+    /**
+     * @return int
+     */
+    public function getDoubleutilization()
+    {
+        return $this->doubleutilization;
+    }
+
+    /**
+     * @param int $doubleutilization
+     */
+    public function setDoubleutilization($doubleutilization)
+    {
+        $this->doubleutilization = $doubleutilization;
+    }
 }
 ?>

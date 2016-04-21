@@ -15,6 +15,7 @@ if($_REQUEST["exec"] == "delete")
 {
     $paper = new Paper($_REQUEST["id"]);
     $savemsg = getSaveMessage($paper->delete());
+    $_REQUEST["exec"] = '';
 }
 
 if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "copy")
@@ -93,7 +94,7 @@ $(document).ready(function() {
 					}
     } );
 
-    $("#paper_table tbody td").live('click',function(){
+    $("#paper_table tbody td:not(:nth-child(5))").live('click',function(){
         var aPos = $('#paper_table').dataTable().fnGetPosition(this);
         var aData = $('#paper_table').dataTable().fnGetData(aPos[0]);
         document.location='index.php?page=libs/modules/paper/paper.php&exec=edit&id='+aData[0];

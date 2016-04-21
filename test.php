@@ -34,31 +34,3 @@ $_LANG = $_USER->getLang();
 
 error_reporting(-1);
 ini_set('display_errors', 1);
-
-
-
-
-function GetMonth($sStartDate, $sEndDate){
-
-    $sStartDate = date('Y-m-d', strtotime($sStartDate));
-    $sEndDate = date('Y-m-d', strtotime($sEndDate));
-    // dem $aDays Array das erste Datum hinzufügen
-    $aDays[] = date('Y-m-d',strtotime($sStartDate));
-    // $sCurrentDate auf das Startdatum setzen
-    $sCurrentDate = $sStartDate;
-    // Schleife die solange läuft bis das $sCurrentDate nicht mehr kleiner als das Enddatum ist
-    while($sCurrentDate < $sEndDate){
-        // auf $sCurrentDate +1 Monat draufrechnen
-        $sCurrentDate = date('Y-m-d', strtotime("+1 month", strtotime($sCurrentDate)));
-        // das $sCurrentDate dem $aDays Array hinzufügen
-        $aDays[] = date('Y-m-d',strtotime($sCurrentDate));
-    }
-    return $aDays;
-}
-
-
-$start = 1451645980;
-$end = 1470045580;
-
-prettyPrint(GetMonth(date('d.m.Y',$start),date('d.m.Y',$end)));
-

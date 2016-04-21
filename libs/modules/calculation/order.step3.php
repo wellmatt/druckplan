@@ -249,6 +249,12 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
                                                     echo '<input type="text" name="mach_cutter_cuts_'.$x.'" id="mach_cutter_cuts_'.$x.'" value="'.$mach->getCutter_cuts().'" class="form-control">';
                                                     echo '</div></div></div>';
 
+                                                    // Stapel
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Stapel</label><div class="input-group">';
+                                                    echo '<input type="text" disabled value="'.$mach->calcStacks().'" class="form-control" style="cursor: auto;">';
+                                                    echo '</div></div></div>';
+
                                                     // Manueller Aufschlag
                                                     echo '<div class="col-md-4"><div class="form-group">';
                                                     echo '<label class="control-label">Man. Aufschlag</label><div class="input-group">';
@@ -624,6 +630,7 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
                                                         }
                                                     }
 
+                                                    // Falzart
                                                     echo '<div class="col-md-4"><div class="form-group">';
                                                     echo '<label class="control-label">Falzart</label><div class="input-group">';
                                                     echo '<select name="mach_foldtype_'.$x.'" class="form-control">';
@@ -638,6 +645,14 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
                                                     }
                                                     echo '</select>';
                                                     echo '</div></div></div>';
+
+                                                    // Doppelter Nutzen
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<div class="checkbox"><label>';
+                                                    echo '<input type="checkbox" id="mach_dopnutz_'.$x.'" name="mach_dopnutz_'.$x.'" value="1" ';
+                                                    if($mach->getDoubleutilization()) echo ' checked="checked"';
+                                                    echo '>';
+                                                    echo ' Dop. Nutzen</label></div></div></div>';
                                                     ?>
                                                 </td>
                                                 <td></td>
@@ -698,6 +713,15 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
                                                             echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
                                                         }
                                                     }
+
+                                                    // Doppelter Nutzen
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<div class="checkbox"><label>';
+                                                    echo '<input type="checkbox" id="mach_dopnutz_'.$x.'" name="mach_dopnutz_'.$x.'" value="1" ';
+                                                    if($mach->getDoubleutilization()) echo ' checked="checked"';
+                                                    echo '>';
+                                                    echo ' Dop. Nutzen</label></div></div></div>';
+
                                                     ?>
                                                 </td>
                                                 <td></td>
@@ -1137,6 +1161,10 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
         <td class="content_row_clear">
             <input type="checkbox" name="auto_calc_values" value="1" <?if($calc->getCalcAutoValues()) echo "checked";?>> 
             * <?=$_LANG->get('Werte automatisch kalkulieren')?>
+        </td>
+        <td class="content_row_clear">
+            <input type="checkbox" name="debug_calc" value="1" <?if($calc->getCalcDebug()) echo "checked";?>>
+            * <?=$_LANG->get('Debug Ausgabe')?>
         </td>
     </tr>
 </table>

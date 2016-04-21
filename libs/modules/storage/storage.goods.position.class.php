@@ -8,6 +8,7 @@
  */
 require_once 'libs/basic/model.php';
 require_once 'libs/modules/storage/storage.area.class.php';
+require_once 'libs/modules/storage/storage.book.entry.class.php';
 
 
 class StorageGoodsPosition extends Model{

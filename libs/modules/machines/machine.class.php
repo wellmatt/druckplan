@@ -605,12 +605,17 @@ class Machine
      */
     function getRunningTime($machineEntry)
     {
-        $debug = false;
         $calc = new Calculation($machineEntry->getCalcId());
+
+        if ($calc->getCalcDebug())
+            $debug = true;
+        else
+            $debug = false;
+
         $time = 0;
 
         if ($debug){
-            echo '</br></br>'.$machineEntry->getMachine()->getName().':</br></br>';
+            echo '</br><hr>Debug Zeitberechnung für Maschine "'.$machineEntry->getMachine()->getName().'" mit ME->id = '.$machineEntry->getId().'</br>';
         }
 
         // ----------------------------------------------------------------------------------
@@ -620,32 +625,30 @@ class Machine
             if($this->unit == Machine::UNIT_PERHOUR_DRUCKPLATTEN)
             {
                 $time = (60 / $this->getUnitsPerHour($calc->getPlateCount())) * $calc->getPlateCount();
-                if ($debug)
-                {
-                    echo '$time = 60 / '.$this->getUnitsPerHour($calc->getPlateCount()).' * '.$calc->getPlateCount().'</br>';
+                if ($debug){
+                    echo '$time = (60 / '.$this->getUnitsPerHour($calc->getPlateCount()).') * '.$calc->getPlateCount().'</br>';
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_BOGEN)
             {
-                if($machineEntry->getPart() > 0)
-                    $time = 60 / ($this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart(),$machineEntry)) / $calc->getPaperCount($machineEntry->getPart(),$machineEntry));
-                    if ($debug)
-                    {
-                        echo '$time = 60 / ('.$this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart(),$machineEntry)).' / '.$calc->getPaperCount($machineEntry->getPart(),$machineEntry).') </br>';
-                        echo 'zu Druckende Seiten (Auflage*Umfang/Produkte pro Seite) = '. $calc->getPaperCount($machineEntry->getPart(),$machineEntry) . '</br>';
-                        echo 'Produkte pro Seite = ' . $calc->getProductsPerPaperForMe($machineEntry->getPart(),$machineEntry).'</br>';
+                if($machineEntry->getPart() > 0){
+                    $time = 60 / ($this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) / $calc->getPaperCount($machineEntry->getPart()));
+                    if ($debug) {
+                        echo '$time = 60 / (' . $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) . ' / ' . $calc->getPaperCount($machineEntry->getPart()) . ') </br>';
+                        echo 'zu Druckende Seiten (Auflage*Umfang/Produkte pro Seite) = ' . $calc->getPaperCount($machineEntry->getPart()) . '</br>';
+                        echo 'Produkte pro Seite = ' . $calc->getProductsPerPaper($machineEntry->getPart()) . '</br>';
                     }
+                }
                 else
                 {
-                    $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT,$machineEntry)
-                               + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2)+ $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3,$machineEntry)
-                               + $calc->getPaperCount(Calculation::PAPER_ENVELOPE,$machineEntry);
+                    $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
+                               + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2)+ $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
+                               + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
                     $time = 60 / $this->getUnitsPerHour($papers) * $papers;
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_AUFLAGE)
             {
                 $time = 60 / $this->getUnitsPerHour($calc->getAmount()) * $calc->getAmount();
-                if ($debug)
-                {
+                if ($debug){
                     echo '$time = 60 / ' . $this->getUnitsPerHour($calc->getAmount()) . ' * ' . $calc->getAmount() . '</br>';
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_SEITEN)
@@ -669,28 +672,25 @@ class Machine
             } else if($this->unit == Machine::UNIT_PERHOUR_MM)
             {
                 $time = (($calc->getProductFormatHeightOpen() * 2 + $calc->getProductFormatWidthOpen() * 2) * $calc->getAmount())/$this->getUnitsPerHour(0)/60;
-                if ($debug)
-                {
+                if ($debug){
                     echo '$time = (('.$calc->getProductFormatHeightOpen().' * 2 + '.$calc->getProductFormatWidthOpen().' * 2) * '.$calc->getAmount().')/'.$this->getUnitsPerHour(0).'/60 </br>';
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_M)
             {
                 $time = (($calc->getProductFormatHeightOpen()/1000) * $calc->getAmount())/$this->getUnitsPerHour(0)/60;
-                if ($debug)
-                {
+                if ($debug){
                     echo '$time = (('.$calc->getProductFormatHeightOpen().' /1000) * '.$calc->getAmount().')/'.$this->getUnitsPerHour(0).'/60 </br>';
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_CUTS)
             {
                 $time = (60 / $this->getUnitsPerHour($machineEntry->calcCuts() * $machineEntry->calcStacks())) * $machineEntry->calcCuts() * $machineEntry->calcStacks();
-                if ($debug)
-                {
+                if ($debug){
                     echo '$time = (60 / '.$this->getUnitsPerHour($machineEntry->calcCuts() * $machineEntry->calcStacks()).') * '.$machineEntry->calcCuts().' * '.$machineEntry->calcStacks().' </br>';
                 }
             }
 
 
-            if ($debug) {
+            if ($debug){
                 echo 'Zeit vor Erschwernissen: ' . $time . '</br>';
             }
             // Apply Difficulty factor
@@ -758,8 +758,7 @@ class Machine
             		    if ($machineEntry->getFoldtype()->getId() > 0){
                             $diff_breaks = $machineEntry->getFoldtype()->getBreaks();
                             $diff = $this->getDifficultyByValue($diff_breaks, $difficulty["id"]);
-                            if ($debug)
-                            {
+                            if ($debug){
                                 echo '$time = '.$time.' * (1 + ('.$diff.' / 100)) + '.$diff_breaks.' * '.($machineEntry->getMachine()->getBreaks_time()).'</br>';
                             }
             		        $time = $time * (1 + ($diff / 100)) + $diff_breaks * ($machineEntry->getMachine()->getBreaks_time());
@@ -792,7 +791,7 @@ class Machine
                 
                 
             }
-            if ($debug) {
+            if ($debug){
                 echo 'Zeit nach Erschwernissen: ' . $time . '</br>';
             }
 
@@ -868,8 +867,13 @@ class Machine
             }
         }
 
+        // Doppelter Nutzen Option in ME
+        if($machineEntry->getDoubleutilization()){
+            $time = $time / 2;
+        }
+
         
-        // END Maschinenspezifische Zuschl�ge
+        // END Maschinenspezifische Zuschlaege
         // -------------------------------------------------------------------------
         
         
@@ -882,192 +886,231 @@ class Machine
         return $time;
     }
 
-    function getMachinePrice($machineEntry)
+    function getMachinePrice(Machineentry $machineEntry)
     {
         $price = 0;
         $clickpr = 0;	//gln
         $calc = new Calculation($machineEntry->getCalcId());
-        if ($this->priceBase == self::PRICE_DRUCKPLATTE)
-        {
-            // Preise nach Druckplatten
-            $price = $this->price * $calc->getPlateCount();
-        } else if($this->priceBase == self::PRICE_DPSQUAREMETER)
-        {
-            // Preis nach m2
-            $all_machines = Machineentry::getAllMachineentries($calc->getId());
-            
-            
-            foreach ($all_machines as $machine){
-                $part = $machine->getPart();
-                
-                if ($part == Calculation::PAPER_CONTENT || $part == Calculation::PAPER_ADDCONTENT || $part == Calculation::PAPER_ADDCONTENT2 ||
-                    $part == Calculation::PAPER_ADDCONTENT3 || $part == Calculation::PAPER_ENVELOPE){
-                    
-                    $DP_width = $machine->getMachine()->getDPWidth();
-                    $DP_height = $machine->getMachine()->getDPHeight();
-                    $dps = $calc->getPlateCount($machine);
-                    $price += (($dps * $DP_width * $DP_height) / 1000000) * $this->price;
+
+        if ($calc->getCalcDebug())
+            $debug = true;
+        else
+            $debug = false;
+
+        if ($debug){
+            echo '</br><hr>Debug Preiskalkulation für Maschine "'.$machineEntry->getMachine()->getName().'" mit ME->id = '.$machineEntry->getId().'</br>';
+        }
+
+        switch ($this->priceBase){
+            case self::PRICE_MINUTE:
+
+                // gln, Klickpreise
+                if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
+                    $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesContent());	//gln
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
+                    $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesAddContent());	//gln
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
+                    $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesAddContent2());	//gln
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
+                    $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesAddContent3());	//gln
+                } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
+                    $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesEnvelope());	//gln
                 }
-                
-            }
 
-        } else if($this->priceBase == self::PRICE_BOGEN)
-        {
-            // Preis nach Bogen
-            if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-            } else 
-            {
-                $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
-                           + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
-                           + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-            }
-            $price = $papers * $this->price;
-            
-        } else if($this->priceBase == self::PRICE_AUFLAGE)
-        {
-            // Preis nach Auflage
-            $price = $calc->getAmount() * $this->price;
-        } else if($this->priceBase == self::PRICE_PAUSCHAL)
-        {
-            $price = $this->price;
-        } else if($this->priceBase == self::PRICE_MINUTE)
-        {
-            // gln, Klickpreise
-            if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
-                $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesContent());	//gln
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
-	            $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesAddContent());	//gln
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
-	            $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesAddContent2());	//gln
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
-	            $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesAddContent3());	//gln
-            } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-	            $clickpr = $this->getCurrentClickprice($calc->getChromaticitiesEnvelope());	//gln
-            }
-            //$price = $this->price * $machineEntry->getTime();
-            if (isset($papers)) // temp fix ascherer fuer bescheuerte programmierung von gln
-                $price = $this->price * $machineEntry->getTime() + $papers * $clickpr;	//gln
-			//echo "clickpr".$clickpr." ";
-        } else if($this->priceBase == self::PRICE_SQUAREMETER)
-        {
-            // Preis nach quadratmeter
-            if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
-                $width = $calc->getPaperContentWidth();
-                $height = $calc->getPaperContentHeight();
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
-                $width = $calc->getPaperAddContentWidth();
-                $height = $calc->getPaperAddContentHeight();
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
-                $width = $calc->getPaperAddContent2Width();
-                $height = $calc->getPaperAddContent2Height();
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
-                $width = $calc->getPaperAddContent3Width();
-                $height = $calc->getPaperAddContent3Height();
-            } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-                $width = $calc->getPaperEnvelopeWidth();
-                $height = $calc->getPaperEnvelopeHeight();
-            } else 
-            {
-                $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
-                + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
-                + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-                
-                $width = $calc->getPaperContentWidth() + $calc->getPaperAddContentWidth() + $calc->getPaperAddContent2Width()
-                         + $calc->getPaperAddContent3Width() + $calc->getPaperEnvelopeWidth();
-                $height = $calc->getPaperContentHeight() + $calc->getPaperAddContentHeight() + $calc->getPaperAddContent2Height()
-                         + $calc->getPaperAddContent3Height() + $calc->getPaperEnvelopeHeight();
-            }
-            $price = (($papers * $width) * $height) / 1000000 * $this->price;
-        }
-        
-        // Aufschlag aus Farbigkeit ber�cksichtigen
-        if($machineEntry->getPart() == Calculation::PAPER_CONTENT)
-            $price *= 1+($calc->getChromaticitiesContent()->getMarkup()/100);
-        else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
-            $price *= 1+($calc->getChromaticitiesAddContent()->getMarkup()/100);
-        else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
-            $price *= 1+($calc->getChromaticitiesAddContent2()->getMarkup()/100);
-        else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
-            $price *= 1+($calc->getChromaticitiesAddContent3()->getMarkup()/100);
-        else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
-            $price *= 1+($calc->getChromaticitiesEnvelope()->getMarkup()/100);
-        
-        // Option plus Lack
-        if($machineEntry->getFinishing()->getId() > 0)
-        {
-            if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
-            } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
-            {
-                $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-            } else 
-            {
-                $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
-                            + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2)  + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
-                            + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
-            }
-            
-            $price += $papers * $machineEntry->getFinishing()->getKosten();
-            $price += $machineEntry->getMachine()->getFinishPlateCost();
-        }
-		if($machineEntry->getMachine()->getType() == Machine::TYPE_CUTTER){
-			$price += $machineEntry->getCutter_cuts() * $machineEntry->getMachine()->getCutPrice();
-		}
-// 		if($machineEntry->getMachine()->getType() == Machine::TYPE_FOLDER){
-// 		    if ($machineEntry->getFoldtype()->getId() > 0){
-// 		      $price = $price * (1 + ($machineEntry->getFoldtype()->getDifficulty() / 100));
-// 		    }
-// 		} // durch Erschwernis ersetzt
+                // DAFUQ gln RECHNUNGS FIX:
+                if ((isset($clickpr) && $clickpr > 0) && (isset($papers) && $papers > 0)){
+                    $price = $clickpr * $papers; // HIER CLICKPRICE
+                    if ($debug)
+                    {
+                        echo 'Klickpreis in diesem Fall: $price = '.$clickpr.' * '.$papers.'</br>';
+                    }
+                } else {
+                    $price = $this->price * $machineEntry->getTime(); // HIER PREIS PRO MINUTE
+                    if ($debug)
+                    {
+                        echo 'Minutenpreis in diesem Fall: $price = '.$this->price.' * '.$machineEntry->getTime().'</br>';
+                    }
+                }
 
-		// Manueller Aufschlag
-		if($machineEntry->getSpecial_margin() > 0){
-		    $price = $price * (1 + ($machineEntry->getSpecial_margin() / 100));
-		} // Manueller Aufschlag ENDE
-		
+                if($machineEntry->getMachine()->getType() == Machine::TYPE_CUTTER){
+                    $price += $machineEntry->getCutter_cuts() * $machineEntry->getMachine()->getCutPrice();
+                    if ($debug)
+                    {
+                        echo 'Preis Aufschlag TYPE_CUTTER </br>';
+                        echo '$price += '.$machineEntry->calcCuts().' * '.$machineEntry->getMachine()->getCutPrice().' </br>';
+                    }
+                }
+
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_MINUTE berechnet: </br>';
+                }
+
+                break;
+            case self::PRICE_BOGEN:
+
+                // Preis nach Bogen
+                if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
+                } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
+                } else
+                {
+                    $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
+                        + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
+                        + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
+                }
+                $price = $papers * $this->price;
+
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_BOGEN berechnet: </br>';
+                    echo '$price = '.$papers.' * '.$this->price.' </br>';
+                }
+
+                break;
+            case self::PRICE_DRUCKPLATTE:
+
+                // Preise nach Druckplatten
+                $price = $this->price * $calc->getPlateCount();
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_DRUCKPLATTE berechnet: </br>';
+                    echo '$price = '.$this->price.' * '.$calc->getPlateCount().' </br>';
+                }
+
+                break;
+            case self::PRICE_AUFLAGE:
+
+                // Preis nach Auflage
+                $price = $calc->getAmount() * $this->price;
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_AUFLAGE berechnet: </br>';
+                    echo '$price = '.$calc->getAmount().' * '.$this->price.' </br>';
+                }
+
+                break;
+            case self::PRICE_PAUSCHAL:
+
+                $price = $this->price;
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_PAUSCHAL berechnet: </br>';
+                    echo '$price = '.$this->price.' </br>';
+                }
+
+                break;
+            case self::PRICE_SQUAREMETER:
+
+                // Preis nach quadratmeter
+                if ($machineEntry->getPart() == Calculation::PAPER_CONTENT)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_CONTENT);
+                    $width = $calc->getPaperContentWidth();
+                    $height = $calc->getPaperContentHeight();
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT);
+                    $width = $calc->getPaperAddContentWidth();
+                    $height = $calc->getPaperAddContentHeight();
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2);
+                    $width = $calc->getPaperAddContent2Width();
+                    $height = $calc->getPaperAddContent2Height();
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3);
+                    $width = $calc->getPaperAddContent3Width();
+                    $height = $calc->getPaperAddContent3Height();
+                } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE)
+                {
+                    $papers = $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
+                    $width = $calc->getPaperEnvelopeWidth();
+                    $height = $calc->getPaperEnvelopeHeight();
+                } else
+                {
+                    $papers =  $calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT)
+                        + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3)
+                        + $calc->getPaperCount(Calculation::PAPER_ENVELOPE);
+
+                    $width = $calc->getPaperContentWidth() + $calc->getPaperAddContentWidth() + $calc->getPaperAddContent2Width()
+                        + $calc->getPaperAddContent3Width() + $calc->getPaperEnvelopeWidth();
+                    $height = $calc->getPaperContentHeight() + $calc->getPaperAddContentHeight() + $calc->getPaperAddContent2Height()
+                        + $calc->getPaperAddContent3Height() + $calc->getPaperEnvelopeHeight();
+                }
+                $price = (($papers * $width) * $height) / 1000000 * $this->price;
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_SQUAREMETER berechnet: </br>';
+                    echo '$price = (('.$papers.' * '.$width.') * '.$height.') / 1000000 * '.$this->price.' </br>';
+                }
+
+                break;
+            case self::PRICE_DPSQUAREMETER: // TODO: obsolete
+
+                // Preis nach m2
+                $all_machines = Machineentry::getAllMachineentries($calc->getId());
+                foreach ($all_machines as $machine){
+                    $part = $machine->getPart();
+
+                    if ($part == Calculation::PAPER_CONTENT || $part == Calculation::PAPER_ADDCONTENT || $part == Calculation::PAPER_ADDCONTENT2 ||
+                        $part == Calculation::PAPER_ADDCONTENT3 || $part == Calculation::PAPER_ENVELOPE){
+
+                        $DP_width = $machine->getMachine()->getDPWidth();
+                        $DP_height = $machine->getMachine()->getDPHeight();
+                        $dps = $calc->getPlateCount($machine);
+                        $price += (($dps * $DP_width * $DP_height) / 1000000) * $this->price;
+                    }
+
+                }
+                if ($debug)
+                {
+                    echo 'Preis wird nach PRICE_DPSQUAREMETER berechnet: </br>';
+                    echo '$price += (($dps * $DP_width * $DP_height) / 1000000) * $this->price </br>';
+                }
+
+                break;
+        }
+
+        if ($debug)
+        {
+            echo 'Preis nach Grundberechnung </br>';
+            echo '$price = '.$price.' </br>';
+        }
+
+        // Manueller Aufschlag
+        if($machineEntry->getSpecial_margin() > 0){
+            $price = $price * (1 + ($machineEntry->getSpecial_margin() / 100));
+        } // Manueller Aufschlag ENDE
+
+        if ($debug)
+        {
+            echo 'Preis nach Manueller Aufschlag </br>';
+            echo '$price = '.$price.' </br>';
+        }
         return $price;
     }
     

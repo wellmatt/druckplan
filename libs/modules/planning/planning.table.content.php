@@ -64,6 +64,8 @@ function printPage() {
 </script>
 <body OnLoad="printPage()">
 <h2>Planungstabelle - Druckansicht</h2>
+
+
 <?php 
 
 $html = '';
