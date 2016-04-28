@@ -42,33 +42,43 @@ $lists = MarketingList::getAllLists();
     </div>
 </div>
 
-<div class="box1">
-    <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form">
-        <input type="hidden" name="exec" value="save"/>
-        <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>
-        <input type="hidden" name="id" value="<?php echo $_REQUEST['id'];?>"/>
-        <h3>Marketing Job</h3></br>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+               Marketing Job
+            </h3>
+	  </div>
+    <div class="panel-body">
+        <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form" class="form-horizontal" role="form">
+            <input type="hidden" name="exec" value="save"/>
+            <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>
+            <input type="hidden" name="id" value="<?php echo $_REQUEST['id'];?>"/>
 
-        <table>
-            <tr>
-                <td>Titel</td>
-                <td><input type="text" name="title" value="<?php echo $marketingjob->getTitle();?>" required style="width: 100%"></td>
-            </tr>
-            <tr>
-                <td>Kunde</td>
-                <td>
-                    <input type="text" name="search" id="search" value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine();?>" style="width:280px" required>
-                    <input type="hidden" name="businesscontact" id="businesscontact" value="<?php echo $marketingjob->getBusinesscontact()->getId();?>" required>
-                </td>
-            </tr>
+
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">Titel</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="title" value="<?php echo $marketingjob->getTitle();?>">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">Kunde</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" name="search" id="search" value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine();?>">
+                    <input class="form-control" type="hidden" name="businesscontact" id="businesscontact" value="<?php echo $marketingjob->getBusinesscontact()->getId();?>">
+                </div>
+            </div>
+
             <?php foreach ($columns as $column) {?>
                 <tr>
                     <td><?php echo $column->getTitle();?></td>
                     <td><input type="text" name="column[<?php echo $column->getId();?>]" value="<?php echo $marketingjob->getColumnValue($column->getId());?>" required style="width: 100%"></td>
                 </tr>
             <?php } ?>
-        </table>
-    </form>
+
+        </form>
+    </div>
 </div>
 
 
@@ -87,3 +97,4 @@ $lists = MarketingList::getAllLists();
         });
     });
 </script>
+

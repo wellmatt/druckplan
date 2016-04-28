@@ -42,98 +42,97 @@ if($_REQUEST["subexec"] == "create_print"){
 }*/
 
 ?>
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Serienbrief erstellen')?>
-			<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Serienbrief bearbeiten')?>
-		</td>
-		<td align="right"><?=$savemsg?></td>
-	</tr>
-</table>
-
 <div id="fl_menu">
 	<div class="label">Quick Move</div>
 	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#bulkletter_edit').submit();">Speichern</a>
-    </div>
+		<a href="#top" class="menu_item">Seitenanfang</a>
+		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+		<a href="#" class="menu_item" onclick="$('#bulkletter_edit').submit();">Speichern</a>
+	</div>
 </div>
 
-<form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="bulkletter_edit" id="bulkletter_edit"   
-		onSubmit="return checkForm(new Array(this.bulk_title, this.bulk_text))">
-	<div class="box1">
-		<input type="hidden" name="exec" value="edit"> 
-		<input type="hidden" name="subexec" value="save"> 
-		<input type="hidden" name="bid" value="<?=$bulk->getId()?>">
-		<table width="100%">
-			<colgroup>
-				<col width="170">
-				<col>
-			</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-				<td class="content_row_clear">
-				<input id="bulk_title" name="bulk_title" type="text" class="text" 
-					value="<?=$bulk->getTitle()?>" style="width: 250px">
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Text')?> *</td>
-				<td class="content_row_clear" valign="top">
-					<textarea id="bulk_text" name="bulk_text" class="text" 
-						style="width: 500px; height: 150px; " ><?=$bulk->getText()?></textarea>
-				</td>
-			</tr>
-			
-			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Kunden-Filter')?></td>
-				<td class="content_row_clear" valign="top">
-					<select name="bulk_filter" style="width: 250px"	class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Serienbrief erstellen')?>
+				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Serienbrief bearbeiten')?>
+			</h3>
+	  </div>
+	<div class="panel-body">
+		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="bulkletter_edit" id="bulkletter_edit"
+			  class="form-horizontal" role="form"  onSubmit="return checkForm(new Array(this.bulk_title, this.bulk_text))">
+			<input type="hidden" name="exec" value="edit">
+			<input type="hidden" name="subexec" value="save">
+			<input type="hidden" name="bid" value="<?=$bulk->getId()?>">
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Titel</label>
+				<div class="col-sm-10">
+					<select name="bulk_filter" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						<option value="0" <? if($bulk->getCustomerFilter()==0) echo "selected";?>><?=$_LANG->get('Interessent')?></option>
+						<option value="1" <? if($bulk->getCustomerFilter()==1) echo "selected";?>><?=$_LANG->get('Bestandskunde')?></option>
+						<option value="2" <? if($bulk->getCustomerFilter()==2) echo "selected";?>><?=$_LANG->get('Alle Kunden')?></option>
+						<option value="3" <? if($bulk->getCustomerFilter()==3) echo "selected";?>><?=$_LANG->get('Lieferanten')?></option>
+						<option value="4" <? if($bulk->getCustomerFilter()==4) echo "selected";?>><?=$_LANG->get('Alle')?></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Text</label>
+				<div class="col-sm-10">
+					<textarea id="bulk_text" name="bulk_text" type="text" class="form-control" ><?=$bulk->getText()?></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Kunden-Filter</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<select name="bulk_filter" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							<option value="0" <? if($bulk->getCustomerFilter()==0) echo "selected";?>><?=$_LANG->get('Interessent')?></option>
 							<option value="1" <? if($bulk->getCustomerFilter()==1) echo "selected";?>><?=$_LANG->get('Bestandskunde')?></option>
 							<option value="2" <? if($bulk->getCustomerFilter()==2) echo "selected";?>><?=$_LANG->get('Alle Kunden')?></option>
 							<option value="3" <? if($bulk->getCustomerFilter()==3) echo "selected";?>><?=$_LANG->get('Lieferanten')?></option>
 							<option value="4" <? if($bulk->getCustomerFilter()==4) echo "selected";?>><?=$_LANG->get('Alle')?></option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Kunden-Merkmale</label>
+				<div class="col-sm-10">
+					<? if (count($bulk->getCustomerAttrib()) > 0) { foreach ($bulk->getCustomerAttrib() as $attrib){
+						$tmp_expl_attrib = explode(",",$attrib);?>
+						<select name="filter_attrib[]" type="text" class="form-control"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+							<?
+							foreach ($all_attributes AS $attribute){
+								$allitems = $attribute->getItems();
+								foreach ($allitems AS $item){
+									if ($item["id"] == $tmp_expl_attrib[1]){?>
+										<option value="<?=$attribute->getId()?>,<?=$item["id"]?>" selected><?=$item["title"]?></option>
+									<? } else { ?>
+										<option value="<?=$attribute->getId()?>,<?=$item["id"]?>"><?=$item["title"]?></option>
+									<?}
+								}
+							} ?>
+						</select></br>
+					<? }} ?>
+					<select name="filter_attrib[]"type="text" class="form-control"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+						<?
+						foreach ($all_attributes AS $attribute){
+							$allitems = $attribute->getItems();
+							foreach ($allitems AS $item){?>
+								<option value="<?=$attribute->getId()?>,<?=$item["id"]?>"><?=$item["title"]?></option>
+							<?}
+						} ?>
 					</select>
-				</td>
-			</tr>
-			
-			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Kunden-Merkmale')?></td>
-				<td class="content_row_clear" valign="top" id="attrib_td">
-				<? if (count($bulk->getCustomerAttrib()) > 0) { foreach ($bulk->getCustomerAttrib() as $attrib){
-				    $tmp_expl_attrib = explode(",",$attrib);?>
-        			<select name="filter_attrib[]" style="width:150px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-        				<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-        				<? 
-        				foreach ($all_attributes AS $attribute){
-        				 	$allitems = $attribute->getItems();
-        					foreach ($allitems AS $item){ 
-        					   if ($item["id"] == $tmp_expl_attrib[1]){?>
-        						  <option value="<?=$attribute->getId()?>,<?=$item["id"]?>" selected><?=$item["title"]?></option>
-        					<? } else { ?>
-        						  <option value="<?=$attribute->getId()?>,<?=$item["id"]?>"><?=$item["title"]?></option>
-        					 <?}
-        					}
-        				} ?>
-        			</select></br>
-        		<? }} ?>
-        			<select name="filter_attrib[]" style="width:150px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-        				<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-        				<? 
-        				foreach ($all_attributes AS $attribute){
-        				 	$allitems = $attribute->getItems();
-        					foreach ($allitems AS $item){?>
-        						  <option value="<?=$attribute->getId()?>,<?=$item["id"]?>"><?=$item["title"]?></option>
-        				  <?}
-        				} ?>
-        			</select>
-				</td>
-			</tr>
-			
+				</div>
+			</div>
 			<?if ($bulk->getCrt_user()->getId() > 0){?>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
@@ -147,7 +146,7 @@ if($_REQUEST["subexec"] == "create_print"){
 						<?if($bulk->getCrt_date() > 0) echo date('d.m.Y - H:i:s',$bulk->getCrt_date())?>
 					</td>
 				</tr>
-					<?if($bulk->getUpd_user()->getId() > 0){?>
+				<?if($bulk->getUpd_user()->getId() > 0){?>
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Bearbeitet von')?></td>
 						<td class="content_row_clear">
@@ -160,7 +159,7 @@ if($_REQUEST["subexec"] == "create_print"){
 							<?if($bulk->getUpd_date() > 0) echo date('d.m.Y - H:i:s',$bulk->getUpd_date())?>
 						</td>
 					</tr>
-					<?}?>
+				<?}?>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Download')?></td>
 					<td class="content_row_clear">
@@ -169,13 +168,13 @@ if($_REQUEST["subexec"] == "create_print"){
 								<td>
 									<ul class="postnav_save_small" style="padding:0px">
 										<a href="<?=$bulk->getPdfLink(Bulkletter::DOCTYPE_EMAIL)?>"
-											title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
+										   title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
 									</ul>
 								</td>
 								<td>
 									<ul class="postnav_save_small" style="padding:0px">
 										<a href="<?=$bulk->getPdfLink(Bulkletter::DOCTYPE_PRINT)?>"
-											title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
+										   title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
 									</ul>
 								</td>
 							</tr>
@@ -183,6 +182,8 @@ if($_REQUEST["subexec"] == "create_print"){
 					</td>
 				</tr>
 			<?}?>
-		</table>
+		</form>
 	</div>
-</form>
+</div>
+
+

@@ -44,122 +44,120 @@ $users = User::getAllUser();
         <a href="#" class="menu_item" onclick="$('#vacuser').submit();">Speichern</a>
     </div>
 </div>
-
-<table width="100%">
-    <tr>
-        <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Benutzer')?></td>
-        <td><?=$savemsg?></td>
-    </tr>
-</table>
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="vacuser" id="vacuser">
-    <input type="hidden" name="exec" value="save">
-    <div class="box1">
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Benutzer
+            </h3>
+	  </div>
+    </br>
+    <div class="table-responsive">
         <h3>Benutzer Konfiguration</h3>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="stripe hover row-border order-column">
+        <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td class="content_row_header"><?=$_LANG->get('ID')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Name')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Tage/Jahr')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Tage übernommen')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Gasamt verf.')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Urlaub')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('verbleibend')?></td>
+                    </tr>
+                </thead>
+                <?php
+                foreach($users as $user)
+                {
+                    if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $user->getId() != $_USER->getId())
+                        continue;
+
+                    $tmp_vuser = new VacationUser();
+                    foreach ($vac_user as $vuser)
+                    {
+                        if ($vuser->getUser()->getId() == $user->getId())
+                            $tmp_vuser = $vuser;
+                    }
+                    if ($tmp_vuser->getId() != 0)
+                    {
+                        ?>
+                        <tr>
+                            <td class="content_row_header"><?php echo $tmp_vuser->getUser()->getId(); ?></td>
+                            <td class="content_row_header"><?php echo $tmp_vuser->getUser()->getNameAsLine(); ?></td>
+                            <td class="content_row_header">
+                                <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]" value="<?php echo $tmp_vuser->getDays(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
+                            </td>
+                            <td class="content_row_header">
+                                <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
+                            </td>
+                            <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast());?></td>
+                            <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUser($user));?></td>
+                            <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast()-VacationEntry::getDaysByUser($user));?></td>
+                        </tr>
+                        <?php
+                    } else {
+                        ?>
+                        <tr>
+                            <td class="content_row_header"><?php echo $user->getId(); ?></td>
+                            <td class="content_row_header"><?php echo $user->getNameAsLine(); ?></td>
+                            <td class="content_row_header"><input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]"></td>
+                            <td class="content_row_header"><input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]"></td>
+                            <td class="content_row_header">N/A</td>
+                            <td class="content_row_header">N/A</td>
+                            <td class="content_row_header">N/A</td>
+                        </tr>
+                        <?php
+                    }
+                }
+                ?>
+        </table>
+    </div>
+    </br>
+    <?php
+    $vacations = VacationEntry::getAll();
+    ?>
+    <div class="table-responsive">
+        <h3>Urlaub Übersicht</h3>
+    	<table class="table table-hover">
             <thead>
-                <tr>
-                    <td class="content_row_header"><?=$_LANG->get('ID')?></td>
-                    <td class="content_row_header"><?=$_LANG->get('Name')?></td>
-                    <td class="content_row_header"><?=$_LANG->get('Tage/Jahr')?></td>
-                    <td class="content_row_header"><?=$_LANG->get('Tage übernommen')?></td>
-                    <td class="content_row_header"><?=$_LANG->get('Gasamt verf.')?></td>
-                    <td class="content_row_header"><?=$_LANG->get('Urlaub')?></td>
-                    <td class="content_row_header"><?=$_LANG->get('verbleibend')?></td>
-                </tr>
+            <tr>
+                <td class="content_row_header"><?=$_LANG->get('ID')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Benutzer')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Tage')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Von')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Status')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Typ')?></td>
+                <td class="content_row_header"><?=$_LANG->get('Kommentar')?></td>
+            </tr>
             </thead>
             <?php
-            foreach($users as $user)
-            {
-                if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $user->getId() != $_USER->getId())
+            foreach ($vacations as $vacation) {
+                if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $vacation->getUser()->getId() != $_USER->getId())
                     continue;
-
-                $tmp_vuser = new VacationUser();
-                foreach ($vac_user as $vuser)
-                {
-                    if ($vuser->getUser()->getId() == $user->getId())
-                        $tmp_vuser = $vuser;
-                }
-                if ($tmp_vuser->getId() != 0)
-                {
-                    ?>
-                    <tr>
-                        <td class="content_row_header"><?php echo $tmp_vuser->getUser()->getId(); ?></td>
-                        <td class="content_row_header"><?php echo $tmp_vuser->getUser()->getNameAsLine(); ?></td>
-                        <td class="content_row_header">
-                            <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]" value="<?php echo $tmp_vuser->getDays(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
-                        </td>
-                        <td class="content_row_header">
-                            <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
-                        </td>
-                        <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast());?></td>
-                        <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUser($user));?></td>
-                        <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast()-VacationEntry::getDaysByUser($user));?></td>
-                    </tr>
-                    <?php
-                } else {
-                    ?>
-                    <tr>
-                        <td class="content_row_header"><?php echo $user->getId(); ?></td>
-                        <td class="content_row_header"><?php echo $user->getNameAsLine(); ?></td>
-                        <td class="content_row_header"><input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]"></td>
-                        <td class="content_row_header"><input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]"></td>
-                        <td class="content_row_header">N/A</td>
-                        <td class="content_row_header">N/A</td>
-                    </tr>
-                    <?php
-                }
+                ?>
+                <tr class="pointer" <?php if ($_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) || $vacation->getState()==VacationEntry::STATE_OPEN) echo ' onclick="callBoxFancy(\'libs/modules/vacation/vacation.new.frame.php?eventid='.$vacation->getId().'\');" ';?>>
+                    <td class="content_row_header"><?php echo $vacation->getId();?></td>
+                    <td class="content_row_header"><?php echo $vacation->getUser()->getNameAsLine();?></td>
+                    <td class="content_row_header"><?php echo $vacation->getDays();?></td>
+                    <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getStart());?></td>
+                    <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getEnd());?></td>
+                    <td class="content_row_header"><?php echo $vacation->getStateFormated();?></td>
+                    <td class="content_row_header"><?php echo $vacation->getTypeFormated();?></td>
+                    <td class="content_row_header"><?php echo $vacation->getComment();?></td>
+                </tr>
+                <?php
             }
             ?>
         </table>
     </div>
-</form>
-</br>
-<?php
-$vacations = VacationEntry::getAll();
-?>
-
-<div class="box1">
-    <h3>Urlaub Übersicht</h3>
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="stripe hover row-border order-column">
-        <thead>
-        <tr>
-            <td class="content_row_header"><?=$_LANG->get('ID')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Benutzer')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Tage')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Von')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Status')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Typ')?></td>
-            <td class="content_row_header"><?=$_LANG->get('Kommentar')?></td>
-        </tr>
-        </thead>
-        <?php
-        foreach ($vacations as $vacation) {
-            if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $vacation->getUser()->getId() != $_USER->getId())
-                continue;
-            ?>
-            <tr class="pointer" <?php if ($_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) || $vacation->getState()==VacationEntry::STATE_OPEN) echo ' onclick="callBoxFancy(\'libs/modules/vacation/vacation.new.frame.php?eventid='.$vacation->getId().'\');" ';?>>
-                <td class="content_row_header"><?php echo $vacation->getId();?></td>
-                <td class="content_row_header"><?php echo $vacation->getUser()->getNameAsLine();?></td>
-                <td class="content_row_header"><?php echo $vacation->getDays();?></td>
-                <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getStart());?></td>
-                <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getEnd());?></td>
-                <td class="content_row_header"><?php echo $vacation->getStateFormated();?></td>
-                <td class="content_row_header"><?php echo $vacation->getTypeFormated();?></td>
-                <td class="content_row_header"><?php echo $vacation->getComment();?></td>
-            </tr>
-            <?php
-        }
-        ?>
-    </table>
-</div>
-</br>
-
-<div class="box1">
-    <div id='calendar'></div>
-</div>
-<div id="hidden_clicker" style="display:none">
-    <a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a>
+    </br>
+    <div class="table-responsive">
+    	<table class="table table-hover">
+        <div id='calendar'></div>
+    </div>
+    <div id="hidden_clicker" style="display:none">
+        <a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a>
+    </div>
 </div>
 
 <script>

@@ -54,85 +54,87 @@ function askDel(myurl)
    return false;
 }
 </script>
-
-<table border="0" cellpadding="0" cellspacing="0" width="1000">
-<tr>
-	<td height="30" width="160" class="content_header">
-		<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-		<span style="font-size: 13px">Kundenuploads</span>
-	</td>
-	<td class="content_header" align="center" width="200">
-		<span style="font-size: 12px">
-		<a href="index.php?page=<?=$_REQUEST['page']?>&doupload=1"  class="icon-link" title="<?=$_LANG->get('Upload f&uuml;r Kunden');?>" >
-			<img src="images/icons/navigation.png" alt="Upload">
-			<?=$_LANG->get('Upload');?>
-		</a>
-		</span></td>
-	<td align="center"><?=$savemsg?></td>
-	<td class="content_header" width="160">
-		<span style="font-size: 12px">
-		<a href="index.php?page=<?=$_REQUEST['page']?>&filter=<?=$filter2?>"  class="icon-link" title="<?=$_LANG->get('Kunden ohne Download filtern');?>" >
-			<img src="images/icons/funnel.png"alt="Download">
-			<?=$filter_msg?>
-		</a>
-		</span>
-	</td>
-</tr>
-</table>
-<? 
-	foreach($customers as $cust){
-	    $sql = "SELECT * FROM ftpcustuploads
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Kundenuploads
+			<span class= "pull-center">
+				<img src="images/icons/navigation.png" alt="Upload">
+				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&doupload=1)?>';" >
+					<?=$_LANG->get('Upload');?>
+				</button>
+			</span>
+			<span class= "pull-right">
+				<img src="images/icons/funnel.png"alt="Download">
+				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&filter=<?=$filter2?>';" >
+					<?=$filter_msg?>
+				</button>
+			</span>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<?
+		foreach($customers as $cust){
+		$sql = "SELECT * FROM ftpcustuploads
 	            WHERE ftp_cust_id = {$cust->getId()}
 	            ORDER BY ftp_crtdat DESC";
-	    $files = $DB->select($sql);
-	    if(count($files) > 0 && $files != false || $filter == "off" ){
-	        ?>
-	        
-	        <span style="font-size: 12px"><b><?=$cust->getNameAsLine()?></b></span>
-	        <div class="box1">
-	        <table cellpadding="2" cellspacing="0" border="0" width="100%">
-	            <colgroup>
-	                <col>
-	                <col width="120">
-	                <col width="120">
-	                <col width="80">
-	            </colgroup>
-	            <tr>
-	                <td class="content_row_header">Dateiname</td>
-	                <td class="content_row_header">Dateigr&ouml;&szlig;e</td>
-	                <td class="content_row_header">Hochgeladen am</td>
-	                <td class="content_row_header" colspan="2">Optionen</td>
-	            </tr>
-	            <? 
-	            $y=0;
-	            foreach($files as $file){
-	                if($file["ftp_filesize"] > 1024*1024){
-	                    $size = $file["ftp_filesize"] / 1024 / 1024;
-	                    $unit = "MB";
-	                } elseif ($file["ftp_filesize"] > 1024) {
-	                    $size = $file["ftp_filesize"] / 1024;
-	                    $unit = "KB";
-	                } else { 
-	                    $size = $file["ftp_filesize"];
-	                    $unit = "B";
-	                }
-	            ?> 
-	            <tr class="<?=getRowColor($y)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-	                <td class="content_row"><?=$file["ftp_orgname"]?></td>
-	                <td class="content_row"><?=printPrice(round($size, 2))?> <?=$unit?></td>
-	                <td class="content_row"><?=date('d.m.Y H:i', $file["ftp_crtdat"])?></td>
-	                <td class="content_row">
-	                	<a class="icon-link" href="get.php?type=2&hash=<?=$file["ftp_hash"]?>"><img src="images/icons/navigation-270-frame.png" title="Download" alt="Download"></a>
-	                    <!-- a href="#" onclick="askDel('index.php?mid=<?=$_REQUEST["mid"]?>&delete=<?=$file["ftp_hash"]?>')">L&ouml;schen</a-->
-						&ensp;
-						<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delete=<?=$file["ftp_hash"]?>')"><img src="images/icons/cross-script.png"> </a>
-	                </td>
-	            </tr>
-	            <? $y++; } ?>
-	        </table>
-	        </div>
-	        <br>
-	        <? 
-	    } 
-	} 
-}?>
+		$files = $DB->select($sql);
+		if(count($files) > 0 && $files != false || $filter == "off" ){
+		?>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<b><?=$cust->getNameAsLine()?></b>
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<colgroup>
+							<col>
+							<col width="120">
+							<col width="120">
+							<col width="80">
+						</colgroup>
+						<tr>
+							<td class="content_row_header">Dateiname</td>
+							<td class="content_row_header">Dateigr&ouml;&szlig;e</td>
+							<td class="content_row_header">Hochgeladen am</td>
+							<td class="content_row_header" colspan="2">Optionen</td>
+						</tr>
+						<?
+						$y=0;
+						foreach($files as $file){
+							if($file["ftp_filesize"] > 1024*1024){
+								$size = $file["ftp_filesize"] / 1024 / 1024;
+								$unit = "MB";
+							} elseif ($file["ftp_filesize"] > 1024) {
+								$size = $file["ftp_filesize"] / 1024;
+								$unit = "KB";
+							} else {
+								$size = $file["ftp_filesize"];
+								$unit = "B";
+							}
+							?>
+							<tr class="<?=getRowColor($y)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
+								<td class="content_row"><?=$file["ftp_orgname"]?></td>
+								<td class="content_row"><?=printPrice(round($size, 2))?> <?=$unit?></td>
+								<td class="content_row"><?=date('d.m.Y H:i', $file["ftp_crtdat"])?></td>
+								<td class="content_row">
+									<a class="icon-link" href="get.php?type=2&hash=<?=$file["ftp_hash"]?>"><img src="images/icons/navigation-270-frame.png" title="Download" alt="Download"></a>
+									<!-- a href="#" onclick="askDel('index.php?mid=<?=$_REQUEST["mid"]?>&delete=<?=$file["ftp_hash"]?>')">L&ouml;schen</a-->
+									&ensp;
+									<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delete=<?=$file["ftp_hash"]?>')"><img src="images/icons/cross-script.png"> </a>
+								</td>
+							</tr>
+							<? $y++; } ?>
+					</table>
+				</div>
+			</div>
+		</div>
+					<?
+				}
+			}
+		}?>
+	</div>
+</div>

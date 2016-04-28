@@ -51,76 +51,70 @@ function printSubTradegroupsForSelect($parentId, $depth){
 }
 ?>
 
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Warengruppe hinzuf&uuml;gen')?>
-			<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Warengruppe bearbeiten')?>
-			<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Warengruppe kopieren')?>
-		</td>
-		<td align="right"><?=$savemsg?></td>
-	</tr>
-</table>
-
 <div id="fl_menu">
 	<div class="label">Quick Move</div>
 	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#tradegroup_edit').submit();">Speichern</a>
-    </div>
+		<a href="#top" class="menu_item">Seitenanfang</a>
+		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+		<a href="#" class="menu_item" onclick="$('#tradegroup_edit').submit();">Speichern</a>
+	</div>
 </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="tradegroup_edit" id="tradegroup_edit"
-		  onSubmit="return checkform(new Array(this.tradegroup_title))">
-	<div class="box1">
-		<input type="hidden" name="exec" value="edit"> 
-		<input type="hidden" name="subexec" value="save"> 
-		<input type="hidden" name="id" value="<?=$tradegroup->getId()?>">
-		<table width="100%">
-			<colgroup>
-				<col width="170">
-				<col>
-			</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-				<td class="content_row_clear">
-				<input id="tradegroup_title" name="tradegroup_title" type="text" class="text" 
-					value="<?=$tradegroup->getTitle()?>" style="width: 370px">
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-				<td class="content_row_clear">
-					<textarea id="tradegroup_desc" name="tradegroup_desc" rows="4" cols="50" class="text"><?=$tradegroup->getDesc()?></textarea>
-				</td>
-			</tr>
-			<tr>
-			<?if($_CONFIG->shopActivation){?>
-				<td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td>
-				<td class="content_row_clear">
-					<input 	id="tradegroup_shoprel" name="tradegroup_shoprel" class="text" type="checkbox" 
-							value="1" <?if ($tradegroup->getShoprel() == 1) echo "checked"; ?>>
-				</td>
-			<?}?>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('&Uuml;bergeordnete Gruppe')?></td>
-				<td class="content_row_clear">
-					<select id="tradegroup_parentid" name="tradegroup_parentid" style="width: 170px">
-					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<?	foreach ($all_tradegroups as $tg){
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Warengruppe hinzuf&uuml;gen')?>
+				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Warengruppe bearbeiten')?>
+				<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Warengruppe kopieren')?>
+			</h3>
+	  </div>
+
+	<div class="panel-body">
+		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="tradegroup_edit" id="tradegroup_edit"
+			  class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.tradegroup_title))">
+			<input type="hidden" name="exec" value="edit">
+			<input type="hidden" name="subexec" value="save">
+			<input type="hidden" name="id" value="<?=$tradegroup->getId()?>">
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Titel</label>
+				<div class="col-sm-10">
+					<input id="tradegroup_title" name="tradegroup_title" type="text" class="form-control" value="<?=$tradegroup->getTitle()?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Beschreibung</label>
+				<div class="col-sm-10">
+					<textarea id="tradegroup_desc" name="tradegroup_desc" type="text" class="form-control"><?=$tradegroup->getDesc()?></textarea>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-sm-2 control-label">Shop-Freigabe</label>
+					<div class="col-sm-10">
+						<input 	id="tradegroup_shoprel" name="tradegroup_shoprel" class="text" type="checkbox" value="1" <?if ($tradegroup->getShoprel() == 1) echo "checked"; ?>>
+						</div>
+					</div>
+
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Übergeordnete Gruppe</label>
+				<div class="col-sm-10">
+					<select id="tradegroup_parentid" name="tradegroup_parentid" type="text" class="form-control">
+						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+						<?	foreach ($all_tradegroups as $tg){
 							if ($tg->getId() != $tradegroup->getId()){ ?>
 								<option value="<?=$tg->getId()?>"
-								<?if ($tradegroup->getParentID() == $tg->getId()) echo "selected" ;?> ><?= $tg->getTitle()?></option>
-					<?		}
-						printSubTradegroupsForSelect($tg->getID(), 0);
+									<?if ($tradegroup->getParentID() == $tg->getId()) echo "selected" ;?> ><?= $tg->getTitle()?></option>
+							<?		}
+							printSubTradegroupsForSelect($tg->getID(), 0);
 						} ?>
-				</select>
-				</td>
-			</tr>
-		</table>
+					</select>
+				</div>
+			</div>
+		</form>
 	</div>
-	<br/>
-</form>
+</div>
+

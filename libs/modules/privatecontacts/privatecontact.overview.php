@@ -87,19 +87,24 @@ $(document).ready(function() {
 </script>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Private Kontakte</h3>
-        <td align="right">
-            <img src="images/icons/plus.png"> <span onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0'" style="font-size: 13px"
+        <h3 class="panel-title">
+            <img  src="images/icons/user-detective.png">
+            Private Kontakte
+                <span class = pull-right>
+                    <img src="images/icons/plus.png">
+                    <button class="btn btn-xs btn-success"onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
+                        <?=$_LANG->get('Neuer Kontakt') ?>
+                </span>
+        </h3>
     </div>
     <div class="table-responsive">
-        <br>
         <table id="cp_table" class="table table-hover">
             <thead>
             <tr>
                 <th width="10">ID</th>
                 <th>Name</th>
                 <th>Firma</th>
-                <th width="80">Optionen</th>
+                <th>Benutzer</th>
             </tr>
             </thead>
         </table>

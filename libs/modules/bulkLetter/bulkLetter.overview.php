@@ -21,21 +21,22 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 	
 	$all_bulkletter = Bulkletter::getAllBulkletter(Bulkletter::ORDER_CREATE_DESC);
 	?>
-	
-	<table width="100%">
-		<tr>
-			<td width="200" class="content_header">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>" /> <?=$_LANG->get('Serienbrief')?>
-			</td>
-			<td><?=$savemsg?></td>
-			<td width="200" class="content_header" align="right">
-				<a href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/script--plus.png"><?=$_LANG->get('Serienbrief erstellen')?> </a>
-			</td>
-		</tr>
-	</table>
-	
-	<div class="box1">
-		<table width="100%" cellpadding="0" cellspacing="0">
+<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<span
+						<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+					</span>
+					Serienbrief
+				</h3>
+			  <span class="pull-right">
+				  <img src="images/icons/script--plus.png">
+				  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
+					  <?=$_LANG->get('Serienbrief')?>
+			  </span>
+		  </div>
+	<div class="table-responsive">
+		<table class="table table-hover">
 			<colgroup>
 				<col width="40">
 				<col width="180">
@@ -101,4 +102,5 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 			?>
 		</table>
 	</div>
+</div>
 <?} ?>

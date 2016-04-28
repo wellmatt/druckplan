@@ -85,30 +85,29 @@ $(function() {
 	 });
 });
 </script>
-
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-          <? echo $_LANG->get('Sperrzeiten')?>
-      </td>
-      <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				Sperrzeiten
+			</h3>
+	  </div>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form">
 <input type="hidden" name="exec" value="edit">
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" id="id" name="id" value="<?=$_REQUEST['id']?>">
 
-<div class="box1">
-    <table width="100%">
-       <tr>
-          <td width="200" class="content_header">Maschine suchen:</td>
-          <td align="left">
-            <input type="text" style="width:160px" id="maschine" name="maschine" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-    	  </td>
-       </tr>
-    </table>
+	<div class="table-responsive">
+			<table class="table table-hover">
+		   <tr>
+			  <td width="200" class="content_header">Maschine suchen:</td>
+			  <td align="left">
+				<input type="text" style="width:160px" id="maschine" name="maschine" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+			  </td>
+		   </tr>
+		</table>
+	</div>
 </div>
 
 
@@ -116,38 +115,38 @@ $(function() {
 if ($_REQUEST['id'] && $_REQUEST['id'] > 0){
     $machine = new Machine((int)$_REQUEST['id']);
     if ($machine->getId() > 0){?>
-    <div class="box2">
-        <b><u><?=$machine->getName()?></u></b>
-    	<table width="500" cellpadding="0" cellspacing="0" border="0">
-    		<tr>
-    			<td class="content_row_header" valign="top">Sperrzeit Start</td>
-    			<td class="content_row_header" valign="top">Sperrzeit Ende</td>
-    		</tr>
-    		<?php 
-    		$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
-    		foreach ($all_locks as $lock){
-    		    if ($lock->getStart() >= time() || $lock->getStop() >= time()){
-    		?>
-    		<tr>
-    			<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
-    			<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?> 
-    			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><img src="images/icons/cross-script.png"/></a></td>
-    		</tr>
-    		<?php }} ?>
-    		<tr>
-    			<td class="content_row_clear" valign="top">&nbsp;</td>
-    			<td class="content_row_clear" valign="top">&nbsp;</td>
-    		</tr>
-    		<tr>
-    			<td class="content_row_clear" valign="top">neue Sperrzeit:</td>
-    			<td class="content_row_clear" valign="top">
-    			     <input type="text" style="width:160px" id="lock_start" name="lock_start"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
-    			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/> -> <input type="text" style="width:160px" id="lock_stop" name="lock_stop"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
-    			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-    			</td>
-    		</tr>
-    	</table>
-    </div>
+		<div class="panel panel-default">
+			  <div class="panel-heading">
+					<h3 class="panel-title">
+						<?=$machine->getName()?>
+					</h3>
+			  </div>
+			  <div class="panel-body">
+				 Neue Sperrzeit:  <input type="text" style="width:160px" id="lock_start" name="lock_start"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+						 onfocus="markfield(this,0)" onblur="markfield(this,1)"/> -> <input type="text" style="width:160px" id="lock_stop" name="lock_stop"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+																							onfocus="markfield(this,0)" onblur="markfield(this,1)"/> </br>&nbsp;
+				  <div class="table-responsive">
+					  <table class="table table-hover">
+						  <tr>
+							  <td class="content_row_header" valign="top">Sperrzeit Start</td>
+							  <td class="content_row_header" valign="top">Sperrzeit Ende</td>
+							  <td class="content_row_header" valign="top">Option</td>
+						  </tr>
+						  <?php
+						  $all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
+						  foreach ($all_locks as $lock){
+							  if ($lock->getStart() >= time() || $lock->getStop() >= time()){
+								  ?>
+								  <tr>
+									  <td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
+									  <td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?>
+										  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><img src="images/icons/cross-script.png"/></a></td>
+								  </tr>
+							  <?php }} ?>
+					  </table>
+				  </div>
+			  </div>
+		</div>
     </br>
     <?php 
     } 

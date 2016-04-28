@@ -23,63 +23,85 @@ if($_REQUEST["subexec"] == "save")
     $savemsg = getSaveMessage($chr->save());
 }
 ?>
-
-<table width="100%">
-    <tr>
-        <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-            <? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Farbigkeit kopieren')?>
-            <? if ($_REQUEST["exec"] == "edit" && $chr->getId() == 0) echo $_LANG->get('Farbigkeit anlegen')?>
-            <? if ($_REQUEST["exec"] == "edit" && $chr->getId() != 0) echo $_LANG->get('Farbigkeit bearbeiten')?>
-        </td>
-        <td align="right"><?=$savemsg?></td>
-    </tr>
-</table>
-
 <div id="fl_menu">
 	<div class="label">Quick Move</div>
 	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#chromaticity_form').submit();">Speichern</a>
-    </div>
+		<a href="#top" class="menu_item">Seitenanfang</a>
+		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+		<a href="#" class="menu_item" onclick="$('#chromaticity_form').submit();">Speichern</a>
+	</div>
 </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="chromaticity_form" name="chromaticity_form" onSubmit="return checkform(new Array(this.chr_name))">
-<input type="hidden" name="exec" value="edit">
-<input type="hidden" name="subexec" value="save">
-<input type="hidden" name="id" value="<?=$chr->getId()?>">
-<div class="box1">
-	<table width="500">
-	    <colgroup>
-	        <col width="180">
-	        <col>
-	    </colgroup>
-	    <tr>
-	        <td class="content_row_header"><?=$_LANG->get('Bezeichnung')?> *</td>
-	        <td class="content_row_clear"><input id="chr_name" name="chr_name" style="width:300px" class="text" value="<?=$chr->getName()?>"></td>
-	    </tr>
-	    <tr>
-	        <td class="content_row_header"><?=$_LANG->get('Farben Vorderseite')?></td>
-	        <td class="content_row_clear"><input name="chr_color_front" style="width:60px" class="text" value="<?=$chr->getColorsFront()?>"></td>
-	    </tr>
-	    <tr>
-	        <td class="content_row_header"><?=$_LANG->get('Farben R&uuml;ckseite')?></td>
-	        <td class="content_row_clear"><input name="chr_color_back" style="width:60px" class="text" value="<?=$chr->getColorsBack()?>"></td>
-	    </tr>
-	    <tr>
-	        <td class="content_row_header"><?=$_LANG->get('Sch&ouml;n- und Widerdruck')?></td>
-	        <td class="content_row_clear"><input type="checkbox" name="chr_reverse" value="1" <? if($chr->getReversePrinting()) echo "checked";?>></td>
-	    </tr>
-	    <tr>
-	        <td class="content_row_header"><?=$_LANG->get('Aufschlag auf Maschinenpreis')?></td>
-	        <td class="content_row_clear"><input name="chr_markup" style="width:60px" class="text" value="<?=printPrice($chr->getMarkup())?>"> %</td>
-	    </tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Preis/kg')?></td>
-			<td class="content_row_clear"><input name="pricekg" style="width:60px" class="text" value="<?=printPrice($chr->getPricekg())?>"> €</td>
-		</tr>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Farbigkeit kopieren')?>
+				<? if ($_REQUEST["exec"] == "edit" && $chr->getId() == 0) echo $_LANG->get('Farbigkeit anlegen')?>
+				<? if ($_REQUEST["exec"] == "edit" && $chr->getId() != 0) echo $_LANG->get('Farbigkeit bearbeiten')?>
+			</h3>
+	  </div>
+	<div class="panel-body">
+		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="chromaticity_form" name="chromaticity_form"
+			  class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.chr_name))">
+			<input type="hidden" name="exec" value="edit">
+			<input type="hidden" name="subexec" value="save">
+			<input type="hidden" name="id" value="<?=$chr->getId()?>">
 
-	</table>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Bezeichnung</label>
+				<div class="col-sm-10">
+					<input id="chr_name" name="chr_name" type="text" class="form-control" value="<?=$chr->getName()?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Farben Vorderseite</label>
+				<div class="col-sm-10">
+					<input name="chr_color_front" type="text" class="form-control" value="<?=$chr->getColorsFront()?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Farben Rückseite</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input name="chr_color_back"  type="text" class="form-control" value="<?=$chr->getColorsBack()?>">
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Schön- und Widerdruck</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input type="checkbox" name="chr_reverse"  class="form-control" value="1" <? if($chr->getReversePrinting()) echo "checked";?>>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Aufschlag auf Maschinenpreis</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input name="chr_markup"type="text" class="form-control" value="<?=printPrice($chr->getMarkup())?>">
+						<span class="input-group-addon">%</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Preis/kg'</label>
+				<div class="col-sm-10">
+					<div class="input-group">
+						<input name="pricekg" type="text" class="form-control" value="<?=printPrice($chr->getPricekg())?>">
+						<span class="input-group-addon">€</span>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>
-<br/>
-</form>
+
+

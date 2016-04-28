@@ -35,80 +35,78 @@ if($_REQUEST["subexec"] == "save")
 		})
 	});
 </script>
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-          <? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Falzart kopieren')?>
-          <? if ($_REQUEST["exec"] == "edit" && $ft->getId() == 0) echo $_LANG->get('Falzart anlegen')?>
-          <? if ($_REQUEST["exec"] == "edit" && $ft->getId() != 0) echo $_LANG->get('Falzart bearbeiten')?>
-      </td>
-      <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
 
 <div id="fl_menu">
 	<div class="label">Quick Move</div>
 	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#foldtype_form').submit();">Speichern</a>
-    </div>
+		<a href="#top" class="menu_item">Seitenanfang</a>
+		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+		<a href="#" class="menu_item" onclick="$('#foldtype_form').submit();">Speichern</a>
+	</div>
 </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="foldtype_form" name="foldtype_form" onSubmit="return checkform(new Array(this.foldtype_name,this.foldtype_description))">
-	<input type="hidden" name="exec" value="edit">
-	<input type="hidden" name="subexec" value="save">
-	<input type="hidden" name="id" value="<?=$ft->getId()?>">
-	<input type="hidden" name="picture" id="picture" value="<?=$ft->getPicture()?>">
-	<div class="box1">
-		<table width="100%">
-		    <colgroup>
-		        <col width="180">
-		        <col width="300">
-		        <col width="180">
-		        <col width="300">
-		    </colgroup>
-		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Bezeichnung')?> *</td>
-		        <td class="content_row_clear">
-		            <input name="foldtype_name" value="<?=$ft->getName()?>" style="width:300px;" class="text">
-		        </td>
-		        <td class="content_row_header" rowspan="2" valign="top">
-		            <?=$_LANG->get('Beispielbild')?> *<br>
-		            <a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products"><input type="button" class="button" value="<?=$_LANG->get('ändern')?>"></a>
-		            <? if($ft->getPicture() != "") {?>
-		                <input type="button" class="buttonRed" value="<?=$_LANG->get('L&ouml;schen')?>" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$ft->getId()?>&deletePicture=1'">
-		            <? } ?>
-		        </td>
-		        <td class="content_row_clear" rowspan="2" valign="top" id="picture_show">
-		            <img src="images/foldtypes/<?=$ft->getPicture()?>">&nbsp;
-		        </td> 
-		    </tr>
-		    <tr>
-		        <td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung')?> *</td>
-		        <td class="content_row_clear">
-		            <textarea name="foldtype_description" style="width:300px;height:100px" class="text"><?=$ft->getDescription()?></textarea>
-		        </td>
-		    </tr>
-		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Falzen vertikal')?></td>
-		        <td class="content_row_clear">
-		            <input name="foldtype_vertical" value="<?=$ft->getVertical()?>" style="width:60px;" class="text">
-		        </td>
-		    </tr>
-		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Falzen horizontal')?></td>
-		        <td class="content_row_clear">
-		            <input name="foldtype_horizontal" value="<?=$ft->getHorizontal()?>" style="width:60px;" class="text">
-		        </td>
-		    </tr>
-		    <tr>
-		        <td class="content_row_header"><?=$_LANG->get('Anz. Brüche')?></td>
-		        <td class="content_row_clear">
-		            <input name="foldtype_breaks" value="<?=$ft->getBreaks();?>" style="width:60px;" class="text">
-		        </td>
-		    </tr>
-		</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Falzart kopieren')?>
+				<? if ($_REQUEST["exec"] == "edit" && $ft->getId() == 0) echo $_LANG->get('Falzart anlegen')?>
+				<? if ($_REQUEST["exec"] == "edit" && $ft->getId() != 0) echo $_LANG->get('Falzart bearbeiten')?>
+			</h3>
+	  </div>
+
+	<div class="panel-body">
+		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="foldtype_form" name="foldtype_form"
+			  class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.foldtype_name,this.foldtype_description))">
+			<input type="hidden" name="exec" value="edit">
+			<input type="hidden" name="subexec" value="save">
+			<input type="hidden" name="id" value="<?=$ft->getId()?>">
+			<input type="hidden" name="picture" id="picture" value="<?=$ft->getPicture()?>">
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Bezeichnung</label>
+				<div class="col-sm-10">
+					<input name="foldtype_name" class="form-control" type="text" value="<?=$ft->getName()?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Beispielbild</label>
+				<div class="col-sm-10">
+					<a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products"><input type="button" class="button" value="<?=$_LANG->get('ändern')?>"></a>
+					<? if($ft->getPicture() != "") {?>
+						<input type="button" class="buttonRed" value="<?=$_LANG->get('L&ouml;schen')?>" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$ft->getId()?>&deletePicture=1'">
+					<? } ?>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Beschreibung</label>
+				<div class="col-sm-10">
+					<textarea name="foldtype_description" type="text" class="form-control"><?=$ft->getDescription()?></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Falzen vertikal</label>
+				<div class="col-sm-10">
+					<input name="foldtype_vertical" class="form-control" type="text" value="<?=$ft->getVertical()?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Falzen horizontal</label>
+				<div class="col-sm-10">
+					<input name="foldtype_horizontal" class="form-control" type="text" value="<?=$ft->getHorizontal()?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Anz. Brüche</label>
+				<div class="col-sm-10">
+					<input name="foldtype_breaks" class="form-control" type="text" value="<?=$ft->getBreaks();?>">
+				</div>
+			</div>
+		</form>
 	</div>
-	<br/>
-</form>
+</div>

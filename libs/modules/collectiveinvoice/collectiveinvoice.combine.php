@@ -175,69 +175,81 @@ $(document).ready(function() {
 	
 } );
 </script>
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="images/icons/arrow-join.png"> <?=$_LANG->get('Vorg&auml;nge zusammenf&uuml;gen')?></td>
-      <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
+ <div class="panel panel-default">
+ 	  <div class="panel-heading">
+ 			<h3 class="panel-title">
+                <img src="images/icons/arrow-join.png">
+                <?=$_LANG->get('Vorg&auml;nge zusammenf&uuml;gen')?>
+            </h3>
+ 	  </div>
+ 	  <div class="panel-body">
 
-<div class="box1">
-    <div class="box2">
-    Ausgewählte Vorgänge:<br>
-    <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="form_comb_colinv">
-        <input 	type="hidden" name="exec" value="combine">
-        <span id="sel_colinv"></span>
-        <br>
-        <br>
-        <input id="btn_submit" class="button" style="display: none" type="submit" value="Zusammenführen"/><br>
-        Kopfdaten werden vom ersten ausgewählten Vorgang übernommen!
-        </div>
-    </form>
-    <br>
-    <div class="box2">
-        <table>
-            <tr align="left">
-                <td>Datum Filter:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
-                    <input name="date_min" id="date_min" style="width:70px;" class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                </td>
-                <td valign="left">
-                    <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
-                    bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                </td>
-            </tr>
-            <tr align="left">
-                <td>Kunde:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_customer" id="ajax_customer" type="hidden"/>  
-                    <select name="customer" id="customer" style="width:160px">
-                    <option value="" selected></option> 
-                    <?php 
-                    foreach ($customers as $customer){
-                        echo '<option value="'.$customer->getId().'"';
-                        echo '>'.$customer->getNameAsLine().'</option>';
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <br>
-    <table id="comb_colinv" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-    	<thead>
-    		<tr>
-    			<th width="10"><?=$_LANG->get('ID')?></th>
-    			<th width="100"><?=$_LANG->get('Nummer')?></th>
-    			<th><?=$_LANG->get('Kunde')?></th>
-    			<th><?=$_LANG->get('Titel')?></th>
-    			<th width="90"><?=$_LANG->get('Angelegt am')?></th>
-    			<th width="150"><?=$_LANG->get('Status')?></th>
-    		</tr>
-    	</thead>
-    </table>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h3 class="panel-title">
+                      Ausgewählte Vorgänge:<br>
+                      <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="form_comb_colinv">
+                          <input 	type="hidden" name="exec" value="combine">
+                          <span id="sel_colinv"></span>
+                          <br>
+                          <br>
+                          <input id="btn_submit" class="button" style="display: none" type="submit" value="Zusammenführen"/><br>
+                          Kopfdaten werden vom ersten ausgewählten Vorgang übernommen!
+                  </h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="table-responsive">
+                      <table class="table table-hover">
+                          <tr align="left">
+                              <td>Datum Filter:&nbsp;&nbsp;</td>
+                              <td valign="left">
+                                  <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+                                  <input name="date_min" id="date_min" style="width:70px;" class="text"
+                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+                              </td>
+                              <td valign="left">
+                                  <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+                                  bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
+                                              onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+                              </td>
+                          </tr>
+                          <tr align="left">
+                              <td>Kunde:&nbsp;&nbsp;</td>
+                              <td valign="left">
+                                  <input name="ajax_customer" id="ajax_customer" type="hidden"/>
+                                  <select name="customer" id="customer" style="width:160px">
+                                      <option value="" selected></option>
+                                      <?php
+                                      foreach ($customers as $customer){
+                                          echo '<option value="'.$customer->getId().'"';
+                                          echo '>'.$customer->getNameAsLine().'</option>';
+                                      }
+                                      ?>
+                                  </select>
+                              </td>
+                          </tr>
+                      </table>
+                  </div>
+
+                  <br>
+                  <div class="table-responsive">
+                      <table  id="comb_colinv" class="table table-hover">
+                          <thead>
+                          <tr>
+                              <th width="10"><?=$_LANG->get('ID')?></th>
+                              <th width="100"><?=$_LANG->get('Nummer')?></th>
+                              <th><?=$_LANG->get('Kunde')?></th>
+                              <th><?=$_LANG->get('Titel')?></th>
+                              <th width="90"><?=$_LANG->get('Angelegt am')?></th>
+                              <th width="150"><?=$_LANG->get('Status')?></th>
+                          </tr>
+                          </thead>
+                      </table>
+                  </div>
+              </div>
+              </form>
+              <br>
+ 	  </div>
+ </div>
 </div>

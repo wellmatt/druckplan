@@ -23,51 +23,54 @@ if($_REQUEST["exec"] == "edit"){
 	
 $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 ?>
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"><span style="font-size: 13px"> <?=$_LANG->get('Schriftarten')?> </span>
-		</td>
-		<td><?=$savemsg?></td>
-		<td width="200" class="content_header" align="right">
-			<span style="font-size: 13px">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit"><img src="images/icons/edit.png"> <?=$_LANG->get('Schrfitart hinzuf&uuml;gen')?></a>
-			</span>
-		</td>
-	</tr>
-</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				Schriftarten
+				<span class="pull-right">
+					<img src="images/icons/edit.png">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
+						<?=$_LANG->get('Schrfitart hinzuf&uuml;gen')?>
+					</button>
+				</span>
+			</h3>
+	  </div>
+	  <div class="panel-body">
 
-<div class="box1">
-	<table width="100%" cellpadding="0" cellspacing="0">
-		<colgroup>
-			<col width="50">
-			<col>
-			<col width="120">
-		</colgroup>
-		<tr>
-			<td class="content_row_header" align="center"><?=$_LANG->get('ID')?></td>
-			<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-			<td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-		</tr>
-	<?	$x = 0;
-		foreach($all_fonts as $font){?> 
-			<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-				<td class="content_row" align="center" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>'">
-					<?=$font->getId()?>
-				</td>
-				<td class="content_row" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>'">
-					<?=$font->getTitle();?>
-				</td>
-				<td class="content_row">
-	                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>" class="icon-link"
-	                	><img src="images/icons/pencil.png" title="<?=$_LANG->get('Bearbeiten')?>"></a>
-					&ensp;
-					<a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$font->getId()?>')" class="icon-link"
-						><img src="images/icons/cross-script.png" title="<?=$_LANG->get('L&ouml;schen')?>"></a>            
-	            </td>
-			</tr>
-	<?	} ?>
-	</table>
+		  <div class="table-responsive">
+			  <table class="table table-hover">
+				  <colgroup>
+					  <col width="50">
+					  <col>
+					  <col width="120">
+				  </colgroup>
+				  <tr>
+					  <td class="content_row_header" align="center"><?=$_LANG->get('ID')?></td>
+					  <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
+					  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+				  </tr>
+				  <?	$x = 0;
+				  foreach($all_fonts as $font){?>
+					  <tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
+						  <td class="content_row" align="center" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>'">
+							  <?=$font->getId()?>
+						  </td>
+						  <td class="content_row" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>'">
+							  <?=$font->getTitle();?>
+						  </td>
+						  <td class="content_row">
+							  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>" class="icon-link"
+							  ><img src="images/icons/pencil.png" title="<?=$_LANG->get('Bearbeiten')?>"></a>
+							  &ensp;
+							  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$font->getId()?>')" class="icon-link"
+							  ><img src="images/icons/cross-script.png" title="<?=$_LANG->get('L&ouml;schen')?>"></a>
+						  </td>
+					  </tr>
+				  <?	} ?>
+			  </table>
+		  </div>
+	  </div>
 </div>
 <?
 } 

@@ -18,13 +18,66 @@ if ($_REQUEST["exec"] == "save")
     }
 }
 ?>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                <img src="images/icons/gear.png">
+                Dokumenten Einstellungen
+            </h3>
+	  </div>
+	  <div class="panel-body">
+          <form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" enctype="multipart/form-data" name="form"
+                id="form">
+              <input type="hidden" name="exec" value="save">
+              <div id="tabs-4" class="table-responsive">
+                  <table class="table table-hover">
+                      <thead>
+                      <tr>
+                          <td>Dokument</td>
+                          <td>Ausrichtung</td>
+                          <td>Breite (mm)</td>
+                          <td>Höhe (mm)</td>
+                      </tr>
+                      </thead>
+                      <?php
+                      foreach (DocumentFormat::getAllTypes() as $Type => $TypeName) {
+                          $docformat = DocumentFormat::getForDocType($Type);
+                          ?>
+                          <input type="hidden" name="<?php echo $Type;?>_id" value="<?php echo $docformat->getId();?>">
+                          <input type="hidden" name="<?php echo $Type;?>_type" value="<?php echo $Type;?>">
+                          <tr>
+                              <td class="content_row_header" valign="top"><?php echo $TypeName;?></td>
+                              <td class="content_row_header" valign="top">
+                                  <select name="<?php echo $Type;?>_orientation">
+                                      <option <?php if ($docformat->getOrientation() == DocumentFormat::ORI_PORTRAIT) echo ' selected ';?> value="P">Portrait</option>
+                                      <option <?php if ($docformat->getOrientation() == DocumentFormat::ORI_LANDSCAPE) echo ' selected ';?> value="L">Landscape</option>
+                                  </select>
+                              </td>
+                              <td class="content_row_header" valign="top">
+                                  <input type="number" step="0.1" name="<?php echo $Type;?>_width" value="<?php echo $docformat->getWidth();?>">
+                              </td>
+                              <td class="content_row_header" valign="top">
+                                  <input type="number" step="0.1" name="<?php echo $Type;?>_height" value="<?php echo $docformat->getHeight();?>">
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>Margins Oben: <input type="number" step="0.5" name="<?php echo $Type;?>_mtop" value="<?php echo $docformat->getMarginTop();?>"></td>
+                              <td>Links: <input type="number" step="0.5" name="<?php echo $Type;?>_mleft" value="<?php echo $docformat->getMarginLeft();?>"></td>
+                              <td>Rechts: <input type="number" step="0.5" name="<?php echo $Type;?>_mright" value="<?php echo $docformat->getMarginRight();?>"></td>
+                              <td>Unten: <input type="number" step="0.5" name="<?php echo $Type;?>_mbottom" value="<?php echo $docformat->getMarginBottom();?>"></td>
+                          </tr>
+                          <tr>
+                              <td colspan="4">&nbsp;</td>
+                          </tr>
+                          <?php
+                      }
+                      ?>
+                  </table>
+              </div>
+        </div>
+         </form>
+</div>
 
-<table width="100%">
-    <tr>
-        <td width="200" class="content_header"><img src="images/icons/gear.png"> <?=$_LANG->get('Dokumenten Einstellungen')?></td>
-        <td align="right"><?=$savemsg?></td>
-    </tr>
-</table>
 
 <div id="fl_menu">
     <div class="label">Quick Move</div>
@@ -35,54 +88,3 @@ if ($_REQUEST["exec"] == "save")
     </div>
 </div>
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" enctype="multipart/form-data" name="form"
-      id="form">
-    <input type="hidden" name="exec" value="save">
-    <div class="box1">
-        <div id="tabs-4">
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                <thead>
-                    <tr>
-                        <td>Dokument</td>
-                        <td>Ausrichtung</td>
-                        <td>Breite (mm)</td>
-                        <td>Höhe (mm)</td>
-                    </tr>
-                </thead>
-                <?php
-                foreach (DocumentFormat::getAllTypes() as $Type => $TypeName) {
-                    $docformat = DocumentFormat::getForDocType($Type);
-                    ?>
-                    <input type="hidden" name="<?php echo $Type;?>_id" value="<?php echo $docformat->getId();?>">
-                    <input type="hidden" name="<?php echo $Type;?>_type" value="<?php echo $Type;?>">
-                    <tr>
-                        <td class="content_row_header" valign="top"><?php echo $TypeName;?></td>
-                        <td class="content_row_header" valign="top">
-                            <select name="<?php echo $Type;?>_orientation">
-                                <option <?php if ($docformat->getOrientation() == DocumentFormat::ORI_PORTRAIT) echo ' selected ';?> value="P">Portrait</option>
-                                <option <?php if ($docformat->getOrientation() == DocumentFormat::ORI_LANDSCAPE) echo ' selected ';?> value="L">Landscape</option>
-                            </select>
-                        </td>
-                        <td class="content_row_header" valign="top">
-                            <input type="number" step="0.1" name="<?php echo $Type;?>_width" value="<?php echo $docformat->getWidth();?>">
-                        </td>
-                        <td class="content_row_header" valign="top">
-                            <input type="number" step="0.1" name="<?php echo $Type;?>_height" value="<?php echo $docformat->getHeight();?>">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Margins Oben: <input type="number" step="0.5" name="<?php echo $Type;?>_mtop" value="<?php echo $docformat->getMarginTop();?>"></td>
-                        <td>Links: <input type="number" step="0.5" name="<?php echo $Type;?>_mleft" value="<?php echo $docformat->getMarginLeft();?>"></td>
-                        <td>Rechts: <input type="number" step="0.5" name="<?php echo $Type;?>_mright" value="<?php echo $docformat->getMarginRight();?>"></td>
-                        <td>Unten: <input type="number" step="0.5" name="<?php echo $Type;?>_mbottom" value="<?php echo $docformat->getMarginBottom();?>"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">&nbsp;</td>
-                    </tr>
-                    <?php
-                }
-                ?>
-            </table>
-        </div>
-    </div>
-</form>

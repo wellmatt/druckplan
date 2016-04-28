@@ -88,22 +88,20 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
     					}
         } );
     } );
-    </script>
-	
-	<table width="100%">
-		<tr>
-			<td width="200" class="content_header">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>" /> <?=$_LANG->get('Aufgaben')?>
-			</td>
-			<td><?=$savemsg?></td>
-			<td width="200" class="content_header" align="right">
-				<a href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/script--plus.png"><?=$_LANG->get('Aufgabe erstellen')?> </a>
-			</td>
-		</tr>
-	</table>
-	
-	<div class="box1">
-		<table id="tasks" width="100%" cellpadding="0" cellspacing="0">
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+		Aufgaben
+			<span class = pull-right>
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
+					 <?=$_LANG->get('Aufgabe erstellen') ?>
+			</span>
+		</h3>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-hover">
             <thead>
                 <tr>
     				<td width="40" class="content_row_header"><?=$_LANG->get('ID')?></td>
@@ -153,4 +151,5 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 			?>
 		</table>
 	</div>
+</div>
 <?} ?>

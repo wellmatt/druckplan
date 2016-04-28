@@ -172,78 +172,77 @@ function PersoOrderTableRefresh()
 }
 </script>
 
-<table border="0" cellpadding="0" cellspacing="0" width="1000">
-<tr>
-	<td height="30" width="300" class="content_header">
-		<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-		<span style="font-size: 13px">Bestellungen aus Web-to-Print</span>
-	</td>
-	<td align="center"><?=$savemsg?></td>
-	<td class="content_header" width="160">
-		&ensp;
-	</td>
-</tr>
-</table>
-
-<div class="box1">
-    <div class="box2">
-        <table>
-            <tr align="left">
-                <td>Datum:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_date_min" id="ajax_date_min" type="hidden" <?php if ($_SESSION['porder_date_min']) echo 'value="'.$_SESSION['porder_date_min'].'"';?> />  
-                    <input name="date_min" id="date_min" style="width:70px;" <?php if ($_SESSION['porder_date_min']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_min']).'"';?>  class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                </td>
-                <td valign="left">
-                    <input name="ajax_date_max" id="ajax_date_max" type="hidden" <?php if ($_SESSION['porder_date_max']) echo 'value="'.$_SESSION['porder_date_max'].'"';?> />  
-                    bis: <input name="date_max" id="date_max" style="width:70px;" <?php if ($_SESSION['porder_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_max']).'"';?> class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                </td>
-            </tr>
-            <tr align="left">
-                <td>Kunde:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['porder_customer']) echo ' value="'.$_SESSION['porder_customer'].'" ';?>/>  
-                    <select name="customer" id="customer" style="width:160px">
-                    <option value="" <?php if (!$_SESSION['porder_customer']) echo ' selected ';?>></option> 
-                    <?php 
-                    foreach ($customers as $customer){
-                        echo '<option value="'.$customer->getId().'"';
-                        if ($_SESSION['porder_customer'] == $customer->getId())
-                        {
-                            echo ' selected ';
-                        }
-                        echo '>'.$customer->getNameAsLine().'</option>';
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td><a onclick="PersoOrderTableRefresh();" href="Javascript:"><img src="images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
-            </tr>
-            <tr align="left">
-                <td><a href="index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset"><img src="images/icons/slash.png"/> Reset</a></td>
-            </tr>
-        </table>
-    </div>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Bestellungen aus Web-to-Print
+	  </div>
+	  <div class="panel-body">
+		  <div class="panel panel-default">
+		  	  <div class="panel-heading">
+		  			<h3 class="panel-title">Filter</h3>
+		  	  </div>
+		  	  <div class="panel-body">
+				  <table>
+					  <tr align="left">
+						  <td>Datum:&nbsp;&nbsp;</td>
+						  <td valign="left">
+							  <input name="ajax_date_min" id="ajax_date_min" type="hidden" <?php if ($_SESSION['porder_date_min']) echo 'value="'.$_SESSION['porder_date_min'].'"';?> />
+							  <input name="date_min" id="date_min" style="width:70px;" <?php if ($_SESSION['porder_date_min']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_min']).'"';?>  class="text"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+						  </td>
+						  <td valign="left">
+							  <input name="ajax_date_max" id="ajax_date_max" type="hidden" <?php if ($_SESSION['porder_date_max']) echo 'value="'.$_SESSION['porder_date_max'].'"';?> />
+							  bis: <input name="date_max" id="date_max" style="width:70px;" <?php if ($_SESSION['porder_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_max']).'"';?> class="text"
+										  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+						  </td>
+					  </tr>
+					  <tr align="left">
+						  <td>Kunde:&nbsp;&nbsp;</td>
+						  <td valign="left">
+							  <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['porder_customer']) echo ' value="'.$_SESSION['porder_customer'].'" ';?>/>
+							  <select name="customer" id="customer" style="width:160px">
+								  <option value="" <?php if (!$_SESSION['porder_customer']) echo ' selected ';?>></option>
+								  <?php
+								  foreach ($customers as $customer){
+									  echo '<option value="'.$customer->getId().'"';
+									  if ($_SESSION['porder_customer'] == $customer->getId())
+									  {
+										  echo ' selected ';
+									  }
+									  echo '>'.$customer->getNameAsLine().'</option>';
+								  }
+								  ?>
+							  </select>
+						  </td>
+					  </tr>
+					  <tr align="left">
+						  <td><a onclick="PersoOrderTableRefresh();" href="Javascript:"><img src="images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
+					  </tr>
+					  <tr align="left">
+						  <td><a href="index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset"><img src="images/icons/slash.png"/> Reset</a></td>
+					  </tr>
+				  </table>
+		  	  </div>
+		  </div>
+	  </div>
     </br>
-
-    <table id="persoorder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-        <thead>
-            <tr>
-                <th width="20"><?=$_LANG->get('ID')?></th>
-                <th width="220"><?=$_LANG->get('Titel')?></th>
-                <th width="180"><?=$_LANG->get('Verkn. Artikel')?></th>
-                <th width="180"><?=$_LANG->get('Kunde')?></th>
-                <th width="120"><?=$_LANG->get('Lagermenge')?></th>
-                <th width="110"><?=$_LANG->get('Bestelldatum')?></th>
-                <th width="110" align="right"><?=$_LANG->get('Bestellmenge')?></th>
-                <?php /*<th width="130" align="center"><?=$_LANG->get('Status')?></th>*/?>
-                <th width="40"><?=$_LANG->get('Kommentar')?></th>
-                <th width="80"><?=$_LANG->get('Optionen')?></th>
-            </tr>
-        </thead>
-    </table>
+<div class="table-responsive">
+	<table id="persoorder_table" class="table table-hover">
+			<thead>
+				<tr>
+					<th width="20"><?=$_LANG->get('ID')?></th>
+					<th width="220"><?=$_LANG->get('Titel')?></th>
+					<th width="180"><?=$_LANG->get('Verkn. Artikel')?></th>
+					<th width="180"><?=$_LANG->get('Kunde')?></th>
+					<th width="120"><?=$_LANG->get('Lagermenge')?></th>
+					<th width="110"><?=$_LANG->get('Bestelldatum')?></th>
+					<th width="110" align="right"><?=$_LANG->get('Bestellmenge')?></th>
+					<?php /*<th width="130" align="center"><?=$_LANG->get('Status')?></th>*/?>
+					<th width="40"><?=$_LANG->get('Kommentar')?></th>
+					<th width="80"><?=$_LANG->get('Optionen')?></th>
+				</tr>
+			</thead>
+		</table>
+	</div>
 </div>
