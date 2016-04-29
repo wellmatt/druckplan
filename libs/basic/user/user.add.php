@@ -241,11 +241,22 @@ $(document).ready(function () {
     $('#user_form').validate({});
 });
 </script>
+
+<div id="fl_menu">
+	<div class="label">Quick Move</div>
+	<div class="menu">
+		<a href="#top" class="menu_item">Seitenanfang</a>
+		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+		<a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
+	</div>
+</div>
+
+
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form"
-	  onsubmit="return checkpass(new Array(this.user_login, this.user_firstname, this.user_lastname, this.user_email))">
-		<input type="hidden" name="exec" value="edit"> <input type="hidden"
-															  name="subexec" value="save"> <input type="hidden" name="id"
-																								  value="<?=$user->getId()?>">
+	  class="form-horizontal" role="form"  onsubmit="return checkpass(new Array(this.user_login, this.user_firstname, this.user_lastname, this.user_email))">
+		<input type="hidden" name="exec" value="edit">
+	    <input type="hidden" name="subexec" value="save">
+	    <input type="hidden" name="id" value="<?=$user->getId()?>">
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
@@ -254,465 +265,271 @@ $(document).ready(function () {
 			</h3>
 	  </div>
 	  <div class="panel-body">
-<div class="table-responsive">
-	<table class="table table-hover">
-					  <tr>
-						  <td>
-							  <b>Nutzerdaten:</b>
-							  <table width="500px" border="0" cellpadding="0" cellspacing="0">
-								  <colgroup>
-									  <col width="180">
-									  <col>
-								  </colgroup>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Benutzername');?> *</td>
-									  <td class="content_row_clear">
-										  <input name="user_login" style="width: 300px" class="text" required
-												 value="<?=$user->getLogin()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Passwort');?> *</td>
-									  <td class="content_row_clear">
-										  <input name="user_password" id="user_password" style="width: 300px" class="text"
-												 type="password" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Passwort wiederholen');?> *</td>
-									  <td class="content_row_clear">
-										  <input name="user_password_repeat" id="user_password_repeat" style="width: 300px" class="text"
-												 type="password"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Benutzertyp');?></td>
-									  <td class="content_row_clear"><select name="user_type" style="width: 300px"
-																			class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											  <option value="normal">
-												  <?=$_LANG->get('Benutzer')?>
-											  </option>
-											  <option value="admin" <? if($user->isAdmin()) echo "selected";?>>
-												  <?=$_LANG->get('Administrator')?>
-											  </option>
-										  </select>
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
-									  <td class="content_row_clear"><select name="user_client"
-																			style="width: 300px" class="text" onfocus="markfield(this,0)"
-																			onblur="markfield(this,1)">
-											  <?
-											  foreach($clients as $c)
-											  {?>
-												  <option value="<?=$c->getId()?>"
-													  <?if ($user->getClient()->getId() == $c->getId()) echo "selected";?>>
-													  <?if(!$c->isActive()) echo '<span color="red">';?>
-													  <?=$c->getName()?>
-													  <?if(!$c->isActive()) echo '</span>';?>
-												  </option>
-											  <?}
+		  <div class="panel panel-default">
+		  	  <div class="panel-heading">
+		  			<h3 class="panel-title">
+						Nutzerdaten
+					</h3>
+		  	  </div>
+		  	  <div class="panel-body">
 
-											  ?>
-										  </select>
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
-									  <td class="content_row_clear"><select name="user_lang" style="width: 300px"
-																			class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											  <?
-											  foreach($languages as $l)
-											  {?>
-												  <option value="<?=$l->getId()?>"
-													  <?if ($user->getLang()->getId() == $l->getId()) echo "selected";?>>
-													  <?=$l->getName()?>
-												  </option>
-											  <?}
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Benutzername</label>
+					  <div class="col-sm-10">
+						  <input name="user_login" type="text" class="form-control" required
+								 value="<?=$user->getLogin()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
 
-											  ?>
-										  </select>
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Benutzer aktiv')?></td>
-									  <td class="content_row_clear"><input name="user_active" type="checkbox"
-																		   value="1"
-											  <? if ($user->isActive() || $_REQUEST["id"] == "") echo "checked";?>
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header">&nbsp;</td>
-									  <td class="content_row_clear">&nbsp;</td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Telefon-IP');?> *</td>
-									  <td class="content_row_clear">
-										  <input name="user_telefonip" style="width: 300px" class="text" value="<?=$user->getTelefonIP()?>"
-												 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header">&nbsp;</td>
-									  <td class="content_row_clear">&nbsp;</td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Vorname');?> *</td>
-									  <td class="content_row_clear"><input name="user_firstname"
-																		   style="width: 300px" class="text" value="<?=$user->getFirstname()?>" required
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Nachname');?> *</td>
-									  <td class="content_row_clear"><input name="user_lastname"
-																		   style="width: 300px" class="text" value="<?=$user->getLastname()?>" required
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Telefon');?></td>
-									  <td class="content_row_clear"><input name="user_phone" style="width: 300px"
-																		   class="text" value="<?=$user->getPhone()?>"
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('E-Mail Adresse');?> *</td>
-									  <td class="content_row_clear"><input name="user_email" style="width: 300px" required
-																		   class="text" value="<?=$user->getEmail()?>"
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Mails weiterleiten');?></td>
-									  <td class="content_row_clear"><input name="user_forwardmail"
-																		   type="checkbox" value="1"
-											  <? if ($user->getForwardMail() || $_REQUEST["id"] == "") echo "checked";?>
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Kalender->Geburtstage');?></td>
-									  <td class="content_row_clear"><input name="user_cal_birthday"
-																		   type="checkbox" value="1"
-											  <? if ($user->getCalBirthday()) echo "checked";?>
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Kalender->Tickets');?></td>
-									  <td class="content_row_clear"><input name="user_cal_tickets"
-																		   type="checkbox" value="1"
-											  <? if ($user->getCalTickets()) echo "checked";?>
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Kalender->Aufträge');?></td>
-									  <td class="content_row_clear"><input name="user_cal_orders"
-																		   type="checkbox" value="1"
-											  <? if ($user->getCalOrders()) echo "checked";?>
-																		   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header">&nbsp;</td>
-									  <td class="content_row_clear">&nbsp;</td>
-								  </tr>
-							  </table>
-						  </td>
-						  <td valign="top">
-							  <b>Arbeitsstunden:</b>
-							  <?php
-							  unset($whours);
-							  unset($times);
-							  $times = $user->getWorkinghours();
-							  $daynames = Array("Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag");
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Passwort</label>
+					  <div class="col-sm-10">
+						  <input name="user_login" type="password" class="form-control" required
+								 value="<?=$user->getLogin()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Passwort wiederholen</label>
+					  <div class="col-sm-10">
+						  <input name="user_password_repeat" id="user_password_repeat" class="form-control"
+								 type="password"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Benutzertyp</label>
+					  <div class="col-sm-10">
+						  <select name="user_type"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							  <option value="normal">
+								  <?=$_LANG->get('Benutzer')?>
+							  </option>
+							  <option value="admin" <? if($user->isAdmin()) echo "selected";?>>
+								  <?=$_LANG->get('Administrator')?>
+							  </option>
+						  </select>
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Mandant</label>
+					  <div class="col-sm-10">
+						  <select name="user_client" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							  <?
+							  foreach($clients as $c)
+							  {?>
+								  <option value="<?=$c->getId()?>"
+									  <?if ($user->getClient()->getId() == $c->getId()) echo "selected";?>>
+									  <?if(!$c->isActive()) echo '<span color="red">';?>
+									  <?=$c->getName()?>
+									  <?if(!$c->isActive()) echo '</span>';?>
+								  </option>
+							  <?}
+
 							  ?>
-							  <table>
-								  <?php
-								  for($i=0;$i<7;$i++)
-								  {
-									  ?>
-									  <tr>
-										  <td class="content_row_header" valign="top"><?=$_LANG->get($daynames[$i]);?></td>
-										  <td class="content_row_clear">
-											  <?php
-											  $count = 0;
-											  if (count($times[$i])>0)
-											  {
-												  foreach($times[$i] as $whours)
-												  {
-													  ?>
-													  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="<?php echo date("H:i",$whours["start"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis
-													  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="<?php echo date("H:i",$whours["end"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
-													  <script language="JavaScript">
-														  $(document).ready(function () {
-															  var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
-															  var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+						  </select>
+					  </div>
+				  </div>
 
-															  $.timepicker.timeRange(
-																  startTimeTextBox,
-																  endTimeTextBox,
-																  {
-																	  minInterval: (1000*900), // 0,25hr
-																	  timeFormat: 'HH:mm',
-																	  start: {}, // start picker options
-																	  end: {} // end picker options
-																  }
-															  );
-														  });
-													  </script>
-													  <?php
-													  $count++;
-												  }
-											  }
-											  ?>
-											  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis
-											  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
-											  <script language="JavaScript">
-												  $(document).ready(function () {
-													  var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
-													  var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Sprache</label>
+					  <div class="col-sm-10">
+						  <select name="user_lang" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							  <?
+							  foreach($languages as $l)
+							  {?>
+								  <option value="<?=$l->getId()?>"
+									  <?if ($user->getLang()->getId() == $l->getId()) echo "selected";?>>
+									  <?=$l->getName()?>
+								  </option>
+							  <?}
 
-													  $.timepicker.timeRange(
-														  startTimeTextBox,
-														  endTimeTextBox,
-														  {
-															  minInterval: (1000*900), // 0,25hr
-															  timeFormat: 'HH:mm',
-															  start: {}, // start picker options
-															  end: {} // end picker options
-														  }
-													  );
-												  });
-											  </script>
-										  </td>
-									  </tr>
-									  <?php
-								  }
+							  ?>
+						  </select>
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Benutzer aktiv</label>
+					  <div class="col-sm-10">
+						  <input name="user_active" class="form-control" type="checkbox" value="1"
+							  <? if ($user->isActive() || $_REQUEST["id"] == "") echo "checked";?>
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Telefon-IP</label>
+					  <div class="col-sm-10">
+						  <input name="user_telefonip"  type="text" class="form-control" value="<?=$user->getTelefonIP()?>"
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Vorname</label>
+					  <div class="col-sm-10">
+						  <input name="user_firstname" type="text" class="form-control" value="<?=$user->getFirstname()?>" required
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Nachname</label>
+					  <div class="col-sm-10">
+						  <input name="user_lastname" type="text" class="form-control" value="<?=$user->getLastname()?>" required
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Telefon</label>
+					  <div class="col-sm-10">
+						  <input name="user_phone" type="text" class="form-control" value="<?=$user->getPhone()?>"
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">E-Mail Adresse</label>
+					  <div class="col-sm-10">
+						  <input name="user_email" type="text" class="form-control" required value="<?=$user->getEmail()?>"
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Mails weiterleiten</label>
+					  <div class="col-sm-10">
+						  <input name="user_forwardmail" type="checkbox" value="1" class="form-control"
+							  <? if ($user->getForwardMail() || $_REQUEST["id"] == "") echo "checked";?>
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Kalender->Geburtstage</label>
+					  <div class="col-sm-10">
+						  <input name="user_cal_birthday" type="checkbox" value="1" class="form-control"
+							  <? if ($user->getCalBirthday()) echo "checked";?>
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Kalender->Tickets</label>
+					  <div class="col-sm-10">
+						  <input name="user_cal_tickets" type="checkbox" value="1" class="form-control"
+							  <? if ($user->getCalTickets()) echo "checked";?>
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">'Kalender->Aufträge</label>
+					  <div class="col-sm-10">
+						  <input name="user_cal_orders" type="checkbox" value="1"  class="form-control"
+							  <? if ($user->getCalOrders()) echo "checked";?>
+								 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">'Ges. Monat</label>
+					  <div class="col-sm-10">
+						  <input type="text" class="form-control" id="w_month" name="w_month" value="<?php echo printPrice($user->getW_month(),2);?>"/>
+					  </div>
+				  </div>
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">'Signatur</label>
+					  <div class="col-sm-10">
+						  <textarea name="user_signature" id="user_signature" type="text" class="form-control"><?=$user->getSignature()?>
+						  </textarea>
+					  </div>
+				  </div>
+
+
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">'Arbeitsstunden</label>
+					  <div class="col-sm-10">
+						  <?php
+						  unset($whours);
+						  unset($times);
+						  $times = $user->getWorkinghours();
+						  $daynames = Array("Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag");
+						  ?>
+						  <table>
+							  <?php
+							  for($i=0;$i<7;$i++)
+							  {
 								  ?>
 								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Ges. Monat *');?></td>
-									  <td class="content_row_clear"><input style="width: 40px;" type="text" id="w_month" name="w_month" value="<?php echo printPrice($user->getW_month(),2);?>"/> </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
+									  <td class="content_row_header" valign="top"><?=$_LANG->get($daynames[$i]);?></td>
+									  <td class="content_row_clear">
+										  <?php
+										  $count = 0;
+										  if (count($times[$i])>0)
+										  {
+											  foreach($times[$i] as $whours)
+											  {
+												  ?>
+												  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="<?php echo date("H:i",$whours["start"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis
+												  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="<?php echo date("H:i",$whours["end"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
+												  <script language="JavaScript">
+													  $(document).ready(function () {
+														  var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+														  var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
 
-					  <tr>
-						  <td class="content_row_header"><?=$_LANG->get('Signatur');?></td>
-						  <td class="content_row_clear">&nbsp;</td>
-					  </tr>
-					  <tr>
-						  <td class="content_row_clear" colspan="4">
-				<textarea name="user_signature" id="user_signature" style="width: 450px; height: 200px">
-					<?=$user->getSignature()?>
-				</textarea>
-						  </td>
-					  </tr>
-				  </table>
+														  $.timepicker.timeRange(
+															  startTimeTextBox,
+															  endTimeTextBox,
+															  {
+																  minInterval: (1000*900), // 0,25hr
+																  timeFormat: 'HH:mm',
+																  start: {}, // start picker options
+																  end: {} // end picker options
+															  }
+														  );
+													  });
+												  </script>
+												  <?php
+												  $count++;
+											  }
+										  }
+										  ?>
+										  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis
+										  <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
+										  <script language="JavaScript">
+											  $(document).ready(function () {
+												  var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+												  var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+
+												  $.timepicker.timeRange(
+													  startTimeTextBox,
+													  endTimeTextBox,
+													  {
+														  minInterval: (1000*900), // 0,25hr
+														  timeFormat: 'HH:mm',
+														  start: {}, // start picker options
+														  end: {} // end picker options
+													  }
+												  );
+											  });
+										  </script>
+									  </td>
+								  </tr>
+								  <?php
+							  }
+							  ?>
+					  </div>
+				  </div>
+
 			  </div>
+		  </div>
 	  </div>
 </div>
 
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
-    </div>
-</div>
-
-<br/>
-<? if ($user->getId()) { ?>
-<div class="box2">
-<table width="500px">
-	<colgroup>
-		<col width="150">
-		<col>
-		<col width="60">
-	</colgroup>
-	<tr>
-		<td class="content_header" colspan="2"><h1><?=$_LANG->get('Mitglied von')?></h1></td>
-	</tr>
-	<tr>
-		<td class="content_row_header"><?=$_LANG->get('Gruppenname')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-	</tr>
-	<? foreach($groups as $g) {
-	    if($user->isInGroup($g)){?>
-			<tr>
-				<td class="content_row_clear"><?=$g->getName()?></td>
-				<td class="content_row_clear"><?=$g->getDescription()?></td>
-				<td class="content_row_clear"><a href="#"  class="icon-link"
-					onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$user->getId()?>&subexec=removegroup&gid=<?=$g->getId()?>'"><img
-						src="images/icons/minus.png" /> </a></td>
-			</tr>
-	<?	}
-	} ?>
-</table>
-<br>
-<table width="500px">
-	<colgroup>
-		<col width="150">
-		<col>
-		<col width="60">
-	</colgroup>
-	<tr>
-		<td class="content_header" colspan="2"><?=$_LANG->get('Verf&uuml;gbare Gruppen')?>
-		</td>
-	</tr>
-	<tr>
-		<td class="content_row_header"><?=$_LANG->get('Gruppenname')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-	</tr>
-	<? foreach($groups as $g) {
-	    if(!$user->isInGroup($g)){?>
-			<tr>
-				<td class="content_row_clear"><?=$g->getName()?></td>
-				<td class="content_row_clear"><?=$g->getDescription()?></td>
-				<td class="content_row_clear"><a href="#"  class="icon-link"
-					onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$user->getId()?>&subexec=addgroup&gid=<?=$g->getId()?>'"><img
-						src="images/icons/plus.png" /> </a></td>
-			</tr>
-	<?	}
-	} ?>
-</table>
-</div>
-<br>
-<div class="box2">
-<input 	type="hidden" name="email_quantity" id="email_quantity" 
-			value="<? if(count($all_emails) > 0) echo count($all_emails); else echo "1";?>">
-<table width="100%" id="table_emails">
-	<colgroup>
-		<col width="150">
-		<col width="150">
-		<col width="150">
-		<col width="70">
-		<col width="70">
-		<col width="150">
-		<col>
-	</colgroup>
-	<tr>
-		<td class="content_header" colspan="2"><h1><?=$_LANG->get('IMAP Konten')?></h1></td>
-	</tr>
-	<tr>
-		<td class="content_row_header"><?=$_LANG->get('eMail')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Login')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Passwort')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Host/Server')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Port')?></td>
-		<td class="content_row_header">&ensp;</td>
-		<td class="content_row_header">&ensp;</td>
-		<td class="content_row_header"><?=$_LANG->get('Rechte')?></td>
-		<td class="content_row_header">&ensp;</td>
-		<td class="content_row_header"><img src="images/icons/plus.png" class="pointer icon-link" onclick="addEMailRow()"></td>
-	</tr>
-<? 	$x = 0;
-	if(count($all_emails) > 0){
-		foreach($all_emails as $emailaddress) {?>
-			<tr>
-				<td class="content_row">
-					<input type="hidden" class="text" name="mail_id_<?=$x?>" value="<?=$emailaddress->getId()?>">
-					<input type="text" class="text" name="mail_address_<?=$x?>" value="<?=$emailaddress->getAddress()?>"
-						   onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 120px">
-				</td>
-				<td class="content_row">
-					<input type="text" class="text" name="mail_login_<?=$x?>" value="<?=$emailaddress->getLogin()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 220px">
-				</td>
-				<td class="content_row">
-					<input type="password" class="text" name="mail_password_<?=$x?>" value="<?=$emailaddress->getPassword()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 120px">
-				</td>
-				<td class="content_row">
-					<input type="text" class="text" name="mail_host_<?=$x?>" value="<?=$emailaddress->getHost()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 220px">
-				</td>
-				<td class="content_row">
-					<input type="text" class="text" name="mail_port_<?=$x?>" value="<?=$emailaddress->getPort()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 50px">
-				</td>
-				<td class="content_row">
-					<input name="use_imap_<?=$x?>" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)" 
-						<? if ($emailaddress->getUseIMAP()) echo 'checked="checked"';?> >
-					<?=$_LANG->get('IMAP');?>
-				</td>
-				<td class="content_row">
-					<input name="use_ssl_<?=$x?>" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)" 
-						<? if ($emailaddress->getUseSSL()) echo 'checked="checked"';?> >
-					<?=$_LANG->get('SSL');?>
-				</td>
-				<td class="content_row">
-					<input name="mail_read_<?=$x?>" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)" 
-						<? if ($emailaddress->readable()) echo 'checked="checked"';?> >
-					<?=$_LANG->get('Lesen');?>
-				</td>
-				<td class="content_row">
-					<input name="mail_write_<?=$x?>" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)" 
-						<? if ($emailaddress->writeable()) echo 'checked="checked"';?> >
-					<?=$_LANG->get('Schreiben');?>
-				</td>
-				<td class="content_row">
-					<a onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=deletemail&mailid=<?=$emailaddress->getId()?>&id=<?=$user->getId()?>')"  class="icon-link"
-							href="#"><img src="images/icons/cross-script.png" title="<?=$_LANG->get('E-Mail-Adresse l&ouml;schen')?>"></a>
-				</td>
-			</tr>
-<?			$x++;
-		}
-	} else {?>
-		<tr>
-			<td class="content_row">
-				<input type="hidden" name="mail_ip_0" value="0" >
-				<input type="text" class="text" name="mail_address_0"
-					   onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 120px">
-			</td>
-			<td class="content_row">
-				<input type="text" class="text" name="mail_login_0"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 220px">
-			</td>
-			<td class="content_row">
-				<input type="text" class="text" name="mail_password_0"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 120px">
-			</td>
-			<td class="content_row">
-				<input type="text" class="text" name="mail_host_0"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 220px">
-			</td>
-			<td class="content_row">
-				<input type="text" class="text" name="mail_port_0"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" style="width: 50px">
-			</td>
-			<td class="content_row">				
-				<input name="use_imap" type="checkbox" value="1" checked onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				<?=$_LANG->get('IMAP');?>
-			</td>
-			<td class="content_row">	
-				<input name="use_ssl" type="checkbox" value="1" checked onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				<?=$_LANG->get('SSL');?>
-			</td>
-			<td class="content_row">				
-				<input name="mail_read_<?=$x?>" type="checkbox" checked value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				<?=$_LANG->get('Lesen');?>
-			</td>
-			<td class="content_row">	
-				<input name="mail_write_<?=$x?>" type="checkbox" checked value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				<?=$_LANG->get('Schreiben');?>
-			</td>
-		</tr>
-<?	} ?>
-</table>
-</div>
-</br>
 
 
-<? } // Ende if (Benutzer wird neu erstellt)?>
-</form>

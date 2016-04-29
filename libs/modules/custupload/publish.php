@@ -244,100 +244,114 @@ $(function() {
 });
 </script>
 <link rel="stylesheet" type="text/css" href="./css/mail.css" />
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" class="form-horizontal" role="form" name="xform_ftppublish" enctype="multipart/form-data">
+	<input name="exec" value="publish" type="hidden">
+	<input name="doupload" value="1" type="hidden">
+	<input name="subexec" value="send" type="hidden">
+
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<img src="images/icons/navigation.png" alt="-">
+					Neue Datei für Kunden veröffentlichen
+				</h3>
+		  </div>
+		  <div class="panel-body">
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Datei</label>
+				  <div class="col-sm-10">
+					  <input name="datei" type="file" style="background-color: none; border: none;"">
+				  </div>
+			  </div>
+
+			  <? $customers = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME); ?>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Kunde</label>
+				  <div class="col-sm-10">
+					  <input name="customer_search" id="customer_search" type="text" class="form-control" onChange="updateMailList();updateConfidence()"/>
+					  <input name="customer" id="customer" type="hidden"/>
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Empfänger</label>
+				  <div class="col-sm-10">
+					  <a class="btn btn-xs btn-success" href="libs/modules/organizer/nachrichten.addrcpt.php" class="icon-link"
+						 id="add_to">
+						  <?=$_LANG->get('hinzufügen')?>
+					  </a>
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Betreff</label>
+				  <div class="col-sm-10">
+					  <input type="text" name="mail_subject" class="form-control">
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Nachricht</label>
+				  <div class="col-sm-10">
+					  <textarea rows="5" name="mail_body" id="mail_body" class="form-control"></textarea>
+				  </div>
+			  </div>
+
+			  <? /*** ?>
+			  <tr>
+			  <td class="content_row" valign="top">Vertraulichkeit:</td>
+			  <td class="content_row">
+			  <select class="text" name="confstep" id="confstep" style="width:150px"
+			  onfocus="markfield(this,0)" onblur="markfield(this,1)">
+			  <option value="4" <? if($_REQUEST["conf_step"] == "4") echo "selected='selected'"?>>&Ouml;ffentlich</option>
+			  <option value="3" <? if($_REQUEST["conf_step"] == "3") echo "selected='selected'"?>>Intern</option>
+			  <option value="2" <? if($_REQUEST["conf_step"] == "2") echo "selected='selected'"?>>Vertraulich</option>
+			  <option value="1" <? if($_REQUEST["conf_step"] == "1") echo "selected='selected'"?>>Geheim</option>
+			  </select>
+			  </td>
+			  </tr>
+			  <? ***/ ?>
+
+			  <br>
+
+			  <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
+				  <tr>
+					  <td class="content_row_clear">
+						  <input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
+									onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+					  </td>
+					  <td align="right" width="150">
+						  <input type="submit" value="<?=$_LANG->get('Upload')?>">
+					  </td>
+				  </tr>
+			  </table>
+
+				<div style="top:0px; left:0px;z-index:100;background-color:#bbbbbb; height:100%; width:100%; position:absolute;opacity:0.8;display:none;" id="loading_message">
+					<div style="position:absolute;top:300px;left:400px;height:150px;width:200px;z-index:101;background-color:#ffffff;border:1px solid #000000;opacity:1.0">
+						<img src="images/content/loading2.gif"><br><br>
+						Daten werden &uuml;bertragen. Dieser Vorgang kann einige Minuten dauern.<br><br>
+						Bitte warten ....
+					</div>
+				</div>
 
 
-<table border="0" cellpadding="0" cellspacing="0" width="822">
-<tr>
-   <td class="content_header" height="30"><b><img src="images/icons/navigation.png" alt="-">Neue Datei f&uuml;r Kunden ver&ouml;ffentlichen</b></td>
-   <td align="right"><?=$savemsg?></td>
-</tr>
-<tr>
-   <td class="content_headerline" colspan="2">&nbsp;</td>
-</tr>
-</table>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_ftppublish" enctype="multipart/form-data">
-<input name="exec" value="publish" type="hidden">
-<input name="doupload" value="1" type="hidden">
-<input name="subexec" value="send" type="hidden">
-<div class="box1">
-<table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
-<colgroup>
-   <col width="170">
-   <col width="630">
-</colgroup>
-<tr>
-   <td class="content_row_header">Datei</td>
-   <td class="content_row_clear">
-      <input name="datei" type="file" class="text" style="width:350px;">
-   </td>
-</tr>
-
-<? $customers = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME); ?>
-
-<tr>
-   <td class="content_row_header"><?=$_LANG->get('Kunde');?>:</td>
-   <td class="content_row_clear">
-      <input name="customer_search" id="customer_search" type="text" style="width:350px;" class="text" onChange="updateMailList();updateConfidence()"/>
-      <input name="customer" id="customer" type="hidden"/>
-   </td>
-</tr>
-
-<tr>
-	<td class="content_row_header" valign="top"><?=$_LANG->get('Empf&auml;nger');?>:</td>
-	<td class="content_row_clear"  id="td_mail_to" name="td_mail_to">
-		<a href="libs/modules/organizer/nachrichten.addrcpt.php" class="icon-link"
-			id="add_to"><img src="images/icons/plus-white.png" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"> </a>
-	</td>
-</tr>
-<tr>
-	<td class="content_row_header" valign="top"><?=$_LANG->get('Betreff');?>:</td>
-	<td class="content_row_clear">
-		<input type="text" name="mail_subject" style="width:350px;" class="text">
-   </td>
-</tr>
-<tr>
-	<td class="content_row_header" valign="top"><?=$_LANG->get('Nachricht');?>:</td>
-	<td class="content_row_clear">
-		<textarea rows="5" style="width:450px;" name="mail_body" id="mail_body" class="text"></textarea>
-   </td>
-</tr>
-<? /*** ?>
-<tr>
-   <td class="content_row" valign="top">Vertraulichkeit:</td>
-   <td class="content_row">
-         <select class="text" name="confstep" id="confstep" style="width:150px"
-                  onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                     <option value="4" <? if($_REQUEST["conf_step"] == "4") echo "selected='selected'"?>>&Ouml;ffentlich</option>
-                     <option value="3" <? if($_REQUEST["conf_step"] == "3") echo "selected='selected'"?>>Intern</option>
-                     <option value="2" <? if($_REQUEST["conf_step"] == "2") echo "selected='selected'"?>>Vertraulich</option>
-                     <option value="1" <? if($_REQUEST["conf_step"] == "1") echo "selected='selected'"?>>Geheim</option>
-                    </select>
-   </td>
-</tr>
-<? ***/ ?>
-
-</table>
-</div>
-<br>
-
-<table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
-<tr>
-   <td class="content_row_clear">
-   		<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	    		onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-   </td>
-   <td align="right" width="150">
-      	<input type="submit" value="<?=$_LANG->get('Upload')?>">
-   </td>
-</tr>
-</table>
+		  </div>
+	</div>
 </form>
 
-<div style="top:0px; left:0px;z-index:100;background-color:#bbbbbb; height:100%; width:100%; position:absolute;opacity:0.8;display:none;" id="loading_message">
-<div style="position:absolute;top:300px;left:400px;height:150px;width:200px;z-index:101;background-color:#ffffff;border:1px solid #000000;opacity:1.0">
-   <img src="images/content/loading2.gif"><br><br>
-   Daten werden &uuml;bertragen. Dieser Vorgang kann einige Minuten dauern.<br><br>
-   Bitte warten ....
-</div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+

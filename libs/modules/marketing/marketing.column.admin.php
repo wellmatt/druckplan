@@ -49,30 +49,54 @@ $list = new MarketingList($_REQUEST["id"]);
     </div>
 </div>
 
-<div class="box1">
-    <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form">
-        <input type="hidden" name="exec" value="save"/>
-        <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"/>
-        <div id="removed"></div>
-        <h3>Marketing Spalten</h3></br>
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form"
+    class="form-horizontal" role="form">
+    <input type="hidden" name="exec" value="save"/>
+    <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"/>
+    <div id="removed"></div>
+    <div class="panel panel-default">
+          <div class="panel-heading">
+                <h3 class="panel-title">
+                    Marketing Spalten
+                </h3>
+          </div>
+          <div class="panel-body">
 
-        Listen Name: <input name="listname" id="listname" type="text" value="<?php echo $list->getTitle();?>"><br>
-        <ul id="sortable">
-            <?php foreach ($columns as $column) {?>
-                <li class="ui-state-default">
-                    <input type="hidden" class="marketing_id" value="<?php echo $column->getId()?>">
-                    <input type="hidden" class="marketing_sort" name="column[<?php echo $column->getId()?>][sort]" value="<?php echo $column->getSort()?>">
-                    <input type="hidden" class="marketing_title" name="column[<?php echo $column->getId()?>][title]" value="<?php echo $column->getTitle()?>">
-                    <span><?php echo $column->getTitle()?></span>
-                    <img src="images/icons/cross.png" class="pull-right pointer" onclick="removeColumn(this);"/>
-                    <img src="images/icons/pencil.png" class="pull-right pointer" onclick="newLabel(this);"/>
-                </li>
-            <?php } ?>
-        </ul>
-        </br>
-        Neue Spalte: <input id="newcolumn" type="text"> <button type="button" onclick="addColumn();" class="btn btn-sm">Hinzufügen</button>
-    </form>
-</div>
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Listen Name</label>
+                  <div class="col-sm-10">
+                      <input name="listname" id="listname" type="text"
+                             class="form-control"value="<?php echo $list->getTitle();?>"><br>
+                      <ul id="sortable">
+                          <?php foreach ($columns as $column) {?>
+                              <li class="ui-state-default">
+                                  <input type="hidden" class="marketing_id" value="<?php echo $column->getId()?>">
+                                  <input type="hidden" class="marketing_sort" name="column[<?php echo $column->getId()?>][sort]" value="<?php echo $column->getSort()?>">
+                                  <input type="hidden" class="marketing_title" name="column[<?php echo $column->getId()?>][title]" value="<?php echo $column->getTitle()?>">
+                                  <span><?php echo $column->getTitle()?></span>
+                                  <img src="images/icons/cross.png" class="pull-right pointer" onclick="removeColumn(this);"/>
+                                  <img src="images/icons/pencil.png" class="pull-right pointer" onclick="newLabel(this);"/>
+                              </li>
+                          <?php } ?>
+                      </ul>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Neue Spalte:</label>
+                  <div class="col-sm-10">
+                      <div class="input-group">
+                          <input id="newcolumn" class="form-control" type="text">
+                          <span class="input-group-addon"> <button type="button" onclick="addColumn();">Hinzufügen</button> </span>
+                       </div>
+                  </div>
+              </div>
+          </div>
+    </div>
+</form>
+
+
+
 
 <script>
     function newLabel(el)

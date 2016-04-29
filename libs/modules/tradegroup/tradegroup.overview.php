@@ -52,13 +52,13 @@ function printSubTradegroups($parentId, $depth){
 			<h3 class="panel-title">
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Warengruppen
+				<span class="pull-right">
+					  <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
+						  <img src="images/icons/drawer--plus.png">
+						  <?=$_LANG->get('Warengruppe hinzuf&uuml;gen')?>
+					  </button>
+		  		</span>
 			</h3>
-		  <span class="pull-right">
-			  <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-			  <img src="images/icons/drawer--plus.png">
-				  <?=$_LANG->get('Warengruppe hinzuf&uuml;gen')?>
-			  </button>
-		  </span>
 	  </div>
 	  <div class="panel-body">
 

@@ -69,7 +69,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Warengruppe kopieren')?>
 			</h3>
 	  </div>
-
 	<div class="panel-body">
 		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="tradegroup_edit" id="tradegroup_edit"
 			  class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.tradegroup_title))">

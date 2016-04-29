@@ -28,7 +28,8 @@
 			</h3>
 	  </div>
 	<div class="panel-body">
-		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form">
+		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form"
+			class="form-horizontal" role="form">
 			<input type="hidden" name="exec" value="save">
 			<input type="hidden" name="pay_id" value="<?=$payment->getId()?>">
 

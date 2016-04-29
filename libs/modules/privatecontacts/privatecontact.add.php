@@ -129,7 +129,7 @@ $(function() {
 	  </div>
 	  <div class="panel-body">
 		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form"
-				onsubmit="return checkform(new Array(this.name1))">
+				class="form-horizontal" role="form" onsubmit="return checkform(new Array(this.name1))">
 			  <input type="hidden" name="exec" value="save">
 			  <input type="hidden" name="id" value="<?=$privatecontact->getId()?>">
 			  <div class="panel panel-default">
@@ -139,149 +139,143 @@ $(function() {
 					  </h3>
 				  </div>
 				  <div class="panel-body">
-					  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form"
-							class="form-horizontal" role="form" onsubmit="return checkform(new Array(this.name1))">
-						  <input type="hidden" name="exec" value="save">
-						  <input type="hidden" name="id" value="<?=$privatecontact->getId()?>">
-
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Anrede</label>
-							  <div class="col-sm-10">
-								  <select name="title"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  <option value="">Bitte w&auml;hlen</option>
-									  <?php $titles = array("Herr", "Frau", "Dr.", "Prof.");
-									  foreach ($titles as $title)
-									  {
-										  echo '<option value="'.$title.'"';
-										  if($privatecontact->getTitle() == $title) echo ' selected ="selected"';
-										  echo '>'.$title.'</option>';
-									  }
-									  ?>
-								  </select>
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Anrede</label>
+						  <div class="col-sm-10">
+							  <select name="title"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								  <option value="">Bitte w&auml;hlen</option>
+								  <?php $titles = array("Herr", "Frau", "Dr.", "Prof.");
+								  foreach ($titles as $title)
+								  {
+									  echo '<option value="'.$title.'"';
+									  if($privatecontact->getTitle() == $title) echo ' selected ="selected"';
+									  echo '>'.$title.'</option>';
+								  }
+								  ?>
+							  </select>
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Nachname</label>
-							  <div class="col-sm-10">
-								  <input name="name1"  type="text" class="form-control" value="<?=$privatecontact->getName1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Nachname</label>
+						  <div class="col-sm-10">
+							  <input name="name1"  type="text" class="form-control" value="<?=$privatecontact->getName1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Vorname</label>
-							  <div class="col-sm-10">
-								  <input name="name2"  type="text" class="form-control" value="<?=$privatecontact->getName2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Vorname</label>
+						  <div class="col-sm-10">
+							  <input name="name2"  type="text" class="form-control" value="<?=$privatecontact->getName2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Adressfeld 1</label>
-							  <div class="col-sm-10">
-								  <input name="adress1"  type="text" class="form-control" value="<?=$privatecontact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Adressfeld 1</label>
+						  <div class="col-sm-10">
+							  <input name="adress1"  type="text" class="form-control" value="<?=$privatecontact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Adressfeld 2</label>
-							  <div class="col-sm-10">
-								  <input name="adress2"  type="text" class="form-control" value="<?=$privatecontact->getAddress2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Adressfeld 2</label>
+						  <div class="col-sm-10">
+							  <input name="adress2"  type="text" class="form-control" value="<?=$privatecontact->getAddress2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Postleitzahl</label>
-							  <div class="col-sm-10">
-								  <input name="zip"  type="text" class="form-control" value="<?=$privatecontact->getZip()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Postleitzahl</label>
+						  <div class="col-sm-10">
+							  <input name="zip"  type="text" class="form-control" value="<?=$privatecontact->getZip()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Stadt</label>
-							  <div class="col-sm-10">
-								  <input name="city"  type="text" class="form-control" value="<?=$privatecontact->getCity()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Stadt</label>
+						  <div class="col-sm-10">
+							  <input name="city"  type="text" class="form-control" value="<?=$privatecontact->getCity()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Land</label>
-							  <div class="col-sm-10">
-								  <select name="country" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									  <? foreach($countries as $c){ ?>
-										  <option value="<?=$c->getId()?>"
-											  <?if($privatecontact->getCountry()->getId() == $c->getId()) echo "selected";?>>
-											  <?=$c->getName()?>
-										  </option>
-									  <?}
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Land</label>
+						  <div class="col-sm-10">
+							  <select name="country" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								  <? foreach($countries as $c){ ?>
+									  <option value="<?=$c->getId()?>"
+										  <?if($privatecontact->getCountry()->getId() == $c->getId()) echo "selected";?>>
+										  <?=$c->getName()?>
+									  </option>
+								  <?}
 
-									  ?>
-								  </select>
-							  </div>
+								  ?>
+							  </select>
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Telefon</label>
-							  <div class="col-sm-10">
-								  <input name="phone"  type="text" class="form-control" value="<?=$privatecontact->getAltPhone()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Telefon</label>
+						  <div class="col-sm-10">
+							  <input name="phone"  type="text" class="form-control" value="<?=$privatecontact->getAltPhone()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Fax</label>
-							  <div class="col-sm-10">
-								  <input name="fax"  type="text" class="form-control" value="<?=$privatecontact->getAltFax()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Fax</label>
+						  <div class="col-sm-10">
+							  <input name="fax"  type="text" class="form-control" value="<?=$privatecontact->getAltFax()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Mobil</label>
-							  <div class="col-sm-10">
-								  <input name="email"  type="text" class="form-control" value="<?=$privatecontact->getAltMobil()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Mobil</label>
+						  <div class="col-sm-10">
+							  <input name="email"  type="text" class="form-control" value="<?=$privatecontact->getAltMobil()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Email</label>
-							  <div class="col-sm-10">
-								  <input name="web"  type="text" class="form-control" value="<?=$privatecontact->getAltEmail()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Email</label>
+						  <div class="col-sm-10">
+							  <input name="web"  type="text" class="form-control" value="<?=$privatecontact->getAltEmail()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Web</label>
-							  <div class="col-sm-10">
-								  <input name="web"  type="text" class="form-control" value="<?=$privatecontact->getAltWeb()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Web</label>
+						  <div class="col-sm-10">
+							  <input name="web"  type="text" class="form-control" value="<?=$privatecontact->getAltWeb()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Geburtstag</label>
-							  <div class="col-sm-10">
-								  <input name="birthdate" id="birthdate"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"
-									  <? if ($privatecontact->getBirthDate() != 0 ) echo 'value="'.date("d.m.Y", $privatecontact->getBirthDate()).'"';?>
-										 title="<?=$_LANG->get('Geburtstag');?>">
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Geburtstag</label>
+						  <div class="col-sm-10">
+							  <input name="birthdate" id="birthdate"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"
+								  <? if ($privatecontact->getBirthDate() != 0 ) echo 'value="'.date("d.m.Y", $privatecontact->getBirthDate()).'"';?>
+									 title="<?=$_LANG->get('Geburtstag');?>">
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Kunde</label>
-							  <div class="col-sm-10">
-								  <input name="customer_search" id="customer_search" type="text" class="form-control"
-									  <?php if ($privatecontact->getBusinessContactId()>0) echo ' value="'.$privatecontact->getBusinessContact()->getNameAsLine().'" ';?>
-								  <input name="customer" id="customer"type="text" class="form-control"
-									  <?php if ($privatecontact->getBusinessContactId()>0) echo ' value="'.$privatecontact->getBusinessContact()->getId().'" ';?>
-										 type="hidden"/>
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Kunde</label>
+						  <div class="col-sm-10">
+							  <input name="customer_search" id="customer_search" type="text" class="form-control"
+								  <?php if ($privatecontact->getBusinessContactId()>0) echo ' value="'.$privatecontact->getBusinessContact()->getNameAsLine().'" ';?>
+							  <input name="customer" id="customer"type="text" class="form-control"
+								  <?php if ($privatecontact->getBusinessContactId()>0) echo ' value="'.$privatecontact->getBusinessContact()->getId().'" ';?>
+									 type="hidden"/>
 						  </div>
+					  </div>
 
-						  <div class="form-group">
-							  <label for="" class="col-sm-2 control-label">Kommentar</label>
-							  <div class="col-sm-10">
-								  <textarea name="comment" id="notify_mail_adr"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$privatecontact->getComment()?></textarea>
-							  </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Kommentar</label>
+						  <div class="col-sm-10">
+							  <textarea name="comment" id="notify_mail_adr"  type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$privatecontact->getComment()?></textarea>
 						  </div>
+					  </div>
 			  </div>
-		  </form>
 	  </div>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -431,6 +425,7 @@ $(function() {
 			  </div>
 		  </div>
 	</div>
+  <form/>
 </div>
 
 

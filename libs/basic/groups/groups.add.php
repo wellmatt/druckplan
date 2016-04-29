@@ -43,6 +43,15 @@ if ($_REQUEST["subexec"] == "save")
 
 $users = User::getAllUser(User::ORDER_LOGIN);
 ?>
+<div id="fl_menu">
+    <div class="label">Quick Move</div>
+    <div class="menu">
+        <a href="#top" class="menu_item">Seitenanfang</a>
+        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
+        <a href="#" class="menu_item" onclick="$('#group_form').submit();">Speichern</a>
+    </div>
+</div>
+
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
@@ -50,187 +59,221 @@ $users = User::getAllUser(User::ORDER_LOGIN);
                 <? if ($group->getId()) echo $_LANG->get('Gruppe &auml;ndern'); else echo $_LANG->get('Gruppe hinzuf&uuml;gen');?>
 	  </div>
 	  <div class="panel-body">
-          <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="group_form" name="group_form" onsubmit="return checkform(new Array(this.group_name, this.group_description))">
+          <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="group_form" name="group_form"
+                class="form-horizontal" role="form" onsubmit="return checkform(new Array(this.group_name, this.group_description))">
               <input type="hidden" name="exec" value="edit">
               <input type="hidden" name="subexec" value="save">
               <input type="hidden" name="id" value="<?=$group->getId()?>">
-              <div class="table-responsive">
-                  <table class="table table-hover">
-                      <colgroup>
-                          <col width="180">
-                          <col>
-                      </colgroup>
-                      <tr>
-                          <td class="content_row_header"><?=$_LANG->get('Gruppenname');?> *</td>
-                          <td class="content_row_clear">
-                              <input name="group_name" style="width:316px" class="text" value="<?=$group->getName()?>"
-                                     onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                          </td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung');?> *</td>
-                          <td class="content_row_clear">
-         <textarea name="group_description" style="width:316px;height:150px" class="text"
-                   onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$group->getDescription()?></textarea>
-                          </td>
-                      </tr>
-                  </table>
-                  <table width="500px">
-                      <colgroup>
-                          <col>
-                          <col width="60">
-                      </colgroup>
-                      <tr>
-                          <td class="content_header" colspan="2"><?=$_LANG->get('Rechte')?></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_header"><?=$_LANG->get('Recht')?></td>
-                          <td class="content_row_header"><?=$_LANG->get('Ja/Nein')?></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Darf Urlaub genehmigen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_urlaub" value="1" <? if($group->hasRight(Group::RIGHT_URLAUB)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Maschinenauswahl in Kalkulation anzeigen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_machineselection" value="1" <? if($group->hasRight(Group::RIGHT_MACHINE_SELECTION)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Ausf&uuml;hrliche Kalkulation anzeigen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_detailed_calc" value="1" <? if($group->hasRight(Group::RIGHT_DETAILED_CALCULATION)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Sollzeiten anzeigen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_targettime" value="1" <? if($group->hasRight(Group::RIGHT_SEE_TARGETTIME)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Teilauftr&auml;ge planen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_parts_edit" value="1" <? if($group->hasRight(Group::RIGHT_PARTS_EDIT)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Fremde Kalender benutzen / bearbeiten')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_ALL_CALENDAR)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Alle Kalender einsehen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_see_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_SEE_ALL_CALENDAR)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Geschäftskontakte bearbeiten')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_edit_bc" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_BC)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Geschäftskontakte löschen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_delete_bc" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_BC)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Ansprechpartner bearbeiten')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_edit_cp" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_CP)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Ansprechpartner löschen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_delete_cp" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_CP)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Kalkulationen löschen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_delete_order" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_ORDER)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Vorgänge löschen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_delete_colinv" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_COLINV)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Planung löschen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_delete_schedule" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_SCHEDULE)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Vorgänge zusammenführen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_combine_colinv" value="1" <? if($group->hasRight(Group::RIGHT_COMBINE_COLINV)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Ticket Ersteller ändern')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_ticket_change_owner" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_CHANGE_OWNER)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Verknüpfung löschen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_asso_delete" value="1" <? if($group->hasRight(Group::RIGHT_ASSO_DELETE)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Zugriff auf GK-Notizen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_notes_bc" value="1" <? if($group->hasRight(Group::RIGHT_NOTES_BC)) echo "checked";?>></td>
-                      </tr>
-                      <tr>
-                          <td class="content_row_clear"><?=$_LANG->get('Urlaube genehmingen')?></td>
-                          <td class="content_row_clear"><input type="checkbox" name="right_approve_vacation" value="1" <? if($group->hasRight(Group::RIGHT_APPROVE_VACATION)) echo "checked";?>></td>
-                      </tr>
-                  </table>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Gruppenname</label>
+                  <div class="col-sm-10">
+                      <input name="group_name" type="text" class="form-control" value="<?=$group->getName()?>"
+                             onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Beschreibung</label>
+                  <div class="col-sm-10">
+                     <textarea name="group_description" type="text" class="form-control"
+                               onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$group->getDescription()?></textarea>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Recht</label>
+                  <label for="" class="col-sm-5 control-label">Ja/Nein</label>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Darf Urlaub genehmigen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_urlaub" value="1" <? if($group->hasRight(Group::RIGHT_URLAUB)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Maschinenauswahl in Kalkulation anzeigen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_machineselection" value="1" <? if($group->hasRight(Group::RIGHT_MACHINE_SELECTION)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Ausführliche Kalkulation anzeigen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_detailed_calc"  value="1" <? if($group->hasRight(Group::RIGHT_DETAILED_CALCULATION)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Sollzeiten anzeigen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_targettime" value="1" <? if($group->hasRight(Group::RIGHT_SEE_TARGETTIME)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Teilaufträge plane</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_parts_edit" value="1" <? if($group->hasRight(Group::RIGHT_PARTS_EDIT)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Fremde Kalender benutzen / bearbeiten</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_ALL_CALENDAR)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Alle Kalender einsehen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"  name="right_see_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_SEE_ALL_CALENDAR)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Geschäftskontakte bearbeiten</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_edit_bc" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_BC)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Geschäftskontakte löschen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"  name="right_delete_bc" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_BC)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Ansprechpartner bearbeiten</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"  name="right_edit_cp" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_CP)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Ansprechpartner löschen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"  name="right_delete_cp" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_CP)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Kalkulationen löschen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_delete_order" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_ORDER)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Vorgänge löschen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"  name="right_delete_colinv" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_COLINV)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Planung löschen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_delete_schedule" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_SCHEDULE)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Vorgänge zusammenführen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_combine_colinv" value="1" <? if($group->hasRight(Group::RIGHT_COMBINE_COLINV)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Ticket Ersteller ändern</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"name="right_ticket_change_owner" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_CHANGE_OWNER)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Verknüpfung löschen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_asso_delete" value="1" <? if($group->hasRight(Group::RIGHT_ASSO_DELETE)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Zugriff auf GK-Notizen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control" name="right_notes_bc" value="1" <? if($group->hasRight(Group::RIGHT_NOTES_BC)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Urlaube genehmingen</label>
+                  <div class="col-sm-10">
+                      <input type="checkbox" class="form-control"  name="right_approve_vacation" value="1" <? if($group->hasRight(Group::RIGHT_APPROVE_VACATION)) echo "checked";?>>
+                  </div>
+              </div>
           </form>
 	  </div>
 </div>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#group_form').submit();">Speichern</a>
-    </div>
+
+
+
+<div class="panel panel-default">
+      <? if ($group->getId()) { ?>
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Mitglieder
+            </h3>
+	  </div>
+	  <div class="panel-body">
+			<div class="table-responsive">
+				<table class="table table-hover">
+                       <colgroup>
+                          <col width="150">
+                          <col>
+                          <col width="60">
+                       </colgroup>
+                       <tr>
+                          <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
+                          <td class="content_row_header"><?=$_LANG->get('Voller Name')?></td>
+                          <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+                       </tr>
+                       <? foreach($users as $u)
+                          {
+                             if ($u->isInGroup($group)) {?>
+                             <tr>
+                                <td class="content_row_clear"><?=$u->getLogin()?></td>
+                                <td class="content_row_clear"><?=$u->getFirstname()?> <?=$u->getLastname()?></td>
+                                <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=removeuser&uid=<?=$u->getId()?>'"><img src="images/icons/minus.png" /></a></td>
+                             </tr>
+                          <?}}?>
+                    <tr>
+                        <td class="content_header" colspan="2"><?=$_LANG->get('Verf&uuml;gbare Benutzer')?></td>
+                    </tr>
+                    <tr>
+                        <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Voller Name')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+                    </tr>
+                    <? foreach($users as $u)
+                    {
+                        if (!$u->isInGroup($group)) {?>
+                            <tr>
+                                <td class="content_row_clear"><?=$u->getLogin()?></td>
+                                <td class="content_row_clear"><?=$u->getFirstname()?> <?=$u->getLastname()?></td>
+                                <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=adduser&uid=<?=$u->getId()?>'"><img src="images/icons/plus.png" /></a></td>
+                            </tr>
+                        <?}}?>
+                </table>
+            </div>
+      </div>
+          <? } ?>
 </div>
 
-
-
-<br>
-<div class="box2">
-<? if ($group->getId()) { ?>
-<br>
-<table width="500px">
-   <colgroup>
-      <col width="150">
-      <col>
-      <col width="60">
-   </colgroup>
-   <tr>
-      <td class="content_header" colspan="2"><?=$_LANG->get('Mitglieder')?></td>
-   </tr>
-   <tr>
-      <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
-      <td class="content_row_header"><?=$_LANG->get('Voller Name')?></td>
-      <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-   </tr>
-   <? foreach($users as $u)
-      {
-         if ($u->isInGroup($group)) {?>
-         <tr>
-            <td class="content_row_clear"><?=$u->getLogin()?></td>
-            <td class="content_row_clear"><?=$u->getFirstname()?> <?=$u->getLastname()?></td>
-            <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=removeuser&uid=<?=$u->getId()?>'"><img src="images/icons/minus.png" /></a></td>
-         </tr>      
-      <?}}?>
-</table>
-<br>
-<table width="500px">
-   <colgroup>
-      <col width="150">
-      <col>
-      <col width="60">
-   </colgroup>
-   <tr>
-      <td class="content_header" colspan="2"><?=$_LANG->get('Verf&uuml;gbare Benutzer')?></td>
-   </tr>
-   <tr>
-      <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
-      <td class="content_row_header"><?=$_LANG->get('Voller Name')?></td>
-      <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-   </tr>
-   <? foreach($users as $u)
-      {
-         if (!$u->isInGroup($group)) {?>
-         <tr>
-            <td class="content_row_clear"><?=$u->getLogin()?></td>
-            <td class="content_row_clear"><?=$u->getFirstname()?> <?=$u->getLastname()?></td>
-            <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=adduser&uid=<?=$u->getId()?>'"><img src="images/icons/plus.png" /></a></td>
-         </tr>      
-      <?}}?>
-</table>
-</div>
-<? } ?>

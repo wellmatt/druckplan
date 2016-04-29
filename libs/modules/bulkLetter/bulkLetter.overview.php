@@ -28,12 +28,14 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 						<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 					</span>
 					Serienbrief
+					<span class="pull-right">
+					  <img src="images/icons/script--plus.png">
+					  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
+						  <?=$_LANG->get('Serienbrief')?>
+					  </button>
+			  		</span>
 				</h3>
-			  <span class="pull-right">
-				  <img src="images/icons/script--plus.png">
-				  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-					  <?=$_LANG->get('Serienbrief')?>
-			  </span>
+
 		  </div>
 	<div class="table-responsive">
 		<table class="table table-hover">
