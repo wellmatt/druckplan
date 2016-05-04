@@ -52,6 +52,7 @@ if($_REQUEST["subexec"] == "save")
 				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Falzart kopieren')?>
 				<? if ($_REQUEST["exec"] == "edit" && $ft->getId() == 0) echo $_LANG->get('Falzart anlegen')?>
 				<? if ($_REQUEST["exec"] == "edit" && $ft->getId() != 0) echo $_LANG->get('Falzart bearbeiten')?>
+				<span class="pull-right"><?=$savemsg?></span>
 			</h3>
 	  </div>
 

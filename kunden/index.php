@@ -147,6 +147,7 @@ if ($_REQUEST["exec"] == "register_tmp"){
 		</div>
 		
 		<div id="maincontent">
+
 		    <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
 		    <tr  height="100">
 		    	<td>&nbsp;</td>

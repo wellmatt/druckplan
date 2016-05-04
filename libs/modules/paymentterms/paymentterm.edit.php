@@ -25,6 +25,7 @@
 				} else{
 					echo $_LANG->get('Zahlungsbedingung anlegen');
 				}?>
+				<span class="pull-right"><?=$savemsg?></span>
 			</h3>
 	  </div>
 	<div class="panel-body">

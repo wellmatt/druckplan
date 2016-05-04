@@ -39,6 +39,7 @@ if($_REQUEST["subexec"] == "save")
 				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Farbigkeit kopieren')?>
 				<? if ($_REQUEST["exec"] == "edit" && $chr->getId() == 0) echo $_LANG->get('Farbigkeit anlegen')?>
 				<? if ($_REQUEST["exec"] == "edit" && $chr->getId() != 0) echo $_LANG->get('Farbigkeit bearbeiten')?>
+				<span class="pull-right"><?=$savemsg?></span>
 			</h3>
 	  </div>
 	<div class="panel-body">

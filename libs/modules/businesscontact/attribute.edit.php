@@ -62,70 +62,68 @@ function addAttibuteItem()
 	</div>
 </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="attribute_edit" id="attribute_edit"
-	  class="form-horizontal" role="form"	onSubmit="return checkform(new Array(this.attribute_title))">
-	<input type="hidden" name="exec" value="edit">
-	<input type="hidden" name="subexec" value="save">
-	<input type="hidden" name="aid" value="<?=$attribute->getId()?>">
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Merkmal hinzufügen')?>
+				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Merkmal bearbeiten')?>
+				<span class="pull-right"><?=$savemsg?></span>
+			</h3>
 
-	<div class="panel panel-default">
-		  <div class="panel-heading">
-				<h3 class="panel-title">
-					<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-					<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Merkmal hinzufügen')?>
-					<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Merkmal bearbeiten')?>
-				</h3>
-		  </div>
-		  <div class="panel-body">
+	  </div>
+	  <div class="panel-body">
+		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="attribute_edit" id="attribute_edit"
+				class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.attribute_title))">
+				  <input type="hidden" name="exec" value="edit">
+				  <input type="hidden" name="subexec" value="save">
+				  <input type="hidden" name="aid" value="<?=$attribute->getId()?>">
 
-				  <div class="form-group">
-					  <label for="" class="col-sm-2 control-label">Titel</label>
-					  <div class="col-sm-10">
-						  <input id="attribute_title" name="attribute_title" type="text" class="form-control"
-								 value="<?=$attribute->getTitle()?>" >
-					  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Titel</label>
+				  <div class="col-sm-10">
+					  <input id="attribute_title" name="attribute_title" type="text" class="form-control"
+							 value="<?=$attribute->getTitle()?>" >
 				  </div>
+			  </div>
 
-				  <div class="form-group">
-					  <label for="" class="col-sm-2 control-label">ID</label>
-					  <div class="col-sm-10">
-						  <input id="attribute_title" name="attribute_title" type="text" class="form-control"
-								 value="<?=$attribute->getId()?>" >
-					  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">ID</label>
+				  <div class="col-sm-1">
+					  <input  type="text" class="form-control"
+					  <?=$attribute->getId()?>>
 				  </div>
+			  </div>
 
-				  <div class="form-group">
-					  <label for="" class="col-sm-2 control-label">Sichtbar beim Kunden</label>
-					  <div class="col-sm-10">
-						  <input name="enable_cust" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
-							  <? if ($attribute->getEnable_customer()) echo "checked";?> >
-					  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Sichtbar beim Kunden</label>
+				  <div class="col-sm-10">
+					  <input name="enable_cust" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
+						  <? if ($attribute->getEnable_customer()) echo "checked";?> >
 				  </div>
+			  </div>
 
-				  <div class="form-group">
-					  <label for="" class="col-sm-2 control-label">Sichtbar beim Ansprechpartner</label>
-					  <div class="col-sm-10">
-						  <input name="enable_contact" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
-							  <? if ($attribute->getEnable_contact()) echo "checked";?> >
-					  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Sichtbar beim Ansprechpartner</label>
+				  <div class="col-sm-10">
+					  <input name="enable_contact" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
+						  <? if ($attribute->getEnable_contact()) echo "checked";?> >
 				  </div>
+			  </div>
 
-				  <div class="form-group">
-					  <label for="" class="col-sm-2 control-label">Sichtbar beim Vorgang</label>
-					  <div class="col-sm-10">
-						  <input name="enable_colinv" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
-							  <? if ($attribute->getEnable_colinv()) echo "checked";?> >
-					  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Sichtbar beim Vorgang</label>
+				  <div class="col-sm-10">
+					  <input name="enable_colinv" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
+						  <? if ($attribute->getEnable_colinv()) echo "checked";?> >
 				  </div>
-		  </div>
-	</div>
-
-
-		  <div class="panel panel-default">
+			  </div>
+			  <br/>
+			  <div class="panel panel-default">
 				  <div class="panel-heading">
-						<h3 class="panel-title">
-							Merkmalsoptionen
-						</h3>
+					  <h3 class="panel-title">
+						  Merkmalsoptionen
+					  </h3>
 				  </div>
 				  <div class="panel-body">
 					  <input 	type="hidden" name="count_quantity" id="count_quantity"
@@ -181,7 +179,11 @@ function addAttibuteItem()
 					  <br/>
 					  ** <?=$_LANG->get('Erzeugt Eingabefeld für freien Wert zum Merkmal');?>
 				  </div>
+			  </div>
+		  </form>
+	  </div>
+</div>
 
-		  </div>
-</form>
+
+
 

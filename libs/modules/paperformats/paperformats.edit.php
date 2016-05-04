@@ -37,6 +37,7 @@ if($_REQUEST["subexec"] == "save")
                 <?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Produktformat hinzuf&uuml;gen')?>
                 <?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Produktformat &auml;ndern')?>
                 <?if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Produktformat kopieren')?>
+                <span class="pull-right"><?=$savemsg?></span>
                 </td>
             </h3>
 	  </div>

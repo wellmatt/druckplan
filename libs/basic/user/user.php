@@ -21,7 +21,6 @@ if ($_REQUEST["exec"] == "edit")
     $users = User::getAllUser(User::ORDER_LOGIN);
 
     ?>
-
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
@@ -34,6 +33,7 @@ if ($_REQUEST["exec"] == "edit")
 					</button>
 				</span>
 			</h3>
+	  </div>
 		  <div class="panel-body">
 			  <div class="table-responsive">
 				  <table class="table table-hover">

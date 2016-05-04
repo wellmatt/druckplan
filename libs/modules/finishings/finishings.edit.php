@@ -35,6 +35,7 @@ if($_REQUEST["subexec"] == "save")
 				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Lacke hinzuf&uuml;gen')?>
 				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Lacke &auml;ndern')?>
 				<?if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Lacke kopieren')?>
+				<span class="pull-right"><?=$savemsg?></span>
 			</h3>
 	  </div>
 	  <div class="panel-body">
