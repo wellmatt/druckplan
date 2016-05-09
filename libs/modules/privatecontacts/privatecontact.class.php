@@ -62,25 +62,9 @@ class PrivateContact {
 			$this->alt_country = new Country(55);
         }
         $this->crtuser = new User();
+
         
-//        $cached = Cachehandler::fromCache("obj_prvtc_" . $id);
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(get_class($this)));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
-                } else {
-                    echo "method: {$method}() not found!</br>";
-                }
-            }
-            return true;
-        }
-        
-        if ($id > 0 && is_null($cached))
+        if ($id > 0)
         {
             $sql = " SELECT * FROM privatecontacts WHERE id = {$id}";
 
@@ -131,12 +115,7 @@ class PrivateContact {
                 }
                 $this->access = $tmp_prvt_access;
 				
-//                Cachehandler::toCache("obj_prvtc_".$id, $this);
                 return true;
-            } else if ($DB->num_rows($sql) > 1)
-            {
-                $this->strError = $_LANG->get('Mehr als einen Kontakt gefunden.');
-                return false;
             }
         }
     }
@@ -221,14 +200,6 @@ class PrivateContact {
 			$DB->no_result($sql);
 		}
 
-//		Cachehandler::removeCache("obj_prvtc_".$this->id);
-		if($res)
-		{
-//			Cachehandler::toCache("obj_prvtc_".$this->id, $this);
-			return true;
-		}
-		else
-			return false;
 
 	}
     
@@ -355,7 +326,6 @@ class PrivateContact {
 		unset($this);
 		if($res)
 		{
-//		    Cachehandler::removeCache("obj_prvtc_".$this->id);
 			return true;
 		}
 		else

@@ -112,6 +112,18 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
 </div>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="step3_form">
+
+    <div class="row">
+        <div class="col-md-6">
+            <input type="checkbox" name="auto_calc_values" value="1" <?if($calc->getCalcAutoValues()) echo "checked";?>>
+            * <?=$_LANG->get('Werte automatisch kalkulieren')?>
+        </div>
+        <div class="col-md-6">
+            <input type="checkbox" name="debug_calc" value="1" <?if($calc->getCalcDebug()) echo "checked";?>>
+            * <?=$_LANG->get('Debug Ausgabe')?>
+        </div>
+    </div>
+
     <input name="step" value="3" type="hidden">
     <input name="exec" value="edit" type="hidden">
     <input name="subexec" value="save" type="hidden">
@@ -351,13 +363,20 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
                                                     {
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Etiketten pro Rolle</label><div class="input-group">';
-                                                        echo '<input class="text" name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
+                                                        echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
                                                         echo '</div></div></div>';
 
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';
-                                                        echo '<input class="text" name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
+                                                        echo '<input name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
                                                         echo '</div></div></div>';
+
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Anz. Rollen:&nbsp;</label>';
+                                                        //  (WURZEL(4*(Amount/Anzahl Nutzen)/10^3*(Höhe des Produktes)*(Paperthickness;PapierID)/PI()+(Kerndurchmesser manuelle EIngabe)^2);ELSE 0)
+                                                        prettyPrint("Debug Anz. Rollen: Wurzel( 4*({$calc->getAmount()}/{$calc->getProductsPerPaper($mach->getPart())})/10^3*{$mach->getMyPaperHeight()}*{$mach->getMyPaper()->getThickness()}/pi+76^2)");
+                                                        echo ( sqrt( 4*($calc->getAmount()/$calc->getProductsPerPaper($mach->getPart()))/10^3*$mach->getMyPaperHeight()*$mach->getMyPaper()->getThickness()/pi()+76^2 ));
+                                                        echo '</div></div>';
                                                     }
 
                                                     // Manueller Aufschlag
@@ -520,12 +539,12 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
                                                     {
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Etiketten pro Rolle</label><div class="input-group">';
-                                                        echo '<input class="text" name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
+                                                        echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
                                                         echo '</div></div></div>';
 
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';
-                                                        echo '<input class="text" name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
+                                                        echo '<input name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
                                                         echo '</div></div></div>';
                                                     }
 
@@ -1156,18 +1175,6 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
 </div>
 
 <input type="hidden" name="counter_machs" id="counter_machs" value="<?=$x?>">
-<table width="100%">
-    <tr>
-        <td class="content_row_clear">
-            <input type="checkbox" name="auto_calc_values" value="1" <?if($calc->getCalcAutoValues()) echo "checked";?>> 
-            * <?=$_LANG->get('Werte automatisch kalkulieren')?>
-        </td>
-        <td class="content_row_clear">
-            <input type="checkbox" name="debug_calc" value="1" <?if($calc->getCalcDebug()) echo "checked";?>>
-            * <?=$_LANG->get('Debug Ausgabe')?>
-        </td>
-    </tr>
-</table>
 </form>
 
 

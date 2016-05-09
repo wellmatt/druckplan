@@ -29,59 +29,78 @@ class Event {
     function __construct($id = 0) {
         global $DB;
         
-        $cached = Cachehandler::fromCache("obj_event_" . $id);
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(get_class($this)));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
+
+        if ($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
                 } else {
-                    echo "method: {$method}() not found!</br>";
+                    $valid_cache = false;
                 }
+            } else {
+                $valid_cache = false;
             }
-//             echo "loaded from cache!</br>";
-            return true;
-        }
-        
-        if ($id > 0 && is_null($cached))
-        {
-            $sql = "SELECT * FROM events WHERE id = {$id}";
-            if ($DB->num_rows($sql))
-            {
-                $res = $DB->select($sql);
-                $this->id = $res[0]["id"];
-                $this->user = new User($res[0]["user_id"]);
-                $this->public = $res[0]["public"];
-                $this->title = $res[0]["title"];
-                $this->desc = $res[0]["description"];
-                $this->begin = $res[0]["begin"];
-                $this->end = $res[0]["end"];
-                $this->participants_int = unserialize($res[0]["participants_int"]);
-                $this->participants_ext = unserialize($res[0]["participants_ext"]);
-                $this->adress = $res[0]["adress"];
-            }
-            
-            $sql = "SELECT * FROM events_participants WHERE event = {$id}";
-            if($DB->num_rows($sql)){
-                $retval_int = Array();
-                $retval_ext = Array();
-                foreach($DB->select($sql) as $r){
-                    if ($r["type"] == 1)
-                        $retval_int[] = $r["participant"];
-                    else
-                        $retval_ext[] = $r["participant"];
+            if ($valid_cache === false) {
+                $sql = "SELECT * FROM events WHERE id = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $res = $DB->select($sql);
+                    $this->id = $res[0]["id"];
+                    $this->user = new User($res[0]["user_id"]);
+                    $this->public = $res[0]["public"];
+                    $this->title = $res[0]["title"];
+                    $this->desc = $res[0]["description"];
+                    $this->begin = $res[0]["begin"];
+                    $this->end = $res[0]["end"];
+                    $this->participants_int = unserialize($res[0]["participants_int"]);
+                    $this->participants_ext = unserialize($res[0]["participants_ext"]);
+                    $this->adress = $res[0]["adress"];
                 }
-                if (!empty($retval_int))
-                    $this->participants_int = $retval_int;
-                if (!empty($retval_ext))
-                    $this->participants_ext = $retval_ext;
+
+                $sql = "SELECT * FROM events_participants WHERE event = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $retval_int = Array();
+                    $retval_ext = Array();
+                    foreach ($DB->select($sql) as $r) {
+                        if ($r["type"] == 1)
+                            $retval_int[] = $r["participant"];
+                        else
+                            $retval_ext[] = $r["participant"];
+                    }
+                    if (!empty($retval_int))
+                        $this->participants_int = $retval_int;
+                    if (!empty($retval_ext))
+                        $this->participants_ext = $retval_ext;
+                }
+
+                Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
             }
-            
-            Cachehandler::toCache("obj_event_".$id, $this);
         }
     }
 
@@ -407,10 +426,6 @@ class Event {
             $this->begin = $this->end;
             $this->end = $t;
         }
-        
-//         echo date("d.m.y H:i",$this->begin);
-//         echo "</br>";
-//         echo date("d.m.y H:i",$this->end);
 		
         global $DB;
         if ($this->id > 0)
@@ -446,9 +461,6 @@ class Event {
                 ({$this->id}, {$parti}, 2)";
                 $DB->no_result($sql);
             }
-            
-            Cachehandler::toCache("obj_event_".$this->id, $this);
-            return $res; 
         } else
         {
             $sql = "INSERT INTO events
@@ -485,11 +497,18 @@ class Event {
                         $DB->no_result($sql);
                     }
                 
-                Cachehandler::toCache("obj_event_".$this->id, $this);
-                return true;
+                $res = true;
             } else
-                return false;
+                $res = false;
         }
+
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
     }
     
     public function delete()
@@ -502,6 +521,7 @@ class Event {
             if($res)
             {
                 Notification::removeForObject("Event", $this->getId());
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 unset($this);
                 return true;
             } else

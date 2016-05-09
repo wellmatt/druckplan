@@ -54,35 +54,75 @@ class Personalizationitem {
 		global $_USER;
 
 		if ($id > 0){
-			$sql = "SELECT * FROM personalization_items WHERE id = {$id}";
-			if($DB->num_rows($sql)){
-				$r = $DB->select($sql);
-				$r = $r[0];
-				$this->id = $r["id"];
-				$this->status = $r["status"];
-				$this->title = $r["title"];
-				$this->xpos = $r["xpos"];
-				$this->ypos = $r["ypos"];
-				$this->width = $r["width"];
-				$this->height = $r["height"];
-				$this->boxtype = $r["boxtype"];
-				$this->peronalid = $r["personalization_id"];
-				$this->textsize = $r["text_size"];
-				$this->justification = $r["justification"];
-				$this->font = $r["font"];
-				$this->color_c = $r["color_c"];
-				$this->color_m = $r["color_m"];
-				$this->color_y = $r["color_y"];
-				$this->color_k = $r["color_k"];
-				$this->spacing = $r["spacing"];
-				$this->dependencyID = $r["dependency_id"];
-				$this->reverse = $r["reverse"];
-				$this->predefined = $r["predefined"];
-				$this->position = $r["position"];
-				$this->readonly = $r["readonly"];
-				$this->tab = $r["tab"];
-				$this->group = $r["zzgroup"];
-				$this->sort = $r["sort"];
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
+				} else {
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false)
+			{
+				$sql = "SELECT * FROM personalization_items WHERE id = {$id}";
+				if($DB->num_rows($sql)){
+					$r = $DB->select($sql);
+					$r = $r[0];
+					$this->id = $r["id"];
+					$this->status = $r["status"];
+					$this->title = $r["title"];
+					$this->xpos = $r["xpos"];
+					$this->ypos = $r["ypos"];
+					$this->width = $r["width"];
+					$this->height = $r["height"];
+					$this->boxtype = $r["boxtype"];
+					$this->peronalid = $r["personalization_id"];
+					$this->textsize = $r["text_size"];
+					$this->justification = $r["justification"];
+					$this->font = $r["font"];
+					$this->color_c = $r["color_c"];
+					$this->color_m = $r["color_m"];
+					$this->color_y = $r["color_y"];
+					$this->color_k = $r["color_k"];
+					$this->spacing = $r["spacing"];
+					$this->dependencyID = $r["dependency_id"];
+					$this->reverse = $r["reverse"];
+					$this->predefined = $r["predefined"];
+					$this->position = $r["position"];
+					$this->readonly = $r["readonly"];
+					$this->tab = $r["tab"];
+					$this->group = $r["zzgroup"];
+					$this->sort = $r["sort"];
+					Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
+				}
 			}
 		}
 	}
@@ -124,6 +164,7 @@ class Personalizationitem {
 					reverse				= {$this->reverse} 
 					WHERE id = {$this->id}";
 // 			echo $sql . "</br>";
+			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization_items
@@ -144,6 +185,7 @@ class Personalizationitem {
 				$sql = "SELECT max(id) id FROM personalization_items WHERE title = '{$this->title}' ";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
+				Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 				return true;
 			} else {
 				return false;
@@ -164,6 +206,7 @@ class Personalizationitem {
 					status = 0
 					WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+				Cachehandler::removeCache(Cachehandler::genKeyword($this));
 				unset($this);
 				return true;
 			} else {
@@ -341,6 +384,11 @@ class Personalizationitem {
 	    return $this->color_c;
 	}
 
+	public function getColorc()
+	{
+		return $this->color_c;
+	}
+
 	public function setColor_c($color_c)
 	{
 	    $this->color_c = $color_c;
@@ -349,6 +397,11 @@ class Personalizationitem {
 	public function getColor_m()
 	{
 	    return $this->color_m;
+	}
+
+	public function getColorm()
+	{
+		return $this->color_m;
 	}
 
 	public function setColor_m($color_m)
@@ -361,6 +414,11 @@ class Personalizationitem {
 	    return $this->color_y;
 	}
 
+	public function getColory()
+	{
+		return $this->color_y;
+	}
+
 	public function setColor_y($color_y)
 	{
 	    $this->color_y = $color_y;
@@ -369,6 +427,11 @@ class Personalizationitem {
 	public function getColor_k()
 	{
 	    return $this->color_k;
+	}
+
+	public function getColork()
+	{
+		return $this->color_k;
 	}
 
 	public function setColor_k($color_k)

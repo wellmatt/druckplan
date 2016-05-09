@@ -34,7 +34,7 @@ class StorageBookEnrty extends Model
                 break;
             case StorageGoods::TYPE_COLINV:
                 $this->origin = new CollectiveInvoice($this->origin);
-                // TODO: add Colinv position mapping
+                $this->origin_pos = new Orderposition($this->origin_pos);
                 break;
         }
         $this->area = new StorageArea($this->area);
@@ -43,8 +43,45 @@ class StorageBookEnrty extends Model
     }
 
     /**
+     * override default save to save storage position changes
+     */
+    public function save()
+    {
+        global $_USER;
+        $ret = parent::save();
+        if ($ret){
+            $apos = StoragePosition::getFirstForAreaAndArticle($this->area,$this->article);
+            if ($apos->getId()>0){
+                if ($this->type == StorageGoods::TYPE_SUPORDER){
+                    $apos->setAmount($apos->getAmount()+$this->getAmount());
+                } else if ($this->type == StorageGoods::TYPE_COLINV){
+                    $apos->setAmount($apos->getAmount()-$this->getAmount());
+                }
+                $apos->setAllocation($this->alloc);
+                $apos->save();
+            } else {
+                $create = [
+                    'area'=>$this->area->getId(),
+                    'article'=>$this->article->getId(),
+                    'businesscontact'=>0,
+                    'amount'=>$this->amount,
+                    'min_amount'=>0,
+                    'respuser'=>$_USER->getId(),
+                    'description'=>'',
+                    'note'=>'',
+                    'dispatch'=>'',
+                    'packaging'=>'',
+                    'allocation'=>$this->alloc,
+                ];
+                $storageposition = new StoragePosition(0,$create);
+                $storageposition->save();
+            }
+        }
+    }
+
+    /**
      * @param StorageArea $storagearea
-     * @return StoragePosition[]
+     * @return StorageBookEnrty[]
      */
     public static function getAllForArea(StorageArea $storagearea)
     {
@@ -52,13 +89,17 @@ class StorageBookEnrty extends Model
             [
                 'column'=>'area',
                 'value'=>$storagearea->getId()
+            ],
+            [
+                'orderby'=>'crtdate',
+                'orderbydir'=>'desc'
             ]
         ]);
         return $retval;
     }
 
     /**
-     * @param SupOrderPosition $origin_pos
+     * @param Orderposition|SupOrderPosition $origin_pos
      * @return int
      */
     public static function calcutateToBookAmount($origin_pos)
@@ -66,6 +107,8 @@ class StorageBookEnrty extends Model
         $retval = 0;
 
         if (is_a($origin_pos,'SupOrderPosition')){
+            if ($origin_pos->getArticle()->getUsesstorage() == 0)
+                return 0;
             $retval = $origin_pos->getAmount();
             $positions = self::getAllForPosition($origin_pos);
             if (count($positions)>0){
@@ -75,13 +118,28 @@ class StorageBookEnrty extends Model
                     }
                 }
             }
-        } // TODO: add Colinv mapping
+        } else if (is_a($origin_pos,'Orderposition')){
+            if ($origin_pos->getType() == 1 || $origin_pos->getType() == 2){
+                $article = new Article($origin_pos->getObjectid());
+                if ($article->getUsesstorage() == 0)
+                    return 0;
+                $retval = $origin_pos->getAmount();
+                $positions = self::getAllForPosition($origin_pos);
+                if (count($positions)>0){
+                    foreach ($positions as $position) {
+                        if ($position->getArticle()->getId() == $origin_pos->getObjectid()){
+                            $retval = $retval - $position->getAmount();
+                        }
+                    }
+                }
+            }
+        }
 
         return $retval;
     }
 
     /**
-     * @param SupOrderPosition $origin
+     * @param Orderposition|SupOrderPosition $origin
      * @return StorageBookEnrty[]
      */
     public static function getAllForPosition($origin)
@@ -100,9 +158,20 @@ class StorageBookEnrty extends Model
                 ],
             ]);
             return $retval;
-        } else { // TODO: add Colinv pos mapping
+        } else if (is_a($origin,'Orderposition')){
+            $retval = self::fetch([
+                [
+                    'column'=>'origin_pos',
+                    'value'=>$origin->getId()
+                ],
+                [
+                    'column'=>'type',
+                    'value'=>StorageGoods::TYPE_COLINV
+                ],
+            ]);
             return $retval;
         }
+        return [];
     }
 
     /**
@@ -137,9 +206,8 @@ class StorageBookEnrty extends Model
                 ],
             ]);
             return $retval;
-        } else {
-            return $retval;
         }
+        return $retval;
     }
 
     /**

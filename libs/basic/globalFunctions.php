@@ -85,7 +85,9 @@ function getOrderStatus($status, $formated = false)
 			case 2: return "<font color='dFFB92C'><b>".$_LANG->get('Vorgang gesendet')."</b></font>"; break;
 			case 3: return "<font color='FFDA3E'><b>".$_LANG->get('Vorgang angenommen')."</b></font>"; break;
 			case 4: return "<font color='FB71FF'><b>".$_LANG->get('In Produktion')."</b></font>"; break;
-			case 5: return "<font color='71FF9C'><b>".$_LANG->get('Erledigt')."</b></font>"; break;
+			case 5: return "<font color='0092FF'><b>".$_LANG->get('Versandbereit')."</b></font>"; break;
+			case 6: return "<font color='00E7FF'><b>".$_LANG->get('Ware versand')."</b></font>"; break;
+			case 7: return "<font color='71FF9C'><b>".$_LANG->get('Erledigt')."</b></font>"; break;
 			default: return "<font color='6e6e6d'><b>".$_LANG->get('Unbekannt')."</b></font>"; break;
 		}
     }
@@ -97,7 +99,9 @@ function getOrderStatus($status, $formated = false)
             case 2: return $_LANG->get('Vorgang gesendet'); break;
             case 3: return $_LANG->get('Vorgang angenommen'); break;
             case 4: return $_LANG->get('In Produktion'); break;
-            case 5: return $_LANG->get('Erledigt'); break;
+            case 5: return $_LANG->get('Versandbereit'); break;
+			case 6: return $_LANG->get('Ware versand'); break;
+			case 7: return $_LANG->get('Erledigt'); break;
             default: return $_LANG->get('Unbekannt'); break;
         }
     }
@@ -415,5 +419,6 @@ function prettyPrint($a) {
 	print_r($a);
 	echo "</pre>";
 }
+
 
 ?>

@@ -52,8 +52,9 @@ if ($_REQUEST["exec"])
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
+				right: 'agendaWeek,month,agendaDay'
 			},
+			defaultView: 'agendaWeek',
 			weekNumbers: true,
 			selectable: true,
 			selectHelper: true,

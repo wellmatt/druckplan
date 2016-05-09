@@ -51,6 +51,8 @@ class CollectiveInvoice{
     private $needs_planning = 0;
     private $deliverydate = 0;
 	private $rdyfordispatch = 0;		// Ware bereit zur Lieferung
+	private $thirdparty = 0;			// Fremdleistung ja/nein
+	private $thirdpartycomment = "";	// Hinweis zur Fremdleistung
     
     // Doc texts
 
@@ -90,49 +92,91 @@ class CollectiveInvoice{
         $this->custContactperson = new ContactPerson();
 		
 		if($id>0){
-			$sql = "SELECT * FROM collectiveinvoice WHERE id = ".$id;
-			if($DB->num_rows($sql)){
-				$rows = $DB->select($sql);
-				$r = $rows[0];
-				$this->id = (int)$r["id"];
-				$this->status =$r["status"];
-				$this->title = $r["title"];
-				$this->number = $r["number"];
-				$this->comment = $r["comment"];
-				$this->crtdate = $r["crtdate"];
-				$this->uptdate = $r["uptdate"];
-				$this->uptuser = new User((int)$r["uptuser"]);
-				$this->crtuser = new User((int)$r["crtuser"]);
-				$this->deliverycosts = $r["deliverycosts"];
-				$this->client = new Client((int)$r["client"]);
-				$this->businesscontact = new BusinessContact((int)$r["businesscontact"]);
-				$this->deliveryterm = new DeliveryTerms((int)$r["deliveryterm"]);
-				$this->paymentterm = new PaymentTerms((int)$r["paymentterm"]);
-				$this->deliveryaddress = new Address($r["deliveryaddress"]);
-				$this->invoiceAddress = new Address($r["invoiceaddress"]);
-				$this->intent = $r["intent"];
-                $this->internContact = new User($r["intern_contactperson"]);
-                $this->custMessage = $r["cust_message"];
-                $this->custSign	= $r["cust_sign"];
-				$this->custContactperson = new ContactPerson($r["custContactperson"]);
-                $this->needs_planning = $r["needs_planning"];
-                $this->deliverydate = $r["deliverydate"];
-				$this->ext_comment = $r["ext_comment"];
-				$this->rdyfordispatch = $r["rdyfordispatch"];
-				
-				// doc texts
-				$this->offer_header = $r["offer_header"];
-				$this->offer_footer = $r["offer_footer"];
-				$this->offerconfirm_header = $r["offerconfirm_header"];
-				$this->offerconfirm_footer = $r["offerconfirm_footer"];
-				$this->factory_header = $r["factory_header"];
-				$this->factory_footer = $r["factory_footer"];
-				$this->delivery_header = $r["delivery_header"];
-				$this->delivery_footer = $r["delivery_footer"];
-				$this->invoice_header = $r["invoice_header"];
-				$this->invoice_footer = $r["invoice_footer"];
-				$this->revert_header = $r["revert_header"];
-				$this->revert_footer = $r["revert_footer"];
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
+				} else {
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false) {
+				$sql = "SELECT * FROM collectiveinvoice WHERE id = " . $id;
+				if ($DB->num_rows($sql)) {
+					$rows = $DB->select($sql);
+					$r = $rows[0];
+					$this->id = (int)$r["id"];
+					$this->status = $r["status"];
+					$this->title = $r["title"];
+					$this->number = $r["number"];
+					$this->comment = $r["comment"];
+					$this->crtdate = $r["crtdate"];
+					$this->uptdate = $r["uptdate"];
+					$this->uptuser = new User((int)$r["uptuser"]);
+					$this->crtuser = new User((int)$r["crtuser"]);
+					$this->deliverycosts = $r["deliverycosts"];
+					$this->client = new Client((int)$r["client"]);
+					$this->businesscontact = new BusinessContact((int)$r["businesscontact"]);
+					$this->deliveryterm = new DeliveryTerms((int)$r["deliveryterm"]);
+					$this->paymentterm = new PaymentTerms((int)$r["paymentterm"]);
+					$this->deliveryaddress = new Address($r["deliveryaddress"]);
+					$this->invoiceAddress = new Address($r["invoiceaddress"]);
+					$this->intent = $r["intent"];
+					$this->internContact = new User($r["intern_contactperson"]);
+					$this->custMessage = $r["cust_message"];
+					$this->custSign = $r["cust_sign"];
+					$this->custContactperson = new ContactPerson($r["custContactperson"]);
+					$this->needs_planning = $r["needs_planning"];
+					$this->deliverydate = $r["deliverydate"];
+					$this->ext_comment = $r["ext_comment"];
+					$this->rdyfordispatch = $r["rdyfordispatch"];
+					$this->thirdparty = $r["thirdparty"];
+					$this->thirdpartycomment = $r["thirdpartycomment"];
+
+					// doc texts
+					$this->offer_header = $r["offer_header"];
+					$this->offer_footer = $r["offer_footer"];
+					$this->offerconfirm_header = $r["offerconfirm_header"];
+					$this->offerconfirm_footer = $r["offerconfirm_footer"];
+					$this->factory_header = $r["factory_header"];
+					$this->factory_footer = $r["factory_footer"];
+					$this->delivery_header = $r["delivery_header"];
+					$this->delivery_footer = $r["delivery_footer"];
+					$this->invoice_header = $r["invoice_header"];
+					$this->invoice_footer = $r["invoice_footer"];
+					$this->revert_header = $r["revert_header"];
+					$this->revert_footer = $r["revert_footer"];
+
+					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+				}
 			}
 		}
 	}//Ende vom Konstruktor
@@ -168,6 +212,8 @@ class CollectiveInvoice{
                     deliverydate = {$this->deliverydate}, 
                     custContactperson = {$this->custContactperson->getId()},
                     rdyfordispatch = {$this->rdyfordispatch},
+                    thirdparty = {$this->thirdparty},
+                    thirdpartycomment = '{$this->thirdpartycomment}',
                     
                     offer_header = '{$this->offer_header}',
                     offer_footer = '{$this->offer_footer}',  
@@ -184,8 +230,7 @@ class CollectiveInvoice{
                     
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
-//             echo $sql . "</br>";
-			return $DB->no_result($sql);
+			$res = $DB->no_result($sql);
 		} else {
 			$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_COLINV);
 			$sql = "INSERT INTO collectiveinvoice
@@ -196,7 +241,7 @@ class CollectiveInvoice{
 				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
-				 invoice_header, invoice_footer, revert_header, revert_footer)
+				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment)
 			VALUES
 				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
@@ -205,17 +250,22 @@ class CollectiveInvoice{
 				 '{$this->intent}', {$this->needs_planning}, {$this->deliverydate}, '{$this->ext_comment}', {$this->rdyfordispatch},
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
-				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}')";
+				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}',
+				 {$this->thirdparty},'{$this->thirdpartycomment}')";
 			$res = $DB->no_result($sql);
-//             echo $sql . "</br>";
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
-				return true;
-			} else
-				return false;
+			}
 		}
+		if ($res)
+		{
+			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+			return true;
+		}
+		else
+			return false;
 	}
 
 	/**
@@ -229,6 +279,7 @@ class CollectiveInvoice{
 		if($this->id > 0){
 			$sql = "UPDATE collectiveinvoice SET status = 0 WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+				Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 Notification::removeForObject("CollectiveInvoice", $this->getId());
 				unset($this);
 				return true;
@@ -379,7 +430,7 @@ class CollectiveInvoice{
 	 */
 	public static function getAllRdyForDispatch(){
 		global $DB;
-		$sql = "SELECT * FROM collectiveinvoice WHERE status > 0 AND rdyfordispatch = 1";
+		$sql = "SELECT * FROM collectiveinvoice WHERE status = 5";
 		$collectiveInvoices = Array();
 		if($DB->no_result($sql)){
 			$result = $DB->select($sql);
@@ -406,6 +457,23 @@ class CollectiveInvoice{
 			}
 		}
 		return $collectiveInvoices;
+	}
+
+	/**
+	 * @param $search string
+	 * @return Array
+	 */
+	static function searchByNumberOrTitle($search){
+		global $DB;
+		$retval = Array();
+		$sql = "SELECT `id`, `title`, `number` FROM collectiveinvoice WHERE `status` > 0 AND (`number` LIKE '%{$search}%' OR `title` LIKE '%{$search}%') ORDER By id desc";
+		if($DB->no_result($sql)){
+			$result = $DB->select($sql);
+			foreach($result as $r){
+				$retval[] = Array("label" => $r["number"].' - '.$r["title"], "value" => $r["id"]);
+			}
+		}
+		return $retval;
 	}
 	
 	/**
@@ -502,7 +570,9 @@ class CollectiveInvoice{
 			case 2: $retval = "orange.gif";break;
 			case 3: $retval = "yellow.gif";break;
 			case 4: $retval = "lila.gif";break;
-			case 5: $retval = "green.gif";break;
+			case 5: $retval = "lila.gif";break;
+			case 6: $retval = "lila.gif";break;
+			case 7: $retval = "green.gif";break;
 			default: $retval="gray.gif";
 		}
 		return $retval;
@@ -525,7 +595,9 @@ class CollectiveInvoice{
 			case 2: $retval = "Gesendet u. Bestellt";break;
 			case 3: $retval = "angenommen";break;
 			case 4: $retval = "In Produktion";break;
-			case 5: $retval = "Erledigt";break;
+			case 5: $retval = "Versandbereit";break;
+			case 6: $retval = "Ware versand";break;
+			case 7: $retval = "Erledigt";break;
 			default: $retval="...";
 		}
 		return $retval;
@@ -900,6 +972,10 @@ class CollectiveInvoice{
     {
         return $this->needs_planning;
     }
+	public function getNeedsplanning()
+	{
+		return $this->needs_planning;
+	}
 
 	/**
      * @param field_type $needs_planning
@@ -932,6 +1008,10 @@ class CollectiveInvoice{
     {
         return $this->ext_comment;
     }
+	public function getExtcomment()
+	{
+		return $this->ext_comment;
+	}
 
 	/**
      * @param string $ext_comment
@@ -948,6 +1028,10 @@ class CollectiveInvoice{
     {
         return $this->offer_header;
     }
+	public function getOfferheader()
+	{
+		return $this->offer_header;
+	}
 
     /**
      * @return the $offer_footer
@@ -956,6 +1040,10 @@ class CollectiveInvoice{
     {
         return $this->offer_footer;
     }
+	public function getOfferfooter()
+	{
+		return $this->offer_footer;
+	}
 
     /**
      * @return the $offerconfirm_header
@@ -964,6 +1052,10 @@ class CollectiveInvoice{
     {
         return $this->offerconfirm_header;
     }
+	public function getOfferconfirmheader()
+	{
+		return $this->offerconfirm_header;
+	}
 
     /**
      * @return the $offerconfirm_footer
@@ -972,6 +1064,10 @@ class CollectiveInvoice{
     {
         return $this->offerconfirm_footer;
     }
+	public function getOfferconfirmfooter()
+	{
+		return $this->offerconfirm_footer;
+	}
 
     /**
      * @return the $factory_header
@@ -980,6 +1076,10 @@ class CollectiveInvoice{
     {
         return $this->factory_header;
     }
+	public function getFactoryheader()
+	{
+		return $this->factory_header;
+	}
 
     /**
      * @return the $factory_footer
@@ -988,6 +1088,10 @@ class CollectiveInvoice{
     {
         return $this->factory_footer;
     }
+	public function getFactoryfooter()
+	{
+		return $this->factory_footer;
+	}
 
     /**
      * @return the $delivery_header
@@ -996,6 +1100,10 @@ class CollectiveInvoice{
     {
         return $this->delivery_header;
     }
+	public function getDeliveryheader()
+	{
+		return $this->delivery_header;
+	}
 
     /**
      * @return the $delivery_footer
@@ -1004,6 +1112,10 @@ class CollectiveInvoice{
     {
         return $this->delivery_footer;
     }
+	public function getDeliveryfooter()
+	{
+		return $this->delivery_footer;
+	}
 
     /**
      * @return the $invoice_header
@@ -1012,6 +1124,10 @@ class CollectiveInvoice{
     {
         return $this->invoice_header;
     }
+	public function getInvoiceheader()
+	{
+		return $this->invoice_header;
+	}
 
     /**
      * @return the $invoice_footer
@@ -1020,6 +1136,10 @@ class CollectiveInvoice{
     {
         return $this->invoice_footer;
     }
+	public function getInvoicefooter()
+	{
+		return $this->invoice_footer;
+	}
 
     /**
      * @return the $revert_header
@@ -1028,6 +1148,10 @@ class CollectiveInvoice{
     {
         return $this->revert_header;
     }
+	public function getRevertheader()
+	{
+		return $this->revert_header;
+	}
 
     /**
      * @return the $revert_footer
@@ -1036,6 +1160,10 @@ class CollectiveInvoice{
     {
         return $this->revert_footer;
     }
+	public function getRevertfooter()
+	{
+		return $this->revert_footer;
+	}
 
     /**
      * @param field_type $offer_header
@@ -1148,5 +1276,36 @@ class CollectiveInvoice{
 	{
 		$this->rdyfordispatch = $rdyfordispatch;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getThirdparty()
+	{
+		return $this->thirdparty;
+	}
+
+	/**
+	 * @param int $thirdparty
+	 */
+	public function setThirdparty($thirdparty)
+	{
+		$this->thirdparty = $thirdparty;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getThirdpartycomment()
+	{
+		return $this->thirdpartycomment;
+	}
+
+	/**
+	 * @param string $thirdpartycomment
+	 */
+	public function setThirdpartycomment($thirdpartycomment)
+	{
+		$this->thirdpartycomment = $thirdpartycomment;
+	}
 }
-?>

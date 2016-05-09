@@ -49,6 +49,26 @@ class StoragePosition extends Model
     }
 
     /**
+     * @param StorageArea $storagearea
+     * @param Article $article
+     * @return StoragePosition
+     */
+    public static function getFirstForAreaAndArticle(StorageArea $storagearea, Article $article)
+    {
+        $retval = self::fetchSingle([
+            [
+                'column'=>'area',
+                'value'=>$storagearea->getId()
+            ],
+            [
+                'column'=>'article',
+                'value'=>$article->getId()
+            ]
+        ]);
+        return $retval;
+    }
+
+    /**
      * Holt die aktuelle Belegung des Lagerplatzes aus der DB
      * @param StorageArea $storageArea
      * @return int

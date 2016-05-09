@@ -41,4 +41,31 @@ $_CONFIG->cache->user_contruct = 60*5; // User Class Data Caching
 $_CONFIG->cache->menu = 60*15; // User Menu Caching
 
 error_reporting(E_ALL &~E_NOTICE & ~E_DEPRECATED);
+
+function checkErrors($type, $msg, $file, $line, $context = null) {
+    if ($type == 1) {
+        ob_clean();
+        echo "<h1>Error!</h1>";
+        echo "An error occurred while executing this script. Please contact the <a href=mailto:support@contilas.de>Support</a> to report this error.";
+        echo "<p />";
+        echo "Here is the information provided by the script:";
+        echo "<hr><pre>";
+        echo "Error code: $type<br />";
+        echo "Error message: $msg<br />";
+        echo "Script name and line number of error: $file:$line<br />";
+        $variable_state = array_pop($context);
+        echo "Variable state when error occurred: ";
+        print_r($variable_state);
+        echo "</pre><hr>";
+        ob_end_flush();
+    }
+}
+function check_for_fatal()
+{
+    $error = error_get_last();
+    if ( $error["type"] == E_ERROR )
+        checkErrors( $error["type"], $error["message"], $error["file"], $error["line"] );
+}
+register_shutdown_function( "check_for_fatal" );
+set_error_handler( "checkErrors" );
 ?>

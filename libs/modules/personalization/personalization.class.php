@@ -49,49 +49,89 @@ class Personalization {
 	function __construct($id = 0){
 		global $DB;
 		global $_USER;
-		
-		$this->customer = new BusinessContact(0);
-		$this->article = new Article();
 
 		if ($id > 0){
-			$sql = "SELECT * FROM personalization WHERE id = {$id}";
-			if($DB->num_rows($sql)){
-				$r = $DB->select($sql);
-				$r = $r[0];
-				$this->id = $r["id"];
-				$this->status = $r["status"];
-				$this->title = $r["title"];
-				$this->comment = $r["comment"];
-				$this->picture = $r["picture"];
-				$this->picture2 = $r["picture2"];
-				$this->article = new Article($r["article"]);
-				$this->customer = new BusinessContact($r["customer"]);
-				$this->direction = $r["direction"];
-				$this->format = $r["format"];
-				$this->formatwidth = $r["format_width"];
-				$this->formatheight = $r["format_height"];
-				$this->type = $r["type"];
-				$this->linebyline = $r["linebyline"];
-				$this->hidden = $r["hidden"];
-				$this->anschnitt = $r["anschnitt"];
-				$this->preview = $r["preview"];
-					
-				if ($r["crtuser"] != 0 && $r["crtuser"] != "" ){
-					$this->crt_user = new User($r["crtuser"]);
-					$this->crt_date = $r["crtdate"];
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
 				} else {
-					$this->crt_user = new User(0);
-					$this->crt_date = 0;
+					$valid_cache = false;
 				}
-				
-				if ($r["uptuser"] != 0 && $r["uptuser"] != "" ){
-					$this->upt_user = new User($r["uptuser"]);
-					$this->upt_date = $r["uptdate"];
-				} else {
-					$this->upt_user = new User(0);
-					$this->upt_date = 0;
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false)
+			{
+				$sql = "SELECT * FROM personalization WHERE id = {$id}";
+				if($DB->num_rows($sql)){
+					$r = $DB->select($sql);
+					$r = $r[0];
+					$this->id = $r["id"];
+					$this->status = $r["status"];
+					$this->title = $r["title"];
+					$this->comment = $r["comment"];
+					$this->picture = $r["picture"];
+					$this->picture2 = $r["picture2"];
+					$this->article = new Article($r["article"]);
+					$this->customer = new BusinessContact($r["customer"]);
+					$this->direction = $r["direction"];
+					$this->format = $r["format"];
+					$this->formatwidth = $r["format_width"];
+					$this->formatheight = $r["format_height"];
+					$this->type = $r["type"];
+					$this->linebyline = $r["linebyline"];
+					$this->hidden = $r["hidden"];
+					$this->anschnitt = $r["anschnitt"];
+					$this->preview = $r["preview"];
+
+					if ($r["crtuser"] != 0 && $r["crtuser"] != "" ){
+						$this->crt_user = new User($r["crtuser"]);
+						$this->crt_date = $r["crtdate"];
+					} else {
+						$this->crt_user = new User(0);
+						$this->crt_date = 0;
+					}
+
+					if ($r["uptuser"] != 0 && $r["uptuser"] != "" ){
+						$this->upt_user = new User($r["uptuser"]);
+						$this->upt_date = $r["uptdate"];
+					} else {
+						$this->upt_user = new User(0);
+						$this->upt_date = 0;
+					}
+					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 				}
 			}
+		} else {
+			$this->customer = new BusinessContact(0);
+			$this->article = new Article();
 		}
 	}
 
@@ -126,7 +166,8 @@ class Personalization {
 					preview = '{$this->preview}',
 					linebyline = {$this->linebyline} 
                     WHERE id = {$this->id}";
-// 			echo $sql . "</br>";
+
+			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization 
@@ -146,6 +187,7 @@ class Personalization {
                 $sql = "SELECT max(id) id FROM personalization WHERE title = '{$this->title}' ";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
+				Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 return true;
             } else {
                 return false;
@@ -166,6 +208,7 @@ class Personalization {
 					status = 0
 					WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+				Cachehandler::removeCache(Cachehandler::genKeyword($this));
 				unset($this);
 				return true;
 			} else {

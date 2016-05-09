@@ -1,10 +1,11 @@
-<?php // ---------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       25.02.2014
-// Copyright:     2012-14 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
 require_once('businesscontact.class.php');
 
 class Address {
@@ -37,26 +38,9 @@ class Address {
         global $DB;
         global $_USER;
         $this->country = new Country(22);
-        
-        $cached = Cachehandler::fromCache("obj_addr_" . $id);
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(get_class($this)));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
-                } else {
-                    echo "method: {$method}() not found!</br>";
-                }
-            }
-//             echo "loaded from cache!</br>";
-            return true;
-        }
 
-        if ($id > 0 && is_null($cached))
+
+        if ($id > 0)
         {
             $sql = " SELECT * FROM address WHERE id = {$id}";
 
@@ -78,7 +62,6 @@ class Address {
                 $this->shoprel = $res[0]["shoprel"];
                 $this->default = $res[0]["is_default"];
                 $this->country = new Country ($res[0]["country"]);
-                Cachehandler::toCache("obj_addr_".$id, $this);
                 return true;
                 // sql returns more than one record, should not happen!
             } else if ($DB->num_rows($sql) > 1)
@@ -203,7 +186,6 @@ class Address {
 		}
 		if($res)
 		{
-            Cachehandler::toCache("obj_addr_".$this->id, $this);
 			return true;
 		}
 		else

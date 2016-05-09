@@ -18,27 +18,31 @@ if ($_REQUEST['obj']){
         if ($type == StorageGoods::TYPE_SUPORDER) {
             $header = 'Wareneingang';
             $origin = new SupOrder($obj);
+            $positions = SupOrderPosition::getAllForSupOrder($origin);
         }
         if ($type == StorageGoods::TYPE_COLINV) {
             $header = 'Warenausgang';
             $origin = new CollectiveInvoice($obj);
+            $positions = Orderposition::getAllOrderposition($origin->getId());
         }
     }
 } else {
     die ('Kein Objekt erhalten');
 }
-
 if ($_REQUEST["exec"] == "save"){
     if ($_REQUEST["book"]){
         foreach ($_REQUEST["book"] as $posid => $areas) {
             if ($posid>0){
-                if ($type == StorageGoods::TYPE_SUPORDER)
+                if ($type == StorageGoods::TYPE_SUPORDER) {
                     $position = new SupOrderPosition($posid);
-                elseif ($type == StorageGoods::TYPE_COLINV)
-                    $position = new SupOrderPosition($posid);
+                    $article = $position->getArticle();
+                }
+                elseif ($type == StorageGoods::TYPE_COLINV) {
+                    $position = new Orderposition($posid);
+                    $article = new Article($position->getObjectId());
+                }
                 else break;
 
-                $article = $position->getArticle();
 
                 foreach ($areas as $aid => $entry) {
                     if ($aid > 0){
@@ -65,6 +69,20 @@ if ($_REQUEST["exec"] == "save"){
                     }
                 }
             }
+        }
+    }
+    $remaining = 0;
+    foreach ($positions as $position){
+        // calculate if position is fully booked or needs additional
+        $remaining += StorageBookEnrty::calcutateToBookAmount($position);
+    }
+    if ($remaining == 0){ // check if the whole origin object has been booked and if so ajust status
+        if ($type == StorageGoods::TYPE_SUPORDER){
+            $origin->setStatus(3);
+            $origin->save();
+        } elseif ($type == StorageGoods::TYPE_COLINV){
+            $origin->setStatus(6);
+            $origin->save();
         }
     }
 }
@@ -128,7 +146,10 @@ $book_entries = StorageBookEnrty::getAllForOrigin($origin);
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $header;?> buchen</h3>
+                <h3 class="panel-title">
+                    <?php echo $header;?> buchen
+                    <span class="pull-right"><button class="btn btn-xs btn-default" onclick="window.open('libs/modules/storage/storage.goods.print.php?obj=<?php echo $obj;?>&type=<?php echo $type;?>');">Packzettel</button></span>
+                </h3>
             </div>
             <div class="panel-body">
 
@@ -148,8 +169,13 @@ $book_entries = StorageBookEnrty::getAllForOrigin($origin);
                             <td class="content_row_clear"><?php echo $origin->getNumber();?></td>
                         </tr>
                         <tr>
-                            <td class="content_header"><?=$_LANG->get('Lieferant')?>: </td>
-                            <td class="content_row_clear"><?php echo $origin->getSupplier()->getNameAsLine();?></td>
+                            <?php if (is_a($origin,'SupOrder')){?>
+                                <td class="content_header"><?=$_LANG->get('Lieferant')?>: </td>
+                                <td class="content_row_clear"><?php echo $origin->getSupplier()->getNameAsLine();?></td>
+                            <?php } else if (is_a($origin,'CollectiveInvoice')){?>
+                                <td class="content_header"><?=$_LANG->get('Kunde')?>: </td>
+                                <td class="content_row_clear"><?php echo $origin->getCustomer()->getNameAsLine();?></td>
+                            <?php }?>
                         </tr>
                     </table>
                     <br>
@@ -158,7 +184,7 @@ $book_entries = StorageBookEnrty::getAllForOrigin($origin);
                         if ($type == 1){
                             include "storage.goods.create.in.php";
                         } elseif ($type == 2){
-
+                            include "storage.goods.create.out.php";
                         }
                         ?>
                     </div>

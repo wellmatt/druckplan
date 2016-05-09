@@ -162,7 +162,12 @@ class Comment {
         
         return $retval;
     }
-    
+
+    /**
+     * @param $module
+     * @param $objectid
+     * @return Comment[]
+     */
     public static function getCommentsForObject($module,$objectid)
     {
         global $DB;

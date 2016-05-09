@@ -29,10 +29,8 @@ class PersoPDF extends FPDI
      */
     function Header()
     {
-        if (is_null($this->_tplIdx)) {
-            $this->setSourceFile($this->_headerfile);
-            $this->_tplIdx = $this->importPage(1);
-        }
+        $this->setSourceFile($this->_headerfile);
+        $this->_tplIdx = $this->importPage(1);
         $this->useTemplate($this->_tplIdx, 0, 0);
     }
 

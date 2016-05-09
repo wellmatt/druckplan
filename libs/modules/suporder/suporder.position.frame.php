@@ -53,6 +53,7 @@ if ($_REQUEST['exec'] == 'save'){
         'suporder'=>$_REQUEST['suporder'],
         'article'=>$_REQUEST['article'],
         'amount'=>$_REQUEST['amount'],
+        'colinvoice'=>(int)$_REQUEST['colinv'],
     ];
     $SupOrderPosition = new SupOrderPosition($id,$create);
     $SupOrderPosition->save();
@@ -67,9 +68,11 @@ if ($_REQUEST["aid"] && $_REQUEST["soid"]) {
     $position->setSuporder($suporder);
 } elseif ($_REQUEST["id"]) {
     $position = new SupOrderPosition($_REQUEST["id"]);
+    $article = $position->getArticle();
 } else {
     die("Kein Artikel ausgewählt!");
 }
+$pricescales = PriceScale::getAllForArticle($article,PriceScale::TYPE_BUY);
 
 ?>
 
@@ -109,6 +112,15 @@ if ($_REQUEST["aid"] && $_REQUEST["soid"]) {
 <script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 <!-- /MegaNavbar -->
 
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="../../../css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="../../../css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="../../../jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="../../../jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="../../../jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="../../../jscripts/datatable/dataTables.tableTools.js"></script>
+
 <form action="suporder.position.frame.php" id="suporder_form" name="suporder_form" method="post">
     <input type="hidden" id="id" name="id" value="<?=$position->getId()?>" />
     <input type="hidden" id="article" name="article" value="<?=$position->getArticle()->getId()?>" />
@@ -131,12 +143,49 @@ if ($_REQUEST["aid"] && $_REQUEST["soid"]) {
                               <td class="content_header"><?= $_LANG->get('Menge') ?>:</td>
                               <td class="content_row_clear">
                                   <input type="text" id="amount" name="amount" style="width:200px"
-                                         value="<?= $position->getAmount() ?>"
+                                         value="<?=$position->getAmount() ?>"
                                          onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                               </td>
                           </tr>
+                          <tr>
+                              <td class="content_header"><?= $_LANG->get('Vorgang **') ?>:</td>
+                              <td class="content_row_clear">
+                                  <input type="text" id="colinv_name" name="colinv_name" style="width:200px"
+                                         value="<?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getNumber().' - '.$position->getColinvoice()->getTitle();?>"
+                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                  <input type="hidden" id="colinv" name="colinv" value="<?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getId(); else echo '0';?>">
+                              </td>
+                          </tr>
                       </table>
+                      <p>** falls Ware einem Auftrag zugeordnet ist angeben</p>
                   </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Preisstaffeln</h3>
+                </div>
+                <table id="pricescales">
+                    <thead>
+                        <tr>
+                            <th class="content_row_header"><?= $_LANG->get('Nr.') ?></th>
+                            <th class="content_row_header"><?= $_LANG->get('Von') ?></th>
+                            <th class="content_row_header"><?= $_LANG->get('Bis') ?></th>
+                            <th class="content_row_header"><?= $_LANG->get('Preis') ?>*</th>
+                        </tr>
+                    </thead>
+                    <?php foreach ($pricescales as $pricescale){?>
+                        <tr>
+                            <td><?php echo $pricescale->getId();?></td>
+                            <td><?php echo $pricescale->getMin();?></td>
+                            <td><?php echo $pricescale->getMax();?></td>
+                            <td><?php echo $pricescale->getPrice();?></td>
+                        </tr>
+                    <?php }?>
+                </table>
             </div>
         </div>
     </div>
@@ -155,3 +204,49 @@ if ($_REQUEST["aid"] && $_REQUEST["soid"]) {
         </div>
     </div>
 </form>
+
+<script language="JavaScript">
+    $(document).ready(function () {
+        $( "#colinv_name" ).autocomplete({
+            source: "../../../libs/modules/associations/association.ajax.php?ajax_action=search_colinv2",
+            minLength: 2,
+            focus: function( event, ui ) {
+                $( "#colinv_name" ).val( ui.item.label );
+                return false;
+            },
+            select: function( event, ui ) {
+                $( "#colinv_name" ).val( ui.item.label );
+                $( "#colinv" ).val( ui.item.value );
+                return false;
+            }
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        var pricescales = $('#pricescales').DataTable({
+            "dom": 'rt',
+            "ordering": false,
+            "order": [],
+            "paging": false,
+            "language": {
+                "emptyTable": "Keine Daten vorhanden",
+                "info": "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": "Keine Seiten vorhanden",
+                "infoFiltered": "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix": "",
+                "thousands": ".",
+                "lengthMenu": "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing": "Verarbeite...",
+                "search": "Suche:",
+                "zeroRecords": "Keine passenden Eintr&auml;ge gefunden",
+                "aria": {
+                    "sortAscending": ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        });
+    });
+</script>

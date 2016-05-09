@@ -20,6 +20,7 @@ if ($_REQUEST["exec"] == "save"){
     $marketingjob->setList(new MarketingList($_REQUEST["list"]));
     $marketingjob->setTitle($_REQUEST["title"]);
     $marketingjob->setBusinesscontact(new BusinessContact((int)$_REQUEST["businesscontact"]));
+    $marketingjob->setCrtdate(strtotime($_REQUEST["date"]));
     if ($_REQUEST['column'])
         $marketingjob->setData($_REQUEST['column']);
     $marketingjob->save();
@@ -29,56 +30,54 @@ if ($_REQUEST["exec"] == "save"){
 $marketingjob = new Marketing($_REQUEST['id']);
 $lists = MarketingList::getAllLists();
 ?>
+<link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 
 <div id="fl_menu">
     <div class="label">Quick Move</div>
     <div class="menu">
         <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=libs/modules/marketing/marketing.overview.php" class="menu_item">Zurück</a>
+        <a href="index.php?page=libs/modules/marketing/marketing.overview.php&list=<?php echo $_REQUEST["list"];?>" class="menu_item">Zurück</a>
         <a href="#" class="menu_item" onclick="$('#marketing_job_form').submit();">Speichern</a>
         <?php if ($marketingjob->getId()>0){ ?>
-        <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$marketingjob->getId()?>');">Löschen</a>
+            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$marketingjob->getId()?>');">Löschen</a>
         <?php } ?>
     </div>
 </div>
 
-<div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">
-               Marketing Job
-            </h3>
-	  </div>
-    <div class="panel-body">
-        <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form" class="form-horizontal" role="form">
-            <input type="hidden" name="exec" value="save"/>
-            <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>
-            <input type="hidden" name="id" value="<?php echo $_REQUEST['id'];?>"/>
+<div class="box1">
+    <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form">
+        <input type="hidden" name="exec" value="save"/>
+        <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>
+        <input type="hidden" name="id" value="<?php echo $_REQUEST['id'];?>"/>
+        <h3>Marketing Job</h3></br>
 
-
-            <div class="form-group">
-                <label for="" class="col-sm-2 control-label">Titel</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" name="title" value="<?php echo $marketingjob->getTitle();?>">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="" class="col-sm-2 control-label">Kunde</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" name="search" id="search" value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine();?>">
-                    <input class="form-control" type="hidden" name="businesscontact" id="businesscontact" value="<?php echo $marketingjob->getBusinesscontact()->getId();?>">
-                </div>
-            </div>
-
+        <table>
+            <tr>
+                <td>Titel</td>
+                <td><input type="text" name="title" value="<?php echo $marketingjob->getTitle();?>" required style="width: 100%"></td>
+            </tr>
+            <tr>
+                <td>Kunde</td>
+                <td>
+                    <input type="text" name="search" id="search" value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine();?>" style="width:280px" required>
+                    <input type="hidden" name="businesscontact" id="businesscontact" value="<?php echo $marketingjob->getBusinesscontact()->getId();?>" required>
+                </td>
+            </tr>
+            <tr>
+                <td>Datum</td>
+                <td>
+                    <input type="text" name="date" id="date" value="<?if($marketingjob->getCrtdate() != 0){ echo date('d.m.Y', $marketingjob->getCrtdate());} elseif ($marketingjob->getId()==0) { echo date('d.m.Y'); }?>" style="width:280px">
+                </td>
+            </tr>
             <?php foreach ($columns as $column) {?>
                 <tr>
                     <td><?php echo $column->getTitle();?></td>
                     <td><input type="text" name="column[<?php echo $column->getId();?>]" value="<?php echo $marketingjob->getColumnValue($column->getId());?>" required style="width: 100%"></td>
                 </tr>
             <?php } ?>
-
-        </form>
-    </div>
+        </table>
+    </form>
 </div>
 
 
@@ -95,6 +94,23 @@ $lists = MarketingList::getAllLists();
                 return false;
             }
         });
+        $('#date').datetimepicker({
+            lang:'de',
+            i18n:{
+                de:{
+                    months:[
+                        'Januar','Februar','März','April',
+                        'Mai','Juni','Juli','August',
+                        'September','Oktober','November','Dezember',
+                    ],
+                    dayOfWeek:[
+                        "So.", "Mo", "Di", "Mi",
+                        "Do", "Fr", "Sa.",
+                    ]
+                }
+            },
+            timepicker:false,
+            format:'d.m.Y'
+        });
     });
 </script>
-

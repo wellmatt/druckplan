@@ -127,8 +127,24 @@ class Paper {
             }
         }
         return $retval;
-    }    
-    
+    }
+
+    static function getAllPapersByName($order = self::ORDER_NAME, $search = '')
+    {
+        global $DB;
+        $retval = Array();
+        $sql = "SELECT id FROM papers WHERE status = 1 AND name LIKE '%{$search}%' ORDER BY {$order}";
+        if($DB->num_rows($sql))
+        {
+            $res = $DB->select($sql);
+            foreach($res as $r)
+            {
+                $retval[] = new Paper($r["id"]);
+            }
+        }
+        return $retval;
+    }
+
     static function getAllUniquePaperSizes()
     {
         global $DB;

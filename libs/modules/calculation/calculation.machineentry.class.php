@@ -427,6 +427,55 @@ class Machineentry {
         }
     }
 
+    public function getMyPaperHeight()
+    {
+        $calc = new Calculation($this->calcId);
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return $calc->getPaperContentHeight();
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return $calc->getPaperAddContentHeight();
+                break;
+            case 3: // PAPER_ENVELOPE
+                return $calc->getPaperEnvelopeHeight();
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return $calc->getPaperAddContent2Height();
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return $calc->getPaperAddContent3Height();
+                break;
+        }
+    }
+
+    /**
+     * @return Paper
+     */
+    public function getMyPaper()
+    {
+        $calc = new Calculation($this->calcId);
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return $calc->getPaperContent();
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return $calc->getPaperAddContent();
+                break;
+            case 3: // PAPER_ENVELOPE
+                return $calc->getPaperEnvelope();
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return $calc->getPaperAddContent2();
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return $calc->getPaperAddContent3();
+                break;
+        }
+    }
+
     public function clearId()
     {
         $this->id = 0;

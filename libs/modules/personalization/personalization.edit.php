@@ -396,9 +396,9 @@ function addPriceRow()
 				<td class="content_row_header"><?=$_LANG->get('Zeile f&uuml;r Zeile')?></td>
 				<td class="content_row_clear">
 					<select name="perso_linebyline" id="perso_linebyline">
-					  <!-- <option value="0" <? if($perso->getLineByLine() == 0) echo 'selected="selected"';?>>Standard</option> -->
-					  <option value="1" <? if($perso->getLineByLine() == 1) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von oben)</option>
-					  <option value="2" <? if($perso->getLineByLine() == 2) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von unten)</option>
+						<option value="0" <? if($perso->getLineByLine() == 0) echo 'selected="selected"';?>>Alle Fix</option>
+					  	<option value="1" <? if($perso->getLineByLine() == 1) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von oben)</option>
+					  	<option value="2" <? if($perso->getLineByLine() == 2) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von unten)</option>
 					</select>
 				</td>
 			</tr>
@@ -696,7 +696,8 @@ function addPriceRow()
 		</table>
 		<br/>
 		* <?=$_LANG->get('Eingabefeld wird gel&ouml;scht, falls Breite u. H&ouml;he = 0')?> <br/>
-		** <?=$_LANG->get('x- und y-Position ausgehend von der linken oberen Ecke + Anschnitt')?>
+		** <?=$_LANG->get('x- und y-Position ausgehend von der LINKEN OBEREN Ecke (PDF) + Anschnitt')?><br/>
+		*** <?=$_LANG->get('Textausrichtung in den Eingabefeldern ist immer UNTEN LINKS')?>
 	</div>
 	<br/>
 	<? // ---------------------------------------- Preisstaffeln ----------------------------------------------------------------------- ?>

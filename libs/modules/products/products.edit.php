@@ -138,6 +138,10 @@ if($_REQUEST["subexec"] == "save")
 <script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 <script type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <link rel="stylesheet" type="text/css" href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+
+<link href="jscripts/magicsuggest/magicsuggest-min.css" rel="stylesheet">
+<script src="jscripts/magicsuggest/magicsuggest-min.js"></script>
+
 <script type="text/javascript">
 message='<?=$_LANG->get('Sind Sie sicher?')?>';
 	$(document).ready(function() {
@@ -201,6 +205,22 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
 			document.getElementById('span_amount_'+idx).style.display = '';
 	}
 </script>
+<!--<script>-->
+<!--    $(function () {-->
+<!--        var pm = $('#paper_magic').magicSuggest({-->
+<!--            data: 'libs/modules/paper/paper.ajax.php?exec=getAllPaper',-->
+<!--            valueField: 'id',-->
+<!--            displayField: 'name',-->
+<!--            expandOnFocus: true,-->
+<!--            maxSelection: 1,-->
+<!--            minChars: 3,-->
+<!--            selectFirst: true,-->
+<!--        });-->
+<!--        $(pm).on('triggerclick', function(e,m){-->
+<!--            alert("don't shoot me!");-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 <!-- /FancyBox -->
 
 <table width="100%">

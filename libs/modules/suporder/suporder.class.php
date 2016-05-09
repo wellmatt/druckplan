@@ -18,7 +18,7 @@ class SupOrder extends Model {
     public $number = '';
     public $supplier = 0;
     public $title = '';
-    public $eta = '';
+    public $eta = 0;
     public $paymentterm = 0;
     public $status = 1;
     public $invoiceaddress = 0;
@@ -132,7 +132,7 @@ class SupOrder extends Model {
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getEta()
     {
@@ -140,7 +140,7 @@ class SupOrder extends Model {
     }
 
     /**
-     * @param string $eta
+     * @param int $eta
      */
     public function setEta($eta)
     {

@@ -112,10 +112,12 @@ if ($_REQUEST["send_shoppingbasket"]){
 	}
 	
 	$save_msg = $shopping_basket->send();
-// 	var_dump($save_msg);
-	
+
 	// nur wenn erfolgreich gespeichert wurde darf geleert werden
 	if ($save_msg == true){
+		$shopping_basket->clear();
+		$_SESSION["shopping_basket"] = new Shoppingbasket();
+
 		$to = Array();
 		$x=1;
 		// Bestaetigungs-Mails senden
@@ -153,11 +155,8 @@ if ($_REQUEST["send_shoppingbasket"]){
 		$nachricht->setSubject("Bestellbestätigung");
 		$nachricht->setText($text);
 		$ret = $nachricht->send();
-// 		var_dump($ret);
-		
-		$shopping_basket->clear();
+
 		$shopping_basket_entrys = Array ();
-		$_SESSION["shopping_basket"] = new Shoppingbasket();
 	}
 	$save_msg = getSaveMessage($save_msg);
 	$save_msg .= $DB->getLastError();

@@ -44,15 +44,41 @@ if ($perso->getLineByLine() == 0) {
 		$tmp_font = new PersoFont($item->getFont());
 		$font = $tmp_font->getFilename();
 		$pdf->SetFont($font, '', $size, $font,false);
+
+        if ($item->getBoxtype() == 1){
+            $pdf->SetXY ($xpos, $ypos, true);
+            $tabin = strpos($oitem->getValue(), "\\t");
+            if ($tabin === false){
+                $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
+            } else {
+                $tmp_title_arr = explode("\\t",$oitem->getValue());
+                $tmp_tab_space = $item->getTab();
+                $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
+                $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
+                $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
+            }
+        } else {
+            $pdf->SetXY ($xpos, $ypos, true);
+            $tabin = strpos($oitem->getValue(), "\\t");
+            if ($tabin === false){
+                $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
+            } else {
+                $tmp_title_arr = explode("\\t",$oitem->getValue());
+                $tmp_tab_space = $item->getTab();
+                $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
+                $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
+                $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
+            }
+        }
 		
-		// Text einsetzen, der abgeschnitten wird
-		if ($item->getBoxtype() == 1){
-		    $pdf->SetXY ($xpos, $ypos, true);
-		    $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
-		} else {
-		    $pdf->SetXY ($xpos, $ypos, true);
-		    $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
-		}
+//		// Text einsetzen, der abgeschnitten wird
+//		if ($item->getBoxtype() == 1){
+//		    $pdf->SetXY ($xpos, $ypos, true);
+//		    $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
+//		} else {
+//		    $pdf->SetXY ($xpos, $ypos, true);
+//		    $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
+//		}
 	}
 
 } else if ($perso->getLineByLine() == 1) {
@@ -89,25 +115,25 @@ if ($perso->getLineByLine() == 0) {
                         $pdf->SetXY ($xpos, $ypos, true);
                         $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
-                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         } else {
                             $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
-                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
-                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         }
                     } else {
                         $pdf->SetXY ($xpos, $ypos, true);
                         $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
-                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         } else {
                             $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
-                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
-                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         }
                     }
                     
@@ -144,25 +170,25 @@ if ($perso->getLineByLine() == 0) {
                                         $pdf->SetXY ($subxpos, $subypos, true);
                                         $tabin = strpos($suboitem->getValue(), "\\t");
                                         if ($tabin === false){
-                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         } else {
                                             $tmp_title_arr = explode("\\t",$suboitem->getValue());
                                             $tmp_tab_space = $subitem->getTab();
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                             $pdf->SetXY ($subxpos+$tmp_tab_space, $subypos, true);
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         }
                                     } else {
                                         $pdf->SetXY ($subxpos, $subypos, true);
                                         $tabin = strpos($suboitem->getValue(), "\\t");
                                         if ($tabin === false){
-                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         } else {
                                             $tmp_title_arr = explode("\\t",$suboitem->getValue());
                                             $tmp_tab_space = $subitem->getTab();
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                             $pdf->SetXY ($subxpos+$tmp_tab_space, $subypos, true);
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         }
                                     }
                                     $pustekuchen123++;
@@ -209,37 +235,37 @@ if ($perso->getLineByLine() == 0) {
                         $pdf->SetXY ($xpos, $ypos, true);
                         $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
-                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         } else {
                             $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
-                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
-                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         }
                     } else {
                         $pdf->SetXY ($xpos, $ypos, true);
                         $tabin = strpos($oitem->getValue(), "\\t");
                         if ($tabin === false){
-                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $oitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         } else {
                             $tmp_title_arr = explode("\\t",$oitem->getValue());
                             $tmp_tab_space = $item->getTab();
-                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                             $pdf->SetXY ($xpos+$tmp_tab_space, $ypos, true);
-                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                            $pdf->Cell($width, $height, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                         }
                     }
                     
                     $pos_array = Array();
                     foreach ($all_items as $suboitem){
-                        $subitem = new Personalizationitem($suboitem->getPersoItemID()); 
+                        $subitem = new Personalizationitem($suboitem->getPersoItemID());
                         if ($subitem->getGroup() == $group && $item->getId() != $subitem->getId()) {
                             $pos_array[] = Array("xpos" => $subitem->getXposAbsolute(), "ypos" => $subitem->getYposAbsolute(), "width" => $subitem->getWidth(), "height" => $subitem->getHeight());
                         }
                     }
                     $pos_array = array_reverse($pos_array);
-                    
+
                     $pustekuchen123 = 0;
                     foreach ($all_items_reverse as $suboitem){
 					    $subitem = new Personalizationitem($suboitem->getPersoItemID());
@@ -255,8 +281,8 @@ if ($perso->getLineByLine() == 0) {
                                 $tmp_font = new PersoFont($subitem->getFont());
                                 $font = $tmp_font->getFilename();
                                 $pdf->SetFont($font, '', $subsize, $font,false);
-								
-								
+
+
                                 if ($subitem->getTitle() == "spacer"){
                                     $pustekuchen123++;
                                 } else if ($suboitem->getValue() != "") {
@@ -264,25 +290,25 @@ if ($perso->getLineByLine() == 0) {
                                         $pdf->SetXY ($subxpos, $subypos, true);
                                         $tabin = strpos($suboitem->getValue(), "\\t");
                                         if ($tabin === false){
-                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         } else {
                                             $tmp_title_arr = explode("\\t",$suboitem->getValue());
                                             $tmp_tab_space = $subitem->getTab();
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                             $pdf->SetXY ($subxpos+$tmp_tab_space, $subypos, true);
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         }
                                     } else {
                                         $pdf->SetXY ($subxpos, $subypos, true);
                                         $tabin = strpos($suboitem->getValue(), "\\t");
                                         if ($tabin === false){
-                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $suboitem->getValue(), 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         } else {
                                             $tmp_title_arr = explode("\\t",$suboitem->getValue());
                                             $tmp_tab_space = $subitem->getTab();
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[0], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                             $pdf->SetXY ($subxpos+$tmp_tab_space, $subypos, true);
-                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T');
+                                            $pdf->Cell($subwidth, $subheight, $tmp_title_arr[1], 0, 0, $justification, false , '', 0, true, 'T', 'B');
                                         }
                                     }
                                     $pustekuchen123++;

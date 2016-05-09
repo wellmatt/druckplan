@@ -80,59 +80,206 @@ class Order {
         $this->crtusr = new User;
         
         global $DB;
-        if($id > 0)
-        {
-            $sql = "SELECT * FROM orders WHERE id = {$id}";
-            if($DB->num_rows($sql))
-            {
-                $res = $DB->select($sql);
-                $res = $res[0];
-                
-                $this->id = $res["id"];
-                $this->number = $res["number"];
-                $this->customer = new BusinessContact($res["businesscontact_id"], BusinessContact::LOADER_FULL);
-                $this->status = $res["status"];
-                $this->title = $res["title"];
-                $this->product = new Product($res["product_id"]);
-                $this->notes = $res["notes"];
-                $this->deliveryDate = $res["delivery_date"];
-                $this->deliveryCost = $res["delivery_cost"];
-                if($res["delivery_address_id"] > 0)
-                    $this->deliveryAddress = new Address($res["delivery_address_id"]);
-                if($res["delivery_terms_id"])
-                    $this->deliveryTerms = new DeliveryTerms($res["delivery_terms_id"]);
-                if($res["invoice_address_id"] > 0)
-                    $this->invoiceAddress = new Address($res["invoice_address_id"]);
-                if($res["payment_terms_id"] > 0)
-                    $this->paymentTerms = new PaymentTerms($res["payment_terms_id"]);
-                if($res["cust_contactperson"] > 0)
-                    $this->custContactperson = new ContactPerson($res["cust_contactperson"]);
-                $this->textOffer = $res["text_offer"];
-                $this->textOfferconfirm = $res["text_offerconfirm"];
-                $this->textInvoice = $res["text_invoice"];
-                $this->crtdat = $res["crtdat"];
-                $this->upddat = $res["upddat"];
-                $this->collectiveinvoiceId = $res["collectiveinvoice_id"];
-                $this->internContact = new User($res["intern_contactperson"]);
-                $this->custMessage = $res["cust_message"];
-                $this->custSign	= $res["cust_sign"];
-                $this->invoicePriceUpdate = $res["inv_price_update"];
-                $this->invoiceAmount= $res["inv_amount"];
-                $this->deliveryAmount = $res["deliv_amount"];
-                $this->labelLogoActive = $res["label_logo_active"];
-                $this->labelBoxAmount= $res["label_box_amount"];
-                $this->labelTitle = $res["label_title"];
-                $this->showProduct = $res["show_product"];
-                $this->productName = $res["productname"];
-                $this->showPricePer1000 = $res["show_price_per_thousand"];
-                $this->paper_order_boegen = $res["paper_order_boegen"];
-                $this->paper_order_price = $res["paper_order_price"];
-                $this->paper_order_supplier = $res["paper_order_supplier"];
-                $this->paper_order_calc = $res["paper_order_calc"];
-                $this->crtusr = new User($res["crtusr"]);
-                $this->beilagen = $res["beilagen"];
-                $this->articleid = $res["articleid"];
+        if($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
             }
+            if ($valid_cache === false) {
+                $sql = "SELECT * FROM orders WHERE id = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $res = $DB->select($sql);
+                    $res = $res[0];
+
+                    $this->id = $res["id"];
+                    $this->number = $res["number"];
+                    $this->customer = new BusinessContact($res["businesscontact_id"], BusinessContact::LOADER_FULL);
+                    $this->status = $res["status"];
+                    $this->title = $res["title"];
+                    $this->product = new Product($res["product_id"]);
+                    $this->notes = $res["notes"];
+                    $this->deliveryDate = $res["delivery_date"];
+                    $this->deliveryCost = $res["delivery_cost"];
+                    if ($res["delivery_address_id"] > 0)
+                        $this->deliveryAddress = new Address($res["delivery_address_id"]);
+                    if ($res["delivery_terms_id"])
+                        $this->deliveryTerms = new DeliveryTerms($res["delivery_terms_id"]);
+                    if ($res["invoice_address_id"] > 0)
+                        $this->invoiceAddress = new Address($res["invoice_address_id"]);
+                    if ($res["payment_terms_id"] > 0)
+                        $this->paymentTerms = new PaymentTerms($res["payment_terms_id"]);
+                    if ($res["cust_contactperson"] > 0)
+                        $this->custContactperson = new ContactPerson($res["cust_contactperson"]);
+                    $this->textOffer = $res["text_offer"];
+                    $this->textOfferconfirm = $res["text_offerconfirm"];
+                    $this->textInvoice = $res["text_invoice"];
+                    $this->crtdat = $res["crtdat"];
+                    $this->upddat = $res["upddat"];
+                    $this->collectiveinvoiceId = $res["collectiveinvoice_id"];
+                    $this->internContact = new User($res["intern_contactperson"]);
+                    $this->custMessage = $res["cust_message"];
+                    $this->custSign = $res["cust_sign"];
+                    $this->invoicePriceUpdate = $res["inv_price_update"];
+                    $this->invoiceAmount = $res["inv_amount"];
+                    $this->deliveryAmount = $res["deliv_amount"];
+                    $this->labelLogoActive = $res["label_logo_active"];
+                    $this->labelBoxAmount = $res["label_box_amount"];
+                    $this->labelTitle = $res["label_title"];
+                    $this->showProduct = $res["show_product"];
+                    $this->productName = $res["productname"];
+                    $this->showPricePer1000 = $res["show_price_per_thousand"];
+                    $this->paper_order_boegen = $res["paper_order_boegen"];
+                    $this->paper_order_price = $res["paper_order_price"];
+                    $this->paper_order_supplier = $res["paper_order_supplier"];
+                    $this->paper_order_calc = $res["paper_order_calc"];
+                    $this->crtusr = new User($res["crtusr"]);
+                    $this->beilagen = $res["beilagen"];
+                    $this->articleid = $res["articleid"];
+
+                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+                }
+            }
+        }
+    }
+
+    function save()
+    {
+        global $DB;
+        global $_USER;
+        if($this->id > 0){
+            $sql = "UPDATE orders SET
+                        number = '{$this->number}',
+                        businesscontact_id = {$this->customer->getId()},
+                        status = {$this->status},
+                        title = '{$this->title}',
+                        product_id = '{$this->product->getId()}',
+                        notes = '{$this->notes}',
+                        delivery_address_id = '{$this->deliveryAddress->getId()}',
+                        invoice_address_id = '{$this->invoiceAddress->getId()}',
+                        delivery_terms_id = '{$this->deliveryTerms->getId()}',
+                        payment_terms_id = '{$this->paymentTerms->getId()}',
+                        cust_contactperson = '{$this->custContactperson->getId()}',
+                        delivery_date = {$this->deliveryDate},
+                        delivery_cost = {$this->deliveryCost},
+                        text_offer = '{$this->textOffer}',
+                        text_offerconfirm = '{$this->textOfferconfirm}',
+                        text_invoice = '{$this->textInvoice}',
+                        upddat = UNIX_TIMESTAMP(),
+                        updusr = {$_USER->getId()},
+                        collectiveinvoice_id = {$this->collectiveinvoiceId},
+                        intern_contactperson = {$this->internContact->getId()},
+                        cust_message = '{$this->custMessage}',
+                        cust_sign = '{$this->custSign}',
+                        inv_amount = {$this->invoiceAmount},
+                        inv_price_update = {$this->invoicePriceUpdate},
+                        deliv_amount = {$this->deliveryAmount},
+                        label_logo_active = {$this->labelLogoActive},
+                        label_box_amount = {$this->labelBoxAmount},
+                        label_title = '{$this->labelTitle}',
+                        show_product = {$this->showProduct},
+                		productname = '{$this->productName}',
+                		paper_order_boegen = '{$this->paper_order_boegen}',
+                		paper_order_price = '{$this->paper_order_price}',
+                		paper_order_supplier = {$this->paper_order_supplier},
+                		paper_order_calc = {$this->paper_order_calc},
+                		beilagen = '{$this->beilagen}',
+                		show_price_per_thousand = {$this->showPricePer1000},
+                		articleid = {$this->articleid}
+                    WHERE id = {$this->id}";
+            $res = $DB->no_result($sql);
+        } else
+        {
+            if($this->number == "")
+                $this->number = $_USER->getClient()->createOrderNumber(Client::NUMBER_ORDER);
+            if($this->product != NULL){
+                $tmp_product = $this->product->getId();
+            } else {
+                $tmp_product = 0;
+            }
+            $sql = "INSERT INTO orders
+                        (number, status, businesscontact_id, product_id, title, notes,
+                         delivery_address_id, invoice_address_id, delivery_terms_id,
+                         payment_terms_id, crtdat, crtusr,
+                         collectiveinvoice_id, intern_contactperson, cust_message,
+                         cust_sign, cust_contactperson, inv_amount,
+                         inv_price_update, deliv_amount, label_logo_active,
+                         label_box_amount, label_title, show_product, productname,
+                         show_price_per_thousand, paper_order_boegen, paper_order_price,
+                         paper_order_supplier, paper_order_calc, beilagen, articleid )
+                    VALUES
+                        ('{$this->number}', 1, '{$this->customer->getId()}', $tmp_product,
+                         '{$this->title}', '{$this->notes}', '0', '0', '0',
+                         '{$this->paymentTerms->getId()}', UNIX_TIMESTAMP(), {$_USER->getId()},
+            			 {$this->collectiveinvoiceId}, {$this->internContact->getId()}, '{$this->custMessage}',
+            			 '{$this->custSign}', {$this->custContactperson->getId()}, {$this->invoiceAmount},
+            			 {$this->invoicePriceUpdate}, {$this->deliveryAmount}, {$this->labelLogoActive},
+            			 {$this->labelLogoActive}, '{$this->labelTitle}', {$this->showProduct}, '{$this->productName}',
+            			 {$this->showPricePer1000}, '{$this->paper_order_boegen}', '{$this->paper_order_price}',
+						 {$this->paper_order_supplier}, {$this->paper_order_calc}, '{$this->beilagen}', {$this->articleid} )";
+            $res = $DB->no_result($sql);
+            if($res)
+            {
+                $sql = "SELECT max(id) id FROM orders WHERE number = '{$this->number}'";
+                $thisid = $DB->select($sql);
+                $this->id = $thisid[0]["id"];
+                $res = true;
+            } else
+                $res = false;
+        }
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    function delete()
+    {
+        global $DB;
+        if($this->id)
+        {
+            $sql = "UPDATE orders SET status = 0 WHERE id = {$this->id}";
+            if($DB->no_result($sql))
+            {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
+                unset($this);
+                return true;
+            } else
+                return false;
         }
     }
 
@@ -1084,109 +1231,7 @@ static function getCountOrdersPerCustMonth($year)
     }
 
  /******************************* Ende Statistik *********************************************/
-    
-    function save()
-    {
-        global $DB;
-        global $_USER;
-        if($this->id > 0){
-            $sql = "UPDATE orders SET
-                        number = '{$this->number}',
-                        businesscontact_id = {$this->customer->getId()},
-                        status = {$this->status},
-                        title = '{$this->title}',
-                        product_id = '{$this->product->getId()}',
-                        notes = '{$this->notes}',
-                        delivery_address_id = '{$this->deliveryAddress->getId()}',
-                        invoice_address_id = '{$this->invoiceAddress->getId()}',
-                        delivery_terms_id = '{$this->deliveryTerms->getId()}',
-                        payment_terms_id = '{$this->paymentTerms->getId()}',
-                        cust_contactperson = '{$this->custContactperson->getId()}',
-                        delivery_date = {$this->deliveryDate},
-                        delivery_cost = {$this->deliveryCost},
-                        text_offer = '{$this->textOffer}',
-                        text_offerconfirm = '{$this->textOfferconfirm}',
-                        text_invoice = '{$this->textInvoice}',
-                        upddat = UNIX_TIMESTAMP(),
-                        updusr = {$_USER->getId()},
-                        collectiveinvoice_id = {$this->collectiveinvoiceId}, 
-                        intern_contactperson = {$this->internContact->getId()},
-                        cust_message = '{$this->custMessage}',  
-                        cust_sign = '{$this->custSign}', 
-                        inv_amount = {$this->invoiceAmount}, 
-                        inv_price_update = {$this->invoicePriceUpdate},  
-                        deliv_amount = {$this->deliveryAmount},
-                        label_logo_active = {$this->labelLogoActive}, 
-                        label_box_amount = {$this->labelBoxAmount}, 
-                        label_title = '{$this->labelTitle}', 
-                        show_product = {$this->showProduct},
-                		productname = '{$this->productName}', 
-                		paper_order_boegen = '{$this->paper_order_boegen}', 
-                		paper_order_price = '{$this->paper_order_price}', 
-                		paper_order_supplier = {$this->paper_order_supplier}, 
-                		paper_order_calc = {$this->paper_order_calc}, 
-                		beilagen = '{$this->beilagen}', 
-                		show_price_per_thousand = {$this->showPricePer1000},
-                		articleid = {$this->articleid}  
-                    WHERE id = {$this->id}";
-			// echo $sql . "</br>";
-            return $DB->no_result($sql);
-        } else
-        {
-            if($this->number == "")
-                $this->number = $_USER->getClient()->createOrderNumber(Client::NUMBER_ORDER);
-            if($this->product != NULL){
-                $tmp_product = $this->product->getId();
-            } else {
-                $tmp_product = 0;
-            }
-            $sql = "INSERT INTO orders
-                        (number, status, businesscontact_id, product_id, title, notes,
-                         delivery_address_id, invoice_address_id, delivery_terms_id,
-                         payment_terms_id, crtdat, crtusr, 
-                         collectiveinvoice_id, intern_contactperson, cust_message,  
-                         cust_sign, cust_contactperson, inv_amount, 
-                         inv_price_update, deliv_amount, label_logo_active,
-                         label_box_amount, label_title, show_product, productname, 
-                         show_price_per_thousand, paper_order_boegen, paper_order_price, 
-                         paper_order_supplier, paper_order_calc, beilagen, articleid )
-                    VALUES
-                        ('{$this->number}', 1, '{$this->customer->getId()}', $tmp_product,
-                         '{$this->title}', '{$this->notes}', '0', '0', '0',
-                         '{$this->paymentTerms->getId()}', UNIX_TIMESTAMP(), {$_USER->getId()}, 
-            			 {$this->collectiveinvoiceId}, {$this->internContact->getId()}, '{$this->custMessage}',
-            			 '{$this->custSign}', {$this->custContactperson->getId()}, {$this->invoiceAmount}, 
-            			 {$this->invoicePriceUpdate}, {$this->deliveryAmount}, {$this->labelLogoActive}, 
-            			 {$this->labelLogoActive}, '{$this->labelTitle}', {$this->showProduct}, '{$this->productName}', 
-            			 {$this->showPricePer1000}, '{$this->paper_order_boegen}', '{$this->paper_order_price}', 
-						 {$this->paper_order_supplier}, {$this->paper_order_calc}, '{$this->beilagen}', {$this->articleid} )";
-            $res = $DB->no_result($sql);
-//             echo $sql . "</br>";
-            if($res)
-            {
-                $sql = "SELECT max(id) id FROM orders WHERE number = '{$this->number}'";
-                $thisid = $DB->select($sql);
-                $this->id = $thisid[0]["id"];
-                return true;
-            } else 
-                return false;
-        }
-    }
 
-    function delete()
-    {
-        global $DB;
-        if($this->id)
-        {
-            $sql = "UPDATE orders SET status = 0 WHERE id = {$this->id}";
-            if($DB->no_result($sql))
-            {
-                unset($this);
-                return true;
-            } else
-                return false;
-        }
-    }
     
     /**
      * Liefert das Bild mit Pfad fuer den aktuellen Status

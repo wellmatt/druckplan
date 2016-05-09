@@ -84,12 +84,17 @@ class StorageArea extends Model {
                     storage_areas
                     LEFT OUTER JOIN storage_positions ON storage_areas.id = storage_positions.area
                     {$exept}
-                    GROUP BY storage_areas.id";
+                    GROUP BY storage_areas.id
+                    ORDER BY storage_areas.prio desc, alloc asc ";
 
+        $x = 0;
         if($DB->no_result($sql2)){
             $result = $DB->select($sql2);
             foreach($result as $r){
+                if ($x >= 10)
+                    break;
                 $other[] = ['id'=>$r['id'],'alloc'=>$r['alloc']];
+                $x++;
             }
         }
 

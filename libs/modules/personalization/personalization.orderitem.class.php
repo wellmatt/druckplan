@@ -29,15 +29,54 @@ class Personalizationorderitem {
 		$this->crtuser = new User();
 	
 		if ($id > 0){
-			$sql = "SELECT * FROM personalization_orderitems WHERE id = {$id}";
-			if($DB->num_rows($sql)){
-				$r = $DB->select($sql);
-				$r = $r[0];
-				$this->id = $r["id"];
-				$this->persoID = $r["persoid"];
-				$this->persoorderID = $r["persoorderid"];
-				$this->persoItemID = $r["persoitemid"];
-				$this->value = $r["value"];
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
+				} else {
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false) {
+				$sql = "SELECT * FROM personalization_orderitems WHERE id = {$id}";
+				if ($DB->num_rows($sql)) {
+					$r = $DB->select($sql);
+					$r = $r[0];
+					$this->id = $r["id"];
+					$this->persoID = $r["persoid"];
+					$this->persoorderID = $r["persoorderid"];
+					$this->persoItemID = $r["persoitemid"];
+					$this->value = $r["value"];
+					Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
+				}
 			}
 		}
 	}
@@ -56,6 +95,7 @@ class Personalizationorderitem {
 			$sql = "UPDATE personalization_orderitems SET
 					value = '{$this->value}' 
 					WHERE id = {$this->id}";
+			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization_orderitems
@@ -68,6 +108,7 @@ class Personalizationorderitem {
 				$sql = "SELECT max(id) id FROM personalization_orderitems WHERE persoid = {$this->persoID} AND persoorderid = {$this->persoorderID} ";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
+				Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 				return true;
 			} else {
 				return false;
@@ -85,6 +126,7 @@ class Personalizationorderitem {
 		if($this->id > 0){
 			$sql = "DELETE FROM personalization_orderitems WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+				Cachehandler::removeCache(Cachehandler::genKeyword($this));
 				unset($this);
 				return true;
 			} else {
@@ -97,7 +139,7 @@ class Personalizationorderitem {
 	 * Funktion liefert alle aktiven Eingabefelder einer Personalisierugs-Bestellung nach y-Pos sortiert
 	 *
 	 * @param STRING $order Reihenfolge, in der die Eingbelfelder sortiert werden
-	 * @return Array : Personalizationitem
+	 * @return Personalizationorderitem[]
 	 */
 	static function getAllPersonalizationorderitems($perso_order_id, $site = self::SITE_FRONT, $orderby = 't2.ypos'){
 		global $DB;

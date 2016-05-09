@@ -117,7 +117,7 @@ class Model {
      *
      * $filterarray format: Array( Array('column'=>'Spalte','operator'=>'>','value'=>'0') )
      * $filterarray: falls operator nicht angegeben dann wird = genutzt
-     * $filterarray: es kann ein Array angegeben werden um die Rückgabe zu sortieren Array('orderby'=>Spalte,'oderbydir'=>'desc')
+     * $filterarray: es kann ein Array angegeben werden um die Rückgabe zu sortieren Array('orderby'=>Spalte,'orderbydir'=>'desc')
      *
      * @param $filterarray
      * @param int $single
@@ -171,6 +171,7 @@ class Model {
         if (count($filter)>0){
             $filter = implode(' AND ',$filter);
             $sql = "SELECT id FROM {$table} WHERE {$filter} {$orderby} {$limit}";
+//            prettyPrint($sql);
             if ($DB->num_rows($sql)){
                 foreach($DB->select($sql) as $r){
                     $obj = new $class($r['id']);
@@ -209,7 +210,13 @@ class Model {
      */
     public static function fetchSingle($filterarray)
     {
-        return self::fetch($filterarray,1);
+        $class = get_called_class();
+        $retval = self::fetch($filterarray,1);
+        if (count($retval)>0)
+            $retval = $retval[0];
+        else
+            $retval = new $class();
+        return $retval;
     }
 
     /**

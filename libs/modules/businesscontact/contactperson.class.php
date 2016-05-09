@@ -88,118 +88,126 @@ class ContactPerson {
         	$this->alt_country = new Country(55); 
         	$this->priv_country = new Country(55); 
         }
-        
-//         $cached = Cachehandler::fromCache("obj_cp_" . $id);
-		$cached = null;
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(get_class($this)));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
-                } else {
-                    echo "method: {$method}() not found!</br>";
-                }
-            }
-//             echo "loaded from cache!</br>";
-            return true;
-        }
-        
-        if ($id > 0 && is_null($cached))
-        {
-            $sql = " SELECT * FROM contactperson WHERE id = {$id}";
 
-            // sql returns only one record -> business contact is valid
-            if($DB->num_rows($sql) == 1)
-            {
-                $res = $DB->select($sql);
-                $this->id = $res[0]["id"];
-                $this->businessContactId = $res[0]["businesscontact"];
-                $this->active = $res[0]["active"];
-                $this->title = $res[0]["title"];
-                $this->name1 = $res[0]["name1"];
-                $this->name2 = $res[0]["name2"];
-                $this->address1 = $res[0]["address1"];
-                $this->address2 = $res[0]["address2"];
-                $this->zip = $res[0]["zip"];
-                $this->city = $res[0]["city"];
-                $this->country = new Country ($res[0]["country"]);
-                $this->phone = $res[0]["phone"];
-                $this->mobile = $res[0]["mobil"];
-                $this->fax = $res[0]["fax"];
-                $this->email = $res[0]["email"];
-                $this->mobil = $res[0]["mobil"];
-                $this->web = $res[0]["web"];
-                $this->comment = $res[0]["comment"];
-                $this->isMainContact = $res[0]["main_contact"];
-                $this->activeAdress = $res[0]["active_adress"];
-                $this->birthdate = $res[0]["birthdate"];
-                
-                if ($loader == ContactPerson::LOADER_FULL)
-                {
-        	        $this->notifymailadr = unserialize($res[0]["notifymailadr"]);
-                    $this->shopLogin = $res[0]["shop_login"];
-                    $this->shopPassword = $res[0]["shop_pass"];
-                    $this->enabledArtikel = $res[0]["enabled_article"];
-                    $this->enabledTickets = $res[0]["enabled_ticket"];
-                    $this->enabledPersonalization = $res[0]["enabled_personalization"];
+        if ($id > 0){
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
+				} else {
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false)
+			{
+				$sql = " SELECT * FROM contactperson WHERE id = {$id}";
+
+				// sql returns only one record -> business contact is valid
+				if($DB->num_rows($sql) == 1) {
+					$res = $DB->select($sql);
+					$this->id = $res[0]["id"];
+					$this->businessContactId = $res[0]["businesscontact"];
+					$this->active = $res[0]["active"];
+					$this->title = $res[0]["title"];
+					$this->name1 = $res[0]["name1"];
+					$this->name2 = $res[0]["name2"];
+					$this->address1 = $res[0]["address1"];
+					$this->address2 = $res[0]["address2"];
+					$this->zip = $res[0]["zip"];
+					$this->city = $res[0]["city"];
+					$this->country = new Country ($res[0]["country"]);
+					$this->phone = $res[0]["phone"];
+					$this->mobile = $res[0]["mobil"];
+					$this->fax = $res[0]["fax"];
+					$this->email = $res[0]["email"];
+					$this->mobil = $res[0]["mobil"];
+					$this->web = $res[0]["web"];
+					$this->comment = $res[0]["comment"];
+					$this->isMainContact = $res[0]["main_contact"];
+					$this->activeAdress = $res[0]["active_adress"];
+					$this->birthdate = $res[0]["birthdate"];
+
+					$this->notifymailadr = unserialize($res[0]["notifymailadr"]);
+					$this->shopLogin = $res[0]["shop_login"];
+					$this->shopPassword = $res[0]["shop_pass"];
+					$this->enabledArtikel = $res[0]["enabled_article"];
+					$this->enabledTickets = $res[0]["enabled_ticket"];
+					$this->enabledPersonalization = $res[0]["enabled_personalization"];
 					$this->enabledMarketing = $res[0]["enabled_marketing"];
-                
-                    $this->alt_name1 = $res[0]["alt_name1"];
-                    $this->alt_name2 = $res[0]["alt_name2"];
-                    $this->alt_address1 = $res[0]["alt_address1"];
-                    $this->alt_address2 = $res[0]["alt_address2"];
-                    $this->alt_zip = $res[0]["alt_zip"];
-                    $this->alt_city = $res[0]["alt_city"];
-                    $this->alt_country = new Country ($res[0]["alt_country"]);
-                    $this->alt_phone = $res[0]["alt_phone"];
-                    $this->alt_fax = $res[0]["alt_fax"];
-                    $this->alt_mobil = $res[0]["alt_mobil"];
-                    $this->alt_email = $res[0]["alt_email"];
-                    
-                    $this->priv_name1 = $res[0]["priv_name1"];
-                    $this->priv_name2 = $res[0]["priv_name2"];
-                    $this->priv_address1 = $res[0]["priv_address1"];
-                    $this->priv_address2 = $res[0]["priv_address2"];
-                    $this->priv_zip = $res[0]["priv_zip"];
-                    $this->priv_city = $res[0]["priv_city"];
-                    $this->priv_country = new Country ($res[0]["priv_country"]);
-                    $this->priv_phone = $res[0]["priv_phone"];
-                    $this->priv_fax = $res[0]["priv_fax"];
-                    $this->priv_mobil = $res[0]["priv_mobil"];
-                    $this->priv_email = $res[0]["priv_email"];
-                    
 
-                    $sql = "SELECT * FROM contactperson_categories_perm WHERE cpid = {$id}";
-                    $tmp_categories_cansee = Array();
-                    $tmp_categories_cancreate = Array();
-                    if($DB->num_rows($sql)){
-                        foreach($DB->select($sql) as $r){
-                            if ((int)$r["cansee"] == 1){
-                                $tmp_cat = new TicketCategory($r["categoryid"]);
-                                $tmp_categories_cansee[] = $tmp_cat;
-                            }
-                            if ((int)$r["cancreate"] == 1){
-                                $tmp_cat = new TicketCategory($r["categoryid"]);
-                                $tmp_categories_cancreate[] = $tmp_cat;
-                            }
-                        }
-                    }
-                    $this->categories_cansee = $tmp_categories_cansee;
-                    $this->categories_cancreate = $tmp_categories_cancreate;
-                }
-				
-//                 Cachehandler::toCache("obj_cp_".$id, $this);
-                return true;
-                // sql returns more than one record, should not happen!
-            } else if ($DB->num_rows($sql) > 1)
-            {
-                $this->strError = $_LANG->get('Mehr als einen Ansprechpartner gefunden.');
-                return false;
-                // sql returns 0 rows -> login isn't valid
+					$this->alt_name1 = $res[0]["alt_name1"];
+					$this->alt_name2 = $res[0]["alt_name2"];
+					$this->alt_address1 = $res[0]["alt_address1"];
+					$this->alt_address2 = $res[0]["alt_address2"];
+					$this->alt_zip = $res[0]["alt_zip"];
+					$this->alt_city = $res[0]["alt_city"];
+					$this->alt_country = new Country ($res[0]["alt_country"]);
+					$this->alt_phone = $res[0]["alt_phone"];
+					$this->alt_fax = $res[0]["alt_fax"];
+					$this->alt_mobil = $res[0]["alt_mobil"];
+					$this->alt_email = $res[0]["alt_email"];
+
+					$this->priv_name1 = $res[0]["priv_name1"];
+					$this->priv_name2 = $res[0]["priv_name2"];
+					$this->priv_address1 = $res[0]["priv_address1"];
+					$this->priv_address2 = $res[0]["priv_address2"];
+					$this->priv_zip = $res[0]["priv_zip"];
+					$this->priv_city = $res[0]["priv_city"];
+					$this->priv_country = new Country ($res[0]["priv_country"]);
+					$this->priv_phone = $res[0]["priv_phone"];
+					$this->priv_fax = $res[0]["priv_fax"];
+					$this->priv_mobil = $res[0]["priv_mobil"];
+					$this->priv_email = $res[0]["priv_email"];
+
+
+					$sql = "SELECT * FROM contactperson_categories_perm WHERE cpid = {$id}";
+					$tmp_categories_cansee = Array();
+					$tmp_categories_cancreate = Array();
+					if ($DB->num_rows($sql)) {
+						foreach ($DB->select($sql) as $r) {
+							if ((int)$r["cansee"] == 1) {
+								$tmp_cat = new TicketCategory($r["categoryid"]);
+								$tmp_categories_cansee[] = $tmp_cat;
+							}
+							if ((int)$r["cancreate"] == 1) {
+								$tmp_cat = new TicketCategory($r["categoryid"]);
+								$tmp_categories_cancreate[] = $tmp_cat;
+							}
+						}
+					}
+					$this->categories_cansee = $tmp_categories_cansee;
+					$this->categories_cancreate = $tmp_categories_cancreate;
+				}
+
+				Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
             }
         }
     }
@@ -508,10 +516,9 @@ class ContactPerson {
 		    $DB->no_result($sql);
 		}
 
-// 		Cachehandler::removeCache("obj_cp_".$this->id);
-		if($res)
+		if ($res)
 		{
-// 		    Cachehandler::toCache("obj_cp_".$this->id, $this);
+			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 			return true;
 		}
 		else
@@ -523,10 +530,11 @@ class ContactPerson {
 		global $DB;
 		$sql = "DELETE FROM contactperson WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
-		unset($this);
-		if($res)
+		if($res) {
+			Cachehandler::removeCache(Cachehandler::genKeyword($this));
+			unset($this);
 			return true;
-		else
+		} else
 			return false;		
 	}
 	

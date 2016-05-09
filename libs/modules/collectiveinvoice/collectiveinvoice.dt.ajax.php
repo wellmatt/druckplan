@@ -329,11 +329,28 @@
                     $tmp_row .= 'black.svg';
                 }
                 $tmp_row .= '" title="'.$tmp_title.'"></a>';
-                
-                
+
                 $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=5">';
                 $tmp_row .= '<img class="select" src="./images/status/';
                 if($aRow[ $aColumns[$i] ] == 5){
+                    $tmp_row .= 'blue.svg';
+                } else {
+                    $tmp_row .= 'black.svg';
+                }
+                $tmp_row .= '" title="Versandbereit"></a>';
+
+                $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=5">';
+                $tmp_row .= '<img class="select" src="./images/status/';
+                if($aRow[ $aColumns[$i] ] == 6){
+                    $tmp_row .= 'light_blue.svg';
+                } else {
+                    $tmp_row .= 'black.svg';
+                }
+                $tmp_row .= '" title="Ware versand"></a>';
+
+                $tmp_row .= '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&ciid='.$aRow[ $aColumns[0] ].'&exec=setState&state=5">';
+                $tmp_row .= '<img class="select" src="./images/status/';
+                if($aRow[ $aColumns[$i] ] == 7){
                     $tmp_row .= 'green.svg';
                 } else {
                     $tmp_row .= 'black.svg';

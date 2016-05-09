@@ -41,36 +41,70 @@ class PlanningJob {
         $this->assigned_group = new Group();
         $this->ticket = new Ticket();
 
-        if($id > 0)
-        {
-            $sql = "SELECT * FROM planning_jobs WHERE id = {$id}";
-            if($DB->num_rows($sql))
-            {
-                $r = $DB->select($sql);
-                $r = $r[0];
-
-                $this->id = $r["id"];
-                $this->type = $r["type"];
-                $this->object = new CollectiveInvoice((int)$r["object"]);
-                $this->opos = new Orderposition((int)$r["opos"]);
-                if ($this->type == PlanningJob::TYPE_V)
-                {
-                    $this->subobject = new Article((int)$r["subobject"]);
-                    $this->artmach = new Article((int)$r["artmach"]);
+        if($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
                 }
-                elseif ($this->type == PlanningJob::TYPE_K)
-                {
-                    $this->subobject = new Order((int)$r["subobject"]);
-                    $this->artmach = new Machine((int)$r["artmach"]);
-                }
-                $this->assigned_user = new User((int)$r["assigned_user"]);
-                $this->assigned_group = new Group((int)$r["assigned_group"]);
-                $this->ticket = new Ticket((int)$r["ticket"]);
-                $this->start = $r["start"];
-                $this->tplanned = $r["tplanned"];
-                $this->tactual = $r["tactual"];
-                $this->state = $r["state"];
+            } else {
+                $valid_cache = false;
+            }
+            if ($valid_cache === false) {
+                $sql = "SELECT * FROM planning_jobs WHERE id = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $r = $DB->select($sql);
+                    $r = $r[0];
 
+                    $this->id = $r["id"];
+                    $this->type = $r["type"];
+                    $this->object = new CollectiveInvoice((int)$r["object"]);
+                    $this->opos = new Orderposition((int)$r["opos"]);
+                    if ($this->type == PlanningJob::TYPE_V) {
+                        $this->subobject = new Article((int)$r["subobject"]);
+                        $this->artmach = new Article((int)$r["artmach"]);
+                    } elseif ($this->type == PlanningJob::TYPE_K) {
+                        $this->subobject = new Order((int)$r["subobject"]);
+                        $this->artmach = new Machine((int)$r["artmach"]);
+                    }
+                    $this->assigned_user = new User((int)$r["assigned_user"]);
+                    $this->assigned_group = new Group((int)$r["assigned_group"]);
+                    $this->ticket = new Ticket((int)$r["ticket"]);
+                    $this->start = $r["start"];
+                    $this->tplanned = $r["tplanned"];
+                    $this->tactual = $r["tactual"];
+                    $this->state = $r["state"];
+
+                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+                }
             }
         }
     }
@@ -207,21 +241,24 @@ class PlanningJob {
         
         if ($this->id > 0) {
             $sql = "UPDATE planning_jobs SET " . $set . " WHERE id = {$this->id}";
-//             echo $sql."</br>";
-            return $DB->no_result($sql);
+            $res = $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO planning_jobs SET " . $set . " ";
-//             echo $sql."</br>";
             $res = $DB->no_result($sql);
             
             if ($res) {
                 $sql = "SELECT max(id) id FROM planning_jobs WHERE id = {$this->id}";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
-                return true;
             }
         }
-        return false;
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
     }
 
     function delete()
@@ -231,6 +268,7 @@ class PlanningJob {
             $sql = "UPDATE planning_jobs SET state = 0 WHERE id = {$this->id}";
             $r = $DB->no_result($sql);
             if ($r) {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 unset($this);
                 return true;
             }
@@ -320,6 +358,10 @@ class PlanningJob {
      * @return the $assigned_user
      */
     public function getAssigned_user()
+    {
+        return $this->assigned_user;
+    }
+    public function getAssigneduser()
     {
         return $this->assigned_user;
     }
@@ -472,6 +514,10 @@ class PlanningJob {
      * @return the $assigned_group
      */
     public function getAssigned_group()
+    {
+        return $this->assigned_group;
+    }
+    public function getAssignedgroup()
     {
         return $this->assigned_group;
     }

@@ -8,6 +8,10 @@
 //----------------------------------------------------------------------------------
 require_once 'libs/modules/tradegroup/tradegroup.class.php';
 require_once 'libs/modules/article/article.pricescale.class.php';
+require_once 'libs/modules/article/article.qusers.class.php';
+require_once 'libs/modules/article/article.orderamount.class.php';
+require_once 'libs/modules/article/article.shopapproval.class.php';
+require_once 'libs/modules/article/article.tag.class.php';
 
 class Article {
 
@@ -19,7 +23,7 @@ class Article {
 	const STATUS_INACTIVE = 0;
 	const STATUS_ACTIVE = 1;
 
-	private $id = 0;				//Einzigartige interne ID
+	private $id = 0;				// Einzigartige interne ID
 	private $status = 1;			// Status des Artikels (0=geloescht)
 	private $shoprel = 0;			// Freigabe fuer den Shop
 	private $number = 0;			// Artikelnummer
@@ -27,8 +31,6 @@ class Article {
 	private $desc;					// Beschreibung des Artikels
 	private $tradegroup;			// ID der Warengruppe			
 	private $seperation; 			// Preis-Staffelungen
-	private $prices;				// VK-Preise
-	private $costs;					// EK-Preise
 	private $picture;				// Verweis auf das Bild, das mit dem Artikel verknuepft ist
 	private $crt_date;				// Erstelldatum
 	private $crt_user;				// ID des Erstellers
@@ -65,97 +67,104 @@ class Article {
 
 		$this->tradegroup = new Tradegroup(0);
 		
-		if ($id > 0){ //  && is_null($cached)
-			$sql = "SELECT * FROM article WHERE id = {$id}";
-			if($DB->num_rows($sql)){
-				$r = $DB->select($sql);
-				$r = $r[0];
-				$this->id = $r["id"];
-				$this->status = $r["status"];
-				$this->shoprel = $r["shoprel"];
-				$this->title = $r["title"];
-				$this->desc = $r["description"];
-				$this->picture = $r["picture"];
-				$this->number = $r["number"];
-				$this->tax = $r["tax"];
-				$this->minorder = $r["minorder"];
-				$this->maxorder = $r["maxorder"];
-				$this->orderunit = $r["orderunit"];
-				$this->orderunitweight = $r["orderunitweight"];
-				$this->tradegroup = new Tradegroup($r["tradegroup"]);
-				$this->shopCustomerID = $r["shop_customer_id"];
-				$this->shopCustomerRel = $r["shop_customer_rel"];
-				$this->isworkhourart = $r["isworkhourart"];
-				$this->show_shop_price = $r["show_shop_price"];
-				$this->shop_needs_upload = $r["shop_needs_upload"];
-				$this->matchcode = $r["matchcode"];
-				$this->orderid = $r["orderid"];
-				$this->usesstorage = $r["usesstorage"];
-				
-				if ($r["tradegroup"] == 0){
-					$this->tradegroup->setTitle(" &ensp; ");
-				}
-				
-				if ($r["crtuser"] != 0 && $r["crtuser"] != "" ){
-					$this->crt_user = new User($r["crtuser"]);
-					$this->crt_date = $r["crtdate"];
+		if ($id > 0){
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
 				} else {
-					$this->crt_user = 0;
-					$this->crt_date = 0;
+					$valid_cache = false;
 				}
-				
-				if ($r["uptuser"] != 0 && $r["uptuser"] != "" ){
-					$this->upt_user = new User($r["uptuser"]);
-					$this->upt_date = $r["uptdate"];
-				} else {
-					$this->upt_user = 0;
-					$this->upt_date = 0;
-				}
-				
-				// Arbeiter
-				$tmp_qusrs = Array();
-				$sql = "SELECT * FROM article_qualified_users WHERE article = {$this->id}";
-				if($DB->num_rows($sql))
-				{
-				    foreach($DB->select($sql) as $r)
-				    {
-				        $tmp_qusrs[] = new User((int)$r["user"]);	//gln
-				    }
-				}
-				$this->qualified_users = $tmp_qusrs;
-				
-				$sql = "SELECT * FROM article_orderamounts WHERE article_id = {$id}";
-				if($DB->num_rows($sql)){
-				    $retval = Array();
-				    foreach($DB->select($sql) as $r){
-				    	$retval[] = $r["amount"];
-				    }
-				    $this->orderamounts = $retval;
-				}
-				
-				$sql = "SELECT * FROM article_shop_approval WHERE article = {$id}";
-				if($DB->num_rows($sql)){
-				    $retval = Array("BCs"=>Array(),"CPs"=>Array());
-				    foreach($DB->select($sql) as $r){
-				        if ($r["bc"]>0)
-				    	   $retval["BCs"][] = $r["bc"];
-				        elseif ($r["cp"]>0)
-				           $retval["CPs"][] = $r["cp"];
-				    }
-				    $this->shop_approval = $retval;
-				}
-				
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false) {
+				$sql = "SELECT * FROM article WHERE id = {$id}";
+				if ($DB->num_rows($sql)) {
+					$r = $DB->select($sql);
+					$r = $r[0];
+					$this->id = $r["id"];
+					$this->status = $r["status"];
+					$this->shoprel = $r["shoprel"];
+					$this->title = $r["title"];
+					$this->desc = $r["description"];
+					$this->picture = $r["picture"];
+					$this->number = $r["number"];
+					$this->tax = $r["tax"];
+					$this->minorder = $r["minorder"];
+					$this->maxorder = $r["maxorder"];
+					$this->orderunit = $r["orderunit"];
+					$this->orderunitweight = $r["orderunitweight"];
+					$this->tradegroup = new Tradegroup($r["tradegroup"]);
+					$this->shopCustomerID = $r["shop_customer_id"];
+					$this->shopCustomerRel = $r["shop_customer_rel"];
+					$this->isworkhourart = $r["isworkhourart"];
+					$this->show_shop_price = $r["show_shop_price"];
+					$this->shop_needs_upload = $r["shop_needs_upload"];
+					$this->matchcode = $r["matchcode"];
+					$this->orderid = $r["orderid"];
+					$this->usesstorage = $r["usesstorage"];
 
-				$sql = "SELECT tag FROM article_tags WHERE article = {$id}";
-				if($DB->num_rows($sql)){
-				    $retval = Array();
-				    foreach($DB->select($sql) as $r){
-				        $retval[] = $r["tag"];
-				    }
-				    $this->tags = $retval;
+					if ($r["tradegroup"] == 0) {
+						$this->tradegroup->setTitle(" &ensp; ");
+					}
+
+					if ($r["crtuser"] != 0 && $r["crtuser"] != "") {
+						$this->crt_user = new User($r["crtuser"]);
+						$this->crt_date = $r["crtdate"];
+					} else {
+						$this->crt_user = 0;
+						$this->crt_date = 0;
+					}
+
+					if ($r["uptuser"] != 0 && $r["uptuser"] != "") {
+						$this->upt_user = new User($r["uptuser"]);
+						$this->upt_date = $r["uptdate"];
+					} else {
+						$this->upt_user = 0;
+						$this->upt_date = 0;
+					}
+
+					// Arbeiter
+					$this->qualified_users = ArticleQualifiedUser::getAllForArticleAsArray($this);
+
+					// Bestellmengen
+					$this->orderamounts = ArticleOrderAmount::getAllForArticleAsArray($this);
+
+					// Shop Freigaben
+					$this->shop_approval = ArticleShopApproval::getAllForArticleAsArray($this);
+
+					// Tags
+					$this->tags = ArticleTag::getAllForArticleAsArray($this);
+
+					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 				}
-				
-// 			    Cachehandler::toCache("obj_article_".$id, $this);
 			}
 		}
 	}
@@ -297,8 +306,13 @@ class Article {
 		    }
 	    }
 
-// 		Cachehandler::toCache("obj_article_".$this->id, $this);
-		return $res;
+		if ($res)
+		{
+			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+			return true;
+		}
+		else
+			return false;
 		
 	}
 	
@@ -317,6 +331,7 @@ class Article {
 					status = 0
 					WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+				Cachehandler::removeCache(Cachehandler::genKeyword($this));
 				unset($this);
 				return true;
 			} else {
@@ -684,15 +699,17 @@ class Article {
 	 * @param int $max : Stueckzahl, bis zu der der Preis gilt
 	 * @param int $supplier : Lieferanten ID
 	 * @param float $price : Preis der fuer diese Staffelung gilt
+	 * @param string $artnum : Artikel Nummer beim Lieferanten
 	 */
-	function saveCost($min, $max, $price, $supplier){
+	function saveCost($min, $max, $price, $supplier, $artnum){
 		$create = [
 			'article'=>$this->getId(),
 			'min'=>$min,
 			'max'=>$max,
 			'price'=>$price,
 			'type'=>2,
-			'supplier'=>$supplier
+			'supplier'=>$supplier,
+			'artnum'=>$artnum
 		];
 		$pricescale = new PriceScale(0, $create);
 		$pricescale->save();
@@ -719,7 +736,8 @@ class Article {
 					'sep_min' => $pricescale->getMin(),
 					'sep_max' => $pricescale->getMax(),
 					'sep_price' => $pricescale->getPrice(),
-					'supplier' => $pricescale->getSupplier()->getId()
+					'supplier' => $pricescale->getSupplier()->getId(),
+					'supplier_artnum' => $pricescale->getArtnum()
 				];
 			}
 		}
@@ -897,6 +915,10 @@ class Article {
 	{
 	    return $this->crt_date;
 	}
+	public function getCrtdate()
+	{
+		return $this->crt_date;
+	}
 
 	public function setCrt_date($crt_date)
 	{
@@ -906,6 +928,10 @@ class Article {
 	public function getCrt_user()
 	{
 	    return $this->crt_user;
+	}
+	public function getCrtuser()
+	{
+		return $this->crt_user;
 	}
 
 	public function setCrt_user($crt_user)
@@ -917,6 +943,10 @@ class Article {
 	{
 	    return $this->upt_date;
 	}
+	public function getUptdate()
+	{
+		return $this->upt_date;
+	}
 
 	public function setUpt_date($upt_date)
 	{
@@ -926,6 +956,10 @@ class Article {
 	public function getUpt_user()
 	{
 	    return $this->upt_user;
+	}
+	public function getUptuser()
+	{
+		return $this->upt_user;
 	}
 
 	public function setUpt_user($upt_user)
@@ -1056,6 +1090,10 @@ class Article {
     {
         return $this->qualified_users;
     }
+	public function getQualifiedusers()
+	{
+		return $this->qualified_users;
+	}
 
 	/**
      * @param multitype: $qualified_users
@@ -1072,6 +1110,10 @@ class Article {
     {
         return $this->shop_needs_upload;
     }
+	public function getShopneedsupload()
+	{
+		return $this->shop_needs_upload;
+	}
 
 	/**
      * @param field_type $shop_needs_upload
@@ -1103,6 +1145,10 @@ class Article {
     {
         return $this->shop_approval;
     }
+	public function getShopapproval()
+	{
+		return $this->shop_approval;
+	}
 
 	/**
      * @param field_type $shop_approval

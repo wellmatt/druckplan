@@ -733,45 +733,63 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?= $collectinv->getId() ?>&exec=setState2&state=1">
 	            				<img class="select" title="<?php echo getOrderStatus(1);?>" src="./images/status/<?
 	            				if($collectinv->getStatus() == 1)
-	            	    				echo 'red.gif';
+	            	    				echo 'red.svg';
 					            	else
-										echo 'black.gif'; ?>">
+										echo 'black.svg'; ?>">
 	                		</a>
 	                	</td>
 	                	<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=2">
 	            				<img class="select" title="<?php echo getOrderStatus(2);?>" src="./images/status/<?
 	            					if($collectinv->getStatus() == 2)
-					                	echo 'orange.gif';
+					                	echo 'orange.svg';
 					                else
-					                	echo 'black.gif';?>">
+					                	echo 'black.svg';?>">
 							</a>
 						</td>
 						<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=3">
 								<img class="select" title="<?php echo getOrderStatus(3);?>" src="./images/status/<?
 									if($collectinv->getStatus() == 3)
-					                	echo 'yellow.gif';
+					                	echo 'yellow.svg';
 					                else
-					                	echo 'black.gif'; ?>">
+					                	echo 'black.svg'; ?>">
 							</a>
 						</td>
 						<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=4">
 	            				<img class="select" title="<?php echo getOrderStatus(4);?>" src="./images/status/<?
 	            					if($collectinv->getStatus() == 4)
-	            						echo 'lila.gif';
+	            						echo 'lila.svg';
 									else
-										echo 'black.gif';?>">
+										echo 'black.svg';?>">
 							</a>
 						</td>
 						<td>
 							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=5">
 	            				<img class="select" title="<?php echo getOrderStatus(5);?>" src="./images/status/<?
 	            					if($collectinv->getStatus() == 5)
-	            						echo 'green.gif';
+	            						echo 'blue.svg';
 									else
-										echo 'black.gif';?>">
+										echo 'black.svg';?>">
+							</a>
+						</td>
+						<td>
+							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=6">
+								<img class="select" title="<?php echo getOrderStatus(6);?>" src="./images/status/<?
+								if($collectinv->getStatus() == 6)
+									echo 'light_blue.svg';
+								else
+									echo 'black.svg';?>">
+							</a>
+						</td>
+						<td>
+							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=7">
+								<img class="select" title="<?php echo getOrderStatus(7);?>" src="./images/status/<?
+								if($collectinv->getStatus() == 7)
+									echo 'green.svg';
+								else
+									echo 'black.svg';?>">
 							</a>
 						</td>
                         <td>
@@ -972,6 +990,10 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                     ?>
                 </select>
             </td>
+			<td class="content_row" valign="top">Fremdleistung</td>
+			<td class="content_row" valign="top">
+				<input type="checkbox" name="thirdparty" id="thirdparty" value="1" <?php if ($collectinv->getThirdparty()) echo ' checked ';?>/>
+			</td>
         </tr>
         <tr>
             <td class="content_row" valign="top"><b><?=$_LANG->get('Ansprechp. d. Kunden')?></b></td>
@@ -988,6 +1010,10 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
                     ?>
                 </select>
             </td>
+			<td class="content_row" valign="top" id="thirdpartycomment_title" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>">FL-Bemerkung</td>
+			<td class="content_row" valign="top">
+				<textarea name="thirdpartycomment" id="thirdpartycomment" style="width: 300px; height: 40px;<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
+			</td>
         </tr>
 	</table>
 </div>
@@ -1167,3 +1193,18 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 
 <input type="hidden" id="poscount" value="<?php echo $i;?>"/>
 </form>
+
+
+<script language="JavaScript">
+	$(function(){
+		$('#thirdparty').change(function(){
+			if($(this).is(":checked")) {
+				$('#thirdpartycomment_title').show();
+				$('#thirdpartycomment').show();
+			} else {
+				$('#thirdpartycomment_title').hide();
+				$('#thirdpartycomment').hide();
+			}
+		});
+	});
+</script>

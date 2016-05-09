@@ -335,10 +335,9 @@ foreach ($calculations as $c){
                             }
                         }
                         ?>
-                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis</label>
+                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis (<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv"><img src="images/icons/application-export.png"></a>)</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="order_beilagen" name="order_beilagen"><?=$order->getBeilagen()?></textarea>
-                            <a href="./docs/<?=$_USER->getId()?>-Beilagen.csv">export</a>
                         </div>
                     </div>
                 </div>
@@ -349,7 +348,7 @@ foreach ($calculations as $c){
     <div class="panel panel-default">
     	  <div class="panel-heading">
     			<h3 class="panel-title">
-                    Panel title
+                    Kalkulationsübersicht
                     <span class="pull-right">
                         <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=export&id=<?=$order->getId()?>" target="_blank"><img src="images/icons/application-export.png"> <?=$_LANG->get('Exportieren')?></a>
                     </span>

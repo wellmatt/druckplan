@@ -226,11 +226,19 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
                           <tr>
                               <td class="content_header"><?= $_LANG->get('Belegung') ?>:</td>
                               <td class="content_row_clear">
-                                  <input type="text" id="stp_allocation" name="stp_allocation" readonly
-                                         style="width:200px" value="<?= $position->getAllocation() ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text"><label
-                                      for="stp_allocation">%</label>
-                                  <div id="stp_allocation_slider" style="width: 210px;"></div>
+                                  <div class="input-group">
+                                      <div class="input-group-btn">
+                                          <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
+                                          <ul class="dropdown-menu">
+                                              <li><a href="#" onclick="setAlloc(0);">0%</a></li>
+                                              <li><a href="#" onclick="setAlloc(25);">25%</a></li>
+                                              <li><a href="#" onclick="setAlloc(50);">50%</a></li>
+                                              <li><a href="#" onclick="setAlloc(75);">75%</a></li>
+                                              <li><a href="#" onclick="setAlloc(100);">100%</a></li>
+                                          </ul>
+                                      </div>
+                                      <input type="number" min="0" max="<?php echo $maxallocation;?>" name="stp_allocation" id="stp_allocation" class="numberBox">%
+                                  </div>
                               </td>
                           </tr>
                       </table>
@@ -284,15 +292,25 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
 
             }
         });
-        $( "#stp_allocation_slider" ).slider({
-            range: "max",
-            min: 1,
-            max: <?php echo $maxallocation; ?>,
-            value: $('#stp_allocation').val(),
-            slide: function( event, ui ) {
-                $( "#stp_allocation" ).val( ui.value );
+        $( ".numberBox" ).change(function() {
+            var max = parseInt($(this).attr('max'));
+            var min = parseInt($(this).attr('min'));
+            if ($(this).val() > max)
+            {
+                $(this).val(max);
+            }
+            else if ($(this).val() < min)
+            {
+                $(this).val(min);
             }
         });
-        $( "#stp_allocation" ).val( $( "#stp_allocation_slider" ).slider( "value" ) );
     });
+    function setAlloc(perc){
+        var input = $('#stp_allocation');
+        if (perc <= parseInt(input.attr('max'))){
+            input.val(perc);
+        } else {
+            input.val(input.attr('max'));
+        }
+    }
 </script>

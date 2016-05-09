@@ -51,49 +51,51 @@ if ($_REQUEST['area']){
 
 ?>
 
-<table id="storage_pos" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Kunde</th>
-            <th>Artikel</th>
-            <th>Artikel #</th>
-            <th>Lagermenge</th>
-            <th>Mindestmenge</th>
-            <th>Verantwortlicher</th>
-            <th>Beschreibung</th>
-            <th>Bemerkung</th>
-            <th>Versandart</th>
-            <th>Verpackungsart</th>
-            <th>Belegung</th>
-        </tr>
-    </thead>
-    <?php
-    foreach ($positions as $position) {
-        ?>
-        <tr class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.position.frame.php?id=<?php echo $position->getId();?>');">
-            <td><?php echo $position->getId()?></td>
-            <td><?php echo $position->getBusinesscontact()->getNameAsLine()?></td>
-            <td><?php echo $position->getArticle()->getTitle()?></td>
-            <td><?php echo $position->getArticle()->getNumber()?></td>
-            <td>
-                <?php if ($position->getAmount()<=$position->getMinAmount()) echo '<span class="error" style="color: red;">';?>
-                <?php echo $position->getAmount()?>
-                <?php if ($position->getAmount()<=$position->getMinAmount()) echo '</span>';?>
-            </td>
-            <td><?php echo $position->getMinAmount()?></td>
-            <td><?php echo $position->getRespuser()->getNameAsLine()?></td>
-            <td title="<?php echo $position->getDescription()?>">
-                <?php if (strlen($position->getDescription())>20) echo substr($position->getDescription(),0,20).'...'; else echo $position->getDescription();?>
-            </td>
-            <td title="<?php echo $position->getNote()?>">
-                <?php if (strlen($position->getNote())>20) echo substr($position->getNote(),0,20).'...'; else echo $position->getNote();?>
-            </td>
-            <td><?php echo $position->getDispatch()?></td>
-            <td><?php echo $position->getPackaging()?></td>
-            <td><?php echo $position->getAllocation()?>%</td>
-        </tr>
+<div class="table-responsive">
+    <table id="storage_pos" width="100%" cellpadding="0" cellspacing="0" class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Kunde</th>
+                <th>Artikel</th>
+                <th>Artikel #</th>
+                <th>Lagermenge</th>
+                <th>Mindestmenge</th>
+                <th>Verantwortlicher</th>
+                <th>Beschreibung</th>
+                <th>Bemerkung</th>
+                <th>Versandart</th>
+                <th>Verpackungsart</th>
+                <th>Belegung</th>
+            </tr>
+        </thead>
         <?php
-    }
-    ?>
-</table>
+        foreach ($positions as $position) {
+            ?>
+            <tr class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.position.frame.php?id=<?php echo $position->getId();?>');">
+                <td><?php echo $position->getId()?></td>
+                <td><?php echo $position->getBusinesscontact()->getNameAsLine()?></td>
+                <td><?php echo $position->getArticle()->getTitle()?></td>
+                <td><?php echo $position->getArticle()->getNumber()?></td>
+                <td>
+                    <?php if ($position->getAmount()<=$position->getMinAmount()) echo '<span class="error" style="color: red;">';?>
+                    <?php echo $position->getAmount()?>
+                    <?php if ($position->getAmount()<=$position->getMinAmount()) echo '</span>';?>
+                </td>
+                <td><?php echo $position->getMinAmount()?></td>
+                <td><?php echo $position->getRespuser()->getNameAsLine()?></td>
+                <td title="<?php echo $position->getDescription()?>">
+                    <?php if (strlen($position->getDescription())>20) echo substr($position->getDescription(),0,20).'...'; else echo $position->getDescription();?>
+                </td>
+                <td title="<?php echo $position->getNote()?>">
+                    <?php if (strlen($position->getNote())>20) echo substr($position->getNote(),0,20).'...'; else echo $position->getNote();?>
+                </td>
+                <td><?php echo $position->getDispatch()?></td>
+                <td><?php echo $position->getPackaging()?></td>
+                <td><?php echo $position->getAllocation()?>%</td>
+            </tr>
+            <?php
+        }
+        ?>
+    </table>
+</div>

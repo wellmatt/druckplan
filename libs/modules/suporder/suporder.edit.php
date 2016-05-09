@@ -12,7 +12,7 @@ if ($_REQUEST["subexec"] == "save"){
     $array = [
         'supplier' => $_REQUEST["supplier"],
         'title' => $_REQUEST["title"],
-        'eta' => $_REQUEST["eta"],
+        'eta' => (int)strtotime($_REQUEST["eta"]),
         'paymentterm' => $_REQUEST["paymentterm"],
         'status' => $_REQUEST["status"],
         'invoiceaddress' => 0,
@@ -43,6 +43,9 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
 ?>
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <script src="jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
+
 
 <div id="fl_menu">
     <div class="label">Quick Move</div>
@@ -67,7 +70,14 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
     <div class="col-md-12">
     	<div class="panel panel-default">
     		  <div class="panel-heading">
-    				<h3 class="panel-title"><?=$header_title?></h3>
+    				<h3 class="panel-title">
+                        <?=$header_title?>
+                        <?php if ($suporder->getId()>0){?>
+                        <span class="pull-right">
+                            <button class="btn btn-xs btn-default" onclick="window.open('libs/modules/suporder/suporder.print.php?id=<?php echo $suporder->getId();?>');">Drucken</button>
+                        </span>
+                        <?php } ?>
+                    </h3>
     		  </div>
     		  <div class="panel-body">
     				<form action="index.php?page=<?=$_REQUEST['page']?>" id="suporder_form" name="suporder_form" method="post" role="form" class="form-horizontal">
@@ -119,9 +129,9 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
                                 </td>
                             </tr>
                             <tr>
-                                <td class="content_header"><?=$_LANG->get('ETA')?>: </td>
+                                <td class="content_header"><?=$_LANG->get('Lieferdatum')?>: </td>
                                 <td class="content_row_clear">
-                                    <input type="text" id="eta" name="eta" style="width:300px" value="<?=$suporder->getEta()?>"
+                                    <input type="text" id="eta" name="eta" style="width:300px" value="<?php if ($suporder->getEta()>0) echo date('d.m.y',$suporder->getEta()); else echo date('d.m.y');?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                                 </td>
                             </tr>
@@ -175,7 +185,7 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
     <div class="col-md-12">
         <div class="panel panel-default">
         	  <div class="panel-heading">
-        			<h3 class="panel-title">Positionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.article.frame.php?soid=<?php echo $suporder->getId();?>');"/></h3>
+        			<h3 class="panel-title">Positionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.article.frame.php?soid=<?php echo $suporder->getId();?>&supid=<?php echo $suporder->getSupplier()->getId();?>');"/></h3>
         	  </div>
         	  <div class="panel-body" id="suporderpositionbox">
         	  </div>
@@ -264,5 +274,27 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
         j1.href = my_href;
         $('#hiddenclicker_artframe').trigger('click');
     }
+</script>
+<script>
+    $(function () {
+        $('#eta').datetimepicker({
+            lang: 'de',
+            i18n: {
+                de: {
+                    months: [
+                        'Januar', 'Februar', 'März', 'April',
+                        'Mai', 'Juni', 'Juli', 'August',
+                        'September', 'Oktober', 'November', 'Dezember',
+                    ],
+                    dayOfWeek: [
+                        "So.", "Mo", "Di", "Mi",
+                        "Do", "Fr", "Sa.",
+                    ]
+                }
+            },
+            timepicker: false,
+            format: 'd.m.Y'
+        });
+    });
 </script>
 <div id="hidden_clicker95" style="display:none"><a id="hiddenclicker_artframe" href="http://www.google.com" >Hidden Clicker</a></div>

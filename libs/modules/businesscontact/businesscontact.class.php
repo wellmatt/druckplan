@@ -119,121 +119,131 @@ class BusinessContact {
 		$this->alt_country = new Country(55); // Auf Deutschland setzen
 		$this->priv_country = new Country(55); // Auf Deutschland setzen
 		$this->language = new Translator(22); // Auf Deutsch setzen
+
         
+        if ($id > 0){
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
+				} else {
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false) {
+				$sql = " SELECT * FROM businesscontact WHERE id = {$id}";
 
-//         $cached = Cachehandler::fromCache("obj_bc_" . $id);
-		$cached = null;
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(get_class($this)));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
-                } else {
-                    echo "method: {$method}() not found!</br>";
-                }
-            }
-            return true;
-        }
-        
-        if ($id > 0 && is_null($cached))
-        {
-            $sql = " SELECT * FROM businesscontact WHERE id = {$id}";
+				// sql returns only one record -> business contact is valid
+				//if($DB->num_rows($sql) == 1){
+				$res = $DB->select($sql);
+				$this->id = $res[0]["id"];
+				$this->active = $res[0]["active"];
+				$this->commissionpartner = $res[0]["commissionpartner"];
+				$this->customer = $res[0]["customer"];
+				$this->supplier = $res[0]["supplier"];
+				$this->name1 = $res[0]["name1"];
+				$this->name2 = $res[0]["name2"];
+				$this->address1 = $res[0]["address1"];
+				$this->address2 = $res[0]["address2"];
+				$this->zip = $res[0]["zip"];
+				$this->city = $res[0]["city"];
+				$this->phone = $res[0]["phone"];
+				$this->fax = $res[0]["fax"];
+				$this->email = $res[0]["email"];
+				$this->web = $res[0]["web"];
+				$this->comment = $res[0]["comment"];
+				$this->lectorId = $res[0]["lector_id"];
+				$this->discount = $res[0]["discount"];
+				$this->customernumber = $res[0]["cust_number"];
+				$this->matchcode = $res[0]["matchcode"];
+				$this->supervisor = new User((int)$res[0]["supervisor"]);
+				$this->salesperson = new User((int)$res[0]["salesperson"]);
+				$this->tourmarker = $res[0]["tourmarker"];
 
-            // sql returns only one record -> business contact is valid
-            //if($DB->num_rows($sql) == 1){
-                $res = $DB->select($sql);
-                $this->id = $res[0]["id"];
-                $this->active = $res[0]["active"];
-                $this->commissionpartner = $res[0]["commissionpartner"];
-                $this->customer = $res[0]["customer"];
-                $this->supplier = $res[0]["supplier"];
-                $this->name1 = $res[0]["name1"];
-                $this->name2 = $res[0]["name2"];
-                $this->address1 = $res[0]["address1"];
-                $this->address2 = $res[0]["address2"];
-                $this->zip = $res[0]["zip"];
-                $this->city = $res[0]["city"];
-                $this->phone = $res[0]["phone"];
-                $this->fax = $res[0]["fax"];
-                $this->email = $res[0]["email"];
-                $this->web = $res[0]["web"];
-                $this->comment = $res[0]["comment"];
-                $this->lectorId = $res[0]["lector_id"];
-                $this->discount = $res[0]["discount"];
-                $this->customernumber = $res[0]["cust_number"];
-                $this->matchcode = $res[0]["matchcode"];
-                $this->supervisor = new User((int)$res[0]["supervisor"]);
-                $this->salesperson = new User((int)$res[0]["salesperson"]);
-                $this->tourmarker = $res[0]["tourmarker"];
-                
-                // Daten nur laden, wenn die Loader-Variable es hergibt
-                if($loader <= self::LOADER_MEDIUM){
-                	$this->client = new Client($res[0]["client"]);
-                	$this->country = new Country ($res[0]["country"]);
-        			$this->contactPersons = ContactPerson::getAllContactPersons($this);
-        			$this->deliveryAddresses = Address::getAllAddresses($this,Address::ORDER_NAME,Address::FILTER_DELIV);
-        			$this->invoiceAddresses = Address::getAllAddresses($this,Address::ORDER_NAME,Address::FILTER_INVC);
-        			$this->language = new Translator($res[0]["language"]);
-        			$this->paymentTerms = new PaymentTerms($res[0]["payment_terms"]);
+				// Daten nur laden, wenn die Loader-Variable es hergibt
+//				if ($loader <= self::LOADER_MEDIUM) {
+					$this->client = new Client($res[0]["client"]);
+					$this->country = new Country ($res[0]["country"]);
+					$this->contactPersons = ContactPerson::getAllContactPersons($this);
+					$this->deliveryAddresses = Address::getAllAddresses($this, Address::ORDER_NAME, Address::FILTER_DELIV);
+					$this->invoiceAddresses = Address::getAllAddresses($this, Address::ORDER_NAME, Address::FILTER_INVC);
+					$this->language = new Translator($res[0]["language"]);
+					$this->paymentTerms = new PaymentTerms($res[0]["payment_terms"]);
 
-        			$this->shoplogin = $res[0]["shop_login"];
-        			$this->shoppass = $res[0]["shop_pass"];
-        			$this->loginexpire = $res[0]["login_expire"];
-        			$this->ticketenabled = $res[0]["ticket_enabled"];
-        			$this->personalizationenabled= $res[0]["personalization_enabled"];
-        			$this->articleenabled = $res[0]["enabled_article"];
-        			$this->numberatcustomer = $res[0]["number_at_customer"];
-        			$this->bic = $res[0]["bic"];
-        			$this->iban = $res[0]["iban"];
-        			
-        			$this->alt_name1 = $res[0]["alt_name1"];
-        			$this->alt_name2 = $res[0]["alt_name2"];
-        			$this->alt_address1 = $res[0]["alt_address1"];
-        			$this->alt_address2 = $res[0]["alt_address2"];
-        			$this->alt_zip = $res[0]["alt_zip"];
-        			$this->alt_city = $res[0]["alt_city"];
-        			$this->alt_country = new Country ($res[0]["alt_country"]);
-        			$this->alt_phone = $res[0]["alt_phone"];
-        			$this->alt_fax = $res[0]["alt_fax"];
-        			$this->alt_email = $res[0]["alt_email"];
-        			
-        			$this->priv_name1 = $res[0]["priv_name1"];
-        			$this->priv_name2 = $res[0]["priv_name2"];
-        			$this->priv_address1 = $res[0]["priv_address1"];
-        			$this->priv_address2 = $res[0]["priv_address2"];
-        			$this->priv_zip = $res[0]["priv_zip"];
-        			$this->priv_city = $res[0]["priv_city"];
-        			$this->priv_country = new Country ($res[0]["priv_country"]);
-        			$this->priv_phone = $res[0]["priv_phone"];
-        			$this->priv_fax = $res[0]["priv_fax"];
-        			$this->priv_email = $res[0]["priv_email"];
-        			
-        			$this->debitor = $res[0]["debitor_number"];
-        			$this->kreditor = $res[0]["kreditor_number"];
-        			$this->positiontitles = unserialize($res[0]["position_titles"]);
-        			$this->notifymailadr = unserialize($res[0]["notifymailadr"]);
-                    $this->notes = $res[0]["notes"];
-                }
-        		
-        		$this->branche = $res[0]["branche"];
-        		$this->type = $res[0]["type"];
-        		$this->produkte = $res[0]["produkte"];
-        		$this->bedarf = $res[0]["bedarf"];
+					$this->shoplogin = $res[0]["shop_login"];
+					$this->shoppass = $res[0]["shop_pass"];
+					$this->loginexpire = $res[0]["login_expire"];
+					$this->ticketenabled = $res[0]["ticket_enabled"];
+					$this->personalizationenabled = $res[0]["personalization_enabled"];
+					$this->articleenabled = $res[0]["enabled_article"];
+					$this->numberatcustomer = $res[0]["number_at_customer"];
+					$this->bic = $res[0]["bic"];
+					$this->iban = $res[0]["iban"];
 
-//         		Cachehandler::toCache("obj_bc_".$id, $this);
-        	    return true;
-                // sql returns more than one record, should not happen!
-            //} 
-            if ($DB->num_rows($sql) > 1)
-            {
-                $this->strError = "Mehr als einen Geschaeftskontakt gefunden";
-                return false;
-                // sql returns 0 rows -> login isn't valid
-            }
+					$this->alt_name1 = $res[0]["alt_name1"];
+					$this->alt_name2 = $res[0]["alt_name2"];
+					$this->alt_address1 = $res[0]["alt_address1"];
+					$this->alt_address2 = $res[0]["alt_address2"];
+					$this->alt_zip = $res[0]["alt_zip"];
+					$this->alt_city = $res[0]["alt_city"];
+					$this->alt_country = new Country ($res[0]["alt_country"]);
+					$this->alt_phone = $res[0]["alt_phone"];
+					$this->alt_fax = $res[0]["alt_fax"];
+					$this->alt_email = $res[0]["alt_email"];
+
+					$this->priv_name1 = $res[0]["priv_name1"];
+					$this->priv_name2 = $res[0]["priv_name2"];
+					$this->priv_address1 = $res[0]["priv_address1"];
+					$this->priv_address2 = $res[0]["priv_address2"];
+					$this->priv_zip = $res[0]["priv_zip"];
+					$this->priv_city = $res[0]["priv_city"];
+					$this->priv_country = new Country ($res[0]["priv_country"]);
+					$this->priv_phone = $res[0]["priv_phone"];
+					$this->priv_fax = $res[0]["priv_fax"];
+					$this->priv_email = $res[0]["priv_email"];
+
+					$this->debitor = $res[0]["debitor_number"];
+					$this->kreditor = $res[0]["kreditor_number"];
+					$this->positiontitles = unserialize($res[0]["position_titles"]);
+					$this->notifymailadr = unserialize($res[0]["notifymailadr"]);
+					$this->notes = $res[0]["notes"];
+//				}
+
+				$this->branche = $res[0]["branche"];
+				$this->type = $res[0]["type"];
+				$this->produkte = $res[0]["produkte"];
+				$this->bedarf = $res[0]["bedarf"];
+
+				Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+			}
         }
     }
 
@@ -507,10 +517,11 @@ class BusinessContact {
 		global $DB;
 		$sql = "UPDATE businesscontact SET active = 0 WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
-		unset($this);
-		if($res)
+		if($res) {
+			Cachehandler::removeCache(Cachehandler::genKeyword($this));
+			unset($this);
 			return true;
-		else
+		} else
 			return false;
 	}
 
@@ -588,7 +599,6 @@ class BusinessContact {
         			tourmarker = '{$this->tourmarker}' 
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql); //Aenderungen speichern
-// 			echo $sql;
 		}
 		else
 		{
@@ -620,8 +630,6 @@ class BusinessContact {
 		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()} )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			echo $DB->getLastError();
-// 			echo "</br>" . $sql . "</br>";
-//			prettyPrint($sql);
 			if ($res)
             {
                 $sql = " SELECT max(id) id FROM businesscontact";
@@ -629,9 +637,9 @@ class BusinessContact {
                 $this->id = $thisid[0]["id"];
             }
 		}
-		if($res)
+		if ($res)
 		{
-//     		Cachehandler::toCache("obj_bc_".$this->id, $this);
+			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 			return true;
 		}
 		else

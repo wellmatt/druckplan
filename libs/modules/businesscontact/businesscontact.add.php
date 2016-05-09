@@ -491,7 +491,7 @@ function commi_checkbox(){
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
 			<li><a href="#tabs-10"><? echo $_LANG->get('Rechnungseingang');?></a></li>
-			<li><a href="#tabs-11"><? echo $_LANG->get('Kalkulationen');?></a></li>
+<!--			<li><a href="#tabs-11">--><?// echo $_LANG->get('Kalkulationen');?><!--</a></li>-->
 			<li><a href="#tabs-13"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
 		</ul>
 		
@@ -1360,16 +1360,17 @@ function commi_checkbox(){
 		</div>
 
 		<? // ------------------------------------- Kalks ----------------------------------------------?>
-		
+		<?php /*
 		<div id="tabs-11">
 		<?if($businessContact->getId()){
 		    $_REQUEST['page'] = "libs/modules/calculation/order.php";
 			$_REQUEST['cust_id'] = $businessContact->getId();
 			require_once('libs/modules/calculation/order.php');
-		} 
+		}
 		$_REQUEST['page'] = "libs/modules/businesscontact/businesscontact.php";?>
 		</div>
 
+ 		*/?>
 		<? // ------------------------------------- Vorgänge ----------------------------------------------?>
 		
 		<div id="tabs-13">

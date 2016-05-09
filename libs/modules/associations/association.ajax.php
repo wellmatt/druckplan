@@ -45,6 +45,13 @@ if ($_REQUEST["ajax_action"] == "search_colinv"){
 	header("Content-Type: application/json");
 	echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "search_colinv2"){
+	$retval = Array();
+	$retval = CollectiveInvoice::searchByNumberOrTitle($_REQUEST['term']);
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
+}
 if ($_REQUEST["ajax_action"] == "search_event"){
     $retval = Array();
     $events = Event::getAllEventsForHome($order = self::ORDER_BEGIN, $_REQUEST['term']);

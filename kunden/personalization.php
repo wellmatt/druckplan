@@ -35,7 +35,6 @@ if ($_REQUEST["exec"] == "edit" && $_REQUEST["subexec"] == "save"){
 }
 
 function savePersonalization() {
-
     global $busicon, $DB;
 
     $tmp_perso = new Personalization((int)$_REQUEST["persoid"]);

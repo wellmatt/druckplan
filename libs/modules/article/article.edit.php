@@ -132,9 +132,10 @@ if($_REQUEST["subexec"] == "save"){
 		$min = (int)$_REQUEST["article_costprice_min_".$i];
 		$max = (int)$_REQUEST["article_costprice_max_".$i];
 		$supplier = (int)$_REQUEST["article_costprice_supplier_".$i];
+		$artnum = $_REQUEST["article_costprice_artnum_".$i];
 		$price = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["article_costprice_price_".$i])));
 		if ($price > 0){
-			$article->saveCost($min, $max, $price, $supplier);
+			$article->saveCost($min, $max, $price, $supplier, $artnum);
 		}
 	}
 
@@ -606,74 +607,72 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				  <div class="panel-heading">
 						<h3 class="panel-title">Preisstaffeln EK</h3>
 				  </div>
-				  <div class="panel-body">
-					  <input type="hidden" name="count_quantity_cost"	id="count_quantity_cost" value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
-					  <table id="table_prices_cost">
-						  <colgroup>
-							  <col width="40">
-							  <col width="80">
-							  <col width="120">
-							  <col width="120">
-						  </colgroup>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Von')?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-						  </tr>
-						  <?
-						  $x = count($allcostprices);
-						  if ($x < 1){
-							  //$allprices[] = new Array
-							  $x++;
-						  }
-						  for ($y=0; $y < $x ; $y++){ ?>
-							  <tr>
-								  <td class="content_row_clear">
-									  <?=$y+1?>
-								  </td>
-								  <td class="content_row_clear"><input
-										  name="article_costprice_min_<?=$y?>" class="text" type="text"
-										  value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
-									  <?=$_LANG->get('Stk.')?>
-								  </td>
-								  <td class="content_row_clear"><input
-										  name="article_costprice_max_<?=$y?>" class="text" type="text"
-										  value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
-									  <?=$_LANG->get('Stk.')?>
-								  </td>
-								  <td class="content_row_clear">
-									  <select name="article_costprice_supplier_<?=$y?>" style="width:200px">
-										  <?php
-										  foreach ($allsupplier as $supplier){
-											  if ($article->getId()>0){
-												  if ($allcostprices[$y]['supplier'] == $supplier->getId()){
-													  echo '<option value="'.$supplier->getId().'" selected>'.$supplier->getNameAsLine().'</option>';
-												  } else {
-													  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
-												  }
-											  } else {
-												  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
-											  }
-										  }
-										  ?>
-									  </select>
-								  </td>
-								  <td class="content_row_clear"><input
-										  name="article_costprice_price_<?=$y?>" class="text" type="text"
-										  value="<?=printPrice($allcostprices[$y][sep_price])?>"
-										  style="width: 50px">
-									  <?=$_USER->getClient()->getCurrency()?>
-									  &nbsp;&nbsp;&nbsp;
-									  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										  echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
-									  }?>
-								  </td>
-							  </tr>
-						  <? } //Ende alle Preis-Staffeln?>
-					  </table>
-					  <br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
-				  </div>
+				<input type="hidden" name="count_quantity_cost"	id="count_quantity_cost" value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
+				<table id="table_prices_cost" class="table table-condensed table-hover">
+					<thead>
+						<tr>
+							<th><?=$_LANG->get('Nr.')?></th>
+							<th><?=$_LANG->get('Von')?></th>
+							<th><?=$_LANG->get('Bis')?></th>
+							<th><?=$_LANG->get('Lieferant')?></th>
+							<th><?=$_LANG->get('Lief-Art.Nr.')?></th>
+							<th><?=$_LANG->get('Preis')?>*</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?
+						$x = count($allcostprices);
+						if ($x < 1){
+							//$allprices[] = new Array
+							$x++;
+						}
+						for ($y=0; $y < $x ; $y++){ ?>
+							<tr>
+								<td><?=$y+1?></td>
+								<td>
+									<input name="article_costprice_min_<?=$y?>" class="text" type="text"
+										value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
+									<?=$_LANG->get('Stk.')?>
+								</td>
+								<td>
+									<input name="article_costprice_max_<?=$y?>" class="text" type="text"
+										value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
+									<?=$_LANG->get('Stk.')?>
+								</td>
+								<td>
+									<select name="article_costprice_supplier_<?=$y?>" style="width:160px">
+										<?php
+										foreach ($allsupplier as $supplier){
+											if ($article->getId()>0){
+												if ($allcostprices[$y]['supplier'] == $supplier->getId()){
+													echo '<option value="'.$supplier->getId().'" selected>'.$supplier->getNameAsLine().'</option>';
+												} else {
+													echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
+												}
+											} else {
+												echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
+											}
+										}
+										?>
+									</select>
+								</td>
+								<td>
+									<input name="article_costprice_artnum_<?=$y?>" class="text" type="text" value="<?=$allcostprices[$y][supplier_artnum]?>" style="width: 100px">
+								</td>
+								<td><input name="article_costprice_price_<?=$y?>" class="text" type="text"
+										value="<?=printPrice($allcostprices[$y][sep_price])?>"
+										style="width: 50px">
+									<?=$_USER->getClient()->getCurrency()?>
+									&nbsp;&nbsp;&nbsp;
+									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+										echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
+									}?>
+								</td>
+							</tr>
+						<? } //Ende alle Preis-Staffeln?>
+					</tbody>
+				</table>
+				<br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
 			</div>
 		</div>
 	</div>
@@ -811,15 +810,15 @@ function printSubTradegroupsForSelect($parentId, $depth){
         var obj = document.getElementById('table-prices');
         var count = parseInt(document.getElementById('count_quantity').value) + 1;
         var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-        insert += '<td class="content_row_clear">';
+        insert += '<td>';
         insert += '<input name="article_price_min_'+count+'" class="text" type="text"';
         insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
         insert += '</td>';
-        insert += '<td class="content_row_clear">';
+        insert += '<td>';
         insert += '<input name="article_price_max_'+count+'" class="text" type="text"';
         insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
         insert += '</td>';
-        insert += '<td class="content_row_clear">';
+        insert += '<td>';
         insert += '<input name="article_price_price_'+count+'" class="text" type="text"';
         insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
         insert += '</td></tr>';
@@ -832,22 +831,26 @@ function printSubTradegroupsForSelect($parentId, $depth){
         var obj = document.getElementById('table_prices_cost');
         var count = parseInt(document.getElementById('count_quantity_cost').value) + 1;
         var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-        insert += '<td class="content_row_clear">';
+        insert += '<td>';
         insert += '<input name="article_costprice_min_'+count+'" class="text" type="text"';
         insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
         insert += '</td>';
-        insert += '<td class="content_row_clear">';
+        insert += '<td>';
         insert += '<input name="article_costprice_max_'+count+'" class="text" type="text"';
         insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
         insert += '</td>';
-        insert += '<td class="content_row_clear">';
-        insert += '<select name="article_costprice_supplier_'+count+'" style="width:200px">';
+        insert += '<td>';
+        insert += '<select name="article_costprice_supplier_'+count+'" style="width:160px">';
         <?php foreach ($allsupplier as $supplier){?>
         insert += '<option value="<?=$supplier->getId()?>"><?=$supplier->getNameAsLine()?></option>';
         <?}?>
         insert += '</select>';
         insert += '</td>';
-        insert += '<td class="content_row_clear">';
+		insert += '<td>';
+		insert += '<input name="article_costprice_artnum_'+count+'" class="text" type="text"';
+		insert += 'value ="" style="width: 100px">';
+		insert += '</td>';
+        insert += '<td>';
         insert += '<input name="article_costprice_price_'+count+'" class="text" type="text"';
         insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
         insert += '</td></tr>';

@@ -13,7 +13,7 @@ class Marketing{
     private $id = 0;
     private $title;
     private $businesscontact;
-    private $crtdate;
+    private $crtdate = 0;
     private $crtuser;
     private $data;
     private $list;
@@ -50,6 +50,7 @@ class Marketing{
         {
             $sql = "UPDATE marketing SET
 			title = '{$this->title}',
+			crtdate = {$this->crtdate},
 			businesscontact = {$this->businesscontact->getId()},
 			list = {$this->list->getId()}
 			WHERE id = '{$this->id}'";
@@ -66,9 +67,8 @@ class Marketing{
                 return false;
             }
         }else{
-            $now = time();
             $sql = "INSERT INTO marketing (title, businesscontact, crtuser, crtdate, list)
-			VALUES ('{$this->title}', {$this->businesscontact->getId()}, {$this->crtuser->getId()}, {$now}, {$this->list->getId()})";
+			VALUES ('{$this->title}', {$this->businesscontact->getId()}, {$this->crtuser->getId()}, {$this->crtdate}, {$this->list->getId()})";
             $res = $DB->no_result($sql);
             if ($res){
                 $sql = "SELECT max(id) id FROM marketing";

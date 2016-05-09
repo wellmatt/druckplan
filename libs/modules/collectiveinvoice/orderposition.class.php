@@ -36,23 +36,63 @@ class Orderposition{
 	public function __construct($id=0){
 		global $DB;
 		if($id>0){
-			$sql = "SELECT * FROM collectiveinvoice_orderposition WHERE id = ".$id;
-			if($DB->num_rows($sql)){
-				$rows = $DB->select($sql);
-				$r = $rows[0];
-				$this->id = $r["id"];
-				$this->status =$r["status"];
-				$this->quantity = $r["quantity"];
-				$this->price = $r["price"];
-				$this->tax = $r["tax"];
-				$this->comment = $r["comment"];
-				$this->collectiveinvoice = $r["collectiveinvoice"];
-				$this->type = $r["type"];
-				$this->objectid = $r["object_id"];
-				$this->invrel = $r["inv_rel"];
-				$this->revrel = $r["rev_rel"];
-				$this->file_attach = $r["file_attach"];
-				$this->perso_order = $r["perso_order"];
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
+				} else {
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false) {
+				$sql = "SELECT * FROM collectiveinvoice_orderposition WHERE id = " . $id;
+				if ($DB->num_rows($sql)) {
+					$rows = $DB->select($sql);
+					$r = $rows[0];
+					$this->id = $r["id"];
+					$this->status = $r["status"];
+					$this->quantity = $r["quantity"];
+					$this->price = $r["price"];
+					$this->tax = $r["tax"];
+					$this->comment = $r["comment"];
+					$this->collectiveinvoice = $r["collectiveinvoice"];
+					$this->type = $r["type"];
+					$this->objectid = $r["object_id"];
+					$this->invrel = $r["inv_rel"];
+					$this->revrel = $r["rev_rel"];
+					$this->file_attach = $r["file_attach"];
+					$this->perso_order = $r["perso_order"];
+
+					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+				}
 			}
 		}
 	}
@@ -153,6 +193,7 @@ class Orderposition{
 		$sql = "UPDATE collectiveinvoice_orderposition SET status = 0 WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
 		if($res){
+			Cachehandler::removeCache(Cachehandler::genKeyword($this));
 			unset($this);
 			return true;
 		} else {
@@ -262,6 +303,10 @@ class Orderposition{
 	public function getQuantity(){
 		return $this->quantity;
 	}
+
+	public function getAmount(){
+		return $this->quantity;
+	}
 	
 	public function setQuantity($quantity){
 		$this->quantity = $quantity;
@@ -360,6 +405,10 @@ class Orderposition{
     {
         return $this->file_attach;
     }
+	public function getFileattach()
+	{
+		return $this->file_attach;
+	}
 
 	/**
      * @param field_type $file_attach
@@ -368,14 +417,18 @@ class Orderposition{
     {
         $this->file_attach = $file_attach;
     }
-    
+
 	/**
-     * @return the $perso_order
-     */
-    public function getPerso_order()
-    {
-        return $this->perso_order;
-    }
+	 * @return the $perso_order
+	 */
+	public function getPerso_order()
+	{
+		return $this->perso_order;
+	}
+	public function getPersoorder()
+	{
+		return $this->perso_order;
+	}
 
 	/**
      * @param number $perso_order

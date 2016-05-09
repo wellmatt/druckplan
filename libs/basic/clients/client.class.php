@@ -86,88 +86,111 @@ class Client {
         global $DB;
         global $_USER;
 
-        $this->country = new Country(22);
-        
-        $cached = Cachehandler::fromCache("obj_client_" . $id);
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(get_class($this)));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                $method = str_replace("_", "", $method);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
+
+
+        if ($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
                 } else {
-                    echo "method: {$method}() not found!</br>";
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
+            }
+            if ($valid_cache === false)
+            {
+                $sql = " SELECT * FROM clients WHERE id = {$id} AND client_status = 1";
+                if ($DB->num_rows($sql)){
+                    $res = $DB->select($sql);
+                    $this->id = $res[0]["id"];
+                    $this->name = $res[0]["client_name"];
+                    $this->street1 = $res[0]["client_street1"];
+                    $this->street2 = $res[0]["client_street2"];
+                    $this->street3 = $res[0]["client_street3"];
+                    $this->postcode = $res[0]["client_postcode"];
+                    $this->city = $res[0]["client_city"];
+                    $this->phone = $res[0]["client_phone"];
+                    $this->fax = $res[0]["client_fax"];
+                    $this->email = $res[0]["client_email"];
+                    $this->website = $res[0]["client_website"];
+                    $this->bank_name = $res[0]["client_bank_name"];
+                    $this->bank_kto = $res[0]["client_bank_kto"];
+                    $this->bank_blz = $res[0]["client_bank_blz"];
+                    $this->bank_iban = $res[0]["client_bank_iban"];
+                    $this->bank_bic = $res[0]["client_bank_bic"];
+                    $this->gericht = $res[0]["client_gericht"];
+                    $this->steuernummer = $res[0]["client_steuernummer"];
+                    $this->ustid = $res[0]["client_ustid"];
+                    $this->country = new Country($res[0]["client_country"]);
+                    $this->active = $res[0]["active"] == 1;
+                    $this->currency = $res[0]["client_currency"];
+                    $this->decimal = $res[0]["client_decimal"];
+                    $this->thousand = $res[0]["client_thousand"];
+                    $this->taxes = $res[0]["client_taxes"];
+                    $this->margin = $res[0]["client_margin"];
+                    $this->bankName2 = $res[0]["client_bank2"];
+                    $this->bankBic2 = $res[0]["client_bic2"];
+                    $this->bankIban2 = $res[0]["client_iban2"];
+                    $this->bankName3 = $res[0]["client_bank3"];
+                    $this->bankBic3 = $res[0]["client_bic3"];
+                    $this->bankIban3 = $res[0]["client_iban3"];
+
+                    $this->number_format_order = $res[0]["number_format_order"];
+                    $this->number_counter_order = $res[0]["number_counter_order"];
+                    $this->number_format_colinv = $res[0]["number_format_colinv"];
+                    $this->number_counter_colinv = $res[0]["number_counter_colinv"];
+                    $this->number_format_offer = $res[0]["number_format_offer"];
+                    $this->number_counter_offer = $res[0]["number_counter_offer"];
+                    $this->number_format_offerconfirm = $res[0]["number_format_offerconfirm"];
+                    $this->number_counter_offerconfirm = $res[0]["number_counter_offerconfirm"];
+                    $this->number_format_delivery = $res[0]["number_format_delivery"];
+                    $this->number_counter_delivery = $res[0]["number_counter_delivery"];
+                    $this->number_format_paper_order = $res[0]["number_format_paper_order"];
+                    $this->number_counter_paper_order = $res[0]["number_counter_paper_order"];
+                    $this->number_format_invoice = $res[0]["number_format_invoice"];
+                    $this->number_counter_invoice = $res[0]["number_counter_invoice"];
+                    $this->number_format_revert = $res[0]["number_format_revert"];
+                    $this->number_counter_revert = $res[0]["number_counter_revert"];
+                    $this->number_format_warning = $res[0]["number_format_warning"];
+                    $this->number_counter_warning = $res[0]["number_counter_warning"];
+                    $this->number_format_work = $res[0]["number_format_work"];
+                    $this->number_counter_work = $res[0]["number_counter_work"];
+                    $this->number_format_suporder = $res[0]["number_format_suporder"];
+                    $this->number_counter_suporder = $res[0]["number_counter_suporder"];
+
+                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
             }
-            return true;
-        }
-
-        if ($id > 0 && is_null($cached)){
-            $sql = " SELECT * FROM clients WHERE id = {$id} AND client_status = 1";
-            if ($DB->num_rows($sql)){
-                $res = $DB->select($sql);
-                $this->id = $res[0]["id"];
-                $this->name = $res[0]["client_name"];
-                $this->street1 = $res[0]["client_street1"];
-                $this->street2 = $res[0]["client_street2"];
-                $this->street3 = $res[0]["client_street3"];
-                $this->postcode = $res[0]["client_postcode"];
-                $this->city = $res[0]["client_city"];
-                $this->phone = $res[0]["client_phone"];
-                $this->fax = $res[0]["client_fax"];
-                $this->email = $res[0]["client_email"];
-                $this->website = $res[0]["client_website"];
-                $this->bank_name = $res[0]["client_bank_name"];
-                $this->bank_kto = $res[0]["client_bank_kto"];
-                $this->bank_blz = $res[0]["client_bank_blz"];
-                $this->bank_iban = $res[0]["client_bank_iban"];
-                $this->bank_bic = $res[0]["client_bank_bic"];
-                $this->gericht = $res[0]["client_gericht"];
-                $this->steuernummer = $res[0]["client_steuernummer"];
-                $this->ustid = $res[0]["client_ustid"];
-                $this->country = new Country($res[0]["client_country"]);
-                $this->active = $res[0]["active"] == 1;
-                $this->currency = $res[0]["client_currency"];
-                $this->decimal = $res[0]["client_decimal"];
-                $this->thousand = $res[0]["client_thousand"];
-                $this->taxes = $res[0]["client_taxes"];
-                $this->margin = $res[0]["client_margin"];
-                $this->bankName2 = $res[0]["client_bank2"];
-                $this->bankBic2 = $res[0]["client_bic2"];
-                $this->bankIban2 = $res[0]["client_iban2"];
-                $this->bankName3 = $res[0]["client_bank3"];
-                $this->bankBic3 = $res[0]["client_bic3"];
-                $this->bankIban3 = $res[0]["client_iban3"];
-
-                $this->number_format_order = $res[0]["number_format_order"];
-                $this->number_counter_order = $res[0]["number_counter_order"];
-                $this->number_format_colinv = $res[0]["number_format_colinv"];
-                $this->number_counter_colinv = $res[0]["number_counter_colinv"];
-                $this->number_format_offer = $res[0]["number_format_offer"];
-                $this->number_counter_offer = $res[0]["number_counter_offer"];
-                $this->number_format_offerconfirm = $res[0]["number_format_offerconfirm"];
-                $this->number_counter_offerconfirm = $res[0]["number_counter_offerconfirm"];
-                $this->number_format_delivery = $res[0]["number_format_delivery"];
-                $this->number_counter_delivery = $res[0]["number_counter_delivery"];
-                $this->number_format_paper_order = $res[0]["number_format_paper_order"];
-                $this->number_counter_paper_order = $res[0]["number_counter_paper_order"];
-                $this->number_format_invoice = $res[0]["number_format_invoice"];
-                $this->number_counter_invoice = $res[0]["number_counter_invoice"];
-                $this->number_format_revert = $res[0]["number_format_revert"];
-                $this->number_counter_revert = $res[0]["number_counter_revert"];
-                $this->number_format_warning = $res[0]["number_format_warning"];
-                $this->number_counter_warning = $res[0]["number_counter_warning"];
-                $this->number_format_work = $res[0]["number_format_work"];
-                $this->number_counter_work = $res[0]["number_counter_work"];
-                $this->number_format_suporder = $res[0]["number_format_suporder"];
-                $this->number_counter_suporder = $res[0]["number_counter_suporder"];
-
-        		Cachehandler::toCache("obj_client_".$id, $this);
-            }
+        } else {
+            $this->country = new Country(22);
         }
     }
      
@@ -298,7 +321,7 @@ class Client {
         }
         if ($res)
         {
-    		Cachehandler::toCache("obj_client_".$this->id, $this);
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
             return true;
         }
         else
@@ -311,8 +334,10 @@ class Client {
         $sql = "UPDATE clients SET client_status = 0 WHERE id = {$this->id}";
         $res = $DB->no_result($sql);
         unset($this);
-        if ($res)
+        if ($res){
+            Cachehandler::removeCache(Cachehandler::genKeyword($this));
             return true;
+        }
         else
             return false;
     }

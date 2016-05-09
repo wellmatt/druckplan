@@ -8,6 +8,7 @@ ob_start();
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
+
 // error_reporting(E_ERROR | E_WARNING | E_PARSE);
 if (strstr(__DIR__, "contilas2"))
 {
@@ -98,7 +99,7 @@ if ($_USER == false)
 {
 
 //    if ($_USER->getLogin() != "ascherer")
-//        die('contilas2 ist im Wartungsmodus (13.04.2016 by A.Scherer)');
+//        die('contilas2 ist im Wartungsmodus (09.05.2016 by A.Scherer)');
 
     /* Logindaten merken?
      * Daten werden für 365 Tage gemerkt
@@ -122,7 +123,7 @@ if ($_USER == false)
 	
 	$perf = new Perferences();
 
-	$_CACHE = phpFastCache("memcache");
+	$_CACHE = phpFastCache("memcached");
 	
 	
     /*******************************************************************/

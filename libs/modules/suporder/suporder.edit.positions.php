@@ -56,6 +56,7 @@ if ($_REQUEST['suporder']){
             <th>#</th>
             <th>Artikel</th>
             <th>Artikel #</th>
+            <th>zug. VO.</th>
             <th>Menge</th>
         </tr>
     </thead>
@@ -63,10 +64,11 @@ if ($_REQUEST['suporder']){
     foreach ($positions as $position) {
         ?>
         <tr class="pointer" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.position.frame.php?id=<?php echo $position->getId();?>');">
-            <td><?php echo $position->getId()?></td>
-            <td><?php echo $position->getArticle()->getTitle()?></td>
-            <td><?php echo $position->getArticle()->getNumber()?></td>
-            <td><?php echo $position->getAmount()?></td>
+            <td><?php echo $position->getId();?></td>
+            <td><?php echo $position->getArticle()->getTitle();?></td>
+            <td><?php echo $position->getArticle()->getNumber();?></td>
+            <td><?php if($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getNumber();?></td>
+            <td><?php echo $position->getAmount();?></td>
         </tr>
         <?php
     }

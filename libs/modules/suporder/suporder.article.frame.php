@@ -97,7 +97,7 @@ else
             // "scrollY": "600px",
             "processing": true,
             "bServerSide": true,
-            "sAjaxSource": "../../../libs/modules/article/article.dt.ajax.php",
+            "sAjaxSource": "../../../libs/modules/suporder/suporder.article.dt.ajax.php",
             "paging": true,
             "stateSave": <?php if ($perf->getDt_state_save()) {
             echo "true";
@@ -134,12 +134,10 @@ else
             "fnServerData": function (sSource, aoData, fnCallback) {
                 var tags = document.getElementById('ajax_tags').value;
                 var tg = document.getElementById('ajax_tradegroup').value;
-                var bc = document.getElementById('ajax_bc').value;
-                var cp = document.getElementById('ajax_cp').value;
-                aoData.push({"name": "search_tags", "value": tags,});
-                aoData.push({"name": "tradegroup", "value": tg,});
-                aoData.push({"name": "bc", "value": bc,});
-                aoData.push({"name": "cp", "value": cp,});
+                var bc = <?php echo $_REQUEST["supid"];?>;
+                aoData.push({"name": "search_tags", "value": tags});
+                aoData.push({"name": "tradegroup", "value": tg});
+                aoData.push({"name": "bc", "value": bc});
                 $.getJSON(sSource, aoData, function (json) {
                     fnCallback(json)
                 });
@@ -215,30 +213,6 @@ else
     });
 </script>
 
-<script>
-    $(function () {
-        $("#bc_cp").autocomplete({
-            delay: 0,
-            source: '../../../libs/modules/article/article.ajax.php?ajax_action=search_bc_cp',
-            minLength: 2,
-            dataType: "json",
-            select: function (event, ui) {
-                if (ui.item.type == 1) {
-                    $('#ajax_bc').val(ui.item.value);
-                    $('#bc_cp').val(ui.item.label);
-                    $('#art_table').dataTable().fnDraw();
-                }
-                else {
-                    $('#ajax_cp').val(ui.item.value);
-                    $('#bc_cp').val(ui.item.label);
-                    $('#art_table').dataTable().fnDraw();
-                }
-                return false;
-            }
-        });
-    });
-</script>
-
 <table width="100%">
     <tr>
         <td width="200" class="content_header">
@@ -280,19 +254,6 @@ else
                         }
                         ?>
                     </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td valing="top">Kunde/Ansprechpartner:&nbsp;&nbsp;</td>
-                <td valign="top">
-                    <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
-                    <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
-                    <input name="bc_cp" id="bc_cp" style="width:200px;"
-                           onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}"
-                           class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    <img src="../../../images/icons/cross-script.png" class="pointer"
-                         onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();"
-                         title="Reset">
                 </td>
             </tr>
         </table>

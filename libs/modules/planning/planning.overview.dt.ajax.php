@@ -205,7 +205,6 @@
         "iTotalDisplayRecords" => $iFilteredTotal,
         "aaData" => array()
     );
-     
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
 //      $aColumns = array( 'id', 'number', 'title', 'customer', 'deliverydate', 'comment', 'type' );
@@ -286,4 +285,3 @@
     }
      
     echo json_encode( $output );
-?>

@@ -19,6 +19,7 @@ class PriceScale extends Model{
     public $max = 0;            // Max. Menge
     public $price = 0.0;        // Preis
     public $supplier = 0;       // Lieferant (nur bei EK)
+    public $artnum = '';        // Lieferant Art Num
 
     const TYPE_SELL = 1;
     const TYPE_BUY = 2;
@@ -80,8 +81,62 @@ class PriceScale extends Model{
                 'orderby'=>'price'
             ]
         ]);
+        if ($retval->getId()>0)
+            return tofloat($retval->getPrice());
+        else {
+            $retval = self::fetchSingle([
+                [
+                    'column'=>'article',
+                    'value'=>$article->getId()
+                ],
+                [
+                    'column'=>'type',
+                    'value'=>$type
+                ],
+                [
+                    'orderby'=>'price'
+                ]
+            ]);
+            if ($retval->getId()>0)
+                return tofloat($retval->getPrice());
+            else
+                return 0;
+        }
+    }
+
+    /**
+     * @param Article $article
+     * @param int $amount
+     * @param int $type
+     * @return PriceScale
+     */
+    public static function getPriceScaleForAmount(Article $article, $amount, $type = self::TYPE_SELL)
+    {
+        $retval = self::fetchSingle([
+            [
+                'column'=>'article',
+                'value'=>$article->getId()
+            ],
+            [
+                'column'=>'type',
+                'value'=>$type
+            ],
+            [
+                'column'=>'min',
+                'operator'=>'>=',
+                'value'=>$amount
+            ],
+            [
+                'column'=>'max',
+                'operator'=>'<=',
+                'value'=>$amount
+            ],
+            [
+                'orderby'=>'price'
+            ]
+        ]);
         if ($retval)
-            return tofloat($retval[0]->getPrice());
+            return $retval;
         else {
             $retval = self::fetchSingle([
                 [
@@ -97,9 +152,9 @@ class PriceScale extends Model{
                 ]
             ]);
             if ($retval)
-                return tofloat($retval[0]->getPrice());
+                return $retval;
             else
-                return 0;
+                return false;
         }
     }
 
@@ -222,5 +277,19 @@ class PriceScale extends Model{
         $this->supplier = $supplier;
     }
 
+    /**
+     * @return string
+     */
+    public function getArtnum()
+    {
+        return $this->artnum;
+    }
 
+    /**
+     * @param string $artnum
+     */
+    public function setArtnum($artnum)
+    {
+        $this->artnum = $artnum;
+    }
 }

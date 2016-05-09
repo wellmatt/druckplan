@@ -9,6 +9,7 @@
 require_once("menu.class.php");
 global $_USER;
 global $_CACHE;
+global $_CONFIG;
 
 function printSubTree($tree, $i = 1)
 {
@@ -63,13 +64,6 @@ function printChildTree($tree, $i = 1)
         
     }
 }
-$usermenustr = "menu_getcached_".$_USER->getId();
-$_MENU = $_CACHE->get($usermenustr);
-if ($_MENU === null)
-{
-    $_MENU = new Menu();
-    $_CACHE->set($usermenustr,$_MENU, $_CONFIG->cache->menu);
-}
+$_MENU = new Menu();
 
 printSubTree($_MENU->getElements());
-?>

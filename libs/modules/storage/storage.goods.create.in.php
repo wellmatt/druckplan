@@ -7,149 +7,185 @@
  *
  */
 
-$positions = SupOrderPosition::getAllForSupOrder($origin);
+
 ?>
 
 <?php foreach ($positions as $position) {
-    $storages = StorageArea::getStoragesPrioArticle($position->getArticle());
-    ?>
+    $article = $position->getArticle();
+    if ($article->getUsesstorage()){
+        $storages = StorageArea::getStoragesPrioArticle($article);
+        $bookamount = StorageBookEnrty::calcutateToBookAmount($position);
+        if ($bookamount>0){?>
 
-    <div class="panel panel-default">
-    	  <div class="panel-heading" id="heading_<?php echo $position->getId();?>" style="background-color: #f2dede;">
-    			<h3 class="panel-title">
-                    <?php echo $position->getArticle()->getTitle();?>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-                </h3>
-    	  </div>
-    	  <div class="panel-body slidepanel">
-              <div class="row">
-                  <div class="col-md-6">
-                      <b>Artikelname:</b> <?php echo $position->getArticle()->getTitle();?>
+            <div class="panel artpanel panel-default">
+                  <div class="panel-heading" id="heading_<?php echo $position->getId();?>" style="background-color: #f2dede;">
+                        <h3 class="panel-title">
+                            <?php echo $position->getArticle()->getTitle();?>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                            <span class="pull-right"><?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getNumber();?>&nbsp;&nbsp;</span>
+                        </h3>
                   </div>
-                  <div class="col-md-6">
-                      <b>Artikelnummer:</b> <?php echo $position->getArticle()->getNumber();?>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-md-6">
-                      <b>Eingegangen:</b> <span id="book_amount_<?php echo $position->getId();?>"><?php echo $position->getAmount();?></span>
-                  </div>
-                  <div class="col-md-6">
-                      <b>zu Buchen:</b> <span class="" id="tobook_<?php echo $position->getId();?>"><?php echo StorageBookEnrty::calcutateToBookAmount($position);?></span>
-                  </div>
-              </div>
-              <br>
-              <?php if (count($storages['prio'])>0){?>
-              <div class="row">
-                  <div class="col-md-12">
-                      <div class="panel panel-default">
-                          <div class="panel-heading">
-                              <h3 class="panel-title">Bestandslager mit freier Belegung</h3>
+                  <div class="panel-body slidepanel">
+                      <div class="row">
+                          <div class="col-md-6">
+                              <b>Artikelname:</b> <?php echo $position->getArticle()->getTitle();?>
                           </div>
-                          <div class="panel-body">
-                                  <div class="row">
-                                      <div class="col-md-2"><b>Lager-Name</b></div>
-                                      <div class="col-md-2"><b>Ges.-Belegung</b></div>
-                                      <div class="col-md-2"><b>Belegung d. Art.</b></div>
-                                      <div class="col-md-3"><b>Buchung</b></div>
-                                      <div class="col-md-3"><b>neue Belegung</b></div>
-                                  </div>
-                                  <?php foreach ($storages['prio'] as $storage) {
-                                      $this_storage = new StorageArea($storage['id']);
-                                      $this_position = new StoragePosition($storage['posid']);?>
-                                      <div class="row">
-                                          <div class="col-md-2">
-                                              <?php echo $this_storage->getName();?>
-                                          </div>
-                                          <div class="col-md-2">
-                                              <?php echo $storage['alloc'];?>%
-                                          </div>
-                                          <div class="col-md-2">
-                                              <?php echo $this_position->getAllocation();?>%
-                                          </div>
-                                          <div class="col-md-3">
-                                              <input type="text" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][amount]" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="input-group">
-                                                  <div class="input-group-btn">
-                                                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
-                                                      <ul class="dropdown-menu">
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,0);">0%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,25);">25%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,50);">50%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,75);">75%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
-                                                      </ul>
-                                                  </div>
-                                                  <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
-                                                  <span class="input-group-addon">%</span>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <?php
-                                  }?>
+                          <div class="col-md-6">
+                              <b>Artikelnummer:</b> <?php echo $position->getArticle()->getNumber();?>
                           </div>
                       </div>
-                  </div>
-              </div>
-              <?php }
-              if (count($storages['other'])>0){?>
-              <div class="row">
-                  <div class="col-md-12">
-                      <div class="panel panel-default">
-                          <div class="panel-heading">
-                              <h3 class="panel-title">Lager mit freier Belegung</h3>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <b>Eingegangen:</b> <span id="book_amount_<?php echo $position->getId();?>"><?php echo $position->getAmount();?></span>
                           </div>
-                          <div class="panel-body">
-                                  <div class="row">
-                                      <div class="col-md-2"><b>Lager-Name</b></div>
-                                      <div class="col-md-2"><b>Ges.-Belegung</b></div>
-                                      <div class="col-md-2"><b>&nbsp;</b></div>
-                                      <div class="col-md-3"><b>Buchung</b></div>
-                                      <div class="col-md-3"><b>neue Belegung</b></div>
-                                  </div>
-                                  <?php foreach ($storages['other'] as $storage) {
-                                      $this_storage = new StorageArea($storage['id']);?>
-                                      <div class="row">
-                                          <div class="col-md-2">
-                                              <?php echo $this_storage->getName();?>
-                                          </div>
-                                          <div class="col-md-2">
-                                              <?php echo $storage['alloc'];?>%
-                                          </div>
-                                          <div class="col-md-2">
-                                              &nbsp;
-                                          </div>
-                                          <div class="col-md-3">
-                                              <input type="text" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][amount]" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="input-group">
-                                                  <div class="input-group-btn">
-                                                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
-                                                      <ul class="dropdown-menu">
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,0);">0%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,25);">25%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,50);">50%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,75);">75%</a></li>
-                                                          <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
-                                                      </ul>
-                                                  </div>
-                                                  <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
-                                                  <span class="input-group-addon">%</span>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <?php
-                                  }?>
+                          <div class="col-md-6">
+                              <b>zu Buchen:</b> <span class="" id="tobook_<?php echo $position->getId();?>"><?php echo StorageBookEnrty::calcutateToBookAmount($position);?></span>
                           </div>
                       </div>
+                      <br>
+                      <?php if (count($storages['prio'])>0){?>
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="panel panel-default">
+                                  <div class="panel-heading">
+                                      <h3 class="panel-title">Bestandslager mit freier Belegung</h3>
+                                  </div>
+                                  <div class="panel-body">
+                                          <div class="row">
+                                              <div class="col-md-2"><b>Lager-Name</b></div>
+                                              <div class="col-md-2"><b>Ges.-Belegung</b></div>
+                                              <div class="col-md-2"><b>Belegung d. Art.</b></div>
+                                              <div class="col-md-3"><b>Buchung</b></div>
+                                              <div class="col-md-3"><b>neue Belegung</b></div>
+                                          </div>
+                                          <?php foreach ($storages['prio'] as $storage) {
+                                              $this_storage = new StorageArea($storage['id']);
+                                              $this_position = new StoragePosition($storage['posid']);?>
+                                              <div class="row">
+                                                  <div class="col-md-2">
+                                                      <?php echo $this_storage->getName();?>
+                                                  </div>
+                                                  <div class="col-md-2">
+                                                      <?php echo $storage['alloc'];?>%
+                                                  </div>
+                                                  <div class="col-md-2">
+                                                      <?php echo $this_position->getAmount() . ' Stk. ( ' . $this_position->getAllocation();?>% )
+                                                  </div>
+                                                  <div class="col-md-3">
+                                                      <input type="text" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][amount]" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
+                                                  </div>
+                                                  <div class="col-md-3">
+                                                      <div class="input-group">
+                                                          <div class="input-group-btn">
+                                                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
+                                                              <ul class="dropdown-menu">
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,0);">0%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,25);">25%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,50);">50%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,75);">75%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
+                                                              </ul>
+                                                          </div>
+                                                          <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
+                                                          <span class="input-group-addon">%</span>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <br>
+                                              <div class="row">
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Ort: </span> <?=$this_storage->getLocation()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Gang: </span> <?=$this_storage->getCorridor()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Regal: </span> <?=$this_storage->getShelf()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Reihe: </span> <?=$this_storage->getLine()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Ebene: </span> <?=$this_storage->getLayer()?></div>
+                                                  <div class="col-md-2">
+                                                      <span style="font-weight: bold;">Priorit&auml;t</span>
+                                                      <?php if ($this_storage->getPrio() == 0) echo 'Niedrig';?>
+                                                      <?php if ($this_storage->getPrio() == 1) echo 'Mittel';?>
+                                                      <?php if ($this_storage->getPrio() == 2) echo 'Hoch';?>
+                                                  </div>
+                                              </div>
+                                              <hr>
+                                              <?php
+                                          }?>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <?php }
+                      if (count($storages['other'])>0){?>
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="panel panel-default">
+                                  <div class="panel-heading">
+                                      <h3 class="panel-title">Lager mit freier Belegung</h3>
+                                  </div>
+                                  <div class="panel-body">
+                                          <div class="row">
+                                              <div class="col-md-2"><b>Lager-Name</b></div>
+                                              <div class="col-md-2"><b>Ges.-Belegung</b></div>
+                                              <div class="col-md-2"><b>&nbsp;</b></div>
+                                              <div class="col-md-3"><b>Buchung</b></div>
+                                              <div class="col-md-3"><b>neue Belegung</b></div>
+                                          </div>
+                                          <?php foreach ($storages['other'] as $storage) {
+                                              $this_storage = new StorageArea($storage['id']);?>
+                                              <div class="row">
+                                                  <div class="col-md-2">
+                                                      <?php echo $this_storage->getName();?>
+                                                  </div>
+                                                  <div class="col-md-2">
+                                                      <?php echo $storage['alloc'];?>%
+                                                  </div>
+                                                  <div class="col-md-2">
+                                                      &nbsp;
+                                                  </div>
+                                                  <div class="col-md-3">
+                                                      <input type="text" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][amount]" data-bookid="<?php echo $position->getId();?>" class="form-control bookinput tobook_<?php echo $position->getId();?>" placeholder="X auf dieses Lager buchen">
+                                                  </div>
+                                                  <div class="col-md-3">
+                                                      <div class="input-group">
+                                                          <div class="input-group-btn">
+                                                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
+                                                              <ul class="dropdown-menu">
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,0);">0%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,25);">25%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,50);">50%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,75);">75%</a></li>
+                                                                  <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
+                                                              </ul>
+                                                          </div>
+                                                          <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
+                                                          <span class="input-group-addon">%</span>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <br>
+                                              <div class="row">
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Ort: </span> <?=$this_storage->getLocation()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Gang: </span> <?=$this_storage->getCorridor()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Regal: </span> <?=$this_storage->getShelf()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Reihe: </span> <?=$this_storage->getLine()?></div>
+                                                  <div class="col-md-2"><span style="font-weight: bold;">Ebene: </span> <?=$this_storage->getLayer()?></div>
+                                                  <div class="col-md-2">
+                                                      <span style="font-weight: bold;">Priorit&auml;t</span>
+                                                      <?php if ($this_storage->getPrio() == 0) echo 'Niedrig';?>
+                                                      <?php if ($this_storage->getPrio() == 1) echo 'Mittel';?>
+                                                      <?php if ($this_storage->getPrio() == 2) echo 'Hoch';?>
+                                                  </div>
+                                              </div>
+                                              <hr>
+                                              <?php
+                                          }?>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <?php } ?>
                   </div>
-              </div>
-              <?php } ?>
-    	  </div>
-    </div>
+            </div>
+        <?php } ?>
+    <?php } ?>
 <?php } ?>
 
 <script>
@@ -177,9 +213,7 @@ $positions = SupOrderPosition::getAllForSupOrder($origin);
     });
     $(document).on('change', '.bookinput', function(e){
         var id = $(this).attr('data-bookid');
-        console.log('ID: '+id);
         var amount = $('#book_amount_'+id).text();
-        console.log('amount: '+amount);
         var now = 0;
         var inputs = $('.tobook_'+id);
 
@@ -191,27 +225,25 @@ $positions = SupOrderPosition::getAllForSupOrder($origin);
         inputs.each(function( index, ele ) {
             if (isNaN(parseInt($(ele).val())) == false){
                 now = now + parseInt($(ele).val());
-                console.log('now+ : '+ parseInt($(ele).val()));
             }
         });
         var result = amount - now;
-        console.log('result: '+ result);
         $('#tobook_'+id).text(result);
         if (result == 0)
             $('#heading_'+id).css('background-color','#dff0d8');
         else
             $('#heading_'+id).css('background-color','#f2dede');
-    })
+    });
     $(document).on('click', '.panel-heading span.clickable', function(e){
         var $this = $(this);
         if(!$this.hasClass('panel-collapsed')) {
-            $this.parents('.panel').find('.slidepanel').slideUp();
+            $this.parents('.artpanel').find('.slidepanel').slideUp();
             $this.addClass('panel-collapsed');
             $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
         } else {
-            $this.parents('.panel').find('.slidepanel').slideDown();
+            $this.parents('.artpanel').find('.slidepanel').slideDown();
             $this.removeClass('panel-collapsed');
             $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
         }
-    })
+    });
 </script>

@@ -143,18 +143,63 @@ if ($_REQUEST["exec"] == "edit"){
     	</div>
     </div>
 </div>
-<?php if ($storagearea->getId()>0){ ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-        	  <div class="panel-heading">
-        			<h3 class="panel-title">Lagerpositionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.article.frame.php?stid=<?php echo $storagearea->getId();?>');"/></h3>
-        	  </div>
-        	  <div class="panel-body" id="storagepositionbox">
-        	  </div>
+<?php if ($storagearea->getId()>0){
+    $book_entries = StorageBookEnrty::getAllForArea($storagearea);?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                  <div class="panel-heading">
+                        <h3 class="panel-title">Lagerpositionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.article.frame.php?stid=<?php echo $storagearea->getId();?>');"/></h3>
+                  </div>
+                  <div class="panel-body" id="storagepositionbox">
+                  </div>
+            </div>
         </div>
     </div>
-</div>
+    <?php if (count($book_entries)>0){ ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Letzte 25 Buchungen</h3>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Artikel</th>
+                                <th>Anzahl</th>
+                                <th>Belegung</th>
+                                <th>Herkunft</th>
+                                <th>Datum</th>
+                                <th>User</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($book_entries as $booke){ ?>
+                                <tr>
+                                    <td><?php echo $booke->getId();?></td>
+                                    <td><?php echo $booke->getArticle()->getTitle();?></td>
+                                    <?php if ($booke->getType() == 1){?>
+                                        <td>+<?php echo $booke->getAmount();?></td>
+                                    <?php } elseif ($booke->getType() == 2){?>
+                                        <td>-<?php echo $booke->getAmount();?></td>
+                                    <?php } ?>
+                                    <td><?php echo $booke->getAlloc();?>%</td>
+                                    <td><?php echo $booke->getOrigin()->getNumber();?></td>
+                                    <td><?php echo date('d.m.y H:i',$booke->getCrtdate());?></td>
+                                    <td><?php echo $booke->getCrtuser()->getNameAsLine();?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
 <?php } ?>
 
 

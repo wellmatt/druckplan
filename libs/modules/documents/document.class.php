@@ -505,18 +505,17 @@ class Document
             }
             Global $_BASEDIR;
             
-            $format = Array(
-                $pdf_width,
-                $pdf_height
-            );
+            $format = Array( $pdf_width, $pdf_height );
             
             $pdf = new PersoPDF($direction, 'mm', $format, true, 'UTF-8', false);
-            $pdf->SetPrintHeader(false);
-            $pdf->SetPrintFooter(false);
 
             if ($version == self::VERSION_EMAIL){
                 $pdf->setHeaderfile('docs/personalization/'.$order->getPicture());
                 $pdf->SetPrintHeader(true);
+                $pdf->SetPrintFooter(false);
+                $pdf->AddPage();
+            } else {
+                $pdf->SetPrintHeader(false);
                 $pdf->SetPrintFooter(false);
                 $pdf->AddPage();
             }
@@ -533,16 +532,17 @@ class Document
             if ($order->getType() == 1)
             {
                 $this->setReverse(1);
-                $pdf->SetPrintHeader(false);
-                $pdf->SetPrintFooter(false);
 
                 if ($version == self::VERSION_EMAIL){
                     $pdf->setHeaderfile('docs/personalization/'.$order->getPicture2());
                     $pdf->SetPrintHeader(true);
                     $pdf->SetPrintFooter(false);
                     $pdf->AddPage();
+                } else {
+                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintFooter(false);
+                    $pdf->AddPage();
                 }
-
                 if ($this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
                     if ($this->type == self::TYPE_PERSONALIZATION) {
                         require 'docs/templates/personalization.tmpl.php';
@@ -552,7 +552,6 @@ class Document
                     }
                 }
             }
-            
         } else {
 
             $docformat = DocumentFormat::getForDocType($this->type);
@@ -574,37 +573,6 @@ class Document
             $pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
             $pdf->AddPage();
 
-
-            // Normale Dokumente oder Label
-//            if ($this->type == self::TYPE_LABEL) {
-//                $format[0] = 106;
-//                $format[1] = 60;
-//                $pdf = new TCPDF('L','mm',$format);
-//            } elseif ($this->type == self::TYPE_FACTORY){
-//                $pdf = new TCPDF('L','mm',$format);
-//                $pref= new Perferences();
-//                $pdf->SetPrintHeader(false);
-//                $pdf->SetPrintFooter(false);
-//                $pdf->setPageOrientation('L', TRUE, $pref->getPdf_margin_bottom());
-//                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
-//                $pdf->AddPage();
-//            } else {
-//                $pref= new Perferences();
-//                if ($version == self::VERSION_EMAIL)
-//                {
-//                    $pdf = new TCPDF_BG('P', 'mm', 'A4', true, 'UTF-8', false);
-//                    $pdf->SetPrintFooter(false);
-//                }
-//                else
-//                {
-//                    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-//                    $pdf->SetPrintHeader(false);
-//                    $pdf->SetPrintFooter(false);
-//                }
-//                $pdf->setPageOrientation('P', TRUE, $pref->getPdf_margin_bottom());
-//                $pdf->SetMargins($this->tofloat($pref->getPdf_margin_left()), $this->tofloat($pref->getPdf_margin_top()), $this->tofloat($pref->getPdf_margin_right()), TRUE);
-//                $pdf->AddPage();
-//            }
         }
         
         // apply specific template

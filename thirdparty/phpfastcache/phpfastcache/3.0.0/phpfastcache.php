@@ -60,7 +60,7 @@ class phpFastCache {
 		"htaccess"      => true,
 		"path"      =>  "",
 
-		"memcache"        =>  array(
+		"memcached"        =>  array(
 			array("127.0.0.1",11211,1),
 			//  array("new.host.ip",11211,1),
 		),

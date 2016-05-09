@@ -1,4 +1,6 @@
 <?php
+error_reporting(-1);
+ini_set('display_errors', 1);
 require_once("config.php");
 require_once("libs/basic/mysql.php");
 require_once("libs/basic/globalFunctions.php");
@@ -20,17 +22,29 @@ require_once 'libs/modules/finishings/finishing.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/personalization/personalization.order.class.php';
+require_once "thirdparty/phpfastcache/phpfastcache.php";
+require_once 'libs/basic/cachehandler/cachehandler.class.php';
 session_start();
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 global $_LANG;
 
-// Login
-$_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
-$_LANG = $_USER->getLang();
 
+$_CACHE = phpFastCache("memcached");
 
-error_reporting(-1);
-ini_set('display_errors', 1);
+//$_CACHE->clean();
+
+//$test = Cachehandler::fromCache('cc4c4a5dfgfca54345ddg2343f511399de3c49_Article_3');
+//prettyPrint($test);
+
+$m = new Memcached();
+$m->addServers(array(array('127.0.0.1',11211)));
+
+prettyPrint($m->getAllKeys());
+
+//$bc = new BusinessContact(1);
+//prettyPrint($bc);
+
+//prettyPrint($m->getAllKeys());

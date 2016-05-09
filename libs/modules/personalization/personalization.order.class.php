@@ -42,28 +42,67 @@ class Personalizationorder{
 		$this->crtuser = new User();
 		
 		if ($id > 0){
-			$sql = "SELECT * FROM personalization_orders WHERE id = {$id}";
-			if($DB->num_rows($sql)){
-				$r = $DB->select($sql);
-				$r = $r[0];
-				$this->id = $r["id"];
-				$this->status = $r["status"];
-				$this->title = $r["title"];
-				$this->persoID = $r["persoid"];
-				$this->documentID = $r["documentid"];
-				$this->customerID = $r["customerid"];
-				$this->comment = $r["comment"];
-				$this->orderdate = $r["orderdate"];
-				$this->amount = $r["amount"];
-				$this->contactPersonID = $r["contact_person_id"];
-				$this->deliveryAddressID = $r["deliveryaddress_id"];
-					
-				if ($r["crtuser"] != 0 && $r["crtuser"] != "" ){
-					$this->crtuser = new User($r["crtuser"]);
-					$this->crtdate = $r["crtdate"];
+			$valid_cache = true;
+			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+				$cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+				if (get_class($cached) == get_class($this)){
+					$vars = array_keys(get_class_vars(get_class($this)));
+					foreach ($vars as $var)
+					{
+						$method = "get".ucfirst($var);
+						$method2 = $method;
+						$method = str_replace("_", "", $method);
+						if (method_exists($this,$method))
+						{
+							if(is_object($cached->$method()) === false) {
+								$this->$var = $cached->$method();
+							} else {
+								$class = get_class($cached->$method());
+								$this->$var = new $class($cached->$method()->getId());
+							}
+						} elseif (method_exists($this,$method2)){
+							if(is_object($cached->$method2()) === false) {
+								$this->$var = $cached->$method2();
+							} else {
+								$class = get_class($cached->$method2());
+								$this->$var = new $class($cached->$method2()->getId());
+							}
+						} else {
+							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+							$valid_cache = false;
+						}
+					}
 				} else {
-					$this->crtuser = new User(0);
-					$this->crtdate = 0;
+					$valid_cache = false;
+				}
+			} else {
+				$valid_cache = false;
+			}
+			if ($valid_cache === false) {
+				$sql = "SELECT * FROM personalization_orders WHERE id = {$id}";
+				if ($DB->num_rows($sql)) {
+					$r = $DB->select($sql);
+					$r = $r[0];
+					$this->id = $r["id"];
+					$this->status = $r["status"];
+					$this->title = $r["title"];
+					$this->persoID = $r["persoid"];
+					$this->documentID = $r["documentid"];
+					$this->customerID = $r["customerid"];
+					$this->comment = $r["comment"];
+					$this->orderdate = $r["orderdate"];
+					$this->amount = $r["amount"];
+					$this->contactPersonID = $r["contact_person_id"];
+					$this->deliveryAddressID = $r["deliveryaddress_id"];
+
+					if ($r["crtuser"] != 0 && $r["crtuser"] != "") {
+						$this->crtuser = new User($r["crtuser"]);
+						$this->crtdate = $r["crtdate"];
+					} else {
+						$this->crtuser = new User(0);
+						$this->crtdate = 0;
+					}
+					Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 				}
 			}
 		}
@@ -89,6 +128,7 @@ class Personalizationorder{
 					contact_person_id = {$this->contactPersonID}, 
 					deliveryaddress_id = {$this->deliveryAddressID}
 					WHERE id = {$this->id}";
+			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization_orders
@@ -105,6 +145,7 @@ class Personalizationorder{
 				$sql = "SELECT max(id) id FROM personalization_orders WHERE persoid = {$this->persoID} AND customerid = {$this->customerID} ";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
+				Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
 				return true;
 			} else {
 				return false;
@@ -125,6 +166,7 @@ class Personalizationorder{
 					status = 0
 					WHERE id = {$this->id}";
 			if($DB->no_result($sql)){
+				Cachehandler::removeCache(Cachehandler::genKeyword($this));
 				unset($this);
 				return true;
 			} else {
@@ -440,5 +482,21 @@ class Personalizationorder{
     {
         $this->deliveryAddressID = $deliveryAddressID;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getDocumentID()
+	{
+		return $this->documentID;
+	}
+
+	/**
+	 * @param mixed $documentID
+	 */
+	public function setDocumentID($documentID)
+	{
+		$this->documentID = $documentID;
+	}
 }
 ?>

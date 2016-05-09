@@ -42,7 +42,7 @@ if($_REQUEST["createDoc"]){
         $doc->setType(Document::TYPE_FACTORY);
     if($_REQUEST["createDoc"] == "delivery") {
 		$doc->setType(Document::TYPE_DELIVERY);
-		$collectinv->setRdyfordispatch(1);
+		$collectinv->setStatus(5);
 		$collectinv->save();
 	}
     if($_REQUEST["createDoc"] == "invoice")
