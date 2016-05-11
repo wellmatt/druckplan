@@ -18,6 +18,11 @@ class ArticleQualifiedUser extends Model
     public $article = 0;
     public $user = 0;
 
+    protected function bootClasses()
+    {
+        $this->user = new User((int)$this->user);
+    }
+
     /**
      * @param Article $article
      * @return ArticleQualifiedUser[]
@@ -54,7 +59,7 @@ class ArticleQualifiedUser extends Model
     }
 
     /**
-     * @return int
+     * @return User
      */
     public function getUser()
     {
@@ -62,7 +67,7 @@ class ArticleQualifiedUser extends Model
     }
 
     /**
-     * @param int $user
+     * @param User $user
      */
     public function setUser($user)
     {

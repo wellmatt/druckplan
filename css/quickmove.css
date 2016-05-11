@@ -1,0 +1,64 @@
+/*
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
+
+#quickmove{
+    position:fixed;
+    top:100px;
+    left:0px;
+    z-index:999;
+    height:50px;
+    /*margin-left:10px;*/
+    margin-top:100px;
+}
+#quickmove .label{
+    padding-left:20px;
+    font-size:14px;
+    font-weight:bold;
+    background:#f8f8f8;
+    color:#797979;
+}
+#quickmove span{
+    font-size:18px;
+    margin-right: 15px;
+}
+#quickmove .quickmove .quickmove_item{
+    display:block;
+    background:#f8f8f8;
+    color:#797979;
+    padding:10px 10px;
+    font-size:12px;
+    text-decoration:none;
+    width:40px;
+    transition: width 0.5s;
+    -webkit-transition: width 0.5s;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#quickmove .quickmove a.quickmove_item:hover{
+    background:#dfdfdf;
+    color:#343434;
+    width:150px;
+}
+#quickmove .quickmove .quickmove_item_danger{
+    display:block;
+    background:#fa6262;
+    color:#bbb;
+    padding:10px 10px;
+    font-size:12px;
+    text-decoration:none;
+    width:40px;
+    transition: width 0.5s;
+    -webkit-transition: width 0.5s;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#quickmove .quickmove a.quickmove_item_danger:hover{
+    background:#fa6262;
+    color:#343434;
+    width:150px;
+}

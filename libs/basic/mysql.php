@@ -20,20 +20,24 @@ class DBMysql {
       $this->dbpass = $conf->pass;
       $this->dbname = $conf->name;
       
-      $this->conn = mysql_connect($this->dbhost, $this->dbuser, $this->dbpass);
+//      $this->conn = mysql_connect($this->dbhost, $this->dbuser, $this->dbpass);
+      $this->conn = mysqli_connect($this->dbhost,$this->dbuser,$this->dbpass);
       if ($this->conn)
-         mysql_select_db($this->dbname, $this->conn);
+         mysqli_select_db($this->conn,$this->dbname);
+//         mysql_select_db($this->dbname, $this->conn);
       else
          return false;
       
-      mysql_set_charset("utf8", $this->conn);
+//      mysql_set_charset("utf8", $this->conn);
+      mysqli_set_charset($this->conn,'utf8');
       
       return true;
    }
    
    // Disconnect
    function disconnect() {
-      mysql_close($this->conn);
+      mysqli_close($this->conn);
+//      mysql_close($this->conn);
       $this->conn = false;
       
       return false;
@@ -43,9 +47,11 @@ class DBMysql {
    function select($sql) {
 //      echo $sql . "</br>";
       $retval = Array();
-      $res = mysql_query($sql, $this->conn);
+//      $res = mysql_query($sql, $this->conn);
+      $res = mysqli_query($this->conn,$sql);
       if ($res) {
-         while ($data = mysql_fetch_assoc($res))
+//         while ($data = mysql_fetch_assoc($res))
+         while ($data = mysqli_fetch_assoc($res))
          {
             $retval[] = $data;
          }
@@ -57,7 +63,8 @@ class DBMysql {
    // falls keine Daten ausgelesen werden
    function no_result($sql) {
 //      echo $sql . "</br>";
-      $res = mysql_query($sql);
+//      $res = mysql_query($sql);
+      $res = mysqli_query($this->conn,$sql);
       if ($res)
          return true;
       else
@@ -67,9 +74,11 @@ class DBMysql {
    // num_rows
    function num_rows($sql) {
 //      echo $sql . "</br>";
-      $res = mysql_query($sql, $this->conn);
+//      $res = mysql_query($sql, $this->conn);
+      $res = mysqli_query($this->conn,$sql);
       if ($res)
-         return mysql_num_rows($res);
+//         return mysql_num_rows($res);
+         return mysqli_num_rows($res);
       else
          return 0;
    }
@@ -77,8 +86,8 @@ class DBMysql {
    // get last error 
    function getLastError()
    {
-      return mysql_error();
+//      return mysql_error();
+      return mysqli_error($this->conn);
    }
    
 }
-?>

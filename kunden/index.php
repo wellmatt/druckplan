@@ -112,7 +112,7 @@ if ($_SESSION["login_type"] == "businesscontact"){
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
 <head>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+<!--    <link rel="stylesheet" type="text/css" href="css/main.css">-->
     <title>Kundenportal</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     
@@ -122,12 +122,16 @@ if ($_SESSION["login_type"] == "businesscontact"){
 	<script type="text/javascript" src="../jscripts/jquery/local/jquery.ui.datepicker-de.js"></script>
 	<link type="text/css" href="../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
 	<!-- /jQuery -->
+	<!-- Bootstrap -->
+	<link href="../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<script type="text/javascript" src="../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<!-- /Bootstrap -->
 	
 	<script language="javascript" src="../jscripts/basic.js"></script>
 </head>
 
 <body>
-		<img src="images/back.jpg" id="background" border="0">
 
 <? 
 if ($_REQUEST["exec"] == "register_tmp"){
@@ -146,119 +150,67 @@ if ($_REQUEST["exec"] == "register_tmp"){
 		&emsp;
 		</div>
 		
-		<div id="maincontent">
 
-		    <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
-		    <tr  height="100">
-		    	<td>&nbsp;</td>
-		    	<td> 
-		    		<br>
-		    		<b><?=$_LANG->get("Firmendaten")?>:</b>
-		    		<hr>
-		    		<table width="100%">
-			    		<colgroup>
-					    	<col width="350">
-					    	<col >
-					    	<col width="250">
-					    	<col width="250">
-			    		</colgroup>
-			    		<tr>
-				    		<td><img src="./../images/icons/building-old.png" alt=""> <?=$busicon->getNameAsLine();?></td>
-				    		<td> 
-				    			<? if($busicon->getPhone() != "" && $busicon->getPhone() != NULL){ ?>
-				    			<img src="./../images/icons/telephone.png" alt="TEL"> <?=$busicon->getPhone()?>
-				    			<? } ?>  &ensp;
-				    		</td>
-				    		<td>&emsp;</td>
-				    		<td align="right">
-				    		<?	if ($busicon->getLoginexpire() != 0) { 
-				    				echo '<b class="msg_error">'.$_LANG->get("Login g&uuml;ltig bis").": ".date("d.m.Y", $busicon->getLoginexpire()).'</b>';
-				    			} ?>   &ensp;
-				    		</td>
-			    		</tr>
-			    		<tr>
-				  		  	<td>&emsp;&ensp; <? echo $busicon->getAddress1()." ".$busicon->getAddress2();?></td>
-				  		  	<td>
-				  		  	<? if($busicon->getFax() != "" && $busicon->getFax() != NULL){?>
-				    			<img src="./../images/icons/telephone-fax.png" alt="FAX">  <?= $busicon->getFax()?>
-				    		<? } ?>  &ensp;
-				    		</td>
-				    		<td>&emsp;</td>
-				    		<td align="right"> 
-				    			 <?=$_LANG->get('Login')." (".$login_type_str.")"?>  
-				    		</td>
-			  		  	</tr>
-			  		  	<tr>
-				  		  	<td>&emsp;&ensp; <? echo $busicon->getZip()." ".$busicon->getCity();?></td>
-				  		  	<td><img src="./../images/icons/mail.png" alt="Mail"> <?= $busicon->getEmail()?></td>
-				  		  	<td align="center">
-				  		  		<?if($enabled_tickets == "on"){?>
-				  		  		<a href="index.php?pid=20&exec=new"><img src="./../images/icons/ticket--plus.png" alt="">Neues Ticket</a>
-				  		  		<? } ?>
-				  		  	</td>
-				  		  	<td align="right">
-				  		  		<a href="index.php?exec=logout">
-		    						<img src="../images/icons/door-open-out.png"> Abmelden
-								</a>
-				  		  	</td>
-			  		  	</tr>
-			   		</table>
-					<br/>
-		    	</td>
-		    	<td>&nbsp;</td>
-		    </tr>
-		    <tr>
-		        <td>&nbsp;</td>
-		        <td id="innerFrame">
-		            <div id="menuframe">
-		                <ul class="menu">
-		                    <li class="menu <?if($_REQUEST["pid"] == 1 || $_REQUEST["pid"] == "") echo "active";?>" onclick="location.href='index.php?pid=1'"
-		                    	style="width:115px;">Meine Dateien</li>
-		                    <li class="menu <?if($_REQUEST["pid"] == 2) echo "active";?>" onclick="location.href='index.php?pid=2'"
-		                    	style="width:115px;">Neue Datei</li>
-		                    <li class="menu <?if($_REQUEST["pid"] == 3) echo "active";?>" onclick="location.href='index.php?pid=3'"
-		                    	style="width:115px;">Profil</li>
-		                    <?if($enabled_tickets == "on"){?>
-		                    	<li class="menu <?if($_REQUEST["pid"] == 20) echo "active";?>" onclick="location.href='index.php?pid=20'"
-		                    	style="width:115px;">Tickets</li>
-		                    <?}?>
-		                    <?if($enabled_persos == "on"){?>
-		                    	<li class="menu <?if($_REQUEST["pid"] == 40) echo "active";?>" onclick="location.href='index.php?pid=40'">Personalisierungen</li>
-		                    <?}?>
-		                    <?if($enabled_article == "on"){?>
-		                    	<li class="menu <?if($_REQUEST["pid"] == 60) echo "active";?>" onclick="location.href='index.php?pid=60'"
-		                    	style="width:115px;">Artikel</li>
-		                    <?} ?>
-							<?if($enabled_marketing == "on"){?>
-								<li class="menu <?if($_REQUEST["pid"] == 100) echo "active";?>" onclick="location.href='index.php?pid=100'"
-									style="width:115px;">Marketing</li>
-							<?} ?>
-		                    <li class="menu <?if($_REQUEST["pid"] == 90) echo "active";?>" onclick="location.href='index.php?pid=90'"
-		                    	style="width:115px;">Historie</li>
-		                </ul>
-		            </div>
-		            
-		            <? 
-		            switch($_REQUEST["pid"])
-		            {
-		                case 1: require_once('kunden/files.php'); break;
-		                case 2: require_once('kunden/upload.php'); break;
-		                case 3: require_once('kunden/customerdetails.php'); break;
-		                case 20: require_once('kunden/modules/tickets/ticket.php'); break;
-		                case 40: require_once('kunden/personalization.php'); break;
-		                case 60: require_once('kunden/article.php'); break;
-		                case 80: require_once('kunden/modules/shoppingbasket/shoppingbasket.php'); break;
-		                case 90: require_once('kunden/orderhistory.php'); break;
-						case 100: require_once('kunden/marketing.php'); break;
-		                default: require_once 'kunden/files.php'; break;
-		            }            
-		            ?>
-		        </td>
-		        <td>&nbsp;</td>
-		    </tr>
-		    <tr height="100"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-		    </table>
-		</div>
+		<!-- Fixed navbar -->
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="<?if($_REQUEST["pid"] == 3 || $_REQUEST["pid"] == "") echo "active";?>"><a href="index.php?pid=3">Profil</a></li>
+						<li class="<?if($_REQUEST["pid"] == 2) echo "active";?>"><a href="index.php?pid=2">Upload</a></li>
+						<li class="<?if($_REQUEST["pid"] == 1) echo "active";?>"><a href="index.php?pid=1">Dateien</a></li>
+						<?if($enabled_tickets == "on"){?>
+							<li class="<?if($_REQUEST["pid"] == 20) echo "active";?>"><a href="index.php?pid=20">Tickets</a></li>
+						<?}?>
+						<?if($enabled_persos == "on"){?>
+							<li class="<?if($_REQUEST["pid"] == 40) echo "active";?>"><a href="index.php?pid=40">Personalisierungen</a></li>
+						<?}?>
+						<?if($enabled_article == "on"){?>
+							<li class="<?if($_REQUEST["pid"] == 60) echo "active";?>"><a href="index.php?pid=60">Artikel</a></li>
+						<?}?>
+						<?if($enabled_marketing == "on"){?>
+							<li class="<?if($_REQUEST["pid"] == 100) echo "active";?>"><a href="index.php?pid=100">Marketing</a></li>
+						<?}?>
+						<li class="<?if($_REQUEST["pid"] == 90) echo "active";?>"><a href="index.php?pid=90">Historie</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<?if($enabled_tickets == "on"){?>
+							<li><a href="index.php?pid=20&exec=new">Neues Ticket</a></li>
+						<? } ?>
+						<li><a href="index.php?exec=logout">Logout (<?php echo $_CONTACTPERSON->getNameAsLine();?>)</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</nav>
+
+		<div class="container" style="padding-top: 60px;">
+			<?
+			switch($_REQUEST["pid"])
+			{
+				case 1: require_once('kunden/files.php'); break;
+				case 2: require_once('kunden/upload.php'); break;
+				case 3: require_once('kunden/customerdetails.php'); break;
+				case 20: require_once('kunden/modules/tickets/ticket.php'); break;
+				case 40: require_once('kunden/personalization.php'); break;
+				case 60: require_once('kunden/article.php'); break;
+				case 80: require_once('kunden/modules/shoppingbasket/shoppingbasket.php'); break;
+				case 90: require_once('kunden/orderhistory.php'); break;
+				case 100: require_once('kunden/marketing.php'); break;
+				default: require_once 'kunden/files.php'; break;
+			}
+			?>
+		</div> <!-- /container -->
+
+
+
 	<? } 
 	} ?>
 </body>

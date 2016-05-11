@@ -134,7 +134,6 @@ class Orderposition{
 		global $DB;
 		foreach ($orderpositions as $opos){
 			//aus demo1 auskommentiert
-			//if ($opos->getId() == 0){
 			if ($opos->id == 0){
 				//Neuer Eintrag in DB
 				$sql = "INSERT INTO collectiveinvoice_orderposition
@@ -145,13 +144,13 @@ class Orderposition{
 						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, 
 						{$opos->getTax()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
 						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()}, {$opos->getFile_attach()}, {$opos->getPerso_order()} )";
-// 				echo $sql . "</br>";
 				$res = $DB->no_result($sql);
 				if($res){
 					$sql = " SELECT max(id) id FROM collectiveinvoice_orderposition";
 					$thisid = $DB->select($sql);
 					$opos->id = $thisid[0]["id"];
 					$result = true;
+					Cachehandler::toCache(Cachehandler::genKeyword($opos),$opos);
 				} else {
 					return false;
 				}
@@ -171,9 +170,9 @@ class Orderposition{
 						collectiveinvoice = {$opos->getCollectiveinvoice()},
 						perso_order = {$opos->getPerso_order()} 
 						WHERE id = {$opos->getId()}";
-// 				echo $sql . "</br>";
 				$res = $DB->no_result($sql);
 				if($res){
+					Cachehandler::toCache(Cachehandler::genKeyword($opos),$opos);
 					$result = true;
 				} else {
 					return false;
@@ -211,6 +210,7 @@ class Orderposition{
 		$sql = "UPDATE collectiveinvoice_orderposition SET status = 2 WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
 		if($res){
+			Cachehandler::removeCache(Cachehandler::genKeyword($this));
 			unset($this);
 			return true;
 		} else {
@@ -228,6 +228,7 @@ class Orderposition{
 		$sql = "UPDATE collectiveinvoice_orderposition SET status = 1 WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
 		if($res){
+			Cachehandler::removeCache(Cachehandler::genKeyword($this));
 			unset($this);
 			return true;
 		} else {

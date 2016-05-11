@@ -65,7 +65,7 @@ switch ($_REQUEST["exec"]) {
     	            $tmp_order->save();
     
     	            $artdesc = 'Inhalt 1<br>';
-    	            $artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormat()->getWidth()."x".$firstcalc->getProductFormat()->getHeight()."mm)<br>";
+    	            $artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight()."mm)<br>";
     	            $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperContent()->getName() . ' ' . $firstcalc->getPaperContentWeight() . 'g <br>';
     	            $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesContent().'<br>';
     	            $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesContent()->getName() . '<br>';
@@ -93,7 +93,6 @@ switch ($_REQUEST["exec"]) {
     	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesEnvelope().'<br>';
     	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesEnvelope()->getName() . '<br>';
     	            }
-					prettyPrint($artdesc);
     	            $article->setDesc($artdesc);
     	            
     	            
@@ -131,7 +130,7 @@ switch ($_REQUEST["exec"]) {
 	            $article->setOrderamounts($orderamounts);
 	            
 	            $artdesc = 'Inhalt 1<br>';
-	            $artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormat()->getWidth()."x".$firstcalc->getProductFormat()->getHeight()."mm)<br>";
+				$artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight()."mm)<br>";
 	            $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperContent()->getName() . ' ' . $firstcalc->getPaperContentWeight() . 'g <br>';
 	            $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesContent().'<br>';
 	            $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesContent()->getName() . '<br>';

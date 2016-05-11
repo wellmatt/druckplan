@@ -376,10 +376,10 @@ function createSelects(id,count,workload)
                               			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
                                			value="<?php echo date('d.m.Y H:i');?>" style="width:100px;"/>
                			           </td>
-                       			   <td class="content_row" valign="top"><?php echo printPrice($me->getTime(),2);?></td>
+                       			   <td class="content_row" valign="top"><?php echo printPrice($me->getTime()/60,2);?></td>
                            		   <td class="content_row" valign="top"><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
                            		   <td class="content_row" valign="top" id="workerstd_<?php echo $x;?>">
-       		                            <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($me->getTime(),2);?>" style="width: 40px;"/>
+       		                            <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($me->getTime()/60,2);?>" style="width: 40px;"/>
                    		                <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
                                         <option disabled>-- Users --</option>
                                         <?php 
@@ -397,7 +397,7 @@ function createSelects(id,count,workload)
                            		   </td>
                            	   </tr>
     	                       <?php
-    	                       $time_total += printPrice($me->getTime(),2);
+    	                       $time_total += printPrice($me->getTime()/60,2);
     	                       $x++;
     	                       $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$me->getId()} AND artmach = {$me->getMachine()->getId()}");
     	                       if (count($tmp_planned_jobs)==0)

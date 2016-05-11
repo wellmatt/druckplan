@@ -36,6 +36,7 @@ require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'libs/modules/api/api.class.php';
+require_once 'libs/basic/quickmove.class.php';
 
 require_once __DIR__.'/vendor/Horde/Autoloader.php';
 require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';
@@ -144,6 +145,7 @@ if ($_USER == false)
 <link rel="stylesheet" type="text/css" href="./css/ticket.css" />
 <link rel="stylesheet" type="text/css" href="./css/menu.css" />
 <link rel="stylesheet" type="text/css" href="./css/main.print.css" media="print"/>
+<link rel="stylesheet" type="text/css" href="./css/quickmove.css" />
 
 <!-- jQuery -->
 <link type="text/css" href="jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
