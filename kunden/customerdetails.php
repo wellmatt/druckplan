@@ -117,57 +117,55 @@ function askDel(myurl)
    return false;
 }
 </script>
-
-
-<table cellpadding="2" cellspacing="0" border="0" width="100%">
-<colgroup>
-    <col width="50%">
-    <col width="50%">
-</colgroup>
-<tr>
-<td>
 <form id="change_customer" method="post">
-	<input type="hidden" name="pid" value="<?=$_REQUEST["pid"]?>" > 
+	<input type="hidden" name="pid" value="<?=$_REQUEST["pid"]?>" >
 	<?/*<input type="hidden" name="subexec" value="save" > */?>
-	<div class="box2" style="height:280px;">
-	<table cellpadding="2" cellspacing="0" border="0" >
-	    <colgroup>
-	        <col width="170">
-	        <col ><!--width="250">
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<b>Profil</b>
+				</h3>
+		  </div>
+		  <div class="panel-body">
+			  <div class="table-responsive">
+				  <table class="table table-hover">
+					  <colgroup>
+						  <col width="170">
+						  <col ><!--width="250">
 	        <col>
 	        <col width="160"-->
-	    </colgroup>
-	    <tr>
-	    	<td colspan="2"><b><?=$_LANG->get('Adressdaten');?> </b></td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Firmenname');?></td>
-	        <td><?/*gln, 05.02.14 <input type="text" name="name1" class="text" value=""/>*/?><?=$busicon->getName1()?> </td>
-	        <td>&ensp;</td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Firmenname (Zusatz)');?></td>
-	        <td><?/*gln, 05.02.14 <input type="text" name="name2" class="text" value="" />*/?><?=$busicon->getName2()?></td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Stra&szlig;e');?></td>
-	        <td><?/*gln, 05.02.14 <input type="text" name="adress1" class="text" value="" />*/?><?=$busicon->getAddress1()?></td>
-	    </tr>
-	    <tr>
-	        <td>&ensp;</td>
-	        <td><?/*gln, 05.02.14 <input type="text" name="adress2" class="text" value="*/?><?=$busicon->getAddress2()?></td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('PLZ/Stadt');?></td>
-	        <td>
-	        	<?/*gln, 05.02.14 <input type="text" name="plz" class="text" style="width:60px"  value=""/> */?><?=$busicon->getZip()?>
-	        	<?/*gln, 05.02.14 <input type="text" name="city" class="text" style="width:174px" value=""/>*/?><?=$busicon->getCity()?>
-	        </td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Land');?></td>
-	        <td>
-	        	<?/*gln, 05.02.14 <select name="country" style="width:240px"
+					  </colgroup>
+					  <tr>
+						  <td colspan="2"><b><?=$_LANG->get('Adressdaten');?> </b></td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Firmenname');?></td>
+						  <td><?/*gln, 05.02.14 <input type="text" name="name1" class="text" value=""/>*/?><?=$busicon->getName1()?> </td>
+						  <td>&ensp;</td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Firmenname (Zusatz)');?></td>
+						  <td><?/*gln, 05.02.14 <input type="text" name="name2" class="text" value="" />*/?><?=$busicon->getName2()?></td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Stra&szlig;e');?></td>
+						  <td><?/*gln, 05.02.14 <input type="text" name="adress1" class="text" value="" />*/?><?=$busicon->getAddress1()?></td>
+					  </tr>
+					  <tr>
+						  <td>&ensp;</td>
+						  <td><?/*gln, 05.02.14 <input type="text" name="adress2" class="text" value="*/?><?=$busicon->getAddress2()?></td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('PLZ/Stadt');?></td>
+						  <td>
+							  <?/*gln, 05.02.14 <input type="text" name="plz" class="text" style="width:60px"  value=""/> */?><?=$busicon->getZip()?>
+							  <?/*gln, 05.02.14 <input type="text" name="city" class="text" style="width:174px" value=""/>*/?><?=$busicon->getCity()?>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Land');?></td>
+						  <td>
+							  <?/*gln, 05.02.14 <select name="country" style="width:240px"
 					class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 	<? 					foreach($countries as $c) { ?>
 						<option value="<?=$c->getId()?>"
@@ -176,499 +174,405 @@ function askDel(myurl)
 						</option>
 	<?					} ?>
 				</select> */?> <?$c=new Country($busicon->getCountry()->getId()); echo $c->getName()?>
-	        </td>
-	    </tr>
-	    <tr><td colspan="3">&ensp;</td></tr>
-	    <tr><td colspan="3"><b><?=$_LANG->get('Kontaktdaten');?></b></td></tr>
-	    <tr>
-	        <td><?=$_LANG->get('E-Mail');?></td>
-	        <td><?/*<input type="text" name="email" class="text" value="<?=$busicon->getEmail()?>" />*/?><?=$busicon->getEmail()?></td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Telefon');?></td>
-	        <td><?/*<input type="text" name="phone" class="text" value="<?=$busicon->getPhone()?>" />*/?><?=$busicon->getPhone()?></td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Fax');?></td>
-	        <td><?/*<input type="text" name="fax" class="text" value="<?=$busicon->getFax()?>" />*/?><?=$busicon->getFax()?></td>
-	    </tr>
-	    <tr>
-	        <td><?=$_LANG->get('Web');?></td>
-	        <td><?/*<input type="text" name="web" class="text" value="<?=$busicon->getWeb()?>" />*/?><?=$busicon->getWeb()?></td>
-	    </tr>
-	    <tr><td colspan="3">&ensp;</td></tr>
-	    <tr><td colspan="3">&ensp;</td></tr>
-	    
-	    <!-- tr>
+						  </td>
+					  </tr>
+					  <tr><td colspan="3">&ensp;</td></tr>
+					  <tr><td colspan="3"><b><?=$_LANG->get('Kontaktdaten');?></b></td></tr>
+					  <tr>
+						  <td><?=$_LANG->get('E-Mail');?></td>
+						  <td><?/*<input type="text" name="email" class="text" value="<?=$busicon->getEmail()?>" />*/?><?=$busicon->getEmail()?></td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Telefon');?></td>
+						  <td><?/*<input type="text" name="phone" class="text" value="<?=$busicon->getPhone()?>" />*/?><?=$busicon->getPhone()?></td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Fax');?></td>
+						  <td><?/*<input type="text" name="fax" class="text" value="<?=$busicon->getFax()?>" />*/?><?=$busicon->getFax()?></td>
+					  </tr>
+					  <tr>
+						  <td><?=$_LANG->get('Web');?></td>
+						  <td><?/*<input type="text" name="web" class="text" value="<?=$busicon->getWeb()?>" />*/?><?=$busicon->getWeb()?></td>
+					  </tr>
+					  <tr><td colspan="3">&ensp;</td></tr>
+					  <tr><td colspan="3">&ensp;</td></tr>
+
+					  <!-- tr>
 	    	<td><b><?=$_LANG->get("Sprache")?></b></td>
 	    	<td>
 	    		<select name="language" style="width: 243px"
 					class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<?
-						foreach($languages as $l)
-						{?>
+					  foreach($languages as $l)
+					  {?>
 						<option value="<?=$l->getId()?>"
 						<?if ($busicon->getLanguage()->getId() == $l->getId()) echo "selected";?>>
 							<?=$l->getName()?>
 						</option>
 						<?}
-	
-						?>
+
+					  ?>
 				</select>
 			</td>
 	    </tr -->
-	    <tr>
-	        <td>&ensp;</td>
-	<?/*
+					  <tr>
+						  <td>&ensp;</td>
+						  <?/*
 	        <td align="right">
 	        	<input type="submit" name="submit" style="width:80px" value="<?=$_LANG->get('Speichern');?>" />
 	        </td>
 	        <td>&ensp;</td>
 	*/?>
-	        </tr>
-	</table>
+					  </tr>
+				  </table>
+			  </div>
+		  </div>
 	</div>
 </form>
 </td>
 <td>
 <form method="post" id="neue_lieferadr" style="display:none">
-	<input type="hidden" name="subexec" value="save" > 
-	<div class="box1" style="height:280px;"> 
-	<?/*<table width="500px"> */?>
-   	<b><?=$_LANG->get('neue Lieferadresse');?></b> <br/><br/>
-	<table cellpadding="2" cellspacing="0" border="0" width="50%">
-		<colgroup>
-			<col width="180">
-			<col>
-		</colgroup>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-			<td class="content_row_clear"><input name="name1" style="width: 300px"
-				class="text" value="<?=$address->getName1()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-			<td class="content_row_clear"><input name="name2"
-				style="width: 300px" class="text" value="<?=$address->getName2()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Adresse');?>
-			</td>
-			<td class="content_row_clear"><input name="address1"
-				style="width: 300px" class="text" value="<?=$address->getAddress1()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-			</td>
-			<td class="content_row_clear"><input name="address2"
-				style="width: 300px" class="text" value="<?=$address->getAddress2()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
-			</td>
-			<td class="content_row_clear">
-				<nobr>
-				<input name="zip" style="width: 50px" class="text" value="<?=$address->getZip()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				<input name="city" style="width: 243px" class="text" value="<?=$address->getCity()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				</nobr>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-			<td class="content_row_clear"><select name="country" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<?
-					foreach($countries as $c)
-					{?>
-					<option value="<?=$c->getId()?>"
-					<?if ($address->getCountry()->getId() == $c->getId()) echo "selected";?>>
-						<?=$c->getName()?>
-					</option>
-					<?}?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">&nbsp;</td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-			</td>
-			<td class="content_row_clear">
-				<input name="phone" style="width: 300px" class="text" value="<?=$address->getPhone()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Fax');?>
-			</td>
-			<td class="content_row_clear">
-				<input name="fax" style="width: 300px" class="text" value="<?=$address->getFax()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Mobil');?>
-			</td>
-			<td class="content_row_clear">
-				<input name="mobil" style="width: 300px" class="text" value="<?=$address->getMobil()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" class="content_row_clear" align="right">
-					<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
-			<?=$savemsg?>
-			</td>
-		</tr>
-	</table>
-	</div>
-	
-</form>
-</td>
-<td>&ensp;</td>
-</tr>
-</table>
+	<input type="hidden" name="subexec" value="save" >
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<b>Neue Lieferadresse</b>
+				</h3>
+		  </div>
+		  <div class="panel-body">
 
-<table>
-	<tr>
-		<td>
-			<form method="post" id="neue_lieferadr" style="display:none">
-				<input type="hidden" name="subexec" value="save" > 
-				<div class="box1" style="height:280px;"> 
-				<?/*<table width="500px"> */?>
-				<b><?=$_LANG->get('neue Lieferadresse');?></b> <br/><br/>
-				<table cellpadding="2" cellspacing="0" border="0" width="50%">
-					<colgroup>
-						<col width="180">
-						<col>
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-						<td class="content_row_clear"><input name="name1" style="width: 300px"
-							class="text" value="<?=$address->getName1()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-						<td class="content_row_clear"><input name="name2"
-							style="width: 300px" class="text" value="<?=$address->getName2()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Adresse');?>
-						</td>
-						<td class="content_row_clear"><input name="address1"
-							style="width: 300px" class="text" value="<?=$address->getAddress1()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-						</td>
-						<td class="content_row_clear"><input name="address2"
-							style="width: 300px" class="text" value="<?=$address->getAddress2()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
-						</td>
-						<td class="content_row_clear">
-							<nobr>
-							<input name="zip" style="width: 50px" class="text" value="<?=$address->getZip()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<input name="city" style="width: 243px" class="text" value="<?=$address->getCity()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</nobr>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-						<td class="content_row_clear"><select name="country" style="width: 300px"
-							class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-								<?
-								foreach($countries as $c)
-								{?>
-								<option value="<?=$c->getId()?>"
-								<?if ($address->getCountry()->getId() == $c->getId()) echo "selected";?>>
-									<?=$c->getName()?>
-								</option>
-								<?}?>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header">&nbsp;</td>
-						<td class="content_row_clear">&nbsp;</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-						</td>
-						<td class="content_row_clear">
-							<input name="phone" style="width: 300px" class="text" value="<?=$address->getPhone()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Fax');?>
-						</td>
-						<td class="content_row_clear">
-							<input name="fax" style="width: 300px" class="text" value="<?=$address->getFax()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Mobil');?>
-						</td>
-						<td class="content_row_clear">
-							<input name="mobil" style="width: 300px" class="text" value="<?=$address->getMobil()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" class="content_row_clear" align="right">
-								<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
-						<?=$savemsg?>
-						</td>
-					</tr>
-				</table>
-				</div>
-				
-			</form>
-		</td>
-		<td>
-			<form method="post" id="neue_rechadr" style="display:none">
-				<input type="hidden" name="subexec" value="save" > 
-				<div class="box1" style="height:280px;"> 
-				<?/*<table width="500px"> */?>
-				<b><?=$_LANG->get('neue Rechnungsadresse');?></b> <br/><br/>
-				<table cellpadding="2" cellspacing="0" border="0" width="50%">
-					<colgroup>
-						<col width="180">
-						<col>
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-						<td class="content_row_clear"><input name="r_name1" style="width: 300px"
-							class="text" value="<?=$r_address->getName1()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-						<td class="content_row_clear"><input name="r_name2"
-							style="width: 300px" class="text" value="<?=$r_address->getName2()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Adresse');?>
-						</td>
-						<td class="content_row_clear"><input name="r_address1"
-							style="width: 300px" class="text" value="<?=$r_address->getAddress1()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-						</td>
-						<td class="content_row_clear"><input name="r_address2"
-							style="width: 300px" class="text" value="<?=$r_address->getAddress2()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
-						</td>
-						<td class="content_row_clear">
-							<nobr>
-							<input name="r_zip" style="width: 50px" class="text" value="<?=$r_address->getZip()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<input name="r_city" style="width: 243px" class="text" value="<?=$r_address->getCity()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</nobr>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-						<td class="content_row_clear"><select name="r_country" style="width: 300px"
-							class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-								<?
-								foreach($countries as $c)
-								{?>
-								<option value="<?=$c->getId()?>"
-								<?if ($r_address->getCountry()->getId() == $c->getId()) echo "selected";?>>
-									<?=$c->getName()?>
-								</option>
-								<?}?>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header">&nbsp;</td>
-						<td class="content_row_clear">&nbsp;</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-						</td>
-						<td class="content_row_clear">
-							<input name="r_phone" style="width: 300px" class="text" value="<?=$r_address->getPhone()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Fax');?>
-						</td>
-						<td class="content_row_clear">
-							<input name="r_fax" style="width: 300px" class="text" value="<?=$r_address->getFax()?>"
-							onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Mobil');?>
-						</td>
-						<td class="content_row_clear">
-							<input name="r_mobil" style="width: 300px" class="text" value="<?=$r_address->getMobil()?>"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" class="content_row_clear" align="right">
-								<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
-						<?=$savemsg?>
-						</td>
-					</tr>
-				</table>
-				</div>
-				
-			</form>
-		</td>
-	</tr>
-</table>
+			  <div class="table-responsive">
+				  <table class="table table-hover">
+					  <colgroup>
+						  <col width="180">
+						  <col>
+					  </colgroup>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
+						  <td class="content_row_clear"><input name="name1" style="width: 300px"
+															   class="text" value="<?=$address->getName1()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
+						  <td class="content_row_clear"><input name="name2"
+															   style="width: 300px" class="text" value="<?=$address->getName2()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Adresse');?>
+						  </td>
+						  <td class="content_row_clear"><input name="address1"
+															   style="width: 300px" class="text" value="<?=$address->getAddress1()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
+						  </td>
+						  <td class="content_row_clear"><input name="address2"
+															   style="width: 300px" class="text" value="<?=$address->getAddress2()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <nobr>
+								  <input name="zip" style="width: 50px" class="text" value="<?=$address->getZip()?>"
+										 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								  <input name="city" style="width: 243px" class="text" value="<?=$address->getCity()?>"
+										 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							  </nobr>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Land')?></td>
+						  <td class="content_row_clear"><select name="country" style="width: 300px"
+																class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								  <?
+								  foreach($countries as $c)
+								  {?>
+									  <option value="<?=$c->getId()?>"
+										  <?if ($address->getCountry()->getId() == $c->getId()) echo "selected";?>>
+										  <?=$c->getName()?>
+									  </option>
+								  <?}?>
+							  </select>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header">&nbsp;</td>
+						  <td class="content_row_clear">&nbsp;</td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Telefon');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <input name="phone" style="width: 300px" class="text" value="<?=$address->getPhone()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Fax');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <input name="fax" style="width: 300px" class="text" value="<?=$address->getFax()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Mobil');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <input name="mobil" style="width: 300px" class="text" value="<?=$address->getMobil()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td colspan="2" class="content_row_clear" align="right">
+							  <input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
+							  <?=$savemsg?>
+						  </td>
+					  </tr>
+				  </table>
+			  </div>
+		  </div>
+	</div>
+</form>
+
+
+<form method="post" id="neue_rechadr" style="display:none">
+	<input type="hidden" name="subexec" value="save" >
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<b>Neue Rechnungsadresse</b>
+				</h3>
+		  </div>
+		  <div class="panel-body">
+			  <div class="table-responsive">
+				  <table class="table table-hover">
+					  <colgroup>
+						  <col width="180">
+						  <col>
+					  </colgroup>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
+						  <td class="content_row_clear"><input name="r_name1" style="width: 300px"
+															   class="text" value="<?=$r_address->getName1()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
+						  <td class="content_row_clear"><input name="r_name2"
+															   style="width: 300px" class="text" value="<?=$r_address->getName2()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Adresse');?>
+						  </td>
+						  <td class="content_row_clear"><input name="r_address1"
+															   style="width: 300px" class="text" value="<?=$r_address->getAddress1()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
+						  </td>
+						  <td class="content_row_clear"><input name="r_address2"
+															   style="width: 300px" class="text" value="<?=$r_address->getAddress2()?>"
+															   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <nobr>
+								  <input name="r_zip" style="width: 50px" class="text" value="<?=$r_address->getZip()?>"
+										 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								  <input name="r_city" style="width: 243px" class="text" value="<?=$r_address->getCity()?>"
+										 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							  </nobr>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Land')?></td>
+						  <td class="content_row_clear"><select name="r_country" style="width: 300px"
+																class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								  <?
+								  foreach($countries as $c)
+								  {?>
+									  <option value="<?=$c->getId()?>"
+										  <?if ($r_address->getCountry()->getId() == $c->getId()) echo "selected";?>>
+										  <?=$c->getName()?>
+									  </option>
+								  <?}?>
+							  </select>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header">&nbsp;</td>
+						  <td class="content_row_clear">&nbsp;</td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Telefon');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <input name="r_phone" style="width: 300px" class="text" value="<?=$r_address->getPhone()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Fax');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <input name="r_fax" style="width: 300px" class="text" value="<?=$r_address->getFax()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td class="content_row_header"><?=$_LANG->get('Mobil');?>
+						  </td>
+						  <td class="content_row_clear">
+							  <input name="r_mobil" style="width: 300px" class="text" value="<?=$r_address->getMobil()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						  </td>
+					  </tr>
+					  <tr>
+						  <td colspan="2" class="content_row_clear" align="right">
+							  <input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
+							  <?=$savemsg?>
+						  </td>
+					  </tr>
+				  </table>
+			  </div>
+		  </div>
+	</div>
+</form>
 <?=$savemsg?>		
 
 <?/*11.02.2014,gln: Anzeige Lieferadressen */?>
-
-<div class="box1" style="min-height:210px;padding-left:16px;">
-   	<b><?=$_LANG->get('Lieferadressen');?></b>
-	<? /*gln	10.02.14   */ ?>   	
-	&emsp;
-	<img onclick="document.getElementById('neue_lieferadr').style.display='' " src="../images/icons/user--plus.png" 
-			title="<?=$_LANG->get('Neue Lieferadresse anlegen');?>" alt="<?=$_LANG->get('Neue Lieferadresse anlegen');?>"> 
-   	<br/><br/>
-	<div style="overflow: auto; max-height:195px;">
-		<table cellpadding="2" cellspacing="0" border="0" width="100%">
-    		<colgroup>
-        		<col width="270">
-        		<col width="260">
-        		<col width="200">
-        		<col>
-        		<col>
-        		<!--col width="160"-->
-    		</colgroup>
-			<tr>
-		    	<td class="content_row"><b>Firma</b></td>
-		    	<td class="content_row"><b>Adresse</b></td>
-		    	<td class="content_row"><b>PLZ/Ort</b></td>
-		    	<td class="content_row"><b>Land</b></td>
-		    	<td class="content_row"><b>Telefon</b></td>
-			</tr>    	
-			<?/*<tr>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<b>Lieferadressen</b>
+				<img onclick="document.getElementById('neue_lieferadr').style.display='' " src="../images/icons/user--plus.png"
+					 title="<?=$_LANG->get('Neue Lieferadresse anlegen');?>" alt="<?=$_LANG->get('Neue Lieferadresse anlegen');?>">
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <div class="table-responsive">
+			  <table class="table table-hover">
+				  <colgroup>
+					  <col width="270">
+					  <col width="260">
+					  <col width="200">
+					  <col>
+					  <col>
+					  <!--col width="160"-->
+				  </colgroup>
+				  <tr>
+					  <td class="content_row"><b>Firma</b></td>
+					  <td class="content_row"><b>Adresse</b></td>
+					  <td class="content_row"><b>PLZ/Ort</b></td>
+					  <td class="content_row"><b>Land</b></td>
+					  <td class="content_row"><b>Telefon</b></td>
+				  </tr>
+				  <?/*<tr>
 		    	<td colspan="2"><b><?=$_LANG->get('Lieferadressen');?> </b></td>
-			</tr> */?>    	
-			<tr>
-		   <?/* 	<td><b><?=$_LANG->get('Name');?> </b></td>
+			</tr> */?>
+				  <tr>
+					  <?/* 	<td><b><?=$_LANG->get('Name');?> </b></td>
 		    	<td><b><?=$_LANG->get('Adresse');?> </b></td> */?>
-			</tr>    	
-	    	<?	foreach($all_deliveryAddresses AS $deliv){ ?>
-    		<tr>
-		    	<td>
-		    		<?=$deliv->getNameAsLine()?>
-		    		<? if ($deliv->getDefault() == 1) echo ' (Standard)'; ?>
-		    	</td>
-		    	<td>
-		    		<?=$deliv->getAddress1()?> <?=$deliv->getAddress2()?>
-		    	</td>
-		    	<td>
-		    		<?=$deliv->getZip()?> <?=$deliv->getCity()?>
-		    	</td>
-				<td>
-					<?$c=new Country($deliv->getCountry()->getId()); echo $c->getName()?>
-				</td>
-		    	<td>
-		    		<?=$deliv->getPhone()?>
-		    	</td>
-			</tr>
-			<?	} ?>
-		</table>
-	</div>
+				  </tr>
+				  <?	foreach($all_deliveryAddresses AS $deliv){ ?>
+					  <tr>
+						  <td>
+							  <?=$deliv->getNameAsLine()?>
+							  <? if ($deliv->getDefault() == 1) echo ' (Standard)'; ?>
+						  </td>
+						  <td>
+							  <?=$deliv->getAddress1()?> <?=$deliv->getAddress2()?>
+						  </td>
+						  <td>
+							  <?=$deliv->getZip()?> <?=$deliv->getCity()?>
+						  </td>
+						  <td>
+							  <?$c=new Country($deliv->getCountry()->getId()); echo $c->getName()?>
+						  </td>
+						  <td>
+							  <?=$deliv->getPhone()?>
+						  </td>
+					  </tr>
+				  <?	} ?>
+			  </table>
+		  </div>
+	  </div>
 </div>
 
-<div class="box1" style="min-height:210px;padding-left:16px;">
-   	<b><?=$_LANG->get('Rechnungsadressen');?></b>
-	<? /*gln	10.02.14   */ ?>   	
-	&emsp;
-	<img onclick="document.getElementById('neue_rechadr').style.display='' " src="../images/icons/user--plus.png" 
-			title="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>" alt="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>"> 
-   	<br/><br/>
-	<div style="overflow: auto; max-height:195px;">
-		<table cellpadding="2" cellspacing="0" border="0" width="100%">
-    		<colgroup>
-        		<col width="270">
-        		<col width="260">
-        		<col width="200">
-        		<col>
-        		<col>
-        		<!--col width="160"-->
-    		</colgroup>
-			<tr>
-		    	<td class="content_row"><b>Firma</b></td>
-		    	<td class="content_row"><b>Adresse</b></td>
-		    	<td class="content_row"><b>PLZ/Ort</b></td>
-		    	<td class="content_row"><b>Land</b></td>
-		    	<td class="content_row"><b>Telefon</b></td>
-			</tr>    	
-			<?/*<tr>
+
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<b>Rechnungsadressen</b>
+				<img onclick="document.getElementById('neue_rechadr').style.display='' " src="../images/icons/user--plus.png"
+					 title="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>" alt="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>">
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <div class="table-responsive">
+			  <table class="table table-hover">
+				  <colgroup>
+					  <col width="270">
+					  <col width="260">
+					  <col width="200">
+					  <col>
+					  <col>
+					  <!--col width="160"-->
+				  </colgroup>
+				  <tr>
+					  <td class="content_row"><b>Firma</b></td>
+					  <td class="content_row"><b>Adresse</b></td>
+					  <td class="content_row"><b>PLZ/Ort</b></td>
+					  <td class="content_row"><b>Land</b></td>
+					  <td class="content_row"><b>Telefon</b></td>
+				  </tr>
+				  <?/*<tr>
 		    	<td colspan="2"><b><?=$_LANG->get('Lieferadressen');?> </b></td>
-			</tr> */?>    	
-			<tr>
-		   <?/* 	<td><b><?=$_LANG->get('Name');?> </b></td>
+			</tr> */?>
+				  <tr>
+					  <?/* 	<td><b><?=$_LANG->get('Name');?> </b></td>
 		    	<td><b><?=$_LANG->get('Adresse');?> </b></td> */?>
-			</tr>    	
-	    	<?	foreach($all_invoiceAddresses AS $invoiceadr){ ?>
-    		<tr>
-		    	<td>
-		    		<?=$invoiceadr->getNameAsLine()?>
-		    		<? if ($invoiceadr->getDefault() == 1) echo ' (Standard)'; ?>
-		    	</td>
-		    	<td>
-		    		<?=$invoiceadr->getAddress1()?> <?=$invoiceadr->getAddress2()?>
-		    	</td>
-		    	<td>
-		    		<?=$invoiceadr->getZip()?> <?=$invoiceadr->getCity()?>
-		    	</td>
-				<td>
-					<?$c=new Country($invoiceadr->getCountry()->getId()); echo $c->getName()?>
-				</td>
-		    	<td>
-		    		<?=$invoiceadr->getPhone()?>
-		    	</td>
-			</tr>
-			<?	} ?>
-		</table>
-	</div>
+				  </tr>
+				  <?	foreach($all_invoiceAddresses AS $invoiceadr){ ?>
+					  <tr>
+						  <td>
+							  <?=$invoiceadr->getNameAsLine()?>
+							  <? if ($invoiceadr->getDefault() == 1) echo ' (Standard)'; ?>
+						  </td>
+						  <td>
+							  <?=$invoiceadr->getAddress1()?> <?=$invoiceadr->getAddress2()?>
+						  </td>
+						  <td>
+							  <?=$invoiceadr->getZip()?> <?=$invoiceadr->getCity()?>
+						  </td>
+						  <td>
+							  <?$c=new Country($invoiceadr->getCountry()->getId()); echo $c->getName()?>
+						  </td>
+						  <td>
+							  <?=$invoiceadr->getPhone()?>
+						  </td>
+					  </tr>
+				  <?	} ?>
+			  </table>
+		  </div>
+	  </div>
 </div>
+

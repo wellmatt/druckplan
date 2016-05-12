@@ -207,283 +207,301 @@ $(document).ready(function () {
     }
 });
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                <h2><?=$header_title?></h2>
+                <span class="pull-right" <?=$savemsg?>></span>
+            </h3>
 
-
-<body>
-
-
-<div class="ticket_view">
-<table width="100%">
-	<tr>
-		<td class="content_header">
-			 <h2><?=$header_title?></h2>
-		</td>
-		<td align="right">
-			<?=$savemsg?>
-		</td>
-	</tr>
-</table>
-
-  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-        <tbody>
-        	<tr>
-                <td width="50%">
-                     <h3><?php if ($ticket->getId()>0){?><a href="index.php?pid=20&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
-                     <i class="icon-refresh"></i> Ticket #<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></h3>
-                </td>
-                <td width="50%" align="right">&nbsp;
-                </td>
-        	</tr>
-        </tbody>
-  </table>
-  
-  <form action="index.php?pid=20" method="post" name="ticket_edit" id="ticket_edit" enctype="multipart/form-data">
-  <input type="hidden" name="exec" value="edit"> 
-  <input type="hidden" name="subexec" value="save"> 
-  <input type="hidden" name="tktid" value="<?=$ticket->getId()?>">
-  
-  <div class="ticket_header">
-  	<table width="100%" border="1">
-      <tr>
-        <td width="25%">Titel:</td>
-        <td width="25%">
-            <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $ticket->getTitle();?>" style="width:160px" required/>
-        </td>
-        <td width="25%">Kunde:</td>
-        <td width="25%">
-            <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) { 
-                                                                                        echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2(); 
-                                                                                    } else {
-                                                                                        echo $_BUSINESSCONTACT->getNameAsLine()." - ".$_CONTACTPERSON->getNameAsLine2();
-                                                                                    }?>" style="width:160px" disabled/>
-            <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php if ($new_ticket == true) { echo $_BUSINESSCONTACT->getId(); } else { echo $ticket->getCustomer()->getId();}?>"/>
-            <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php if ($new_ticket == true) { echo $_CONTACTPERSON->getId(); } else { echo $ticket->getCustomer_cp()->getId();}?>"/>
-        </td>
-      </tr>
-      <tr>
-        <td width="25%">Kategorie:</td>
-        <td width="25%">
-            <select name="tkt_category" id="tkt_category" style="width:160px" required>
-            <?php 
-            $tkt_all_categories = TicketCategory::getAllCategories();
-            foreach ($tkt_all_categories as $tkt_category){
-                if ($ticket->getId()>0){
-                    if ($ticket->getCategory() == $tkt_category){
-                        echo '<option value="'.$tkt_category->getId().'" selected>'.$tkt_category->getTitle().'</option>';
-                    }
-                } else {
-                    if ($_CONTACTPERSON->TC_cancreate($tkt_category))
-                        echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
-                }
-            }
-            ?>
-            </select>
-        </td>
-        <td width="25%">Telefon:</td>
-        <td width="25%"><div id="cp_phone"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getPhone(); } else { $_CONTACTPERSON->getPhone(); }?></div></td>
-      </tr>
-      <tr>
-        <td width="25%">Status:</td>
-        <td width="25%">
-            <select name="tkt_state" id="tkt_state" style="width:160px" required>
-            <?php 
-            $tkt_all_states = TicketState::getAllStates();
-            foreach ($tkt_all_states as $tkt_state){
-                if ($tkt_state->getId() != 1){
-                    if ($ticket->getId() == 0 && $tkt_state->getId() == 2){
-                        echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
-                    } else if ($ticket->getState() == $tkt_state){
-                        echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
-                    } else {
-                        echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
-                    }
-                }
-            }
-            ?>
-            </select>
-        </td>
-        <td width="25%">eMail-Adresse:</td>
-        <td width="25%"><div id="cp_mail"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getEmail();} else { $_CONTACTPERSON->getEmail(); }?></div></td>
-      </tr>
-      <tr>
-        <td width="25%">Priorität:</td>
-        <td width="25%">
-            <select name="tkt_prio" id="tkt_prio" style="width:160px" required>
-            <?php 
-            $tkt_all_prios = TicketPriority::getAllPriorities();
-            foreach ($tkt_all_prios as $tkt_prio){
-                if ($ticket->getPriority() == $tkt_prio){
-                    echo '<option value="'.$tkt_prio->getId().'" selected>'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
-                } else {
-                    echo '<option value="'.$tkt_prio->getId().'">'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
-                }
-            }
-            ?>
-            </select>
-        </td>
-        <td width="25%">Herkunft:</td>
-        <td width="25%">
-            <select name="tkt_source" id="tkt_source" style="width:160px" required>
-                <?php 
-                $tkt_all_sources = TicketSource::getAllSources();
-                foreach ($tkt_all_sources as $tkt_source){
-                    if ($ticket->getSource() == $tkt_source->getId()){
-                        echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
-                    } elseif ($ticket->getId() == 0 && $tkt_source->getDefault()) {
-                        echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
-                    } else {
-                        echo '<option value="'.$tkt_source->getId().'">'.$tkt_source->getTitle().'</option>';
-                    }
-                }
-                ?>
-            </select>
-        </td>
-      </tr>
-      <tr>
-        <td width="25%">Fälligkeitsdatum:</td>
-        <td width="25%">
-			<input type="text" style="width:160px" id="tkt_due" name="tkt_due"
-			class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-			onfocus="markfield(this,0)" onblur="markfield(this,1)"
-			value="<?if($ticket->getDuedate() != 0){ echo date('d.m.Y H:i', $ticket->getDuedate());} elseif ($ticket->getId()==0) { echo date('d.m.Y H:i'); }?>"/>
-            <input type="checkbox" id="tkt_due_enabled" name="tkt_due_enabled" value="1" onclick="JavaScript: if ($('#tkt_due_enabled').prop('checked')) {$('#tkt_due').val('')};" 
-             <?php if ($ticket->getDuedate()==0 && $ticket->getId()!=0) echo " checked ";?>/> ohne
-        </td>
-        <td width="25%">Letzte Mitteilung:</td>
-        <td width="25%"><?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?>&nbsp;</td>
-      </tr>
-      <tr>
-        <td width="25%">Erstellt am:</td>
-        <td width="25%"><?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>&nbsp;</td>
-        <td width="25%">&nbsp;</td>
-        <td width="25%">&nbsp;</td>
-      </tr>
-      <tr>
-        <td width="25%">Zugewiesen an:</td>
-        <td width="25%">
-        <?php 
-        if ($ticket->getId() > 0) {
-            if ($ticket->getAssigned_group()->getId() > 0){
-                echo $ticket->getAssigned_group()->getName();
-            } else {
-                echo $ticket->getAssigned_user()->getNameAsLine();
-            }
-        }?>
-        </td>
-        <td width="25%">&nbsp;</td>
-        <td width="25%">&nbsp;</td>
-      </tr>
-    </table>
-  </div>
-  </br>
-  	<div class="ticket_comment">
-  	     <table width="100%" border="1">
-  	         <tr>
-  	             <td width="100%" colspan="2">
-  	                 <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea>
-  	             </td>
-  	         </tr>
-		     <tr>
-		          <td width="50%">Anhänge:</td>
-		          <td width="50%">
-		              <input type="file" multiple="multiple" name="tktc_attachments[]" width="100%" />
-		          </td>
-		     </tr>
-  	     </table>
-	</div>
-  </br>
-  
-  <table width="100%">
-    <colgroup>
-        <col width="180">
-        <col>
-    </colgroup> 
-    <tr>
-        <td class="content_row_header">
-        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-        			onclick="window.location.href='index.php?pid=20'">
-        </td>
-        <td class="content_row_clear" align="right">
-        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-        </td>
-    </tr>
-  </table>
-  </br>
-  <?php 
-  $all_comments = Comment::getCommentsForObject(get_class($ticket),$ticket->getId());
-  $all_comments = array_reverse($all_comments);
-  if ($_REQUEST["sort"] == "asc"){
-      $all_comments = array_reverse($all_comments);
-  }
-  
-  if (count($all_comments) > 0){?>
-  <div class="ticket_comments">
-    <table><tr><td align="left"><h3><i class="icon-comment"></i> Kommentare <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=asc"><img src="../../../images/icons/arrow-090.png"/></a></h3></td></tr></table>
-    
-    <?php 
-    foreach ($all_comments as $comment){
-        if ($comment->getVisability() == Comment::VISABILITY_PUBLIC || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
-        {
-            ?>
-          	<table width="100%" border="1">
+          <table border="0" cellpadding="2" cellspacing="0" width="100%">
+              <tbody>
               <tr>
-                <td width="25%"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?>
-                <?php
-                if ($comment->getState() == 0) { echo '[GELÖSCHT]'; }
-                ?>
-                </td>
-                <td width="50%"><?php echo $comment->getTitle();?></td>
-                <?php 
-                if ($comment->getCrtuser()->getId()>0){
-                    $crtby = $comment->getCrtuser()->getNameAsLine();
-                } elseif ($comment->getCrtcp()->getId()>0){
-                    $crtby = $comment->getCrtcp()->getNameAsLine2();
-                }
-                ?>
-                <td width="25%"><?php echo $crtby;?></td>
+                  <td width="50%">
+                      <h3><?php if ($ticket->getId()>0){?><a href="index.php?pid=20&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
+                              <i class="icon-refresh"></i> Ticket #<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></h3>
+                  </td>
+                  <td width="50%" align="right">&nbsp;
+                  </td>
               </tr>
-              <tr>
-                <td colspan="3"><?php echo $comment->getComment();?></td>
-              </tr>
-              <?php if (count(Attachment::getAttachmentsForObject(get_class($comment),$comment->getId())) > 0){ ?>
-              <tr>
-                <td width="25%">Anhänge:</td>
-                <td colspan="2">
-                    <?php 
-                        foreach (Attachment::getAttachmentsForObject(get_class($comment),$comment->getId()) as $c_attachment){
-                            if ($c_attachment->getState() == 1)
-                                echo '<span><a href="../../.'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a></span></br>';
-                        }
-                    ?>
-                    &nbsp;
-                </td>
-              </tr>
-              <?php }?>
-              <?php if (count($comment->getArticles()) > 0){?>
-              <tr>
-                <td width="25%">Artikel:</td>
-                <td colspan="2">
-                    <?php 
-                        foreach ($comment->getArticles() as $c_article){
-                            echo '<span>'.$c_article->getAmount().'x '.$c_article->getArticle()->getTitle().'</span></br>';
-                        }
-                    ?>
-                    &nbsp;
-                </td>
-              </tr>
-              <?php }?>
-            </table>
-            </br>
-            <?php 
-        }
-    }
-    ?>
-  </div>
-  <?php 
-  }
-  ?>
-  </br>
-  </form>
+              </tbody>
+          </table>
+	  </div>
+	  <div class="panel-body">
+
+          <form action="index.php?pid=20" method="post" name="ticket_edit" id="ticket_edit" enctype="multipart/form-data" class="form-horizontal">
+              <input type="hidden" name="exec" value="edit">
+              <input type="hidden" name="subexec" value="save">
+              <input type="hidden" name="tktid" value="<?=$ticket->getId()?>">
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Titel</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $ticket->getTitle();?>"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Kunde</label>
+                  <div class="col-sm-10">
+
+                      <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) {
+                          echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2();
+                      } else {
+                          echo $_BUSINESSCONTACT->getNameAsLine()." - ".$_CONTACTPERSON->getNameAsLine2();
+                      }?>" style="width:160px" disabled/>
+                      <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php if ($new_ticket == true) { echo $_BUSINESSCONTACT->getId(); } else { echo $ticket->getCustomer()->getId();}?>"/>
+                      <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php if ($new_ticket == true) { echo $_CONTACTPERSON->getId(); } else { echo $ticket->getCustomer_cp()->getId();}?>"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Kategorie</label>
+                  <div class="col-sm-10">
+                      <select name="tkt_category" id="tkt_category" style="width:160px" required>
+                          <?php
+                          $tkt_all_categories = TicketCategory::getAllCategories();
+                          foreach ($tkt_all_categories as $tkt_category){
+                              if ($ticket->getId()>0){
+                                  if ($ticket->getCategory() == $tkt_category){
+                                      echo '<option value="'.$tkt_category->getId().'" selected>'.$tkt_category->getTitle().'</option>';
+                                  }
+                              } else {
+                                  if ($_CONTACTPERSON->TC_cancreate($tkt_category))
+                                      echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
+                              }
+                          }
+                          ?>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Telefon</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="cp_phone" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getPhone(); } else { $_CONTACTPERSON->getPhone(); }?>"/>
+                  </div>
+              </div>
+
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Status</label>
+                  <div class="col-sm-10">
+                      <select name="tkt_state" id="tkt_state" >
+                          <?php
+                          $tkt_all_states = TicketState::getAllStates();
+                          foreach ($tkt_all_states as $tkt_state){
+                              if ($tkt_state->getId() != 1){
+                                  if ($ticket->getId() == 0 && $tkt_state->getId() == 2){
+                                      echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
+                                  } else if ($ticket->getState() == $tkt_state){
+                                      echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
+                                  } else {
+                                      echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
+                                  }
+                              }
+                          }
+                          ?>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">eMail-Adresse:</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="cp_mail" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getEmail();} else { $_CONTACTPERSON->getEmail(); }?>"/>
+                  </div>
+              </div>
+
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Priorität</label>
+                  <div class="col-sm-10">
+                      <select name="tkt_prio" id="tkt_prio">
+                          <?php
+                          $tkt_all_prios = TicketPriority::getAllPriorities();
+                          foreach ($tkt_all_prios as $tkt_prio){
+                              if ($ticket->getPriority() == $tkt_prio){
+                                  echo '<option value="'.$tkt_prio->getId().'" selected>'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
+                              } else {
+                                  echo '<option value="'.$tkt_prio->getId().'">'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
+                              }
+                          }
+                          ?>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Herkunft</label>
+                  <div class="col-sm-10">
+                      <select name="tkt_source" id="tkt_source">
+                          <?php
+                          $tkt_all_sources = TicketSource::getAllSources();
+                          foreach ($tkt_all_sources as $tkt_source){
+                              if ($ticket->getSource() == $tkt_source->getId()){
+                                  echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                              } elseif ($ticket->getId() == 0 && $tkt_source->getDefault()) {
+                                  echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                              } else {
+                                  echo '<option value="'.$tkt_source->getId().'">'.$tkt_source->getTitle().'</option>';
+                              }
+                          }
+                          ?>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Fälligkeitsdatum</label>
+                  <div class="col-sm-10">
+                      <input type="text" style="width:160px" id="tkt_due" name="tkt_due"
+                             class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+                             onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                             value="<?if($ticket->getDuedate() != 0){ echo date('d.m.Y H:i', $ticket->getDuedate());} elseif ($ticket->getId()==0) { echo date('d.m.Y H:i'); }?>"/>
+                      <input type="checkbox" id="tkt_due_enabled" name="tkt_due_enabled" value="1" onclick="JavaScript: if ($('#tkt_due_enabled').prop('checked')) {$('#tkt_due').val('')};"
+                          <?php if ($ticket->getDuedate()==0 && $ticket->getId()!=0) echo " checked ";?>/> ohne
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Letzte Mitteilung:</label>
+                  <div class="col-sm-10">
+                      <input type="text" value="<?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?>"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Erstellt am:</label>
+                  <div class="col-sm-10">
+                      <input type="text" value="<?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Zugewiesen an:</label>
+                  <div class="col-sm-10">
+                      <input type="text"/>
+                      <?php
+                      if ($ticket->getId() > 0) {
+                          if ($ticket->getAssigned_group()->getId() > 0){
+                              echo $ticket->getAssigned_group()->getName();
+                          } else {
+                              echo $ticket->getAssigned_user()->getNameAsLine();
+                          }
+                      }?>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Erstellt am:</label>
+                  <div class="col-sm-10">
+                      <input type="text" value="<?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>"/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label"></label>
+                  <div class="col-sm-10">
+                      <textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Anhänge</label>
+                  <div class="col-sm-10">
+                      <input type="file" multiple="multiple" name="tktc_attachments[]" width="100%" />
+                  </div>
+              </div>
+
+              <table width="100%">
+                  <colgroup>
+                      <col width="180">
+                      <col>
+                  </colgroup>
+                  <tr>
+                      <td class="content_row_header">
+                          <input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
+                                    onclick="window.location.href='index.php?pid=20'">
+                      </td>
+                      <td class="content_row_clear" align="right">
+                          <input type="submit" value="<?=$_LANG->get('Speichern')?>">
+                      </td>
+                  </tr>
+              </table>
+
+              <?php
+              $all_comments = Comment::getCommentsForObject(get_class($ticket),$ticket->getId());
+              $all_comments = array_reverse($all_comments);
+              if ($_REQUEST["sort"] == "asc"){
+                  $all_comments = array_reverse($all_comments);
+              }
+
+              if (count($all_comments) > 0){?>
+                  <div class="ticket_comments">
+                      <table><tr><td align="left"><h3><i class="icon-comment"></i> Kommentare <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=asc"><img src="../../../images/icons/arrow-090.png"/></a></h3></td></tr></table>
+
+                      <?php
+                      foreach ($all_comments as $comment){
+                          if ($comment->getVisability() == Comment::VISABILITY_PUBLIC || $comment->getVisability() == Comment::VISABILITY_PUBLICMAIL)
+                          {
+                              ?>
+                              <table width="100%" border="1">
+                                  <tr>
+                                      <td width="25%"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?>
+                                          <?php
+                                          if ($comment->getState() == 0) { echo '[GELÖSCHT]'; }
+                                          ?>
+                                      </td>
+                                      <td width="50%"><?php echo $comment->getTitle();?></td>
+                                      <?php
+                                      if ($comment->getCrtuser()->getId()>0){
+                                          $crtby = $comment->getCrtuser()->getNameAsLine();
+                                      } elseif ($comment->getCrtcp()->getId()>0){
+                                          $crtby = $comment->getCrtcp()->getNameAsLine2();
+                                      }
+                                      ?>
+                                      <td width="25%"><?php echo $crtby;?></td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="3"><?php echo $comment->getComment();?></td>
+                                  </tr>
+                                  <?php if (count(Attachment::getAttachmentsForObject(get_class($comment),$comment->getId())) > 0){ ?>
+                                      <tr>
+                                          <td width="25%">Anhänge:</td>
+                                          <td colspan="2">
+                                              <?php
+                                              foreach (Attachment::getAttachmentsForObject(get_class($comment),$comment->getId()) as $c_attachment){
+                                                  if ($c_attachment->getState() == 1)
+                                                      echo '<span><a href="../../.'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a></span></br>';
+                                              }
+                                              ?>
+                                              &nbsp;
+                                          </td>
+                                      </tr>
+                                  <?php }?>
+                                  <?php if (count($comment->getArticles()) > 0){?>
+                                      <tr>
+                                          <td width="25%">Artikel:</td>
+                                          <td colspan="2">
+                                              <?php
+                                              foreach ($comment->getArticles() as $c_article){
+                                                  echo '<span>'.$c_article->getAmount().'x '.$c_article->getArticle()->getTitle().'</span></br>';
+                                              }
+                                              ?>
+                                              &nbsp;
+                                          </td>
+                                      </tr>
+                                  <?php }?>
+                              </table>
+                              </br>
+                              <?php
+                          }
+                      }
+                      ?>
+                  </div>
+                  <?php
+              }
+              ?>
+	  </div>
 </div>
-</body>
-</html>

@@ -202,114 +202,110 @@ $(document).ready(function() {
 	})
 } );
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<b>Tickets</b>
+				<span class="pull-right">
+					<img src="../../../images/icons/ticket--plus.png">
+					<a href="index.php?pid=20&exec=new" class="icon-link">
+						<?=$_LANG->get('Ticket erstellen')?></a>
 
-<table width="100%">
-	<tr>
-		<td width="150" class="content_header"><span
-			style="font-size: 13px"><?=$_LANG->get('Tickets')?></span></td>
-		<td width="250" class="content_header" align="right">
-		<?=$savemsg?>
-		</td>
-		<td class="content_header" align="right"><a
-			href="index.php?pid=20&exec=new"
-			class="icon-link"><img src="../../../images/icons/ticket--plus.png"> <span
-				style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
-		</td>
-	</tr>
-</table>
-<br />
+				</span>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <table>
+			  <tr align="left">
+				  <td>Datum (erstellt):&nbsp;&nbsp;</td>
+				  <td valign="left">
+					  <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+					  <input name="date_min" id="date_min" style="width:70px;" class="text"
+							 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+				  </td>
+				  <td valign="left">
+					  <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+					  bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
+								  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+				  </td>
+			  </tr>
+			  <tr align="left">
+				  <td>Datum (fällig):&nbsp;&nbsp;</td>
+				  <td valign="left">
+					  <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>
+					  <input name="date_due_min" id="date_due_min" style="width:70px;" class="text"
+							 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+				  </td>
+				  <td valign="left">
+					  <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>
+					  bis: <input name="date_due_max" id="date_due_max" style="width:70px;" class="text"
+								  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+				  </td>
+			  </tr>
+			  <tr align="left">
+				  <td>Kategorie:&nbsp;&nbsp;</td>
+				  <td valign="left">
+					  <input name="ajax_category" id="ajax_category" type="hidden"/>
+					  <select name="category" id="category" style="width:160px">
+						  <option value="" selected></option>
+						  <?php
+						  $tkt_all_categories = TicketCategory::getAllCategories();
+						  foreach ($tkt_all_categories as $tkt_category){
+							  if ($_CONTACTPERSON->TC_cansee($tkt_category))
+								  echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
+						  }
+						  ?>
+					  </select>
+				  </td>
+			  </tr>
+			  <tr align="left">
+				  <td>zeige geschlossene:&nbsp;&nbsp;</td>
+				  <td valign="left">
+					  <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
+					  <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
+				  </td>
+			  </tr>
+			  <tr align="left">
+				  <td><a href="index.php?pid=20">Reset</a><img src="../../../images/icons/slash.png"/></td>
+			  </tr>
+			  </br>
+		  </table>
 
-<div class="box2">
-    <table>
-        <tr align="left">
-            <td>Datum (erstellt):&nbsp;&nbsp;</td>
-            <td valign="left">
-                <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
-                <input name="date_min" id="date_min" style="width:70px;" class="text" 
-                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-            </td>
-            <td valign="left">
-                <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
-                bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
-                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-            </td>
-        </tr>
-        <tr align="left">
-            <td>Datum (fällig):&nbsp;&nbsp;</td>
-            <td valign="left">
-                <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>  
-                <input name="date_due_min" id="date_due_min" style="width:70px;" class="text" 
-                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-            </td>
-            <td valign="left">
-                <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>  
-                bis: <input name="date_due_max" id="date_due_max" style="width:70px;" class="text" 
-                onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-            </td>
-        </tr>
-        <tr align="left">
-            <td>Kategorie:&nbsp;&nbsp;</td>
-            <td valign="left">
-                <input name="ajax_category" id="ajax_category" type="hidden"/>  
-                <select name="category" id="category" style="width:160px">
-                    <option value="" selected></option> 
-                    <?php 
-                    $tkt_all_categories = TicketCategory::getAllCategories();
-                    foreach ($tkt_all_categories as $tkt_category){
-                        if ($_CONTACTPERSON->TC_cansee($tkt_category))
-                            echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
-                    }
-                    ?>
-                </select>
-            </td>
-        </tr>
-        <tr align="left">
-            <td>zeige geschlossene:&nbsp;&nbsp;</td>
-            <td valign="left">
-                <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
-                <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
-            </td>
-        </tr>
-        <tr align="left">
-            <td><a href="index.php?pid=20">Reset</a><img src="../../../images/icons/slash.png"/></td>
-        </tr>
-        </br>
-    </table>
+		  <div class="table-responsive">
+			  <table id="ticketstable" class="table table-hover">
+				  <thead>
+				  <tr>
+					  <th><?=$_LANG->get('ID')?></th>
+					  <th><?=$_LANG->get('#')?></th>
+					  <th><?=$_LANG->get('Kategorie')?></th>
+					  <th><?=$_LANG->get('Datum')?></th>
+					  <th><?=$_LANG->get('erst. von')?></th>
+					  <th><?=$_LANG->get('Fälligkeit')?></th>
+					  <th><?=$_LANG->get('Betreff')?></th>
+					  <th><?=$_LANG->get('Status')?></th>
+					  <th><?=$_LANG->get('Von')?></th>
+					  <th><?=$_LANG->get('Priorität')?></th>
+					  <th><?=$_LANG->get('Zugewiesen an')?></th>
+				  </tr>
+
+
+				  <tfoot>
+				  <tr>
+					  <th><?=$_LANG->get('ID')?></th>
+					  <th><?=$_LANG->get('#')?></th>
+					  <th><?=$_LANG->get('Kategorie')?></th>
+					  <th><?=$_LANG->get('Datum')?></th>
+					  <th><?=$_LANG->get('erst. von')?></th>
+					  <th><?=$_LANG->get('Fällig')?></th>
+					  <th><?=$_LANG->get('Betreff')?></th>
+					  <th><?=$_LANG->get('Status')?></th>
+					  <th><?=$_LANG->get('Von')?></th>
+					  <th><?=$_LANG->get('Priorität')?></th>
+					  <th><?=$_LANG->get('Zugewiesen an')?></th>
+				  </tr>
+				  </tfoot>
+			  </table>
+		  </div>
+	  </div>
 </div>
-</br>
 
-<div class="box1">
-	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-		<thead>
-			<tr>
-				<th><?=$_LANG->get('ID')?></th>
-				<th><?=$_LANG->get('#')?></th>
-				<th><?=$_LANG->get('Kategorie')?></th>
-				<th><?=$_LANG->get('Datum')?></th>
-				<th><?=$_LANG->get('erst. von')?></th>
-				<th><?=$_LANG->get('Fälligkeit')?></th>
-				<th><?=$_LANG->get('Betreff')?></th>
-				<th><?=$_LANG->get('Status')?></th>
-				<th><?=$_LANG->get('Von')?></th>
-				<th><?=$_LANG->get('Priorität')?></th>
-				<th><?=$_LANG->get('Zugewiesen an')?></th>
-			</tr>
-		
-		
-		<tfoot>
-			<tr>
-				<th><?=$_LANG->get('ID')?></th>
-				<th><?=$_LANG->get('#')?></th>
-				<th><?=$_LANG->get('Kategorie')?></th>
-				<th><?=$_LANG->get('Datum')?></th>
-				<th><?=$_LANG->get('erst. von')?></th>
-				<th><?=$_LANG->get('Fällig')?></th>
-				<th><?=$_LANG->get('Betreff')?></th>
-				<th><?=$_LANG->get('Status')?></th>
-				<th><?=$_LANG->get('Von')?></th>
-				<th><?=$_LANG->get('Priorität')?></th>
-				<th><?=$_LANG->get('Zugewiesen an')?></th>
-			</tr>
-		</tfoot>
-	</table>
-</div>

@@ -60,28 +60,26 @@
 		} );
 	} );
 </script>
-
-<div class="box2" style="min-height:180px;">
-<table style="width:100%">
-	<tr>
-		<td width="400px">
-    		<h1><?=$_LANG->get('Ihre Bestellungen');?></h1>
-    	</td>
-    	<td width="200px" align="right">
-    	</td>
-    </tr>
-</table>
-
-<table cellpadding="2" cellspacing="0" border="0" width="100%" id="ordhistable" class="stripe hover row-border order-column">
-	<thead>
-		<tr>
-			<td>Auftrag-Nr.</td>
-			<td align="center">Bestelldatum</td>
-			<td>Positionen</td>
-			<td>Lieferadresse</td>
-			<td>Rechnungsadresse</td>
-			<td align="center">Status</td>
-		</tr>
-	</thead>
-</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<b>Ihre Bestellungen</b>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+			<div class="table-responsive">
+				<table class="table table-hover" id="ordhistable">
+					<thead>
+						<tr>
+							<td class="content_row_header">Auftrag-Nr.</td>
+							<td class="content_row_header">Bestelldatum</td>
+							<td class="content_row_header">Positionen</td>
+							<td class="content_row_header">Lieferadresse</td>
+							<td class="content_row_header">Rechnungsadresse</td>
+							<td class="content_row_header">Status</td>
+						</tr>
+					</thead>
+				</table>
+			</div>
+	  </div>
 </div>
