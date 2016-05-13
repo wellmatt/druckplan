@@ -39,6 +39,7 @@ $lists = MarketingList::getAllLists();
         <a href="#top" class="menu_item">Seitenanfang</a>
         <a href="index.php?page=libs/modules/marketing/marketing.overview.php&list=<?php echo $_REQUEST["list"];?>" class="menu_item">Zurück</a>
         <a href="#" class="menu_item" onclick="$('#marketing_job_form').submit();">Speichern</a>
+        <a href="#" class="menu_item" onclick="$('#entry_id').val(0); $('#marketing_job_form').submit();">Als neuen Eintrag speichern</a>
         <?php if ($marketingjob->getId()>0){ ?>
             <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$marketingjob->getId()?>');">Löschen</a>
         <?php } ?>
@@ -49,7 +50,7 @@ $lists = MarketingList::getAllLists();
     <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form">
         <input type="hidden" name="exec" value="save"/>
         <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>
-        <input type="hidden" name="id" value="<?php echo $_REQUEST['id'];?>"/>
+        <input type="hidden" id="entry_id" name="id" value="<?php echo $_REQUEST['id'];?>"/>
         <h3>Marketing Job</h3></br>
 
         <table>

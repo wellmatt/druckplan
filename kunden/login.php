@@ -100,37 +100,30 @@ function checkform(obj){
 	return true;
 }
 </script>
-<div id="loginform">
-	<h1>Login</h1>
-	<form action="index.php" method="post"
-		 onsubmit="return checkform(new Array(this.user, this.password))">
-	    <input name="exec" type="hidden" value="login">
-		<table cellpadding="1" cellspacing="0" border="0" width="100%">
-			<colgroup>
-				<col width="100">
-				<col>
-			</colgroup>
-			<tr>
-				<td colspan="2"><b class="msg_error"><?=$loginmsg?>&nbsp;</b></td>
-			</tr>
-			<tr>
-				<td>&ensp;Benutzer</td>
-				<td><input name="user" style="width: 160px"></td>
-			</tr>
-			<tr>
-				<td>&ensp;Passwort</td>
-				<td><input name="password" style="width: 160px" type="password"></td>
-			</tr>
-			<tr>
-				<td>&ensp;</td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td align="right"><input type="submit" value="Anmelden">&ensp;</td>
-			</tr> 
-		</table>
-	</form>
-</div>
+<link rel="stylesheet" type="text/css" href="../css/login_new.css">
+
+<!-- Loginform -->
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_login">
+	<div id="loginform">
+		<input name="exec" type="hidden" value="login">
+		<div class="login-window">
+			<div class="inner">
+				<p class="login-row">
+					<input type="text" name="user" placeholder="User Name" onLoad="focus()"/>
+				</p>
+				<p class="pass-row">
+					<input type="password" name="password" placeholder="Passwort" onLoad="focus()"/>
+				</p>
+				<p class="logo-row">
+					<span class="error"><? if($_USER) echo $_USER->getError()?></span>
+					<img src="../images/page/contilas_logo.png" alt="logo" />
+				<p class="submit-row">
+					<input type="submit" name="submit" value=""/>
+				</p>
+			</div>
+		</div>
+	</div>
+</form>
 
 <script language="javascript">
 if (document.body.clientHeight)

@@ -171,645 +171,529 @@ if ((int)$_REQUEST["persoid"] > 0){
 	$page_type = "perso_order";
 	$header_info = "Bestelldetails";
 }
-
 // Tabelle um den Warenkorb rechts anzeigen lasssen zu können?>
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
-	<colgroup>
-	<col>
-	<col width="2">
-	<col width="200">
-	</colgroup>
-	<tr>
-		<td valign="top">
-		<?
-		if ($_REQUEST["exec"] == "edit"){
-			//Ab hier wird die Personalisierung bearbeitet
-			
-			if($page_type == "perso"){
-				$perso_order = new Personalizationorder();
-				$perso = new Personalization($_REQUEST["persoid"]);
-				$all_items = Personalizationitem::getAllPersonalizationitems($perso->getId(), "id", Personalizationitem::SITE_FRONT);
-				$all_items2 = Personalizationitem::getAllPersonalizationitems($perso->getId(), "id", Personalizationitem::SITE_BACK);
-				$tmp_title = "" ; // $perso->getTitle();
-			} else {
-				$perso_order = new Personalizationorder((int)$_REQUEST["persoorderid"]);			// nicht nocheinmal setzen
-				$perso = new Personalization($perso_order->getPersoID());
-				$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_FRONT, "t2.id");
-				$all_items2 = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_BACK, "t2.id");
-				$tmp_title = $perso_order->getTitle();
-			}
-			
-		$count_quantity = count($all_items)+count($all_items2);
-		$allprices = $perso->getPrices();
-		$allCostomerContactPersons = ContactPerson::getAllContactPersons($busicon, BusinessContact::ORDER_NAME);
-		$all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_NAME, Address::FILTER_DELIV);
-		
-		?>			
-			<div class="box2" align="center">
-				<table width="100%">
-					<tr>
-						<td width="33%"><h1><?=$header_info?></h1></td>
-						<td width="33%" align="center"><b><?=$perso->getTitle()?></b></td>
-						<td align="right"><?=$savemsg?></td>
-					</tr>
-				</table>
-				<br/>
-			<? // =$docs[0]->getHash()
-				// PDF hohlen
-				if($page_type == "perso"){
-					$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION, 
-														 "requestId" => $perso->getId(), 
-														 "module" => Document::REQ_MODULE_PERSONALIZATION));
-				} else {
-					$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER,
-														 "requestId" => $perso_order->getId(),
-														 "module" => Document::REQ_MODULE_PERSONALIZATION));
-				} ?>
-				<table>
-				<tr>
-					<td align="center">
-    					<?
-        				// PDF ausgeben
-        				if (count($docs) && $docs != false){
-        					$tmp_id =$_USER->getClient()->getId();
-        					$hash = $docs[0]->getHash();
-        					
-        					$obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
-        					$obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
-        					?>			 
-        					<object data="../docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf" type="application/pdf" 
-        							width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
-        				<? } ?>
-					</td>
-				</tr>
-				</table>
+
+
+<?
+if ($_REQUEST["exec"] == "edit"){
+	//Ab hier wird die Personalisierung bearbeitet
+
+	if($page_type == "perso"){
+		$perso_order = new Personalizationorder();
+		$perso = new Personalization($_REQUEST["persoid"]);
+		$all_items = Personalizationitem::getAllPersonalizationitems($perso->getId(), "id", Personalizationitem::SITE_FRONT);
+		$all_items2 = Personalizationitem::getAllPersonalizationitems($perso->getId(), "id", Personalizationitem::SITE_BACK);
+		$tmp_title = "" ; // $perso->getTitle();
+	} else {
+		$perso_order = new Personalizationorder((int)$_REQUEST["persoorderid"]);			// nicht nocheinmal setzen
+		$perso = new Personalization($perso_order->getPersoID());
+		$all_items = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_FRONT, "t2.id");
+		$all_items2 = Personalizationorderitem::getAllPersonalizationorderitems($perso_order->getId(), Personalizationitem::SITE_BACK, "t2.id");
+		$tmp_title = $perso_order->getTitle();
+	}
+
+	$count_quantity = count($all_items)+count($all_items2);
+	$allprices = $perso->getPrices();
+	$allCostomerContactPersons = ContactPerson::getAllContactPersons($busicon, BusinessContact::ORDER_NAME);
+	$all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_NAME, Address::FILTER_DELIV);
+
+	if($page_type == "perso"){
+		$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION,
+			"requestId" => $perso->getId(),
+			"module" => Document::REQ_MODULE_PERSONALIZATION));
+	} else {
+		$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER,
+			"requestId" => $perso_order->getId(),
+			"module" => Document::REQ_MODULE_PERSONALIZATION));
+	}
+	?>
+
+
+	<form action="index.php" method="post" name="cust_perso_edit" id="cust_perso_edit"
+		  onSubmit="return checkform(new Array(this.persoorder_title))" class="form-horizontal">
+		<input type="hidden" name="persoid" value="<?=$perso->getId()?>">
+		<input type="hidden" name="persoorderid" value="<?=$perso_order->getId()?>">
+		<input type="hidden" name="pid" value="<?=$_REQUEST["pid"]?>">
+		<input type="hidden" name="exec" value="edit">
+		<input type="hidden" name="subexec" id="subexec" value="save">
+		<input	type="hidden" name="count_quantity" id="count_quantity"
+				  value="<? if($count_quantity > 0) echo $count_quantity; else echo "0";?>">
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					  <div class="panel-heading">
+							<h3 class="panel-title">
+								<b>Personalisierungen</b>
+							</h3>
+					  </div>
+					  <div class="panel-body">
+						  <div class="panel panel-default">
+							  <div class="panel-heading">
+									<h3 class="panel-title">
+										<?=$header_info?> - <?=$perso->getTitle()?>
+										<span class="pull-right"><?=$savemsg?></span>
+									</h3>
+							  </div>
+							  <div class="panel-body">
+								  <div class="row">
+									  <?
+									  // PDF ausgeben
+									  if (count($docs) && $docs != false){
+										  $tmp_id =$_USER->getClient()->getId();
+										  $hash = $docs[0]->getHash();
+
+										  $obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
+										  $obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
+										  ?>
+										  <object data="../docs/personalization/<?=$tmp_id?>.per_<?=$hash?>_e.pdf" type="application/pdf"
+												  width="<?=$obj_width?>" height="<?=$obj_height?>" ></object>
+									  <? } ?>
+								  </div>
+								  <div class="row">
+									  <br>
+									  <?php
+									  /**
+									   * Um festzustellen, ob das Formular bereits abgesendet wurde,
+									   * halten wir die Anzahl der bereits ausgefüllten Textfelder fest.
+									   */
+									  $filledInputs = 0;
+
+									  ?>
+
+									  <div class="col-md-12">
+										  <div class="row">
+											  <div class="col-md-6"> <!-- vorderseite -->
+												  <? 	if (count($all_items) > 0 && $all_items != FALSE){
+													  $y=1;
+													  foreach ($all_items as $item){
+														  // if ($item->getTitle() == "spacer") { continue; }
+														  if($page_type == "perso"){
+															  // Wenn es gerade eine Personalisierung aufgerufen wurde
+															  $itemID = 0;
+															  $persoitemID = $item->getID();
+															  $persoitem = new Personalizationitem($persoitemID);
+															  $tmp_type = $item->getBoxtype();
+															  $tmp_label = $item->getTitle();
+															  $tmp_titel = "";
+														  } else {
+															  // Wenn gerade eine Bestellung einer Personalisierung ausfegrufen wurde
+															  $itemID = $item->getId();
+															  $persoitemID = $item->getPersoItemID();
+															  $persoitem = new Personalizationitem($persoitemID);
+															  $tmp_type = $persoitem->getBoxtype();
+															  $tmp_label = $persoitem->getTitle();
+															  $tmp_titel = $item->getValue();
+															  if(!empty($tmp_titel)) {
+																  $filledInputs++;
+															  }
+														  }
+														  ?>
+
+														  <input type="hidden" name="item_id_<?=$y?>" value="<?=$itemID?>">
+														  <input type="hidden" name="item_persoitemid_<?=$y?>" value="<?=$persoitemID?>">
+
+														  <div class="form-group">
+															  <label for="" class="col-sm-6 control-label">
+																  <? if ($tmp_label == "spacer") { echo "&nbsp;"; } else { echo $tmp_label; }?>
+															  </label>
+															  <div class="col-sm-6">
+
+																  <? if ($page_type == "perso" && $item->getPosition() == 1){
+																	  $position_titles = $busicon->getPositionTitles();
+																	  // print_r($position_titles);
+																	  ?>
+																	  <select name="item_value_<?=$y?>" id="item_value_<?=$y?>" class="form-control">
+																		  <option value="" selected></option>
+																		  <?
+																		  foreach($position_titles as $pt)
+																		  {?>
+																			  <option value="<?=$pt?>"><?=$pt?></option>
+																		  <?}?>
+																	  </select>
+																	  <?
+																  } elseif ($page_type == "perso_order" && $persoitem->getPosition() == 1){
+																	  $position_titles = $busicon->getPositionTitles();
+																	  ?>
+																	  <select name="item_value_<?=$y?>" id="item_value_<?=$y?>" class="form-control">
+																		  <option value="<?=$tmp_titel?>" selected><?=$tmp_titel?></option>
+																		  <?
+																		  foreach($position_titles as $pt)
+																		  {?>
+																			  <option value="<?=$pt?>"><?=$pt?></option>
+																		  <?}?>
+																	  </select>
+																	  <?
+																  } else {
+																	  if ($tmp_type == 1) {?>
+																		  <input name="item_value_<?=$y?>" class="form-control" <? if ($tmp_label == "spacer") { echo ' type="hidden" '; } else { echo ' type="text" '; } ?>
+																			  <? if ($perso_order->getStatus() > 1) echo "disabled "; ?>
+																			  <? if ($persoitem->getReadOnly() == 1) echo "readonly ";
+																			  if ($tmp_label == "spacer") {
+																				  echo 'value ="' . htmlspecialchars($tmp_label) . '" ';
+																			  } else {
+																				  if($page_type == "perso"){
+																					  if ($item->getPreDefined() == 1) {
+																						  echo 'value ="' . htmlspecialchars($tmp_label) . '" ';
+																					  } else {
+																						  echo 'value ="' . htmlspecialchars($tmp_titel) . '" ';
+																					  }
+																				  } else {
+																					  echo 'value ="' . htmlspecialchars($tmp_titel) . '" ';
+																				  }
+																			  }
+																			  ?> >
+																	  <?} else {?>
+																		  <textarea name="item_value_<?=$y?>" class="form-control" type="text" style="height: 30px;"
+																			  <? if ($perso_order->getStatus() > 1) echo "disabled";?>
+																			  <? if ($item->getPreDefined() == 1) echo ' value="' . $tmp_label . '" ';?>
+																		  ><?=$tmp_titel?></textarea>
+
+																	  <?}
+																  }?>
+															  </div>
+														  </div>
+														  <? 	$y++;
+													  }
+												  } else { ?>
+													  <span class="alert-info"><?=$_LANG->get('Keine Felder angelegt');?></span>
+												  <?	} ?>
+											  </div>
+											  <div class="col-md-6"> <!-- rueckseite -->
+												  <? 	if (count($all_items2) > 0 && $all_items2 != FALSE){
+													  foreach ($all_items2 as $item){
+														  // if ($item->getTitle() == "spacer") { continue; }
+														  if($page_type == "perso"){
+															  // Wenn es gerade eine Personalisierung aufgerufen wurde
+															  $itemID = 0;
+															  $persoitemID = $item->getID();
+															  $persoitem = new Personalizationitem($persoitemID);
+															  $tmp_type = $item->getBoxtype();
+															  $tmp_label = $item->getTitle();
+															  $tmp_titel = "";
+														  } else {
+															  // Wenn gerade eine Bestellung einer Personalisierung ausfegrufen wurde
+															  $itemID = $item->getId();
+															  $persoitemID = $item->getPersoItemID();
+															  $persoitem = new Personalizationitem($persoitemID);
+															  $tmp_type = $persoitem->getBoxtype();
+															  $tmp_label = $persoitem->getTitle();
+															  $tmp_titel = $item->getValue();
+														  }
+														  ?>
+
+														  <input type="hidden" name="item_id_<?=$y?>" value="<?=$itemID?>">
+														  <input type="hidden" name="item_persoitemid_<?=$y?>" value="<?=$persoitemID?>">
+
+														  <div class="form-group">
+															  <label for="" class="col-sm-6 control-label">
+																  <? if ($tmp_label == "spacer") { echo "&nbsp;"; } else { echo $tmp_label; }?>
+															  </label>
+															  <div class="col-sm-6">
+
+																  <? if ($page_type == "perso" && $item->getPosition() == 1){
+																	  $position_titles = $busicon->getPositionTitles();
+																	  // print_r($position_titles);
+																	  ?>
+																	  <select name="item_value_<?=$y?>" id="item_value_<?=$y?>" class="form-control">
+																		  <option value="" selected></option>
+																		  <?
+																		  foreach($position_titles as $pt)
+																		  {?>
+																			  <option value="<?=$pt?>"><?=$pt?></option>
+																		  <?}?>
+																	  </select>
+																	  <?
+																  } elseif ($page_type == "perso_order" && $persoitem->getPosition() == 1){
+																	  $position_titles = $busicon->getPositionTitles();
+																	  ?>
+																	  <select name="item_value_<?=$y?>" id="item_value_<?=$y?>" class="form-control">
+																		  <option value="<?=$tmp_titel?>" selected><?=$tmp_titel?></option>
+																		  <?
+																		  foreach($position_titles as $pt)
+																		  {?>
+																			  <option value="<?=$pt?>"><?=$pt?></option>
+																		  <?}?>
+																	  </select>
+																	  <?
+																  } else {
+																	  if ($tmp_type == 1) {?>
+																		  <input name="item_value_<?=$y?>" class="form-control" <? if ($tmp_label == "spacer") { echo ' type="hidden" '; } else { echo ' type="text" '; } ?>
+																			  <? if ($perso_order->getStatus() > 1) echo "disabled "; ?>
+																			  <? if ($persoitem->getReadOnly() == 1) echo "readonly ";
+																			  if ($tmp_label == "spacer") {
+																				  echo 'value ="' . htmlspecialchars($tmp_label) . '" ';
+																			  } else {
+																				  if($page_type == "perso"){
+																					  if ($item->getPreDefined() == 1) {
+																						  echo 'value ="' . htmlspecialchars($tmp_label) . '" ';
+																					  } else {
+																						  echo 'value ="' . htmlspecialchars($tmp_titel) . '" ';
+																					  }
+																				  } else {
+																					  echo 'value ="' . htmlspecialchars($tmp_titel) . '" ';
+																				  }
+																			  }
+																			  ?> >
+																	  <?} else {?>
+																		  <textarea name="item_value_<?=$y?>" class="form-control" type="text" style="height: 30px;"
+																			  <? if ($perso_order->getStatus() > 1) echo "disabled";?>
+																			  <? if ($item->getPreDefined() == 1) echo ' value="' . $tmp_label . '" ';?>
+																		  ><?=$tmp_titel?></textarea>
+
+																	  <?}
+																  }?>
+															  </div>
+														  </div>
+														  <? 	$y++;
+													  }
+												  } else { ?>
+													  <span class="alert-info"><?=$_LANG->get('Keine Felder angelegt');?></span>
+												  <?	} ?>
+											  </div>
+										  </div>
+									  </div>
+								  </div>
+
+								  <div class="row">
+									  <div class="col-md-12">
+										  <button type="submit" class="btn btn-success"><?=$_LANG->get('Speichern')?></button>
+										  <br>&nbsp;
+										  <div class="row" style="display: <?= ($filledInputs > 0) ? 'block' : 'none' ?>">
+											  <div class="form-group">
+												  <label for="" class="col-sm-2 control-label">Titel</label>
+												  <div class="col-sm-10">
+													  <input type="text" class="form-control" name="persoorder_title" id="persoorder_title" value="<?= (empty($tmp_title)) ? '(Unbenannt)' : $tmp_title ?>">
+												  </div>
+											  </div>
+											  <div class="form-group">
+												  <label for="" class="col-sm-2 control-label">Menge</label>
+												  <div class="col-sm-10">
+													  <div class="input-group">
+														  <select name="persoorder_amount" id="persoorder_amount" class="form-control">
+															  <?
+															  foreach($allprices AS $price){ ?>
+																  <option value="<?=$price["sep_max"]?>"
+																	  <?if($price["sep_max"] == $perso_order->getAmount()) echo "selected";?>>
+																	  <?	echo $price["sep_max"];
+																	  if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
+																  </option>
+															  <?	} ?>
+														  </select>
+														  <div class="input-group-addon"><span>Stk.</span></div>
+													  </div>
+												  </div>
+											  </div>
+											  <div class="form-group">
+												  <label for="" class="col-sm-2 control-label">Anprechpartner</label>
+												  <div class="col-sm-10">
+													  <select name="persoorder_cp_id" id="persoorder_cp_id" class="form-control" <? if ($perso_order->getStatus() > 1) echo "disabled";?>>
+														  <option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;len');?> &gt;</option>
+														  <?	foreach($allCostomerContactPersons AS $cp){ ?>
+															  <option value="<?=$cp->getId()?>"
+																  <?if($cp->getId() == $perso_order->getContactPersonId()) echo "selected";?>>
+																  <?=$cp->getNameAsLine2()?>
+															  </option>
+														  <?	} ?>
+													  </select>
+												  </div>
+											  </div>
+											  <div class="form-group">
+												  <label for="" class="col-sm-2 control-label">Status</label>
+												  <div class="col-sm-10">
+													  <div class="form-control">
+														  <img src="../images/status/<?=$perso_order->getStatusImage()?>"
+															   title="<?=$perso_order->getStatusDescription()?>"
+															   alt="<?=$perso_order->getStatusDescription()?>" > <?=$perso_order->getStatusDescription()?>
+													  </div>
+												  </div>
+											  </div>
+											  <div class="form-group">
+												  <label for="" class="col-sm-2 control-label">Erstelldatum</label>
+												  <div class="col-sm-10">
+													  <div class="form-control">
+														  <?
+														  if($perso_order->getCrtdate() > 0){
+															  echo date("d.m.Y - H:i",$perso_order->getCrtdate());
+														  } else {
+															  echo "-";
+														  }?>
+													  </div>
+												  </div>
+											  </div>
+											  <div class="form-group">
+												  <label for="" class="col-sm-2 control-label">Bestelldatum</label>
+												  <div class="col-sm-10">
+													  <div class="form-control">
+														  <?
+														  if($perso_order->getOrderdate() > 0){
+															  echo date("d.m.Y - H:i",$perso_order->getOrderdate());
+														  } else {
+															  echo "-";
+														  }?>
+													  </div>
+												  </div>
+											  </div>
+											  &nbsp;<br>&nbsp;
+											  <button type="submit" class="btn btn-success">
+												  <?=$_LANG->get('Speichern')?>
+											  </button>
+											  <button type="button" class="btn btn-success" onclick="window.location.href='index.php?pid=<?=$_REQUEST["pid"]?>'">
+												  <?=$_LANG->get('Zur&uuml;ck')?>
+											  </button>
+											  <button type="button" class="btn btn-success" onclick="document.getElementById('subexec').value='addToSchoppingbasket';
+												 document.getElementById('cust_perso_edit').submit();">
+												  <?=$_LANG->get('in den Warenkorb')?>
+											  </button>
+										  </div>
+									  </div>
+								  </div>
+							  </div>
+						  </div>
+					  </div>
+				</div>
 			</div>
-		
-			<form action="index.php" method="post" name="cust_perso_edit" id="cust_perso_edit" 
-					onSubmit="return checkform(new Array(this.persoorder_title))">
-				<input type="hidden" name="persoid" value="<?=$perso->getId()?>">
-				<input type="hidden" name="persoorderid" value="<?=$perso_order->getId()?>">
-				<input type="hidden" name="pid" value="<?=$_REQUEST["pid"]?>">
-				<input type="hidden" name="exec" value="edit">
-				<input type="hidden" name="subexec" id="subexec" value="save">
-				<input	type="hidden" name="count_quantity" id="count_quantity"
-					value="<? if($count_quantity > 0) echo $count_quantity; else echo "0";?>">
-				<div class="box2">
-				<table>
-				<tr>
-				<td valign="top">
-                    <?php
-                    /**
-                     * Um festzustellen, ob das Formular bereits abgesendet wurde,
-                     * halten wir die Anzahl der bereits ausgefüllten Textfelder fest.
-                     */
-                    $filledInputs = 0;
-
-                    ?>
-					<table id="table-items">
-						<colgroup>
-				        	<col width="150">
-				        	<col width="200">
-				    	</colgroup>
-				<? 	if (count($all_items) > 0 && $all_items != FALSE){
-						$y=1;
-						foreach ($all_items as $item){
-							// if ($item->getTitle() == "spacer") { continue; }
-							if($page_type == "perso"){
-								// Wenn es gerade eine Personalisierung aufgerufen wurde	 
-								$itemID = 0;
-								$persoitemID = $item->getID();
-								$persoitem = new Personalizationitem($persoitemID);
-								$tmp_type = $item->getBoxtype();
-								$tmp_label = $item->getTitle();
-								$tmp_titel = "";
-							} else {
-								// Wenn gerade eine Bestellung einer Personalisierung ausfegrufen wurde
-								$itemID = $item->getId();
-								$persoitemID = $item->getPersoItemID();
-								$persoitem = new Personalizationitem($persoitemID);
-								$tmp_type = $persoitem->getBoxtype();
-								$tmp_label = $persoitem->getTitle();
-								$tmp_titel = $item->getValue();
-                                if(!empty($tmp_titel)) {
-                                    $filledInputs++;
-                                }
-							} 
-						?>
-							<tr>
-								<td class="content_row">
-									<b><? if ($tmp_label == "spacer") { echo "&nbsp;"; } else { echo $tmp_label; }?></b>
-								</td>
-								<td class="content_row">
-									<input type="hidden" name="item_id_<?=$y?>" value="<?=$itemID?>">
-									<input type="hidden" name="item_persoitemid_<?=$y?>" value="<?=$persoitemID?>">
-									<? if ($page_type == "perso" && $item->getPosition() == 1){
-										$position_titles = $busicon->getPositionTitles();
-										// print_r($position_titles);
-										?>
-										<select name="item_value_<?=$y?>" style="width:230px" class="text">
-											<option value="" selected></option> 
-											<? 
-											foreach($position_titles as $pt)
-											{?>
-												<option value="<?=$pt?>"><?=$pt?></option> 
-											<?}?>
-										</select>
-									<?
-									} elseif ($page_type == "perso_order" && $persoitem->getPosition() == 1){
-										$position_titles = $busicon->getPositionTitles();
-										?>
-										<select name="item_value_<?=$y?>" style="width:230px" class="text">
-											<option value="<?=$tmp_titel?>" selected><?=$tmp_titel?></option> 
-											<? 
-											foreach($position_titles as $pt)
-											{?>
-												<option value="<?=$pt?>"><?=$pt?></option> 
-											<?}?>
-										</select>
-									<?
-									} else {
-									  if ($tmp_type == 1) {?>
-										<input 	name="item_value_<?=$y?>" class="text" <? if ($tmp_label == "spacer") { echo ' type="hidden" '; } else { echo ' type="text" '; } ?> 
-												<? if ($perso_order->getStatus() > 1) echo "disabled "; ?>
-												<? if ($persoitem->getReadOnly() == 1) echo "readonly ";
-												if ($tmp_label == "spacer") { 
-													echo 'value ="' . htmlspecialchars($tmp_label) . '" '; 
-												} else { 
-													if($page_type == "perso"){
-														if ($item->getPreDefined() == 1) {
-															echo 'value ="' . htmlspecialchars($tmp_label) . '" '; 
-														} else {
-															echo 'value ="' . htmlspecialchars($tmp_titel) . '" '; 
-														}
-													} else {
-														echo 'value ="' . htmlspecialchars($tmp_titel) . '" '; 
-													}
-												} 
-												?> 
-												style="width: 230px" >
-									<?} else {?>
-										<textarea 	name="item_value_<?=$y?>" class="text" type="text" style="width: 227px; height: 30px;"  
-												<? if ($perso_order->getStatus() > 1) echo "disabled";?> 
-												<? if ($item->getPreDefined() == 1) echo ' value="' . $tmp_label . '" ';?>
-												><?=$tmp_titel?></textarea>
-												
-									<?}
-									}?>
-								</td>
-							</tr>
-					<? 	$y++;
-						} 	
-					} else { ?>
-						<tr>
-							<td class="content_row" colspan="6" id="td_empty" align="center">
-								<?=$_LANG->get('Keine Felder angelegt');?>
-							</td>
-						</tr>
-				<?	} ?>
-					</table>
-				</td>
-				<td valign="top">
-					<table id="table-items">
-						<colgroup>
-				        	<col width="150">
-				        	<col width="200">
-				    	</colgroup>
-				<? 	if (count($all_items2) > 0 && $all_items2 != FALSE){
-						foreach ($all_items2 as $item){
-							// if ($item->getTitle() == "spacer") { continue; }
-							if($page_type == "perso"){
-								// Wenn es gerade eine Personalisierung aufgerufen wurde	 
-								$itemID = 0;
-								$persoitemID = $item->getID();
-								$persoitem = new Personalizationitem($persoitemID);
-								$tmp_type = $item->getBoxtype();
-								$tmp_label = $item->getTitle();
-								$tmp_titel = "";
-							} else {
-								// Wenn gerade eine Bestellung einer Personalisierung ausfegrufen wurde
-								$itemID = $item->getId();
-								$persoitemID = $item->getPersoItemID();
-								$persoitem = new Personalizationitem($persoitemID);
-								$tmp_type = $persoitem->getBoxtype();
-								$tmp_label = $persoitem->getTitle();
-								$tmp_titel = $item->getValue();
-							} 
-						?>
-							<tr>
-								<td class="content_row">
-									<b><? if ($tmp_label == "spacer") { echo "&nbsp;"; } else { echo $tmp_label; }?></b>
-								</td>
-								<td class="content_row">
-									<input type="hidden" name="item_id_<?=$y?>" value="<?=$itemID?>">
-									<input type="hidden" name="item_persoitemid_<?=$y?>" value="<?=$persoitemID?>">
-									<? if ($page_type == "perso" && $item->getPosition() == 1){
-										$position_titles = $busicon->getPositionTitles();
-										?>
-										<select name="item_value_<?=$y?>" style="width:230px" class="text">
-											<option value="" selected></option> 
-											<? 
-											foreach($position_titles as $pt)
-											{?>
-												<option value="<?=$pt?>"><?=$pt?></option> 
-											<?}?>
-										</select>
-									<?
-									} elseif ($page_type == "perso_order" && $persoitem->getPosition() == 1){
-										$position_titles = $busicon->getPositionTitles();
-										?>
-										<select name="item_value_<?=$y?>" style="width:230px" class="text">
-											<option value="<?=$tmp_titel?>" selected><?=$tmp_titel?></option> 
-											<? 
-											foreach($position_titles as $pt)
-											{?>
-												<option value="<?=$pt?>"><?=$pt?></option> 
-											<?}?>
-										</select>
-									<?
-									} else {
-									if ($tmp_type == 1) {?>
-										<input 	name="item_value_<?=$y?>" class="text" <? if ($tmp_label == "spacer") { echo ' type="hidden" '; } else { echo ' type="text" '; } ?>
-												<? if ($perso_order->getStatus() > 1) echo "disabled "; ?>
-												<? if ($persoitem->getReadOnly() == 1) echo "readonly ";
-												if ($tmp_label == "spacer") { 
-													echo 'value ="' . $tmp_label . '" '; 
-												} else { 
-													if($page_type == "perso"){
-														if ($item->getPreDefined() == 1) {
-															echo 'value ="' . $tmp_label . '" '; 
-														} else {
-															echo 'value ="' . $tmp_titel . '" '; 
-														}
-													} else {
-														echo 'value ="' . $tmp_titel . '" '; 
-													}
-												} 
-												?>
-												style="width: 230px" >
-									<?} else {?>
-										<textarea 	name="item_value_<?=$y?>" class="text" type="text" style="width: 227px; height: 30px;"  
-												<? if ($perso_order->getStatus() > 1) echo "disabled";?>
-												<? if ($item->getPreDefined() == 1) echo ' value="' . $tmp_label . '" ';?>
-												><?=$tmp_titel?></textarea>
-												
-									<?}
-									}?>
-								</td>
-							</tr>
-					<? 	$y++;
-						} 	
-					} else { ?>
-						<tr>
-							<td class="content_row" colspan="6" id="td_empty" align="center">
-								<?=$_LANG->get('Keine Felder angelegt');?>
-							</td>
-						</tr>
-				<?	} ?>
-					</table>
-				</td></tr></table>
-				</div>
-
-                <div class="__box2">
-                    <table width="100%">
-                        <tr>
-                            <td style="width: 400px;">&nbsp;</td>
-                            <td colspan="2">
-                                <input type="submit" class="button" value="<?=$_LANG->get('Speichern')?>"> &ensp;
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-				
-				<div class="box2" style="display: <?= ($filledInputs > 0) ? 'block' : 'none' ?>">
-					<table>
-					<colgroup>
-				        	<col width="150">
-				        	<col width="310">
-				        	<col width="130">
-				        	<col>
-				    	</colgroup>
-				    	<tr>
-				    		<td valign="top"><b>Dokument speichern unter*</b></td>
-				    		<td valign="top">
-				    			<input  type="text" name="persoorder_title" value="<?= (empty($tmp_title)) ? '(Unbenannt)' : $tmp_title ?>" style="width: 150px;">
-				    		</td>
-				    		<td rowspan="5" valign="top">&nbsp;</td>
-				    		<td rowspan="5" valign="top">&nbsp;</td>
-				    		<!-- 
-				    		<td rowspan="5" valign="top"><b>Bemerkung </b></td>
-				    		<td rowspan="5" valign="top">
-				    			<textarea name="persoorder_comment" rows="4" cols="35"><?=stripslashes($perso_order->getComment())?></textarea>
-				    		</td> -->
-				    	</tr>
-				    	<tr>
-				    		<td valign="top"><b>Bestellmenge</b></td>
-				    		<td valign="top">
-				    			
-				    			<select name="persoorder_amount" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
-				    					style="width: 150px;">
-				    				<?
-				    				foreach($allprices AS $price){ ?>
-				    					<option value="<?=$price["sep_max"]?>"
-				    							<?if($price["sep_max"] == $perso_order->getAmount()) echo "selected";?>>
-				    					<?	echo $price["sep_max"];
-				    						if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
-				    					</option>
-								<?	} ?>
-				    			</select> Stk.
-				    			
-				    			<!-- input  type="text" name="persoorder_amount" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
-				    					value="<?=$perso_order->getAmount()?>" style="width:50Px"> Stk. -->
-				    		</td>
-				    	</tr>
-				    	<tr>
-				    		<td valign="top"><b>Anprechpartner</b></td>
-				    		<td valign="top">
-				    			<select name="persoorder_cp_id" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
-				    					style="width: 150px;">
-				    				<option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;len');?> &gt;</option>
-				    			<?	foreach($allCostomerContactPersons AS $cp){ ?>
-				    					<option value="<?=$cp->getId()?>"
-				    							<?if($cp->getId() == $perso_order->getContactPersonId()) echo "selected";?>>
-				    					<?=$cp->getNameAsLine2()?>
-				    					</option>
-								<?	} ?>
-				    			</select> 
-				    		</td>
-				    	</tr>
-				    	<!-- tr>
-				    		<td valign="top"><b>Lieferaddresse</b></td>
-				    		<td valign="top">
-				    			<select name="persoorder_deliv_id" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
-				    					style="width: 150px;">
-				    				<option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;len');?> &gt;</option>
-				    			<?	foreach($all_deliveryAddresses AS $deliv){ ?>
-				    					<option value="<?=$deliv->getId()?>"
-				    							<?if($deliv->getId() == $perso_order->getDeliveryAddressID()) echo "selected";?>>
-				    					<?=$deliv->getAddressAsLine()?>
-				    					</option>
-								<?	} ?>
-				    			</select> 
-				    		</td>
-				    	</tr -->
-				    	<tr>
-				    		<td><b>Status</b></td>
-				    		<td>
-				    			<img src="../images/status/<?=$perso_order->getStatusImage()?>" 
-				        			 title="<?=$perso_order->getStatusDescription()?>" 
-				        			 alt="<?=$perso_order->getStatusDescription()?>" >
-				    		</td>
-				    	</tr>
-				    	<tr>
-				    		<td><b>Erstelldatum</b></td>
-				    		<td><?
-				    			if($perso_order->getCrtdate() > 0){
-				    				echo date("d.m.Y - H:i",$perso_order->getCrtdate());
-								} else {
-									echo "-";
-								}?>
-				    		</td>
-				    	</tr>
-				    	<tr>
-				    		<td><b>Bestelldatum</b></td>
-				    		<td><?
-				    			if($perso_order->getOrderdate() > 0){
-				    				echo date("d.m.Y - H:i",$perso_order->getOrderdate());
-								} else {
-									echo "-";
-								}?>
-				    		</td>
-				    	</tr>
-					</table>
-				</div>
-
-
-				
-				<?// Speicher & Navigations-Button ?>
-				<table width="100%" style="display: <?= ($filledInputs > 0) ? 'block' : 'none' ?>">
-				    <colgroup>
-				        <col width="180">
-				        <col >
-				        <col width="180">
-				    </colgroup> 
-				    <tr>
-				        <td>
-				         	&ensp; 
-				        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-				        			onclick="window.location.href='index.php?pid=<?=$_REQUEST["pid"]?>'">
-				        </td>
-				        
-				        <td class="content_row_clear" align="right">
-				        	<? if ($perso_order->getStatus() == 1){?>
-				        	<input type="button" class="button" value="<?=$_LANG->get('In den Warenkorb')?>"
-				        			onclick="document.getElementById('subexec').value='addToSchoppingbasket'; 
-					        				 document.getElementById('cust_perso_edit').submit(); "> &ensp;
-				        	<?}?> &ensp; 
-				        </td>
-				        <td class="content_row_clear" align="right">
-				        	<!--<input type="submit" class="button" value="<?/*=$_LANG->get('Speichern')*/?>"> &ensp;-->
-				        </td>
-				    </tr>
-				</table>
-			</form>
-		<?
-		
-		} else { // ----------------------------- Auflistung der Personalisierungen -----------------------------------------------------
-		
-		$search_string = $_REQUEST["search_string"];
-		$search_ver_string = $_REQUEST["search_ver_string"];
-		
-			
-			$all_persos = Personalization::getAllPersonalizationsByCustomerSearch($busicon->getId(), "title ASC",$search_ver_string);
-// 			$all_persoorders = Personalizationorder::getAllPersonalizationordersForShop($busicon->getId(), Personalizationorder::ORDER_CRTDATE, $search_string);
-		?>
-		
-		<script language="javascript">
-		function askDel(myurl){
-		   if(confirm("Sind Sie sicher?")){
-		      if(myurl != '')
-		         location.href = myurl;
-		      else
-		         return true;
-		   }
-		   return false;
-		}
-		</script>
-        <!-- DataTables -->
-        <link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.css">
-        <link rel="stylesheet" type="text/css" href="../css/dataTables.bootstrap.css">
-        <script type="text/javascript" charset="utf8" src="../jscripts/datatable/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="../jscripts/datatable/numeric-comma.js"></script>
-        <script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.bootstrap.js"></script>
-        <script type="text/javascript">
-        $(document).ready(function() {
-            var art_table = $('#porder_table').DataTable( {
-                "processing": true,
-                "bServerSide": true,
-                "sAjaxSource": "personalization.dt.ajax.php?customerid=<?php echo $busicon->getId();?>",
-                "paging": true,
-        		"stateSave": false,
-        		"pageLength": "25",
-        		"aaSorting": [[ 3, "desc" ]],
-        		"dom": 'flrtip',        
-        		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
-        		"columns": [
-        		            null,
-        		            null,
-        		            null,
-        		            null,
-        		            null,
-        		            null,
-        		            null
-        		          ],
-        		"language": 
-        					{
-        						"emptyTable":     "Keine Daten vorhanden",
-        						"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
-        						"infoEmpty": 	  "Keine Seiten vorhanden",
-        						"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
-        						"infoPostFix":    "",
-        						"thousands":      ".",
-        						"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
-        						"loadingRecords": "Lade...",
-        						"processing":     "Verarbeite...",
-        						"search":         "Suche:",
-        						"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
-        						"paginate": {
-        							"first":      "Erste",
-        							"last":       "Letzte",
-        							"next":       "N&auml;chste",
-        							"previous":   "Vorherige"
-        						},
-        						"aria": {
-        							"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
-        							"sortDescending": ": aktivieren um absteigend zu sortieren"
-        						}
-        					}
-            } );
-        } );
-        </script>
-		 
-		<div class="box2" style="min-height:180px;">
-			<table style="width:100%">
-				<tr>
-					<td width="400px">
-						<h1>Verf&uuml;gbare Personalisierungen</h1>
-			    	</td>
-			    	<td width="200px" align="right">
-			    		<form action="index.php" method="post" name="perso_ver_search" id="perso_ver_search" >
-			    			<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
-			    			<input name="search_ver_string" type="text" value="<?=$search_ver_string?>" style="width:150px;"/>
-			    			<img src="../images/icons/magnifier-left.png" alt="<?=$_LANG->get('Suchen');?>" class="pointer"
-			    				 onClick="document.getElementById('perso_ver_search').submit()" />
-			    		</form>
-			    	</td>
-			    </tr>
-			</table>
-			<table cellpadding="2" cellspacing="0" border="0" width="100%">
-			    <colgroup>
-			        <col width="100">
-			        <col>
-			        <col width="160">
-			    </colgroup>
-			    <tr>
-			        <td class="filerow_header">Bild</td>
-			        <td class="filerow_header">Titel</td>
-			        <td class="filerow_header">Optionen</td>
-			    </tr>
-			    <?foreach ($all_persos AS $perso){ ?>
-			    <tr class="filerow">
-					<td class="filerow">
-						<img src="../docs/personalization/<?=$perso->getPreview()?>" alt="..." width="80px">
-					</td>
-			        <td class="filerow"><?=$perso->getTitle()?></td>
-			        <td class="filerow">
-			        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&persoid=<?=$perso->getId()?>&exec=edit" class="button">Ansehen/Bestellen</a>
-			        </td>
-			    </tr>
-			    <? $x++; } ?>
-			</table>
-			
-			<br/><br/>
-			
-			<table style="width:100%">
-				<tr>
-					<td width="400px">
-			    		<h1>Angelegte Personalisierungen</h1>
-			    	</td>
-			    </tr>
-			</table>
-			
-        	<table id="porder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-                <thead>
-                    <tr>
-                        <th width="20"><?=$_LANG->get('ID')?></th>
-                        <th width="105"><?=$_LANG->get('Beschreibung')?></th>
-                        <th><?=$_LANG->get('Titel')?></th>
-                        <th width="80"><?=$_LANG->get('Erstelldatum')?></th>
-                        <th width="80"><?=$_LANG->get('Bestelldatum')?></th>
-                        <th width="160"><?=$_LANG->get('Menge')?></th>
-                        <th width="160"><?=$_LANG->get('Optionen')?></th>
-                    </tr>
-                </thead>
-        	</table>
-			<?php /*
-			<table cellpadding="2" cellspacing="0" style="width:100%; border:0px;">
-			    <colgroup>
-			        <col>
-			        <col width="100">
-			        <col width="90">
-			        <col width="80">
-			        <col width="80">
-			        <col width="100">
-			    </colgroup>
-			    <? if(count($all_persoorders) > 0  && $all_persoorders != false) {?>
-			    <tr>
-			        <td class="filerow_header"><?=$_LANG->get('Beschreibung');?></td>
-			        <td class="filerow_header"><?=$_LANG->get('Titel');?></td>
-			        <td class="filerow_header" align="center"><?=$_LANG->get('Erstelldatum');?></td>
-			        <td class="filerow_header" align="center"><?=$_LANG->get('Bestelldatum');?></td>
-			        <td class="filerow_header" align="right"><?=$_LANG->get('Menge');?></td>
-			        <td class="filerow_header"><?=$_LANG->get('Optionen');?></td>
-			    </tr>
-			    <?foreach ($all_persoorders AS $perso_order){ 
-			    	$perso = new Personalization($perso_order->getPersoID()); ?>
-			    <tr class="filerow">
-			        <td class="filerow"><?=$perso_order->getTitle()?></td>
-			        <td class="filerow"><?=$perso->getTitle()?></td>
-			        <td class="filerow" align="center">
-			        	<?=date("d.m.Y",$perso_order->getCrtdate()) //  - H:i?>
-			        </td>
-			        <td class="filerow" align="center">
-			        	<?if ($perso_order->getOrderdate() > 0) echo date("d.m.Y",$perso_order->getOrderdate()) // - H:i?>
-			        </td>
-			        <td class="filerow" align="right"><?=$perso_order->getAmount()?> Stk.</td>
-			        <td class="filerow">
-			        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&persoorderid=<?=$perso_order->getId()?>&exec=edit" class="button">Ansehen</a>
-			        <? 	if($perso_order->getStatus() >= 1){ ?>
-			        	&ensp;
-			        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&deleteid=<?=$perso_order->getId()?>&exec=delete" 
-			        		class="button" onclick="return confirm('<?=$_LANG->get('Personalisierung wirklich l&ouml;schen?') ?>')"
-			        		style="border: solid 1px red; color: red;">X</a>
-			        <?	} ?>
-			        </td>
-			    </tr>
-			    <? $x++; } 
-			    } else {
-					echo '<tr><td class="filerow" colspan="4" align="center">'.$_LANG->get('Keine Personalisierungen aktiv').'</td></tr>';
-			    }?>
-			</table>
-			*/ ?>
 		</div>
-		<? } ?>
-		</td>
-		<td>&ensp;</td>
-		<td valign="top">
-			<div class="box1"  style="min-height:600px;">
-			<? // Warenkorb laden
-				require_once 'kunden/modules/shoppingbasket/shopping_sidebar.php';?>
-			</div>
-		</td>
-	</tr>
-</table>
+	</form>
+
+<?php } else { // ----------------------------- Auflistung der Personalisierungen -----------------------------------------------------
+		
+	$search_string = $_REQUEST["search_string"];
+	$search_ver_string = $_REQUEST["search_ver_string"];
+	$all_persos = Personalization::getAllPersonalizationsByCustomerSearch($busicon->getId(), "title ASC",$search_ver_string);
+	?>
+
+	<script language="javascript">
+	function askDel(myurl){
+	   if(confirm("Sind Sie sicher?")){
+		  if(myurl != '')
+			 location.href = myurl;
+		  else
+			 return true;
+	   }
+	   return false;
+	}
+	</script>
+	<!-- DataTables -->
+	<link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="../css/dataTables.bootstrap.css">
+	<script type="text/javascript" charset="utf8" src="../jscripts/datatable/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" charset="utf8" src="../jscripts/datatable/numeric-comma.js"></script>
+	<script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.bootstrap.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		var art_table = $('#porder_table').DataTable( {
+			"processing": true,
+			"bServerSide": true,
+			"sAjaxSource": "personalization.dt.ajax.php?customerid=<?php echo $busicon->getId();?>",
+			"paging": true,
+			"stateSave": false,
+			"pageLength": "25",
+			"aaSorting": [[ 3, "desc" ]],
+			"dom": 'flrtip',
+			"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+			"columns": [
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null
+					  ],
+			"language":
+						{
+							"emptyTable":     "Keine Daten vorhanden",
+							"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+							"infoEmpty": 	  "Keine Seiten vorhanden",
+							"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+							"infoPostFix":    "",
+							"thousands":      ".",
+							"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+							"loadingRecords": "Lade...",
+							"processing":     "Verarbeite...",
+							"search":         "Suche:",
+							"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+							"paginate": {
+								"first":      "Erste",
+								"last":       "Letzte",
+								"next":       "N&auml;chste",
+								"previous":   "Vorherige"
+							},
+							"aria": {
+								"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+								"sortDescending": ": aktivieren um absteigend zu sortieren"
+							}
+						}
+		} );
+	} );
+	</script>
+
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">Personalisierungen</h3>
+		  </div>
+		  <div class="panel-body">
+			  <div class="panel panel-default">
+			  	  <div class="panel-heading">
+			  			<h3 class="panel-title">
+							Verfügbar
+							<span class="pull-right">
+								<form action="index.php" method="post" name="perso_ver_search" id="perso_ver_search" >
+									<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
+									<input name="search_ver_string" type="text" value="<?=$search_ver_string?>" style="width:150px;"/>
+									<img src="../images/icons/magnifier-left.png" alt="<?=$_LANG->get('Suchen');?>" class="pointer"
+										 onClick="document.getElementById('perso_ver_search').submit()" />
+								</form>
+							</span>
+						</h3>
+			  	  </div>
+				  <div class="table-responsive">
+					  <table class="table table-hover">
+						  <thead>
+							  <tr>
+								  <th>Bild</th>
+								  <th>Titel</th>
+								  <th>Optionen</th>
+							  </tr>
+						  </thead>
+						  <tbody>
+						  <?foreach ($all_persos AS $perso){ ?>
+							  <tr class="filerow">
+								  <td class="filerow">
+									  <img src="../docs/personalization/<?=$perso->getPreview()?>" width="80px">
+								  </td>
+								  <td class="filerow"><?=$perso->getTitle()?></td>
+								  <td class="filerow">
+									  <a href="index.php?pid=<?=$_REQUEST["pid"]?>&persoid=<?=$perso->getId()?>&exec=edit" class="button">Ansehen/Bestellen</a>
+								  </td>
+							  </tr>
+						  <? $x++; } ?>
+						  </tbody>
+					  </table>
+				  </div>
+			  </div>
+			  <div class="panel panel-default">
+			  	  <div class="panel-heading">
+			  			<h3 class="panel-title">Gespeichert</h3>
+			  	  </div>
+				  <div class="table-responsive">
+					  <table id="porder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
+						  <thead>
+						  <tr>
+							  <th width="20"><?=$_LANG->get('ID')?></th>
+							  <th width="105"><?=$_LANG->get('Beschreibung')?></th>
+							  <th><?=$_LANG->get('Titel')?></th>
+							  <th width="80"><?=$_LANG->get('Erstelldatum')?></th>
+							  <th width="80"><?=$_LANG->get('Bestelldatum')?></th>
+							  <th width="160"><?=$_LANG->get('Menge')?></th>
+							  <th width="160"><?=$_LANG->get('Optionen')?></th>
+						  </tr>
+						  </thead>
+					  </table>
+				  </div>
+			  </div>
+		  </div>
+	</div>
+<? } ?>
 	

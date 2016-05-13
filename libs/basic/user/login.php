@@ -13,10 +13,7 @@ $_LANG = new Translator();
 <link rel="stylesheet" type="text/css" href="./css/login_new.css">
 </head>
 <body>
-   
    <!-- Loginform -->
-   
-   
     <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_login">
     <input type="hidden" name="login_keeplogin" value="1"/>
     <input type="hidden" name="login_domain" value="1"/>

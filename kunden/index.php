@@ -182,9 +182,40 @@ if ($_REQUEST["exec"] == "register_tmp"){
 						<li class="<?if($_REQUEST["pid"] == 90) echo "active";?>"><a href="index.php?pid=90">Historie</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
+						<!-- shoppingcart -->
+						<?php
+						$shopping_basket = new Shoppingbasket();
+						$shopping_basket_entrys = Array ();
+
+						if ($_SESSION["shopping_basket"]){
+							$shopping_basket = $_SESSION["shopping_basket"];
+							$shopping_basket_entrys = $shopping_basket->getEntrys();
+						}
+						?>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+								<span class="badge"><?php echo count($shopping_basket_entrys);?></span>
+								<span class="caret">
+							</a>
+							<ul class="dropdown-menu" style="margin: 0 0 0; padding: 0; border: none;">
+								<li>
+									<div class="row">
+										<div class="col-lg-12 col-md-12 col-sm-12">
+											<div class="item active">
+												<? // Warenkorb laden
+												require_once 'kunden/modules/shoppingbasket/shopping_sidebar.php';?>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<!-- /shoppingcart -->
 						<?if($enabled_tickets == "on"){?>
 							<li><a href="index.php?pid=20&exec=new">Neues Ticket</a></li>
 						<? } ?>
+						<!-- glyphicon-shopping-cart -->
 						<li><a href="index.php?exec=logout">Logout (<?php echo $_CONTACTPERSON->getNameAsLine();?>)</a></li>
 					</ul>
 				</div><!--/.nav-collapse -->
@@ -204,7 +235,7 @@ if ($_REQUEST["exec"] == "register_tmp"){
 				case 80: require_once('kunden/modules/shoppingbasket/shoppingbasket.php'); break;
 				case 90: require_once('kunden/orderhistory.php'); break;
 				case 100: require_once('kunden/marketing.php'); break;
-				default: require_once 'kunden/files.php'; break;
+				default: require_once 'kunden/customerdetails.php'; break;
 			}
 			?>
 		</div> <!-- /container -->

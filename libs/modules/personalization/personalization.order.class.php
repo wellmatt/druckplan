@@ -30,7 +30,7 @@ class Personalizationorder{
 	private $crtdate;				// Erstelldatum
 	private $crtuser;				// Ersteller
 	private $comment;				// Kommentar
-	private $orderdate;				// Bestelldatum
+	private $orderdate = 0;			// Bestelldatum
 	private $amount;				// Bestellmenge
 	private $contactPersonID = 0;	// ID des ausgewaehlten Ansprechpartners
 	private $deliveryAddressID = 0; // ID der ausgewaehlten Lieferaddresse
@@ -128,8 +128,7 @@ class Personalizationorder{
 					contact_person_id = {$this->contactPersonID}, 
 					deliveryaddress_id = {$this->deliveryAddressID}
 					WHERE id = {$this->id}";
-			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
-			return $DB->no_result($sql);
+			$ret = $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization_orders
 					( status, comment, crtdate, crtuser, amount, 
@@ -145,11 +144,16 @@ class Personalizationorder{
 				$sql = "SELECT max(id) id FROM personalization_orders WHERE persoid = {$this->persoID} AND customerid = {$this->customerID} ";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
-				Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
-				return true;
+				$ret = true;
 			} else {
-				return false;
+				$ret = false;
 			}
+		}
+		if ($ret){
+			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

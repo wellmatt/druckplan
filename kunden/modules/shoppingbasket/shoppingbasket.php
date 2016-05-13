@@ -32,7 +32,7 @@ if ($_SESSION["shopping_basket"]){ // Warenkorb aus der Session holen
 }
 
 // Einen Eintrag bearbeiten
-if ($_REQUEST["edit_items"]){ 
+if ($_REQUEST["exec"] == 'edit_items'){
 	$shopping_basket->setIntent(trim(addslashes($_REQUEST["shopping_intent"])));
 	$shopping_basket->setNote(trim(addslashes($_REQUEST["shopping_note"])));
 	$shopping_basket->setDeliveryAdressID((int)$_REQUEST["shopping_deliv_id"]);
@@ -62,16 +62,18 @@ if ($_REQUEST["delete_item"]){
 	$del_id = (int)$_REQUEST["del_id"];
 	$shopping_basket->deleteItemByEntryId($del_id);
 	$shopping_basket_entrys = $shopping_basket->getEntrys();
+	header('Location: index.php?pid=80');
 }
 
 // Warenkorb leeren
-if ($_REQUEST["clear_shoppingbasket"]){
+if ($_REQUEST["exec"] == 'clear_shoppingbasket'){
 	$shopping_basket->clear();
 	$shopping_basket_entrys = Array ();
+	header('Location: index.php?pid=80');
 }
 
 // Warenkorb
-if ($_REQUEST["send_shoppingbasket"]){
+if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 	$shopping_basket->setIntent(trim(addslashes($_REQUEST["shopping_intent"])));
 	$shopping_basket->setNote(trim(addslashes($_REQUEST["shopping_note"])));
 	$shopping_basket->setDeliveryAdressID((int)$_REQUEST["shopping_deliv_id"]);
@@ -160,6 +162,7 @@ if ($_REQUEST["send_shoppingbasket"]){
 	}
 	$save_msg = getSaveMessage($save_msg);
 	$save_msg .= $DB->getLastError();
+	header('Location: index.php?pid=80');
 }
 
 $overall_price = 0;
@@ -168,34 +171,31 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_INVC);
 ?>
 <script>
-// $(document).ready(function(event) {
-//     $("#form_shopbasket").submit(function(){
-function BasketSubmit()
-{
-        var isFormValid = true;
-    
-        $(".artfile").each(function(){
-            if ($.trim($(this).val()).length == 0){
-                isFormValid = false;
-            }
-        });
-    
-        if (!isFormValid) 
-        {
-        	alert("Bitte die zugehörigen Dateiuploads auswählen!");
-        	return isFormValid;
-        }
-        if (confirm('Warenkorb wirklich absenden ?'))
+	function BasketSubmit() {
+		var isFormValid = true;
+
+		$(".artfile").each(function () {
+			if ($.trim($(this).val()).length == 0) {
+				isFormValid = false;
+			}
+		});
+
+		if (!isFormValid) {
+			alert("Bitte die zugehörigen Dateiuploads auswählen!");
+			return isFormValid;
+		}
+
+		if (confirm('Warenkorb wirklich absenden ?')) {
+			$('#exec').val('send_shoppingbasket');
 			$('#form_shopbasket').submit();
-}
-//     });
-// });
+		}
+	}
 </script>
 
 <form method="post" action="index.php" name="form_shopbasket" id="form_shopbasket" enctype="multipart/form-data">
 <input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
 <input type="hidden" name="del_id" id="del_id" value="">
-<input type="hidden" name="exec" value="edit_items";>
+<input type="hidden" id="exec" name="exec" value="edit_items">
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
@@ -378,7 +378,7 @@ function BasketSubmit()
 					</div>
 					 <div class="row">
 						 <div class="col-md-5">
-							 <button name="clear_shoppingbasket" class="btn btn-success"onclick="return confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')">
+							 <button name="clear_shoppingbasket" class="btn btn-success"onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">
 								 <?=$_LANG->get('Warenkorb leeren')?>
 							 </button>
 						 </div>

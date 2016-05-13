@@ -23,10 +23,71 @@ if ($_SESSION["shopping_basket"]){
 ?>
 
 <?//---------------------------- WARENKORB ------------------------------------------------- ?>
+
+<div style="min-width: 400px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Warenkorb
+				<span class="pull-right"><a href="index.php?pid=80">Warenkorb ansehen</a></span>
+			</h3>
+		</div>
+		<div class="panel-body">
+			<? $x=0;
+			if (count($shopping_basket_entrys)>0){ //Artikel auflisten?>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th><?=$_LANG->get('Titel')?></th>
+								<th align="right"><?=$_LANG->get('Stk.')?></th>
+								<th>&ensp;</th>
+								<th><?=$_LANG->get('Preis')?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?foreach ($shopping_basket_entrys as $entry){?>
+								<tr>
+									<td class="content_row">
+										<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
+											$tmp_pid = 60;
+											$tmp_obj = "articleid=".$entry->getId();
+											$tmp_exec= "exec=showArticleDetails";
+										} else if($entry->getType() == Shoppingbasketitem::TYPE_PRODUCTS){
+											$tmp_pid = 100;
+											$tmp_obj = "productid=".$entry->getId();
+											$tmp_exec= "exec=edit";
+										}else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
+											$tmp_pid = 40;
+											$tmp_obj = "persoorderid=".$entry->getId();
+											$tmp_exec= "exec=edit";
+										}?>
+										<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
+											<?=substr($entry->getTitle(),0,21)?></a>
+									</td>
+									<td class="content_row" align="right"><?=$entry->getAmount()?> </td>
+									<td class="content_row">&ensp;</td>
+									<td class="content_row" align="right"><?=printPrice($entry->getPrice())?>&euro; </td>
+								</tr>
+								<?$x++;
+							}?>
+						</tbody>
+					</table>
+				</div>
+
+			<? } else {?>
+				<?=$_LANG->get("Der Warenkorb ist leer");?>
+			</div>
+			<?} //ENDE alse(count(Eintraege))?>
+	</div>
+</div>
+
+<?php /*
+
+
 <div class="shopping_menu"><b>Warenkorb</b></div>
 
-<? $x=0; 
-if (count($shopping_basket_entrys)>0){ //Artikel auflisten?>
 	<form method="post" action="index.php" name="form_additems">
 		<input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
 		<input type="hidden" name="tgid" value="<?=(int)$tg_id?>">
@@ -44,38 +105,7 @@ if (count($shopping_basket_entrys)>0){ //Artikel auflisten?>
 				<td class="content_row_header">&ensp;</td>
 				<td class="content_row_header"><?=$_LANG->get('Preis')?></td>
 			</tr>
-			<?foreach ($shopping_basket_entrys as $entry){?>
-				<tr>
-					<td class="content_row">
-					<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-							$tmp_pid = 60;	
-							$tmp_obj = "articleid=".$entry->getId();
-							$tmp_exec= "exec=showArticleDetails";
-						} else if($entry->getType() == Shoppingbasketitem::TYPE_PRODUCTS){
-							 $tmp_pid = 100;
-							 $tmp_obj = "productid=".$entry->getId();
-							 $tmp_exec= "exec=edit";
-						}else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
-							 $tmp_pid = 40;
-							 $tmp_obj = "persoorderid=".$entry->getId();
-							 $tmp_exec= "exec=edit";
-						}?>
-						<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
-								<?=substr($entry->getTitle(),0,21)?></a>
-					</td> 
-					<td class="content_row" align="right"><?=$entry->getAmount()?> </td>
-					<td class="content_row">&ensp;</td>
-					<td class="content_row" align="right"><?=printPrice($entry->getPrice())?>&euro; </td>  
-				</tr>
-			<?$x++;
-			}?>
 		</table>
-		<p  align="right">
-			<a href="index.php?pid=80">Warenkorb ansehen</a>
-		</p>
 	</form>
-<? } else {?>
-<div class="menu_lvl2"> <br/> <?=$_LANG->get("Der Warenkorb ist leer");?> <br/><br/><br/><br/></div>
-<?} //ENDE alse(count(Eintraege))?>
 
-
+ */
