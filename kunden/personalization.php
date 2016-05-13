@@ -488,7 +488,7 @@ if ($_REQUEST["exec"] == "edit"){
 												  <label for="" class="col-sm-2 control-label">Anprechpartner</label>
 												  <div class="col-sm-10">
 													  <select name="persoorder_cp_id" id="persoorder_cp_id" class="form-control" <? if ($perso_order->getStatus() > 1) echo "disabled";?>>
-														  <option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;len');?> &gt;</option>
+														  <option value="0" > &lt; <?=$_LANG->get('Bitte w&auml;hlen');?> &gt;</option>
 														  <?	foreach($allCostomerContactPersons AS $cp){ ?>
 															  <option value="<?=$cp->getId()?>"
 																  <?if($cp->getId() == $perso_order->getContactPersonId()) echo "selected";?>>
