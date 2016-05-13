@@ -299,43 +299,41 @@ $(document).ready(function() {
 				  </div>
 		  	  </div>
 		  </div>
-
-
-		  <div class="table-responsive">
-			  <table id="ticketstable" class="table table-hover">
-				  <thead>
-				  <tr>
-					  <th><?=$_LANG->get('ID')?></th>
-					  <th><?=$_LANG->get('#')?></th>
-					  <th><?=$_LANG->get('Kategorie')?></th>
-					  <th><?=$_LANG->get('Datum')?></th>
-					  <th><?=$_LANG->get('erst. von')?></th>
-					  <th><?=$_LANG->get('Fälligkeit')?></th>
-					  <th><?=$_LANG->get('Betreff')?></th>
-					  <th><?=$_LANG->get('Status')?></th>
-					  <th><?=$_LANG->get('Von')?></th>
-					  <th><?=$_LANG->get('Priorität')?></th>
-					  <th><?=$_LANG->get('Zugewiesen an')?></th>
-				  </tr>
-
-
-				  <tfoot>
-				  <tr>
-					  <th><?=$_LANG->get('ID')?></th>
-					  <th><?=$_LANG->get('#')?></th>
-					  <th><?=$_LANG->get('Kategorie')?></th>
-					  <th><?=$_LANG->get('Datum')?></th>
-					  <th><?=$_LANG->get('erst. von')?></th>
-					  <th><?=$_LANG->get('Fällig')?></th>
-					  <th><?=$_LANG->get('Betreff')?></th>
-					  <th><?=$_LANG->get('Status')?></th>
-					  <th><?=$_LANG->get('Von')?></th>
-					  <th><?=$_LANG->get('Priorität')?></th>
-					  <th><?=$_LANG->get('Zugewiesen an')?></th>
-				  </tr>
-				  </tfoot>
-			  </table>
-		  </div>
 	  </div>
+	<div class="table-responsive">
+		<table id="ticketstable" class="table table-hover">
+			<thead>
+			<tr>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('#')?></th>
+				<th><?=$_LANG->get('Kategorie')?></th>
+				<th><?=$_LANG->get('Datum')?></th>
+				<th><?=$_LANG->get('erst. von')?></th>
+				<th><?=$_LANG->get('Fälligkeit')?></th>
+				<th><?=$_LANG->get('Betreff')?></th>
+				<th><?=$_LANG->get('Status')?></th>
+				<th><?=$_LANG->get('Von')?></th>
+				<th><?=$_LANG->get('Priorität')?></th>
+				<th><?=$_LANG->get('Zugewiesen an')?></th>
+			</tr>
+
+
+			<tfoot>
+			<tr>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('#')?></th>
+				<th><?=$_LANG->get('Kategorie')?></th>
+				<th><?=$_LANG->get('Datum')?></th>
+				<th><?=$_LANG->get('erst. von')?></th>
+				<th><?=$_LANG->get('Fällig')?></th>
+				<th><?=$_LANG->get('Betreff')?></th>
+				<th><?=$_LANG->get('Status')?></th>
+				<th><?=$_LANG->get('Von')?></th>
+				<th><?=$_LANG->get('Priorität')?></th>
+				<th><?=$_LANG->get('Zugewiesen an')?></th>
+			</tr>
+			</tfoot>
+		</table>
+	</div>
 </div>
 

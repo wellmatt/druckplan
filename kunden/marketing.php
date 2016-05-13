@@ -55,44 +55,44 @@ $marketjobs = Marketing::getAllForListAndBc($curr_list,$_BUSINESSCONTACT);
                   </form>
           	  </div>
           </div>
-          <div class="table-responsive">
-              <table class="table table-hover" id="marketing_table">
-                  <thead>
-                  <tr>
-                      <th><?= $_LANG->get('ID') ?></th>
-                      <th><?= $_LANG->get('Titel') ?></th>
-                      <th><?= $_LANG->get('Kunde') ?></th>
-                      <th><?= $_LANG->get('Datum') ?></th>
-                      <?php foreach ($columns as $column) { ?>
-                          <th><?php echo $column->getTitle() ?></th>
-                      <?php } ?>
-                  </tr>
-                  </thead>
-                  <?php foreach ($marketjobs as $marketjob) { ?>
-                      <tr>
-                          <td><?php echo $marketjob->getId(); ?></td>
-                          <td><?php echo $marketjob->getTitle(); ?></td>
-                          <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
-                          <td><?php echo date('d.m.y H:i', $marketjob->getCrtdate()); ?></td>
-                          <?php foreach ($columns as $column) { ?>
-                              <td><?php echo $marketjob->getColumnValue($column->getId()); ?></td>
-                          <?php } ?>
-                      </tr>
-                  <?php } ?>
-                  <tfoot>
-                  <tr>
-                      <th><?= $_LANG->get('ID') ?></th>
-                      <th><?= $_LANG->get('Titel') ?></th>
-                      <th><?= $_LANG->get('Kunde') ?></th>
-                      <th><?= $_LANG->get('Datum') ?></th>
-                      <?php foreach ($columns as $column) { ?>
-                          <th><?php echo $column->getTitle() ?></th>
-                      <?php } ?>
-                  </tr>
-                  </tfoot>
-              </table>
-          </div>
 	  </div>
+    <div class="table-responsive">
+        <table class="table table-hover" id="marketing_table">
+            <thead>
+            <tr>
+                <th><?= $_LANG->get('ID') ?></th>
+                <th><?= $_LANG->get('Titel') ?></th>
+                <th><?= $_LANG->get('Kunde') ?></th>
+                <th><?= $_LANG->get('Datum') ?></th>
+                <?php foreach ($columns as $column) { ?>
+                    <th><?php echo $column->getTitle() ?></th>
+                <?php } ?>
+            </tr>
+            </thead>
+            <?php foreach ($marketjobs as $marketjob) { ?>
+                <tr>
+                    <td><?php echo $marketjob->getId(); ?></td>
+                    <td><?php echo $marketjob->getTitle(); ?></td>
+                    <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
+                    <td><?php echo date('d.m.y H:i', $marketjob->getCrtdate()); ?></td>
+                    <?php foreach ($columns as $column) { ?>
+                        <td><?php echo $marketjob->getColumnValue($column->getId()); ?></td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+            <tfoot>
+            <tr>
+                <th><?= $_LANG->get('ID') ?></th>
+                <th><?= $_LANG->get('Titel') ?></th>
+                <th><?= $_LANG->get('Kunde') ?></th>
+                <th><?= $_LANG->get('Datum') ?></th>
+                <?php foreach ($columns as $column) { ?>
+                    <th><?php echo $column->getTitle() ?></th>
+                <?php } ?>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 

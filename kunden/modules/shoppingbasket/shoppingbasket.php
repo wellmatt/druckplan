@@ -186,16 +186,16 @@ function BasketSubmit()
         	return isFormValid;
         }
         if (confirm('Warenkorb wirklich absenden ?'))
-            return isFormValid;
+			$('#form_shopbasket').submit();
 }
 //     });
 // });
 </script>
 
-<form method="post" action="index.php" name="form_shopbasket" enctype="multipart/form-data">
+<form method="post" action="index.php" name="form_shopbasket" id="form_shopbasket" enctype="multipart/form-data">
 <input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
 <input type="hidden" name="del_id" id="del_id" value="">
-<input type="hidden" name="exec" value="save";>
+<input type="hidden" name="exec" value="edit_items";>
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
@@ -205,7 +205,8 @@ function BasketSubmit()
 				</span>
 			</h3>
 	  </div>
-
+	<?	$x=1;
+	if (count($shopping_basket_entrys) > 0){?>
 	<div class="table-responsive">
 		<table class="table table-hover">
 			<tr>
@@ -341,7 +342,16 @@ function BasketSubmit()
 			}?>
 		</table>
 	</div>
+	<?php
+	};
+	?>
+
 	  <div class="panel-body">
+		  <?
+		  if (count($shopping_basket_entrys) == 0){?>
+			  <div class="alert alert-info" role="alert"><?echo $_LANG->get("Der Warenkorb ist leer")?></div>
+			<?
+			} ?>
 			<div class="form-horizontal">
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kostenstelle/Zweck</label>
@@ -380,7 +390,7 @@ function BasketSubmit()
 						 </div>
 
 						 <div class="col-md-1">
-							 <button name="send_shoppingbasket" type="submit" class="btn btn-success" onclick="return BasketSubmit();">
+							 <button   name="send_shoppingbasket" type="submit" class="btn btn-success" onclick="return BasketSubmit();">
 								 <?=$_LANG->get('Senden')?>
 							 </button>
 						 </div>
@@ -389,10 +399,4 @@ function BasketSubmit()
 				</div>
 			</div>
 	  </div>
-<? 	$x=1;
-	if (count($shopping_basket_entrys) > 0){?>
-
-		<?} else {
-			echo $_LANG->get("Der Warenkorb ist leer");
-		} ?>
 </form>
