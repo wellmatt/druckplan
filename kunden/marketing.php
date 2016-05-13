@@ -27,70 +27,76 @@ $marketjobs = Marketing::getAllForListAndBc($curr_list,$_BUSINESSCONTACT);
 <script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript" charset="utf8" src="../jscripts/datatable/date-uk.js"></script>
 
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                <b>Marketingplan</b>
+                <span class="pull-right"><?=$savemsg?></span>
+            </h3>
+	  </div>
+	  <div class="panel-body">
+          <div class="panel panel-default">
+          	  <div class="panel-heading">
+          			<h3 class="panel-title">
+                       <b>Filter</b>
+                    </h3>
+          	  </div>
+          	  <div class="panel-body">
+                  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form">
+                      <input type="hidden" name="pid" value="100">
+                      Liste auswählen: <select name="list">
+                          <?php
+                          foreach ($lists as $list) {
+                              echo '<option value="'.$list->getId().'">'.$list->getTitle().'</option>';
+                          }
+                          ?>
+                      </select>
+                      <button type="submit" class="btn btn-sm">Weiter</button>
+                  </form>
+          	  </div>
+          </div>
+          <div class="table-responsive">
+              <table class="table table-hover" id="marketing_table">
+                  <thead>
+                  <tr>
+                      <th><?= $_LANG->get('ID') ?></th>
+                      <th><?= $_LANG->get('Titel') ?></th>
+                      <th><?= $_LANG->get('Kunde') ?></th>
+                      <th><?= $_LANG->get('Datum') ?></th>
+                      <?php foreach ($columns as $column) { ?>
+                          <th><?php echo $column->getTitle() ?></th>
+                      <?php } ?>
+                  </tr>
+                  </thead>
+                  <?php foreach ($marketjobs as $marketjob) { ?>
+                      <tr>
+                          <td><?php echo $marketjob->getId(); ?></td>
+                          <td><?php echo $marketjob->getTitle(); ?></td>
+                          <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
+                          <td><?php echo date('d.m.y H:i', $marketjob->getCrtdate()); ?></td>
+                          <?php foreach ($columns as $column) { ?>
+                              <td><?php echo $marketjob->getColumnValue($column->getId()); ?></td>
+                          <?php } ?>
+                      </tr>
+                  <?php } ?>
+                  <tfoot>
+                  <tr>
+                      <th><?= $_LANG->get('ID') ?></th>
+                      <th><?= $_LANG->get('Titel') ?></th>
+                      <th><?= $_LANG->get('Kunde') ?></th>
+                      <th><?= $_LANG->get('Datum') ?></th>
+                      <?php foreach ($columns as $column) { ?>
+                          <th><?php echo $column->getTitle() ?></th>
+                      <?php } ?>
+                  </tr>
+                  </tfoot>
+              </table>
+          </div>
+	  </div>
+</div>
 
-<table width="100%">
-    <tr>
-        <td width="150" class="content_header">
-            <span style="font-size: 13px"><?= $_LANG->get('Marketingplan') ?></span>
-        </td>
-        <td width="250" class="content_header" align="right">
-            <?= $savemsg ?>
-        </td>
-    </tr>
-</table>
-</br>
-<div class="box1" style="width: 900px;">
-    <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form">
-        <input type="hidden" name="pid" value="100">
-        Liste auswählen: <select name="list">
-            <?php
-            foreach ($lists as $list) {
-                echo '<option value="'.$list->getId().'">'.$list->getTitle().'</option>';
-            }
-            ?>
-        </select>
-        <button type="submit" class="btn btn-sm">Weiter</button>
-    </form>
-</div>
-</br>
-<div class="box1" style="width: 900px;">
-    <table id="marketing_table" style="width: 900px;" cellpadding="0" cellspacing="0"
-           class="display stripe hover row-border order-column">
-        <thead>
-        <tr>
-            <th><?= $_LANG->get('ID') ?></th>
-            <th><?= $_LANG->get('Titel') ?></th>
-            <th><?= $_LANG->get('Kunde') ?></th>
-            <th><?= $_LANG->get('Datum') ?></th>
-            <?php foreach ($columns as $column) { ?>
-                <th><?php echo $column->getTitle() ?></th>
-            <?php } ?>
-        </tr>
-        </thead>
-        <?php foreach ($marketjobs as $marketjob) { ?>
-            <tr>
-                <td><?php echo $marketjob->getId(); ?></td>
-                <td><?php echo $marketjob->getTitle(); ?></td>
-                <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
-                <td><?php echo date('d.m.y H:i', $marketjob->getCrtdate()); ?></td>
-                <?php foreach ($columns as $column) { ?>
-                    <td><?php echo $marketjob->getColumnValue($column->getId()); ?></td>
-                <?php } ?>
-            </tr>
-        <?php } ?>
-        <tfoot>
-        <tr>
-            <th><?= $_LANG->get('ID') ?></th>
-            <th><?= $_LANG->get('Titel') ?></th>
-            <th><?= $_LANG->get('Kunde') ?></th>
-            <th><?= $_LANG->get('Datum') ?></th>
-            <?php foreach ($columns as $column) { ?>
-                <th><?php echo $column->getTitle() ?></th>
-            <?php } ?>
-        </tr>
-        </tfoot>
-    </table>
-</div>
+
+
 
 
 <script language="JavaScript">

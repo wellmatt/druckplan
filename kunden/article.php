@@ -72,144 +72,156 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			    // else Meldung: Meldung nicht genug Artikel auf Lager!
 			}
 			?>	
-		<form method="post" action="index.php" name="form_additems">
-			<input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
-			<input type="hidden" name="articleid" value="<?=$article->getId()?>">
-			<input type="hidden" name="exec" value="showArticleDetails">
-			<input type="hidden" name="subexec" value="add_item">
-			<div class="box2">
-				<h1><?=$_LANG->get('Artikeldetails')?>: <?=$article->getTitle()?></h1>
-				<table width="100%">
-					<colgroup>
-							<col>
-							<col width="450">
-					</colgroup>
-					<tr>
-						<td  valign="top">
-							<b><?=$_LANG->get('Artikelnummer')?>: </b><br/><?=$article->getNumber()?>
-						</td>
-						<td align="right" valign="top" rowspan="3">
-							<?if ($all_pictures[0]["url"] == NULL || $all_pictures[0]["url"] ==""){?>
-			        			<img src="../images/icons/image.png" title="<?=$_LANG->get('Kein Bild hinterlegt');?>" width="130px">
-								&ensp; 
-			        		<?} else {?>
-    							<?	foreach ($all_pictures AS $pic){ ?>
-    									<a href="../images/products/<?=$pic["url"]?>" target="_blank"><img src="../images/products/<?=$pic["url"]?>" width="130px"></a>
-    				        			&ensp; 
-    			        		<? }?>
-							<? }?>
-						</td>
-					</tr>
-					<tr>
-						<td  valign="top">
-							<b><?=$_LANG->get('Beschreibung')?>: </b><br/><?=$article->getDesc()?>
-						</td>
-					</tr>
-					<tr>
-						<td>&ensp;</td>
-					</tr>
-					<tr>
-						<td>&ensp;</td>
-						<td class="content_row_header" align="right">
-						        <?php 
-						        if (count($article->getOrderamounts())>0){?>
-						        <select name="shopping_amount" id="shopping_amount" style="width: 60px">
-						           <option value=""></option>
-            					   <?php 
-            					   foreach ($article->getOrderamounts() as $orderamount)
-            					   {
-            					       echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
-            					   }
-            					   ?>
-            					</select> Stk.
-						        <?php } else {?>
-								<input name="shopping_amount" style="width: 25px;" value="0"> Stk.
-								<?php }?>
-								<input	type="image" style="border:none;" title="<?=$_LANG->get('Zum Warenkorb hinzuf&uuml;gen') ?>"
-										src="../images/icons/shopping-basket--plus.png" />
-								&ensp; &ensp; &ensp; 
-						</td>
-					</tr>
-					<tr>
-						<td>&ensp;</td>
-						<td class="content_row_header" align="right">
-								Auf Lager: <?=$wh_count?>
-								&ensp; &ensp; &ensp; 
-						</td>
-					</tr>
-					<tr>
-						<td>&ensp;</td>
-						<td class="content_row_header" align="right">
-								Lieferadresse: <select name="article_deliv" class="text" style="width: 200px;">
-    		    			<?	foreach($all_deliveryAddresses AS $deliv){ ?>
-    		    					<option value="<?=$deliv->getId()?>"
-    		    							<?if($deliv->getDefault()){echo 'selected="selected"';}?>>
-    		    					<?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
-    		    					</option>
-    						<?	} ?>
-    		    		</select>
-								&ensp; &ensp; &ensp; 
-						</td>
-					</tr>
-				</table>
-				<br/>
+<form method="post" action="index.php" name="form_additems">
+	<input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
+	<input type="hidden" name="articleid" value="<?=$article->getId()?>">
+	<input type="hidden" name="exec" value="showArticleDetails">
+	<input type="hidden" name="subexec" value="add_item">
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<b>Artikeldetails:</b> <?=$article->getTitle()?>
+				</h3>
+		  </div>
+		  <div class="panel-body">
+			  <div class="form-horizontal">
+				   <div class="row">
+
+					   <div class="col-md-8">
+						   <div class="row">
+							   <div class="col-sm-3"><b>Artikelnummer:</b></div>
+							   <div class="col-sm-2">
+								   <?=$article->getNumber()?>
+							   </div>
+						   </div>
+						   <div class="row">
+							   <div class="col-sm-3"><b>Beschreibung:</b></div>
+							   <div class="col-sm-9">
+								   <?=$article->getDesc()?>
+							   </div>
+						   </div>
+
+
+
+					   </div>
+
+					   <div class="col-md-4" style="text-align: right">
+						   <div class="row">
+							   <?if ($all_pictures[0]["url"] == NULL || $all_pictures[0]["url"] ==""){?>
+								   <img src="../images/icons/image.png" title="<?=$_LANG->get('Kein Bild hinterlegt');?>">
+								   &ensp;
+							   <?} else {?>
+								   <?	foreach ($all_pictures AS $pic){ ?>
+									   <a href="../images/products/<?=$pic["url"]?>" target="_blank"><img src="../images/products/<?=$pic["url"]?>"></a>
+									   &ensp;
+								   <? }?>
+							   <? }?>
+						   </div>
+
+
+					   </div>
+				   </div>
+				  <div class="row">
+					  <div class="col-sm-2"><b>Bestellmenge:</b></div>
+					  <div class="col-sm-5">
+						  <div class="input-group">
+							  <?php
+							  if (count($article->getOrderamounts())>0){?>
+							  <select class="form-control" name="shopping_amount" id="shopping_amount">
+								  <option value=""></option>
+								  <?php
+								  foreach ($article->getOrderamounts() as $orderamount)
+								  {
+									  echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
+								  }
+								  ?>
+							  </select>
+							  <span class="input-group-addon">Stk</span>
+						  </div>
+					  </div>
+					  <?php } else {?>
+						  <div class="col-sm-6">
+							  <input name="shopping_amount"  value="0"> Stk.
+						  </div>
+					  <?php }?>
+				  </div>
+
+						  <div class="row">
+							  <div class="col-sm-2"><b>Auf Lager:</b></div>
+							  <div class="col-sm-5">
+								 <div class="form-control"><?=$wh_count?></div>
+							  </div>
+						  </div>
+
+						  <div class="row">
+							  <div class="col-sm-2"><b>Lieferadresse:</b></div>
+							  <div class="col-sm-5">
+								  <select class=form-control name="article_deliv">
+									  <?	foreach($all_deliveryAddresses AS $deliv){ ?>
+										  <option value="<?=$deliv->getId()?>"
+											  <?if($deliv->getDefault()){echo 'selected="selected"';}?>>
+											  <?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
+										  </option>
+									  <?	} ?>
+								  </select>
+							  </div>
+						  </div>
+				  <br/>
+				          <div class="row">
+							  <div class="col-md-1">
+									<button class="btn btn-success">
+										<?=$_LANG->get('Zum Warenkorb hinzuf&uuml;gen') ?>
+									</button>
+							  </div>
+						  </div>
+
+				   </div>
+		       </div>
+					<div class="panel panel-default">
+						  <div class="panel-heading">
+								<h3 class="panel-title">
+									<b>Preisliste</b>
+								</h3>
+						  </div>
+						<? if ($article->getShowShopPrice() == 1) { ?>
+						<div class="table-responsive">
+							<table class="table table-hover">
+								<tr>
+									<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
+									<td class="content_row_header"><?=$_LANG->get('Von')?></td>
+									<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+									<td class="content_row_header"><?=$_LANG->get('Preis')?></td>
+									<td class="content_row_header">&ensp;</td>
+								</tr>
+								<? $x=1;
+								foreach($art_prices as $price){ ?>
+									<tr class="color<?=$x % 2?>">
+										<td class="filerow">
+											<?=$x?>
+										</td>
+										<td class="filerow">
+											<?=$price["sep_min"]?> <?=$_LANG->get('Stk.')?>
+										</td>
+										<td class="filerow">
+											<?=$price["sep_max"]?> <?=$_LANG->get('Stk.')?>
+										</td>
+										<td class="filerow">
+											<?=$price["sep_price"]?> &euro;
+										</td >
+										<td class="filerow">&ensp;</td>
+									</tr>
+									<?$x++;
+								} ?>
+							</table>
+							<? } ?>
+						</div>
+					</div>
+	      </div>
+	</div>
+</form>
+<br/>
 				
-				<? if ($article->getShowShopPrice() == 1) { ?>
-				
-				<b><?=$_LANG->get('Preisliste')?></b>
-				<br/>
-				<table width="100%" cellpadding="2" cellspacing="0" border="0" >
-					<colgroup>
-							<col width="60">
-							<col width="100">
-							<col width="100">
-							<col width="80">
-							<col>
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Von')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-						<td class="content_row_header"><?=$_LANG->get('Preis')?></td>
-						<td class="content_row_header">&ensp;</td>
-					</tr>
-					<? $x=1;
-					foreach($art_prices as $price){ ?>
-					<tr class="color<?=$x % 2?>">
-						<td class="filerow">
-							<?=$x?>
-						</td>
-						<td class="filerow">
-							<?=$price["sep_min"]?> <?=$_LANG->get('Stk.')?>
-						</td>
-						<td class="filerow">
-							<?=$price["sep_max"]?> <?=$_LANG->get('Stk.')?>
-						</td>
-						<td class="filerow">
-							<?=$price["sep_price"]?> &euro;
-						</td >
-						<td class="filerow">&ensp;</td>
-					</tr>
-					<?$x++;
-					} ?>
-				</table>
-				
-				<? } ?>
-				
-				<table>
-					<colgroup>
-							<col>
-							<col width="120">
-							<col width="50">
-					</colgroup>
-					<tr>
-						<td>&ensp;</td>
-						
-						<td align="left">&ensp;</td>
-					</tr>
-				</table>
-			</div>
-		</form>
+
 <?		} else { // ---------- Auflistung der freigegeben Artikel fuer dieses Kunden ------------------------
 			if ($_REQUEST["search"])
 				$all_article = Article::getAllShopArticleByCustomerAndCp((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]," WHERE title LIKE '%{$_REQUEST["search"]}%'");
@@ -218,41 +230,50 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 //			prettyPrint($_REQUEST["search"]);
 // 			var_dump($all_article);
 			?>
-			<div class="box2" style="min-height:180px;">
-			<b>Artikel</b><br>
-			<form action="index.php?pid=60" method="get">
-				<input type="hidden" name="pid" value="60">
-				Suche: <input type="text" name="search" id="search" style="width: 200px;"><button type="submit">Suchen</button>
-			</form>
-			<table cellpadding="2" cellspacing="0" border="0" width="100%">
-			<colgroup>
-			<col width="100">
-			<col>
-			<col width="160">
-			</colgroup>
-			<tr>
-			<td class="filerow_header">Bild</td>
-			<td class="filerow_header">Titel</td>
-			<td class="filerow_header">Optionen</td>
-			</tr>
-				<?	foreach ($all_article AS $article){ 
-				    	$all_pictures = $article->getAllPictures(); ?>
-					    <tr class="filerow">
-							<td class="filerow">
-								<?if ($all_pictures[0]["url"] != NULL && $all_pictures[0]["url"] !=""){?>
-									<img src="../images/products/<?=$all_pictures[0]["url"]?>" width="100px">&nbsp;
-				        		<?} else {?>
-				        			<img src="../images/icons/image.png" title="<?=$_LANG->get('Kein Bild hinterlegt');?>">&nbsp;
-				        		<? } ?>
-							</td>
-					        <td class="filerow"><?=$article->getTitle()?></td>
-					        <td class="filerow">
-					        	<a href="index.php?pid=<?=$_REQUEST["pid"]?>&articleid=<?=$article->getId()?>&exec=showArticleDetails" class="button">Ansehen</a>
-					        </td>
-					    </tr>
-				<? 	} ?>
-				</table>
-			</div>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<b>Artikel</b>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <form action="index.php?pid=60" method="get">
+			  <input type="hidden" name="pid" value="60">
+			  Suche: <input type="text" name="search" id="search" style="width: 200px;"><button type="submit">Suchen</button>
+		  </form>
+		  <div class="table-responsive">
+			  <table class="table table-hover">
+				  <colgroup>
+					  <col width="100">
+					  <col>
+					  <col width="160">
+				  </colgroup>
+				  <tr>
+					  <td class="filerow_header">Bild</td>
+					  <td class="filerow_header">Titel</td>
+					  <td class="filerow_header">Optionen</td>
+				  </tr>
+				  <?	foreach ($all_article AS $article){
+					  $all_pictures = $article->getAllPictures(); ?>
+					  <tr class="filerow">
+						  <td class="filerow">
+							  <?if ($all_pictures[0]["url"] != NULL && $all_pictures[0]["url"] !=""){?>
+								  <img src="../images/products/<?=$all_pictures[0]["url"]?>" width="100px">&nbsp;
+							  <?} else {?>
+								  <img src="../images/icons/image.png" title="<?=$_LANG->get('Kein Bild hinterlegt');?>">&nbsp;
+							  <? } ?>
+						  </td>
+						  <td class="filerow"><?=$article->getTitle()?></td>
+						  <td class="filerow">
+							  <a href="index.php?pid=<?=$_REQUEST["pid"]?>&articleid=<?=$article->getId()?>&exec=showArticleDetails" class="button">Ansehen</a>
+						  </td>
+					  </tr>
+				  <? 	} ?>
+			  </table>
+		  </div>
+	  </div>
+</div>
+
 		<?
 		}
 		?>

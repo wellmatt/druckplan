@@ -210,22 +210,11 @@ $(document).ready(function () {
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-                <h2><?=$header_title?></h2>
+               <b><?=$header_title?>
+               <?php if ($ticket->getId()>0){?><a href="index.php?pid=20&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
+                        <i class="icon-refresh"></i> - <?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></b>
                 <span class="pull-right" <?=$savemsg?>></span>
             </h3>
-
-          <table border="0" cellpadding="2" cellspacing="0" width="100%">
-              <tbody>
-              <tr>
-                  <td width="50%">
-                      <h3><?php if ($ticket->getId()>0){?><a href="index.php?pid=20&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
-                              <i class="icon-refresh"></i> Ticket #<?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></h3>
-                  </td>
-                  <td width="50%" align="right">&nbsp;
-                  </td>
-              </tr>
-              </tbody>
-          </table>
 	  </div>
 	  <div class="panel-body">
 
@@ -233,172 +222,170 @@ $(document).ready(function () {
               <input type="hidden" name="exec" value="edit">
               <input type="hidden" name="subexec" value="save">
               <input type="hidden" name="tktid" value="<?=$ticket->getId()?>">
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Titel</label>
-                  <div class="col-sm-10">
-                      <input type="text" id="tkt_title" name="tkt_title" value="<?php echo $ticket->getTitle();?>"/>
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Titel</label>
+                      <div class="col-sm-8">
+                          <input type="text" id="tkt_title" name="tkt_title" class="form-control" value="<?php echo $ticket->getTitle();?>"/>
+                      </div>
                   </div>
-              </div>
 
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Kunde</label>
-                  <div class="col-sm-10">
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Kunde</label>
+                      <div class="col-sm-8">
 
-                      <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) {
-                          echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2();
-                      } else {
-                          echo $_BUSINESSCONTACT->getNameAsLine()." - ".$_CONTACTPERSON->getNameAsLine2();
-                      }?>" style="width:160px" disabled/>
-                      <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php if ($new_ticket == true) { echo $_BUSINESSCONTACT->getId(); } else { echo $ticket->getCustomer()->getId();}?>"/>
-                      <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php if ($new_ticket == true) { echo $_CONTACTPERSON->getId(); } else { echo $ticket->getCustomer_cp()->getId();}?>"/>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Kategorie</label>
-                  <div class="col-sm-10">
-                      <select name="tkt_category" id="tkt_category" style="width:160px" required>
-                          <?php
-                          $tkt_all_categories = TicketCategory::getAllCategories();
-                          foreach ($tkt_all_categories as $tkt_category){
-                              if ($ticket->getId()>0){
-                                  if ($ticket->getCategory() == $tkt_category){
-                                      echo '<option value="'.$tkt_category->getId().'" selected>'.$tkt_category->getTitle().'</option>';
-                                  }
-                              } else {
-                                  if ($_CONTACTPERSON->TC_cancreate($tkt_category))
-                                      echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
-                              }
-                          }
-                          ?>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Telefon</label>
-                  <div class="col-sm-10">
-                      <input type="text" id="cp_phone" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getPhone(); } else { $_CONTACTPERSON->getPhone(); }?>"/>
-                  </div>
-              </div>
-
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Status</label>
-                  <div class="col-sm-10">
-                      <select name="tkt_state" id="tkt_state" >
-                          <?php
-                          $tkt_all_states = TicketState::getAllStates();
-                          foreach ($tkt_all_states as $tkt_state){
-                              if ($tkt_state->getId() != 1){
-                                  if ($ticket->getId() == 0 && $tkt_state->getId() == 2){
-                                      echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
-                                  } else if ($ticket->getState() == $tkt_state){
-                                      echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
-                                  } else {
-                                      echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
-                                  }
-                              }
-                          }
-                          ?>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">eMail-Adresse:</label>
-                  <div class="col-sm-10">
-                      <input type="text" id="cp_mail" value="<?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getEmail();} else { $_CONTACTPERSON->getEmail(); }?>"/>
-                  </div>
-              </div>
-
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Priorität</label>
-                  <div class="col-sm-10">
-                      <select name="tkt_prio" id="tkt_prio">
-                          <?php
-                          $tkt_all_prios = TicketPriority::getAllPriorities();
-                          foreach ($tkt_all_prios as $tkt_prio){
-                              if ($ticket->getPriority() == $tkt_prio){
-                                  echo '<option value="'.$tkt_prio->getId().'" selected>'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
-                              } else {
-                                  echo '<option value="'.$tkt_prio->getId().'">'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
-                              }
-                          }
-                          ?>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Herkunft</label>
-                  <div class="col-sm-10">
-                      <select name="tkt_source" id="tkt_source">
-                          <?php
-                          $tkt_all_sources = TicketSource::getAllSources();
-                          foreach ($tkt_all_sources as $tkt_source){
-                              if ($ticket->getSource() == $tkt_source->getId()){
-                                  echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
-                              } elseif ($ticket->getId() == 0 && $tkt_source->getDefault()) {
-                                  echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
-                              } else {
-                                  echo '<option value="'.$tkt_source->getId().'">'.$tkt_source->getTitle().'</option>';
-                              }
-                          }
-                          ?>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Fälligkeitsdatum</label>
-                  <div class="col-sm-10">
-                      <input type="text" style="width:160px" id="tkt_due" name="tkt_due"
-                             class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-                             onfocus="markfield(this,0)" onblur="markfield(this,1)"
-                             value="<?if($ticket->getDuedate() != 0){ echo date('d.m.Y H:i', $ticket->getDuedate());} elseif ($ticket->getId()==0) { echo date('d.m.Y H:i'); }?>"/>
-                      <input type="checkbox" id="tkt_due_enabled" name="tkt_due_enabled" value="1" onclick="JavaScript: if ($('#tkt_due_enabled').prop('checked')) {$('#tkt_due').val('')};"
-                          <?php if ($ticket->getDuedate()==0 && $ticket->getId()!=0) echo " checked ";?>/> ohne
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Letzte Mitteilung:</label>
-                  <div class="col-sm-10">
-                      <input type="text" value="<?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?>"/>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Erstellt am:</label>
-                  <div class="col-sm-10">
-                      <input type="text" value="<?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>"/>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Zugewiesen an:</label>
-                  <div class="col-sm-10">
-                      <input type="text"/>
-                      <?php
-                      if ($ticket->getId() > 0) {
-                          if ($ticket->getAssigned_group()->getId() > 0){
-                              echo $ticket->getAssigned_group()->getName();
+                          <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) {
+                              echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2();
                           } else {
-                              echo $ticket->getAssigned_user()->getNameAsLine();
-                          }
-                      }?>
+                              echo $_BUSINESSCONTACT->getNameAsLine()." - ".$_CONTACTPERSON->getNameAsLine2();
+                          }?>" class="form-control" disabled/>
+                          <input type="hidden" id="tkt_customer_id" name="tkt_customer_id" value="<?php if ($new_ticket == true) { echo $_BUSINESSCONTACT->getId(); } else { echo $ticket->getCustomer()->getId();}?>"/>
+                          <input type="hidden" id="tkt_customer_cp_id" name="tkt_customer_cp_id" value="<?php if ($new_ticket == true) { echo $_CONTACTPERSON->getId(); } else { echo $ticket->getCustomer_cp()->getId();}?>"/>
+                      </div>
                   </div>
-              </div>
 
-              <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Erstellt am:</label>
-                  <div class="col-sm-10">
-                      <input type="text" value="<?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>"/>
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Kategorie</label>
+                      <div class="col-sm-8">
+                          <select name="tkt_category" id="tkt_category" class="form-control" required>
+                              <?php
+                              $tkt_all_categories = TicketCategory::getAllCategories();
+                              foreach ($tkt_all_categories as $tkt_category){
+                                  if ($ticket->getId()>0){
+                                      if ($ticket->getCategory() == $tkt_category){
+                                          echo '<option value="'.$tkt_category->getId().'" selected>'.$tkt_category->getTitle().'</option>';
+                                      }
+                                  } else {
+                                      if ($_CONTACTPERSON->TC_cancreate($tkt_category))
+                                          echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
+                                  }
+                              }
+                              ?>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Telefon</label>
+                      <div class="col-sm-8">
+                          <div class="form-control"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getPhone(); } else { $_CONTACTPERSON->getPhone(); }?></div>
+                      </div>
+                  </div>
+
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Status</label>
+                      <div class="col-sm-8">
+                          <select name="tkt_state" id="tkt_state" class="form-control" >
+                              <?php
+                              $tkt_all_states = TicketState::getAllStates();
+                              foreach ($tkt_all_states as $tkt_state){
+                                  if ($tkt_state->getId() != 1){
+                                      if ($ticket->getId() == 0 && $tkt_state->getId() == 2){
+                                          echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
+                                      } else if ($ticket->getState() == $tkt_state){
+                                          echo '<option value="'.$tkt_state->getId().'" selected>'.$tkt_state->getTitle().'</option>';
+                                      } else {
+                                          echo '<option value="'.$tkt_state->getId().'">'.$tkt_state->getTitle().'</option>';
+                                      }
+                                  }
+                              }
+                              ?>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">eMail-Adresse:</label>
+                      <div class="col-sm-8">
+                          <div class="form-control"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getEmail();} else { $_CONTACTPERSON->getEmail(); }?></div>
+                      </div>
+                  </div>
+
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Priorität</label>
+                      <div class="col-sm-8">
+                          <select name="tkt_prio" id="tkt_prio" class="form-control">
+                              <?php
+                              $tkt_all_prios = TicketPriority::getAllPriorities();
+                              foreach ($tkt_all_prios as $tkt_prio){
+                                  if ($ticket->getPriority() == $tkt_prio){
+                                      echo '<option value="'.$tkt_prio->getId().'" selected>'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
+                                  } else {
+                                      echo '<option value="'.$tkt_prio->getId().'">'.$tkt_prio->getTitle().' ('.$tkt_prio->getValue().') </option>';
+                                  }
+                              }
+                              ?>
+                          </select>
+                      </div>
                   </div>
               </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Herkunft</label>
+                      <div class="col-sm-8">
+                          <select name="tkt_source" id="tkt_source" class="form-control">
+                              <?php
+                              $tkt_all_sources = TicketSource::getAllSources();
+                              foreach ($tkt_all_sources as $tkt_source){
+                                  if ($ticket->getSource() == $tkt_source->getId()){
+                                      echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                                  } elseif ($ticket->getId() == 0 && $tkt_source->getDefault()) {
+                                      echo '<option value="'.$tkt_source->getId().'" selected>'.$tkt_source->getTitle().'</option>';
+                                  } else {
+                                      echo '<option value="'.$tkt_source->getId().'">'.$tkt_source->getTitle().'</option>';
+                                  }
+                              }
+                              ?>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Fälligkeitsdatum</label>
+                      <div class="col-sm-8">
+                          <input type="text" class="form-control" id="tkt_due" name="tkt_due"
+                                 class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+                                 onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                                 value="<?if($ticket->getDuedate() != 0){ echo date('d.m.Y H:i', $ticket->getDuedate());} elseif ($ticket->getId()==0) { echo date('d.m.Y H:i'); }?>"/>
+                          <input type="checkbox" id="tkt_due_enabled" name="tkt_due_enabled" value="1" onclick="JavaScript: if ($('#tkt_due_enabled').prop('checked')) {$('#tkt_due').val('')};"
+                              <?php if ($ticket->getDuedate()==0 && $ticket->getId()!=0) echo " checked ";?>/> ohne
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Letzte Mitteilung:</label>
+                      <div class="col-sm-8">
+                          <div class="form-control"><?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?> </div>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Erstellt am:</label>
+                      <div class="col-sm-8">
+                          <div class="form-control"><?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>"</div>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="" class="col-sm-4 control-label">Zugewiesen an:</label>
+                      <div class="col-sm-8">
+                          <div class="form-control">
+                          <?php
+                          if ($ticket->getId() > 0) {
+                              if ($ticket->getAssigned_group()->getId() > 0){
+                                  echo $ticket->getAssigned_group()->getName();
+                              } else {
+                                  echo $ticket->getAssigned_user()->getNameAsLine();
+                              }
+                          }?>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label"></label>
@@ -503,5 +490,5 @@ $(document).ready(function () {
                   <?php
               }
               ?>
-	  </div>
+    </div>
 </div>

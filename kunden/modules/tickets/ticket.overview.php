@@ -207,69 +207,99 @@ $(document).ready(function() {
 			<h3 class="panel-title">
 				<b>Tickets</b>
 				<span class="pull-right">
-					<img src="../../../images/icons/ticket--plus.png">
-					<a href="index.php?pid=20&exec=new" class="icon-link">
-						<?=$_LANG->get('Ticket erstellen')?></a>
-
-				</span>
+					  <img src="../../../images/icons/ticket--plus.png">
+					  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?pid=20&exec=new';" class="icon-link">
+						  <?=$_LANG->get('Ticket erstellen')?>
+					  </button>
+			  		</span>
 			</h3>
 	  </div>
 	  <div class="panel-body">
-		  <table>
-			  <tr align="left">
-				  <td>Datum (erstellt):&nbsp;&nbsp;</td>
-				  <td valign="left">
-					  <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-					  <input name="date_min" id="date_min" style="width:70px;" class="text"
-							 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-				  </td>
-				  <td valign="left">
-					  <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-					  bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
-								  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-				  </td>
-			  </tr>
-			  <tr align="left">
-				  <td>Datum (fällig):&nbsp;&nbsp;</td>
-				  <td valign="left">
-					  <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>
-					  <input name="date_due_min" id="date_due_min" style="width:70px;" class="text"
-							 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-				  </td>
-				  <td valign="left">
-					  <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>
-					  bis: <input name="date_due_max" id="date_due_max" style="width:70px;" class="text"
-								  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-				  </td>
-			  </tr>
-			  <tr align="left">
-				  <td>Kategorie:&nbsp;&nbsp;</td>
-				  <td valign="left">
-					  <input name="ajax_category" id="ajax_category" type="hidden"/>
-					  <select name="category" id="category" style="width:160px">
-						  <option value="" selected></option>
-						  <?php
-						  $tkt_all_categories = TicketCategory::getAllCategories();
-						  foreach ($tkt_all_categories as $tkt_category){
-							  if ($_CONTACTPERSON->TC_cansee($tkt_category))
-								  echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
-						  }
-						  ?>
-					  </select>
-				  </td>
-			  </tr>
-			  <tr align="left">
-				  <td>zeige geschlossene:&nbsp;&nbsp;</td>
-				  <td valign="left">
-					  <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
-					  <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
-				  </td>
-			  </tr>
-			  <tr align="left">
-				  <td><a href="index.php?pid=20">Reset</a><img src="../../../images/icons/slash.png"/></td>
-			  </tr>
-			  </br>
-		  </table>
+		  <div class="panel panel-default">
+		  	  <div class="panel-heading">
+		  			<h3 class="panel-title">
+						<b>Filter</b>
+					<span class="pull-right">
+				  		<button class="btn btn-xs btn-success"onclick="document.location.href='index.php?pid=20';">
+						  <?=$_LANG->get('Reset')?>
+					  	</button>
+			  		</span>
+					</h3>
+		  	  </div>
+		  	  <div class="panel-body">
+				  <div class="form-horizontal">
+				 	 <div class="row">
+					 	 <div class="col-md-6">
+
+							 <div class="form-group">
+								 <label for="" class="col-sm-4 control-label">Datum (erstellt)</label>
+								 <div class="col-sm-8">
+									 <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+									 <input name="date_min" id="date_min"  class="form-control"
+											onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
+								 </div>
+							 </div>
+
+							 <div class="form-group">
+								 <label for="" class="col-sm-4 control-label">Datum (fällig)</label>
+								 <div class="col-sm-8">
+									 <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>
+									 <input name="date_due_min" id="date_due_min"  class="form-control"
+											onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
+								 </div>
+							 </div>
+
+						 </div>
+						 <div class="col-md-6">
+
+							 <div class="form-group">
+								 <label for="" class="col-sm-4 control-label">bis:</label>
+								 <div class="col-sm-8">
+									 <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+									 <input name="date_max" id="date_max" class="form-control"
+												 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
+								 </div>
+							 </div>
+
+							 <div class="form-group">
+								 <label for="" class="col-sm-4 control-label">bis:</label>
+								 <div class="col-sm-8">
+									 <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>
+									 <input name="date_due_max" id="date_due_max" class="form-control"
+												 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
+								 </div>
+							 </div>
+						 </div>
+					 </div>
+
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Kategorie:</label>
+						  <div class="col-sm-10">
+							  <input name="ajax_category" id="ajax_category" type="hidden"/>
+							  <select name="category" id="category" class="form-control">
+								  <option value="" selected></option>
+								  <?php
+								  $tkt_all_categories = TicketCategory::getAllCategories();
+								  foreach ($tkt_all_categories as $tkt_category){
+									  if ($_CONTACTPERSON->TC_cansee($tkt_category))
+										  echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
+								  }
+								  ?>
+							  </select>
+						  </div>
+					  </div>
+
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">zeige geschlossene:</label>
+						  <div class="col-sm-1">
+							  <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
+							  <input class="form-control" name="showclosed" id="showclosed" type="checkbox" value="1"/>
+						  </div>
+					  </div>
+				  </div>
+		  	  </div>
+		  </div>
+
 
 		  <div class="table-responsive">
 			  <table id="ticketstable" class="table table-hover">

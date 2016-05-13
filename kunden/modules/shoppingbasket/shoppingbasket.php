@@ -196,30 +196,18 @@ function BasketSubmit()
 <input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
 <input type="hidden" name="del_id" id="del_id" value="">
 <input type="hidden" name="exec" value="save";>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Warenkorb
+				<span class="pull-right">
+					<?=$save_msg?>
+				</span>
+			</h3>
+	  </div>
 
-<div class="box1">
-	<table width="100%">
-		<tr>
-			<td><h1><?=$_LANG->get('Warenkorb')?></h1></td>
-			<td align="right"><?=$save_msg?></td>
-		</tr>
-	</table>
-	
-<? 	$x=1;
-	if (count($shopping_basket_entrys) > 0){?>
-		<br/>
-		<table width="100%" cellpadding="0" cellspacing="0" border="0">
-			<colgroup>
-				<col width="20">
-				<col width="120">
-				<col>
-				<col width="50">
-				<col width="130">
-				<col width="130">
-				<col width="120">
-				<col width="120">
-				<col width="50">
-			</colgroup>
+	<div class="table-responsive">
+		<table class="table table-hover">
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
 				<td class="content_row_header">&ensp;</td>
@@ -232,187 +220,179 @@ function BasketSubmit()
 				<td class="content_row_header">&ensp;</td>
 			</tr>
 			<?foreach ($shopping_basket_entrys as $entry){
-			    $perso_order = new Personalizationorder($entry->getId());
-			    $perso = new Personalization($perso_order->getPersoID());
-			    $allprices = $perso->getPrices();
-			    ?>
+				$perso_order = new Personalizationorder($entry->getId());
+				$perso = new Personalization($perso_order->getPersoID());
+				$allprices = $perso->getPrices();
+				?>
 				<tr>
 					<td class="filerow"><?=$x?></td>
 					<td class="filerow" >
-						<? 
+						<?
 						if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-						$artic = new Article($entry->getId());
-				    	$all_pictures = $artic->getAllPictures();
-						if ($all_pictures[0]["url"] != NULL && $all_pictures[0]["url"] !=""){?>
-							<img src="../images/products/<?=$all_pictures[0]["url"]?>" width="100px">&nbsp;
-						<?}} // Ende if(Bild gesetzt)?>
-						<? 
+							$artic = new Article($entry->getId());
+							$all_pictures = $artic->getAllPictures();
+							if ($all_pictures[0]["url"] != NULL && $all_pictures[0]["url"] !=""){?>
+								<img src="../images/products/<?=$all_pictures[0]["url"]?>" width="100px">&nbsp;
+							<?}} // Ende if(Bild gesetzt)?>
+						<?
 						if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
-						    $tmp_pero_order = new Personalizationorder($entry->getId());
-						    $tmp_pero = new Personalization($tmp_pero_order->getPersoID());
-						    $artic = $tmp_pero->getArticle();
-						if ($artic->getPicture() != "" && $artic->getPicture()!= NULL){?>
-							<img src="../images/products/<?=$artic->getPicture()?>" width="100px">&nbsp;
-						<?}} // Ende if(Bild gesetzt)
-// 						echo $artic->getId();
+							$tmp_pero_order = new Personalizationorder($entry->getId());
+							$tmp_pero = new Personalization($tmp_pero_order->getPersoID());
+							$artic = $tmp_pero->getArticle();
+							if ($artic->getPicture() != "" && $artic->getPicture()!= NULL){?>
+								<img src="../images/products/<?=$artic->getPicture()?>" width="100px">&nbsp;
+							<?}} // Ende if(Bild gesetzt)
+						// 						echo $artic->getId();
 						?>
 						&ensp;
 					</td>
 					<td class="filerow">
-					    <table><tr><td>
-						<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-							$tmp_pid = 60;	
-							$tmp_obj = "articleid=".$entry->getId();
-							$tmp_exec= "exec=showArticleDetails";
-						} else if($entry->getType() == Shoppingbasketitem::TYPE_PRODUCTS){
-							 $tmp_pid = 100;
-							 $tmp_obj = "productid=".$entry->getId();
-							 $tmp_exec= "exec=edit";
-						}else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
-							 $tmp_pid = 40;
-							 $tmp_obj = "persoorderid=".$entry->getId();
-							 $tmp_exec= "exec=edit";
-						}?>
-						<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
-								<?=substr($entry->getTitle(),0,21)?></a></td>
+						<table><tr><td>
+									<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
+										$tmp_pid = 60;
+										$tmp_obj = "articleid=".$entry->getId();
+										$tmp_exec= "exec=showArticleDetails";
+									} else if($entry->getType() == Shoppingbasketitem::TYPE_PRODUCTS){
+										$tmp_pid = 100;
+										$tmp_obj = "productid=".$entry->getId();
+										$tmp_exec= "exec=edit";
+									}else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
+										$tmp_pid = 40;
+										$tmp_obj = "persoorderid=".$entry->getId();
+										$tmp_exec= "exec=edit";
+									}?>
+									<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
+										<?=substr($entry->getTitle(),0,21)?></a></td>
 								<?php if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){if($artic->getShop_needs_upload()==1){?>
-								<td><label class="filebutton"><img src="../images/icons/disk--plus.png"/>
-								<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label></td>
+									<td><label class="filebutton"><img src="../images/icons/disk--plus.png"/>
+											<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label></td>
 								<?php }}?>
-						</tr></table>
-					</td> 
+							</tr></table>
+					</td>
 					<td class="filerow"  align="right">
-					<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-							$tmp_amount = $entry->getAmount();	
+						<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
+							$tmp_amount = $entry->getAmount();
 							$tmp_readonly = "";
 							?>
-							<input 	style="width:50px;" name="amount_<?=$entry->getEntryid()?>" 
-									value="<?=$entry->getAmount()?>" <?=$tmp_readonly?>> 
+							<input 	style="width:50px;" name="amount_<?=$entry->getEntryid()?>"
+									  value="<?=$entry->getAmount()?>" <?=$tmp_readonly?>>
 							<?
 						} else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){?>
-				    			<select name="amount_<?=$entry->getEntryid()?>" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?> 
-				    					style="width: 150px;">
-				    				<?
-				    				foreach($allprices AS $price){ ?>
-				    					<option value="<?=$price["sep_max"]?>"
-				    							<?if($price["sep_max"] == $entry->getAmount()) echo "selected";?>>
-				    					<?	echo $price["sep_max"];
-				    						if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
-				    					</option>
+							<select name="amount_<?=$entry->getEntryid()?>" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?>
+									style="width: 150px;">
+								<?
+								foreach($allprices AS $price){ ?>
+									<option value="<?=$price["sep_max"]?>"
+										<?if($price["sep_max"] == $entry->getAmount()) echo "selected";?>>
+										<?	echo $price["sep_max"];
+										if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
+									</option>
 								<?	} ?>
-				    			</select>
-						<?
+							</select>
+							<?
 						}?>
 					</td>
 					<td class="filerow" align="right"><?=printPrice($entry->getPrice())?> &euro; </td>
 					<td class="filerow" align="right">
 						<?	if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-						        if ($artic->getOrderid()>0)
-						        {
-    								$ges_price = $entry->getPrice();
-    								$overall_price += $ges_price;
-						        } else {
-    								$ges_price = $entry->getAmount()*$entry->getPrice();
-    								$overall_price += $ges_price;
-						        }   
-							} else if ($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
+							if ($artic->getOrderid()>0)
+							{
 								$ges_price = $entry->getPrice();
-								if ($ges_price >0.00){
-									$overall_price += $ges_price;
-								}
+								$overall_price += $ges_price;
+							} else {
+								$ges_price = $entry->getAmount()*$entry->getPrice();
+								$overall_price += $ges_price;
 							}
-							echo printPrice($ges_price);?>&euro;
+						} else if ($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
+							$ges_price = $entry->getPrice();
+							if ($ges_price >0.00){
+								$overall_price += $ges_price;
+							}
+						}
+						echo printPrice($ges_price);?>&euro;
 					</td>
 					<td class="filerow" align="right">
-    		    		<select name="entry_deliv_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
-    		    			<?	foreach($all_deliveryAddresses AS $deliv){ ?>
-    		    					<option value="<?=$deliv->getId()?>"
-    		    							<?if($deliv->getId() == $entry->getDeliveryAdressID()){echo 'selected="selected"';} else if ($deliv->getDefault()){echo 'selected="selected"';}?>>
-    		    					<?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
-    		    					</option>
-    						<?	} ?>
-    		    		</select>
-		    	    </td>
+						<select name="entry_deliv_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
+							<?	foreach($all_deliveryAddresses AS $deliv){ ?>
+								<option value="<?=$deliv->getId()?>"
+									<?if($deliv->getId() == $entry->getDeliveryAdressID()){echo 'selected="selected"';} else if ($deliv->getDefault()){echo 'selected="selected"';}?>>
+									<?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
+								</option>
+							<?	} ?>
+						</select>
+					</td>
 					<td class="filerow" align="right">
-    		    		<select name="entry_invoice_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
-    		    			<?	foreach($all_invoiceAddresses AS $invoice){ ?>
-    		    					<option value="<?=$invoice->getId()?>"
-    		    							<?if($invoice->getId() == $entry->getInvoiceAdressID()){echo 'selected="selected"';} else if ($invoice->getDefault()){echo 'selected="selected"';}?>>
-    		    					<?=$invoice->getNameAsLine()?> (<?=$invoice->getAddressAsLine()?>)
-    		    					</option>
-    						<?	} ?>
-    		    		</select> 
-		    	    </td>
+						<select name="entry_invoice_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
+							<?	foreach($all_invoiceAddresses AS $invoice){ ?>
+								<option value="<?=$invoice->getId()?>"
+									<?if($invoice->getId() == $entry->getInvoiceAdressID()){echo 'selected="selected"';} else if ($invoice->getDefault()){echo 'selected="selected"';}?>>
+									<?=$invoice->getNameAsLine()?> (<?=$invoice->getAddressAsLine()?>)
+								</option>
+							<?	} ?>
+						</select>
+					</td>
 					<td class="filerow" align="center">
 						<input 	type="submit" style="border: solid 1px red; color: red;";
-							value="X" name="delete_item"
-							onClick="document.getElementById('del_id').value = <?=$entry->getEntryid()?>;">
+								  value="X" name="delete_item"
+								  onClick="document.getElementById('del_id').value = <?=$entry->getEntryid()?>;">
 					</td>
 				</tr>
-			<?$x++;
+				<?$x++;
 			}?>
 		</table>
-		<br/>
-		<table width="100%" cellpadding="2" cellspacing="0" border="0">
-			<colgroup>
-				<col width="150">
-				<col>
-				<col width="220">
-				<col width="90">
-				<col width="50">
-			</colgroup>
-			<tr>
-				<td> 
-					<b><?=$_LANG->get('Kostenstelle');?> / <?=$_LANG->get('Zweck');?></b>
-				</td>
-				<td>
-					<input type="text" id="shopping_intent" name="shopping_intent" style="width: 200px;"
-							value="<?=$shopping_basket->getIntent()?>">
-				</td>
-				<td> <b> <?= $_LANG->get('Preis des Warenkorbs') ?> </b></td>
-				<td align="right">
-					<b><?=printPrice($overall_price)?> </b> &euro; 
-				</td>
-				<td> &ensp; </td>
-			</tr>
-			<tr>
-				<td valign="top"> 
-					<b><?=$_LANG->get('Hinweis');?> / <?=$_LANG->get('Bemerkung');?></b>
-				</td>
-				<td>
-				    <textarea rows="4" cols="50" id="shopping_note" name="shopping_note" style="width: 200px;"><?=$shopping_basket->getNote()?></textarea>
-					<!-- <input type="text" id="shopping_note" name="shopping_note" style="width: 200px;"
-							value="<?=$shopping_basket->getNote()?>"> -->
-				</td>
-			</tr>
-		</table>
-		<br/><br/>
-		<table width="100%" cellpadding="0" cellspacing="0" border="0">
-			<colgroup>
-				<col width="400">
-				<col>
-				<col>
-			</colgroup>
-			<tr>
-				<td align="center"> 
-					<input 	type="submit" class="submit"  name="clear_shoppingbasket" 
-							value="<?=$_LANG->get('Warenkorb leeren')?>" 
-							onclick="return confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')">
-				</td>
-				<td align="center">
-					<input 	type="submit" class="submit"  name="edit_items" 
-							value="<?=$_LANG->get('&Auml;nderung speichern')?>">
-				</td>
-				<td align="right">
-					<?//TODO AGBs zustimmen und kalkulierte Produkte explizit bestaetigen?>
-					<input 	type="submit" class="submit" name="send_shoppingbasket" 
-							value="<?=$_LANG->get('senden')?>"
-							onclick="return BasketSubmit();">
-				</td>
-			</tr>
-		</table>
+	</div>
+	  <div class="panel-body">
+			<div class="form-horizontal">
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Kostenstelle/Zweck</label>
+						<div class="col-sm-10">
+							<input type="text"class="form-control" id="shopping_intent" name="shopping_intent"
+									value="<?=$shopping_basket->getIntent()?>">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Hinweis/Bemerkung</label>
+						<div class="col-sm-10">
+							<textarea rows="4" cols="50" id="shopping_note" name="shopping_note" class="form-control"><?=$shopping_basket->getNote()?></textarea>
+							<!-- <input type="text" id="shopping_note" name="shopping_note" style="width: 200px;"
+					value="<?=$shopping_basket->getNote()?>"> -->
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Preis des Warenkorbs</label>
+						<div class="col-sm-10">
+							<div class="form-control"><b><?=printPrice($overall_price)?></b></div>
+						</div>
+					</div>
+					 <div class="row">
+						 <div class="col-md-5">
+							 <button name="clear_shoppingbasket" class="btn btn-success"onclick="return confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')">
+								 <?=$_LANG->get('Warenkorb leeren')?>
+							 </button>
+						 </div>
+
+						 <div class="col-md-6">
+							 <button type="submit" name="clear_shoppingbasket" class="btn btn-success">
+								 <?=$_LANG->get('&Auml;nderung speichern')?>
+							 </button>
+						 </div>
+
+						 <div class="col-md-1">
+							 <button name="send_shoppingbasket" type="submit" class="btn btn-success" onclick="return BasketSubmit();">
+								 <?=$_LANG->get('Senden')?>
+							 </button>
+						 </div>
+					 </div>
+
+				</div>
+			</div>
+	  </div>
+<? 	$x=1;
+	if (count($shopping_basket_entrys) > 0){?>
+
 		<?} else {
 			echo $_LANG->get("Der Warenkorb ist leer");
 		} ?>
-</div>
 </form>
