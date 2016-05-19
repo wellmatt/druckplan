@@ -22,41 +22,42 @@ if ($_REQUEST["exec"] == "delete"){
 <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+                Lagerplätze
+                <span class="pull-right">
+                     <?=$savemsg?>
+					  <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';"
+                          <img src="images/icons/details_open.svg">
+                          <?=$_LANG->get('Lagerplatz erstellen')?>
+                      </button>
+		  		</span>
+            </h3>
+	  </div>
 
-<table width="100%">
-    <tr>
-        <td width="150" class="content_header"><img
-                src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <span
-                style="font-size: 13px"><?=$_LANG->get('Lagerpl&auml;tze')?></span></td>
-        <td width="250" class="content_header" align="right">
-            <?=$savemsg?>
-        </td>
-        <td class="content_header" align="right"><a
-                href="index.php?page=libs/modules/storage/storage.edit.php&exec=new"
-                class="icon-link"><img src="images/icons/details_open.svg"> <span
-                    style="font-size: 13px"><?=$_LANG->get('Lagerplatz erstellen')?></span></a>
-        </td>
-    </tr>
-</table>
-<br />
-<div class="box1">
-    <table id="storagetable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-        <thead>
-        <tr>
-            <th><?=$_LANG->get('ID')?></th>
-            <th><?=$_LANG->get('Name')?></th>
-            <th><?=$_LANG->get('Belegung')?></th>
-        </tr>
-        </thead>
-        <tfoot>
-        <tr>
-            <th><?=$_LANG->get('ID')?></th>
-            <th><?=$_LANG->get('Name')?></th>
-            <th><?=$_LANG->get('Belegung')?></th>
-        </tr>
-        </tfoot>
-    </table>
+    <div class="table-responsive">
+        <table  id="storagetable" class="table table-hover">
+            <thead>
+            <tr>
+                <th><?=$_LANG->get('ID')?></th>
+                <th><?=$_LANG->get('Name')?></th>
+                <th><?=$_LANG->get('Belegung')?></th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th><?=$_LANG->get('ID')?></th>
+                <th><?=$_LANG->get('Name')?></th>
+                <th><?=$_LANG->get('Belegung')?></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
 </div>
+
 
 <script type="text/javascript">
     $(document).ready(function() {

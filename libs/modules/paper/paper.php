@@ -101,27 +101,33 @@ $(document).ready(function() {
     });
 } );
 </script>
+    <div class="panel panel-default">
+    	  <div class="panel-heading">
+    			<h3 class="panel-title">
+                    Papiere
+                    <span class="pull-right">
+                        <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
+                            <img src="images/icons/script--plus.png">
+                            <?=$_LANG->get('Papier hinzuf&uuml;gen')?>
+                        </button>
+                    </span>
+                </h3>
+    	  </div>
+        <div class="table-responsive">
+            <table id="paper_table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th width="20"><?=$_LANG->get('ID')?></th>
+                    <th><?=$_LANG->get('Name')?></th>
+                    <th><?=$_LANG->get('Gr&ouml;&szlig;en')?></th>
+                    <th><?=$_LANG->get('Grammaturen')?></th>
+                    <th width="100"><?=$_LANG->get('Optionen')?></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Papiere')?></td>
-      <td><?=$savemsg?></td>
-      <td width="200" class="content_header" align="right"><a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit"><img src="images/icons/script--plus.png"> <?=$_LANG->get('Papier hinzuf&uuml;gen')?></a></td>
-   </tr>
-</table>
-<div class="box1">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" id="paper_table" class="stripe hover row-border order-column">
-    <thead>
-        <tr>
-            <th width="20"><?=$_LANG->get('ID')?></th>
-            <th><?=$_LANG->get('Name')?></th>
-            <th><?=$_LANG->get('Gr&ouml;&szlig;en')?></th>
-            <th><?=$_LANG->get('Grammaturen')?></th>
-            <th width="100"><?=$_LANG->get('Optionen')?></th>
-        </tr>
-    </thead>
-</table>
-</div>
 <?  } ?>
 
 

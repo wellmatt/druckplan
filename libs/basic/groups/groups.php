@@ -25,16 +25,8 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                </span>
             </h3>
 	  </div>
-      <div class="panel-body">
          <div class="table-responsive">
             <table class="table table-hover">
-               <colgroup>
-                  <col width="20">
-                  <col width="150">
-                  <col width="200">
-                  <col>
-                  <col width="80">
-               </colgroup>
                <tr>
                   <td class="content_row_header"><?=$_LANG->get('ID')?></td>
                   <td class="content_row_header"><?=$_LANG->get('Gruppenname')?></td>
@@ -69,6 +61,5 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                   <?$x++;}?>
             </table>
          </div>
-      </div>
 </div>
 <?}?>

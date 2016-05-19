@@ -86,7 +86,6 @@ $(document).ready(function() {
         <h3 class="panel-title">Ansprechpartner</h3>
     </div>
     <div class="table-responsive">
-        <br>
         <table id="cp_table" class="table table-hover">
             <thead>
             <tr>

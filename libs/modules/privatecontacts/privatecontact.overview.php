@@ -91,7 +91,7 @@ $(document).ready(function() {
             <img  src="images/icons/user-detective.png">
             Private Kontakte
                 <span class = pull-right>
-                    <img src="images/icons/plus.png">
+                    <img src="images/icons/glyphicons-433-plus.svg">
                     <button class="btn btn-xs btn-success"onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
                         <?=$_LANG->get('Neuer Kontakt') ?>
                 </span>

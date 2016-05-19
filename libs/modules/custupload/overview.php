@@ -87,7 +87,6 @@ function askDel(myurl)
 					<b><?=$cust->getNameAsLine()?></b>
 				</h3>
 			</div>
-			<div class="panel-body">
 				<div class="table-responsive">
 					<table class="table table-hover">
 						<colgroup>
@@ -130,7 +129,6 @@ function askDel(myurl)
 							<? $y++; } ?>
 					</table>
 				</div>
-			</div>
 		</div>
 					<?
 				}

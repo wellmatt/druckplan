@@ -139,50 +139,47 @@ $(document).ready(function() {
     
 } );
 </script>
-<table width="100%">
-	<tr>
-		<td width="220" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <span style="font-size: 13px"><?=$_LANG->get('Gesch&auml;ftskontakte')?></span>
-		</td>
-		<td align="center">
-			&ensp; 
-		</td>
-		<td class="content_row_clear">
-			Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" style="width:110px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-				<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-				<? 
-				foreach ($all_attributes AS $attribute){
-				 	$allitems = $attribute->getItems();
-					foreach ($allitems AS $item){ ?>
-						<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
-					<? }
-				} ?>
-			</select>
-		</td>
-		<td width="290" class="content_header" align="right">
-			<span style="font-size: 13px">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&tabshow=1" class="icon-link"
-				><img src="images/icons/plus.png"> <?=$_LANG->get('Gesch&auml;ftskontakte hinzuf&uuml;gen')?></a>
-			</span>
-		</td>
-	</tr>
-</table>
-<div class="box1">
-	<table id="bcon_table" width="100%" class="stripe hover row-border order-column">
-        <thead>
-            <tr>
-                <th width="10">ID</th>
-                <th width="80">Nr.</th>
-                <th width="100">Matchcode</th>
-                <th>Firma</th>
-                <th width="100">Ort</th>
-                <th width="120">Typ</th>
-                <th width="120">Lieferant</th>
-                <th width="180">Merkmale</th>
-                <th width="80">Optionen</th>
-            </tr>
-        </thead>
-	</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Geschäftskontakte
+				<span class="pull-center">
+					Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+						<?
+						foreach ($all_attributes AS $attribute){
+							$allitems = $attribute->getItems();
+							foreach ($allitems AS $item){ ?>
+								<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
+							<? }
+						} ?>
+					</select>
+				</span>
+				<span class="pull-right">
+					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&tabshow=1';">
+						 <img src="images/icons/glyphicons-433-plus.svg">
+						 <?=$_LANG->get('Gesch&auml;ftskontakte hinzuf&uuml;gen')?>
+					 </button>
+				</span>
+			</h3>
+	  </div>
+	<div class="table-responsive">
+		<table id="bcon_table"  class="table table-hover">
+			<thead>
+			<tr>
+				<th width="10">ID</th>
+				<th width="80">Nr.</th>
+				<th width="100">Matchcode</th>
+				<th>Firma</th>
+				<th width="100">Ort</th>
+				<th width="120">Typ</th>
+				<th width="120">Lieferant</th>
+				<th width="180">Merkmale</th>
+				<th width="80">Optionen</th>
+			</tr>
+			</thead>
+		</table>
+	</div>
+	<?}
+	?>
 </div>
-<?}
-?>

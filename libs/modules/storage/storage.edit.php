@@ -67,77 +67,82 @@ if ($_REQUEST["exec"] == "edit"){
                         <input type="hidden" id="exec" name="exec" value="edit" />
                         <input type="hidden" id="subexec" name="subexec" value="save" />
 
-                        <table border="0" cellpadding="3" cellspacing="1" width="100%">
-                            <colgroup>
-                                <col width="130">
-                                <col>
-                            </colgroup>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Lagerplatzname')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="st_name" name="st_name" style="width:200px" value="<?=$storagearea->getName()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Beschreibung')?>:</td>
-                                <td class="content_row_clear">
-			                    <textarea rows="8" cols="80" type="text" id="st_description" name="st_description"
-                                    class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$storagearea->getDescription()?></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Ort')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="st_location" name="st_location" style="width:200px" value="<?=$storagearea->getLocation()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Gang')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="st_corridor" name="st_corridor" style="width:200px" value="<?=$storagearea->getCorridor()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Regal')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="st_shelf" name="st_shelf" style="width:200px" value="<?=$storagearea->getShelf()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Reihe')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="st_line" name="st_line" style="width:200px" value="<?=$storagearea->getLine()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Ebene')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="st_layer" name="st_layer" style="width:200px" value="<?=$storagearea->getLayer()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Priorit&auml;t')?>: </td>
-                                <td class="content_row_clear">
-                                    <select id="st_prio" name="st_prio" style="width:200px">
-                                        <option value="0" <?php if ($storagearea->getPrio() == 0) echo ' selected ';?>>Niedrig</option>
-                                        <option value="1" <?php if ($storagearea->getPrio() == 1) echo ' selected ';?>>Mittel</option>
-                                        <option value="2" <?php if ($storagearea->getPrio() == 2) echo ' selected ';?>>Hoch</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <?php if ($storagearea->getId()>0){ ?>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Belegung')?>: </td>
-                                <td class="content_row_clear"><?php echo StoragePosition::getAllocationForArea($storagearea);?>%</td>
-                            </tr>
-                            <?php } ?>
-                        </table>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Lagerplatzname</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="st_name" name="st_name" class="form-control" value="<?=$storagearea->getName()?>"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Beschreibung</label>
+                            <div class="col-sm-4">
+                                <textarea rows="8" cols="80" type="text" id="st_description" name="st_description"
+                                          class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$storagearea->getDescription()?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Ort</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="st_location" name="st_location" class="form-control" value="<?=$storagearea->getLocation()?>"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Gang</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="st_corridor" name="st_corridor"class="form-control" value="<?=$storagearea->getCorridor()?>"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Regal</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="st_shelf" name="st_shelf" class="form-control" value="<?=$storagearea->getShelf()?>"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Reihe</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="st_line" name="st_line" class="form-control" value="<?=$storagearea->getLine()?>"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Ebene</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="st_layer" name="st_layer" class="form-control" value="<?=$storagearea->getLayer()?>"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Priorität</label>
+                            <div class="col-sm-4">
+                                <select id="st_prio" name="st_prio" class="form-control">
+                                    <option value="0" <?php if ($storagearea->getPrio() == 0) echo ' selected ';?>>Niedrig</option>
+                                    <option value="1" <?php if ($storagearea->getPrio() == 1) echo ' selected ';?>>Mittel</option>
+                                    <option value="2" <?php if ($storagearea->getPrio() == 2) echo ' selected ';?>>Hoch</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <?php if ($storagearea->getId()>0){ ?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Belegung</label>
+                            <div class="col-sm-4">
+                                <?php echo StoragePosition::getAllocationForArea($storagearea);?>%
+                            </div>
+                        </div>
+                        <?php } ?>
+
     				</form>
     		  </div>
     	</div>

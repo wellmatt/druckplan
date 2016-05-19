@@ -109,54 +109,67 @@ function PersoOrderTableRefresh()
 	$('#persos_table').dataTable().fnDraw(); 
 }
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Personalisierungen
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
+                        <img src="images/icons/applications-stack.png">
+                        <?=$_LANG->get('Personalisierung hinzuf&uuml;gen')?>
+                    </button>
+                </span>
+            </h3>
+	  </div>
+	  <div class="panel-body">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+                           Filter
+                        </h3>
+				  </div>
+				  <div class="panel-body">
+                      <div class="form-horizontal">
 
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"><span style="font-size: 13px"> <?=$_LANG->get('Personalisierungen')?> </span>
-		</td>
-		<td><?=$savemsg?></td>
-		<td width="300" class="content_header" align="right">
-			<span style="font-size: 13px">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/applications-stack.png"> <?=$_LANG->get('Personalisierung hinzuf&uuml;gen')?></a>
-			</span>
-		</td>
-	</tr>
-</table>
+                          <div class="form-group">
+                              <label for="" class="col-sm-1 control-label">Kunde</label>
+                              <div class="col-sm-3">
+                                  <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['perso_ajax_customer']) echo ' value="'.$_SESSION['perso_ajax_customer'].'" ';?>/>
+                                  <select name="customer" id="customer" class="form-control">
+                                      <option value="" <?php if (!$_SESSION['perso_ajax_customer']) echo ' selected ';?>></option>
+                                      <?php
+                                      foreach ($customers as $customer){
+                                          echo '<option value="'.$customer->getId().'"';
+                                          if ($_SESSION['perso_ajax_customer'] == $customer->getId())
+                                          {
+                                              echo ' selected ';
+                                          }
+                                          echo '>'.$customer->getNameAsLine().'</option>';
+                                      }
+                                      ?>
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                      <span class="pull-right">
+                          <button class="btn btn-xs btn-success" onclick="PersoTableRefresh();" href="Javascript:">
+                              <img src="images/icons/arrow-circle-double-135.png"/>
+                              <?=$_LANG->get('Refresh')?>
+                          </button>
+                      </span>
+                      <span class="pull-right">
+                          <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/personalization/personalization.php&exec=reset';">
+                              <img src="images/icons/slash.png"/>
+                              <?=$_LANG->get('Reset')?>
+                          </button>
+                      </span>
+				  </div>
+			</div>
+	  </div>
 
-<div class="box1">
-    <div class="box2">
-        <table>
-            <tr align="left">
-                <td>Kunde:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['perso_ajax_customer']) echo ' value="'.$_SESSION['perso_ajax_customer'].'" ';?>/>  
-                    <select name="customer" id="customer" style="width:160px">
-                    <option value="" <?php if (!$_SESSION['perso_ajax_customer']) echo ' selected ';?>></option> 
-                    <?php 
-                    foreach ($customers as $customer){
-                        echo '<option value="'.$customer->getId().'"';
-                        if ($_SESSION['perso_ajax_customer'] == $customer->getId())
-                        {
-                            echo ' selected ';
-                        }
-                        echo '>'.$customer->getNameAsLine().'</option>';
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td><a onclick="PersoTableRefresh();" href="Javascript:"><img src="images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
-            </tr>
-            <tr align="left">
-                <td><a href="index.php?page=libs/modules/personalization/personalization.php&exec=reset"><img src="images/icons/slash.png"/> Reset</a></td>
-            </tr>
-        </table>
-    </div>
-    </br>
-	<table id="persos_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-        <thead>
+    <div class="table-responsive">
+        <table id="persos_table" class="table table-hover">
+            <thead>
             <tr>
                 <th width="20"><?=$_LANG->get('ID')?></th>
                 <th width="105"><?=$_LANG->get('Bild')?></th>
@@ -165,6 +178,8 @@ function PersoOrderTableRefresh()
                 <th width="170"><?=$_LANG->get('Artikel')?></th>
                 <th width="70"><?=$_LANG->get('Shop')?></th>
             </tr>
-        </thead>
-	</table>
+            </thead>
+        </table>
+    </div>
 </div>
+

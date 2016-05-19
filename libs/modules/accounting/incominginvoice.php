@@ -295,7 +295,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -306,7 +306,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -317,7 +317,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -328,7 +328,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -339,7 +339,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );

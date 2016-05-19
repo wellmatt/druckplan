@@ -66,9 +66,6 @@
 				<b>Ihre Bestellungen</b>
 			</h3>
 	  </div>
-	  <div class="panel-body">
-
-	  </div>
 	<div class="table-responsive">
 		<table class="table table-hover" id="ordhistable">
 			<thead>

@@ -35,43 +35,34 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
 				</span>
 			</h3>
 	  </div>
-	  <div class="panel-body">
-		  <div class="table-responsive">
-			  <table class="table table-hover">
-				  <colgroup>
-					  <col width="20">
-					  <col>
-					  <col>
-					  <col>
-					  <col width="100">
-				  </colgroup>
-				  <tr>
-					  <td class="content_row_header">&nbsp;</td>
-					  <td class="content_row_header"><?=$_LANG->get('Name')?></td>
-					  <td class="content_row_header"><?=$_LANG->get('Breite')?></td>
-					  <td class="content_row_header"><?=$_LANG->get('H&ouml;he')?></td>
-					  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+	  <div class="table-responsive">
+		  <table class="table table-hover">
+			  <tr>
+				  <td class="content_row_header">&nbsp;</td>
+				  <td class="content_row_header"><?=$_LANG->get('Name')?></td>
+				  <td class="content_row_header"><?=$_LANG->get('Breite')?></td>
+				  <td class="content_row_header"><?=$_LANG->get('H&ouml;he')?></td>
+				  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+			  </tr>
+
+			  <? $x = 0;
+			  foreach($formats as $f)
+			  {?>
+				  <tr class="<?=getRowColor($x)?>">
+					  <td class="content_row">&nbsp;</td>
+					  <td class="content_row"><?=$f->getName()?>&nbsp;</td>
+					  <td class="content_row"><?=$f->getWidth()?> mm</td>
+					  <td class="content_row"><?=$f->getHeight()?> mm</td>
+					  <td class="content_row">
+						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><img src="images/icons/pencil.png"></a>
+						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><img src="images/icons/scripts.png"></a>
+						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$f->getId()?>')"><img src="images/icons/cross-script.png"></a>
+					  </td>
 				  </tr>
 
-				  <? $x = 0;
-				  foreach($formats as $f)
-				  {?>
-					  <tr class="<?=getRowColor($x)?>">
-						  <td class="content_row">&nbsp;</td>
-						  <td class="content_row"><?=$f->getName()?>&nbsp;</td>
-						  <td class="content_row"><?=$f->getWidth()?> mm</td>
-						  <td class="content_row"><?=$f->getHeight()?> mm</td>
-						  <td class="content_row">
-							  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><img src="images/icons/pencil.png"></a>
-							  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><img src="images/icons/scripts.png"></a>
-							  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$f->getId()?>')"><img src="images/icons/cross-script.png"></a>
-						  </td>
-					  </tr>
-
-					  <? $x++; }
-				  ?>
-			  </table>
-		  </div>
+				  <? $x++; }
+			  ?>
+		  </table>
 	  </div>
 </div>
 

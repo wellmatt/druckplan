@@ -499,7 +499,7 @@ function commi_checkbox(){
 		
 	<div id="tabs-0">
 	<?php if ($businessContact->getId()>0){?>
-    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><img src="images/icons/printer.png"/></a></div>
+    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><img src="images/icons/glyphicons-450-fax.svg"/></a></div>
     <?php }?>
 		<br>
 		<table width="100%">
@@ -559,13 +559,13 @@ function commi_checkbox(){
 							<td class="content_row_clear" valign="top">
 								<span  onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$businessContact->getPhoneForDial()?>')"
 									title="<?=$businessContact->getPhoneForDial()." ".$_LANG->get('anrufen');?>" class="pointer icon-link">
-									<img src=" images/icons/telephone.png" alt="TEL"> <?=$businessContact->getPhone()?>
+									<img src=" images/icons/glyphicons-443-earphone.svg" alt="TEL"> <?=$businessContact->getPhone()?>
 								</span>
 								<br>
-								<img src="images/icons/telephone-fax.png" alt="FAX"> <?=$businessContact->getFax()?><br>
-								<img src="images/icons/globe-green.png" alt="WEB"> 
+								<img src="images/icons/glyphicons-450-fax.svg" alt="FAX"> <?=$businessContact->getFax()?><br>
+								<img src="images/icons/glyphicons-371-globe-af.svg" alt="WEB">
 									<a class="icon-link" href="<?=$businessContact->getWebForHref()?>" target="_blank"><?=$businessContact->getWeb()?></a> <br>
-								<img src="images/icons/mail.png" alt="MAIL"> <?=$businessContact->getEmail()?>
+								<img src="images/icons/glyphicons-11-envelope.svg" alt="MAIL"> <?=$businessContact->getEmail()?>
 							</td>
 						</tr>
 						<tr>
@@ -678,17 +678,17 @@ function commi_checkbox(){
 										<?if ($phone != false){?>  
 										<a class="icon-link" href="#" title="<?=$phone." ".$_LANG->get('anrufen');?>"
 											onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$phone?>')"											
-											><img src="images/icons/telephone.png"></a>
+											><img src="images/icons/glyphicons-443-earphone.svg"></a>
 										<?}?>
 									</td>
 									<td>
-										<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=phone" title="<?=$cp->getEmail();?>"><img src="images/icons/mail.png"></a>
+										<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=phone" title="<?=$cp->getEmail();?>"><img src="images/icons/glyphicons-11-envelope.svg"></a>
 									</td>
 									<td>
 										<?if ($mobilephone != false){?>
 										<a class="icon-link" href="#" title="<?=$mobilephone." ".$_LANG->get('anrufen');?>"
 											onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$mobilephone?>')"
-											><img src="images/icons/mobile-phone.png"></a>
+										 ><img src="images/icons/mobile-phone.png"></a>
 										<?}?>
 									</td>
 								</tr>
@@ -846,7 +846,7 @@ function commi_checkbox(){
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="customernumber" id="customernumber" 
 					    		value="<?=$businessContact->getCustomernumber()?>">
-					    <img src="images/icons/arrow-curve-180.png" onclick="generadeCustomerNumber()" class="pointer"
+					    <img src="images/icons/glyphicons-222-unshare.svg" onclick="generadeCustomerNumber()" class="pointer"
 					    	 title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>">
 					</td>
 				</tr>
@@ -962,7 +962,7 @@ function commi_checkbox(){
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="kreditor" id="kreditor"
 					    		value="<?=$businessContact->getKreditor()?>"> 
-					    <img src="images/icons/arrow-curve-180.png" onclick="generadeCreditorNumber()" class="pointer"
+					    <img src="images/icons/glyphicons-222-unshare.svg" onclick="generadeCreditorNumber()" class="pointer"
 					    		title="<?=$_LANG->get('Neue Kreditoren-Nr. erzeugen');?>">
 					</td>
 				</tr>
@@ -971,7 +971,7 @@ function commi_checkbox(){
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="debitor" id="debitor"
 					    		value="<?=$businessContact->getDebitor()?>">
-					    <img src="images/icons/arrow-curve-180.png" onclick="generadeDebitorNumber()" class="pointer"
+					    <img src="images/icons/glyphicons-222-unshare.svg" onclick="generadeDebitorNumber()" class="pointer"
 					    		title="<?=$_LANG->get('Neue Debitoren-Nr. erzeugen');?>">
 					</td>
 				</tr>
@@ -1047,7 +1047,7 @@ function commi_checkbox(){
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear" align="right">
-					<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>"><img src="images/icons/plus.png"> <?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?></a>
+					<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-433-plus.svg"> <?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?></a>
 				</td>
 			</tr>
 			<?php $addressInvoice = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
@@ -1061,7 +1061,7 @@ function commi_checkbox(){
 				<td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
 				<td><? echo $ai->getZip()." ".$ai->getCity();?></td>
 				<td class="content_row_clear" align="right">
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/pencil.png"></a>
+	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-31-pencil.svg"></a>
 	        	</td>
 	        </tr>
 	        <?php 
@@ -1086,7 +1086,7 @@ function commi_checkbox(){
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear" align="right">
 					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id=<?=$businessContact->getID()?>" class="icon-link"
-						><img src="images/icons/plus.png"> <?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?></a>
+						><img src="images/icons/glyphicons-433-plus.svg"> <?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?></a>
 				</td>
 			</tr>
 			<?php 
@@ -1109,7 +1109,7 @@ function commi_checkbox(){
 							echo "green_small.gif";
 						}
 					?>" title="<?=$_LANG->get('Shop-Freigabe')?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/pencil.png"></a>
+	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-31-pencil.svg"></a>
 	        	</td>
 	        </tr>
 	        <?php 
@@ -1137,7 +1137,7 @@ function commi_checkbox(){
 				<td class="content_row_clear">&emsp;</td>
 				<td class="content_row_clear" align="right" colspan="3">
 					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&id=<?=$businessContact->getID()?>" class="icon-link"
-						><img src="images/icons/plus.png"> <?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></a>
+						><img src="images/icons/glyphicons-433-plus.svg"> <?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></a>
 				</td>
 			</tr>
 			<? //$contactPerson = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
@@ -1147,7 +1147,7 @@ function commi_checkbox(){
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
 					valign="top">
 					<?php echo $cp->getNameAsLine(); ?> &ensp; </br>
-					<? if ($cp->getBirthDate()) echo '<img src="images/icons/cake.png"/>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
+					<? if ($cp->getBirthDate()) echo '<img src="images/icons/glyphicons-273-cake.svg"/>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
 					valign="top">
@@ -1184,7 +1184,7 @@ function commi_checkbox(){
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"> &ensp;</td>
 				<td class="content_row" align="right">
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/pencil.png"></a>
+	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-31-pencil.svg"></a>
 	        	 </td>
 	        </tr>
 	        <?
@@ -1200,7 +1200,7 @@ function commi_checkbox(){
 			<table width="100%">
 					<tr>
 						<td width="200" class="content_header">
-							<img src="<?$_MENU->getIcon($_REQUEST['page'])?>"> 
+							<img src="glyphicons-188-more.svg">
 							<?=$_LANG->get('Merkmale');?>
 						</td>
 						<td></td>
@@ -1313,7 +1313,7 @@ function commi_checkbox(){
 						<td width="280" class="content_header">
 							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
 							<?=$_LANG->get('Personalisierung (Positions Titel)');?>
-							<img onclick="addTitlePosition()" class="pointer icon-link" src="images/icons/plus.png">
+							<img onclick="addTitlePosition()" class="pointer icon-link" src="images/icons/glyphicons-433-plus.svg">
 						</td>
 						<td></td>
 						<td width="120" class="content_header" align="right">&ensp;</td>

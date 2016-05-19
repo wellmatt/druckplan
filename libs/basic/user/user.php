@@ -34,19 +34,9 @@ if ($_REQUEST["exec"] == "edit")
 				</span>
 			</h3>
 	  </div>
-		  <div class="panel-body">
 			  <div class="table-responsive">
 				  <table class="table table-hover">
-					  <colgroup>
-						  <col width="20">
-						  <col width="100">
-						  <col width="200">
-						  <col width="100">
-						  <col>
 						  <? if($_USER->isAdmin()) echo '<col width="100">'; ?>
-						  <col width="40">
-						  <col width="80">
-					  </colgroup>
 					  <tr>
 						  <td class="content_row_header"><?=$_LANG->get('ID')?></td>
 						  <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
@@ -93,7 +83,6 @@ if ($_REQUEST["exec"] == "edit")
 					  ?>
 				  </table>
 			  </div>
-		  </div>
 		  <?}
 		  ?>
 	  </div>

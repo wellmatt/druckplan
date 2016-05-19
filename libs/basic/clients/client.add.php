@@ -65,6 +65,11 @@ if($_REQUEST["subexec"] == "save")
 
 ?>
 <div class="panel panel-default">
+	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="client_form"
+		  class="form-horizontal" onsubmit="return checkform(new Array(this.client_name, this.client_street1, this.client_plz, this.client_city))">
+		<input type="hidden" name="exec" value="edit">
+		<input type="hidden" name="subexec" value="save">
+		<input type="hidden" name="id" value="<?=$client->getId()?>">
 	<div class="panel-heading">
 		<h3 class="panel-title"
 		<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
@@ -73,402 +78,414 @@ if($_REQUEST["subexec"] == "save")
 		</h3>
 	</div>
 	<div class="panel-body">
-		<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="client_form"
-			  onsubmit="return checkform(new Array(this.client_name, this.client_street1, this.client_plz, this.client_city))">
-			<input type="hidden" name="exec" value="edit">
-			<input type="hidden" name="subexec" value="save">
-			<input type="hidden" name="id" value="<?=$client->getId()?>">
-			<table width="100%">
-				<tr>
-					<td valign="top">
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<colgroup>
-									<col width="180">
-									<col>
-								</colgroup>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Mandant');?> *</td>
-									<td class="content_row_clear"><input name="client_name"
-																		 style="width: 300px" class="text" value="<?=$client->getName()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Adresse');?> 1 *</td>
-									<td class="content_row_clear"><input name="client_street1"
-																		 style="width: 300px" class="text" value="<?=$cl_streets[0]?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Adresse');?> 2</td>
-									<td class="content_row_clear"><input name="client_street2"
-																		 style="width: 300px" class="text" value="<?=$cl_streets[1]?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Adresse');?> 3</td>
-									<td class="content_row_clear"><input name="client_street3"
-																		 style="width: 300px" class="text" value="<?=$cl_streets[2]?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('PLZ / Ort');?> *</td>
-									<td class="content_row_clear"><input name="client_postcode"
-																		 style="width: 60px" class="text" value="<?=$client->getPostcode()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)"> <input
-											name="client_city" style="width: 236px" class="text"
-											value="<?=$client->getCity()?>" onfocus="markfield(this,0)"
-											onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-									<td class="content_row_header"><select name="client_country"
-																		   style="width: 300px;" class="text">
-											<?
-											$countries = Country::getAllCountries();
+			 <div class="row">
+				 <div class="col-md-6">
 
-											foreach($countries as $co)
-											{
-												?>
-												<option value="<?=$co->getId()?>"
-													<?if($client->getCountry()->getId() == $co->getId()) echo "selected";?>>
-													<?=$co->getName()?>
-												</option>
-											<? } ?>
-										</select>
-									</td>
-								</tr>
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Mandant</label>
+						 <div class="col-sm-6">
+							 <input name="client_name" class="form-control" value="<?=$client->getName()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
 
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Telefon');?></td>
-									<td class="content_row_clear"><input name="client_phone"
-																		 style="width: 300px" class="text" value="<?=$client->getPhone()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Fax');?></td>
-									<td class="content_row_clear"><input name="client_fax" style="width: 300px"
-																		 class="text" value="<?=$client->getFax()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('E-Mail');?></td>
-									<td class="content_row_clear"><input name="client_email"
-																		 style="width: 300px" class="text" value="<?=$client->getEmail()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Mandant aktiv')?></td>
-									<td class="content_row_clear"><input name="client_active" type="checkbox"
-																		 value="1"
-											<? if ($client->isActive() || $_REQUEST["id"] == "") echo "checked";?>
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header">&nbsp;</td>
-									<td class="content_row_clear">&nbsp;</td>
-								</tr>
-								<tr>
-									<td class="content_header"><?=$_LANG->get('Zus&auml;tzliche Daten')?>
-									</td>
-									<td class="content_row_clear">&nbsp;</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Webseite');?></td>
-									<td class="content_row_clear"><input name="client_website"
-																		 style="width: 300px" class="text" value="<?=$client->getWebsite()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Bank');?></td>
-									<td class="content_row_clear"><input name="client_bank_name"
-																		 style="width: 300px" class="text"
-																		 value="<?=$client->getBankName()?>" onfocus="markfield(this,0)"
-																		 onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('BLZ');?></td>
-									<td class="content_row_clear"><input name="client_bank_blz"
-																		 style="width: 300px" class="text" value="<?=$client->getBankBlz()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Kontonummer');?></td>
-									<td class="content_row_clear"><input name="client_bank_kto"
-																		 style="width: 300px" class="text" value="<?=$client->getBankKto()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('IBAN');?></td>
-									<td class="content_row_clear"><input name="client_bank_iban"
-																		 style="width: 300px" class="text"
-																		 value="<?=$client->getBankIban()?>" onfocus="markfield(this,0)"
-																		 onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('BIC');?></td>
-									<td class="content_row_clear"><input name="client_bank_bic"
-																		 style="width: 300px" class="text" value="<?=$client->getBankBic()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Amtsgericht');?></td>
-									<td class="content_row_clear"><input name="client_gericht"
-																		 style="width: 300px" class="text" value="<?=$client->getGericht()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Steuernummer');?></td>
-									<td class="content_row_clear"><input name="client_steuernummer"
-																		 style="width: 300px" class="text"
-																		 value="<?=$client->getSteuerNummer()?>" onfocus="markfield(this,0)"
-																		 onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('UstID');?></td>
-									<td class="content_row_clear"><input name="client_ustid"
-																		 style="width: 300px" class="text" value="<?=$client->getUstId()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Adresse</label>
+						 <div class="col-sm-6">
+							 <input name="client_street1" class="form-control" value="<?=$cl_streets[0]?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
 
-							</table>
-						</div>
-	</div>
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Adresse/2</label>
+						 <div class="col-sm-6">
+							 <input name="client_street2" class="form-control" value="<?=$cl_streets[1]?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
 
-				<td valign="top">
-					<table width="490px" border="0" cellpadding="0" cellspacing="0">
-						<colgroup>
-							<col width="180">
-							<col>
-						</colgroup>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('W&auml;hrung')?></td>
-							<td class="content_row_clear"><input name="client_currency" class="text" style="width:100px" value="<?=$client->getCurrency()?>"></td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Dezimaltrenner')?></td>
-							<td class="content_row_clear"><input name="client_decimal" class="text" style="width:100px" value="<?=$client->getDecimal()?>"></td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Tausendertrenner')?></td>
-							<td class="content_row_clear"><input name="client_thousand" class="text" style="width:100px" value="<?=$client->getThousand()?>"></td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Umsatzsteuer')?></td>
-							<td class="content_row_clear"><input name="client_taxes" class="text" style="width:100px" value="<?=printPrice($client->getTaxes())?>"> %</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Standardmarge')?></td>
-							<td class="content_row_clear"><input name="client_margin" class="text" style="width:100px" value="<?=printPrice($client->getMargin())?>"> %</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"  style="height:136px;">&emsp;</td>
-							<td class="content_row_clear">&emsp;</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Bank 2');?></td>
-							<td class="content_row_clear">&nbsp;</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Name');?></td>
-							<td class="content_row_clear">
-								<input name="client_bank_name2" style="width: 300px" class="text" value="<?=$client->getBankName2()?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('IBAN');?></td>
-							<td class="content_row_clear">
-								<input name="client_bank_iban2" style="width: 300px" class="text" value="<?=$client->getBankIban2()?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('BIC');?></td>
-							<td class="content_row_clear">
-								<input name="client_bank_bic2" style="width: 300px" class="text" value="<?=$client->getBankBic2()?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-						</tr>
-						<tr>
-							<td class="content_row_header" style="height:26px;">&emsp;</td>
-							<td class="content_row_clear">&nbsp;</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Bank 3');?></td>
-							<td class="content_row_clear">&nbsp;</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Name');?></td>
-							<td class="content_row_clear">
-								<input name="client_bank_name3" style="width: 300px" class="text" value="<?=$client->getBankName3()?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('IBAN');?></td>
-							<td class="content_row_clear">
-								<input name="client_bank_iban3" style="width: 300px" class="text" value="<?=$client->getBankIban3()?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('BIC');?></td>
-							<td class="content_row_clear">
-								<input name="client_bank_bic3" style="width: 300px" class="text" value="<?=$client->getBankBic3()?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header">&nbsp;</td>
-				<td class="content_row_clear" align="right"><input type="submit"
-																   value=<?=$_LANG->get('Speichern')?> />
-				</td>
-			</tr>
-		</table>
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Adresse/3</label>
+						 <div class="col-sm-6">
+							 <input name="client_street3" class="form-control" value="<?=$cl_streets[2]?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">PLZ / Ort</label>
+						 <div class="col-sm-6">
+							 <input name="client_postcode" class="form-control" value="<?=$client->getPostcode()?>"
+									 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							 <input name="client_city" class="form-control"
+								 value="<?=$client->getCity()?>" onfocus="markfield(this,0)"
+								 onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Land</label>
+						 <div class="col-sm-6">
+							 <select name="client_country" class="form-control">
+								 <?
+								 $countries = Country::getAllCountries();
+
+								 foreach($countries as $co)
+								 {
+									 ?>
+									 <option value="<?=$co->getId()?>"
+										 <?if($client->getCountry()->getId() == $co->getId()) echo "selected";?>>
+										 <?=$co->getName()?>
+									 </option>
+								 <? } ?>
+							 </select>
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Telefon</label>
+						 <div class="col-sm-6">
+							 <input name="client_phone" class="form-control" value="<?=$client->getPhone()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Fax</label>
+						 <div class="col-sm-6">
+							 <input name="client_fax" class="form-control" value="<?=$client->getFax()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">E-Mail</label>
+						 <div class="col-sm-6">
+							 <input name="client_email" class="form-control" value="<?=$client->getEmail()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Mandant aktiv</label>
+						 <div class="col-sm-6">
+							 <input name="client_active" type="checkbox" class="form-control"
+									value="1"
+								 <? if ($client->isActive() || $_REQUEST["id"] == "") echo "checked";?>
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-4 control-label">Zusätzliche Daten</label>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Webseite</label>
+						 <div class="col-sm-6">
+							 <input name="client_website" class="form-control" value="<?=$client->getWebsite()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Bank</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_name" class="form-control" value="<?=$client->getBankName()?>" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">BLZ</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_blz" class="form-control" value="<?=$client->getBankBlz()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Kontonr</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_kto" class="form-control" value="<?=$client->getBankKto()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">IBAN</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_iban" class="form-control" value="<?=$client->getBankIban()?>" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">BIC</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_bic" class="form-control" value="<?=$client->getBankBic()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Amtsgericht</label>
+						 <div class="col-sm-6">
+							 <input name="client_gericht" class="form-control" value="<?=$client->getGericht()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Steuernr</label>
+						 <div class="col-sm-6">
+							 <input name="client_steuernummer" class="form-control" value="<?=$client->getSteuerNummer()?>" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">UstID</label>
+						 <div class="col-sm-6">
+							 <input name="client_ustid" class="form-control" value="<?=$client->getUstId()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+
+				 </div>
+
+				 <div class="col-md-6">
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Währung</label>
+						 <div class="col-sm-6">
+							 <input name="client_currency" class="form-control" value="<?=$client->getCurrency()?>">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Dezimaltrenner</label>
+						 <div class="col-sm-6">
+							 <input name="client_decimal" class="form-control" value="<?=$client->getDecimal()?>">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Tausendertrenner</label>
+						 <div class="col-sm-6">
+							 <input name="client_thousand" class="form-control" value="<?=$client->getThousand()?>">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Umsatzsteuer</label>
+						 <div class="col-sm-6">
+							 <div class="input-group">
+								 <input name="client_taxes" class="form-control" value="<?=printPrice($client->getTaxes())?>">
+								 <span class="input-group-addon">%</span>
+							 </div>
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Standardmarge</label>
+						 <div class="col-sm-6">
+							 <div class="input-group">
+								 <input name="client_margin" class="form-control" value="<?=printPrice($client->getMargin())?>">
+								 <span class="input-group-addon">%</span>
+							 </div>
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Bank 2 </label>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Name</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_name2" class="form-control" value="<?=$client->getBankName2()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">IBAN</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_iban2" class="form-control" value="<?=$client->getBankIban2()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">BIC</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_bic2" class="form-control" value="<?=$client->getBankBic2()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Bank 3 </label>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">Name</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_name3" class="form-control" value="<?=$client->getBankName3()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">IBAN</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_iban3" class="form-control" value="<?=$client->getBankIban3()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+					 <div class="form-group">
+						 <label for="" class="col-sm-3 control-label">BIC</label>
+						 <div class="col-sm-6">
+							 <input name="client_bank_bic3" class="form-control" value="<?=$client->getBankBic3()?>"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						 </div>
+					 </div>
+
+
+				 </div>
+			 </div>
+			 <div class="row">
+				 <div class="col-md-12">
+					 <span class="pull-right">
+						 <button class="btn btn-success">
+							 <?=$_LANG->get('Speichern')?>
+						 </button>
+					 </span>
+				 </div>
+
+			 </div>
+
 		</br>
-		<div class="panel panel-default">
-			  <div class="panel-heading">
-					<h3 class="panel-title">
-						Nummernkreise
-					</h3>
-			  </div>
-			  <div class="panel-body">
-				  <div class="table-responsive">
-					  <table class="table table-hover">
-						  <colgroup>
-							  <col width="180">
-							  <col>
-							  <col>
-						  </colgroup>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Betrifft');?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Format');?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Counter');?></td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Kalkulation');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_order" style="width: 300px" class="text" value="<?=$client->getNumberFormatOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_order" style="width: 300px" class="text" value="<?=$client->getNumberCounterOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Vorgang');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_colinv" style="width: 300px" class="text" value="<?=$client->getNumberFormatColinv()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_colinv" style="width: 300px" class="text" value="<?=$client->getNumberCounterColinv()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Angebot');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_offer" style="width: 300px" class="text" value="<?=$client->getNumberFormatOffer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_offer" style="width: 300px" class="text" value="<?=$client->getNumberCounterOffer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('AB');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_offerconfirm" style="width: 300px" class="text" value="<?=$client->getNumberFormatOfferconfirm()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_offerconfirm" style="width: 300px" class="text" value="<?=$client->getNumberCounterOfferconfirm()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Liefers.');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_delivery" style="width: 300px" class="text" value="<?=$client->getNumberFormatDelivery()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_delivery" style="width: 300px" class="text" value="<?=$client->getNumberCounterDelivery()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Papier Best.');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_paper_order" style="width: 300px" class="text" value="<?=$client->getNumberFormatPaperOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_paper_order" style="width: 300px" class="text" value="<?=$client->getNumberCounterPaperOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Rechnung');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_invoice" style="width: 300px" class="text" value="<?=$client->getNumberFormatInvoice()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_invoice" style="width: 300px" class="text" value="<?=$client->getNumberCounterInvoice()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Gutschrift');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_revert" style="width: 300px" class="text" value="<?=$client->getNumberFormatRevert()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_revert" style="width: 300px" class="text" value="<?=$client->getNumberCounterRevert()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Mahnung');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_warning" style="width: 300px" class="text" value="<?=$client->getNumberFormatWarning()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_warning" style="width: 300px" class="text" value="<?=$client->getNumberCounterWarning()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Tasche');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_work" style="width: 300px" class="text" value="<?=$client->getNumberFormatWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Lief. Bestellung');?></td>
-							  <td class="content_row_clear">
-								  <input name="number_format_work" style="width: 300px" class="text" value="<?=$client->getNumberFormatSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-							  <td class="content_row_clear">
-								  <input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							  </td>
-						  </tr>
-					  </table>
-				  </div>
-			  </div>
+
 		</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Nummernkreise
+			</h3>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Betrifft');?></td>
+					<td class="content_row_header"><?=$_LANG->get('Format');?></td>
+					<td class="content_row_header"><?=$_LANG->get('Counter');?></td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Kalkulation');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_order" style="width: 300px" class="text" value="<?=$client->getNumberFormatOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_order" style="width: 300px" class="text" value="<?=$client->getNumberCounterOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Vorgang');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_colinv" style="width: 300px" class="text" value="<?=$client->getNumberFormatColinv()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_colinv" style="width: 300px" class="text" value="<?=$client->getNumberCounterColinv()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Angebot');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_offer" style="width: 300px" class="text" value="<?=$client->getNumberFormatOffer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_offer" style="width: 300px" class="text" value="<?=$client->getNumberCounterOffer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('AB');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_offerconfirm" style="width: 300px" class="text" value="<?=$client->getNumberFormatOfferconfirm()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_offerconfirm" style="width: 300px" class="text" value="<?=$client->getNumberCounterOfferconfirm()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Liefers.');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_delivery" style="width: 300px" class="text" value="<?=$client->getNumberFormatDelivery()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_delivery" style="width: 300px" class="text" value="<?=$client->getNumberCounterDelivery()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Papier Best.');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_paper_order" style="width: 300px" class="text" value="<?=$client->getNumberFormatPaperOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_paper_order" style="width: 300px" class="text" value="<?=$client->getNumberCounterPaperOrder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Rechnung');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_invoice" style="width: 300px" class="text" value="<?=$client->getNumberFormatInvoice()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_invoice" style="width: 300px" class="text" value="<?=$client->getNumberCounterInvoice()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Gutschrift');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_revert" style="width: 300px" class="text" value="<?=$client->getNumberFormatRevert()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_revert" style="width: 300px" class="text" value="<?=$client->getNumberCounterRevert()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Mahnung');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_warning" style="width: 300px" class="text" value="<?=$client->getNumberFormatWarning()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_warning" style="width: 300px" class="text" value="<?=$client->getNumberCounterWarning()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Tasche');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_work" style="width: 300px" class="text" value="<?=$client->getNumberFormatWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterWork()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+				<tr>
+					<td class="content_row_header"><?=$_LANG->get('Lief. Bestellung');?></td>
+					<td class="content_row_clear">
+						<input name="number_format_work" style="width: 300px" class="text" value="<?=$client->getNumberFormatSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+					<td class="content_row_clear">
+						<input name="number_counter_work" style="width: 300px" class="text" value="<?=$client->getNumberCounterSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 	</form>
 </div>

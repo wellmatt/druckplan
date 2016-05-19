@@ -31,58 +31,49 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 				</span>
 			</h3>
 	  </div>
-	  <div class="panel-body">
-			<div class="table-responsive">
-				<table class="table table-hover">
-					<colgroup>
-						<col width="300px">
-						<col width="60px">
-						<col width="60px">
-						<col width="60px">
-						<col width="60px">
-					</colgroup>
-					<tr>
-						<td class="content_row_header"><?= $_LANG->get('Name');?></td>
-						<td class="content_row_header" align="center"><?= $_LANG->get('Bei Kunden');?></td>
-						<td class="content_row_header" align="center"><?= $_LANG->get('Bei Ansprechpartner');?></td>
-						<td class="content_row_header" align="center"><?= $_LANG->get('Bei Vorgängen');?></td>
-						<td class="content_row_header" align="center"><?= $_LANG->get('Optionen');?></td>
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<tr>
+					<td class="content_row_header"><?= $_LANG->get('Name');?></td>
+					<td class="content_row_header" align="center"><?= $_LANG->get('Bei Kunden');?></td>
+					<td class="content_row_header" align="center"><?= $_LANG->get('Bei Ansprechpartner');?></td>
+					<td class="content_row_header" align="center"><?= $_LANG->get('Bei Vorgängen');?></td>
+					<td class="content_row_header" align="center"><?= $_LANG->get('Optionen');?></td>
+				</tr>
+				<?	$x=0;
+				foreach ($all_attributes AS $attribute){ ?>
+					<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
+						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'">
+							<?=$attribute->getTitle()?>
+						</td>
+						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
+							<? if ($attribute->getEnable_customer() == 1){
+								echo "<img src='images/icons/tick.png'>";
+							}
+							?>
+						</td>
+						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
+							<? if ($attribute->getEnable_contact() == 1 ){
+								echo "<img src='images/icons/tick.png'>";
+							}
+							?>
+						</td>
+						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
+							<? if ($attribute->getEnable_colinv() == 1 ){
+								echo "<img src='images/icons/tick.png'>";
+							}
+							?>
+						</td>
+						<td class="content_row" align="center">
+							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><img src="images/icons/pencil.png"></a>
+							&ensp;
+							<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><img	src="images/icons/cross-script.png"> </a>
+						</td>
 					</tr>
-					<?	$x=0;
-					foreach ($all_attributes AS $attribute){ ?>
-						<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-							<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'">
-								<?=$attribute->getTitle()?>
-							</td>
-							<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-								<? if ($attribute->getEnable_customer() == 1){
-									echo "<img src='images/icons/tick.png'>";
-								}
-								?>
-							</td>
-							<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-								<? if ($attribute->getEnable_contact() == 1 ){
-									echo "<img src='images/icons/tick.png'>";
-								}
-								?>
-							</td>
-							<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
-								<? if ($attribute->getEnable_colinv() == 1 ){
-									echo "<img src='images/icons/tick.png'>";
-								}
-								?>
-							</td>
-							<td class="content_row" align="center">
-								<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><img src="images/icons/pencil.png"></a>
-								&ensp;
-								<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><img	src="images/icons/cross-script.png"> </a>
-							</td>
-						</tr>
-						<?		$x++;
-					} ?>
-				</table>
-			</div>
-	  </div>
+					<?		$x++;
+				} ?>
+			</table>
+		</div>
 </div>
 
 

@@ -60,59 +60,48 @@ function printSubTradegroups($parentId, $depth){
 		  		</span>
 			</h3>
 	  </div>
-	  <div class="panel-body">
-
-		  <div class="table-responsive">
-			  <table class="table table-hover">
-				  <colgroup>
-					  <col width="200">
-					  <col>
-					  <?if($_CONFIG->shopActivation){?>
-						  <col width="100">
-					  <?}?>
-					  <col width="100">
-				  </colgroup>
-				  <tr>
-					  <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-					  <td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-					  <?if($_CONFIG->shopActivation){?>
-						  <td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td>
-					  <?}?>
-					  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
-				  </tr>
-				  <? $x = 0;
-				  foreach($all_tradegroups as $tradegroup){
-					  ?>
-					  <tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-						  <td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>'">
-							  <?=$tradegroup->getTitle()?>
-						  </td>
-						  <td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>'">
-							  <?=$tradegroup->getDesc()?>
-						  </td>
-						  <?if($_CONFIG->shopActivation){?>
-							  <td class="content_row pointer" align="center"
-								  onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>'">
-								  <img src="images/status/
-						<? if ($tradegroup->getShoprel() == 0){
-									  echo "red_small.gif";
-								  } else {
-									  echo "green_small.gif";
-								  }
-								  ?> ">
-							  </td>
-						  <?}?>
-						  <td class="content_row">
-							  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>"><img src="images/icons/pencil.png"></a>
-							  &ensp;
-							  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><img src="images/icons/cross-script.png"></a>
-						  </td>
-					  </tr>
-					  <?	printSubTradegroups($tradegroup->getID(), 0);
-					  $x++;
-				  }// Ende foreach($all_tradegroups)
+	  <div class="table-responsive">
+		  <table class="table table-hover">
+			  <tr>
+				  <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
+				  <td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
+				  <?if($_CONFIG->shopActivation){?>
+					  <td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td>
+				  <?}?>
+				  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+			  </tr>
+			  <? $x = 0;
+			  foreach($all_tradegroups as $tradegroup){
 				  ?>
-			  </table>
-		  </div>
+				  <tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
+					  <td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>'">
+						  <?=$tradegroup->getTitle()?>
+					  </td>
+					  <td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>'">
+						  <?=$tradegroup->getDesc()?>
+					  </td>
+					  <?if($_CONFIG->shopActivation){?>
+						  <td class="content_row pointer" align="center"
+							  onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>'">
+							  <img src="images/status/
+					<? if ($tradegroup->getShoprel() == 0){
+								  echo "red_small.gif";
+							  } else {
+								  echo "green_small.gif";
+							  }
+							  ?> ">
+						  </td>
+					  <?}?>
+					  <td class="content_row">
+						  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>"><img src="images/icons/pencil.png"></a>
+						  &ensp;
+						  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><img src="images/icons/cross-script.png"></a>
+					  </td>
+				  </tr>
+				  <?	printSubTradegroups($tradegroup->getID(), 0);
+				  $x++;
+			  }// Ende foreach($all_tradegroups)
+			  ?>
+		  </table>
 	  </div>
 </div>

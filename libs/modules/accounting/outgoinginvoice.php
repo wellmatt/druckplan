@@ -76,7 +76,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -91,7 +91,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -106,7 +106,7 @@ $(function() {
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
                 showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
+                buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
      );
@@ -369,7 +369,7 @@ $(function() {
 		</td>
 		<td colspan="5" align="right">
 			<a href="./docs/<?=$_USER->getId()?>-Rechnungsausgang.csv"  class="icon-link"
-					title="Rechnugen als CSV-Datei exportieren"><img src="images/icons/calculator-scientific.png">Export</a>
+					title="Rechnugen als CSV-Datei exportieren"><img src="images/icons/glyphicons-420-disk-export.svg">Export</a>
 		</td>
 		<td>&ensp;</td>
 	</tr>

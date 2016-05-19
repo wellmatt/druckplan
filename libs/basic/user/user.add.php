@@ -272,14 +272,8 @@ $(document).ready(function () {
 							</h3>
 					  </div>
 					  <div class="panel-body">
-						  <table>
-							  <tr>
-								  <td>
-									  <table width="500px" border="0" cellpadding="0" cellspacing="0">
-										  <colgroup>
-											  <col width="180">
-											  <col>
-										  </colgroup>
+						  <div class="table-responsive">
+						  	<table class="table table-hover">
 										  <tr>
 											  <td class="content_row_header"><?=$_LANG->get('Benutzername');?> *</td>
 											  <td class="content_row_clear">

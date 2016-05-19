@@ -36,44 +36,35 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                 </span>
             </h3>
 	  </div>
-	  <div class="panel-body">
-          <div class="table-responsive">
-              <table class="table table-hover">
-                  <col width="20">
-                  <col width="200">
-                  <col>
-                  <col width="80">
-                  <col width="80">
-                  <col width="100">
-                  </colgroup>
-                  <tr>
-                      <td class="content_row_header"><?=$_LANG->get('ID')?></td>
-                      <td class="content_row_header"><?=$_LANG->get('Bezeichnung')?></td>
-                      <td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-                      <td class="content_row_header"><?=$_LANG->get('Anz. vert.')?></td>
-                      <td class="content_row_header"><?=$_LANG->get('Anz. hor.')?></td>
-                      <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+      <div class="table-responsive">
+          <table class="table table-hover">
+              <tr>
+                  <td class="content_row_header"><?=$_LANG->get('ID')?></td>
+                  <td class="content_row_header"><?=$_LANG->get('Bezeichnung')?></td>
+                  <td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
+                  <td class="content_row_header"><?=$_LANG->get('Anz. vert.')?></td>
+                  <td class="content_row_header"><?=$_LANG->get('Anz. hor.')?></td>
+                  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+              </tr>
+              <? $x = 0;
+              foreach($foldtypes as $f)
+              {?>
+                  <tr class="<?=getRowColor($x)?>">
+                      <td class="content_row"><?=$f->getId()?></td>
+                      <td class="content_row"><?=$f->getName()?></td>
+                      <td class="content_row"><?=$f->getDescription()?></td>
+                      <td class="content_row" align="center"><?=$f->getVertical()?></td>
+                      <td class="content_row" align="center"><?=$f->getHorizontal()?></td>
+                      <td class="content_row">
+                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><img src="images/icons/pencil.png"></a>
+                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><img src="images/icons/scripts.png"></a>
+                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST["page"]?>&exec=delete&id=<?=$f->getId()?>')"><img src="images/icons/cross-script.png"></a>
+                      </td>
                   </tr>
-                  <? $x = 0;
-                  foreach($foldtypes as $f)
-                  {?>
-                      <tr class="<?=getRowColor($x)?>">
-                          <td class="content_row"><?=$f->getId()?></td>
-                          <td class="content_row"><?=$f->getName()?></td>
-                          <td class="content_row"><?=$f->getDescription()?></td>
-                          <td class="content_row" align="center"><?=$f->getVertical()?></td>
-                          <td class="content_row" align="center"><?=$f->getHorizontal()?></td>
-                          <td class="content_row">
-                              <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><img src="images/icons/pencil.png"></a>
-                              <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><img src="images/icons/scripts.png"></a>
-                              <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST["page"]?>&exec=delete&id=<?=$f->getId()?>')"><img src="images/icons/cross-script.png"></a>
-                          </td>
-                      </tr>
 
-                      <? $x++; }
-                  ?>
-              </table>
-          </div>
+                  <? $x++; }
+              ?>
+          </table>
       </div>
 </div>
 <? } ?>

@@ -57,71 +57,67 @@ $(function() {
 			</h3>
 	  </div>
 	  <div class="panel-body">
-		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="task_edit" id="task_edit">
+		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="task_edit" id="task_edit" class="form-horizontal">
 			 	  <input type="hidden" name="exec" value="edit">
 				  <input type="hidden" name="subexec" value="save">
 				  <input type="hidden" name="bid" value="<?=$task->getId()?>">
-				  <div class="table-responsive">
-						<table class="table table-hover">
-							  <colgroup>
-								  <col width="170">
-								  <col>
-							  </colgroup>
-							  <tr>
-								  <td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-								  <td class="content_row_clear">
-									  <input id="task_title" name="task_title" type="text" class="text"
-											 value="<?=$task->getTitle()?>" style="width: 250px">
-								  </td>
-							  </tr>
-							  <tr>
-								  <td class="content_row_header" valign="top"><?=$_LANG->get('Inhalt')?> *</td>
-								  <td class="content_row_clear" valign="top">
-							<textarea id="task_content" name="task_content" class="text"
-									  style="width: 500px; height: 150px; " ><?=$task->getContent()?></textarea>
-								  </td>
-							  </tr>
-							  <tr>
-								  <td class="content_row_header" valign="top"><?=$_LANG->get('Fälligkeit')?></td>
-								  <td class="content_row_clear" valign="top">
-									  <input name="task_due_date" id="task_due_date" style="width:100px"
-											 value="<? if($task->getDue_date() > 0) echo date('d.m.Y', $task->getDue_date())?>">
-								  </td>
-							  </tr>
-							  <tr>
-								  <td class="content_row_header" valign="top"><?=$_LANG->get('Priorität')?></td>
-								  <td class="content_row_clear" valign="top">
-									  <select name="task_prio" style="width:330px" class="text">
-										  <option value="0"><?=$_LANG->get('keine Priorität')?></option>
-										  <?
-										  for($i = 1; $i <= 10; $i++)
-										  {
-											  echo '<option value="'.$i.'" ';
-											  if($task->getPrio() == $i) echo "selected";
-											  echo '>'.$i.'</option>';
-										  }
-										  ?>
-									  </select>
-								  </td>
-							  </tr>
 
-
-							  <?if ($task->getCrt_usr()->getId() > 0){?>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
-									  <td class="content_row_clear">
-										  <?if($task->getCrt_usr()->getId() > 0) echo $task->getCrt_usr()->getNameAsLine()?>
-									  </td>
-								  </tr>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
-									  <td class="content_row_clear">
-										  <?if($task->getCrt_date() > 0) echo date('d.m.Y - H:i:s',$task->getCrt_date())?>
-									  </td>
-								  </tr>
-							  <?}?>
-				  </table>
+			  <div class="form-group">
+				  <label for="" class="col-sm-1 control-label">Titel</label>
+				  <div class="col-sm-4">
+					  <input id="task_title" name="task_title" type="text" class="form-control"
+							 value="<?=$task->getTitle()?>">
+				  </div>
 			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-1 control-label">Inhalt</label>
+				  <div class="col-sm-4">
+					 <textarea id="task_content" name="task_content" class="form-control"><?=$task->getContent()?></textarea>
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-1 control-label">Fälligkeit</label>
+				  <div class="col-sm-4">
+					  <input name="task_due_date" id="task_due_date" class="form-control"
+							 value="<? if($task->getDue_date() > 0) echo date('d.m.Y', $task->getDue_date())?>">
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-1 control-label">Priorität</label>
+				  <div class="col-sm-4">
+
+					  <select name="task_prio" class="form-control">
+						  <option value="0"><?=$_LANG->get('keine Priorität')?></option>
+						  <?
+						  for($i = 1; $i <= 10; $i++)
+						  {
+							  echo '<option value="'.$i.'" ';
+							  if($task->getPrio() == $i) echo "selected";
+							  echo '>'.$i.'</option>';
+						  }
+						  ?>
+					  </select>
+				  </div>
+			  </div>
+
+			  <?if ($task->getCrt_usr()->getId() > 0){?>
+			  <div class="form-group">
+				  <label for="" class="col-sm-1 control-label">Erstellt von</label>
+				  <div class="col-sm-4">
+					  <?if($task->getCrt_usr()->getId() > 0) echo $task->getCrt_usr()->getNameAsLine()?>
+				  </div>
+			  </div>
+
+			  <div class="form-group">
+				  <label for="" class="col-sm-1 control-label">Erstellt am</label>
+				  <div class="col-sm-4">
+					  <?if($task->getCrt_date() > 0) echo date('d.m.Y - H:i:s',$task->getCrt_date())?>
+				  </div>
+			  </div>
+			  <?}?>
 
 	  </div>
 </div>

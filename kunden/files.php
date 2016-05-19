@@ -49,9 +49,6 @@ function askDel(myurl)
                <b>Dateien</b>
             </h3>
 	  </div>
-	  <div class="panel-body">
-      </div>
-
           <div class="table-responsive">
               <table class="table table-hover">
                   <tr>

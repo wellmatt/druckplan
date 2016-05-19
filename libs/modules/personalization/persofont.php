@@ -36,15 +36,8 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 				</span>
 			</h3>
 	  </div>
-	  <div class="panel-body">
-
 		  <div class="table-responsive">
 			  <table class="table table-hover">
-				  <colgroup>
-					  <col width="50">
-					  <col>
-					  <col width="120">
-				  </colgroup>
 				  <tr>
 					  <td class="content_row_header" align="center"><?=$_LANG->get('ID')?></td>
 					  <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
@@ -70,7 +63,6 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 				  <?	} ?>
 			  </table>
 		  </div>
-	  </div>
 </div>
 <?
 } 

@@ -38,20 +38,11 @@ $all_country = Country::getEveryCountry();
 			Länderverwaltung
 		</h3>
 	</div>
-	<div class="panel-body">
-
 		<form action="index.php?page=<?=$_REQUEST['page']?>" id="countries_form" method="post">
 
 			<input type="hidden" name="exec" value="save">
 			<div class="table-responsive">
 				<table class="table table-hover">
-					<colgroup>
-						<col width="180">
-						<col width="80">
-						<col width="20">
-						<col width="80">
-						<col>
-					</colgroup>
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Name')?></td>
 						<td class="content_row_header"><?=$_LANG->get('L&auml;nderk&uuml;rzel')?></td>
@@ -83,17 +74,12 @@ $all_country = Country::getEveryCountry();
 				</table>
 			</div>
 		</form>
-	</div>
 </div>
 
 <br/>
 <?// Speicher & Navigations-Button ?>
 <div class="table-responsive">
 	<table class="table table-hover">
-		<colgroup>
-			<col width="180">
-			<col>
-		</colgroup>
 		<tr>
 			<td class="content_row_clear" align="right">
 				<input type="submit" value="<?=$_LANG->get('Speichern')?>">
