@@ -115,8 +115,7 @@ class PlanningJob {
         $retval = Array();
     
         $sql = "SELECT id FROM planning_jobs WHERE state > 0 {$filter}";
-//         echo $sql."</br>";
-    
+
         if($DB->num_rows($sql))
         {
             foreach ($DB->select($sql) as $r)
@@ -133,8 +132,7 @@ class PlanningJob {
         $retval = new PlanningJob();
     
         $sql = "SELECT id FROM planning_jobs WHERE state > 0 AND ticket = {$ticketid} {$filter}";
-//         echo $sql."</br>";
-    
+
         if($DB->num_rows($sql))
         {
             foreach ($DB->select($sql) as $r)

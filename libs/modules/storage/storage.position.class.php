@@ -69,6 +69,21 @@ class StoragePosition extends Model
     }
 
     /**
+     * @param Article $article
+     * @return StoragePosition[]
+     */
+    public static function getAllForArticle(Article $article)
+    {
+        $retval = self::fetch([
+            [
+                'column'=>'article',
+                'value'=>$article->getId()
+            ]
+        ]);
+        return $retval;
+    }
+
+    /**
      * Holt die aktuelle Belegung des Lagerplatzes aus der DB
      * @param StorageArea $storageArea
      * @return int

@@ -29,7 +29,7 @@ class Order {
     private $number;
     private $customer;
     private $custContactperson;			// Anspr. des Kunden
-    private $status;
+    private $status = 1;
     private $title;
     private $product;
     private $notes;

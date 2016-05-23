@@ -1340,7 +1340,7 @@ echo $quickmove->generate();
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="" class="col-sm-2 control-label">Tourenmerkmal</label>
+                                    <label for="" class="col-sm-2 control-label">Tour</label>
                                     <div class="col-sm-10">
                                         <div class="form-control"><span
                                                 id="tkt_tourmarker"><?php if ($ticket->getId() > 0) echo $ticket->getTourmarker(); ?></span>
@@ -1370,7 +1370,7 @@ echo $quickmove->generate();
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Neues Kommentar</h3>
+                        <h3 class="panel-title">Neuer Kommentar</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row ticket_comment">
@@ -1665,7 +1665,7 @@ echo $quickmove->generate();
                                         <a name="comment_<?php echo $comment->getId(); ?>"></a>
                                         <div
                                             style="padding: 8px 0; background: #f7f7f7 none repeat scroll 0 0; border-bottom: 1px solid #eee;">
-                                            <img alt="User Image" src="images/icons/user.png" class="img-circle img-sm"
+                                            <img alt="User Image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $comment->getCrtuser()->getId();?>" class="img-circle img-sm"
                                                  style="height: 30px !important; width: 30px !important; float: left;">
                                             <div style="color: #555; margin-left: 40px;">
                                               <span style="color: #444; display: block; font-weight: 600;">
@@ -1761,7 +1761,7 @@ echo $quickmove->generate();
                                                     ) {
                                                         ?>
                                                         <div style="padding: 8px 0; background: #f7f7f7 none repeat scroll 0 0; border-bottom: 1px solid #eee; margin-left: 40px;">
-                                                            <img alt="User Image" src="images/icons/user.png" class="img-circle img-sm" style="height: 30px !important; width: 30px !important; float: left;">
+                                                            <img alt="User Image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $comment->getCrtuser()->getId();?>" class="img-circle img-sm" style="height: 30px !important; width: 30px !important; float: left;">
                                                             <div style="color: #555; margin-left: 40px;">
                                                                 <span
                                                                     style="color: #444; display: block; font-weight: 600;">

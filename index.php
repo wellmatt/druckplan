@@ -72,6 +72,7 @@ if ($_REQUEST["doLogout"] == 1)
     
     ?>
     <script language="JavaScript">location.href='index.php'</script>
+    <?php die(); ?>
 <?
 } else
 {
@@ -140,7 +141,6 @@ if ($_USER == false)
 <!-- <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"> -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" type="text/css" href="./css/main.css" />
 <link rel="stylesheet" type="text/css" href="./css/matze.css" />
 <link rel="stylesheet" type="text/css" href="./css/ticket.css" />
 <link rel="stylesheet" type="text/css" href="./css/menu.css" />
@@ -179,6 +179,7 @@ if ($_USER == false)
 <script src="jscripts/pace/pace.min.js"></script>
 <link href="jscripts/pace/pace-theme-big-counter.css" rel="stylesheet" />
 <!-- /PACE -->
+<link rel="stylesheet" type="text/css" href="./css/main.css" />
 
 <title>Druckplan - <?=$_USER->getClient()->getName()?></title>
 </head>
@@ -419,46 +420,46 @@ function sleep(millis, callback) {
                         
                         
             <!-- account -->
-            <li class="dropdown-grid">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle"><i class="fa fa-lock"></i>&nbsp;<span class="hidden-sm">Account</span><span class="caret"></span></a>
+            <li class="dropdown-grid user-menu">
+              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle"><img alt="User Image" class="user-image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $_USER->getId();?>">&nbsp;<span class="hidden-sm">Account</span><span class="caret"></span></a>
               <div class="dropdown-grid-wrapper" role="menu">
-                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-4">
+                <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-4" style="border-top-left-radius: 0;border-top-right-radius: 0;border-top-width: 0;padding: 1px 0 0;width: 280px;">
                   <li>
-                      <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                            <div class="item active">
-                              <h3 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;"><i class="fa fa-lock"></i> Angemeldet als <?=$_USER->getFirstname()?> <?=$_USER->getLastname()?></h3>
-                              <br>
-                              <form class="form-horizontal" role="form">
-                                <div class="form-group" style='margin-left: 200px; margin-right: -120px;'>
-                                  <label class="col-sm-3 control-label">N&uuml;tzliche Links</label>
-                                  <div class="col-sm-6">
-                                        <label class="col-sm-12 control-label">
-                                            <a href="JavaScript: callBoxFancyIndex('http://contilas.de/changelog.htm');">Changelog</a></br>
-			                                <a href="JavaScript: callBoxFancyIndex('http://support.mein-druckplan.de/open.php');">Support</a></br>
-			                                <?php 
-			                                if(Timer::getLastUsed()->getId() > 0){
-			                                    $active_timer = Timer::getLastUsed();
-			                                    if ($active_timer->getState() == Timer::TIMER_RUNNING){
-			                                        if ((time()-300) > $active_timer->getStarttime()){
-			                                            echo 'Logout (Timer läuft!)</br>';
-			                                        } else {
-			                                            echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';">Logout</a></br>';
-			                                        }
-			                                    } else {
-			                                        echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';">Logout</a></br>';
-			                                    }
-			                                } else {
-			                                    echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';">Logout</a></br>';
-			                                }
-			                                ?>
-                                        </label>
-                                  </div>
-                                </div>
-                               </form>
-                            </div>
-                      </div>
-                     </div>
+                      <!-- The user image in the menu -->
+                      <li class="user-header">
+                          <img alt="User Image" class="img-circle" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $_USER->getId();?>">
+                          <p>
+                              <?php echo $_USER->getNameAsLine();?>
+                              <br><small><?php if($_USER->isAdmin()) echo 'Administrator'; else echo 'Benutzer';?></small>
+                          </p>
+                      </li>
+                      <!-- Menu Footer-->
+                      <li class="user-footer">
+                          <div class="col-xs-4 text-center">
+                              <a href="JavaScript: callBoxFancyIndex('http://contilas.de/changelog.htm');" class="btn btn-default btn-flat btn-xs">Changelog</a>
+                          </div>
+                          <div style="" class="col-xs-4 text-center">
+                              <a href="mailto:support@contilas.de?Subject=Support" class="btn btn-default btn-flat btn-xs">Support</a>
+                          </div>
+                          <div class="col-xs-4 text-center">
+                              <?php
+                              if(Timer::getLastUsed()->getId() > 0){
+                                  $active_timer = Timer::getLastUsed();
+                                  if ($active_timer->getState() == Timer::TIMER_RUNNING){
+                                      if ((time()-300) > $active_timer->getStarttime()){
+                                          echo 'Logout (Timer läuft!)</br>';
+                                      } else {
+                                          echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';" class="btn btn-default btn-flat btn-xs">Logout</a></br>';
+                                      }
+                                  } else {
+                                      echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';" class="btn btn-default btn-flat btn-xs">Logout</a></br>';
+                                  }
+                              } else {
+                                  echo '<a href="JavaScript: document.location=\'index.php?doLogout=1&userid='.$_USER->getId().'\';" class="btn btn-default btn-flat btn-xs">Logout</a></br>';
+                              }
+                              ?>
+                          </div>
+                      </li>
                   </li>
                 </ul>
               </div>

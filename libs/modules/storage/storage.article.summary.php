@@ -7,12 +7,13 @@
  *
  */
 require_once 'libs/modules/storage/storage.area.class.php';
+require_once 'libs/modules/storage/storage.position.class.php';
 
-if ($_REQUEST["exec"] == "delete"){
-    $del_area = new StorageArea($_REQUEST["id"]);
-    $del_area->delete();
-}
+$sarticles = Article::getAllArticlesNeedingStorage();
+
 ?>
+
+
 <!-- DataTables -->
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
@@ -23,39 +24,64 @@ if ($_REQUEST["exec"] == "delete"){
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 
 <div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">
-                <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-                Lagerplätze
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Lagerartikel
                 <span class="pull-right">
-                     <?= $savemsg ?>
-                    <button class="btn btn-xs btn-success"
-                            onclick="document.location. href='index.php?page=libs/modules/storage/storage.article.summary.php';">
-                    <?= $_LANG->get('Lagerartikel') ?>
-                    </button>
-                    <button class="btn btn-xs btn-success"
-                            onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
+                     <?=$savemsg?>
+                    <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';"
                           <img src="images/icons/details_open.svg">
-                    <?= $_LANG->get('Lagerplatz erstellen') ?>
+                    <?=$_LANG->get('Lagerplatz erstellen')?>
                     </button>
 		  		</span>
-            </h3>
-	  </div>
+        </h3>
+    </div>
 
     <div class="table-responsive">
-        <table  id="storagetable" class="table table-hover">
+        <table  id="storagearttable" class="table table-hover">
             <thead>
             <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('Name')?></th>
-                <th><?=$_LANG->get('Belegung')?></th>
+                <th><?=$_LANG->get('Art.-Nr.')?></th>
+                <th><?=$_LANG->get('Art.-Name')?></th>
+                <th><?=$_LANG->get('Auf Lager')?></th>
+                <th><?=$_LANG->get('Lager Plätze')?></th>
             </tr>
             </thead>
+            <tbody>
+                <?php foreach ($sarticles as $sarticle) {
+                    $spositions = StoragePosition::getAllForArticle($sarticle);
+                    $stored = 0;
+                    $storages = [];
+                    foreach ($spositions as $sposition) {
+                        $stored += $sposition->getAmount();
+                        $storages[] = ['name'=>$sposition->getArea()->getName(),'id'=>$sposition->getArea()->getId()];
+                    }
+                    ?>
+                    <tr>
+                        <td><?php echo $sarticle->getNumber();?></td>
+                        <td><?php echo $sarticle->getTitle();?></td>
+                        <td><?php echo $stored;?></td>
+                        <td>
+                            <?php
+                            $i = 1;
+                            foreach ($storages as $storage) {
+                                echo '<a href="index.php?page=libs/modules/storage/storage.edit.php&exec=edit&id='.$storage['id'].'">'.$storage['name'].'</a>';
+                                if ($i < count($storages))
+                                    echo ', ';
+                                $i++;
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                } ?>
+            </tbody>
             <tfoot>
             <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('Name')?></th>
-                <th><?=$_LANG->get('Belegung')?></th>
+                <th><?=$_LANG->get('Art.-Nr.')?></th>
+                <th><?=$_LANG->get('Art.-Name')?></th>
+                <th><?=$_LANG->get('Auf Lager')?></th>
+                <th><?=$_LANG->get('Lager Plätze')?></th>
             </tr>
             </tfoot>
         </table>
@@ -66,13 +92,10 @@ if ($_REQUEST["exec"] == "delete"){
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var storagetable = $('#storagetable').DataTable( {
-            "processing": true,
-            "bServerSide": true,
-            "sAjaxSource": "libs/modules/storage/storage.dt.ajax.php",
+        var storagearttable = $('#storagearttable').DataTable( {
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
-            "pageLength": <?php echo $perf->getDt_show_default();?>,
+            "pageLength": 50,
             "dom": 'T<"clear">flrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -83,17 +106,12 @@ if ($_REQUEST["exec"] == "delete"){
                     {
                         "sExtends": "pdf",
                         "sPdfOrientation": "landscape",
-                        "sPdfMessage": "Contilas - Articles"
+                        "sPdfMessage": "Contilas - Storage - Articles"
                     },
                     "print"
                 ]
             },
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
-            "columns": [
-                null,
-                null,
-                null
-            ],
             "language":
             {
                 "emptyTable":     "Keine Daten vorhanden",
@@ -118,12 +136,6 @@ if ($_REQUEST["exec"] == "delete"){
                     "sortDescending": ": aktivieren um absteigend zu sortieren"
                 }
             }
-        } );
-
-        $("#storagetable tbody td").live('click',function(){
-            var aPos = $('#storagetable').dataTable().fnGetPosition(this);
-            var aData = $('#storagetable').dataTable().fnGetData(aPos[0]);
-            document.location='index.php?page=libs/modules/storage/storage.edit.php&exec=edit&id='+aData[0];
         });
     } );
 </script>

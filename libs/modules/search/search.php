@@ -20,6 +20,105 @@ $query = urlencode($_REQUEST["mainsearch_string"]);
 	
 <script type="text/javascript">
 $(document).ready(function() {
+// Start Bcontacts
+	var search_bcontacts = $('#search_bcontacts').DataTable( {
+		"processing": true,
+		"bServerSide": true,
+		"sAjaxSource": "libs/modules/search/search.ajax.php?exec=search_businesscontacts&query=<?php echo $query;?>",
+		"stateSave": false,
+		"pageLength": 10,
+		"dom": 'lrtip',
+		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+		"columns": [
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false }
+		],
+		"language": {
+			"url": "jscripts/datatable/German.json"
+		},
+		"fnDrawCallback": function (settings)
+		{
+			if ($("#search_bcontacts > tbody > tr > .dataTables_empty")[0])
+			{
+				$("#search_bcontacts").parent().parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+			}
+		}
+	} );
+	$("#search_bcontacts tbody td").live('click',function(){
+		var aPos = $('#search_bcontacts').dataTable().fnGetPosition(this);
+		var aData = $('#search_bcontacts').dataTable().fnGetData(aPos[0]);
+		document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='+aData[0];
+	});
+//-> End Bcontacts
+// Start Cpersons
+	var search_cpersons = $('#search_cpersons').DataTable( {
+		"processing": true,
+		"bServerSide": true,
+		"sAjaxSource": "libs/modules/search/search.ajax.php?exec=search_contactpersons&query=<?php echo $query;?>",
+		"stateSave": false,
+		"pageLength": 10,
+		"dom": 'lrtip',
+		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+		"columns": [
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false }
+		],
+		"language": {
+			"url": "jscripts/datatable/German.json"
+		},
+		"fnDrawCallback": function (settings)
+		{
+			if ($("#search_cpersons > tbody > tr > .dataTables_empty")[0])
+			{
+				$("#search_cpersons").parent().parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+			}
+		}
+	} );
+	$("#search_cpersons tbody td").live('click',function(){
+		var aPos = $('#search_cpersons').dataTable().fnGetPosition(this);
+		var aData = $('#search_cpersons').dataTable().fnGetData(aPos[0]);
+		document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid='+aData[0];
+	});
+//-> End Cpersons
+// Start Articles
+	var search_articles = $('#search_articles').DataTable( {
+		"processing": true,
+		"bServerSide": true,
+		"sAjaxSource": "libs/modules/search/search.ajax.php?exec=search_articles&query=<?php echo $query;?>",
+		"stateSave": false,
+		"pageLength": 10,
+		"dom": 'lrtip',
+		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+		"columns": [
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false },
+			{ "searchable": false, "orderable": false }
+		],
+		"language": {
+			"url": "jscripts/datatable/German.json"
+		},
+		"fnDrawCallback": function (settings)
+		{
+			if ($("#search_articles > tbody > tr > .dataTables_empty")[0])
+			{
+				$("#search_articles").parent().parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+			}
+		}
+	} );
+	$("#search_articles tbody td").live('click',function(){
+		var aPos = $('#search_articles').dataTable().fnGetPosition(this);
+		var aData = $('#search_articles').dataTable().fnGetData(aPos[0]);
+		document.location='index.php?page=libs/modules/article/article.php&exec=edit&aid='+aData[0];
+	});
+//-> End Articles
 // Start Tickets
     var search_tickets = $('#search_tickets').DataTable( {
         "processing": true,
@@ -48,7 +147,10 @@ $(document).ready(function() {
           	        },
         "fnDrawCallback": function (settings) 
                           {
-            	           $("#search_tickets").parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+							  if ($("#search_tickets > tbody > tr > .dataTables_empty")[0])
+							  {
+								  $("#search_tickets").parent().parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+							  }
             	          }
     } );
     $("#search_tickets tbody td").live('click',function(){
@@ -81,7 +183,10 @@ $(document).ready(function() {
           	        },
         "fnDrawCallback": function (settings) 
                             {
-                             $("#search_comments").parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+								if ($("#search_comments > tbody > tr > .dataTables_empty")[0])
+								{
+									$("#search_comments").parent().parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+								}
                             }
     } );
     $("#search_comments tbody td").live('click',function(){
@@ -113,7 +218,10 @@ $(document).ready(function() {
           	        },
         "fnDrawCallback": function (settings) 
                             {
-                             $("#search_notes").parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+								if ($("#search_notes > tbody > tr > .dataTables_empty")[0])
+								{
+									$("#search_notes").parent().parent().parent().toggle(settings.fnRecordsDisplay() > 0);
+								}
                             }
     } );
     $("#search_notes tbody td").live('click',function(){
@@ -149,85 +257,133 @@ $(document).ready(function() {
 } );
 </script>
 
-<div class="box1">
-	<h3>Suchergebnisse für '<?php echo $_REQUEST["mainsearch_string"];?>':</h3>
-	<div class="row">
-		<div class="col-md-12">
-	        <!-- start row -->
-        	<div class="row">
-        		<div class="col-md-12">
-        			<div class="box1">
-        	            <h4>Tickets</h4>
-        				<table id="search_tickets" width="100%" cellpadding="0"
-        					cellspacing="0" class="stripe hover row-border order-column">
-        					<thead>
-        						<tr>
-                    				<th><?=$_LANG->get('ID')?></th>
-                    				<th><?=$_LANG->get('#')?></th>
-                    				<th><?=$_LANG->get('Kategorie')?></th>
-                    				<th><?=$_LANG->get('Datum')?></th>
-                    				<th><?=$_LANG->get('erst. von')?></th>
-                    				<th><?=$_LANG->get('Fälligkeit')?></th>
-                    				<th><?=$_LANG->get('Betreff')?></th>
-                    				<th><?=$_LANG->get('Status')?></th>
-                    				<th><?=$_LANG->get('Von')?></th>
-                    				<th><?=$_LANG->get('Priorität')?></th>
-                    				<th><?=$_LANG->get('Zugewiesen an')?></th>
-        							<th><?=$_LANG->get('Relevanz')?></th>
-        						</tr>
-        					</thead>
-        				</table>
-        			</div>
-    			</div>
-			</div>
-			</br>
-	        <!-- end row -->
-	        <!-- start row -->
-        	<div class="row">
-        		<div class="col-md-12">
-        			<div class="box1">
-        	            <h4>Kommentare</h4>
-        				<table id="search_comments" width="100%" cellpadding="0"
-        					cellspacing="0" class="stripe hover row-border order-column">
-        					<thead>
-        						<tr>
-        							<th><?=$_LANG->get('ID')?></th>
-        							<th><?=$_LANG->get('Kommentar')?></th>
-                    				<th><?=$_LANG->get('Datum')?></th>
-                    				<th><?=$_LANG->get('erst. von')?></th>
-        							<th><?=$_LANG->get('Modul')?></th>
-        							<th><?=$_LANG->get('Relevanz')?></th>
-        						</tr>
-        					</thead>
-        				</table>
-        			</div>
-    			</div>
-			</div>
-			</br>
-	        <!-- end row -->
-	        <!-- start row -->
-        	<div class="row">
-        		<div class="col-md-12">
-        			<div class="box1">
-        	            <h4>Notizen</h4>
-        				<table id="search_notes" width="100%" cellpadding="0"
-        					cellspacing="0" class="stripe hover row-border order-column">
-        					<thead>
-        						<tr>
-        							<th><?=$_LANG->get('ID')?></th>
-        							<th><?=$_LANG->get('Titel')?></th>
-                    				<th><?=$_LANG->get('Datum')?></th>
-                    				<th><?=$_LANG->get('erst. von')?></th>
-                    				<th><?=$_LANG->get('Kunde')?></th>
-        							<th><?=$_LANG->get('Relevanz')?></th>
-        						</tr>
-        					</thead>
-        				</table>
-        			</div>
-    			</div>
-			</div>
-			</br>
-	        <!-- end row -->
-		</div>
-	</div>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">Suchergebnisse für "<?php echo $_REQUEST["mainsearch_string"];?>"</h3>
+	  </div>
+	  <div class="panel-body">
+		  <div class="panel panel-default">
+			  <div class="panel-heading">
+				  <h3 class="panel-title">Geschäftskontakte</h3>
+			  </div>
+			  <div class="table-responsive">
+				  <table id="search_bcontacts" width="100%" cellpadding="0"
+						 cellspacing="0" class="table table-hover stripe hover row-border order-column">
+					  <thead>
+					  <tr>
+						  <th><?=$_LANG->get('ID')?></th>
+						  <th><?=$_LANG->get('#')?></th>
+						  <th><?=$_LANG->get('Matchcode')?></th>
+						  <th><?=$_LANG->get('Name')?></th>
+						  <th><?=$_LANG->get('Relevanz')?></th>
+					  </tr>
+					  </thead>
+				  </table>
+			  </div>
+		  </div>
+		  <div class="panel panel-default">
+			  <div class="panel-heading">
+				  <h3 class="panel-title">Ansprechpartner</h3>
+			  </div>
+			  <div class="table-responsive">
+				  <table id="search_cpersons" width="100%" cellpadding="0"
+						 cellspacing="0" class="table table-hover stripe hover row-border order-column">
+					  <thead>
+					  <tr>
+						  <th><?=$_LANG->get('ID')?></th>
+						  <th><?=$_LANG->get('Name')?></th>
+						  <th><?=$_LANG->get('Firma')?></th>
+						  <th><?=$_LANG->get('Tel.')?></th>
+						  <th><?=$_LANG->get('eMail')?></th>
+						  <th><?=$_LANG->get('Relevanz')?></th>
+					  </tr>
+					  </thead>
+				  </table>
+			  </div>
+		  </div>
+		  <div class="panel panel-default">
+			  <div class="panel-heading">
+				  <h3 class="panel-title">Artikel</h3>
+			  </div>
+			  <div class="table-responsive">
+				  <table id="search_articles" width="100%" cellpadding="0"
+						 cellspacing="0" class="table table-hover stripe hover row-border order-column">
+					  <thead>
+					  <tr>
+						  <th><?=$_LANG->get('ID')?></th>
+						  <th><?=$_LANG->get('#')?></th>
+						  <th><?=$_LANG->get('Name')?></th>
+						  <th><?=$_LANG->get('Relevanz')?></th>
+					  </tr>
+					  </thead>
+				  </table>
+			  </div>
+		  </div>
+		  <div class="panel panel-default">
+		  	  <div class="panel-heading">
+		  			<h3 class="panel-title">Tickets</h3>
+		  	  </div>
+			  <div class="table-responsive">
+					<table id="search_tickets" width="100%" cellpadding="0"
+						   cellspacing="0" class="table table-hover stripe hover row-border order-column">
+						<thead>
+						<tr>
+							<th><?=$_LANG->get('ID')?></th>
+							<th><?=$_LANG->get('#')?></th>
+							<th><?=$_LANG->get('Kategorie')?></th>
+							<th><?=$_LANG->get('Datum')?></th>
+							<th><?=$_LANG->get('erst. von')?></th>
+							<th><?=$_LANG->get('Fälligkeit')?></th>
+							<th><?=$_LANG->get('Betreff')?></th>
+							<th><?=$_LANG->get('Status')?></th>
+							<th><?=$_LANG->get('Von')?></th>
+							<th><?=$_LANG->get('Priorität')?></th>
+							<th><?=$_LANG->get('Zugewiesen an')?></th>
+							<th><?=$_LANG->get('Relevanz')?></th>
+						</tr>
+						</thead>
+					</table>
+			  </div>
+		  </div>
+		  <div class="panel panel-default">
+		  	  <div class="panel-heading">
+		  			<h3 class="panel-title">Kommentare</h3>
+		  	  </div>
+			  <div class="table-responsive">
+				  <table id="search_comments" width="100%" cellpadding="0"
+						 cellspacing="0" class="table table-hover stripe hover row-border order-column">
+					  <thead>
+					  <tr>
+						  <th><?=$_LANG->get('ID')?></th>
+						  <th><?=$_LANG->get('Kommentar')?></th>
+						  <th><?=$_LANG->get('Datum')?></th>
+						  <th><?=$_LANG->get('erst. von')?></th>
+						  <th><?=$_LANG->get('Modul')?></th>
+						  <th><?=$_LANG->get('Relevanz')?></th>
+					  </tr>
+					  </thead>
+				  </table>
+			  </div>
+		  </div>
+		  <div class="panel panel-default">
+			  <div class="panel-heading">
+				  <h3 class="panel-title">Notizen</h3>
+			  </div>
+			  <div class="table-responsive">
+				  <table id="search_notes" width="100%" cellpadding="0"
+						 cellspacing="0" class="table table-hover stripe hover row-border order-column">
+					  <thead>
+					  <tr>
+						  <th><?=$_LANG->get('ID')?></th>
+						  <th><?=$_LANG->get('Titel')?></th>
+						  <th><?=$_LANG->get('Datum')?></th>
+						  <th><?=$_LANG->get('erst. von')?></th>
+						  <th><?=$_LANG->get('Kunde')?></th>
+						  <th><?=$_LANG->get('Relevanz')?></th>
+					  </tr>
+					  </thead>
+				  </table>
+			  </div>
+		  </div>
+	  </div>
 </div>

@@ -69,7 +69,7 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
         if ($comment->getModule() == "Ticket")
         {
             $tmp_ticket = new Ticket($comment->getObjectid());
-            $logentry = '<a href="#comment_'.$comment->getId().'">(#'.$comment->getId().') Neues Kommentar </a> von ' . $comment->getCrtuser()->getNameAsLine() . '</br>';
+            $logentry = '<a href="#comment_'.$comment->getId().'">(#'.$comment->getId().') Neuer Kommentar </a> von ' . $comment->getCrtuser()->getNameAsLine() . '</br>';
             $ticketlog = new TicketLog();
             $ticketlog->setCrtusr($_USER);
             $ticketlog->setDate(time());
@@ -82,7 +82,7 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
             if ($tmp_comment->getModule() == "Ticket")
             {
                 $tmp_ticket = new Ticket($tmp_comment->getObjectid());
-                $logentry = '<a href="#comment_'.$comment->getId().'">(#'.$comment->getId().') Neues Kommentar </a> von ' . $comment->getCrtuser()->getNameAsLine() . '</br>';
+                $logentry = '<a href="#comment_'.$comment->getId().'">(#'.$comment->getId().') Neuer Kommentar </a> von ' . $comment->getCrtuser()->getNameAsLine() . '</br>';
                 $ticketlog = new TicketLog();
                 $ticketlog->setCrtusr($_USER);
                 $ticketlog->setDate(time());

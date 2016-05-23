@@ -54,7 +54,7 @@ switch ($_REQUEST["exec"]) {
     	                {
     	                    $firstcalc = $tmp_calc;
     	                    $article->savePrice($tmp_calc->getAmount(), $tmp_calc->getAmount(), $tmp_calc->getSummaryPrice());
-    	                    $article->saveCost($tmp_calc->getAmount(), $tmp_calc->getAmount(), $tmp_calc->getSubTotal());
+    	                    $article->saveCost($tmp_calc->getAmount(), $tmp_calc->getAmount(), $tmp_calc->getSubTotal(), 1, '');
     	                    $orderamounts[] = $tmp_calc->getAmount();
     	                }
     	            }
@@ -64,31 +64,41 @@ switch ($_REQUEST["exec"]) {
     	            $tmp_order->setArticleid($article->getId());
     	            $tmp_order->save();
 
+					$tags = $article->getTags();
+
     	            $artdesc = 'Inhalt 1<br>';
     	            $artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight()."mm)<br>";
+					$tags[] = $firstcalc->getProductFormat()->getName() . ' (' . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight().'mm)';
     	            $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperContent()->getName() . ' ' . $firstcalc->getPaperContentWeight() . 'g <br>';
+					$tags[] = $firstcalc->getPaperContent()->getName();
+					$tags[] = $firstcalc->getPaperContentWeight() . 'g';
     	            $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesContent().'<br>';
 					$artdesc .= 'Anzahl Sorten: '.$firstcalc->getSorts().'<br>';
     	            $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesContent()->getName() . '<br>';
+					$tags[] = $firstcalc->getChromaticitiesContent()->getName();
     	            if ($firstcalc->getPaperAddContent()->getId()>0) {
+						$tags[] = 'Inhalt 2';
     	                $artdesc .= '<br>Inhalt 2<br>';
     	                $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperAddContent()->getName() . ' ' . $firstcalc->getPaperAddContentWeight() . 'g <br>';
     	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesAddContent().'<br>';
     	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesAddContent()->getName() . '<br>';
     	            }
     	            if ($firstcalc->getPaperAddContent2()->getId()>0) {
+						$tags[] = 'Inhalt 3';
     	                $artdesc .= '<br>Inhalt 3<br>';
     	                $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperAddContent2()->getName() . ' ' . $firstcalc->getPaperAddContent2Weight() . 'g <br>';
     	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesAddContent2().'<br>';
     	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesAddContent2()->getName() . '<br>';
     	            }
     	            if ($firstcalc->getPaperAddContent3()->getId()>0) {
+						$tags[] = 'Inhalt 4';
     	                $artdesc .= '</br>Inhalt 4<br>';
     	                $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperAddContent3()->getName() . ' ' . $firstcalc->getPaperAddContent3Weight() . 'g <br>';
     	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesAddContent3().'<br>';
     	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesAddContent3()->getName() . '<br>';
     	            }
     	            if ($firstcalc->getPaperEnvelope()->getId()>0) {
+						$tags[] = 'Umschlag';
     	                $artdesc .= '<br>Umschlag<br>';
     	                $artdesc .= 'Material Umschlag: '. $firstcalc->getPaperEnvelope()->getName() . ' ' . $firstcalc->getPaperEnvelopeWeight() . 'g <br>';
     	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesEnvelope().'<br>';
@@ -96,7 +106,7 @@ switch ($_REQUEST["exec"]) {
     	            }
 					$artdesc .= '<br>Verarbeitung: '.$firstcalc->getTextProcessing().'<br>';
     	            $article->setDesc($artdesc);
-    	            
+    	            $article->setTags($tags);
     	            
     	            $savemsg = getSaveMessage($article->save()).$DB->getLastError();
     	            
@@ -125,37 +135,47 @@ switch ($_REQUEST["exec"]) {
 	                {
 	                    $firstcalc = $tmp_calc;
 	                    $article->savePrice($tmp_calc->getAmount(), $tmp_calc->getAmount(), $tmp_calc->getSummaryPrice());
-	                    $article->saveCost($tmp_calc->getAmount(), $tmp_calc->getAmount(), $tmp_calc->getSubTotal());
+						$article->saveCost($tmp_calc->getAmount(), $tmp_calc->getAmount(), $tmp_calc->getSubTotal(), 1, '');
 	                    $orderamounts[] = $tmp_calc->getAmount();
 	                }
 	            }
 	            $article->setOrderamounts($orderamounts);
+
+				$tags = $article->getTags();
 	            
 	            $artdesc = 'Inhalt 1<br>';
 				$artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight()."mm)<br>";
+				$tags[] = $firstcalc->getProductFormat()->getName() . ' (' . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight().'mm)';
 	            $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperContent()->getName() . ' ' . $firstcalc->getPaperContentWeight() . 'g <br>';
+				$tags[] = $firstcalc->getPaperContent()->getName();
+				$tags[] = $firstcalc->getPaperContentWeight() . 'g';
 	            $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesContent().'<br>';
 				$artdesc .= 'Anzahl Sorten: '.$firstcalc->getSorts().'<br>';
 	            $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesContent()->getName() . '<br>';
+				$tags[] = $firstcalc->getChromaticitiesContent()->getName();
 	            if ($firstcalc->getPaperAddContent()->getId()>0) {
+					$tags[] = 'Inhalt 2';
 	                $artdesc .= '<br>Inhalt 2<br>';
 	                $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperAddContent()->getName() . ' ' . $firstcalc->getPaperAddContentWeight() . 'g <br>';
 	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesAddContent().'<br>';
 	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesAddContent()->getName() . '<br>';
 	            }
 	            if ($firstcalc->getPaperAddContent2()->getId()>0) {
+					$tags[] = 'Inhalt 3';
 	                $artdesc .= '<br>Inhalt 3<br>';
 	                $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperAddContent2()->getName() . ' ' . $firstcalc->getPaperAddContent2Weight() . 'g <br>';
 	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesAddContent2().'<br>';
 	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesAddContent2()->getName() . '<br>';
 	            }
 	            if ($firstcalc->getPaperAddContent3()->getId()>0) {
+					$tags[] = 'Inhalt 4';
 	                $artdesc .= '</br>Inhalt 4<br>';
 	                $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperAddContent3()->getName() . ' ' . $firstcalc->getPaperAddContent3Weight() . 'g <br>';
 	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesAddContent3().'<br>';
 	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesAddContent3()->getName() . '<br>';
 	            }
 	            if ($firstcalc->getPaperEnvelope()->getId()>0) {
+					$tags[] = 'Umschlag';
 	                $artdesc .= '<br>Umschlag<br>';
 	                $artdesc .= 'Material Umschlag: '. $firstcalc->getPaperEnvelope()->getName() . ' ' . $firstcalc->getPaperEnvelopeWeight() . 'g <br>';
 	                $artdesc .= 'Anzahl Seiten: '.$firstcalc->getPagesEnvelope().'<br>';
@@ -163,6 +183,7 @@ switch ($_REQUEST["exec"]) {
 	            }
 				$artdesc .= '<br>Verarbeitung: '.$firstcalc->getTextProcessing().'<br>';
 	            $article->setDesc($artdesc);
+				$article->setTags($tags);
 	            
 	            $savemsg = getSaveMessage($article->save()).$DB->getLastError();
 	            

@@ -20,6 +20,124 @@ require_once 'libs/modules/abonnements/abonnement.class.php';
 
  */
 
+if($_REQUEST["exec"]=="search_businesscontacts")
+{
+    $term = urldecode($_REQUEST["query"]);
+
+
+    $search_businesscontacts = new Search(Array(
+            "table" => "businesscontact",
+            "fields" => Array ("id", "cust_number", "matchcode", "CONCAT(name1,\" \",name2) as bname"),
+            "matchfields" => Array("cust_number","matchcode","name1","name2"),
+            "against" => $term,
+            "limit" => $_REQUEST["iDisplayLength"],
+            "offset" => $_REQUEST["iDisplayStart"],
+            "where" => " AND active = 1 "
+        )
+    );
+    $search_businesscontacts_matches = $search_businesscontacts->performSearch();
+
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => $search_businesscontacts->getTotal(),
+        "iTotalDisplayRecords" => $search_businesscontacts->getTotal(),
+        "aaData" => array()
+    );
+
+    foreach ($search_businesscontacts_matches as $match)
+    {
+        $row = Array();
+        $row[] = $match["id"];
+        $row[] = $match["cust_number"];
+        $row[] = $match["matchcode"];
+        $row[] = $match["bname"];
+        $row[] = $match["score"];
+
+        $output['aaData'][] = $row;
+    }
+
+    echo json_encode( $output );
+}
+
+if($_REQUEST["exec"]=="search_articles")
+{
+    $term = urldecode($_REQUEST["query"]);
+
+
+    $search_articles = new Search(Array(
+            "table" => "article",
+            "fields" => Array ("id", "number", "title"),
+            "matchfields" => Array("number","title"),
+            "against" => $term,
+            "limit" => $_REQUEST["iDisplayLength"],
+            "offset" => $_REQUEST["iDisplayStart"],
+            "where" => " AND status = 1 "
+        )
+    );
+    $search_articles_matches = $search_articles->performSearch();
+
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => $search_articles->getTotal(),
+        "iTotalDisplayRecords" => $search_articles->getTotal(),
+        "aaData" => array()
+    );
+
+    foreach ($search_articles_matches as $match)
+    {
+        $row = Array();
+        $row[] = $match["id"];
+        $row[] = $match["number"];
+        $row[] = $match["title"];
+        $row[] = $match["score"];
+
+        $output['aaData'][] = $row;
+    }
+
+    echo json_encode( $output );
+}
+
+if($_REQUEST["exec"]=="search_contactpersons")
+{
+    $term = urldecode($_REQUEST["query"]);
+
+
+    $search_contactpersons = new Search(Array(
+            "table" => "contactperson",
+            "fields" => Array ("contactperson.id", "contactperson.phone", "contactperson.email", "CONCAT(contactperson.name1,\" \",contactperson.name2) as cname", "CONCAT(businesscontact.name1,\" \",businesscontact.name2) as bname"),
+            "matchfields" => Array("contactperson.name1","contactperson.name2"),
+            "join" => " INNER JOIN businesscontact ON contactperson.businesscontact = businesscontact.id ",
+            "against" => $term,
+            "limit" => $_REQUEST["iDisplayLength"],
+            "offset" => $_REQUEST["iDisplayStart"],
+            "where" => " AND contactperson.active = 1 "
+        )
+    );
+    $search_contactpersons_matches = $search_contactpersons->performSearch();
+
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => $search_contactpersons->getTotal(),
+        "iTotalDisplayRecords" => $search_contactpersons->getTotal(),
+        "aaData" => array()
+    );
+
+    foreach ($search_contactpersons_matches as $match)
+    {
+        $row = Array();
+        $row[] = $match["id"];
+        $row[] = $match["cname"];
+        $row[] = $match["bname"];
+        $row[] = $match["phone"];
+        $row[] = $match["email"];
+        $row[] = $match["score"];
+
+        $output['aaData'][] = $row;
+    }
+
+    echo json_encode( $output );
+}
+
 if($_REQUEST["exec"]=="search_comments")
 {
     $term = urldecode($_REQUEST["query"]);
@@ -49,7 +167,7 @@ if($_REQUEST["exec"]=="search_comments")
     {
         $row = Array();
         $row[] = $match["id"];
-        $row[] = '<span title="'.htmlspecialchars(strip_tags($match["comment"])).'">'.substr($match["comment"], 0, 50).'</span>';
+        $row[] = '<span title="'.htmlspecialchars(strip_tags($match["comment"])).'">'.substr(strip_tags($match["comment"]), 0, 50).'</span>';
         $row[] = date("d.m.Y",$match["crtdate"]);
         $row[] = $match["crtuser"];
         $row[] = $match["module"];

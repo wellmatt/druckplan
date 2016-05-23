@@ -101,6 +101,7 @@ foreach ($dates as $date)
             $subhtml .= '<td width="50">Vorgang</td>';
             $subhtml .= '<td width="50">Ticket</td>';
             $subhtml .= '<td width="80">Prod. Beginn</td>';
+            $subhtml .= '<td width="70">Lief.-Datum</td>';
             $subhtml .= '<td width="50">S-Zeit</td>';
             $subhtml .= '<td width="50">I-Zeit</td>';
             $subhtml .= '<td width="80">Status</td>';
@@ -119,6 +120,7 @@ foreach ($dates as $date)
             $subhtml .= '<td>#'.$pj->getObject()->getNumber().'</td>';
             $subhtml .= '<td>#'.$pj->getTicket()->getNumber().'</td>';
             $subhtml .= '<td>'.date("d.m.Y H:i",$pj->getTicket()->getDuedate()).'</td>';
+            $subhtml .= '<td>'.date("d.m.Y",$pj->getObject()->getDeliverydate()).'</td>';
             $subhtml .= '<td>'.number_format($pj->getTplanned(), 2, ",", "").'</td>';
             if ($pj->getTactual()>$pj->getTplanned())
                 $style = ' style="background-color: red;"';
@@ -208,6 +210,7 @@ echo $html;
                 $subhtml .= '<td width="50">Vorgang</td>';
                 $subhtml .= '<td width="50">Ticket</td>';
                 $subhtml .= '<td width="80">Prod. Beginn</td>';
+                $subhtml .= '<td width="70">Lief.-Datum</td>';
                 $subhtml .= '<td width="50">S-Zeit</td>';
                 $subhtml .= '<td width="50">I-Zeit</td>';
                 $subhtml .= '<td width="80">Status</td>';
@@ -227,6 +230,7 @@ echo $html;
                 $subhtml .= '<td><a target="_blank" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='.$pj->getObject()->getId().'">#'.$pj->getObject()->getNumber().'</a></td>';
                 $subhtml .= '<td><a target="_blank" href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&returnhome=1&tktid='.$pj->getTicket()->getId().'">#'.$pj->getTicket()->getNumber().'</a></td>';
                 $subhtml .= '<td>'.date("d.m.Y H:i",$pj->getTicket()->getDuedate()).'</td>';
+                $subhtml .= '<td>'.date("d.m.Y",$pj->getObject()->getDeliverydate()).'</td>';
                 $subhtml .= '<td>'.number_format($pj->getTplanned(), 2, ",", "").'</td>';
                 if ($pj->getTactual()>$pj->getTplanned())
                     $style = ' style="background-color: red;"';

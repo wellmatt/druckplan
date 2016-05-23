@@ -63,6 +63,8 @@ class User {
 	const WEEKDAY_SATURDAY = 6;
 
 	private $workinghours = Array();
+
+    private $avatar = null;
 	
     /* Konstruktor
      * Falls id �bergeben, werden die entsprechenden Daten direkt geladen
@@ -76,95 +78,221 @@ class User {
             $this->lang = $_USER->getLang();
             $this->client = $_USER->getClient();
         }
-        
-//         $cached = Cachehandler::fromCache("obj_usr_" . $id);
-        $cached = null;
-        if (!is_null($cached))
-        {
-            $vars = array_keys(get_class_vars(User));
-            foreach ($vars as $var)
-            {
-                $method = "get".ucfirst($var);
-                $method = str_replace("_", "", $method);
-                if (method_exists($this,$method))
-                {
-                    $this->$var = $cached->$method();
-                } else {
-                    echo "method: {$method}() not found!</br>";
-                }
-            }
-            return true;
-        }
-        
-        if ($id > 0 && is_null($cached))
-        {
-            $sql = " SELECT * FROM user
-            WHERE id = {$id}";
 
-            // sql returns only one record -> user is valid
-            if($DB->num_rows($sql) == 1)
-            {
-                $res = $DB->select($sql);
-                $this->firstname = $res[0]["user_firstname"];
-                $this->lastname = $res[0]["user_lastname"];
-                $this->userlevel = $res[0]["user_level"];
-                $this->email = $res[0]["user_email"];
-                $this->phone = $res[0]["user_phone"];
-                $this->signature = $res[0]["user_signature"];
-                $this->client = new Client($res[0]["client"]);
-                $this->lang = new Translator($res[0]["user_lang"], true);
-                $this->active = $res[0]["user_active"];
-                $this->forwardmail = $res[0]["user_forwardmail"];
-                $this->login = $res[0]["login"];
-                $this->password = $res[0]["password"];
-                $this->id = $res[0]["id"];
-                $this->telefonIP = $res[0]["telefon_ip"];
-				
-                $this->calendar_birthdays = $res[0]["cal_birthdays"];
-                $this->calendar_tickets = $res[0]["cal_tickets"];
-                $this->calendar_orders = $res[0]["cal_orders"];
-
-                $this->w_mo = $res[0]["w_mo"];
-                $this->w_tu = $res[0]["w_tu"];
-                $this->w_we = $res[0]["w_we"];
-                $this->w_th = $res[0]["w_th"];
-                $this->w_fr = $res[0]["w_fr"];
-                $this->w_sa = $res[0]["w_sa"];
-                $this->w_su = $res[0]["w_su"];
-                $this->w_month = $res[0]["w_month"];
-
-                // Arbeiter
-                $tmp_worktimes = Array();
-                $sql = "SELECT * FROM user_worktimes WHERE user = {$this->id}";
-                if($DB->num_rows($sql))
-                {
-                    foreach($DB->select($sql) as $r)
+        if ($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
                     {
-                        $tmp_worktimes[(int)$r["weekday"]][] = Array("start"=>$r["start"],"end"=>$r["end"]);
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
                     }
+                } else {
+                    $valid_cache = false;
                 }
-                $this->workinghours = $tmp_worktimes;
-                
-//                 if ($addgroups)
-//                 {
+            } else {
+                $valid_cache = false;
+            }
+            if ($valid_cache === false) {
+                $sql = " SELECT * FROM user WHERE id = {$id}";
+
+                // sql returns only one record -> user is valid
+                if ($DB->num_rows($sql) == 1) {
+                    $res = $DB->select($sql);
+                    $this->firstname = $res[0]["user_firstname"];
+                    $this->lastname = $res[0]["user_lastname"];
+                    $this->userlevel = $res[0]["user_level"];
+                    $this->email = $res[0]["user_email"];
+                    $this->phone = $res[0]["user_phone"];
+                    $this->signature = $res[0]["user_signature"];
+                    $this->client = new Client($res[0]["client"]);
+                    $this->lang = new Translator($res[0]["user_lang"], true);
+                    $this->active = $res[0]["user_active"];
+                    $this->forwardmail = $res[0]["user_forwardmail"];
+                    $this->login = $res[0]["login"];
+                    $this->password = $res[0]["password"];
+                    $this->id = $res[0]["id"];
+                    $this->telefonIP = $res[0]["telefon_ip"];
+
+                    $this->calendar_birthdays = $res[0]["cal_birthdays"];
+                    $this->calendar_tickets = $res[0]["cal_tickets"];
+                    $this->calendar_orders = $res[0]["cal_orders"];
+
+                    $this->w_mo = $res[0]["w_mo"];
+                    $this->w_tu = $res[0]["w_tu"];
+                    $this->w_we = $res[0]["w_we"];
+                    $this->w_th = $res[0]["w_th"];
+                    $this->w_fr = $res[0]["w_fr"];
+                    $this->w_sa = $res[0]["w_sa"];
+                    $this->w_su = $res[0]["w_su"];
+                    $this->w_month = $res[0]["w_month"];
+
+                    $this->avatar = $res[0]["avatar"];
+
+                    // Arbeiter
+                    $tmp_worktimes = Array();
+                    $sql = "SELECT * FROM user_worktimes WHERE user = {$this->id}";
+                    if ($DB->num_rows($sql)) {
+                        foreach ($DB->select($sql) as $r) {
+                            $tmp_worktimes[(int)$r["weekday"]][] = Array("start" => $r["start"], "end" => $r["end"]);
+                        }
+                    }
+                    $this->workinghours = $tmp_worktimes;
+
                     $sql = " SELECT * FROM user_groups WHERE user_id = {$this->id}";
-                    if ($DB->num_rows($sql) > 0)
-                    {
+                    if ($DB->num_rows($sql) > 0) {
                         $res = $DB->select($sql);
                         foreach ($res as $r)
                             $this->groups[] = new Group($r["group_id"], false);
                     }
-//                 }
-//         		Cachehandler::toCache("obj_usr_".$id, $this);
-                return true;
-                // sql returns more than one record, should not happen!
-            } else if ($DB->num_rows($sql) > 1)
-            {
-                $this->strError = "Mehr als einen Benutzer gefunden";
-                return false;
-                // sql returns 0 rows -> login isn't valid
+
+                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+                    return true;
+                }
             }
         }
+    }
+
+    // Alle Daten abspeichern. Falls Benutzer noch nicht existiert ($id leer)
+    // Benutzer neu anlegen und ID in $id speichern
+    function save() {
+        global $DB;
+        $tmp_signature = addslashes($this->signature);
+        $avatar = mysqli_real_escape_string($this->avatar,'\\');
+        if ($this->id > 0)
+        {
+            $sql = " UPDATE user SET
+            user_firstname = '{$this->firstname}',
+            user_lastname = '{$this->lastname}',
+            user_email = '{$this->email}',
+            user_phone = '{$this->phone}',
+            user_signature = '{$tmp_signature}',
+            user_active = {$this->active},
+            user_level = {$this->userlevel},
+            user_lang = {$this->lang->getId()},
+            user_forwardmail = {$this->forwardmail},
+            cal_birthdays = {$this->calendar_birthdays},
+            cal_tickets = {$this->calendar_tickets},
+            cal_orders = {$this->calendar_orders},
+            client = {$this->client->getId()},
+            login = '{$this->login}',
+            password = '{$this->password}',
+            w_mo = '{$this->w_mo}',
+            w_tu = '{$this->w_tu}',
+            w_we = '{$this->w_we}',
+            w_th = '{$this->w_th}',
+            w_fr = '{$this->w_fr}',
+            w_sa = '{$this->w_sa}',
+            w_su = '{$this->w_su}',
+            w_month = '{$this->w_month}',
+            avatar = '{$avatar}',
+            telefon_ip = '{$this->telefonIP}'
+            WHERE id = {$this->id}";
+            $res = $DB->no_result($sql);
+
+            $sql = " DELETE FROM user_groups WHERE user_id = {$this->id}";
+            $DB->no_result($sql);
+
+            foreach ($this->groups as $g)
+            {
+                $sql = " INSERT INTO user_groups
+                (user_id, group_id)
+                VALUES
+                ({$this->id}, {$g->getId()})";
+                $DB->no_result($sql);
+            }
+        } else
+        {
+            $this->userlevel |= self::USER_NORMAL;
+            $sql = " INSERT INTO user
+            (user_firstname, user_lastname, user_email, user_phone, user_signature,
+            user_active, user_level, login, password, client, user_forwardmail, user_lang,
+            telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa,
+            w_su, w_month, avatar )
+            VALUES
+            ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
+            '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
+            '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()},
+            '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
+            '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}',
+            '{$this->w_su}', '{$this->w_month}', '{$avatar}' )";
+            $res = $DB->no_result($sql);
+
+            if ($res)
+            {
+                $sql = " SELECT max(id) id FROM user";
+                $thisid = $DB->select($sql);
+                $this->id = $thisid[0]["id"];
+            }
+        }
+        if ($res)
+        {
+            $sql = "DELETE FROM user_worktimes WHERE user = {$this->id}";
+            $DB->no_result($sql);
+
+            for($i=0;$i<7;$i++)
+            {
+                if (count($this->workinghours[$i])>0)
+                {
+                    foreach($this->workinghours[$i] as $whours)
+                    {
+                        if ($whours["start"] && $whours["end"])
+                        {
+                            $sql = "INSERT INTO user_worktimes
+                            (user, weekday, start, end)
+                            VALUES
+                            ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
+//                             echo $sql . "</br>";
+                            $DB->no_result($sql);
+                        }
+                    }
+                }
+            }
+        }
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // Delete User
+    function delete() {
+        global $DB;
+        $sql = "UPDATE user SET user_level = 0 WHERE id = {$this->id}";
+        $res = $DB->no_result($sql);
+        if ($res) {
+            Cachehandler::removeCache(Cachehandler::genKeyword($this));
+            unset($this);
+            return true;
+        }
+        else
+            return false;
     }
      
     /**
@@ -479,120 +607,6 @@ class User {
             }
         }
         $this->groups = $new;
-    }
-     
-    // Alle Daten abspeichern. Falls Benutzer noch nicht existiert ($id leer)
-    // Benutzer neu anlegen und ID in $id speichern
-    function save() {
-        global $DB;
-        $tmp_signature = addslashes($this->signature);
-        if ($this->id > 0)
-        {
-            $sql = " UPDATE user SET
-            user_firstname = '{$this->firstname}',
-            user_lastname = '{$this->lastname}',
-            user_email = '{$this->email}',
-            user_phone = '{$this->phone}',
-            user_signature = '{$tmp_signature}',
-            user_active = {$this->active},
-            user_level = {$this->userlevel},
-            user_lang = {$this->lang->getId()},
-            user_forwardmail = {$this->forwardmail},
-            cal_birthdays = {$this->calendar_birthdays},
-            cal_tickets = {$this->calendar_tickets},
-            cal_orders = {$this->calendar_orders},
-            client = {$this->client->getId()},
-            login = '{$this->login}',
-            password = '{$this->password}',  
-            w_mo = '{$this->w_mo}',  
-            w_tu = '{$this->w_tu}',  
-            w_we = '{$this->w_we}',  
-            w_th = '{$this->w_th}',  
-            w_fr = '{$this->w_fr}',  
-            w_sa = '{$this->w_sa}',  
-            w_su = '{$this->w_su}',   
-            w_month = '{$this->w_month}',
-            telefon_ip = '{$this->telefonIP}' 
-            WHERE id = {$this->id}";
-            $res = $DB->no_result($sql);
-
-//             var_dump($res); echo "</br>";
-//             echo $sql . "</br>";
-            
-            $sql = " DELETE FROM user_groups WHERE user_id = {$this->id}";
-            $DB->no_result($sql);
-             
-            foreach ($this->groups as $g)
-            {
-                $sql = " INSERT INTO user_groups
-                (user_id, group_id)
-                VALUES
-                ({$this->id}, {$g->getId()})";
-                $DB->no_result($sql);
-            }
-        } else
-        {
-            $this->userlevel |= self::USER_NORMAL;
-            $sql = " INSERT INTO user
-            (user_firstname, user_lastname, user_email, user_phone, user_signature,
-            user_active, user_level, login, password, client, user_forwardmail, user_lang, 
-            telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa, w_su, w_month )
-            VALUES
-            ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
-            '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
-            '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()}, 
-            '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
-            '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}', '{$this->w_su}', '{$this->w_month}' )";
-            $res = $DB->no_result($sql);
-
-            if ($res)
-            {
-                $sql = " SELECT max(id) id FROM user";
-                $thisid = $DB->select($sql);
-                $this->id = $thisid[0]["id"];
-            }
-        }
-        if ($res)
-        {
-            $sql = "DELETE FROM user_worktimes WHERE user = {$this->id}";
-            $DB->no_result($sql);
-            
-            for($i=0;$i<7;$i++)
-            {
-                if (count($this->workinghours[$i])>0)
-                {
-                    foreach($this->workinghours[$i] as $whours)
-                    {
-                        if ($whours["start"] && $whours["end"])
-                        {
-                            $sql = "INSERT INTO user_worktimes
-                            (user, weekday, start, end)
-                            VALUES
-                            ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
-//                             echo $sql . "</br>";
-                            $DB->no_result($sql);
-                        }
-                    }
-                }
-            }
-
-            Cachehandler::toCache("obj_usr_".$this->id, $this);
-            return true;
-        }
-        else
-            return false;
-    }
-     
-    // Delete User
-    function delete() {
-        global $DB;
-        $sql = "UPDATE user SET user_level = 0 WHERE id = {$this->id}";
-        $res = $DB->no_result($sql);
-        unset($this);
-        if ($res)
-            return true;
-        else
-            return false;
     }
 
 	public function getTelefonIP()
@@ -964,5 +978,20 @@ class User {
     {
         return $this->calendar_birthdays;
     }
+
+    /**
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string $avatar
+     */
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+    }
 }
-?>

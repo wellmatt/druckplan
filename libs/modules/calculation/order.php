@@ -215,7 +215,7 @@ $(document).ready(function() {
             Kalkulationen
 				<span class="pull-right">
 					<img src="images/icons/details_open.svg">
-					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page'] ?>&exec=edit';">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page'] ?>&exec=new';">
                         <?=$_LANG->get('Kalkulation hinzuf&uuml;gen') ?>
                     </button>
 				</span>

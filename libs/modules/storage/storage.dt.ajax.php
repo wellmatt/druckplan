@@ -98,7 +98,7 @@ $sWhere = "";
 if ( isset($_GET['sSearch']) && $_GET['sSearch'] != "" )
 {
     $_GET['sSearch'] = utf8_decode($_GET['sSearch']);
-    $sWhere = "WHERE (";
+    $sWhere = "HAVING (";
     for ( $i=0 ; $i<count($aColumns) ; $i++ )
     {
         if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" )
@@ -117,7 +117,7 @@ for ( $i=0 ; $i<count($aColumns) ; $i++ )
     {
         if ( $sWhere == "" )
         {
-            $sWhere = "WHERE ";
+            $sWhere = "HAVING ";
         }
         else
         {
@@ -150,9 +150,21 @@ $sQuery = "SELECT
 $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 
 /* Data set length after filtering */
-$sQuery = "SELECT COUNT(storage_areas.id)
-           FROM storage_areas
-           $sWhere";
+$sQuery = "SELECT
+            count(id)
+            FROM
+            (
+            SELECT
+            storage_areas.id,
+            storage_areas.`name`,
+            COALESCE(SUM(storage_positions.allocation),0) as alloc
+            FROM
+            storage_areas
+            LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
+            GROUP BY storage_areas.id
+            $sWhere
+            ) t1
+            ";
 //     var_dump($sQuery);
 $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);

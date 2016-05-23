@@ -73,10 +73,10 @@ class Search {
             $where = $this->where;
         
         $sql =  "
-                SELECT {$fieldset}, MATCH ({$matchset}) AGAINST ('{$this->against}') as score
+                SELECT {$fieldset}, MATCH ({$matchset}) AGAINST ('*{$this->against}*' IN BOOLEAN MODE) as score
                 FROM
                 {$this->table} {$this->join} 
-                WHERE MATCH ({$matchset}) AGAINST ('{$this->against}') {$where}
+                WHERE MATCH ({$matchset}) AGAINST ('*{$this->against}*' IN BOOLEAN MODE) {$where}
                 ORDER BY score desc
                 LIMIT {$limit}
                 ";

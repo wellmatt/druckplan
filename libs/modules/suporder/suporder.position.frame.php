@@ -72,7 +72,7 @@ if ($_REQUEST["aid"] && $_REQUEST["soid"]) {
 } else {
     die("Kein Artikel ausgewählt!");
 }
-$pricescales = PriceScale::getAllForArticle($article,PriceScale::TYPE_BUY);
+$pricescales = PriceScale::getAllForArticleAndSupplier($article,$position->getSuporder()->getSupplier(),PriceScale::TYPE_BUY);
 
 ?>
 

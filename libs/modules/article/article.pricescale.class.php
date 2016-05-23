@@ -52,6 +52,31 @@ class PriceScale extends Model{
 
     /**
      * @param Article $article
+     * @param BusinessContact $supplier
+     * @param int $type
+     * @return PriceScale[]
+     */
+    public static function getAllForArticleAndSupplier(Article $article, BusinessContact $supplier,$type = self::TYPE_SELL)
+    {
+        $retval = self::fetch([
+            [
+                'column'=>'article',
+                'value'=>$article->getId()
+            ],
+            [
+                'column'=>'supplier',
+                'value'=>$supplier->getId()
+            ],
+            [
+                'column'=>'type',
+                'value'=>$type
+            ]
+        ]);
+        return $retval;
+    }
+
+    /**
+     * @param Article $article
      * @param int $amount
      * @param int $type
      * @return float

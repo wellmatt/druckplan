@@ -407,6 +407,27 @@ class Article {
 		}
 		return false;
 	}
+
+	/**
+	 * Liefert alle Lagerartikel.
+	 *
+	 * @param string $order
+	 * @return Article[]
+	 */
+	static function getAllArticlesNeedingStorage($order = self::ORDER_TITLE){
+		global $DB;
+		$retval = Array();
+		$sql = "SELECT id FROM article
+				WHERE status > 0 AND
+				usesstorage = 1
+				ORDER BY {$order}";
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = new Article($r["id"]);
+			}
+		}
+		return $retval;
+	}
 	
 	/**
      * Suchfunktion fuer Artikel. Sucht in Titel und Auftragsnummer.

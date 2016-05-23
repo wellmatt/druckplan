@@ -54,7 +54,6 @@ if ($_REQUEST["delete"])
 
     if ($_REQUEST["subexec"]=="save")
     {
-//        echo '<pre>';print_r($_REQUEST);echo '</pre>';
         if ($_REQUEST["crt_job"])
         {
             $tickets = Array();
@@ -83,26 +82,22 @@ if ($_REQUEST["delete"])
                         $pj->setAssigned_group(new Group((int)substr($job["workers"]["assigned"][$i], 2)));
                         $assigned = "group";
                     }
-//                    print_r($pj); die();
                     $pj->createMyTicket();
                     $pj->save();
                     $ticketlist['"'.$job["opos"].'"'][] = $pj->getTicket()->getId();
                 }
             }
             
-//             echo "</br>"; print_r($ticketlist); echo "</br>";
-            
+
             foreach ($ticketlist as $tickets)
             {
 
-//                 echo "</br>"; print_r($tickets); echo "</br>";
                 foreach ($tickets as $asso_ticket)
                 {
                     foreach ($tickets as $asso_link)
                     {
                         if ($asso_ticket != $asso_link)
                         {
-//                             echo $asso_ticket . " wird gelinkt mit " . $asso_link . "</br>";
                             $alry_asso[] = $asso_link;
                             $asso = new Association();
                             $asso->setCrtdate(time());
@@ -157,6 +152,13 @@ $all_user = User::getAllUser(User::ORDER_NAME);
 $all_groups = Group::getAllGroups(Group::ORDER_NAME);
 $button = " disabled ";
 ?>
+
+
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Zurück','index.php?page=libs/modules/planning/planning.overview.php',null,'glyphicon-step-backward');
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
