@@ -46,7 +46,7 @@ function askDel(myurl)
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-               <b>Dateien</b>
+              Dateien
             </h3>
 	  </div>
           <div class="table-responsive">

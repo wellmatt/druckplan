@@ -143,18 +143,6 @@ $(document).ready(function() {
 	  <div class="panel-heading">
 			<h3 class="panel-title">
 				Geschäftskontakte
-				<span class="pull-center">
-					Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-						<?
-						foreach ($all_attributes AS $attribute){
-							$allitems = $attribute->getItems();
-							foreach ($allitems AS $item){ ?>
-								<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
-							<? }
-						} ?>
-					</select>
-				</span>
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&tabshow=1';">
 						 <img src="images/icons/glyphicons-433-plus.svg">
@@ -163,23 +151,45 @@ $(document).ready(function() {
 				</span>
 			</h3>
 	  </div>
-	<div class="table-responsive">
-		<table id="bcon_table"  class="table table-hover">
-			<thead>
-			<tr>
-				<th width="10">ID</th>
-				<th width="80">Nr.</th>
-				<th width="100">Matchcode</th>
-				<th>Firma</th>
-				<th width="100">Ort</th>
-				<th width="120">Typ</th>
-				<th width="120">Lieferant</th>
-				<th width="180">Merkmale</th>
-				<th width="80">Optionen</th>
-			</tr>
-			</thead>
-		</table>
+	<div class="panel-body">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Filter
+				</h3>
+			</div>
+			<div class="panel-body">
+				Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+					<?
+					foreach ($all_attributes AS $attribute){
+						$allitems = $attribute->getItems();
+						foreach ($allitems AS $item){ ?>
+							<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
+						<? }
+					} ?>
+				</select>
+			</div>
+		</div>
 	</div>
-	<?}
-	?>
+		<div class="table-responsive">
+			<table id="bcon_table"  class="table table-hover">
+				<thead>
+				<tr>
+					<th width="10">ID</th>
+					<th width="80">Nr.</th>
+					<th width="100">Matchcode</th>
+					<th>Firma</th>
+					<th width="100">Ort</th>
+					<th width="120">Typ</th>
+					<th width="120">Lieferant</th>
+					<th width="180">Merkmale</th>
+					<th width="80">Optionen</th>
+				</tr>
+				</thead>
+			</table>
+		</div>
+		<?}
+		?>
+
 </div>

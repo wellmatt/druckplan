@@ -205,7 +205,7 @@ $(document).ready(function() {
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<b>Tickets</b>
+				Tickets
 				<span class="pull-right">
 					  <img src="../../../images/icons/ticket--plus.png">
 					  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?pid=20&exec=new';" class="icon-link">
@@ -218,7 +218,7 @@ $(document).ready(function() {
 		  <div class="panel panel-default">
 		  	  <div class="panel-heading">
 		  			<h3 class="panel-title">
-						<b>Filter</b>
+						Filter
 					<span class="pull-right">
 				  		<button class="btn btn-xs btn-success"onclick="document.location.href='index.php?pid=20';">
 						  <?=$_LANG->get('Reset')?>

@@ -49,7 +49,7 @@ if($_REQUEST["subexec"] == "save")
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Name</label>
 				  <div class="col-sm-10">
-					  <input type="text" class="form-control" id="finishing_name" name="finishing_name" value="<?=$finishing->getName()?>" placeholder="bitte Lacknamen eintragen...">
+					  <input type="text" class="form-control" id="finishing_name" name="finishing_name" value="<?=$finishing->getName()?>" placeholder="Bitte Lacknamen eintragen...">
 				  </div>
 			  </div>
 

@@ -1131,7 +1131,7 @@ function commi_checkbox(){
 				<col width="20">
 				<col width="120">
 			</colgroup>
-			
+
 			<tr>
 				<td class="content_row_header"><? echo $_LANG->get('Ansprechpartner');?></td>
 				<td class="content_row_clear">&emsp;</td>

@@ -210,9 +210,9 @@ $(document).ready(function () {
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-               <b><?=$header_title?>
+               <?=$header_title?>
                <?php if ($ticket->getId()>0){?><a href="index.php?pid=20&exec=edit&tktid=<?=$ticket->getId()?>" title="Reload">
-                        <i class="icon-refresh"></i> - <?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?></b>
+                        <i class="icon-refresh"></i> - <?php echo $ticket->getNumber();?> - <?php echo $ticket->getTitle();?></a><?php } ?>
                 <span class="pull-right" <?=$savemsg?>></span>
             </h3>
 	  </div>

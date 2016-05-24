@@ -63,7 +63,7 @@
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<b>Ihre Bestellungen</b>
+				Ihre Bestellungen
 			</h3>
 	  </div>
 	<div class="table-responsive">

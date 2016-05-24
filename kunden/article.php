@@ -73,7 +73,7 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 	<div class="panel panel-default">
 		  <div class="panel-heading">
 				<h3 class="panel-title">
-					<b>Artikeldetails:</b> <?=$article->getTitle()?>
+					Artikeldetails: <?=$article->getTitle()?>
 				</h3>
 		  </div>
 		  <div class="panel-body">
@@ -81,14 +81,14 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 				  <div class="row">
 					  <div class="col-md-8">
 						  <div class="row">
-							  <div class="col-sm-3"><b>Artikelnummer:</b></div>
-							  <div class="col-sm-9 well well-sm">
+							  <div class="col-sm-3">Artikelnummer:</div>
+							  <div class="col-sm-9 ">
 								  <?= $article->getNumber() ?>
 							  </div>
 						  </div>
 						  <div class="row">
-							  <div class="col-sm-3"><b>Beschreibung:</b></div>
-							  <div class="col-sm-9 well well-sm">
+							  <div class="col-sm-3">Beschreibung:</div>
+							  <div class="col-sm-9 ">
 								  <?= $article->getDesc() ?>
 							  </div>
 						  </div>
@@ -163,7 +163,7 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			  <div class="panel panel-default">
 				  <div class="panel-heading">
 					  <h3 class="panel-title">
-						  <b>Preisliste</b>
+						 Preisliste
 					  </h3>
 				  </div>
 				  <div class="table-responsive">
@@ -215,7 +215,7 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<b>Artikel</b>
+				Artikel
 			</h3>
 	  </div>
 	  <div class="panel-body">
@@ -223,13 +223,9 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			  <input type="hidden" name="pid" value="60">
 			  Suche: <input type="text" name="search" id="search" style="width: 200px;"><button type="submit">Suchen</button>
 		  </form>
+		  </br>
 		  <div class="table-responsive">
 			  <table class="table table-hover">
-				  <colgroup>
-					  <col width="100">
-					  <col>
-					  <col width="160">
-				  </colgroup>
 				  <tr>
 					  <td class="filerow_header">Bild</td>
 					  <td class="filerow_header">Titel</td>

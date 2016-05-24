@@ -30,7 +30,7 @@ $marketjobs = Marketing::getAllForListAndBc($curr_list,$_BUSINESSCONTACT);
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-                <b>Marketingplan</b>
+               Marketingplan
                 <span class="pull-right"><?=$savemsg?></span>
             </h3>
 	  </div>

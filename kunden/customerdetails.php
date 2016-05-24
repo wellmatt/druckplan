@@ -117,319 +117,324 @@ function askDel(myurl)
    return false;
 }
 </script>
-<form id="change_customer" method="post">
+<form id="change_customer" method="post" class="form-horizontal">
 	<input type="hidden" name="pid" value="<?=$_REQUEST["pid"]?>" >
 	<?/*<input type="hidden" name="subexec" value="save" > */?>
 	<div class="panel panel-default">
 		  <div class="panel-heading">
 				<h3 class="panel-title">
-					<b>Profil</b>
+					Profil
 				</h3>
 		  </div>
 		  <div class="panel-body">
-			  <div class="table-responsive">
-				  <table class="table table-hover">
-					  <tr>
-						  <td colspan="2"><b><?=$_LANG->get('Adressdaten');?> </b></td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Firmenname');?></td>
-						  <td><?/*gln, 05.02.14 <input type="text" name="name1" class="text" value=""/>*/?><?=$busicon->getName1()?> </td>
-						  <td>&ensp;</td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Firmenname (Zusatz)');?></td>
-						  <td><?/*gln, 05.02.14 <input type="text" name="name2" class="text" value="" />*/?><?=$busicon->getName2()?></td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Stra&szlig;e');?></td>
-						  <td><?/*gln, 05.02.14 <input type="text" name="adress1" class="text" value="" />*/?><?=$busicon->getAddress1()?></td>
-					  </tr>
-					  <tr>
-						  <td>&ensp;</td>
-						  <td><?/*gln, 05.02.14 <input type="text" name="adress2" class="text" value="*/?><?=$busicon->getAddress2()?></td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('PLZ/Stadt');?></td>
-						  <td>
-							  <?/*gln, 05.02.14 <input type="text" name="plz" class="text" style="width:60px"  value=""/> */?><?=$busicon->getZip()?>
-							  <?/*gln, 05.02.14 <input type="text" name="city" class="text" style="width:174px" value=""/>*/?><?=$busicon->getCity()?>
-						  </td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Land');?></td>
-						  <td>
-							  <?/*gln, 05.02.14 <select name="country" style="width:240px"
-					class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-	<? 					foreach($countries as $c) { ?>
-						<option value="<?=$c->getId()?>"
-						<?if ($busicon->getCountry()->getId() == $c->getId()) echo "selected";?>>
-							<?=$c->getName()?>
-						</option>
-	<?					} ?>
-				</select> */?> <?$c=new Country($busicon->getCountry()->getId()); echo $c->getName()?>
-						  </td>
-					  </tr>
-					  <tr><td colspan="3">&ensp;</td></tr>
-					  <tr><td colspan="3"><b><?=$_LANG->get('Kontaktdaten');?></b></td></tr>
-					  <tr>
-						  <td><?=$_LANG->get('E-Mail');?></td>
-						  <td><?/*<input type="text" name="email" class="text" value="<?=$busicon->getEmail()?>" />*/?><?=$busicon->getEmail()?></td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Telefon');?></td>
-						  <td><?/*<input type="text" name="phone" class="text" value="<?=$busicon->getPhone()?>" />*/?><?=$busicon->getPhone()?></td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Fax');?></td>
-						  <td><?/*<input type="text" name="fax" class="text" value="<?=$busicon->getFax()?>" />*/?><?=$busicon->getFax()?></td>
-					  </tr>
-					  <tr>
-						  <td><?=$_LANG->get('Web');?></td>
-						  <td><?/*<input type="text" name="web" class="text" value="<?=$busicon->getWeb()?>" />*/?><?=$busicon->getWeb()?></td>
-					  </tr>
-					  <tr><td colspan="3">&ensp;</td></tr>
-					  <tr><td colspan="3">&ensp;</td></tr>
+			  <div class="panel panel-default">
+			  	  <div class="panel-heading">
+			  			<h3 class="panel-title">
+							Adressdaten
+						</h3>
+			  	  </div>
+				  <div class="panel-body">
 
-					  <!-- tr>
-	    	<td><b><?=$_LANG->get("Sprache")?></b></td>
-	    	<td>
-	    		<select name="language" style="width: 243px"
-					class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						<?
-					  foreach($languages as $l)
-					  {?>
-						<option value="<?=$l->getId()?>"
-						<?if ($busicon->getLanguage()->getId() == $l->getId()) echo "selected";?>>
-							<?=$l->getName()?>
-						</option>
-						<?}
 
-					  ?>
-				</select>
-			</td>
-	    </tr -->
-					  <tr>
-						  <td>&ensp;</td>
-						  <?/*
-	        <td align="right">
-	        	<input type="submit" name="submit" style="width:80px" value="<?=$_LANG->get('Speichern');?>" />
-	        </td>
-	        <td>&ensp;</td>
-	*/?>
-					  </tr>
-				  </table>
+					  <div class="row">
+						  <div class="col-sm-3">Firmenname</div>
+						  <div class="col-sm-4" >
+							  <?=$busicon->getName1()?>
+						  </div>
+					  </div>
+
+
+					  <div class="row">
+						  <div class="col-sm-3">Firmenname (Zusatz)</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getName2()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">Straße</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getAddress1()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">Straße (Zusatz)</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getAddress2()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">PLZ/Stadt</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getZip()?>&ensp;<?=$busicon->getCity()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">Land</div>
+						  <div class="col-sm-4 ">
+							  <?$c=new Country($busicon->getCountry()->getId()); echo $c->getName()?>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+			  <div class="panel panel-default">
+			  	  <div class="panel-heading">
+			  			<h3 class="panel-title">
+							Kontaktdaten
+						</h3>
+			  	  </div>
+			  	  <div class="panel-body">
+
+					  <div class="row">
+						  <div class="col-sm-3">E-Mail</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getEmail()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">Telefon</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getPhone()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">Fax</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getFax()?>
+						  </div>
+					  </div>
+
+					  <div class="row">
+						  <div class="col-sm-3">Web</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getWeb()?>
+						  </div>
+					  </div>
+
+			  	  </div>
 			  </div>
 </form>
-			  <form method="post" id="neue_lieferadr" >
+			  <form method="post" id="neue_lieferadr" class="form-horizontal" style="display:none" >
 					<input type="hidden" name="subexec" value="save" >
 					<div class="panel panel-default">
 						  <div class="panel-heading">
 								<h3 class="panel-title">
-									<b>Neue Lieferadresse</b>
+									Neue Lieferadresse
 								</h3>
 						  </div>
-							  <div class="table-responsive">
-								  <table class="table table-hover">
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-										  <td class="content_row_clear"><input name="name1" style="width: 300px"
-																			   class="text" value="<?=$address->getName1()?>"
-																			   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-										  <td class="content_row_clear"><input name="name2"
-																			   style="width: 300px" class="text" value="<?=$address->getName2()?>"
-																			   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Adresse');?>
-										  </td>
-										  <td class="content_row_clear"><input name="address1"
-																			   style="width: 300px" class="text" value="<?=$address->getAddress1()?>"
-																			   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-										  </td>
-										  <td class="content_row_clear"><input name="address2"
-																			   style="width: 300px" class="text" value="<?=$address->getAddress2()?>"
-																			   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
-										  </td>
-										  <td class="content_row_clear">
-											  <nobr>
-												  <input name="zip" style="width: 50px" class="text" value="<?=$address->getZip()?>"
-														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-												  <input name="city" style="width: 243px" class="text" value="<?=$address->getCity()?>"
-														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											  </nobr>
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Land')?></td>
-										  <td class="content_row_clear"><select name="country" style="width: 300px"
-																				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-												  <?
-												  foreach($countries as $c)
-												  {?>
-													  <option value="<?=$c->getId()?>"
-														  <?if ($address->getCountry()->getId() == $c->getId()) echo "selected";?>>
-														  <?=$c->getName()?>
-													  </option>
-												  <?}?>
-											  </select>
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header">&nbsp;</td>
-										  <td class="content_row_clear">&nbsp;</td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Telefon');?>
-										  </td>
-										  <td class="content_row_clear">
-											  <input name="phone" style="width: 300px" class="text" value="<?=$address->getPhone()?>"
-													 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Fax');?>
-										  </td>
-										  <td class="content_row_clear">
-											  <input name="fax" style="width: 300px" class="text" value="<?=$address->getFax()?>"
-													 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Mobil');?>
-										  </td>
-										  <td class="content_row_clear">
-											  <input name="mobil" style="width: 300px" class="text" value="<?=$address->getMobil()?>"
-													 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										  </td>
-									  </tr>
-									  <tr>
-										  <td colspan="2" class="content_row_clear" align="right">
-											  <input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
-											  <?=$savemsg?>
-										  </td>
-									  </tr>
-								  </table>
-							  </div>
+
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Firma</label>
+							<div class="col-sm-4">
+								<input name="name1"
+									   class="form-control" value="<?=$address->getName1()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Firmenzusatz</label>
+							<div class="col-sm-4">
+								<input name="name2"
+									   class="form-control" value="<?=$address->getName2()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Adresse</label>
+							<div class="col-sm-4">
+								<input name="address1"
+									   class="form-control" value="<?=$address->getAddress1()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Adresszusatz</label>
+							<div class="col-sm-4">
+								<input name="address2"
+									   class="form-control" value="<?=$address->getAddress2()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label"></label>
+							<div class="col-sm-1">
+								<input name="zip"  class="form-control" value="<?=$address->getZip()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)" placeholder="PLZ">
+							</div>
+							<div class="col-sm-3">
+								<input name="city"  class="form-control" value="<?=$address->getCity()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)"placeholder="Stadt">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Land</label>
+							<div class="col-sm-4">
+								<select name="country"
+										class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									<?
+									foreach($countries as $c)
+									{?>
+										<option value="<?=$c->getId()?>"
+											<?if ($address->getCountry()->getId() == $c->getId()) echo "selected";?>>
+											<?=$c->getName()?>
+										</option>
+									<?}?>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Telefon</label>
+							<div class="col-sm-4">
+								<input name="phone"  class="form-control" value="<?=$address->getPhone()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Fax</label>
+							<div class="col-sm-4">
+								<input name="fax"  class="form-control" value="<?=$address->getFax()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Mobil</label>
+							<div class="col-sm-4">
+								<input name="mobil"  class="form-control" value="<?=$address->getMobil()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label"></label>
+							<div class="col-sm-4">
+								<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
+								<?=$savemsg?>
+							</div>
+						</div>
 					</div>
 				</form>
 
 
-				<form method="post" id="neue_rechadr" style="display:none">
+				<form method="post" id="neue_rechadr" class=form-horizontal style="display:none">
 					<input type="hidden" name="subexec" value="save" >
 					<div class="panel panel-default">
 						  <div class="panel-heading">
 								<h3 class="panel-title">
-									<b>Neue Rechnungsadresse</b>
+									Neue Rechnungsadresse
 								</h3>
 						  </div>
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-									<td class="content_row_clear"><input name="r_name1" style="width: 300px"
-																		 class="text" value="<?=$r_address->getName1()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-									<td class="content_row_clear"><input name="r_name2"
-																		 style="width: 300px" class="text" value="<?=$r_address->getName2()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Adresse');?>
-									</td>
-									<td class="content_row_clear"><input name="r_address1"
-																		 style="width: 300px" class="text" value="<?=$r_address->getAddress1()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-									</td>
-									<td class="content_row_clear"><input name="r_address2"
-																		 style="width: 300px" class="text" value="<?=$r_address->getAddress2()?>"
-																		 onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('PLZ / Stadt');?>
-									</td>
-									<td class="content_row_clear">
-										<nobr>
-											<input name="r_zip" style="width: 50px" class="text" value="<?=$r_address->getZip()?>"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											<input name="r_city" style="width: 243px" class="text" value="<?=$r_address->getCity()?>"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										</nobr>
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-									<td class="content_row_clear"><select name="r_country" style="width: 300px"
-																		  class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											<?
-											foreach($countries as $c)
-											{?>
-												<option value="<?=$c->getId()?>"
-													<?if ($r_address->getCountry()->getId() == $c->getId()) echo "selected";?>>
-													<?=$c->getName()?>
-												</option>
-											<?}?>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header">&nbsp;</td>
-									<td class="content_row_clear">&nbsp;</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-									</td>
-									<td class="content_row_clear">
-										<input name="r_phone" style="width: 300px" class="text" value="<?=$r_address->getPhone()?>"
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Fax');?>
-									</td>
-									<td class="content_row_clear">
-										<input name="r_fax" style="width: 300px" class="text" value="<?=$r_address->getFax()?>"
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td class="content_row_header"><?=$_LANG->get('Mobil');?>
-									</td>
-									<td class="content_row_clear">
-										<input name="r_mobil" style="width: 300px" class="text" value="<?=$r_address->getMobil()?>"
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2" class="content_row_clear" align="right">
-										<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
-										<?=$savemsg?>
-									</td>
-								</tr>
-							</table>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Firma</label>
+							<div class="col-sm-4">
+								<input name="name1"
+									   class="form-control" value="<?=$address->getName1()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Firmenzusatz</label>
+							<div class="col-sm-4">
+								<input name="name2"
+									   class="form-control" value="<?=$address->getName2()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Adresse</label>
+							<div class="col-sm-4">
+								<input name="address1"
+									   class="form-control" value="<?=$address->getAddress1()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Adresszusatz</label>
+							<div class="col-sm-4">
+								<input name="address2"
+									   class="form-control" value="<?=$address->getAddress2()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label"></label>
+							<div class="col-sm-1">
+									<input name="zip"  class="form-control" value="<?=$address->getZip()?>"
+										   onfocus="markfield(this,0)" onblur="markfield(this,1)" placeholder="PLZ">
+							</div>
+							<div class="col-sm-3">
+									<input name="city"  class="form-control" value="<?=$address->getCity()?>"
+										   onfocus="markfield(this,0)" onblur="markfield(this,1)"placeholder="Stadt">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Land</label>
+							<div class="col-sm-4">
+								<select name="country"
+										class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									<?
+									foreach($countries as $c)
+									{?>
+										<option value="<?=$c->getId()?>"
+											<?if ($address->getCountry()->getId() == $c->getId()) echo "selected";?>>
+											<?=$c->getName()?>
+										</option>
+									<?}?>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Telefon</label>
+							<div class="col-sm-4">
+								<input name="phone"  class="form-control" value="<?=$address->getPhone()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Fax</label>
+							<div class="col-sm-4">
+								<input name="fax"  class="form-control" value="<?=$address->getFax()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Mobil</label>
+							<div class="col-sm-4">
+								<input name="mobil"  class="form-control" value="<?=$address->getMobil()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label"></label>
+							<div class="col-sm-4">
+								<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
+								<?=$savemsg?>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -439,7 +444,7 @@ function askDel(myurl)
 				<div class="panel panel-default">
 					  <div class="panel-heading">
 							<h3 class="panel-title">
-								<b>Lieferadressen</b>
+								Lieferadressen
 								<img onclick="document.getElementById('neue_lieferadr').style.display='' " src="../images/icons/user--plus.png"
 									 title="<?=$_LANG->get('Neue Lieferadresse anlegen');?>" alt="<?=$_LANG->get('Neue Lieferadresse anlegen');?>">
 							</h3>
@@ -488,7 +493,7 @@ function askDel(myurl)
 				<div class="panel panel-default">
 					  <div class="panel-heading">
 							<h3 class="panel-title">
-								<b>Rechnungsadressen</b>
+								Rechnungsadressen
 								<img onclick="document.getElementById('neue_rechadr').style.display='' " src="../images/icons/user--plus.png"
 									 title="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>" alt="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>">
 							</h3>
