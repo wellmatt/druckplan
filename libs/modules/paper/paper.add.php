@@ -278,18 +278,20 @@ function addSupplierRow()
 		        </td>
 	        <?php endif; ?>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <?php if($paper->hasPriceBase() && $alternativePaperMode) : ?>
-        <a href="#" onclick="prepareProductCloning()" class="menu_item">Zur&uuml;ck zur Auftragsbearbeitung</a>
-        <?php else : ?>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <?php endif; ?>
-        <a href="#" class="menu_item" onclick="$('#paper_form').submit();">Speichern</a>
-    </div>
-</div>
+
+
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Speichern','#',"$('#paper_form').submit();",'glyphicon-floppy-disk');
+if($paper->hasPriceBase() && $alternativePaperMode) {
+    $quickmove->addItem('Zurück zur Auftragsbearbeitung','#',"prepareProductCloning()",'glyphicon-step-backward');
+}
+else{
+    $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form" onSubmit="return checkform(new Array(this.paper_name))">
 <input name="exec" value="edit" type="hidden">

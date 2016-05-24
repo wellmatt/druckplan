@@ -36,14 +36,13 @@ if($_REQUEST["subexec"] == "save")
 	});
 </script>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-		<a href="#top" class="menu_item">Seitenanfang</a>
-		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-		<a href="#" class="menu_item" onclick="$('#foldtype_form').submit();">Speichern</a>
-	</div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#foldtype_form').submit();",'glyphicon-floppy-disk');
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <div class="panel panel-default">
 	  <div class="panel-heading">
@@ -70,16 +69,29 @@ if($_REQUEST["subexec"] == "save")
 					<input name="foldtype_name" class="form-control" type="text" value="<?=$ft->getName()?>">
 				</div>
 			</div>
-
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Beispielbild</label>
 				<div class="col-sm-10">
-					<a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products"><input type="button" class="button" value="<?=$_LANG->get('ändern')?>"></a>
+					<a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products">
+						<button type="button" class="btn btn-success btn-sm">
+							Ändern
+						</button>
+					</a>
 					<? if($ft->getPicture() != "") {?>
-						<input type="button" class="buttonRed" value="<?=$_LANG->get('L&ouml;schen')?>" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$ft->getId()?>&deletePicture=1'">
+						<button type="button" class="btn btn-sm btn-danger"
+								onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$ft->getId()?>&deletePicture=1'">
+							Löschen
+						</button>
 					<? } ?>
 				</div>
 			</div>
+			 <div class="row">
+				 <div class="col-md-2"></div>
+				<div class="col-md-10" id="picture_show">
+					<img src="images/foldtypes/<?=$ft->getPicture()?>">
+				</div>
+			</div>
+			</br>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Beschreibung</label>
@@ -87,21 +99,18 @@ if($_REQUEST["subexec"] == "save")
 					<textarea name="foldtype_description" type="text" class="form-control"><?=$ft->getDescription()?></textarea>
 				</div>
 			</div>
-
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Falzen vertikal</label>
 				<div class="col-sm-10">
 					<input name="foldtype_vertical" class="form-control" type="text" value="<?=$ft->getVertical()?>">
 				</div>
 			</div>
-
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Falzen horizontal</label>
 				<div class="col-sm-10">
 					<input name="foldtype_horizontal" class="form-control" type="text" value="<?=$ft->getHorizontal()?>">
 				</div>
 			</div>
-
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Anz. Brüche</label>
 				<div class="col-sm-10">

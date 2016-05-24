@@ -43,14 +43,16 @@ if ($_REQUEST["subexec"] == "save")
 
 $users = User::getAllUser(User::ORDER_LOGIN);
 ?>
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#group_form').submit();">Speichern</a>
-    </div>
-</div>
+
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#group_form').submit();",'glyphicon-floppy-disk');
+
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 
 <div class="panel panel-default">
 	  <div class="panel-heading">
@@ -83,138 +85,138 @@ $users = User::getAllUser(User::ORDER_LOGIN);
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Recht</label>
-                  <label for="" class="col-sm-5 control-label">Ja/Nein</label>
+                  <label for="" class="col-sm-1 control-label">Ja/Nein</label>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Darf Urlaub genehmigen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_urlaub" value="1" <? if($group->hasRight(Group::RIGHT_URLAUB)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Maschinenauswahl in Kalkulation anzeigen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_machineselection" value="1" <? if($group->hasRight(Group::RIGHT_MACHINE_SELECTION)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Ausführliche Kalkulation anzeigen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_detailed_calc"  value="1" <? if($group->hasRight(Group::RIGHT_DETAILED_CALCULATION)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Sollzeiten anzeigen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_targettime" value="1" <? if($group->hasRight(Group::RIGHT_SEE_TARGETTIME)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Teilaufträge plane</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_parts_edit" value="1" <? if($group->hasRight(Group::RIGHT_PARTS_EDIT)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Fremde Kalender benutzen / bearbeiten</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_ALL_CALENDAR)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Alle Kalender einsehen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"  name="right_see_all_calendar" value="1" <? if($group->hasRight(Group::RIGHT_SEE_ALL_CALENDAR)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Geschäftskontakte bearbeiten</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_edit_bc" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_BC)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Geschäftskontakte löschen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"  name="right_delete_bc" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_BC)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Ansprechpartner bearbeiten</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"  name="right_edit_cp" value="1" <? if($group->hasRight(Group::RIGHT_EDIT_CP)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Ansprechpartner löschen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"  name="right_delete_cp" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_CP)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Kalkulationen löschen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_delete_order" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_ORDER)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Vorgänge löschen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"  name="right_delete_colinv" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_COLINV)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Planung löschen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_delete_schedule" value="1" <? if($group->hasRight(Group::RIGHT_DELETE_SCHEDULE)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Vorgänge zusammenführen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_combine_colinv" value="1" <? if($group->hasRight(Group::RIGHT_COMBINE_COLINV)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Ticket Ersteller ändern</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"name="right_ticket_change_owner" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_CHANGE_OWNER)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Verknüpfung löschen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_asso_delete" value="1" <? if($group->hasRight(Group::RIGHT_ASSO_DELETE)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Zugriff auf GK-Notizen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control" name="right_notes_bc" value="1" <? if($group->hasRight(Group::RIGHT_NOTES_BC)) echo "checked";?>>
                   </div>
               </div>
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Urlaube genehmingen</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-1">
                       <input type="checkbox" class="form-control"  name="right_approve_vacation" value="1" <? if($group->hasRight(Group::RIGHT_APPROVE_VACATION)) echo "checked";?>>
                   </div>
               </div>

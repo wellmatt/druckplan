@@ -222,6 +222,16 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
 <!--    });-->
 <!--</script>-->
 <!-- /FancyBox -->
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#machine_form').submit();",'glyphicon-floppy-disk');
+if ($product->getId()>0){
+    $quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$product->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <table width="100%">
    <tr>
@@ -233,15 +243,6 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
       <td align="right"><?=$savemsg?></td>
    </tr>
 </table>
-
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#machine_form').submit();">Speichern</a>
-    </div>
-</div>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form" onsubmit="return checkform(new Array(this.product_name))">
 <input type="hidden" name="exec" value="edit">

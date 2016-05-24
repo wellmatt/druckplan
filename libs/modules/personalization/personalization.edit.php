@@ -300,17 +300,16 @@ function addPriceRow()
 	</tr>
 </table>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#perso_edit').submit();">Speichern</a>
-        <?php if ($perso->getId()>0){?>
-        <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/personalization/personalization.php&exec=delete&id=<?php echo $perso->getId();?>')">Löschen</a>
-        <?php }?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#perso_edit').submit();",'glyphicon-floppy-disk');
+if ($perso->getId()>0){
+	$quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/personalization/personalization.php&exec=delete&id=".$perso->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="perso_edit" id="perso_edit"   
 		onSubmit="return checkform(new Array(this.perso_title))" enctype="multipart/form-data">

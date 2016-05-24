@@ -487,6 +487,14 @@ $(function() {
 });
 </script>
 
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#machine_form').submit();",'glyphicon-floppy-disk');
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 <table width="100%">
    <tr>
       <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
@@ -506,16 +514,6 @@ if ($machine->getId() > 0){
       //-> END Associations
 }
 ?>
-
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#machine_form').submit();">Speichern</a>
-    </div>
-</div>
-
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form" onSubmit="return checkform(new Array(this.machine_name, this.machine_group,this.machine_type,this.machine_pricebase))">
 <input type="hidden" name="exec" value="edit">
 <input type="hidden" name="subexec" value="save">

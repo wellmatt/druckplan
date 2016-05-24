@@ -23,14 +23,14 @@ if($_REQUEST["subexec"] == "save"){
 	$savemsg = getSaveMessage($delterm->save()).$DB->getLastError();
 }?>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-		<a href="#top" class="menu_item">Seitenanfang</a>
-		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-		<a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
-	</div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#user_form').submit();",'glyphicon-floppy-disk');
+
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="user_form" name="user_form"
 	  class="form-horizontal" role="form"  onSubmit="return checkform(new Array(this.deliv_name, this.deliv_comment))">

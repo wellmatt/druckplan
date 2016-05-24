@@ -20,14 +20,14 @@ if($_REQUEST["subexec"] == "save")
 }
 ?>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-		<a href="#top" class="menu_item">Seitenanfang</a>
-		<a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-		<a href="#" class="menu_item" onclick="$('#paper_form').submit();">Speichern</a>
-	</div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#paper_form').submit();",'glyphicon-floppy-disk');
+
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <div class="panel panel-default">
 	  <div class="panel-heading">

@@ -74,17 +74,17 @@ if ($_REQUEST["exec"] == "save")
                       ?>
                   </table>
               </div>
-        </div>
-         </form>
+          </form>
+      </div>
 </div>
 
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#form').submit();",'glyphicon-floppy-disk');
 
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#form').submit();">Speichern</a>
-    </div>
-</div>
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 

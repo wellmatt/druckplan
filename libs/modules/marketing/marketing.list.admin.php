@@ -36,58 +36,61 @@ $lists = MarketingList::getAllLists();
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 
-<table width="100%">
-    <tr>
-        <td width="150" class="content_header"><img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
-            <span style="font-size: 13px"><?= $_LANG->get('Marketing-Vorlagen') ?></span>
-        </td>
-        <td width="250" class="content_header" align="right">
-            <?= $savemsg ?>
-        </td>
-        <td class="content_header" align="right">
-            <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form">
-                <input type="hidden" name="exec" value="save"/>
-                Neue Liste: <input id="newlist" name="newlist" type="text"><button type="submit" class="btn btn-sm">Hinzufügen</button>
-            </form>
-        </td>
-    </tr>
-</table>
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="marketing_column_form"
+      id="marketing_column_form" class="form-horizontal">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
+                Marketing-Vorlagen
+                    <span class="pull-right">
+                         <?= $savemsg ?>
+                        <div class="input-group" style="margin-top: -6px;">
+                            <input type="text" name="newlist" id="newlist" class="form-control input-sm">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default btn-sm">Neuer Eintrag</button>
+                            </span>
+                        </div>
+                    </span>
+            </h3>
+        </div>
+        <div class="table-responsive">
+            <table id="marketing_table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Standard') ?></th>
+                </tr>
+                </thead>
+                <?php foreach ($lists as $list) { ?>
+                    <tr>
+                        <td><?php echo $list->getId(); ?></td>
+                        <td><?php echo $list->getTitle(); ?></td>
+                        <td>
+                            <?php
+                            if ($list->getDefault() == 0) {
+                                echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=star&id=' . $list->getId() . '"><img src="images/icons/star-empty.png"/></a>&nbsp;';
+                                echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=delete&id=' . $list->getId() . '"><img src="images/icons/cross.png"/></a>';
+                            } else {
+                                echo '<img src="images/icons/star.png"/>';
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tfoot>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Standard') ?></th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</form>
 
-<div class="box1">
-    <table id="marketing_table" width="100%" cellpadding="0" cellspacing="0"
-           class="display stripe hover row-border order-column">
-        <thead>
-        <tr>
-            <th><?= $_LANG->get('ID') ?></th>
-            <th><?= $_LANG->get('Titel') ?></th>
-            <th><?= $_LANG->get('Standard') ?></th>
-        </tr>
-        </thead>
-        <?php foreach ($lists as $list) { ?>
-            <tr>
-                <td><?php echo $list->getId(); ?></td>
-                <td><?php echo $list->getTitle(); ?></td>
-                <td>
-                    <?php
-                    if ($list->getDefault() == 0){
-                        echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=star&id='.$list->getId().'"><img src="images/icons/star-empty.png"/></a>&nbsp;';
-                        echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=delete&id='.$list->getId().'"><img src="images/icons/cross.png"/></a>';
-                    } else {
-                        echo '<img src="images/icons/star.png"/>';
-                    }
-                    ?>
-                </td>
-            </tr>
-        <?php } ?>
-        <tfoot>
-        <tr>
-            <th><?= $_LANG->get('ID') ?></th>
-            <th><?= $_LANG->get('Titel') ?></th>
-            <th><?= $_LANG->get('Standard') ?></th>
-        </tr>
-        </tfoot>
-    </table>
-</div>
 
 
 <script language="JavaScript">

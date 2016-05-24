@@ -24,13 +24,14 @@ if ($_REQUEST["exec"] == "save"){
 }
 $all_country = Country::getEveryCountry();
 ?>
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-		<a href="#top" class="menu_item">Seitenanfang</a>
-		<a href="#" class="menu_item" onclick="$('#countries_form').submit();">Speichern</a>
-	</div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Speichern','#',"$('#countries_form').submit();",'glyphicon-floppy-disk');
+
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
