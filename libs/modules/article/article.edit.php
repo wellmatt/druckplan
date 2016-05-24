@@ -240,23 +240,22 @@ function printSubTradegroupsForSelect($parentId, $depth){
 </table>
 </br>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#article_edit').submit();">Speichern</a>
-        <?php if ($article->getId()>0){?>
-        <a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user&startart=<?php echo $article->getId();?>" class="menu_item">Neuer Vorgang</a>
-        <?php }?>
-        <?php if ($article->getOrderid()>0){?>
-        <a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?php echo $article->getOrderid();?>&step=4" class="menu_item">Zur Kalkulation</a>
-        <?php }?>
-        <?php if ($_USER->isAdmin()){?>
-            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&did=<?=$article->getId()?>');">Löschen</a>
-        <?php }?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#article_edit').submit();",'glyphicon-floppy-disk');
+if ($article->getId()>0){
+	$quickmove->addItem('Neuer Vorgang','index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user&startart='.$article->getId(),null,'glyphicon-book');
+}
+if ($article->getOrderid()>0){
+	$quickmove->addItem('Zur Kalkulation','index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$article->getOrderid().'&step=4',null,'glyphicon-book');
+}
+if ($_USER->isAdmin() && $article->getId()>0){
+	$quickmove->addItem('Löschen', '#', "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&did=".$article->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="article_edit" id="article_edit" onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))" enctype="multipart/form-data">
 	<input type="hidden" name="exec" value="edit"> 
