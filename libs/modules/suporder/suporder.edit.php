@@ -46,18 +46,16 @@ $suppliers = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 
-
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=libs/modules/suporder/suporder.overview.php" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#suporder_form').submit();">Speichern</a>
-        <?php if ($suporder->getId() > 0){ ?>
-        <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/suporder/suporder.overview.php&exec=delete&id=<?=$suporder->getId()?>');">Löschen</a>
-        <?php } ?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page=libs/modules/suporder/suporder.overview.php',null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#suporder_form').submit();",'glyphicon-floppy-disk');
+if ($suporder->getId()>0){
+    $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/suporder/suporder.overview.php&exec=delete&id=".$suporder->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <?php if (isset($savemsg)) { ?>
 <div class="alert">

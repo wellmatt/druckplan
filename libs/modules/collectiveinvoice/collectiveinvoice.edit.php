@@ -664,18 +664,17 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	</table>
 </div>
 <br/>
-	
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#form_collectiveinvoices').submit();">Speichern</a>
-        <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){ ?>
-            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=<?php echo $collectinv->getId();?>')">Löschen</a>
-        <?}?>
-    </div>
-</div>
+
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#form_collectiveinvoices').submit();",'glyphicon-floppy-disk');
+if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
+	$quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=".$collectinv->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 	
 <?//--------------------------Beginn Formular----------------------------?>
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="form_collectiveinvoices" name="form_collectiveinvoices" onsubmit="return checkform(new Array(colinv_title))">

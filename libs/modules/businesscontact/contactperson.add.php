@@ -211,21 +211,20 @@ $(function() {
 	</tr>
 </table>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="#" class="menu_item" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$_REQUEST["id"]?>&tabshow=4'">Zurück</a>
-        <?php if($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)){?>
-        <a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
-        <?php } ?>
-    	<? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){ ?>
-        	<?if($_REQUEST["exec"] != "new"){?>
-                <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$contactperson->getId()?>&id=<?=$contactperson->getBusinessContact()->getID()?>')">Löschen</a>
-        	<?}?>
-        <?}?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','#',"index.php?page=".$_REQUEST['page']."&exec=edit&id=".$_REQUEST["id"]."&tabshow=4'",'glyphicon-step-backward');
+if($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)) {
+	$quickmove->addItem('Speichern', '#', "$('#user_form').submit();", 'glyphicon-floppy-disk');
+}
+if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){
+	if($_REQUEST["exec"] != "new"){
+	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete_cp&cpid=".$contactperson->getId()."&id=".$contactperson->getBusinessContact()->getID()."');", 'glyphicon-trash', true);
+}
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form" 
 	onsubmit="return checkform(new Array(this.name1))">

@@ -107,19 +107,19 @@ $(function() {
 });
 </script>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-		<a href="#top" class="menu_item">Seitenanfang</a>
-		<a href="#" class="menu_item" onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.overview.php'">Zurück</a>
-		<a href="#" class="menu_item" onclick="$('#user_form').submit();">Speichern</a>
-		<? if(($privatecontact->getId()>0 && $privatecontact->getCrtuser()->getId() == $_USER->getId()) || $_USER->isAdmin()){ ?>
-			<?if($_REQUEST["exec"] != "new"){?>
-				<a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$privatecontact->getId()?>')">Löschen</a>
-			<?}?>
-		<?}?>
-	</div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page=libs/modules/privatecontacts/privatecontact.overview.php',null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#user_form').submit();",'glyphicon-floppy-disk');
+if(($privatecontact->getId()>0 && $privatecontact->getCrtuser()->getId() == $_USER->getId()) || $_USER->isAdmin()){
+if($_REQUEST["exec"] != "new"){
+	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$privatecontact->getId()."');", 'glyphicon-trash', true);
+}
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">

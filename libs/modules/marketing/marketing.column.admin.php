@@ -65,6 +65,7 @@ $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang', '#top', null, 'glyphicon-chevron-up');
 $quickmove->addItem('Speichern', '#', "$('#marketing_column_form').submit();", 'glyphicon-floppy-disk');
 
+
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 

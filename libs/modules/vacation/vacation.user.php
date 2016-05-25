@@ -38,12 +38,12 @@ $users = User::getAllUser();
 <script src='jscripts/calendar/fullcalendar.min.js'></script>
 <script src='jscripts/calendar/de.js'></script>
 
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#" class="menu_item" onclick="$('#vacuser').submit();">Speichern</a>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Speichern','#',"$('#vacuser').submit();",'glyphicon-floppy-disk');
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">

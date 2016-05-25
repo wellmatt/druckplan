@@ -29,6 +29,10 @@ $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#chromaticity_form').submit();",'glyphicon-floppy-disk');
 
+if ($chr->getId()>0){
+	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$chr->getId()."');", 'glyphicon-trash', true);
+}
+
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 

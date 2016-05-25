@@ -177,12 +177,12 @@ function print(){
 
 
 <div id="save_values" style="display: hidden;"></div>
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#" class="menu_item" onclick="move_now();">Jetzt verschieben</a>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Jetzt verschieben','#',"move_now();",'glyphicon-step-backward');
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 
 	
 <div class="row">

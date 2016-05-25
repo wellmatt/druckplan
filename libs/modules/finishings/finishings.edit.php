@@ -26,6 +26,10 @@ $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#paper_form').submit();",'glyphicon-floppy-disk');
 
+if ($finishing->getId()>0){
+	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$finishing->getId()."');", 'glyphicon-trash', true);
+}
+
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 

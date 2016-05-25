@@ -36,17 +36,17 @@ if ($_REQUEST["exec"] == "edit"){
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <script src="jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
 
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=libs/modules/storage/storage.overview.php" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#storagearea_form').submit();">Speichern</a>
-        <?php if ($storagearea->getId() > 0){ ?>
-        <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/storage/storage.overview.php&exec=delete&id=<?=$storagearea->getId()?>');">Löschen</a>
-        <?php } ?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page=libs/modules/storage/storage.overview.php',null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#storagearea_form').submit();",'glyphicon-floppy-disk');
+if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
+    $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/storage/storage.overview.php&exec=delete&id=".$storagearea->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 
 <?php if (isset($savemsg)) { ?>
 <div class="alert">

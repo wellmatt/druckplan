@@ -33,18 +33,18 @@ $lists = MarketingList::getAllLists();
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=libs/modules/marketing/marketing.overview.php&list=<?php echo $_REQUEST["list"];?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#marketing_job_form').submit();">Speichern</a>
-        <a href="#" class="menu_item" onclick="$('#entry_id').val(0); $('#marketing_job_form').submit();">Als neuen Eintrag speichern</a>
-        <?php if ($marketingjob->getId()>0){ ?>
-            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$marketingjob->getId()?>');">Löschen</a>
-        <?php } ?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page=libs/modules/marketing/marketing.overview.php&list='.$_REQUEST['list'].'',null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#marketing_job_form').submit();",'glyphicon-floppy-disk');
+$quickmove->addItem('Als neuen Eintrag speichern','#',"$('#entry_id').val(0); $('#marketing_job_form').submit();",'glyphicon-floppy-disk');
+if ($marketingjob->getId()>0){
+    $quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$marketingjob->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form" class="form-horizontal">
     <input type="hidden" name="exec" value="save"/>
     <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>

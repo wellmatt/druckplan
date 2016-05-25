@@ -39,14 +39,6 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 		  </div>
 	<div class="table-responsive">
 		<table class="table table-hover">
-			<colgroup>
-				<col width="40">
-				<col width="180">
-				<col>
-				<col width="100">
-				<col width="80">
-				<col width="45">
-			</colgroup>
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('ID')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Titel')?></td>

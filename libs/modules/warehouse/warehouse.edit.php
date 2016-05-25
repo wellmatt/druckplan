@@ -87,14 +87,17 @@ function openSearchWindow(id)
 
 <?//------------------ Tabelle mit den Demodaten ----------------------------------------------------------?>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#stock_form').submit();">Speichern</a>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#stock_form').submit();",'glyphicon-floppy-disk');
+if ($stock->getId()>0){
+	$quickmove->addItem('Löschen', '#',"askDel('index.php?page=".$_REQUEST['page']."&exec=delete&stockid=".$stock->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
 
 <form id="stock_form" name="stock_form" method="post">
 <input type="hidden" id="stockid" name="stockid" value="<?=$stock->getId()?>" />

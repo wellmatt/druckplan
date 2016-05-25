@@ -154,17 +154,16 @@ $(function() {
 	</tr>
 </table>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <?php if($vacation->getState() != Urlaub::STATE_APPROVED || $_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_URLAUB)){?>
-            <a href="#" class="menu_item" onclick="$('#vacation_form').submit();">Speichern</a>
-            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=<?php echo $_REQUEST['page'];?>&exec=delvacation&id=<?php echo $vacation->getId();?>')">Löschen</a>
-        <?php } ?>
-    </div>
-</div>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+if($vacation->getState() != Urlaub::STATE_APPROVED || $_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_URLAUB)) {
+    $quickmove->addItem('Speichern', '#', "$('#vacation_form').submit();", 'glyphicon-floppy-disk');
+    $quickmove->addItem('Löschen', '#',"askDel('index.php?page=".$_REQUEST['page']."&exec=delvacation&id".$vacation->getId()."');", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
 <div class="box1">
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="vacation_form" id="vacation_form">
