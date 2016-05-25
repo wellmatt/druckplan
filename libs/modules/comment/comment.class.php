@@ -34,8 +34,7 @@ class Comment {
     
     function __construct($id = 0){
         global $DB;
-        global $_USER;
-    
+
         $this->crtuser	= new User(0);
         $this->crtcp	= new ContactPerson(0);
     
@@ -79,7 +78,7 @@ class Comment {
     {
         global $DB;
         $now = time();
-        $tmp_com = mysql_real_escape_string($this->comment);
+        $tmp_com = addslashes($this->comment);
         
         if ($this->id > 0) {
             $sql = "UPDATE comments SET

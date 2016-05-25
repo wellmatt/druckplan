@@ -48,7 +48,7 @@ switch ($_REQUEST["exec"]) {
     	        if ($res)
     	        {
     	            $orderamounts = Array();
-    	            foreach (Calculation::getAllCalculations($tmp_order) as $tmp_calc)
+    	            foreach (Calculation::getAllCalculations($tmp_order,Calculation::ORDER_AMOUNT) as $tmp_calc)
     	            {
     	                if ($tmp_calc->getState())
     	                {
@@ -129,7 +129,7 @@ switch ($_REQUEST["exec"]) {
 	            $article->delteCostSeperations();
 	             
 	            $orderamounts = Array();
-	            foreach (Calculation::getAllCalculations($tmp_order) as $tmp_calc)
+	            foreach (Calculation::getAllCalculations($tmp_order,Calculation::ORDER_AMOUNT) as $tmp_calc)
 	            {
 	                if ($tmp_calc->getState())
 	                {

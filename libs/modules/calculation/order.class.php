@@ -530,10 +530,14 @@ class Order {
     }
 
 
-    public static function generateSummary($orderid)
+    /**
+     * @param $order
+     * @param $colinv
+     * @return string
+     */
+    public static function generateSummary(Order $order, CollectiveInvoice $colinv)
     {
         global $_USER;
-        $order = new Order($orderid);
         $html = "";
         
         $html .= '<h1>Kalkulationsbersicht</h1>';

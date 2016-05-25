@@ -2,7 +2,7 @@
 
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title', 'shop_customer' );
+    $aColumns = array( 'id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title', 'shop_customer', 'shoprel' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -192,7 +192,7 @@
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title 
+    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shoprel
                FROM article 
                LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
                $sWhere
@@ -306,7 +306,11 @@
                     $shopstr = '<img src="images/status/green_small.gif" title="'.$shoptitle.'">';
                     $row[] = $shopstr;
                 } else {
-                    $row[] = '<img src="images/status/red_small.gif">';
+                    if ($aRow['shoprel'] == 1){
+                        $row[] = '<img src="images/status/green_small.gif" title="Freigabe für Alle">';
+                    } else {
+                        $row[] = '<img src="images/status/red_small.gif">';
+                    }
                 }
             }
             else if ( $aColumns[$i] == 'article_tags' )
@@ -326,14 +330,16 @@
                     $row[] = '';
                 }
             }
+            else if ( $aColumns[$i] == 'shoprel' )
+            {
+                /* do not print the shoprel */
+            }
             else if ( $aColumns[$i] == 'id' )
             {
-                /* do not print the id */
                 $row[] = $aRow[ $aColumns[$i] ];
             }
             else if ( $aColumns[$i] == 'article.matchcode' )
             {
-                /* do not print the id */
                 $row[] = nl2br(htmlentities(utf8_encode($aRow['matchcode'])));
             }
             else

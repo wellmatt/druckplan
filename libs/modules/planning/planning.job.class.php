@@ -179,7 +179,22 @@ class PlanningJob {
         elseif ($this->type == PlanningJob::TYPE_K)
         {
             $title = "PL-Job - " .$this->object->getNumber(). " - " .$this->artmach->getName();
-            $comm = Order::generateSummary($this->subobject->getId());
+            $docs = Document::getDocuments(Array("type" => Document::TYPE_FACTORY, "requestId" => $this->object->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
+            if(count($docs) > 0){
+                $doc = $docs[count($docs)-1];
+                $file = $doc->getFilename(Document::VERSION_PRINT);
+                $docname = $doc->getName();
+            } else {
+                $doc = new Document();
+                $doc->setRequestId($this->object->getId());
+                $doc->setRequestModule(Document::REQ_MODULE_COLLECTIVEORDER);
+                $doc->setType(Document::TYPE_FACTORY);
+                $doc->createDoc(Document::VERSION_PRINT, false, false);
+                $doc->save();
+                $file = $doc->getFilename(Document::VERSION_PRINT);
+                $docname = $doc->getName();
+            }
+//            $comm = Order::generateSummary($this->subobject, $this->object);
         }
         $ticket->setCustomer($this->object->getCustomer());
         $ticket->setCustomer_cp($this->object->getCustContactperson());
@@ -208,6 +223,24 @@ class PlanningJob {
             $comment->setVisability(Comment::VISABILITY_INTERNAL);
             $comment->setComment($comm);
             $comment->save();
+
+            if (isset($file) && $file != '' && $file != null){
+                $tmp_attachment = new Attachment();
+                $tmp_attachment->setCrtdate(time());
+                $tmp_attachment->setCrtuser($_USER);
+                $tmp_attachment->setModule("Comment");
+                $tmp_attachment->setObjectid($comment->getId());
+
+                $destination = "./docs/attachments/";
+                $filename = md5($file.time());
+                $new_filename = $destination.$filename;
+                $tmp_outer = copy($file, $new_filename);
+                if ($tmp_outer) {
+                    $tmp_attachment->setOrig_filename($docname.'.pdf');
+                    $tmp_attachment->setFilename($filename);
+                    $save_ok2 = $tmp_attachment->save();
+                }
+            }
             
             $asso = new Association();
             $asso->setCrtdate(time());

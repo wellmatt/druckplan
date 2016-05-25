@@ -269,8 +269,8 @@ function createSelects(id,count,workload)
 		<tr>
 			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Bemerkung')?></td>
 			<td class="content_row" valign="top"><?php echo $header_comment;?></td>
-			<td class="content_row" valign="top">&nbsp;</td>
-			<td class="content_row" valign="top">&nbsp;</td>
+            <td class="content_row content_row_header" valign="top"><?=$_LANG->get('FL-Bemerkung')?></td>
+            <td class="content_row" valign="top"><?php echo $colinv->getThirdpartycomment();?></td>
 		</tr>
 	</table>
 </div>
@@ -399,7 +399,7 @@ function createSelects(id,count,workload)
                            		   </td>
                            	   </tr>
     	                       <?php
-    	                       $time_total += printPrice($me->getTime()/60,2);
+    	                       $time_total += $me->getTime()/60;
     	                       $x++;
     	                       $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$me->getId()} AND artmach = {$me->getMachine()->getId()}");
     	                       if (count($tmp_planned_jobs)==0)
@@ -443,7 +443,7 @@ function createSelects(id,count,workload)
                		   </td>
               	   </tr>
                    <?php
-                   $time_total += printPrice($opos->getQuantity(),2);
+                   $time_total += $opos->getQuantity();
                    $x++;
                    
     	           $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$opos->getId()} AND artmach = {$opos_article->getId()}");

@@ -904,6 +904,30 @@ function callBoxFancyAbo(my_href) {
 	}
 </script>
 
+
+<script>
+    $(function() {
+        $("a#hiddenclicker_preview").fancybox({
+            'type'          :   'iframe',
+            'transitionIn'	:	'elastic',
+            'transitionOut'	:	'elastic',
+            'speedIn'		:	600,
+            'speedOut'		:	200,
+            'width'         :   1024,
+            'height'		:	768,
+            'scrolling'     :   'yes',
+            'overlayShow'	:	true,
+            'helpers'		:   { overlay:null, closeClick:true }
+        });
+    });
+    function callBoxFancyPreview(my_href) {
+        var j1 = document.getElementById("hiddenclicker_preview");
+        j1.href = my_href;
+        $('#hiddenclicker_preview').trigger('click');
+    }
+</script>
+<div id="hidden_clicker_preview" style="display:none"><a id="hiddenclicker_preview" href="http://www.google.com" >Hidden Clicker</a></div>
+
 <body>
 
 <script type="text/javascript" src="jscripts/jquery.easing.1.3.js"></script>
@@ -1717,9 +1741,17 @@ echo $quickmove->generate();
                                                             <?php
                                                             foreach (Attachment::getAttachmentsForObject(get_class($comment), $comment->getId()) as $c_attachment) {
                                                                 if ($c_attachment->getState() == 1)
-                                                                    echo '<span><a href="' . Attachment::FILE_DESTINATION . $c_attachment->getFilename() . '" download="' . $c_attachment->getOrig_filename() . '">' . $c_attachment->getOrig_filename() . '</a></span></br>';
+                                                                    if (strstr($c_attachment->getOrig_filename(),'.pdf')){
+                                                                        echo '<span><a class="pointer" onclick="callBoxFancyPreview(\'libs/modules/tickets/ticket.pdfviewer.php?pdffile='.$c_attachment->getFilename().'\');">' . $c_attachment->getOrig_filename() . '</a></span></br>';
+                                                                    } else {
+                                                                        echo '<span><a href="' . Attachment::FILE_DESTINATION . $c_attachment->getFilename() . '" download="' . $c_attachment->getOrig_filename() . '">' . $c_attachment->getOrig_filename() . '</a></span></br>';
+                                                                    }
                                                                 elseif ($c_attachment->getState() == 0 && $_USER->isAdmin())
-                                                                    echo '<span><del><a href="' . Attachment::FILE_DESTINATION . $c_attachment->getFilename() . '" download="' . $c_attachment->getOrig_filename() . '">' . $c_attachment->getOrig_filename() . '</a></del></span></br>';
+                                                                    if (strstr($c_attachment->getOrig_filename(),'.pdf')){
+                                                                        echo '<span><del><a class="pointer" onclick="callBoxFancyPreview(\'libs/modules/tickets/ticket.pdfviewer.php?pdffile='.$c_attachment->getFilename().'\');">' . $c_attachment->getOrig_filename() . '</a></del></span></br>';
+                                                                    } else {
+                                                                        echo '<span><del><a href="' . Attachment::FILE_DESTINATION . $c_attachment->getFilename() . '" download="' . $c_attachment->getOrig_filename() . '">' . $c_attachment->getOrig_filename() . '</a></del></span></br>';
+                                                                    }
                                                             }
                                                             ?>
                                                         </div>

@@ -117,6 +117,11 @@ class Attachment {
     }
 
 
+    /**
+     * @param $module
+     * @param $objectid
+     * @return Attachment[]
+     */
     public static function getAttachmentsForObject($module,$objectid)
     {
         global $DB;

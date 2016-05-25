@@ -471,10 +471,6 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 			'height'		:	768, 
 		    'scrolling'     :   'yes',
 			'overlayShow'	:	true,
-// 		    'fitToView'     :   true,
-// 		    'autoSize'      :   true,
-// 		    'autoCenter'    :   true,
-// 		    'height'        :   'auto',
 			'helpers'		:   { overlay:null, closeClick:true }
 		});
 	});

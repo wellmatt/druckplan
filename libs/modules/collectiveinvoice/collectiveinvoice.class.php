@@ -214,7 +214,6 @@ class CollectiveInvoice{
                     rdyfordispatch = {$this->rdyfordispatch},
                     thirdparty = {$this->thirdparty},
                     thirdpartycomment = '{$this->thirdpartycomment}',
-                    
                     offer_header = '{$this->offer_header}',
                     offer_footer = '{$this->offer_footer}',  
                     offerconfirm_header = '{$this->offerconfirm_header}',  
@@ -233,6 +232,8 @@ class CollectiveInvoice{
 			$res = $DB->no_result($sql);
 		} else {
 			$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_COLINV);
+			$this->crtdate = $now;
+			$this->crtuser = $_USER;
 			$sql = "INSERT INTO collectiveinvoice
 				(status, title, number, crtdate, crtuser, 
 				 deliverycosts, comment, businesscontact, client,
