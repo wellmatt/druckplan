@@ -29,7 +29,7 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 			</td>
 			<td><?=$savemsg?></td>
 			<td width="200" class="content_header" align="right">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/bank--plus.png"><?=$_LANG->get('Mahnstufe hinzuf&uuml;gen')?> </a>
+				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><span class="glyphicons glyphicons-bank pointer "></span><?=$_LANG->get('Mahnstufe hinzuf&uuml;gen')?> </a>
 			</td>
 		</tr>
 	</table>
@@ -61,9 +61,9 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 						<?=substr($warn->getText(), 0, 250)?> <?if(strlen($warn->getText()) > 250 ) echo "...";?>
 					</td>
 					<td class="content_row">
-		                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&wid=<?=$warn->getId()?>"><img src="images/icons/pencil.png" title="<?=$_LANG->get('Bearbeiten')?>"></a>
+		                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&wid=<?=$warn->getId()?>"><span class="glyphicons glyphicons-pencil pointer" title="<?=$_LANG->get('Bearbeiten')?>"></span> </a>
 						&ensp;
-		                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$warn->getId()?>')"><img src="images/icons/cross-script.png" title="<?=$_LANG->get('L&ouml;schen')?>"></a>
+		                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$warn->getId()?>')"><span class="glyphicons glyphicons-remove pointer " title="<?=$_LANG->get('L&ouml;schen')?>"></span> </a>
 	            	</td>
 				</tr>
 				<? $x++;

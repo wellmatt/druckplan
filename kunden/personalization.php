@@ -642,8 +642,10 @@ if ($_REQUEST["exec"] == "edit"){
 								<form action="index.php" method="post" name="perso_ver_search" id="perso_ver_search" >
 									<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
 									<input name="search_ver_string" type="text" value="<?=$search_ver_string?>" style="width:150px;"/>
-									<img src="../images/icons/magnifier-left.png" alt="<?=$_LANG->get('Suchen');?>" class="pointer"
-										 onClick="document.getElementById('perso_ver_search').submit()" />
+									<span class="glyphicons glyphicons-search pointer"
+										  alt="<?=$_LANG->get('Suchen');?>"
+										  onClick="document.getElementById('perso_ver_search').submit()">
+									</span>
 								</form>
 							</span>
 						</h3>

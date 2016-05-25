@@ -169,7 +169,7 @@ $(document).ready(function() {
 <table width="100%">
     <tr>
         <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/alarm-clock.png"> <?=$_LANG->get('Abonnements bearbeiten');?></h1>
+            <h1><span class="glyphicons glyphicons-alarm"></span> <?=$_LANG->get('Abonnements bearbeiten');?></h1>
         </td>
         <td class="content_header"><?=$savemsg?></td>
     </tr>
@@ -190,7 +190,7 @@ $(document).ready(function() {
 	<tr>
 		<td class="content_row_clear">
 			<input type="checkbox" name="abo_users[]" id="chkb_<?=$u->getId()?>" <? if(Abonnement::hasAbo($object,$u)) echo " checked ";?> value="<?=$u->getId()?>">
-			<img src="../../../images/icons/user.png" />
+            <span class="glyphicons glyphicons-user"></span>
 			<?=$u->getLogin()?>
 		</td>
 		<td class="content_row_clear" id="user_name_<?=$u->getId()?>"><?=$u->getNameAsLine()?></td>

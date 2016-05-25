@@ -27,7 +27,7 @@ function printSubTreeEdit($tree, $i = 1)
 
         if ($ausgabe)
         {
-            echo '<p class="menu_level'.($i+1).'"><img src="images/icons/plus-small.png">';
+            echo '<p class="menu_level'.($i+1).'"><span class="glyphicons glyphicons-plus">&nbsp;</span>';
             echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&parent='.$t->getPid().'">';
             echo $_LANG->get('Neuer Eintrag').'</a></p>';
         }
@@ -127,7 +127,7 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
 <td width="200" valign="top">
     <div class="menuedit">
     <?=printSubTreeEdit($_MENU->getElements())?>
-    <p class="menu_level1"><img src="images/icons/plus-small.png"> <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&parent=0"><?=$_LANG->get('Neuer Eintrag')?></p>
+    <p class="menu_level1"><span class="glyphicons glyphicons-plus pointer"></span> <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&parent=0"><?=$_LANG->get('Neuer Eintrag')?></p>
     </div>        
 </td>
 <td width="20">&nbsp;</td>

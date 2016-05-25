@@ -5,7 +5,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
-//TOOD: Prüfen, ob die Hidden-Felder noch gebraucht werden
+//TOOD: Prï¿½fen, ob die Hidden-Felder noch gebraucht werden
 ?>
 
 <script language="javascript">
@@ -49,7 +49,7 @@
 		<td align="right">
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="mainsearch_form" id="mainsearch_form" 
 		onsubmit="return setvalues()">
-	<?//Hidden-Felder für die Suche-Einträge auf der Startseite?>
+	<?//Hidden-Felder fï¿½r die Suche-Eintrï¿½ge auf der Startseite?>
 	<input type="hidden" name="pid" id="hidden_pid" value="0">
 	<input type="hidden" name="submit_search" id="hidden_sub" value="true">
 	<input type="hidden" name="header_search" id="hidden_hs" value="true">
@@ -62,8 +62,10 @@
     <?=$_LANG->get('Suche')?>
     <input 	id="mainsearch_string" name="mainsearch_string" style="width:200px" 
     		value="<?=$_REQUEST["mainsearch_string"] ?>" >&nbsp;
-    <img style="cursor: pointer;" alt="" src="images/icons/magnifier-left.png"
-    		onclick="setValues(1)" >
+	<span class="glyphicons glyphicons-search pointer"
+		onclick="setValues(1)" alt="">
+	</span>
+
 </form>
 		</td>
 	</td>

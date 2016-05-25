@@ -164,7 +164,7 @@ $(document).ready(function() {
 				<span class="pull-right">
 					<img src="images/icons/glyphicons-596-paired.svg">
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">
-						<?=$_LANG->get('Vorgänge Zusammenführen') ?>
+						<?=$_LANG->get('Vorgänge zusammenführen') ?>
 					</button>
 				</span>
 				<?php }?>

@@ -265,7 +265,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 									<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
 										<?=substr($entry->getTitle(),0,21)?></a></td>
 								<?php if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){if($artic->getShop_needs_upload()==1){?>
-									<td><label class="filebutton"><img src="../images/icons/disk--plus.png"/>
+									<td><label class="filebutton"<span class="glyphicons glyphicons-floppy-disk pointer"></span>
 											<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label></td>
 								<?php }}?>
 							</tr></table>

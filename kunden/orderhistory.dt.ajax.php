@@ -282,8 +282,9 @@ while ( $aRow = mysqli_fetch_array( $rResult ) )
                 $posrow .= $pos->getCommentForShop() . ' ';
                 if ($pos->getFile_attach()>0){
                     $tmp_attach = new Attachment($pos->getFile_attach());
-                    $posrow .= '<a href="../'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
-                                              <img src="../images/icons/disk--arrow.png" title="Angehängte Datei herunterladen"> '.$tmp_attach->getOrig_filename().'</a>';
+                    $posrow .= '<span class="glyphicons glyphicons-floppy-disk"></span><a href="../'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
+                                               '.$tmp_attach->getOrig_filename().'</a>';
+
                 }
             }
             $row[] = $posrow;

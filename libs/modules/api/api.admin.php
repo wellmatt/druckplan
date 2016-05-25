@@ -25,7 +25,7 @@ echo $quickmove->generate();
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <img src="images/icons/gear.png">
+            <span class="glyphicons glyphicons-cogwheel"></span>
             API-Einstellungen
         </h3>
     </div>
@@ -66,8 +66,7 @@ echo $quickmove->generate();
                             </select>
                         </td>
                         <td class="content_row_clear"><input name="new_posturl"/></td>
-                        <td class="content_row_clear"><a href="#" onclick="$('#api_form').submit();"><img
-                                    src="images/icons/plus.png" class="pointer icon-link"> generieren</a></td>
+                        <td class="content_row_clear"><a href="#" onclick="$('#api_form').submit();"><span class="glyphicons glyphicons-plus pointer"></span>  generieren</a></td>
                     </tr>
                 </table>
             </div>

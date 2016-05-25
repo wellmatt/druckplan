@@ -271,7 +271,10 @@ $(function() {
 			</a>
 			<input type="hidden" name="doc_existingid_<?=$x?>" name="doc_existingid_<?=$x?>" value="<?=(int)$document->getId()?>" />
 			<?if($document->getStornoDate() > 0){?>
-				<img src="images/icons/exclamation.png" title="<?=$_LANG->get('Storno am')." ".date("d.m.Y",$document->getStornoDate())?>">
+				<span class="glyphicons glyphicons-exclamation-sign"
+				title="<?=$_LANG->get('Storno am')." ".date("d.m.Y",$document->getStornoDate())?>">
+				</span>
+
 			<?}?>
 		</td>
 		<td class="content_row">

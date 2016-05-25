@@ -27,7 +27,7 @@ if ($_REQUEST["exec"] == "edit")
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Benutzer
 				<span class="pull-right">
-					<img src="images/icons/user--plus.png">
+					<span class="glyphicons glyphicons-user"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
 						<?=$_LANG->get('Benutzer hinzuf&uuml;gen')?>
 					</button>
@@ -73,8 +73,8 @@ if ($_REQUEST["exec"] == "edit")
 							  <td class="content_row"><? if($u->isActive()) echo '<img src="images/status/green_small.gif">'; else echo '<img src="images/status/red_small.gif">';?>
 							  </td>
 							  <td class="content_row">
-								  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$u->getId()?>"><img src="images/icons/pencil.png"></a>
-								  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$u->getId()?>')"><img src="images/icons/cross-script.png"></a>
+								  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$u->getId()?>"><span class="glyphicons glyphicons-pencil pointer"></span></a>
+								  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$u->getId()?>')"><span class="glyphicons glyphicons-remove pointer"></span></a>
 							  </td>
 						  </tr>
 						  <?

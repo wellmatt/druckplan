@@ -257,7 +257,7 @@ echo $quickmove->generate();
                              <tr>
                                 <td class="content_row_clear"><?=$u->getLogin()?></td>
                                 <td class="content_row_clear"><?=$u->getFirstname()?> <?=$u->getLastname()?></td>
-                                <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=removeuser&uid=<?=$u->getId()?>'"><img src="images/icons/minus.png" /></a></td>
+                                <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=removeuser&uid=<?=$u->getId()?>'"><span class="glyphicons glyphicons-minus pointer"></span></a></td>
                              </tr>
                           <?}}?>
                     <tr>
@@ -274,7 +274,7 @@ echo $quickmove->generate();
                             <tr>
                                 <td class="content_row_clear"><?=$u->getLogin()?></td>
                                 <td class="content_row_clear"><?=$u->getFirstname()?> <?=$u->getLastname()?></td>
-                                <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=adduser&uid=<?=$u->getId()?>'"><img src="images/icons/plus.png" /></a></td>
+                                <td class="content_row_clear"><a class="icon-link" href="#" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>&subexec=adduser&uid=<?=$u->getId()?>'"><span class="glyphicons glyphicons-plus pointer"></span></a></td>
                             </tr>
                         <?}}?>
                 </table>

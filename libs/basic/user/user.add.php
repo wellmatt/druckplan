@@ -631,7 +631,7 @@ echo $quickmove->generate();
 													<td><?= $g->getDescription() ?></td>
 													<td>
 														<a href="#" class="icon-link" onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $user->getId() ?>&subexec=removegroup&gid=<?= $g->getId() ?>'">
-															<img src="images/icons/minus.png"/>
+															<span class="glyphicons glyphicons-minus pointer"></span>
 														</a>
 													</td>
 												</tr>
@@ -663,7 +663,7 @@ echo $quickmove->generate();
 													<td><?= $g->getDescription() ?></td>
 													<td>
 														<a href="#" class="icon-link" onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $user->getId() ?>&subexec=addgroup&gid=<?= $g->getId() ?>'">
-															<img src="images/icons/plus.png"/>
+															<span class="glyphicons glyphicons-plus pointer"></span>
 														</a>
 													</td>
 												</tr>
@@ -696,8 +696,8 @@ echo $quickmove->generate();
 									<td class="content_row_header">&ensp;</td>
 									<td class="content_row_header"><?= $_LANG->get('Rechte') ?></td>
 									<td class="content_row_header">&ensp;</td>
-									<td class="content_row_header"><img src="images/icons/plus.png"
-																		class="pointer icon-link" onclick="addEMailRow()">
+									<td class="content_row_header"><span class="glyphicons glyphicons-plus pointer" onclick="addEMailRow()"></span>
+
 									</td>
 								</tr>
 								<? $x = 0;
@@ -763,8 +763,10 @@ echo $quickmove->generate();
 											<td class="content_row">
 												<a onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=deletemail&mailid=<?= $emailaddress->getId() ?>&id=<?= $user->getId() ?>')"
 												   class="icon-link"
-												   href="#"><img src="images/icons/cross-script.png"
-																 title="<?= $_LANG->get('E-Mail-Adresse l&ouml;schen') ?>"></a>
+												   href="#"><span class="glyphicons glyphicons-remove pointer"
+													title="<?= $_LANG->get('E-Mail-Adresse l&ouml;schen') ?>">
+													</span>
+
 											</td>
 										</tr>
 										<? $x++;

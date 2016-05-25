@@ -18,7 +18,7 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
                Gruppen
                <span class="pull-right">
-                  <img <img src="images/icons/users.png">
+                  <span class="glyphicons glyphicons-group pointer"></span>
                   <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
                      <?=$_LANG->get('Gruppe hinzuf&uuml;gen')?>
                   </button>
@@ -53,8 +53,8 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                         ?>&nbsp;
                      </td>
                      <td class="content_row">
-                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>"><img src="images/icons/pencil.png"></a>
-                        <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$group->getId()?>')"><img src="images/icons/cross-script.png"></a>
+                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>"><span class="glyphicons glyphicons-pencil pointer"></span></a>
+                        <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$group->getId()?>')"><span class="glyphicons glyphicons-remove pointer"></span></a>
                      </td>
                   </tr>
 

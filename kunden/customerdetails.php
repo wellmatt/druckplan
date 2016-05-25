@@ -445,8 +445,10 @@ function askDel(myurl)
 					  <div class="panel-heading">
 							<h3 class="panel-title">
 								Lieferadressen
-								<img onclick="document.getElementById('neue_lieferadr').style.display='' " src="../images/icons/user--plus.png"
-									 title="<?=$_LANG->get('Neue Lieferadresse anlegen');?>" alt="<?=$_LANG->get('Neue Lieferadresse anlegen');?>">
+								<span class="glyphicons glyphicons-user-add pointer"
+									onclick="document.getElementById('neue_lieferadr').style.display=''"
+									 title="<?=$_LANG->get('Neue Lieferadresse anlegen');?>">
+								</span>
 							</h3>
 					  </div>
 						  <div class="table-responsive">
@@ -494,8 +496,10 @@ function askDel(myurl)
 					  <div class="panel-heading">
 							<h3 class="panel-title">
 								Rechnungsadressen
-								<img onclick="document.getElementById('neue_rechadr').style.display='' " src="../images/icons/user--plus.png"
-									 title="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>" alt="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>">
+								<span class="glyphicons glyphicons-user-add pointer"
+									  onclick="document.getElementById('neue_rechadr').style.display='' "
+									  title="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>">
+								</span>
 							</h3>
 					  </div>
 						  <div class="table-responsive">
