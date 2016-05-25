@@ -19,20 +19,17 @@ $schemes = $calc->getAvailableFoldschemes();
 $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
 ?>
 
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$tmp_all_calcs = Calculation::getAllCalculations($order);
+foreach ($tmp_all_calcs as $tmp_calc){
+    $quickmove->addItem('Auflage '.$tmp_calc->getAmount(),'index.php?page=libs/modules/calculation/order.php&id='.$order->getId().'&calc_id='.$tmp_calc->getId().'&exec=edit&step=3',null,'glyphicon glyphicon-pencil');
+}
+$quickmove->addItem('Weiter','#',"document.getElementsByName('nextstep')[0].value='4';document.step3_form.submit();",'glyphicon-chevron-right');
+$quickmove->addItem('Speichern','#',"document.step3_form.submit();",'glyphicon-floppy-disk');
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-	<?
-	$tmp_all_calcs = Calculation::getAllCalculations($order);
-	foreach ($tmp_all_calcs as $tmp_calc){
-	    echo '<a href="index.php?page=libs/modules/calculation/order.php&id='.$order->getId().'&calc_id='.$tmp_calc->getId().'&exec=edit&step=3" class="menu_item">Auflage '.$tmp_calc->getAmount().'</a>';
-	}
-	?>
-        <a href="#" onclick="document.getElementsByName('nextstep')[0].value='4';document.step3_form.submit();" class="menu_item">Weiter</a>
-        <a href="#" onclick="document.step3_form.submit();" class="menu_item">Speichern</a>
-    </div>
-</div>
 
 <div class="panel panel-default">
     <div class="panel-heading">

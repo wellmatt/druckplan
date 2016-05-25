@@ -482,189 +482,6 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 </script>
 <div id="hidden_clicker" style="display:none"><a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
 
-<?//--------------------------------------HTML ----------------------------------------?>
-<?if ($collectinv->getId() >0){
-
-	$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact());?>
-  <table border="0" cellpadding="2" cellspacing="0" width="100%">
-        <tbody>
-        	<tr>
-                <td width="100%" align="left">
-                    <div class="btn-group" role="group">
-                      <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=docs&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default">Dokumente</button>
-                      <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=notes&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default"><?php if ($collectinv->getId()>0) echo '<span id="notify_count" class="badge">'.Comment::getCommentCountForObject("CollectiveInvoice", $collectinv->getId()).'</span>';?>Notizen</button>
-                      <?php 
-                      $association_object = $collectinv;
-                      $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
-                      ?>
-                      <script type="text/javascript">
-                      function removeAsso(id)
-                      {
-                    	  $.ajax({
-                        		type: "POST",
-                        		url: "libs/modules/associations/association.ajax.php",
-                        		data: { ajax_action: "delete_asso", id: id }
-                        		})
-                      }
-                      </script>
-                      <div class="btn-group dropdown">
-                      <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
-                        Verknüpfungen <span class="badge"><?php echo count($associations);?></span> <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                        <?php 
-                            if (count($associations)>0){
-                                $as = 0;
-                                foreach ($associations as $association){
-                                    if ($association->getModule1() == get_class($association_object) && $association->getObjectid1() == $association_object->getId()){
-                                        $classname = $association->getModule2();
-                                        $object = new $classname($association->getObjectid2());
-                                        $link_href = Association::getPath($classname);
-                                        $object_name = Association::getName($object);
-                                    } else {
-                                        $classname = $association->getModule1();
-                                        $object = new $classname($association->getObjectid1());
-                                        $link_href = Association::getPath($classname);
-                                        $object_name = Association::getName($object);
-                                    }
-                                    echo '<li id="as_'.$as.'"><a href="index.php?page='.$link_href.$object->getId().'">';
-                                    echo $object_name;
-                                    echo '</a>';
-                                    if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
-                                        echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso('.$association->getId().'); $("#as_'.$as.'").remove();\'/>';
-                                    echo '</li>';
-                                    $as++;
-                                }
-                            }
-                            echo '<li class="divider"></li>';
-                            echo '<li><a href="#" onclick="callBoxFancyAsso(\'libs/modules/associations/association.frame.php?module='.get_class($association_object).'&objectid='.$association_object->getId().'\');">Neue Verknüpfung</a></li>';
-                        ?>
-                      </ul>
-                      </div>
-                      <?php if ($collectinv->getId()>0){?>
-
-					  <div class="btn-group dropdown" style="margin-left: 0px;">
-						  <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
-							  Vorschau <span class="caret"></span>
-						  </button>
-						  <ul class="dropdown-menu" role="menu">
-							  <li>
-								  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=1');">Angebot</a>
-                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=2');">Auftragsbestätigung</a>
-                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=5');">Auftragstasche</a>
-                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=3');">Lieferschein</a>
-                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=15');">Etiketten</a>
-                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=4');">Rechnung</a>
-                                  <a href="#" onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId();?>&type=7');">Gutschrift</a>
-							  </li>
-						  </ul>
-					  </div>
-
-                      <div class="btn-group dropdown" style="margin-left: 0px;">
-                          <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
-                            Neu <span class="caret"></span>
-                          </button>
-                          <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="#" onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $collectinv->getCustomer()->getId();?>&contactperson=<?php echo $collectinv->getCustContactperson()->getId();?>&asso_class=<?php echo get_class($collectinv);?>&asso_object=<?php echo $collectinv->getId()?>&tkt_title=<?php echo $collectinv->getNumber().' - '.$collectinv->getTitle();?>');">Ticket erstellen (verknüpft)</a>
-                                </li>
-                          </ul>
-                      </div>
-                      <?php }?>
-                  </div>
-                </td>
-        	</tr>
-        </tbody>
-  </table>
-<?php }?>
-<div class="box1" <?if ($collectinv->getId() >0){?>style="margin-top:50px;"<?}?>>
-	<table width="100%">
-		<tr>
-			<td  class="content_row_header">
-				<?= $_LANG->get('Kundendaten')?>
-			</td>
-			<td align="right">
-			<? echo $savemsg; ?>
-			</td>
-		</tr>
-	</table>
-	<table width'="100%">
-		<colgroup>
-			<col width="180">
-			<col width="350">
-			<col width="180">
-			<col width="300">
-		</colgroup>
-		<tr>
-			<td class="content_row_header">
-				<?= $_LANG->get('Firmenname') ?>
-			</td>
-			<td class="content_row_clear">
-				<a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$selected_customer->getId()?>"><?= $selected_customer->getNameAsLine()?></a>			
-			</td>
-			<td class="content_row_header">
-				<?= $_LANG->get('E-Mail') ?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getEmail()?>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">
-				<?= $_LANG->get('Vor-/Nachname') ?>
-			</td>
-			<td class="content_row_clear">			
-			</td>
-			<td class="content_row_header">
-				<?= $_LANG->get('Telefon') ?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getPhone()?>
-			</td>
-		</tr><tr>
-			<td class="content_row_header">
-				<?= $_LANG->get('Strasse')?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getAddress1()?>			
-			</td>
-			<td class="content_row_header">
-				<?= $_LANG->get('Fax')?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getFax()?>
-			</td>
-		</tr><tr>
-			<td class="content_row_header">
-				<?= $_LANG->get('Postleitzahl/Ort')?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getZip()." ".$selected_customer->getCity()?>
-			</td>
-			<td class="content_row_header">
-				<?= $_LANG->get('Webseite')?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getWeb()?>
-			</td>
-		</tr><tr>
-			<td class="content_row_header">
-				<?= $_LANG->get('Land')?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getCountry()->getName()?>			
-			</td>
-			<td class="content_row_header">
-				<?= $_LANG->get('Bemerkungen')?>
-			</td>
-			<td class="content_row_clear">
-				<?= $selected_customer->getComment() ?>
-			</td>
-		</tr>
-	</table>
-</div>
-<br/>
-
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
@@ -675,516 +492,584 @@ if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
 }
 echo $quickmove->generate();
 // end of Quickmove generation ?>
-	
-<?//--------------------------Beginn Formular----------------------------?>
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="form_collectiveinvoices" name="form_collectiveinvoices" onsubmit="return checkform(new Array(colinv_title))">
-	
-	<input 	type="hidden" name="exec" value="save">
-	<input 	type="hidden" name="ciid" value="<?=$collectinv->getId()?>">
-	
-    <input type="hidden" name="asso_class" value="<?php echo $_REQUEST["asso_class"];?>"> 
-    <input type="hidden" name="asso_object" value="<?php echo $_REQUEST["asso_object"];?>"> 
 
+<?//--------------------------------------HTML ----------------------------------------?>
 
-	<input 	type="hidden" name="colinv_businesscontact"  value="<?=$collectinv->getBusinesscontact()->getId()?>">  
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Auftrag<?php if ($collectinv->getId() > 0) echo ': ' . $collectinv->getNumber(); ?>
+			<? if ($collectinv->getId() > 0) {
+				$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact()); ?>
+				<span class="pull-right" style="margin-top: -6px;">
+						<div class="btn-group" role="group">
+							<button type="button"
+									onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=docs&ciid=<?= $collectinv->getId() ?>';"
+									class="btn btn-sm btn-default">Dokumente
+							</button>
+							<button type="button"
+									onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=notes&ciid=<?= $collectinv->getId() ?>';"
+									class="btn btn-sm btn-default"><?php if ($collectinv->getId() > 0) echo '<span id="notify_count" class="badge">' . Comment::getCommentCountForObject("CollectiveInvoice", $collectinv->getId()) . '</span>'; ?>
+								Notizen
+							</button>
+							<?php
+							$association_object = $collectinv;
+							$associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
+							?>
+							<script type="text/javascript">
+								function removeAsso(id) {
+									$.ajax({
+										type: "POST",
+										url: "libs/modules/associations/association.ajax.php",
+										data: {ajax_action: "delete_asso", id: id}
+									})
+								}
+							</script>
+							<div class="btn-group dropdown">
+								<button type="button" class="btn btn-sm dropdown-toggle btn-default"
+										data-toggle="dropdown" aria-expanded="false">
+									Verknüpfungen <span class="badge"><?php echo count($associations); ?></span> <span
+										class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<?php
+									if (count($associations) > 0) {
+										$as = 0;
+										foreach ($associations as $association) {
+											if ($association->getModule1() == get_class($association_object) && $association->getObjectid1() == $association_object->getId()) {
+												$classname = $association->getModule2();
+												$object = new $classname($association->getObjectid2());
+												$link_href = Association::getPath($classname);
+												$object_name = Association::getName($object);
+											} else {
+												$classname = $association->getModule1();
+												$object = new $classname($association->getObjectid1());
+												$link_href = Association::getPath($classname);
+												$object_name = Association::getName($object);
+											}
+											echo '<li id="as_' . $as . '"><a href="index.php?page=' . $link_href . $object->getId() . '">';
+											echo $object_name;
+											echo '</a>';
+											if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+												echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'/>';
+											echo '</li>';
+											$as++;
+										}
+									}
+									echo '<li class="divider"></li>';
+									echo '<li><a href="#" onclick="callBoxFancyAsso(\'libs/modules/associations/association.frame.php?module=' . get_class($association_object) . '&objectid=' . $association_object->getId() . '\');">Neue Verknüpfung</a></li>';
+									?>
+								</ul>
+							</div>
+							<?php if ($collectinv->getId() > 0) { ?>
 
-<div class="box1">
-	<table width="100%">
-		<tr>
-			<td class="content_row_header">
-			<?= $_LANG->get('Vorgangskopfdaten') ?>
-			</td>
-		</tr>
-	</table>
-	<table width'="100%">
-		<colgroup>
-			<col width="180">
-			<col width="350">
-			<col width="180">
-			<col width="300">
-		</colgroup>
-		<tr>
-			<td class="content_header"><?= $_LANG->get('Vorgangstitel')?></td>
-			<td class="content_row_clear" colspan="3">
-				<input name="colinv_title" style="width: 850px" class="text" 
-				value="<?= $collectinv->getTitle()?>" 
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row"><?=$_LANG->get('Vorgangsnummer')?></td>
-			<td class="content_row"><?=$collectinv->getNumber()?></td>
-			<td class="content_row"><?=$_LANG->get('Erstellt am')?></td>
-			<td class="content_row">
-				<?if ($collectinv->getCrtdate() != 0) echo date("d.m.Y H:i:s",$collectinv->getCrtdate())?>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row"><?= $_LANG->get('Status')?></td>
-			<td class="content_row">
-				<table>
-					<tr>
-						<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?= $collectinv->getId() ?>&exec=setState2&state=1">
-	            				<img class="select" title="<?php echo getOrderStatus(1);?>" src="./images/status/<?
-	            				if($collectinv->getStatus() == 1)
-	            	    				echo 'red.svg';
-					            	else
-										echo 'black.svg'; ?>">
-	                		</a>
-	                	</td>
-	                	<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=2">
-	            				<img class="select" title="<?php echo getOrderStatus(2);?>" src="./images/status/<?
-	            					if($collectinv->getStatus() == 2)
-					                	echo 'orange.svg';
-					                else
-					                	echo 'black.svg';?>">
-							</a>
-						</td>
-						<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=3">
-								<img class="select" title="<?php echo getOrderStatus(3);?>" src="./images/status/<?
-									if($collectinv->getStatus() == 3)
-					                	echo 'yellow.svg';
-					                else
-					                	echo 'black.svg'; ?>">
-							</a>
-						</td>
-						<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=4">
-	            				<img class="select" title="<?php echo getOrderStatus(4);?>" src="./images/status/<?
-	            					if($collectinv->getStatus() == 4)
-	            						echo 'lila.svg';
-									else
-										echo 'black.svg';?>">
-							</a>
-						</td>
-						<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=5">
-	            				<img class="select" title="<?php echo getOrderStatus(5);?>" src="./images/status/<?
-	            					if($collectinv->getStatus() == 5)
-	            						echo 'blue.svg';
-									else
-										echo 'black.svg';?>">
-							</a>
-						</td>
-						<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=6">
-								<img class="select" title="<?php echo getOrderStatus(6);?>" src="./images/status/<?
-								if($collectinv->getStatus() == 6)
-									echo 'light_blue.svg';
-								else
-									echo 'black.svg';?>">
-							</a>
-						</td>
-						<td>
-							<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=7">
-								<img class="select" title="<?php echo getOrderStatus(7);?>" src="./images/status/<?
-								if($collectinv->getStatus() == 7)
-									echo 'green.svg';
-								else
-									echo 'black.svg';?>">
-							</a>
-						</td>
-                        <td>
-                            &nbsp;<?=getOrderStatus($collectinv->getStatus(), true)?>
-                        </td>
-					</tr>
-				</table>
-			</td>
-			<td class="content_row"><?= $_LANG->get('Erstellt von')?></td>
-			<td class="content_row">
-				<?if ($collectinv->getCrtuser()->getId() != 0){
-					echo $collectinv->getCrtuser()->getNameAsLine();
-				}?>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row">&ensp;</td>
-			<td class="content_row">&ensp;</td>
-			<td class="content_row">
-				<?= $_LANG->get('Ge&auml;ndert am')?>
-			</td>
-			<td class="content_row">
-				<?if ($collectinv->getUptdate() != 0) echo date("d.m.Y H:i:s",$collectinv->getUptdate())?>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row"><?= $_LANG->get('Zahlungsart')?></td>
-			<td class="content_row" colspawn="7">
-				<select name="colinv_paymentterm" style="width: 300px" class="text" 
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<option value="0"> &lt; <?=$_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-				<?	foreach($allpaymentterms as $payterm){
-						echo '<option value="'. $payterm->getId() . '"';
-						if($payterm->getId() == $collectinv->getPaymentTerm()->getId())
-						{ 
-						    echo ' selected="selected"'; 
-						} else if ($collectinv->getId() <= 0 && $payterm->getId() == $collectinv->getBusinesscontact()->getPaymentTerms()->getId())
-						{
-						    echo ' selected="selected"'; 
-						}
+								<div class="btn-group dropdown" style="margin-left: 0px;">
+									<button type="button" class="btn btn-sm dropdown-toggle btn-default"
+											data-toggle="dropdown" aria-expanded="false">
+										Vorschau <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=1');">Angebot</a>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=2');">Auftragsbestätigung</a>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=5');">Auftragstasche</a>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=3');">Lieferschein</a>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=15');">Etiketten</a>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=4');">Rechnung</a>
+											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=7');">Gutschrift</a>
+										</li>
+									</ul>
+								</div>
 
-						echo ">".$payterm->getName1() . "</option>";
-					} ?>
-				</select>
-			</td> 
-			<td class="content_row"><?=$_LANG->get('Ge&auml;ndert von')?></td>
-			<td class="content_row">
-				<?if ($collectinv->getUptuser()->getId()){
-					echo $collectinv->getUptuser()->getNameAsLine();
-				}?>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row"><?= $_LANG->get('Lieferadresse')?></td>
-			<td class="content_row" colspawn="7">
-				<select name="colinv_deliveryadress" style="width: 300px" class="text" 
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-				<?	foreach($all_deliveryadress as $adress){
-				        if ($collectinv->getId() == 0)
-				        {
-				            echo '<option value="'. $adress->getId() . '"';
-				            if($adress->getDefault()){ echo ' selected="selected"'; }
-				            echo ">".$adress->getAddressAsLine() . "</option>";
-				        } else {
-    						echo '<option value="'. $adress->getId() . '"';
-    						if($adress->getId() == $collectinv->getDeliveryaddress()->getId()){ echo ' selected="selected"'; }
-    						echo ">".$adress->getAddressAsLine() . "</option>";
-				        }
-					} ?>
-				</select>
-			</td> 
-			<td class="content_row" valign="top">
-				<?=$_LANG->get('Lieferdatum')?>
-			</td>
-			<td class="content_row"  valign="top">
-				<input 	name="colinv_deliverydate" id="colinv_deliverydate" style="width: 80px" class="text" 
-						value="<?php if ($collectinv->getDeliverydate()>0) echo date('d.m.Y',$collectinv->getDeliverydate()); else echo date('d.m.Y');?>" 
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-            <td class="content_row" valign="top"><b><?=$_LANG->get('Rechnungsadresse')?></b></td>
-            <td class="content_row" valign="top">
-               <select name="invoice_address" style="width:300px" class="text">
-                  <? 
-                       foreach($all_invoiceadress as $invc)
-                       {
-    				       if ($collectinv->getId() == 0)
-    				       {
-                               echo '<option value="'.$invc->getId().'" ';
-                               if($invc->getDefault()) echo "selected";
-                               echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
-    				       } else {
-                               echo '<option value="'.$invc->getId().'" ';
-                               if($collectinv->getInvoiceAddress()->getId() == $invc->getId()) echo "selected";
-                               echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
-    				       }
-                       }
-                   ?>
-               </select>
-            </td>
-			<td class="content_row" valign="top" rowspan="2">
-				<?= $_LANG->get('Bemerkungen (intern)')?>
-			</td>
-			<td class="content_row"  rowspan="2">
-				<textarea name="colinv_comment" style="width: 300px; height: 40px"
-						  onfocus="markfield(this,0)" onblur="markfield(this,1)"><?= $collectinv->getComment()?></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row"><?=$_LANG->get('Versandart')?></td>
-			<td class="content_row" colspawn="7">
-				<select name="colinv_deliveryterm" style="width: 300px" class="text" 
-						onfocus="markfield(this,0)" onblur="markfield(this,1)"
-						onchange="updateDeliveryPrice()">
-						<option value="0"> &lt; <?=$_LANG->get('Bitte w&auml;hlen') ?> 	&gt;</option>
-					<?foreach($alldeliverycondition as $delcon){
-							echo '<option value="' . $delcon->getId() . '"';
-							if ($delcon->getId() == $collectinv->getDeliveryTerm()->getID()){ echo 'selected="selected" ';} 
-							echo ">".$delcon->getName1() . "</option>";
-						}?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row"><?= $_LANG->get('Versandkosten')?></td>
-			<td class="content_row">
-				<input 	name="colinv_deliverycosts" id="colinv_deliverycosts" style="width: 80px" class="text" 
-						value="<?= printPrice($collectinv->getDeliveryCosts())?>" 
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						<?= $_USER->getClient()->getCurrency()?>
-			</td>
-			<td class="content_row" valign="top" rowspan="2">
-				<?= $_LANG->get('Bemerkungen (extern)')?>
-			</td>
-			<td class="content_row"  rowspan="2">
-				<textarea name="colinv_extcomment" style="width: 300px; height: 40px"
-						  onfocus="markfield(this,0)" onblur="markfield(this,1)"><?= $collectinv->getExt_comment()?></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row" valign="top">
-				<?= $_LANG->get('Zweck')?> / <?= $_LANG->get('Kostenstelle')?> <br/> <?= $_LANG->get('des Kunden')?>
-			</td>
-			<td class="content_row"  valign="top">
-				<input 	name="colinv_intent" id="colinv_intent" style="width: 300px" class="text" 
+								<div class="btn-group dropdown" style="margin-left: 0px;">
+									<button type="button" class="btn btn-sm dropdown-toggle btn-default"
+											data-toggle="dropdown" aria-expanded="false">
+										Neu <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li>
+											<a href="#"
+											   onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $collectinv->getCustomer()->getId(); ?>&contactperson=<?php echo $collectinv->getCustContactperson()->getId(); ?>&asso_class=<?php echo get_class($collectinv); ?>&asso_object=<?php echo $collectinv->getId() ?>&tkt_title=<?php echo $collectinv->getNumber() . ' - ' . $collectinv->getTitle(); ?>');">Ticket
+												erstellen (verknüpft)</a>
+										</li>
+									</ul>
+								</div>
+							<?php } ?>
+						</div>
+					</span>
+			<?php } ?>
+		</h3>
+	</div>
+	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" class="form-horizontal" id="form_collectiveinvoices" name="form_collectiveinvoices" onsubmit="return checkform(new Array(colinv_title))">
+		<input 	type="hidden" name="exec" value="save">
+		<input 	type="hidden" name="ciid" value="<?=$collectinv->getId()?>">
+		<input type="hidden" name="asso_class" value="<?php echo $_REQUEST["asso_class"];?>">
+		<input type="hidden" name="asso_object" value="<?php echo $_REQUEST["asso_object"];?>">
+		<input 	type="hidden" name="colinv_businesscontact"  value="<?=$collectinv->getBusinesscontact()->getId()?>">
 
-						value="<?=$collectinv->getIntent()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>    
-		    <td class="content_row" valign="top"><b><?=$_LANG->get('Dokumente')?> - <?=$_LANG->get('Ihre Nachricht')?></b></td>
-            <td class="content_row" valign="top">
-                <input name="cust_message" id="cust_message" style="width:300px"
-                    value="<?=$collectinv->getCustMessage()?>">
-            </td>
-			<td class="content_row" valign="top">
-				<?=$_LANG->get('Benötigt Planung')?>
-			</td>
-			<td class="content_row"  valign="top">
-				<?php if ($collectinv->getNeeds_planning()) { echo 'Ja'; } else { echo 'Nein'; }?>
-			</td>
-        </tr>
-        <tr>
-        	<td class="content_row" valign="top"><b><?=$_LANG->get('Dokumente')?> - <?=$_LANG->get('Ihr Zeichen')?></b></td>
-            <td class="content_row" valign="top">
-                <input name="cust_sign" id="cust_sign" style="width:300px"
-                    value="<?=$collectinv->getCustSign()?>">
-            </td>
-            <?php if ($collectinv->getId()>0){?>
-			<td class="content_row" valign="top">
-				<?=$_LANG->get('Merkmale')?>
-			</td>
-			<td class="content_row"  valign="top">
-				<span class="pointer" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.attribute.frame.php?ciid=<?php echo $collectinv->getId();?>');"><a>anzeigen</a> (<?php echo count($attributes);?>)</span>
-			</td>
-			<?php }?>
-        </tr>
-        <tr>
-            <td class="content_row" valign="top"><b><?=$_LANG->get('Ansprechpartner')?></b></td>
-            <td class="content_row" valign="top">
-                <select name="intern_contactperson" style="width:300px" class="text">
-                    <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
-                    <? 
-                    foreach($all_user as $us)
-                    {
-                        if ($collectinv->getId() == 0)
-                        {
-                            echo '<option value="'.$us->getId().'" ';
-                            if($_USER->getId() == $us->getId()) echo "selected";
-                            echo '>'.$us->getNameAsLine().'</option>';
-                        } else {
-                            echo '<option value="'.$us->getId().'" ';
-                            if($collectinv->getInternContact()->getId() == $us->getId()) echo "selected";
-                            echo '>'.$us->getNameAsLine().'</option>';
-                        }
-                    }
-                    ?>
-                </select>
-            </td>
-			<td class="content_row" valign="top">Fremdleistung</td>
-			<td class="content_row" valign="top">
-				<input type="checkbox" name="thirdparty" id="thirdparty" value="1" <?php if ($collectinv->getThirdparty()) echo ' checked ';?>/>
-			</td>
-        </tr>
-        <tr>
-            <td class="content_row" valign="top"><b><?=$_LANG->get('Ansprechp. d. Kunden')?></b></td>
-            <td class="content_row" valign="top">
-                <select name="custContactperson" style="width:300px" class="text">
-                    <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
-                    <? 
-                    foreach($all_bc_cp as $cp)
-                    {
-                        echo '<option value="'.$cp->getId().'" ';
-                        if($collectinv->getCustContactperson()->getId() == $cp->getId()) echo "selected";
-                        echo '>'.$cp->getNameAsLine().'</option>';
-                    }
-                    ?>
-                </select>
-            </td>
-			<td class="content_row" valign="top" id="thirdpartycomment_title" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>">FL-Bemerkung</td>
-			<td class="content_row" valign="top">
-				<textarea name="thirdpartycomment" id="thirdpartycomment" style="width: 300px; height: 40px;<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
-			</td>
-        </tr>
-	</table>
-</div>
-<br/>
+		<div class="panel-body">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Kopfdaten</h3>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Vorgangstitel</label>
+						<div class="col-sm-10">
+							<input name="colinv_title" class="form-control" value="<?= $collectinv->getTitle()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Kunde</label>
+								<div class="col-sm-8 form-text">
+									<a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$selected_customer->getId()?>"><?= $selected_customer->getNameAsLine()?></a>
+								</div>
+							</div>
+							<?if ($collectinv->getCrtdate() != 0){?>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Erstellt am</label>
+								<div class="col-sm-8 form-text">
+									<?if ($collectinv->getCrtdate() != 0) echo date("d.m.Y H:i:s",$collectinv->getCrtdate())?>
+								</div>
+							</div>
+							<?php }?>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Status</label>
+								<div class="col-sm-8 form-text">
+									<div class="progress" style="margin-bottom: 0px;">
+										<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+											 style="width: <?php echo 100/7*$collectinv->getStatus();?>%; background-color: <?php echo $collectinv->getStatusColor();?>;">
+											<?php echo getOrderStatus($collectinv->getStatus());?>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Zahlungsart</label>
+								<div class="col-sm-8">
+									<select name="colinv_paymentterm" id="colinv_paymentterm" class="form-control">
+										<option value="0"> &lt; <?=$_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+										<?	foreach($allpaymentterms as $payterm){
+											echo '<option value="'. $payterm->getId() . '"';
+											if($payterm->getId() == $collectinv->getPaymentTerm()->getId())
+											{
+												echo ' selected="selected"';
+											} else if ($collectinv->getId() <= 0 && $payterm->getId() == $collectinv->getBusinesscontact()->getPaymentTerms()->getId())
+											{
+												echo ' selected="selected"';
+											}
 
-<div class="box2">
-    <div class="box1">
-        <b>neue Position:</b>
-        <img src="images/icons/plus.png" title="neue manuelle Position" class="pointer" onclick="addPositionRow(0,0,'Manuell',0,0);"/> 
-        <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.articleselector.php');"/>
-    </div>
-    <table id="order_pos" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Typ</th>
-                    <th>Beschreibung</th>
-                    <th>Menge</th>
-                    <th>Preis</th>
-                    <th>Steuer</th>
-                    <th>Betrag</th>
-                    <th>Dok.-rel.</th>
-                    <th>&nbsp;</th>
-                </tr>
-            </thead>
-    		<? $i = 0;
-    		if(count($collectinv->getPositions(true))>0){
-    			foreach($collectinv->getPositions(true) as $position){?>
-    				<tr<?php if ($position->getStatus() == 2) echo ' style="background-color:rgba(255, 0, 0, 0.5);"';?>>
-    					<td valign="top" class="content_row"><?php echo $position->getId();?></td>
-    					<td valign="top" class="content_row">
-        					<?php 
-        					switch ($position->getType())
-        					{
-                                case 0: 
-                                    echo "Manuell"; 
-                                    break;
-                                case 1: 
-                                    echo "Artikel (Kalk)"; 
-                                    break;
-                                case 2: 
-                                    echo "Artikel"; 
-                                    break;
-                                case 3: 
-                                    echo "Perso"; 
-                                    break;
-                                default: 
-                                    echo "kein"; 
-                                    break;
-        					}   
-        					?>
-        					<input type="hidden" name="orderpos[<?=$i?>][id]" value="<?= $position->getId()?>">
-        					<input type="hidden" name="orderpos[<?=$i?>][obj_id]" id="orderpos_objid_<?=$i?>" value="<?= $position->getObjectid()?>">
-        					<input type="hidden" name="orderpos[<?=$i?>][type]" id="orderpos_type_<?=$i?>" value="<?= $position->getType()?>">
-    					</td>
-    					<td valign="top" class="content_row">
+											echo ">".$payterm->getName1() . "</option>";
+										} ?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Lief. Adr.</label>
+								<div class="col-sm-8">
+									<select name="colinv_deliveryadress" id="colinv_deliveryadress" class="form-control">
+										<?	foreach($all_deliveryadress as $adress){
+											if ($collectinv->getId() == 0)
+											{
+												echo '<option value="'. $adress->getId() . '"';
+												if($adress->getDefault()){ echo ' selected="selected"'; }
+												echo ">".$adress->getAddressAsLine() . "</option>";
+											} else {
+												echo '<option value="'. $adress->getId() . '"';
+												if($adress->getId() == $collectinv->getDeliveryaddress()->getId()){ echo ' selected="selected"'; }
+												echo ">".$adress->getAddressAsLine() . "</option>";
+											}
+										} ?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Versandart</label>
+								<div class="col-sm-8">
+									<select name="colinv_deliveryterm" id="colinv_deliveryterm" class="form-control">
+										<option value="0"> &lt; <?=$_LANG->get('Bitte w&auml;hlen') ?> 	&gt;</option>
+										<?foreach($alldeliverycondition as $delcon){
+											echo '<option value="' . $delcon->getId() . '"';
+											if ($delcon->getId() == $collectinv->getDeliveryTerm()->getID()){ echo 'selected="selected" ';}
+											echo ">".$delcon->getName1() . "</option>";
+										}?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Kosten St.</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" name="colinv_intent" id="colinv_intent" value="<?=$collectinv->getIntent()?>">
+								</div>
+							</div>
+							<?php if ($collectinv->getId()>0){?>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Merkmale</label>
+									<div class="col-sm-8 form-text">
+										<span class="pointer" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.attribute.frame.php?ciid=<?php echo $collectinv->getId();?>');"><a>anzeigen</a> (<?php echo count($attributes);?>)</span>
+									</div>
+								</div>
+							<?php }?>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">MA</label>
+								<div class="col-sm-8">
+									<select name="intern_contactperson" id="intern_contactperson" class="form-control">
+										<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
+										<?
+										foreach($all_user as $us)
+										{
+											if ($collectinv->getId() == 0)
+											{
+												echo '<option value="'.$us->getId().'" ';
+												if($_USER->getId() == $us->getId()) echo "selected";
+												echo '>'.$us->getNameAsLine().'</option>';
+											} else {
+												echo '<option value="'.$us->getId().'" ';
+												if($collectinv->getInternContact()->getId() == $us->getId()) echo "selected";
+												echo '>'.$us->getNameAsLine().'</option>';
+											}
+										}
+										?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Bem. Int.</label>
+								<div class="col-sm-8">
+									<textarea name="colinv_comment" id="colinv_comment" class="form-control"><?php echo $collectinv->getComment();?></textarea>
+								</div>
+							</div>
+						</div> <!-- ENDE COL LINKS -->
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Anspr. P.</label>
+								<div class="col-sm-8">
+									<select name="custContactperson" id="custContactperson" class="form-control">
+										<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
+										<?
+										foreach($all_bc_cp as $cp)
+										{
+											echo '<option value="'.$cp->getId().'" ';
+											if($collectinv->getCustContactperson()->getId() == $cp->getId()) echo "selected";
+											echo '>'.$cp->getNameAsLine().'</option>';
+										}
+										?>
+									</select>
+								</div>
+							</div>
+							<?if ($collectinv->getCrtuser()->getId() != 0){?>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Erstellt von</label>
+								<div class="col-sm-8 form-text">
+									<?php echo $collectinv->getCrtuser()->getNameAsLine();?>
+								</div>
+							</div>
+							<?php }?>
+							<?if ($collectinv->getUptdate() != 0){?>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Geändert</label>
+									<div class="col-sm-8 form-text">
+										<?if ($collectinv->getUptdate() != 0) echo date("d.m.Y H:i:s",$collectinv->getUptdate()).' ('.$collectinv->getUptuser()->getNameAsLine().')'?>
+									</div>
+								</div>
+							<?php }?>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Rech. Adr.</label>
+								<div class="col-sm-8">
+									<select name="invoice_address" id="invoice_address" class="form-control">
+										<?
+										foreach($all_invoiceadress as $invc)
+										{
+											if ($collectinv->getId() == 0)
+											{
+												echo '<option value="'.$invc->getId().'" ';
+												if($invc->getDefault()) echo "selected";
+												echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
+											} else {
+												echo '<option value="'.$invc->getId().'" ';
+												if($collectinv->getInvoiceAddress()->getId() == $invc->getId()) echo "selected";
+												echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
+											}
+										}
+										?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Lieferdatum</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" name="colinv_deliverydate" id="colinv_deliverydate"
+										   value="<?php if ($collectinv->getDeliverydate()>0) echo date('d.m.Y',$collectinv->getDeliverydate()); else echo date('d.m.Y');?>">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Vers. Kosten</label>
+								<div class="col-sm-8">
+									<div class="input-group">
+										<input type="text" class="form-control" name="colinv_deliverycosts" id="colinv_deliverycosts" value="<?= printPrice($collectinv->getDeliveryCosts())?>">
+										<span class="input-group-addon"><?= $_USER->getClient()->getCurrency()?></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Fremd L.</label>
+								<div class="col-sm-8">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="thirdparty" id="thirdparty" value="1" <?php if ($collectinv->getThirdparty()) echo ' checked ';?>>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" id="thirdpartycomment_title" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>">
+								<label for="" class="col-sm-4 control-label">FL-Bemerkung</label>
+								<div class="col-sm-8">
+									<textarea name="thirdpartycomment" id="thirdpartycomment" class="form-control" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
+								</div>
+							</div>
+							<?if ($collectinv->getId()>0){?>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Planung</label>
+									<div class="col-sm-8 form-text">
+										<?php if ($collectinv->getNeeds_planning()) { echo 'Ja'; } else { echo 'Nein'; }?>
+									</div>
+								</div>
+							<?php }?>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Bem. Ext.</label>
+								<div class="col-sm-8">
+									<textarea name="colinv_extcomment" id="colinv_extcomment" class="form-control"><?php echo $collectinv->getExt_comment();?></textarea>
+								</div>
+							</div>
+						</div> <!-- ENDE COL RECHTS -->
+					</div>
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Positionen
+					<span class="pull-right">
+						<button type="button" class="btn btn-default btn-sm" onclick="addPositionRow(0,0,'Manuell',0,0);">
+							<img src="images/icons/plus.png" title="neue manuelle Position" class="pointer"/>
+							Manuell
+						</button>
+						<button type="button" class="btn btn-default btn-sm" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.articleselector.php');">
+							<img src="images/icons/plus.png" title="neuer Artikel" class="pointer"/>
+							Artikel
+						</button>
+					</span>
+					</h3>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th style="width: 10px;">#</th>
+							<th>Typ</th>
+							<th>Beschreibung</th>
+							<th>Menge</th>
+							<th>Preis</th>
+							<th>Steuer</th>
+							<th>Betrag</th>
+							<th>Dok.-rel.</th>
+							<th>&nbsp;</th>
+						</tr>
+						</thead>
+						<tbody>
+						<? $i = 0;
+						if(count($collectinv->getPositions(true))>0){
+							foreach($collectinv->getPositions(true) as $position){?>
+								<tr<?php if ($position->getStatus() == 2) echo ' style="background-color:rgba(255, 0, 0, 0.5);"';?>>
+									<td valign="top"><?php echo $position->getId();?></td>
+									<td valign="top">
+										<?php
+										switch ($position->getType())
+										{
+											case 0:
+												echo "Manuell";
+												break;
+											case 1:
+												echo "Artikel (Kalk)";
+												break;
+											case 2:
+												echo "Artikel";
+												break;
+											case 3:
+												echo "Perso";
+												break;
+											default:
+												echo "kein";
+												break;
+										}
+										?>
+										<input type="hidden" name="orderpos[<?=$i?>][id]" value="<?= $position->getId()?>">
+										<input type="hidden" name="orderpos[<?=$i?>][obj_id]" id="orderpos_objid_<?=$i?>" value="<?= $position->getObjectid()?>">
+										<input type="hidden" name="orderpos[<?=$i?>][type]" id="orderpos_type_<?=$i?>" value="<?= $position->getType()?>">
+									</td>
+									<td valign="top">
     					    <span id="orderpos_name_<?=$i?>">
     					    <?php
-    					    if($position->getType() == 1){
-    					        $tmp_art = new Article($position->getObjectid());
-    					        echo "<b>".$tmp_art->getTitle()."</b></br>";
-    					        echo '<input type="hidden" name="orderpos['.$i.'][orderid]" id="orderpos_orderid_'.$i.'" value="'.$tmp_art->getOrderid().'">';
-    					    }
-    					    if($position->getType() == 2){
-    					        $tmp_art = new Article($position->getObjectid());
-    					        echo "<b>".$tmp_art->getTitle()."</b></br>";
-    					    }
-    					    if($position->getType() == 3){
-    					        $tmp_perso = new Personalization($position->getObjectid());
-    					        echo "<b>".$tmp_perso->getTitle()."</b></br>";
-    					    } 
-    					    ?>
+							if($position->getType() == 1){
+								$tmp_art = new Article($position->getObjectid());
+								echo "<b>".$tmp_art->getTitle()."</b></br>";
+								echo '<input type="hidden" name="orderpos['.$i.'][orderid]" id="orderpos_orderid_'.$i.'" value="'.$tmp_art->getOrderid().'">';
+							}
+							if($position->getType() == 2){
+								$tmp_art = new Article($position->getObjectid());
+								echo "<b>".$tmp_art->getTitle()."</b></br>";
+							}
+							if($position->getType() == 3){
+								$tmp_perso = new Personalization($position->getObjectid());
+								echo "<b>".$tmp_perso->getTitle()."</b></br>";
+							}
+							?>
     					    </span>
     						<textarea name="orderpos[<?=$i?>][comment]" class="text poscomment" id="orderpos_comment_<?=$i?>"
-    								  style="width: 440px; height: 100px"><?=$position->getComment()?></textarea>
-    					</td>
-    					<td valign="top" class="content_row">
-    					<?php
-                        	if ($position->getType() == 1 || $position->getType() == 2)
-                        	{
-                        	    if (count($tmp_art->getOrderamounts())>0)
-                        	    {
-                            	    echo '<select name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" style="width: 60px" onchange="updateArticlePrice('.$i.')">';
-                            	    foreach ($tmp_art->getOrderamounts() as $orderamount)
-                            	    {
-                            	        echo '<option value="'.$orderamount.'" ';
-                            	        if ($position->getQuantity() == $orderamount)
-                            	            echo ' selected ';
-                            	        echo ' >'.$orderamount.'</option>';
-                            	    }
-                            	    echo '</select>';
-                        	    } else {
-                        	        echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-                        	    }
-                        	} else {
-                        		echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-                        	}
-    					?>
-    						<?=$_LANG->get('Stk.')?> <br/>
-    						&ensp;&ensp;&ensp;
-    						<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_<?=$i?>"
-    							 onclick="updateArticlePrice(<?=$i?>)" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"
-    							 <?if($position->getType() == 3) echo 'style="display:none"';?>>
-    					</td>
-    					<td valign="top" class="content_row">
-    						<input 	name="orderpos[<?=$i?>][price]" id="orderpos_price_<?=$i?>" class="text"
-    								value="<?= printPrice($position->getPrice())?>" style="width: 60px" 
-    								onfocus="markfield(this,0)" onblur="markfield(this,1)"> 
-    						<?=$_USER->getClient()->getCurrency()?>
-    					</td>
-    					<td valign="top" class="content_row">
-    						<input 	name="orderpos[<?=$i?>][tax]" class="text" id="orderpos_tax_<?=$i?>"
-    								value="<?= printPrice($position->getTax())?>" style="width: 60px;" > %
-    					</td>
-    					<td valign="top" class="content_row">
-    						<span id="span_totalprice_<?=$i?>"><?= printPrice($position->getNetto())." ". $_USER->getClient()->getCurrency()?></span>
-    					</td>
-    					<td valign="top" class="content_row">
-    						<input type="checkbox" value="1" name="orderpos[<?=$i?>][inv_rel]"
-    						<?if ($position->getInvrel() == 1) echo "checked";?>>
-    					</td>
-    					<td valign="top" class="content_row">
-                            <?php if ($position->getStatus() == 2){?>
-    						<a href="index.php?page=<?=$_REQUEST['page']?>&exec=restorepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>">
-    							<img src="images/icons/asterisk.png" title="<?= $_LANG->get('Wiederherstellen')?>"></a>
-    						<a href="index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>">
-    							<img src="images/icons/cross-script.png" title="<?= $_LANG->get('Endgültig löschen')?>"></a>
-    					    <?php } else {?>
-    						<a href="index.php?page=<?=$_REQUEST['page']?>&exec=softdeletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>">
-    							<img src="images/icons/cross-script.png" title="<?= $_LANG->get('Vorrübergehend löschen')?>"></a>
-    						<?
-    						} 
-    						if ($i == 0){
-    						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=movedown&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-                                      <img src="images/icons/arrow-270.png" title="nach unten bewegen"></a>';
-    						} else if ($i+1 >= count($collectinv->getPositions())){
-    						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=moveup&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-                                      <img src="images/icons/arrow-090.png" title="nach oben bewegen"></a>';
-    			            } else {
-    						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=movedown&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-                                      <img src="images/icons/arrow-270.png" title="nach unten bewegen"></a>';
-    						    echo '<a href="index.php?page='.$_REQUEST['page'].'&exec=edit&subexec=moveup&ciid='.$_REQUEST['ciid'].'&posid='.$position->getId().'">
-                                      <img src="images/icons/arrow-090.png" title="nach oben bewegen"></a>';
-    			            }
-    			            if ($position->getFile_attach()>0){
-    			                $tmp_attach = new Attachment($position->getFile_attach());
-    			                echo '<a href="'.Attachment::FILE_DESTINATION.$tmp_attach->getFilename().'" download="'.$tmp_attach->getOrig_filename().'">
-                                      <img src="images/icons/disk--arrow.png" title="Angehängte Datei herunterladen"></a>';
-    			            } elseif ($position->getPerso_order()>0){
-    			                echo '</br>';
-    			                $perso_order = new Personalizationorder($position->getPerso_order());
-    			                $docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER,
-    			                                                     "requestId" => $perso_order->getId(),
-    			                                                     "module" => Document::REQ_MODULE_PERSONALIZATION));
-    			                if (count($docs) > 0)
-    			                {
-    			                    $tmp_id = $_USER->getClient()->getId();
-    			                    $hash = $docs[0]->getHash();
-        			                echo '<a class="icon-link" target="_blank" href="./docs/personalization/'.$tmp_id.'.per_'.$hash.'_e.pdf">
-                                          <img src="images/icons/application-browser.png" title="Download mit Hintergrund" alt="Download"></a>
-        			                      <a href="./docs/personalization/'.$tmp_id.'.per_'.$hash.'_p.pdf" class="icon-link" target="_blank">
-        			                      <img src="images/icons/application.png" title="Download ohne Hintergrund" alt="Download"></a></br>';
-    			                }
-    			            }
-    						    
-    						?>
-    					</td>
-    				</tr>
-    			<?
-    			$i++;
-    		    }
-    		}?>
-    </table>
+									  style="width: 440px; height: 100px"><?=$position->getComment()?></textarea>
+									</td>
+									<td valign="top">
+										<div class="input-group">
+										<?php
+										if ($position->getType() == 1 || $position->getType() == 2)
+										{
+											if (count($tmp_art->getOrderamounts())>0)
+											{
+												echo '<select name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" class="form-control" onchange="updateArticlePrice('.$i.')">';
+												foreach ($tmp_art->getOrderamounts() as $orderamount)
+												{
+													echo '<option value="'.$orderamount.'" ';
+													if ($position->getQuantity() == $orderamount)
+														echo ' selected ';
+													echo ' >'.$orderamount.'</option>';
+												}
+												echo '</select>';
+											} else {
+												echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+											}
+										} else {
+											echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+										}
+										?>
+										<span class="input-group-addon">
+											<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_<?=$i?>"
+												 onclick="updateArticlePrice(<?=$i?>)" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"
+												<?if($position->getType() == 3) echo 'style="display:none"';?>>
+										</span>
+										</div>
+									</td>
+									<td valign="top">
+										<div class="input-group">
+											<input 	name="orderpos[<?=$i?>][price]" id="orderpos_price_<?=$i?>" class="form-control"
+													  value="<?= printPrice($position->getPrice())?>"
+													  onfocus="markfield(this,0)" onblur="markfield(this,1)">
+											<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+										</div>
+									</td>
+									<td valign="top">
+										<div class="input-group">
+											<input 	name="orderpos[<?=$i?>][tax]" class="form-control" id="orderpos_tax_<?=$i?>"
+													  value="<?= printPrice($position->getTax())?>" >
+											<span class="input-group-addon">%</span>
+										</div>
+									</td>
+									<td valign="top">
+										<span id="span_totalprice_<?=$i?>"><?= printPrice($position->getNetto())." ". $_USER->getClient()->getCurrency()?></span>
+									</td>
+									<td valign="top">
+										<input type="checkbox" value="1" name="orderpos[<?=$i?>][inv_rel]"
+											<?if ($position->getInvrel() == 1) echo "checked";?>>
+									</td>
+									<td valign="top">
+										<?php if ($position->getStatus() == 2){?>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Wiederherstellen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=restorepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
+												<img src="images/icons/asterisk.png">
+											</button>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Endgültig löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
+												<img src="images/icons/cross-script.png">
+											</button>
+										<?php } else {?>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Vorrübergehend löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=softdeletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
+												<img src="images/icons/cross-script.png">
+											</button>
+											<?
+										}
+										if ($i == 0){
+											?>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+												<img src="images/icons/arrow-270.png">
+											</button>
+											<?php
+										} else if ($i+1 >= count($collectinv->getPositions())){
+											?>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+												<img src="images/icons/arrow-090.png">
+											</button>
+											<?php
+										} else {
+											?>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+												<img src="images/icons/arrow-270.png">
+											</button>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+												<img src="images/icons/arrow-090.png">
+											</button>
+											<?php
+										}
+										if ($position->getFile_attach()>0){
+											$tmp_attach = new Attachment($position->getFile_attach());
+											?>
+											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Angehängte Datei herunterladen')?>" onclick="window.open('<?php echo Attachment::FILE_DESTINATION.$tmp_attach->getFilename();?>');">
+												<img src="images/icons/disk--arrow.png">
+											</button>
+											<?php
+										} elseif ($position->getPerso_order()>0){
+											$perso_order = new Personalizationorder($position->getPerso_order());
+											$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION_ORDER,
+												"requestId" => $perso_order->getId(),
+												"module" => Document::REQ_MODULE_PERSONALIZATION));
+											if (count($docs) > 0)
+											{
+												$tmp_id = $_USER->getClient()->getId();
+												$hash = $docs[0]->getHash();
+												?>
+												<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Download mit Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_e.pdf');">
+													<img src="images/icons/application-browser.png">
+												</button>
+												<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Download ohne Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_p.pdf');">
+													<img src="images/icons/application.png">
+												</button>
+												<?php
+											}
+										}
+
+										?>
+									</td>
+								</tr>
+								<?
+								$i++;
+							}
+						}?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div> <!-- ENDE KOPF PANEL -->
+	</form>
 </div>
 
-<br/>
+
 
 <input type="hidden" id="poscount" value="<?php echo $i;?>"/>
 </form>

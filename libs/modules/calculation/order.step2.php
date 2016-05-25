@@ -733,18 +733,18 @@ function clickContentChromaticity(id)
 
 </script>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-	   <a href="#" onclick="
-       <? if($_USER->hasRightsByGroup(Group::RIGHT_MACHINE_SELECTION)) { ?>
-			document.getElementsByName('nextstep')[0].value='3';
-       <? } else { ?>
-			document.getElementsByName('nextstep')[0].value='4';
-       <? } ?>
-        document.product_config_form.submit();" class="menu_item">Weiter</a>
-    </div>
-</div>
+
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+if($_USER->hasRightsByGroup(Group::RIGHT_MACHINE_SELECTION)) {
+    $quickmove->addItem('Weiter','#',"document.getElementsByName('nextstep')[0].value='3';document.product_config_form.submit();",'glyphicon-chevron-right');
+} else {
+    $quickmove->addItem('Weiter','#',"document.getElementsByName('nextstep')[0].value='4';document.product_config_form.submit();",'glyphicon-chevron-right');
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
+
+
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="product_config_form">
     <input name="exec" value="edit" type="hidden"> 

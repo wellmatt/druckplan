@@ -81,9 +81,9 @@ function getOrderStatus($status, $formated = false)
     {
         switch((int)$status)
         {
-			case 1: return "<font color='FF6E6E'><b>".$_LANG->get('Vorgang angelegt')."</b></font>"; break;
-			case 2: return "<font color='dFFB92C'><b>".$_LANG->get('Vorgang gesendet')."</b></font>"; break;
-			case 3: return "<font color='FFDA3E'><b>".$_LANG->get('Vorgang angenommen')."</b></font>"; break;
+			case 1: return "<font color='FF6E6E'><b>".$_LANG->get('angelegt')."</b></font>"; break;
+			case 2: return "<font color='dFFB92C'><b>".$_LANG->get('gesendet')."</b></font>"; break;
+			case 3: return "<font color='FFDA3E'><b>".$_LANG->get('angenommen')."</b></font>"; break;
 			case 4: return "<font color='FB71FF'><b>".$_LANG->get('In Produktion')."</b></font>"; break;
 			case 5: return "<font color='0092FF'><b>".$_LANG->get('Versandbereit')."</b></font>"; break;
 			case 6: return "<font color='00E7FF'><b>".$_LANG->get('Ware versand')."</b></font>"; break;
@@ -95,9 +95,9 @@ function getOrderStatus($status, $formated = false)
     {
         switch((int)$status)
         {
-            case 1: return $_LANG->get('Vorgang angelegt'); break;
-            case 2: return $_LANG->get('Vorgang gesendet'); break;
-            case 3: return $_LANG->get('Vorgang angenommen'); break;
+            case 1: return $_LANG->get('angelegt'); break;
+            case 2: return $_LANG->get('gesendet'); break;
+            case 3: return $_LANG->get('angenommen'); break;
             case 4: return $_LANG->get('In Produktion'); break;
             case 5: return $_LANG->get('Versandbereit'); break;
 			case 6: return $_LANG->get('Ware versand'); break;

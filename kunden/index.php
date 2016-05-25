@@ -127,6 +127,12 @@ if ($_SESSION["login_type"] == "businesscontact"){
 	<link href="../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<script type="text/javascript" src="../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<!-- /Bootstrap -->
+	<link rel="stylesheet" type="text/css" href="../css/glyphicons-bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="../css/glyphicons.css" />
+	<link rel="stylesheet" type="text/css" href="../css/glyphicons-halflings.css" />
+	<link rel="stylesheet" type="text/css" href="../css/glyphicons-filetypes.css" />
+	<link rel="stylesheet" type="text/css" href="../css/glyphicons-social.css" />
+	<link rel="stylesheet" type="text/css" href="../css/main.css" />
 	
 	<script language="javascript" src="../jscripts/basic.js"></script>
 </head>

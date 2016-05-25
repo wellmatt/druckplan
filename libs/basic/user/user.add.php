@@ -213,7 +213,7 @@ function addEMailRow(){
 	insert += '<input type="text" class="text" name="mail_address_'+count+'" style="width: 220px">';
 	insert += '</td>';
 	insert += '<td class="content_row">';
-	insert += '<input type="text" class="text" name="mail_login_'+count+'" style="width: 120px">';
+	insert += '<input type="text" class="text" name="mail_login_'+count+'" style="width: 220px">';
 	insert += '</td>';
 	insert += '<td class="content_row">';
 	insert += '<input type="text" class="text" name="mail_password_'+count+'" style="width: 120px">';
@@ -685,7 +685,7 @@ echo $quickmove->generate();
 						<input type="hidden" name="email_quantity" id="email_quantity"
 							   value="<? if (count($all_emails) > 0) echo count($all_emails); else echo "1"; ?>">
 						<div class="table-responsive">
-							<table class="table table-hover">
+							<table class="table table-hover" id="table_emails">
 								<tr>
 									<td class="content_row_header"><?= $_LANG->get('eMail') ?></td>
 									<td class="content_row_header"><?= $_LANG->get('Login') ?></td>
@@ -710,7 +710,7 @@ echo $quickmove->generate();
 												<input type="text" class="text" name="mail_address_<?= $x ?>"
 													   value="<?= $emailaddress->getAddress() ?>"
 													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													   style="width: 120px">
+													   style="width: 220px">
 											</td>
 											<td class="content_row">
 												<input type="text" class="text" name="mail_login_<?= $x ?>"
@@ -777,7 +777,7 @@ echo $quickmove->generate();
 											<input type="hidden" name="mail_ip_0" value="0">
 											<input type="text" class="text" name="mail_address_0"
 												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												   style="width: 120px">
+												   style="width: 220px">
 										</td>
 										<td class="content_row">
 											<input type="text" class="text" name="mail_login_0"

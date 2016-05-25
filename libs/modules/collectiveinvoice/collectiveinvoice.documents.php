@@ -48,7 +48,7 @@ if($_REQUEST["createDoc"]){
     if($_REQUEST["createDoc"] == "invoice")
     {
         $doc->setType(Document::TYPE_INVOICE);
-        $collectinv->setStatus(5);
+        $collectinv->setStatus(7);
         $collectinv->save();
     }
     if($_REQUEST["createDoc"] == "revert")

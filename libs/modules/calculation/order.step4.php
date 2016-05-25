@@ -105,24 +105,20 @@ foreach ($calculations as $c){
     });
 </script>
 
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#step4_form').submit();",'glyphicon-floppy-disk');
+if ($order->getArticleid()==0){
+    $quickmove->addItem('Artikel Speichern','#',"askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=".$order->getId()."')",'glyphicon-floppy-disk');
+}
+if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){
+    $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=".$order->getId()."')", 'glyphicon-trash', true);
+}
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
-<div id="fl_menu">
-    <div class="label">Quick Move</div>
-    <div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#step4_form').submit();">Speichern</a>
-        <?php if ($order->getArticleid()==0){?>
-            <a href="#" class="menu_item" onclick="askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=<?php echo $order->getId();?>')">Artikel Speichern</a>
-        <?php } elseif ($order->getArticleid()>0){?>
-            <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $order->getArticleid();?>" class="menu_item">Zum Artikel</a>
-            <a href="#" class="menu_item" onclick="askDel('index.php?page=libs/modules/article/article.php&exec=uptfromorder&orderid=<?php echo $order->getId();?>&aid=<?php echo $order->getArticleid();?>')">Artikel aktualisieren</a>
-        <?php }?>
-        <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
-            <a href="#" class="menu_item_delete" onclick="askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=<?php echo $order->getId();?>')">Löschen</a>
-        <?}?>
-    </div>
-</div>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="step4_form" name="step4_form">
     <input name="step" value="4" type="hidden">

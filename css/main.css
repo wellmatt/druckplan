@@ -122,8 +122,6 @@ table.standard {
 
 td {
 	font-size: 11px;
-	padding: 0;
-	width: 550px;
 }
 
 td.content_row {
@@ -409,4 +407,37 @@ li.user-header > p {
 
 .form-group {
 	margin-bottom: 3px;
+}
+
+.glyphicons::before {
+	display: inline-block;
+	padding: 0 0;
+}
+
+.panel-title {
+	font-size: 2.4rem;
+}
+
+.panel-body {
+	font-size: 15px;
+}
+
+.pull-right {
+	font-size: 16px;
+}
+
+.form-group .form-text {
+	margin-bottom: 0;
+	padding-top: 7px;
+}
+
+a .glyphicons {
+	color: #797979;
+}
+a .glyphicons:hover {
+	color: #333;
+}
+
+span .glyphicons {
+	vertical-align: middle;
 }

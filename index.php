@@ -179,6 +179,11 @@ if ($_USER == false)
 <script src="jscripts/pace/pace.min.js"></script>
 <link href="jscripts/pace/pace-theme-big-counter.css" rel="stylesheet" />
 <!-- /PACE -->
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-social.css" />
 <link rel="stylesheet" type="text/css" href="./css/main.css" />
 
 <title>Druckplan - <?=$_USER->getClient()->getName()?></title>

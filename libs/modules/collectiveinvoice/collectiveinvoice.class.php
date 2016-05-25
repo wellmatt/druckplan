@@ -578,6 +578,22 @@ class CollectiveInvoice{
 		}
 		return $retval;
 	}
+
+
+	function getStatusColor(){
+		switch ($this->status) {
+			case 0: $retval = "black";break;
+			case 1: $retval = "red";break;
+			case 2: $retval = "orange";break;
+			case 3: $retval = "yellow";break;
+			case 4: $retval = "purple";break;
+			case 5: $retval = "purple";break;
+			case 6: $retval = "purple";break;
+			case 7: $retval = "green";break;
+			default: $retval="gray";
+		}
+		return $retval;
+	}
 	
 	/**
 	 * ... liefert die Beschreibung zum aktuellen Status
