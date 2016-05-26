@@ -28,7 +28,7 @@ ini_set('display_errors', 0);
 
 
 <? $i = 1;
-foreach (Calculation::getAllCalculations($order) as $calc) {
+foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $calc) {
     $allmes = Machineentry::getAllMachineentries($calc->getId());
     $calc_sorts = $calc->getSorts();
     if ($calc_sorts == 0)

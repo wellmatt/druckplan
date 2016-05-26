@@ -164,36 +164,7 @@ if ($_REQUEST["subexec"] == "send")
     	</tr>
     </tbody>
 </table>
-<div class="box1" style="margin-top:50px;">
-<table width="100%">
-    <colgroup>
-        <col width="10%">
-        <col width="23%">
-        <col width="10%">
-        <col width="23%">
-        <col width="10%">
-        <col>
-    </colgroup>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Kundennummer')?>:</td>
-        <td class="content_row_clear"><?=$collectinv->getBusinessContact()->getId()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Auftrag')?>:</td>
-        <td class="content_row_clear"><?=$collectinv->getNumber()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Telefon')?></td>
-        <td class="content_row_clear"><?=$collectinv->getBusinessContact()->getPhone()?></td>
-    </tr>
-    <tr>
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Name')?>:</td>
-        <td class="content_row_clear" valign="top"><?=nl2br($collectinv->getBusinessContact()->getNameAsLine())?></td>
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Adresse')?>:</td>
-        <td class="content_row_clear"  valign="top"><?=nl2br($collectinv->getBusinessContact()->getAddressAsLine())?></td>
-        <td class="content_row_header"  valign="top"><?=$_LANG->get('E-Mail')?></td>
-        <td class="content_row_clear" valign="top"><?=$collectinv->getBusinessContact()->getEmail()?></td>
-    </tr>
-</table>
-</div>
 <br>
-
 <?
 //---------------------------------------------------------------------------
 // Dokumenten Header + Footer
@@ -841,15 +812,15 @@ $nachricht->setAttachments($senddocs);?>
 
 </table>
 </div>
-
+<br>
 <table width="100%">
     <tr>
         <td>
         </td>
         <td align="center" width="200">
-            <ul class="graphicalButton pointer" onclick="document.getElementById('sendmail').style.display=''">
-                <?=$_LANG->get('Mail verschicken')?>
-            </ul>
+			<div class="btn-group" role="group">
+				<button type="button" onclick="document.getElementById('sendmail').style.display='';" class="btn btn-sm btn-default">Mail verschicken</button>
+			</div>
         </td>
     </tr>
 </table>

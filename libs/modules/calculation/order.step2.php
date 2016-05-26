@@ -44,14 +44,9 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
 }
 ?>
 
-
 <script language="javascript">
-    
-    
     function clickProductFormat(type, id)
     {
-        
-        
         for(var i=0;i<document.getElementsByName('format').length;i++){
             document.getElementsByName('format')[i].style.backgroundImage="url(images/page/organizer.png)";
             document.getElementsByName('format')[i].style.color="#000";
@@ -831,7 +826,7 @@ echo $quickmove->generate();
 					<?= $_LANG->get('offenes Format') ?>
                 </td>
                 <td>Bitte beachten Sie bei einer Kalkulation von Rollenprodukten folgendes:<br/>
-                    HÃ¶he und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
+                    Höhe und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
             </tr>
 
             <?

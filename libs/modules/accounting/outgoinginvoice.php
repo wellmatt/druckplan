@@ -66,7 +66,7 @@ $sum_netto = 0;
 $sum_brutto = 0;
 ?>
 
-<script type="text/javascript"">
+<script type="text/javascript">
 $(function() {
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	
@@ -125,7 +125,7 @@ $(function() {
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_invoicesearch">
 	<input type="hidden" name="subexec" value="search">
 	<input type="hidden" name="mid" value="<?=$_REQUEST["mid"]?>">
-	<div class="box2" style="width:600px;" >
+	<div class="box2">
 		<table width="100%" cellpadding="00" cellspacing="0">
 			<colgroup>
 				<col width="110">
@@ -139,7 +139,7 @@ $(function() {
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('Kunde');?></td>
 				<td class="content_row_clear">
-					<select type="text" id="filter_cust" name="filter_cust" style="width:150px"
+					<select type="text" id="filter_cust" name="filter_cust" style="width:220px"
 						onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
 						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 					<? 	foreach ($allcustomer as $cust){?>
@@ -150,9 +150,9 @@ $(function() {
 				</td>
 				<td class="content_row_header"> <?=$_LANG->get('Zeitraum');?></td>
 				<td class="content_row_clear">
-					Von <input  type="text" name="filter_from" id="filter_from" class="text date" style="width: 65px" 
+					Von <input  type="text" name="filter_from" id="filter_from" class="text date" style="width: 80px"
 								value="<?=date("d.m.Y",$filter_from)?>" />
-					Bis <input  type="text" name="filter_to" id="filter_to" class="text date" style="width: 65px" 
+					Bis <input  type="text" name="filter_to" id="filter_to" class="text date" style="width: 80px"
 								value="<?=date("d.m.Y",$filter_to)?>" />
 				</td>
 			</tr>

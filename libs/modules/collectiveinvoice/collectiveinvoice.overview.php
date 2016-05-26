@@ -214,18 +214,17 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
-	</br>
 	<div class="table-responsive">
 		<table id="colinv" class="table table-hover">
 			<thead>
 			<tr>
-				<th width="10"><?=$_LANG->get('ID')?></th>
-				<th width="100"><?=$_LANG->get('Nummer')?></th>
+				<th><?=$_LANG->get('ID')?></th>
+				<th><?=$_LANG->get('Nummer')?></th>
 				<th><?=$_LANG->get('Kunde')?></th>
 				<th><?=$_LANG->get('Titel')?></th>
-				<th width="90"><?=$_LANG->get('Angelegt am')?></th>
-				<th width="150"><?=$_LANG->get('Status')?></th>
-				<th width="80"><?=$_LANG->get('Optionen')?></th>
+				<th><?=$_LANG->get('Angelegt am')?></th>
+				<th><?=$_LANG->get('Status')?></th>
+				<th><?=$_LANG->get('Optionen')?></th>
 			</tr>
 			</thead>
 		</table>

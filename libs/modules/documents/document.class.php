@@ -402,8 +402,8 @@ class Document
      * Funktion erstellt das eigentliche PDF-Dokument und legt es auf der Festplatte ab.
      *
      * @param String $version            
-     * @param String $oldhash            
-     * @param String $withheader            
+     * @param boolean $oldhash
+     * @param boolean $withheader
      * @return number
      */
     function createDoc($version, $oldhash = false, $withheader = true)
@@ -450,16 +450,14 @@ class Document
             } else {
                 switch ($this->type) {
                     case self::TYPE_OFFER:
-                        
-                        // $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_OFFER);
-                        $tmp_index = self::getDocIndexCounter($this->requestModule, Document::TYPE_OFFER, $order->getId());
-                        $this->name = "AN" . substr($order->getNumber(), 2) . $tmp_index;
+                        $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_OFFER);
+//                          $tmp_index = self::getDocIndexCounter($this->requestModule, Document::TYPE_OFFER, $order->getId());
+//                          $this->name = "AN" . substr($order->getNumber(), 2) . $tmp_index;
                         break;
                     case self::TYPE_OFFERCONFIRM:
-                        
-                        // $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_OFFERCONFIRM);
-                        $tmp_index = self::getDocIndexCounter($this->requestModule, Document::TYPE_OFFERCONFIRM, $order->getId());
-                        $this->name = "AB" . substr($order->getNumber(), 2) . $tmp_index;
+                        $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_OFFERCONFIRM);
+//                          $tmp_index = self::getDocIndexCounter($this->requestModule, Document::TYPE_OFFERCONFIRM, $order->getId());
+//                          $this->name = "AB" . substr($order->getNumber(), 2) . $tmp_index;
                         break;
                     case self::TYPE_FACTORY:
                         $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_WORK);

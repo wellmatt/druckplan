@@ -381,8 +381,8 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	var count = parseInt($('#poscount').val());
     var newrow = "";
     newrow += '<tr>';
-    newrow += '<td valign="top" class="content_row">&nbsp;</td>';
-    newrow += '<td valign="top" class="content_row">';
+    newrow += '<td valign="top">&nbsp;</td>';
+    newrow += '<td valign="top">';
     switch (type) {
     case 0:
     	newrow += 'Manuell';
@@ -401,36 +401,39 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
     newrow += '<input type="hidden" name="orderpos['+count+'][orderid]" id="orderpos_orderid_'+count+'" value="'+orderid+'">';
 	newrow += '<input type="hidden" name="orderpos['+count+'][obj_id]" id="orderpos_objid_'+count+'" value="'+objectid+'">';
 	newrow += '<input type="hidden" name="orderpos['+count+'][type]" id="orderpos_type_'+count+'" value="'+type+'"></td>';
-	newrow += '<td valign="top" class="content_row"><span id="orderpos_name_'+count+'">'+label+'</br></span>';
-	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" class="text poscomment" style="width: 440px; height: 100px" ></textarea>';
-	newrow += '</td><td valign="top" class="content_row">';
+	newrow += '<td valign="top"><span id="orderpos_name_'+count+'">'+label+'</br></span>';
+	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" class="text poscomment form-control" style="width: 220px"></textarea>';
+	newrow += '</td><td valign="top"><div class="input-group" style="width: 160px">';
 	if (orderamounts.length>0)
 	{
-	    newrow += '<select name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" style="width: 60px" onchange="updateArticlePrice('+count+')">';
+	    newrow += '<select name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" class="form-control" onchange="updateArticlePrice('+count+')">';
 	    orderamounts.forEach(function(entry) {
 	        newrow += '<option value="'+entry+'">'+entry+'</option>';
 	    });
 	    newrow += '</select>';
 	} else {
-		newrow += '<input 	name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="1" style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+		newrow += '<input name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="1" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+		newrow += '<span class="input-group-addon">';
+		newrow += '<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_'+count+'" onclick="updateArticlePrice('+count+')" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"';
+		if (type == 3)
+			newrow += ' style="display:none" ';
+		newrow += '></span>';
 	}
-    newrow += ' Stk.<br/> &ensp;&ensp;&ensp;';
-    newrow += '<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_'+count+'"';
-	newrow += 'onclick="updateArticlePrice('+count+')"';
-	if (type != 2 && type != 1)
-		newrow += ' style="display:none" ';
-	newrow += ' title="Staffelpreis aktualisieren">';
-	newrow += '</td><td valign="top" class="content_row"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""'; 
-	newrow += 'style="width: 60px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-    newrow += '<?= $_USER->getClient()->getCurrency()?></td><td valign="top" class="content_row">';
-	newrow += '<input name="orderpos['+count+'][tax]" id="orderpos_tax_'+count+'" value="19,00" style="width: 60px"'; 
-	newrow += 'onfocus="markfield(this,0)" onblur="markfield(this,1)"> %</td>';
-	newrow += '<td valign="top" class="content_row"><span id="span_totalprice_'+count+'"></span>&nbsp;</td>';
-	newrow += '<td valign="top" class="content_row">';
+	newrow += '</div></td><td valign="top"><div class="input-group"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""';
+	newrow += 'class="form-control"  style="width: 100px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+	newrow += '<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span></div>';
+    newrow += '</td><td valign="top">';
+	newrow += '<div class="input-group">';
+	newrow += '<input name="orderpos['+count+'][tax]" id="orderpos_tax_'+count+'" value="19" style="width: 60px" class="form-control"';
+	newrow += 'onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+	newrow += '<span class="input-group-addon">%</span></div></td>';
+	newrow += '<td valign="top"><span id="span_totalprice_'+count+'"></span>&nbsp;</td>';
+	newrow += '<td valign="top">';
 	newrow += '<input type="checkbox" checked value="1" name="orderpos['+count+'][inv_rel]">';		
-	newrow += '</td><td valign="top" class="content_row">';		
-	newrow += '<input type="checkbox" checked value="1" name="orderpos['+count+'][rev_rel]">';	
-	newrow += '</td><td class="content_row" valign="top"><img src="images/icons/cross-script.png" onclick="$(this).parent().parent().remove(); $(\'#poscount\').val($(\'#poscount\').val()-1);" class="pointer" title="Position löschen">&ensp;</td></tr>';
+	newrow += '</td><td valign="top">';
+	newrow += '<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Löschen')?>" onclick="$(this).parent().parent().remove(); $(\'#poscount\').val($(\'#poscount\').val()-1);">';
+	newrow += '<img src="images/icons/cross-script.png"></button>';
+	newrow += '</td></tr>';
     $('#poscount').val(count+1);
     $('#order_pos').append(newrow);
     if (type != 0)
@@ -743,16 +746,26 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-sm-4 control-label">Bem. Int.</label>
+								<label for="" class="col-sm-4 control-label">FL</label>
 								<div class="col-sm-8">
-									<textarea name="colinv_comment" id="colinv_comment" class="form-control"><?php echo $collectinv->getComment();?></textarea>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="thirdparty" id="thirdparty" value="1" <?php if ($collectinv->getThirdparty()) echo ' checked ';?>>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" id="thirdpartycomment_title" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>">
+								<label for="" class="col-sm-4 control-label">FL-Bemerkung</label>
+								<div class="col-sm-8">
+									<textarea name="thirdpartycomment" id="thirdpartycomment" class="form-control" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
 								</div>
 							</div>
 						</div> <!-- ENDE COL LINKS -->
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="" class="col-sm-4 control-label">Anspr. P.</label>
+								<label for="" class="col-sm-4 control-label">ASP Kunde</label>
 								<div class="col-sm-8">
 									<select name="custContactperson" id="custContactperson" class="form-control">
 										<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
@@ -821,22 +834,6 @@ echo $quickmove->generate();
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-4 control-label">Fremd L.</label>
-								<div class="col-sm-8">
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" name="thirdparty" id="thirdparty" value="1" <?php if ($collectinv->getThirdparty()) echo ' checked ';?>>
-										</label>
-									</div>
-								</div>
-							</div>
-							<div class="form-group" id="thirdpartycomment_title" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>">
-								<label for="" class="col-sm-4 control-label">FL-Bemerkung</label>
-								<div class="col-sm-8">
-									<textarea name="thirdpartycomment" id="thirdpartycomment" class="form-control" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
-								</div>
-							</div>
 							<?if ($collectinv->getId()>0){?>
 								<div class="form-group">
 									<label for="" class="col-sm-4 control-label">Planung</label>
@@ -849,6 +846,12 @@ echo $quickmove->generate();
 								<label for="" class="col-sm-4 control-label">Bem. Ext.</label>
 								<div class="col-sm-8">
 									<textarea name="colinv_extcomment" id="colinv_extcomment" class="form-control"><?php echo $collectinv->getExt_comment();?></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Bem. Int.</label>
+								<div class="col-sm-8">
+									<textarea name="colinv_comment" id="colinv_comment" class="form-control"><?php echo $collectinv->getComment();?></textarea>
 								</div>
 							</div>
 						</div> <!-- ENDE COL RECHTS -->
@@ -873,7 +876,7 @@ echo $quickmove->generate();
 					</h3>
 				</div>
 				<div class="table-responsive">
-					<table class="table table-hover">
+					<table class="table table-hover" id="order_pos">
 						<thead>
 						<tr>
 							<th style="width: 10px;">#</th>
@@ -936,11 +939,10 @@ echo $quickmove->generate();
 							}
 							?>
     					    </span>
-    						<textarea name="orderpos[<?=$i?>][comment]" class="text poscomment" id="orderpos_comment_<?=$i?>"
-									  style="width: 440px; height: 100px"><?=$position->getComment()?></textarea>
+    						<textarea name="orderpos[<?=$i?>][comment]" class="text poscomment form-control" id="orderpos_comment_<?=$i?>" style="width: 220px"><?=$position->getComment()?></textarea>
 									</td>
 									<td valign="top">
-										<div class="input-group">
+										<div class="input-group" style="width: 160px">
 										<?php
 										if ($position->getType() == 1 || $position->getType() == 2)
 										{
@@ -972,7 +974,7 @@ echo $quickmove->generate();
 									<td valign="top">
 										<div class="input-group">
 											<input 	name="orderpos[<?=$i?>][price]" id="orderpos_price_<?=$i?>" class="form-control"
-													  value="<?= printPrice($position->getPrice())?>"
+													  value="<?= printPrice($position->getPrice())?>" style="width: 100px"
 													  onfocus="markfield(this,0)" onblur="markfield(this,1)">
 											<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
 										</div>
@@ -980,7 +982,7 @@ echo $quickmove->generate();
 									<td valign="top">
 										<div class="input-group">
 											<input 	name="orderpos[<?=$i?>][tax]" class="form-control" id="orderpos_tax_<?=$i?>"
-													  value="<?= printPrice($position->getTax())?>" >
+													  value="<?= printPrice($position->getTax(),0)?>" style="width: 60px">
 											<span class="input-group-addon">%</span>
 										</div>
 									</td>

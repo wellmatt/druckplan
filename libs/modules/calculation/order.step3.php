@@ -21,7 +21,7 @@ $foldtypes = Foldtype::getAllFoldTypes(Foldtype::ORDER_NAME);
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
-$tmp_all_calcs = Calculation::getAllCalculations($order);
+$tmp_all_calcs = Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT);
 foreach ($tmp_all_calcs as $tmp_calc){
     $quickmove->addItem('Auflage '.$tmp_calc->getAmount(),'index.php?page=libs/modules/calculation/order.php&id='.$order->getId().'&calc_id='.$tmp_calc->getId().'&exec=edit&step=3',null,'glyphicon glyphicon-pencil');
 }

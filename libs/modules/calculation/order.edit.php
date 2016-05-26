@@ -12,9 +12,6 @@ require_once 'libs/modules/perferences/perferences.class.php';
 
 $perference = new Perferences();
 
-// echo "<pre>";
-// print_r($_REQUEST);
-// echo "</pre>";
 
 $products = Product::getAllProducts();
 $products_nonindi = Product::getAllProductsByIndividuality();
@@ -1528,7 +1525,7 @@ if((int)$_REQUEST["step"] == 7){
 					<ul class="dropdown-menu">
 						<?php
 						$menu_counter = 0;
-						foreach (Calculation::getAllCalculations($order) as $tmp_menu_calc) {
+						foreach (Calculation::getAllCalculations($order, Calculation::ORDER_AMOUNT) as $tmp_menu_calc) {
 							echo '<li><a href="#"  onclick="location.href=\'index.php?page=' . $_REQUEST['page'] . '&id=' . $_REQUEST['id'] . '&calc_id=' . $tmp_menu_calc->getId() . '&exec=edit&step=2\'">';
 							echo '#' . $menu_counter . ' ' . $tmp_menu_calc->getTitle() . " ( Aufl. " . $tmp_menu_calc->getAmount() . " ) ";
 							echo '</a></li>';
@@ -1543,7 +1540,7 @@ if((int)$_REQUEST["step"] == 7){
 					<ul class="dropdown-menu">
 						<?php
 						$menu_counter = 0;
-						foreach (Calculation::getAllCalculations($order) as $tmp_menu_calc) {
+						foreach (Calculation::getAllCalculations($order, Calculation::ORDER_AMOUNT) as $tmp_menu_calc) {
 							echo '<li><a href="#"  onclick="location.href=\'index.php?page=' . $_REQUEST['page'] . '&id=' . $_REQUEST['id'] . '&calc_id=' . $tmp_menu_calc->getId() . '&exec=edit&step=3\'">';
 							echo '#' . $menu_counter . ' ' . $tmp_menu_calc->getTitle() . " ( Aufl. " . $tmp_menu_calc->getAmount() . " ) ";
 							echo '</a></li>';
