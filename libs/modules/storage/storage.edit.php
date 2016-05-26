@@ -154,7 +154,7 @@ echo $quickmove->generate();
         <div class="col-md-12">
             <div class="panel panel-default">
                   <div class="panel-heading">
-                        <h3 class="panel-title">Lagerpositionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.article.frame.php?stid=<?php echo $storagearea->getId();?>');"/></h3>
+                        <h3 class="panel-title">Lagerpositionen <span class="glyphicons glyphicons-plus pointer" title="neuer Artikel" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.article.frame.php?stid=<?php echo $storagearea->getId();?>');"></span></h3>
                   </div>
                   <div class="panel-body" id="storagepositionbox">
                   </div>

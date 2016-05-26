@@ -921,8 +921,8 @@ echo $quickmove->generate();
                                         <?php // Optionen ?>
                                         <td>
                                             <?php
-                                            echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow('.$group->getId().')"> ';
-                                            echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow('.$x.')"> ';
+                                            echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="addRow('.$group->getId().')"></span>';
+                                            echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="deleteRow('.$x.')">></span>';
                                             ?>
                                         </td>
                                     </tr>
@@ -955,8 +955,8 @@ echo $quickmove->generate();
                                     echo '<td id="td-cost-'.$x.'">';
                                     echo '</td>';
                                     echo '<td>';
-                                    echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow('.$group->getId().')"> ';
-                                    echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow('.$x.')"> ';
+                                    echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="addRow('.$group->getId().')"></span>';
+                                    echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="deleteRow('.$x.')"></span>';
                                     echo '</td>';
                                     echo '</tr>';
                                     $x++;

@@ -207,7 +207,7 @@
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
         $row = array();
-        $row[] = '<img src="../../../images/icons/building.png" />'.nl2br(htmlentities(utf8_encode($aRow['bname'])));
+        $row[] = '<span class="glyphicons glyphicons-exclamation-sign"></span>'.nl2br(htmlentities(utf8_encode($aRow['bname'])));
         $row[] = '<input type="checkbox" id="chkb_'.$aRow['id'].'" onclick="add_contactperson(this)" value="'.$aRow['id'].'">'.nl2br(htmlentities(utf8_encode($aRow['cname']))).'</td>
 				  <input type="hidden" name="contactperson_name_'.$aRow['id'].'" id="contactperson_name_'.$aRow['id'].'" value="'.nl2br(htmlentities(utf8_encode($aRow['cname']))).'">';
         $output['aaData'][] = $row;

@@ -94,7 +94,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                 Farbigkeit
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-                        <img src="images/icons/color--plus.png">
+                        <span class="glyphicons glyphicons-eyedropper"></span>
                              <?=$_LANG->get('Farbigkeit hinzuf&uuml;gen')?>
                     </button>
                 </span>
@@ -130,8 +130,8 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                           ?></td>
                       <td class="content_row"><?=printPrice($chr->getMarkup())?> %</td>
                       <td class="content_row">
-                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$chr->getId()?>"><img src="images/icons/scripts.png"></a>
-                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$chr->getId()?>')"><img src="images/icons/cross-script.png"></a>
+                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$chr->getId()?>"><span class="glyphicons glyphicons-file"></span></a>
+                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$chr->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
                       </td>
                   </tr>
                   <?

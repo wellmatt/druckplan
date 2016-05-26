@@ -351,8 +351,8 @@ function add_user(element)
 		removeParticipant('user',element.value);
 	} else {
 		var name = document.getElementById('user_name_' + element.value).innerHTML;
-		var addStr = '<span class="newmailToField" id="span_participant_int_'+ element.value +'"><img src="../../../images/icons/user.png" />&nbsp;'+ name;
-		addStr += '<img src="../../../images/icons/cross-white.png" class="pointer icon-link" onclick="removeParticipant(\'user\', '+ element.value +')" />';
+		var addStr = '<span class="newmailToField" id="span_participant_int_'+ element.value +'"><span class="glyphicons glyphicons-user"></span>&nbsp;'+ name;
+		addStr += '<span class="glyphicons glyphicons-remove pointer" onclick="removeParticipant(\'user\', '+ element.value +')" ></span>';
 		addStr += '<input type="hidden" name="participant_int[]" id="participant_int[]" value="'+ element.value +'"></br></span>';
 		document.getElementById('td_part_int').insertAdjacentHTML('BeforeEnd', addStr);
 	}
@@ -363,8 +363,8 @@ function add_contactperson(element)
 		removeParticipant('contactperson',element.value);
 	} else {
 		var name = document.getElementById('contactperson_name_' + element.value).value;
-		var addStr = '<span class="newmailToField" id="span_participant_ext_'+ element.value +'"><img src="../../../images/icons/user.png" />&nbsp;'+ name;
-		addStr += '<img src="../../../images/icons/cross-white.png" class="pointer icon-link" onclick="removeParticipant(\'contactperson\', '+ element.value +')" />';
+		var addStr = '<span class="newmailToField" id="span_participant_ext_'+ element.value +'"><span class="glyphicons glyphicons-user"></span>&nbsp;'+ name;
+		addStr += '<span class="glyphicons glyphicons-remove pointer" onclick="removeParticipant(\'contactperson\', '+ element.value +')" ></span>';
 		addStr += '<input type="hidden" name="participant_ext[]" id="participant_ext[]" value="'+ element.value +'"></br></span>';
 		document.getElementById('td_part_ext').insertAdjacentHTML('BeforeEnd', addStr);
 	}
@@ -421,7 +421,7 @@ function add_contactperson(element)
 <table width="100%">
     <tr>
         <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/alarm-clock.png"> <?=$_LANG->get('Kalender');?> - 
+            <h1><span class="glyphicons glyphicons-remove"></span> <?=$_LANG->get('Kalender');?> -
             <? if ($_REQUEST["id"]) echo $_LANG->get('Termin editieren'); else echo $_LANG->get('Neuer Termin')?></h1>
         </td>
         <td class="content_header"><?=$savemsg?></td>
@@ -467,7 +467,7 @@ function add_contactperson(element)
 					<td class="content_row_clear">
 						<input name="geocomplete" id="geocomplete" value="" style="width:250px;" class="text">
 						<input name="formatted_address" id="formatted_address" type="hidden" value="<?=$event->getAdress()?>">
-						<img src="../../../images/icons/map.png" onclick="window.open('https://www.google.de/maps/place/'+document.getElementById('geocomplete').value,'_blank');" />
+						<span class="glyphicons glyphicons-map" onclick="window.open('https://www.google.de/maps/place/'+document.getElementById('geocomplete').value,'_blank');" ></span>
 						<div class="map_canvas"></div>
 					</td>
 				</tr>    
@@ -499,8 +499,8 @@ function add_contactperson(element)
 							{
 								$part_int = new User($part_user);
 								$part_users_int[] = $part_int->getId();
-								$addStr = '<span class="newmailToField" id="span_participant_int_'.$part_int->getId().'"><img src="../../../images/icons/user.png" />&nbsp;'.$part_int->getFirstname().'&nbsp;'.$part_int->getLastname();
-								$addStr .= '<img src="../../../images/icons/cross-white.png" class="pointer icon-link" onclick="removeParticipant(\'user\', '.$part_int->getId().')" />';
+								$addStr = '<span class="newmailToField" id="span_participant_int_'.$part_int->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$part_int->getFirstname().'&nbsp;'.$part_int->getLastname();
+								$addStr .= '<span class="glyphicons glyphicons-remove pointer" onclick="removeParticipant(\'user\', '.$part_int->getId().')" ></span>';
 								$addStr .= '<input type="hidden" name="participant_int[]" id="participant_int_'.$part_int->getId().'" value="'.$part_int->getId().'"></br></span>';
 								echo $addStr;
 							}
@@ -508,8 +508,8 @@ function add_contactperson(element)
 						{
 						    $part_int = $_USER;
 						    $part_users_int[] = $part_int->getId();
-						    $addStr = '<span class="newmailToField" id="span_participant_int_'.$part_int->getId().'"><img src="../../../images/icons/user.png" />&nbsp;'.$part_int->getFirstname().'&nbsp;'.$part_int->getLastname();
-						    $addStr .= '<img src="../../../images/icons/cross-white.png" class="pointer icon-link" onclick="removeParticipant(\'user\', '.$part_int->getId().')" />';
+						    $addStr = '<span class="newmailToField" id="span_participant_int_'.$part_int->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$part_int->getFirstname().'&nbsp;'.$part_int->getLastname();
+						    $addStr .= '<span class="glyphicons glyphicons-remove pointer" onclick="removeParticipant(\'user\', '.$part_int->getId().')" ></span>';
 						    $addStr .= '<input type="hidden" name="participant_int[]" id="participant_int_'.$part_int->getId().'" value="'.$part_int->getId().'"></br></span>';
 						    echo $addStr;
 						}
@@ -525,8 +525,8 @@ function add_contactperson(element)
 							{
 								$part_ext = new ContactPerson($part_contact_person);
 								$part_users_ext[] = $part_ext->getId();
-								$addStr = '<span class="newmailToField" id="span_participant_ext_'.$part_ext->getId().'"><img src="../../../images/icons/user.png" />&nbsp;'.$part_ext->getNameAsLine2().'&nbsp;';
-								$addStr .= '<img src="../../../images/icons/cross-white.png" class="pointer icon-link" onclick="removeParticipant(\'contactperson\', '.$part_ext->getId().')" />';
+								$addStr = '<span class="newmailToField" id="span_participant_ext_'.$part_ext->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$part_ext->getNameAsLine2().'&nbsp;';
+								$addStr .= '<span class="glyphicons glyphicons-remove pointer" onclick="removeParticipant(\'contactperson\', '.$part_ext->getId().')" ></span>';
 								$addStr .= '<input type="hidden" name="participant_ext[]" id="participant_ext_'.$part_ext->getId().'" value="'.$part_ext->getId().'"></br></span>';
 								echo $addStr;
 							}
@@ -550,7 +550,7 @@ function add_contactperson(element)
 			<tr>
 				<td class="content_row_clear">
 					<input type="checkbox" id="chkb_<?=$u->getId()?>" onclick="add_user(this)" <? if(in_array($u->getId(), $part_users_int)) echo " checked ";?> value="<?=$u->getId()?>">
-					<img src="../../../images/icons/user.png" />
+					<span class="glyphicons glyphicons-user"></span>
 					<?=$u->getLogin()?>
 				</td>
 				<td class="content_row_clear" id="user_name_<?=$u->getId()?>"><?=$u->getNameAsLine()?></td>

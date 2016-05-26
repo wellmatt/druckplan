@@ -177,7 +177,7 @@ function addSizeField()
     var insert = '<span id="paper_size_'+count+'">';
 	insert += '<input name="paper_size_width_'+count+'" id="paper_size_width_'+count+'" class="text" style="width:40px"> x';
 	insert += ' <input name="paper_size_height_'+count+'" id="paper_size_height_'+count+'" class="text" style="width:40px">';
-	insert += '<img src="images/icons/cross-white.png" class="pointer icon-link" onclick="removeOption(\'size\', '+count+')">&nbsp;&nbsp;&nbsp;</span>';
+	insert += '<span class="glyphicons glyphicons-remove pointer" onclick="removeOption(\'size\', '+count+')"></span>&nbsp;&nbsp;&nbsp;</span>';
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('count_size').value = count + 1;
 }
@@ -188,7 +188,7 @@ function addWeightField()
 	var count = parseInt(document.getElementById('count_weight').value);
 
 	var insert = '<span id="sp_paper_weight_'+count+'"><input name="paper_weight_'+count+'" id="paper_weight_'+count+'" class="text" style="width:40px"> g';
-	insert += '<img src="images/icons/cross-white.png" class="pointer icon-link" onclick="removeOption(\'weight\', '+count+')">&nbsp;&nbsp;&nbsp;</span>';
+	insert += '<span class="glyphicons glyphicons-remove pointer" onclick="removeOption(\'weight\', '+count+')"></span>&nbsp;&nbsp;&nbsp;</span>';
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('count_weight').value = count + 1;
 }
@@ -256,7 +256,7 @@ function addSupplierRow()
 	insert += '<option value="<?=$cust->getId()?>"><?=str_replace("'", "\'", $cust->getNameAsLine())?></option>';
 	insert += '<?	} //Ende ?>';
     insert += '</select>Papierbez. b. Lief.: <input name="supplier_descr_'+count+'" id="supplier_descr_'+count+'" value="" style="width: 500px;">';
-	insert += '<img src="images/icons/cross-white.png" class="pointer" onclick="removeOption("supplier", '+count+')"></td></tr>';
+	insert += '<span class="glyphicons glyphicons-remove pointer" onclick="removeOption("supplier", '+count+')"></span>';
 
 
 	
@@ -369,11 +369,11 @@ echo $quickmove->generate();
                 <span id="paper_size_<?=$i?>">
                     Breite <input name="paper_size_width_<?=$i?>" id="paper_size_width_<?=$i?>" class="text" style="width:40px" value="<?=$s["width"]?>"> mm 
                     Höhe <input name="paper_size_height_<?=$i?>" id="paper_size_height_<?=$i?>" class="text" style="width:40px" value="<?=$s["height"]?>"> mm 
-                    <img src="images/icons/minus.png" class="pointer icon-link" onclick="removeOption('size', <?=$i?>)">&nbsp;&nbsp;&nbsp; <br>
+                    <span class="glyphicons glyphicons-minus pointer"onclick="removeOption('size', <?=$i?>)"></span>&nbsp;&nbsp;&nbsp; <br>
                 </span>
             <? $i++; } ?>                
             </span>
-            <img src="images/icons/plus.png" class="pointer" onclick="addSizeField()">
+            <span class="glyphicons glyphicons-plus pointer" onclick="addSizeField()"></span>
         </td>
     
         <td class="content_row_header"><?=$_LANG->get('Verf&uuml;gbare Grammaturen')?></td>
@@ -381,10 +381,10 @@ echo $quickmove->generate();
             <span id="span-weight">
             <? $i = 0; foreach ($paper->getWeights() as $w) {?>
                 <span id="sp_paper_weight_<?=$i?>"><input name="paper_weight_<?=$i?>" id="paper_weight_<?=$i?>" class="text" style="width:40px" value="<?=$w?>"> g
-                <img src="images/icons/minus.png" class="pointer icon-link" onclick="removeOption('weight', <?=$i?>)">&nbsp;&nbsp;&nbsp;</span> <br>
+               <span class="glyphicons glyphicons-minus pointer"onclick="removeOption('weight', <?=$i?>)"></span>&nbsp;&nbsp;&nbsp;</span> <br>
             <? $i++; } ?>
             </span>
-            <img src="images/icons/plus.png" class="pointer icon-link" onclick="addWeightField()">
+            <span class="glyphicons glyphicons-plus pointer" onclick="addWeightField()"></span>
         </td>
 		</tr>
 		<tr>		
@@ -470,12 +470,12 @@ echo $quickmove->generate();
 			<?	} //Ende ?>
 			</select>
             Papierbez. b. Lief.: <input name="supplier_descr_<?=$i?>" id="supplier_descr_<?=$i?>" value="<?php echo $s['descr'];?>" style="width: 500px;">
-			<img src="images/icons/cross-white.png" class="pointer" onclick="removeOption('supplier', <?=$i?>)">
+            <span class="glyphicons glyphicons-remove pointer" onclick="removeOption('supplier', <?=$i?>)"></span>
         </td>
     </tr>
     <?  $i++; } ?>	
 	<tr>
-		<td><img src="images/icons/plus.png" class="pointer" onclick="addSupplierRow()"></td>
+		<td><span class="glyphicons glyphicons-plus pointer"onclick="addSupplierRow()"></span></td>
 	</tr>
 </table>
 </div>
@@ -500,7 +500,7 @@ echo $quickmove->generate();
             <input name="price_<?=$i?>" id="price_<?=$i?>" class="text" style="width:60px;text-align:right" value="<?=printPrice($p["price"])?>">
             <?=$_USER->getClient()->getCurrency()?>
             <? if($i == count($paper->getPrices())-1)
-                    echo '&nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer" onclick="addPriceRow()">'; ?>
+                    echo '&nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-plus pointer"onclick="addPriceRow()"></span>'; ?>
         </td>
     </tr>
     <?  $i++; }
@@ -514,7 +514,7 @@ echo $quickmove->generate();
             ab <input name="price_quantity_from_0" id="price_quantity_from_0" class="text" style="width:40px"> kg
             <input name="price_0" id="price_0" class="text" style="width:60px;text-align:right">
             <?=$_USER->getClient()->getCurrency()?>
-            &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()">
+            &nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow()"></span>
         </td>
     </tr>
     
@@ -611,7 +611,7 @@ echo $quickmove->generate();
 									'.$_USER->getClient()->getCurrency().'
                                         &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
                                         </td>';*/
-										echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">';
+										echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')"></span>';
                 $firstWeight = false;
                 $x++;
             }

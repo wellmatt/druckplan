@@ -98,10 +98,10 @@ echo $quickmove->generate();
                                        name="column[<?php echo $column->getId() ?>][title]"
                                        value="<?php echo $column->getTitle() ?>">
                                 <span><?php echo $column->getTitle() ?></span>
-                                <img src="images/icons/cross.png" class="pull-right pointer"
-                                     onclick="removeColumn(this);"/>
-                                <img src="images/icons/pencil.png" class="pull-right pointer"
-                                     onclick="newLabel(this);"/>
+                                <span class="glyphicons glyphicons-remove pull-right pointer"
+                                     onclick="removeColumn(this);"></span>
+                                <span class="glyphicons glyphicons-pencil pull-right pointer"
+                                     onclick="newLabel(this);"></span>
                             </li>
                         <?php } ?>
                     </ul>
@@ -150,8 +150,8 @@ echo $quickmove->generate();
         insert += '<input type="hidden" class="marketing_sort" name="column[0][sort]" value="' + count + '">';
         insert += '<input type="hidden" class="marketing_title" name="column[0][title]" value="' + label + '">';
         insert += '<span>' + label + '</span>';
-        insert += '<img src="images/icons/cross.png" class="pull-right pointer" onclick="removeColumn(this);"/>';
-        insert += '<img src="images/icons/pencil.png" class="pull-right pointer" onclick="newLabel(this);"/></li>';
+        insert += '<span class="glyphicons glyphicons-remove pull-right pointer" onclick="removeColumn(this);"></span>';
+        insert += '<span class="glyphicons glyphicons-pencil pull-right pointer"  onclick="newLabel(this);"></span></li>';
         $('#sortable').append(insert);
         $('#newcolumn').val('');
         $('#marketing_column_form').submit();

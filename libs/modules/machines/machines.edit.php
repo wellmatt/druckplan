@@ -911,8 +911,8 @@ if ($machine->getId() > 0){
 				<option value="<?=Machine::UNIT_PERHOUR_CUTS?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_CUTS) echo "selected"?>><?=$_LANG->get('Schnitte')?></option>
             </select> <? } ?>
             <?=$_LANG->get('pro Stunde')?>
-            <? if($first) { ?>            
-            <img src="images/icons/plus.png" class="pointer icon-link" onclick="addUnitsPerHour()">
+            <? if($first) { ?>
+				<span class="glyphicons glyphicons-plus pointer" onclick="addUnitsPerHour()"></span>
             <? } // if?>
             <br>
             <? $first = false; $x++;} // foreach?>
@@ -930,7 +930,7 @@ if ($machine->getId() > 0){
 				<option value="<?=Machine::UNIT_PERHOUR_CUTS?>"><?=$_LANG->get('Schnitte')?></option>
             </select>
             <?=$_LANG->get('pro Stunde')?>
-            <img src="images/icons/plus.png" class="pointer icon-link" onclick="addUnitsPerHour()">
+				<span class="glyphicons glyphicons-plus pointer" onclick="addUnitsPerHour()"></span>
             
             <? } ?>
         </td>
@@ -980,14 +980,14 @@ if ($machine->getId() > 0){
                         $x++;
                     }
                     echo "</tr></table>";
-                    echo '<img src="images/icons/plus.png" onclick="addDifficultyField('.$difficulty['id'].')" class="pointer icon-link">';
+                    echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$difficulty['id'].')"></span>';
                 } else
                 {
                     echo "<table><tr id=\"tr_difficulty_fields_".$difficulty["id"]."\"><td>";
                     echo '<input style="width:40px" name="machine_difficulty['.$difficulty["id"].'][values][]"><br>';
    				    echo '<input style="width:40px" name="machine_difficulty['.$difficulty["id"].'][percents][]"> % ';
                     echo "</td></tr></table>";
-                    echo '<img src="images/icons/plus.png" onclick="addDifficultyField('.$difficulty['id'].')" class="pointer icon-link">';
+                    echo '<span class="glyphicons glyphicons-plus pointer onclick="addDifficultyField('.$difficulty['id'].')""></span>';
                     $x++;
                 }
                 
@@ -1124,7 +1124,7 @@ if ($machine->getId() > 0){
 		<tr>
 			<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
 			<td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?> 
-			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><img src="images/icons/cross-script.png"/></a></td>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><span class="glyphicons glyphicons-remove"></span></a></td>
 		</tr>
 		<?php }} ?>
 		<tr>

@@ -183,7 +183,7 @@ echo $quickmove->generate();
     <div class="col-md-12">
         <div class="panel panel-default">
         	  <div class="panel-heading">
-        			<h3 class="panel-title">Positionen <img src="images/icons/plus.png" title="neuer Artikel" class="pointer" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.article.frame.php?soid=<?php echo $suporder->getId();?>&supid=<?php echo $suporder->getSupplier()->getId();?>');"/></h3>
+        			<h3 class="panel-title">Positionen <span class="glyphicons glyphicons-plus pointer" title="neuer Artikel" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.article.frame.php?soid=<?php echo $suporder->getId();?>&supid=<?php echo $suporder->getSupplier()->getId();?>');"></span></h3>
         	  </div>
         	  <div class="panel-body" id="suporderpositionbox">
         	  </div>

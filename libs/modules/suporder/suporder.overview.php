@@ -27,14 +27,14 @@ if ($_REQUEST["exec"] == "delete"){
         <h3 class="panel-title">
             Lief. Bestellungen
                 <span class="pull-right">
-                    <img src="images/icons/details_open.svg">
+                    <span class="glyphicons glyphicons-plus-sign"></span>
                     <button class="btn btn-xs btn-success"
                             onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.collective.php';">
                         Sammelbestellung erstellen
                     </button>
                 </span>
                 <span class="pull-right">
-                    <img src="images/icons/details_open.svg">
+                   <span class="glyphicons glyphicons-plus-sign"></span>
                     <button class="btn btn-xs btn-success"
                             onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.edit.php&exec=new';">
                         Bestellung erstellen

@@ -508,8 +508,7 @@ $(function() {
                             <input name="showdeleted" id="showdeleted" type="hidden" value="0"/>
                         <?php } ?>
                         <tr align="left">
-                            <td><a onclick="TicketTableRefresh();" href="Javascript:"><img
-                                        src="../../../images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
+                            <td><a onclick="TicketTableRefresh();" href="Javascript:"><span class="glyphicons glyphicons-refresh"></span> Refresh</a></td>
                         </tr>
                         </br>
                     </table>

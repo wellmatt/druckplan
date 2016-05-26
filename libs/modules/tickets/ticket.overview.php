@@ -438,7 +438,7 @@ function TicketTableRefresh()
 			Tickets
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=new';">
-						<img src="images/icons/glyphicons-433-plus.svg">
+						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Ticket erstellen')?>
 					</button>
 				</span>
@@ -662,12 +662,12 @@ function TicketTableRefresh()
 					<span class="pull-right">
 
 					  <button class="btn btn-xs btn-success"  onclick="TicketTableRefresh();" href="Javascript:">
-						  <img src="images/icons/glyphicons-82-refresh.svg"/>
+						  <span class="glyphicons glyphicons-refresh"></span>
 						  <?=$_LANG->get('Refresh')?>
 					  </button>
 
 					  <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=reset';">
-						  <img src="images/icons/glyphicons-200-ban-circle.svg"/>
+						  <span class="glyphicons glyphicons-ban-circle"></span>
 						  <?=$_LANG->get('Reset')?>
 					  </button>
 

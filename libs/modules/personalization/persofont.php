@@ -29,7 +29,7 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Schriftarten
 				<span class="pull-right">
-					<img src="images/icons/edit.png">
+					<span class="glyphicons glyphicons-edit"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
 						<?=$_LANG->get('Schrfitart hinzuf&uuml;gen')?>
 					</button>
@@ -54,10 +54,10 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 						  </td>
 						  <td class="content_row">
 							  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&fid=<?=$font->getId()?>" class="icon-link"
-							  ><img src="images/icons/pencil.png" title="<?=$_LANG->get('Bearbeiten')?>"></a>
+							  ><span class="glyphicons glyphicons-pencil" title="<?=$_LANG->get('Bearbeiten')?>"></span></a>
 							  &ensp;
 							  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$font->getId()?>')" class="icon-link"
-							  ><img src="images/icons/cross-script.png" title="<?=$_LANG->get('L&ouml;schen')?>"></a>
+							  ><span class="glyphicons glyphicons-remove" title="<?=$_LANG->get('L&ouml;schen')?>"></span></a>
 						  </td>
 					  </tr>
 				  <?	} ?>

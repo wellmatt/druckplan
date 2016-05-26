@@ -57,7 +57,7 @@ if ($main_searchstring != "" && $main_searchstring!=NULL){
 				</td>
 				<td class="content_row" align="center">
 				<?	if($stock->getComment() != NULL && $stock->getComment() != ""){?>
-					<img src="./images/icons/balloon-ellipsis.png" alt="Kommentar" title="<?=$stock->getComment()?>" />
+					<span class="glyphicons glyphicons-ipad" title="<?=$stock->getComment()?>"></span>
 					<!-- img src="./images/icons/exclamation-octagon.png" alt="Kommentar" title="<?=$stock->getComment()?>" /-->	 
 				<?	} else {
 						echo "&ensp;";

@@ -78,7 +78,7 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Provisionsskontakte')?>
 		</td>
 		<td align="center">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>"><img src="images/icons/document-number.png" alt="Alle" title="<?=$_LANG->get('Alle')?>" /></a> 
+			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>"><span class="glyphicons glyphicons-file-lock" title="<?=$_LANG->get('Alle')?>"></span> </a>
 			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>&filter=a<?=$only?>"><img src="images/icons/document-attribute.png" alt="A" /></a>  
 			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>&filter=b<?=$only?>"><img src="images/icons/document-attribute-b.png" alt="B" /></a>  
 			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>&filter=c<?=$only?>"><img src="images/icons/document-attribute-c.png" alt="C" /></a>  
@@ -106,10 +106,10 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>&filter=y<?=$only?>"><img src="images/icons/document-attribute-y.png" alt="Y" /></a> 
 			<a href="index.php?page=<?=$_REQUEST['page']?>&order=<?=$order?>&filter=z<?=$only?>"><img src="images/icons/document-attribute-z.png" alt="Z" /></a>
 			&emsp; &emsp;
-			<a href="./docs/<?=$_USER->getId()?>-Provisionsempfänger.csv"><img src="images/icons/arrow-turn.png" title="Aktuelle Liste exportieren"></a>
+			<a href="./docs/<?=$_USER->getId()?>-Provisionsempfänger.csv"><span class="glyphicons glyphicons-file-lock" title="Aktuelle Liste exportieren"></span> </a>
 		</td>
 		<td width="220" class="content_header" align="right">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit"><img src="images/icons/user--plus.png"> <?=$_LANG->get('Provisionskontakte hinzuf&uuml;gen')?></a>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit"><span class="glyphicons glyphicons-user"></span> <?=$_LANG->get('Provisionskontakte hinzuf&uuml;gen')?></a>
 		</td>
 	</tr>
 </table>
@@ -165,9 +165,9 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 				</td>
 				<? if($_USER->isAdmin()) echo '<td class="content_row">'.$bc->getClient()->getName().'&nbsp;</td>';?>
 				<td class="content_row" align="right">
-					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$bc->getId()?>"><img src="images/icons/pencil.png"></a>
+					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$bc->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 					&ensp;
-					<a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$bc->getId()?>')"><img	src="images/icons/cross-script.png"> </a>
+					<a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$bc->getId()?>')"><span class="glyphicons glyphicons-pencil"></span></a>
 				</td>
 			</tr>
 		<?	$x++;

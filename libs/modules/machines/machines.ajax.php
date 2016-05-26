@@ -64,7 +64,7 @@ if($_REQUEST["exec"] == "updateDifficultyFields")
         echo "<table><tr id=\"tr_difficulty_fields_".$id."\"><td>";
         echo '<input style="width:40px" name="machine_difficulty['.$id.'][values][]"><br><input style="width:40px" name="machine_difficulty['.$id.'][percents][]"> % ';
         echo "</td></tr></table>";
-        echo '<img src="images/icons/plus.png" onclick="addDifficultyField('.$id.')" class="pointer icon-link">';
+        echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$id.')"></span>';
         
     } else
     {
@@ -86,13 +86,13 @@ if($_REQUEST["exec"] == "updateDifficultyFields")
                 }
             }
             echo "</tr></table>";
-            echo '<img src="images/icons/plus.png" onclick="addDifficultyField('.$id.')" class="pointer icon-link">';
+            echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$id.')"></span>';
         } else
         {
             echo "<table><tr id=\"tr_difficulty_fields_".$id."\"><td>";
             echo '<input style="width:40px" name="machine_difficulty['.$id.'][values][]"><br><input style="width:40px" name="machine_difficulty['.$id.'][percents][]"> % ';
             echo "</td></tr></table>";
-            echo '<img src="images/icons/plus.png" onclick="addDifficultyField('.$id.')" class="pointer icon-link">';
+            echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$id.')"></span>';
         }
     }
 }

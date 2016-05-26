@@ -1301,7 +1301,7 @@ if ($order->getProduct()->getHasEnvelope()) { ?>
                         }
                         ?>
                     </div>
-                    <img class="icon-link" src="images/icons/plus.png" onclick="addAmount()">
+                    <span class="glyphicons glyphicons-plus" onclick="addAmount()"></span>
                 </td>
             </tr>
 

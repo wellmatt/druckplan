@@ -191,7 +191,7 @@ $(function() {
 		<td width="200"><?=$savemsg?></td>
 		<td width="200" class="content_header" align="right">
 			<span style="font-size: 14px">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><span class="glyphicons glyphicons-note-empty"><?=$_LANG->get('Artikel hinzuf&uuml;gen')?></span></a>
+				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><span class="glyphicons glyphicons-note-empty"></span><?=$_LANG->get('Artikel hinzuf&uuml;gen')?></a>
 			</span>
 		</td>
 	</tr>

@@ -22,7 +22,7 @@ foreach($folders as $folder) {
 }
 ?>
 <a class="mail_folder" id="createNewImapFolder" href="">
-    <img src="images/icons/folder--plus.png" alt="Neuer Ordner..."/> [Neuer Ordner &hellip;]
+    <span class="glyphicons glyphicons-folder-new"></span> [Neuer Ordner &hellip;]
 </a>
 
 <form action="" method="post" style="display: none; margin-top: 1em" id="newImapFolderForm">

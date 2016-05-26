@@ -26,7 +26,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
 			<h3 class="panel-title">
 				Lacke
 				<span class="pull-right">
-					<img src="images/icons/paint-can--plus.png">
+					<span class="glyphicons glyphicons-french-press"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit';">
 						<?= $_LANG->get('Lack hinzuf&uuml;gen') ?>
 					</button>
@@ -55,9 +55,9 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
 						<td><?=printPrice($f->getKosten())?> <?=$_USER->getClient()->getCurrency()?>
 						</td>
 						<td>
-							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><img src="images/icons/pencil.png"></a>
-							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><img src="images/icons/scripts.png"></a>
-							<a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$f->getId()?>')"><img src="images/icons/cross-script.png"></a>
+							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+							<a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$f->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
 						</td>
 					</tr>
 					<? $x++; } ?>

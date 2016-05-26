@@ -99,7 +99,7 @@ function searchCust(){
 	    <tr>
 			<td class="content_row_clear">
 		    	<input name="order_search_cust" style="width:170px" class="text" id="order_search_cust">
-	            <img src="../../../images/icons/magnifier-left.png" onclick="searchCust()" class="pointer icon-link">
+				<span class="glyphicons glyphicons-search pointer" onclick="searchCust()"></span>
 	        </td>
 	        <td class="content_row_clear" id="td-selcustomer">
 	            <select name="order_customer" style="width:100%" class="text" id="order_customer">

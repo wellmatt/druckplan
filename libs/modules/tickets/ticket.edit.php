@@ -1052,7 +1052,7 @@ echo $quickmove->generate();
                                             echo $object_name;
                                             echo '</a>';
                                             if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
-                                                echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'/>';
+                                                echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'/></span>';
                                             echo '</li>';
                                             $as++;
                                         }
@@ -1322,8 +1322,7 @@ echo $quickmove->generate();
                                                     onClick="dialNumber('<?php echo $_USER->getTelefonIP(); ?>/command.htm?number=<?php echo $ticket->getCustomer_cp()->getPhoneForDial(); ?>')"
                                                     title="<?php echo $ticket->getCustomer_cp()->getPhoneForDial() . " " . $_LANG->get('anrufen'); ?>"
                                                     class="pointer icon-link form-control">
-									        <img src="images/icons/telephone.png"
-                                                 alt="TEL"> <?php echo $ticket->getCustomer_cp()->getPhone(); ?>
+									       <span class="glyphicons glyphicons-phone-alt"></span> <?php echo $ticket->getCustomer_cp()->getPhone(); ?>
 							            </span>
                                             <?php } ?>
                                         </div>
@@ -1664,8 +1663,9 @@ echo $quickmove->generate();
                                 <h3 class="panel-title">
                                     Kommentare
                                     <span class="pull-right">
-                                        <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?= $ticket->getId() ?>&sort=asc"><img
-                                                src="images/icons/arrow-090.png"/></a>
+                                        <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?= $ticket->getId() ?>&sort=asc">
+                                            <span class="glyphicons glyphicons-arrow-up"></span>
+                                        </a>
                                     </span>
                                 </h3>
                             </div>
@@ -1718,7 +1718,7 @@ echo $quickmove->generate();
                                                       <?php echo date("d.m.Y H:i", $comment->getCrtdate()); ?>
                                                       <?php
                                                       if ($_USER->isAdmin() || $_USER == $comment->getCrtuser()) {
-                                                          echo '<img class="pointer" src="images/icons/pencil.png" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/>';
+                                                          echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                       }
                                                       ?>
                                                   </span>
@@ -1823,7 +1823,7 @@ echo $quickmove->generate();
                                                                         <?php echo date("d.m.Y H:i", $subcom->getCrtdate()); ?>
                                                                         <?php
                                                                         if ($_USER->isAdmin() || $_USER == $subcom->getCrtuser()) {
-                                                                            echo '<img class="pointer" src="images/icons/pencil.png" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/>';
+                                                                            echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                                         }
                                                                         ?>
                                                                     </span>

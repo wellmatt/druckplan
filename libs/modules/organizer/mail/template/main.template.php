@@ -31,7 +31,7 @@
 	<? 	}?>
       </td>
       <td width="20%" class="content_header" align="right">
-          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=newmail&folder=<?=urlencode($currentFolder)?>&emailId=<?=$emailId?>"><img src="images/icons/mail--plus.png" /> <?=$_LANG->get('Neue Nachricht')?></a>
+          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=newmail&folder=<?=urlencode($currentFolder)?>&emailId=<?=$emailId?>"><span class="glyphicons glyphicons-message-plus"></span> <?=$_LANG->get('Neue Nachricht')?></a>
       </td>
    </tr>
 </table>

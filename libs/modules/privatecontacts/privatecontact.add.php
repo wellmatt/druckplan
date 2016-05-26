@@ -123,7 +123,7 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="images/icons/user-detective.png">
+				<span class="glyphicons glyphicons-user"></span>
 				<? if ($privatecontact->getId()) echo $_LANG->get('Kontakt &auml;ndern'); else echo $_LANG->get('Kontakt hinzuf&uuml;gen');?>
 			</h3>
 	  </div>

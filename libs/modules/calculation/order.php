@@ -214,7 +214,7 @@ $(document).ready(function() {
         <h3 class="panel-title">
             Kalkulationen
 				<span class="pull-right">
-					<img src="images/icons/details_open.svg">
+					<span class="glyphicons glyphicons-plus"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page'] ?>&exec=new';">
                         <?=$_LANG->get('Kalkulation hinzuf&uuml;gen') ?>
                     </button>

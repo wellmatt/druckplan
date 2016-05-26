@@ -84,9 +84,9 @@ $products = Product::getAllProducts();
 				</td>
 			<?}*/?>
             <td class="content_row">
-                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$p->getId()?>"><img src="images/icons/pencil.png"></a>
-                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$p->getId()?>"><img src="images/icons/scripts.png"></a>
-                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$p->getId()?>')"><img src="images/icons/cross-script.png"></a>
+                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$p->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$p->getId()?>"><span class="glyphicons glyphicons-file"></span></a>
+                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$p->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
             </td>
         </tr>
     <? $x++; } ?>

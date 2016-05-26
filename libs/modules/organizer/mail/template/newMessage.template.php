@@ -51,7 +51,7 @@
             	<td id="td_mail_to" name="td_mail_to">
             		<input name="mail_to" id="mail_to" value="<?=$recevier?>" style="width:95%" value="">
             		<a href="libs/modules/organizer/nachrichten.addemail.fancy.php" id="add_to" class="icon-link"
-            			><img src="images/icons/plus-white.png" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></a>
+            			><span class="glyphicons glyphicons-plus" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></span></a>
             	</td>
             </tr>
         	<tr>

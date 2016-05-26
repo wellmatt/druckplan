@@ -290,9 +290,9 @@ else
                     <input name="bc_cp" id="bc_cp" style="width:200px;"
                            onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}"
                            class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    <img src="../../../images/icons/cross-script.png" class="pointer"
+                    <span class="glyphicons glyphicons-remove pointer"
                          onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();"
-                         title="Reset">
+                         title="Reset"></span>
                 </td>
             </tr>
         </table>

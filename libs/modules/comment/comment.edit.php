@@ -404,8 +404,8 @@ $(function () {
                         echo '<span id="art_'.$c_article->getId().'"><span id="artamount_'.$c_article->getId().'">'.$c_article->getAmount().'</span>x 
                               <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a>';
                         if ($_USER->isAdmin()){
-                              echo '<img src="../../../images/icons/cross.png" onclick="removeArt('.$c_article->getId().')"/>
-                                    <img src="../../../images/icons/pencil.png" onclick="editArt('.$c_article->getId().','.$c_article->getAmount().')"/>';
+                              echo '<span class="glyphicons glyphicons-remove" onclick="removeArt('.$c_article->getId().')"></span>
+                                    <span class="glyphicons glyphicons-pencil" onclick="editArt('.$c_article->getId().','.$c_article->getAmount().')"></span>';
                         }
                         echo '</span></br>';
                     } elseif ($c_article->getState() == 0 && $_USER->isAdmin()){
@@ -435,12 +435,12 @@ $(function () {
                     if ($c_attachment->getState() == 1){
                         echo '<span id="attach_'.$c_attachment->getId().'">
                               <a href="../../../'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a>
-                              <img src="../../../images/icons/cross.png" onclick="removeAttach('.$c_attachment->getId().')"/>
+                             <span class="glyphicons glyphicons-remove" onclick="removeAttach('.$c_attachment->getId().')"></span>
                               </span></br>';
                     } elseif ($c_attachment->getState() == 0 && $_USER->isAdmin()) {
                         echo '<span id="attach_'.$c_attachment->getId().'"><del>
                               <a href="../../../'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a>
-                              </del><img src="../../../images/icons/cross.png" onclick="removeAttach('.$c_attachment->getId().')"/>
+                              </del><span class="glyphicons glyphicons-remove" onclick="removeAttach('.$c_attachment->getId().')"></span>
                               </span></br>';
                     }
                 }

@@ -472,9 +472,9 @@
                 {
                     if (time() > $aRow[$aColumns[$i]] && $aRow[$aColumns[$i]] > 0){
                         if ($_REQUEST["portal"] == 1){
-                            $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<img src='../../../images/icons/exclamation--frame.png'>";
+                            $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<span class=\"glyphicons glyphicons-exclamation-sign\"></span>";
                         } else {
-                            $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<img src='images/icons/exclamation--frame.png'>";
+                            $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ])."<span class=\"glyphicons glyphicons-exclamation-sign\"></span>";
                         }
                     } else if ($aRow[$aColumns[$i]] == 0) {
                         $row[] = "ohne";
@@ -533,7 +533,7 @@
                     if ($pj_state == '')
                         $pj_state = '<img src="images/status/green_small.svg" title="Keine Verkn."/>';
                     
-                    $commenthtml = "<img class='pointer commentimg' src='images/icons/message_inbox.gif'/>";
+                    $commenthtml = "<span class=\"glyphicons glyphicons-inbox-in pointer commentimg\"></span>";
                     
                     $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])))." ".$pj_state." ".$commenthtml;
                 }

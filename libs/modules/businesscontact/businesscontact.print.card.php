@@ -113,13 +113,13 @@ function printPage() {
 							<td class="content_row_clear" valign="top">
 								<span  onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$businessContact->getPhoneForDial()?>')"
 									title="<?=$businessContact->getPhoneForDial()." ".$_LANG->get('anrufen');?>" class="pointer icon-link">
-									<img src="../../../images/icons/telephone.png" alt="TEL"> <?=$businessContact->getPhone()?>
+									<span class="glyphicons glyphicons-phone-alt"><?=$businessContact->getPhone()?></span>
 								</span>
 								<br>
-								<img src="../../../images/icons/telephone-fax.png" alt="FAX"> <?=$businessContact->getFax()?><br>
-								<img src="../../../images/icons/globe-green.png" alt="WEB"> 
+								<span class="glyphicons glyphicons-phone-alt"><?=$businessContact->getFax()?></span><br>
+								<span class="glyphicons glyphicons-globe-af"></span>
 									<a class="icon-link" href="<?=$businessContact->getWebForHref()?>" target="_blank"><?=$businessContact->getWeb()?></a> <br>
-								<img src="../../../images/icons/mail.png" alt="MAIL"> <?=$businessContact->getEmail()?>
+								<span class="glyphicons glyphicons-envelope"><?=$businessContact->getEmail()?></span>
 							</td>
 						</tr>
 						<tr>
@@ -219,16 +219,16 @@ function printPage() {
 			        </tr>
 					<tr>
 						<td>
-							<?if ($phone != false){?>  
-							<img src="../../../images/icons/telephone.png"> <?php echo $phone;?>
+							<?if ($phone != false){?>
+								<span class="glyphicons glyphicons-phone-alt"></span><?php echo $phone;?>
 							<?}?>
 						</td>
 						<td>
-							<img src="../../../images/icons/mail.png"> <?php echo $cp->getEmail();?>
+							<span class="glyphicons glyphicons-envelope"></span><?php echo $cp->getEmail();?>
 						</td>
 						<td>
 							<?if ($mobilephone != false){?>
-							<img src="../../../images/icons/mobile-phone.png"> <?php echo $mobilephone;?>
+								<span class="glyphicons glyphicons-iphone"></span><?php echo $mobilephone;?>
 							<?}?>
 						</td>
 					</tr>

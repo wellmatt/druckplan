@@ -958,8 +958,8 @@ function removeAttach(id)
 				    // Falls Empf�nger Benutzer -> anzeigen
 				    if (is_a($to, "User"))
 				    {
-				        $addStr = '<span class="newmailToField" id="touserfield_'.$to->getId().'"><img src="images/icons/user.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<img src="images/icons/cross-white.png" class="pointer" onclick="removeMailto(\'user\', '.$to->getId().')" />';
+				        $addStr = '<span class="newmailToField" id="touserfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'user\', '.$to->getId().')"></span>';
 				        $addStr .= '<input type="hidden" name="mail_touser_'.$to->getId().'" id="mail_touser_'.$to->getId().'" value="1"></span>';
 				        echo $addStr;
 				    }
@@ -967,8 +967,8 @@ function removeAttach(id)
 				    // Falls Empf�nger Gruppe -> anzeigen
 				    if (is_a($to, "Group"))
 				    {
-				        $addStr = '<span class="newmailToField" id="togroupfield_'.$to->getId().'"><img src="images/icons/users.png" />&nbsp;'.$to->getName().'&nbsp;&nbsp;';
-				        $addStr .= '<img src="images/icons/cross-white.png" class="pointer" onclick="removeMailto(\'group\', '.$to->getId().')" />';
+				        $addStr = '<span class="newmailToField" id="togroupfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getName().'&nbsp;&nbsp;';
+				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'group\', '.$to->getId().')"></span>';
 				        $addStr .= '<input type="hidden" name="mail_togroup_'.$to->getId().'" id="mail_togroup_'.$to->getId().'" value="1"></span>';
 				        echo $addStr;
 				    }
@@ -976,8 +976,8 @@ function removeAttach(id)
 				    // Falls Empf�nger UserContact -> anzeigen
 				    if (is_a($to, "UserContact"))
 				    {
-				        $addStr = '<span class="newmailToField" id="tousercontactfield_'.$to->getId().'"><img src="images/icons/card-address.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<img src="images/icons/cross-white.png" class="pointer" onclick="removeMailto(\'usercontact\', '.$to->getId().')" />';
+				        $addStr = '<span class="newmailToField" id="tousercontactfield_'.$to->getId().'"><span class="glyphicons glyphicons-remove"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'usercontact\', '.$to->getId().')"></span>';
 				        $addStr .= '<input type="hidden" name="mail_tousercontact_'.$to->getId().'" id="mail_tousercontact_'.$to->getId().'" value="1"></span>';
 				        echo $addStr;
 				    }
@@ -985,8 +985,8 @@ function removeAttach(id)
 				    // Falls Empf�nger BusinessContact -> anzeigen
 				    if (is_a($to, "BusinessContact"))
 				    {
-				        $addStr = '<span class="newmailToField" id="tobusinesscontactfield_'.$to->getId().'"><img src="images/icons/building.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<img src="images/icons/cross-white.png" class="pointer" onclick="removeMailto(\'businesscontact\', '.$to->getId().')" />';
+				        $addStr = '<span class="newmailToField" id="tobusinesscontactfield_'.$to->getId().'"><span class="glyphicons glyphicons-remove"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'businesscontact\', '.$to->getId().')"></span>';
 				        $addStr .= '<input type="hidden" name="mail_tobusinesscontact_'.$to->getId().'" id="mail_tobusinesscontact_'.$to->getId().'" value="1"></span>';
 				        echo $addStr;
 				    }
@@ -994,16 +994,16 @@ function removeAttach(id)
 				    // Falls Empf�nger BusinessContact -> anzeigen
 				    if (is_a($to, "ContactPerson"))
 				    {
-				        $addStr = '<span class="newmailToField" id="tocontactpersonfield_'.$to->getId().'"><img src="images/icons/user-business.png" />&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<img src="images/icons/cross-white.png" class="pointer" onclick="removeMailto(\'contactperson\', '.$to->getId().')" />';
+				        $addStr = '<span class="newmailToField" id="tocontactpersonfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'contactperson\', '.$to->getId().')"></span>';
 				        $addStr .= '<input type="hidden" name="mail_tocontactperson_'.$to->getId().'" id="mail_tocontactperson_'.$to->getId().'" value="1"></span>';
 				        echo $addStr;
 				    }
 
 				}
 				?> <a href="libs/modules/organizer/nachrichten.addrcpt.php"
-					id="add_to"><img src="images/icons/plus-white.png"
-						title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"> </a>
+					id="add_to"><span class="glyphicons glyphicons-plus" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></span>
+				   </a>
 				</td>
 			</tr>
 			<tr>
@@ -1018,8 +1018,8 @@ function removeAttach(id)
 			        <? 
 			            foreach($nachricht->getAttachments() as $sd)
 			            {
-			                echo '<span class="newmailAttachmentField" id="attachfield_'.$sd->getId().'"><img src="images/icons/paper-clip.png">';
-			                echo $sd->getName().' <img src="images/icons/cross-white.png" class="pointer" onclick="removeAttach('.$sd->getId().')">';
+			                echo '<span class="newmailAttachmentField" id="attachfield_'.$sd->getId().'"><span class="glyphicons glyphicons-plus"></span>';
+			                echo $sd->getName().' <span class="glyphicons glyphicons-plus pointer" onclick="removeAttach('.$sd->getId().')"></span>';
 			                echo '<input type="hidden" name="mail_attach_'.$sd->getId().'" id="mail_attach_'.$sd->getId().'" value="1"></span>';
 			            }
 			        ?>

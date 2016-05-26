@@ -164,7 +164,7 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
             insert += '<option value="<?=$p->getId()?>"><?=$p->getName()?></option>';
         <? }?>                    
         insert += '</select></td><td class="content_row_clear" id="td_paperprops_'+part+'_'+count+'">&nbsp;</td><td class="content_row_clear">';
-        insert += '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deletePaper('+count+', \''+part+'\')">';
+        insert += '<span class="glyphicons glyphicons-remove pointer" onclick="deletePaper('+count+', \''+part+'\')"></span>';
         insert += '</td></tr>';
 
         document.getElementById('tr_paper_'+part+'_'+idx).insertAdjacentHTML("AfterEnd", insert);
@@ -389,10 +389,10 @@ echo $quickmove->generate();
             }
             echo '</td>
                 <td class="content_row_clear">
-                    <img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deletePaper('.$x.', \'content\')">';
+                   <span class="glyphicons glyphicons-remove pointer" onclick="deletePaper('.$x.', \'content\')"></span>';
             if($x == count($product->getSelectedPapersIds(Calculation::PAPER_CONTENT)) -1)
                 echo '
-                    <img src="images/icons/plus.png" class="pointer icon-link" onclick="addPaper('.$x.', \'content\')">';
+                    <span class="glyphicons glyphicons-plus pointer"onclick="addPaper('.$x.', \'content\')"></span>';
 
             echo '</td>
             </tr>';
@@ -412,8 +412,8 @@ echo $quickmove->generate();
             <td class="content_row" id="td_paperprops_content_0">
             </td>
             <td class="content_row">
-                <img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deletePaper(0, \'content\')">
-                <img src="images/icons/plus.png" class="pointer icon-link" onclick="addPaper(0, \'content\')">
+                <span class="glyphicons glyphicons-remove pointer"onclick="deletePaper(0, \'content\')"></span>
+               <span class="glyphicons glyphicons-plus pointer" onclick="addPaper(0, \'content\')"></span>
             </td>
         </tr>';
         }
@@ -460,10 +460,10 @@ echo $quickmove->generate();
             }
             echo '</td>
                 <td class="envelope_row_clear">
-                    <img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deletePaper('.$x.', \'envelope\')">';
+                   <span class="glyphicons glyphicons-remove pointer" onclick="deletePaper('.$x.', \'envelope\')"></span>';
             if($x == count($product->getSelectedPapersIds(Calculation::PAPER_ENVELOPE)) -1)
                 echo '
-                    <img src="images/icons/plus.png" class="pointer icon-link" onclick="addPaper('.$x.', \'envelope\')">';
+                    <span class="glyphicons glyphicons-plus pointer"onclick="addPaper('.$x.', \'envelope\')"></span>';
 
             echo '</td>
             </tr>';
@@ -483,8 +483,8 @@ echo $quickmove->generate();
             <td class="envelope_row" id="td_paperprops_envelope_0">
             </td>
             <td class="envelope_row">
-                <img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deletePaper(0, \'envelope\')">
-                <img src="images/icons/plus.png" class="pointer icon-link" onclick="addPaper(0, \'envelope\')">
+               <span class="glyphicons glyphicons-remove pointer" onclick="deletePaper(0, \'envelope\')"></span>
+               <span class="glyphicons glyphicons-plus pointer"onclick="addPaper(0, \'envelope\')"></span>
             </td>
         </tr>';
         }

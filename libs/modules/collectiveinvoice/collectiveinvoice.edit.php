@@ -414,7 +414,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	} else {
 		newrow += '<input name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="1" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 		newrow += '<span class="input-group-addon">';
-		newrow += '<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_'+count+'" onclick="updateArticlePrice('+count+')" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"';
+		newrow += '<span class="glyphicons glyphicons-refresh pointer"id="orderpos_uptpricebutton_'+count+'" onclick="updateArticlePrice('+count+')" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"></span>';
 		if (type == 3)
 			newrow += ' style="display:none" ';
 		newrow += '></span>';
@@ -432,7 +432,7 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	newrow += '<input type="checkbox" checked value="1" name="orderpos['+count+'][inv_rel]">';		
 	newrow += '</td><td valign="top">';
 	newrow += '<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Löschen')?>" onclick="$(this).parent().parent().remove(); $(\'#poscount\').val($(\'#poscount\').val()-1);">';
-	newrow += '<img src="images/icons/cross-script.png"></button>';
+	newrow += '<span class="glyphicons glyphicons-remove"></span></button>';
 	newrow += '</td></tr>';
     $('#poscount').val(count+1);
     $('#order_pos').append(newrow);
@@ -554,7 +554,7 @@ echo $quickmove->generate();
 											echo $object_name;
 											echo '</a>';
 											if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
-												echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'/>';
+												echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'></span>';
 											echo '</li>';
 											$as++;
 										}
@@ -865,11 +865,11 @@ echo $quickmove->generate();
 						Positionen
 					<span class="pull-right">
 						<button type="button" class="btn btn-default btn-sm" onclick="addPositionRow(0,0,'Manuell',0,0);">
-							<img src="images/icons/plus.png" title="neue manuelle Position" class="pointer"/>
+							<span class="glyphicons glyphicons-remove pointer" title="neue manuelle Position"></span>
 							Manuell
 						</button>
 						<button type="button" class="btn btn-default btn-sm" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.articleselector.php');">
-							<img src="images/icons/plus.png" title="neuer Artikel" class="pointer"/>
+							<span class="glyphicons glyphicons-remove pointer" title="neuer Artikel"></span>
 							Artikel
 						</button>
 					</span>
@@ -965,9 +965,9 @@ echo $quickmove->generate();
 										}
 										?>
 										<span class="input-group-addon">
-											<img src="images/icons/arrow-circle-double-135.png" class="pointer" id="orderpos_uptpricebutton_<?=$i?>"
+											<span class="glyphicons glyphicons-refresh pointer" id="orderpos_uptpricebutton_<?=$i?>"
 												 onclick="updateArticlePrice(<?=$i?>)" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"
-												<?if($position->getType() == 3) echo 'style="display:none"';?>>
+												<?if($position->getType() == 3) echo 'style="display:none"';?>></span>
 										</span>
 										</div>
 									</td>
@@ -996,36 +996,36 @@ echo $quickmove->generate();
 									<td valign="top">
 										<?php if ($position->getStatus() == 2){?>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Wiederherstellen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=restorepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
-												<img src="images/icons/asterisk.png">
+												<span class="glyphicons glyphicons-brightness-increase"></span>
 											</button>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Endgültig löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
-												<img src="images/icons/cross-script.png">
+												<span class="glyphicons glyphicons-remove"></span>
 											</button>
 										<?php } else {?>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Vorrübergehend löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=softdeletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
-												<img src="images/icons/cross-script.png">
+												<span class="glyphicons glyphicons-remove"></span>
 											</button>
 											<?
 										}
 										if ($i == 0){
 											?>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<img src="images/icons/arrow-270.png">
+												<span class="glyphicons glyphicons-share"></span>
 											</button>
 											<?php
 										} else if ($i+1 >= count($collectinv->getPositions())){
 											?>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<img src="images/icons/arrow-090.png">
+												<span class="glyphicons glyphicons-share"></span>
 											</button>
 											<?php
 										} else {
 											?>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<img src="images/icons/arrow-270.png">
+												<span class="glyphicons glyphicons-share"></span>
 											</button>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<img src="images/icons/arrow-090.png">
+												<span class="glyphicons glyphicons-share"></span>
 											</button>
 											<?php
 										}
@@ -1033,7 +1033,7 @@ echo $quickmove->generate();
 											$tmp_attach = new Attachment($position->getFile_attach());
 											?>
 											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Angehängte Datei herunterladen')?>" onclick="window.open('<?php echo Attachment::FILE_DESTINATION.$tmp_attach->getFilename();?>');">
-												<img src="images/icons/disk--arrow.png">
+												<span class="glyphicons glyphicons-cd"></span>
 											</button>
 											<?php
 										} elseif ($position->getPerso_order()>0){
@@ -1047,10 +1047,10 @@ echo $quickmove->generate();
 												$hash = $docs[0]->getHash();
 												?>
 												<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Download mit Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_e.pdf');">
-													<img src="images/icons/application-browser.png">
+													<span class="glyphicons glyphicons-display"></span>
 												</button>
 												<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Download ohne Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_p.pdf');">
-													<img src="images/icons/application.png">
+													<span class="glyphicons glyphicons-display"></span>
 												</button>
 												<?php
 											}

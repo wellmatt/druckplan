@@ -12,7 +12,7 @@
 				Zahlungsbedingungen
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-						 <img src="images/icons/user--plus.png">
+						 <span class="glyphicons glyphicons-user"></span>
 						 <?=$_LANG->get('Zahlungsbedingungen hinzuf&uuml;gen')?>
 				</span>
 			</h3>
@@ -51,9 +51,9 @@
 					  </td>
 					  <?}***/ ?>
 					  <td class="content_row">
-						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&pay_id=<?=$pt->getId();?>"><img src="images/icons/pencil.png"></a>
+						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&pay_id=<?=$pt->getId();?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&pay_id=<?=$pt->getId();?>')"><img src="images/icons/cross-script.png"></a>
+						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&pay_id=<?=$pt->getId();?>')"><span class="glyphicons glyphicons-pencil"></span></a>
 					  </td>
 				  </tr>
 				  <? $x++;

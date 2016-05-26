@@ -143,8 +143,8 @@ if ($_REQUEST["exec"] == "addMachineRow") {
     echo '<td id="td-cost-'.$x.'">';
     echo '</td>';
     echo '<td>';
-    echo '<img src="images/icons/details_open.svg" class="pointer icon-link" onclick="addRow('.$group.')"> ';
-    echo '<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteRow('.$x.')"> ';
+    echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="addRow('.$group.')"></span>';
+    echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="deleteRow('.$x.')"></span> ';
     echo '</td>';
     echo '</tr>';
 }

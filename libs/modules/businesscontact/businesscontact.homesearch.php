@@ -83,7 +83,7 @@ if ($main_searchstring != "" && $main_searchstring!=NULL){
 							 <?if($con->getTitle()=="Frau"){ // Unterschiedliche Icons fuer die Anrede?>
 								 <span class="glyphicons glyphicons-user" title="Kunde"></span>  &ensp;
 							 <? } else {?>
-							 	<img src="./images/icons/user-green.png" title="Kunde"> &ensp;
+								 <span class="glyphicons glyphicons-user" title="Kunde"></span> &ensp;
 							 <? } ?> 
 							<?=$con->getNameAsLine()?>&nbsp;
 						</td>

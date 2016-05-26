@@ -121,7 +121,7 @@ $(document).ready(function() {
 <table width="100%">
 	<tr>
 		<td width="150" class="content_header">
-			<img src="images/icons/clipboard-task.png"> 
+			<span class="glyphicons glyphicons-ipad"></span>
 			<?php $notes_cat_name = new TicketCategory(1); $notes_cat_name = $notes_cat_name->getTitle();?>
 			<span style="font-size: 13px"><?=$_LANG->get('Verknüpfte Tickets')?> (<?php echo $notes_cat_name;?>)</span>
 		</td>
@@ -129,7 +129,7 @@ $(document).ready(function() {
 		<?=$savemsg?>
 		</td>
 		<td class="content_header" align="right">
-		  <a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> 
+		  <a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><span class="glyphicons glyphicons-ticket"></span>
 		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
 		</td>
 	</tr>

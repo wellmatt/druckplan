@@ -342,7 +342,7 @@
             else if ( $aColumns[$i] == 'comment' )
             {
                 if($aRow["comment"] != NULL && $aRow["comment"] != ""){
-					$row[] = '<img src="./images/icons/balloon-ellipsis.png" alt="Kommentar" title="'.$aRow["comment"].'"/>' ;
+					$row[] = '<span class="glyphicons glyphicons-chat" title="'.$aRow["comment"].'"/></span>';
 				} else {
 					$row[] =  '&emsp;';
 				}
@@ -366,17 +366,17 @@
             }
         }
         $tmp_options = '<a class="icon-link" target="_blank" href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash1"].'_e.pdf">
-                       <img src="images/icons/application-browser.png" title="Download Vorderseite mit Hintergrund" alt="Download"></a> 
+                       <span class="glyphicons glyphicons-chat" title="Download Vorderseite mit Hintergrund"></span></a>
     	               <a href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash1"].'_p.pdf" class="icon-link" target="_blank">
-                       <img src="images/icons/application.png" title="Download Vorderseite ohne Hintergrund" alt="Download"></a></br>';
+                       <span class="glyphicons glyphicons-display" title="Download Vorderseite ohne Hintergrund"></span></a></br>';
         if ($aRow["hash2"] != $aRow["hash1"] && $aRow["hash2"] != "")
         {
             $tmp_options .= '<a class="icon-link" target="_blank" href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash2"].'_e.pdf">
-                             <img src="images/icons/application-browser.png" title="Download R&uuml;ckseite mit Hintergrund" alt="Download"></a> 
+                            <span class="glyphicons glyphicons-display" title="Download R&uuml;ckseite mit Hintergrund"></span></a>
         	                 <a href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash2"].'_p.pdf" class="icon-link" target="_blank">
-                             <img src="images/icons/application.png" title="Download R&uuml;ckseite ohne Hintergrund" alt="Download"></a>';
+                             <span class="glyphicons glyphicons-display" title="Download R&uuml;ckseite ohne Hintergrund"></span></a>';
         }
-        $tmp_options .= '&ensp;<a class="icon-link" href="#" onclick="askDel(\'index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=delete&delid='.$aRow[ $aColumns[0] ].'\')"><img src="images/icons/cross-script.png"></a>';
+        $tmp_options .= '&ensp;<a class="icon-link" href="#" onclick="askDel(\'index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=delete&delid='.$aRow[ $aColumns[0] ].'\')"><span class="glyphicons glyphicons-remove"></span></a>';
         $row[] = $tmp_options;
         $output['aaData'][] = $row;
     }

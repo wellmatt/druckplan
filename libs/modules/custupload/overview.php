@@ -59,13 +59,13 @@ function askDel(myurl)
 		<h3 class="panel-title">
 			Kundenuploads
 			<span class= "pull-center">
-				<img src="images/icons/navigation.png" alt="Upload">
+				<span class="glyphicons glyphicons-collapse"></span>
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&doupload=1)?>';" >
 					<?=$_LANG->get('Upload');?>
 				</button>
 			</span>
 			<span class= "pull-right">
-				<img src="images/icons/funnel.png"alt="Download">
+				<span class="glyphicons glyphicons-filter"></span>
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&filter=<?=$filter2?>';" >
 					<?=$filter_msg?>
 				</button>
@@ -120,10 +120,10 @@ function askDel(myurl)
 								<td class="content_row"><?=printPrice(round($size, 2))?> <?=$unit?></td>
 								<td class="content_row"><?=date('d.m.Y H:i', $file["ftp_crtdat"])?></td>
 								<td class="content_row">
-									<a class="icon-link" href="get.php?type=2&hash=<?=$file["ftp_hash"]?>"><img src="images/icons/navigation-270-frame.png" title="Download" alt="Download"></a>
+									<a class="icon-link" href="get.php?type=2&hash=<?=$file["ftp_hash"]?>"><span class="glyphicons glyphicons-expand" title="Download"></span></a>
 									<!-- a href="#" onclick="askDel('index.php?mid=<?=$_REQUEST["mid"]?>&delete=<?=$file["ftp_hash"]?>')">L&ouml;schen</a-->
 									&ensp;
-									<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delete=<?=$file["ftp_hash"]?>')"><img src="images/icons/cross-script.png"> </a>
+									<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delete=<?=$file["ftp_hash"]?>')"><span class="glyphicons glyphicons-remove"></span></a>
 								</td>
 							</tr>
 							<? $y++; } ?>

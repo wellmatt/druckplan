@@ -185,36 +185,35 @@ addEventListener("message", receiveMessage, false);
 <table>
 	<tr>
 		<td width="120px">
-			<img src="images/icons/clock-frame.png" alt=""/> <b><?=$_LANG->get('Zeit/Mat.');?></b>
+			<span class="glyphicons glyphicons-clock"></span> <b><?=$_LANG->get('Zeit/Mat.');?></b>
 		</td>
 		<td>
 			<a href="libs/modules/timekeeping/timekeeper.newTimer.iframe.php?tm_objectid=<?=$timer_objectID?>&tm_moduleid=<?=$timer_moduleID?>&modus=timer" 
-				id="a_addtimer"><img src="images/icons/clock--plus.png" title="<?=$_LANG->get('Zeit von Hand eintragen');?>" ></a>
+				id="a_addtimer"<span class="glyphicons glyphicons-clock" title="<?=$_LANG->get('Zeit von Hand eintragen');?>"></span></a>
 			&emsp; &emsp;
 			<a href="libs/modules/timekeeping/timekeeper.newTimer.iframe.php?tm_objectid=<?=$timer_objectID?>&tm_moduleid=<?=$timer_moduleID?>&modus=article" 
-				id="a_addtimer"><img src="images/icons/sticky-note--plus.png" title="<?=$_LANG->get('Artikel eintragen');?>" ></a>
+				id="a_addtimer"><span class="glyphicons glyphicons-note-empty" title="<?=$_LANG->get('Artikel eintragen');?>"></span></a>
 		</td>
 		<td width="25px"></td>
 		<td width="25px">
-			<img src="images/icons/hourglass--arrow.png" title="<?=$_LANG->get('Zeitmessung starten');?>" id="img_timer_start" 
-				 onclick="startTimer()" alt="<?=$_LANG->get('Zeitmessung starten');?>"
-				 style="display:<?=$display_start?>">
+			<span class="glyphicons glyphicons-hourglass" title="<?=$_LANG->get('Zeitmessung starten');?>" id="img_timer_start"
+				 onclick="startTimer()" style="display:<?=$display_start?>"></span>
 		</td>
 		<td  width="25px">
 			<img src="./images/status/loading2.gif" id="img_timer_loading" style="display: <?=$display_loading?>;"> 
 		</td>
 		<td  width="25px">
 			<a  href="libs/modules/timekeeping/timekeeper.iframe.php?tm_objectid=<?=$timer_objectID?>&tm_moduleid=<?=$timer_moduleID?>" class="products" id="a_timer_stop"
-				style="display:<?=$display_stop?>;"><img src="images/icons/hourglass--minus.png" title="Stop" ></a>
+				style="display:<?=$display_stop?>;"><span class="glyphicons glyphicons-hourglass" title="Stop"></span></a>
 			<a  href="libs/modules/timekeeping/timekeeper.iframe.php?tm_objectid=<?=$timer_objectID?>&tm_moduleid=<?=$timer_moduleID?>" class="products" id="a_timer_othertimer"
 				style="display:<?=$display_othertimer?>;"
-				><img src="images/icons/exclamation-diamond.png" alt="<?=$_LANG->get('Achtung');?>" 
-						title="<?=$_LANG->get('Andere Zeitmessung bereits aktiv');?>"/></a>
+				><span class="glyphicons glyphicons-exclamation-sign"
+						title="<?=$_LANG->get('Andere Zeitmessung bereits aktiv');?>"></span></a>
 		</td>
 		<td width="60px"></td>
 		<td>
-			<img src="images/icons/arrow-circle-double-135.png" title="<?=$_LANG->get('Zeiten aktualisieren');?>" id="img_timer_start" 
-				 onclick="updateTimerTable()" alt="<?=$_LANG->get('Zeiten aktualisieren');?>" class="pointer">
+			<span class="glyphicons glyphicons-refresh pointer" title="<?=$_LANG->get('Zeiten aktualisieren');?>" id="img_timer_start"
+				 onclick="updateTimerTable()"></span>
 		</td>
 		<td id="total_time" width="120px" align="right" valign="middle"></td>
 		<!-- td>

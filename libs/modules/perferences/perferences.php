@@ -118,7 +118,7 @@ function addFormatRawRow()
 	insert += '</td>';
 	insert += '<td class="content_row_clear">';
 	insert += '<input name="formatsraw_height_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> &nbsp;&nbsp;&nbsp;<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteFormatRawRow(this)">';
+	insert += 'value ="" style="width: 50px"> &nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-remove pointer" onclick="deleteFormatRawRow(this)"></span>';
 	insert += '</td></tr>';
 	
 	obj.insertAdjacentHTML("BeforeEnd", insert);
@@ -176,7 +176,7 @@ function deleteFormatRawRow(obj)
 
 <table width="100%">
    <tr>
-      <td width="200" class="content_header"><img src="images/icons/gear.png"> <?=$_LANG->get('Einstellungen')?></td>
+      <td width="200" class="content_header"><span class="glyphicons glyphicons-cogwheel"></span> <?=$_LANG->get('Einstellungen')?></td>
 	  <td align="right"><?=$savemsg?></td>
    </tr>
 </table>
@@ -275,9 +275,9 @@ echo $quickmove->generate();
 						<td class="content_row_clear">
 							<input 	name="formatsraw_height_<?=$y?>" class="text" type="text"
 									value ="<?=printPrice($formats_raw[$y]["height"]);?>" style="width: 50px">
-							&nbsp;&nbsp;&nbsp;<img src="images/icons/cross-script.png" class="pointer icon-link" onclick="deleteFormatRawRow(this)">&nbsp;
+							&nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-remove pointer"onclick="deleteFormatRawRow(this)"></span>&nbsp;
 							<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-								echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addFormatRawRow()">';
+								echo '<span class="glyphicons glyphicons-plus pointer" onclick="addFormatRawRow()"></span>';
 							}?> 
 						</td>
 					</tr>
@@ -305,7 +305,7 @@ echo $quickmove->generate();
             </table>
        </div>
        <div id="tabs-5">
-            Feiertage: <img src="images/icons/plus.png" class="pointer icon-link" onclick="addHolidayRow()">
+            Feiertage: <span class="glyphicons glyphicons-plus pointer" onclick="addHolidayRow()"></span>
             <table width="100%" border="0" cellpadding="0" cellspacing="0" id="holidays">
                <colgroup>
                   <col>
@@ -338,7 +338,7 @@ echo $quickmove->generate();
                      <input type="text" class="cal" name="holiday[end][]" value="<?php echo date("d.m.Y H:i",$holiday->getEnd());?>"/>
                   </td>
                   <td class="content_row_clear" valign="top">
-                     <input type="text" name="holiday[color][]" value="<?php echo $holiday->getColor();?>"/><img src="images/icons/cross-script.png" class="pointer icon-link" onclick="$(this).parent().parent().remove();">
+                     <input type="text" name="holiday[color][]" value="<?php echo $holiday->getColor();?>"/><span class="glyphicons glyphicons-remove pointer"onclick="$(this).parent().parent().remove();"></span>
                   </td>
                </tr>
                <?php }}?>

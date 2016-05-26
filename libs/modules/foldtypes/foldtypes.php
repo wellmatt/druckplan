@@ -30,7 +30,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                 Falzarten
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-                        <img src="images/icons/foldtypes--plus.png">
+                        <span class="glyphicons glyphicons-sort"></span>
                             <?=$_LANG->get('Falzart hinzuf&uuml;gen')?>
                     </button>
                 </span>
@@ -56,9 +56,9 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                       <td class="content_row" align="center"><?=$f->getVertical()?></td>
                       <td class="content_row" align="center"><?=$f->getHorizontal()?></td>
                       <td class="content_row">
-                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><img src="images/icons/pencil.png"></a>
-                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><img src="images/icons/scripts.png"></a>
-                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST["page"]?>&exec=delete&id=<?=$f->getId()?>')"><img src="images/icons/cross-script.png"></a>
+                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+                          <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><span class="glyphicons glyphicons-file"></span></a>
+                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST["page"]?>&exec=delete&id=<?=$f->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
                       </td>
                   </tr>
 

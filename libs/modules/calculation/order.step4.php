@@ -331,7 +331,7 @@ echo $quickmove->generate();
                             }
                         }
                         ?>
-                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis (<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv"><img src="images/icons/application-export.png"></a>)</label>
+                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis (<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv"><span class="glyphicons glyphicons-display"></span></a>)</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="order_beilagen" name="order_beilagen"><?=$order->getBeilagen()?></textarea>
                         </div>
@@ -346,7 +346,7 @@ echo $quickmove->generate();
     			<h3 class="panel-title">
                     Kalkulationsübersicht
                     <span class="pull-right">
-                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=export&id=<?=$order->getId()?>" target="_blank"><img src="images/icons/application-export.png"> <?=$_LANG->get('Exportieren')?></a>
+                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=export&id=<?=$order->getId()?>" target="_blank"><span class="glyphicons glyphicons-display"><?=$_LANG->get('Exportieren')?></span></a>
                     </span>
                 </h3>
     	  </div>
@@ -369,11 +369,11 @@ echo $quickmove->generate();
                       <td class="content_row_clear">&nbsp;</td>
                       <? foreach($calculations as $calc) { ?>
                           <td class="content_row_clear value" align="center">
-                              <img src="images/icons/pencil.png" class="pointer icon-link" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=2'">
-                              <img src="images/icons/scripts.png" class="pointer icon-link" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&subexec=copy&step=2'">
+                              <span class="glyphicons glyphicons-pencil pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=2'"></span>
+                              <span class="glyphicons glyphicons-file pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&subexec=copy&step=2'"></span>
 
                               <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
-                                  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$order->getId()?>&subexec=delete&calc_id=<?=$calc->getId()?>&step=4')"><img src="images/icons/cross-script.png"></a>
+                                  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$order->getId()?>&subexec=delete&calc_id=<?=$calc->getId()?>&step=4')"><span class="glyphicons glyphicons-remove"></span></a>
                               <?}?>
                           </td>
                       <? } ?>
@@ -743,7 +743,7 @@ echo $quickmove->generate();
                       <td class="content_row_header"><?=$_LANG->get('Fertigungsprozess')?></td>
                       <? foreach($calculations as $calc) { ?>
                           <td class="content_row_clear value" align="center">
-                              <img src="images/icons/pencil.png" class="pointer icon-link" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=3'">
+                              <span class="glyphicons glyphicons-pencil pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=3'"></span>
                           </td>
                       <?  } ?>
                   </tr>

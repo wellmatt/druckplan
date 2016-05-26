@@ -63,7 +63,7 @@ $(function() {
       <td width="200" class="content_header">
       	
       	<a href="libs/modules/businesscontact/businesscontact.add.fancy.php" id="add_new_client">
-      		<img src="images/icons/user-business.png" title="<?=$_LANG->get('Neuen Kunden anlegen')?>">
+            <span class="glyphicons glyphicons-user" title="<?=$_LANG->get('Neuen Kunden anlegen')?>"></span>
       		<?=$_LANG->get('Neuen Kunden anlegen')?>
       	</a>
       </td>

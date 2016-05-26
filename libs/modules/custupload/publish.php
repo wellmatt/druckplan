@@ -252,7 +252,7 @@ $(function() {
 	<div class="panel panel-default">
 		  <div class="panel-heading">
 				<h3 class="panel-title">
-					<img src="images/icons/navigation.png" alt="-">
+					<span class="glyphicons glyphicons-collapse"></span>
 					Neue Datei für Kunden veröffentlichen
 				</h3>
 		  </div>

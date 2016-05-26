@@ -136,7 +136,7 @@ $(document).ready(function() {
     $("#comb_colinv tbody td").live('click',function(){
         var aPos = $('#comb_colinv').dataTable().fnGetPosition(this);
         var aData = $('#comb_colinv').dataTable().fnGetData(aPos[0]);
-        $("#sel_colinv").append('<span onclick="$(this).remove();">'+aData[1]+' - '+aData[3]+'<img src="images/icons/cross.png"/></br>'+
+        $("#sel_colinv").append('<span onclick="$(this).remove();">'+aData[1]+' - '+aData[3]+'<span class="glyphicons glyphicons-remove"></span></br>'+
                       		    '<input type="hidden" value="'+aData[0]+'" name="comb_ids[]"/></span>');
 	    $('#btn_submit').show();
     });
@@ -178,7 +178,7 @@ $(document).ready(function() {
  <div class="panel panel-default">
  	  <div class="panel-heading">
  			<h3 class="panel-title">
-                <img src="images/icons/arrow-join.png">
+                <span class="glyphicons glyphicons-share-alt"></span>
                 <?=$_LANG->get('Vorg&auml;nge zusammenf&uuml;gen')?>
             </h3>
  	  </div>

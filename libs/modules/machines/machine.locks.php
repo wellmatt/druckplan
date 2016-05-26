@@ -140,7 +140,7 @@ if ($_REQUEST['id'] && $_REQUEST['id'] > 0){
 								  <tr>
 									  <td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
 									  <td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?>
-										  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><img src="images/icons/cross-script.png"/></a></td>
+										  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><span class="glyphicons glyphicons-remove"></span></a></td>
 								  </tr>
 							  <?php }} ?>
 					  </table>

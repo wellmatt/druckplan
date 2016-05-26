@@ -217,10 +217,10 @@ function PersoOrderTableRefresh()
 						  </td>
 					  </tr>
 					  <tr align="left">
-						  <td><a onclick="PersoOrderTableRefresh();" href="Javascript:"><img src="images/icons/arrow-circle-double-135.png"/> Refresh</a></td>
+						  <td><a onclick="PersoOrderTableRefresh();" href="Javascript:"><span class="glyphicons glyphicons-refresh"></span> Refresh</a></td>
 					  </tr>
 					  <tr align="left">
-						  <td><a href="index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset"><img src="images/icons/slash.png"/> Reset</a></td>
+						  <td><a href="index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset"><span class="glyphicons glyphicons-ban-circle"></span> Reset</a></td>
 					  </tr>
 				  </table>
 		  	  </div>

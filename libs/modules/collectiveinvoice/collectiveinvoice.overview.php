@@ -162,14 +162,14 @@ $(document).ready(function() {
 			Vorgänge
 				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
 				<span class="pull-right">
-					<img src="images/icons/glyphicons-596-paired.svg">
+					<span class="glyphicons glyphicons-paired"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">
 						<?=$_LANG->get('Vorgänge zusammenführen') ?>
 					</button>
 				</span>
 				<?php }?>
 				<span class="pull-right">
-					<img src="images/icons/glyphicons-433-plus.svg">
+					<span class="glyphicons glyphicons-plus"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
 						<?=$_LANG->get('Vorgang hinzuf&uuml;gen') ?>
 					</button>

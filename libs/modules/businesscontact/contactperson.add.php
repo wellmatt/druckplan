@@ -415,10 +415,10 @@ echo $quickmove->generate();
 				
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Benachrichtigungs-Adr.');?></td>
-					<td class="content_row_clear" id="notify_mail_adr"><img src="images/icons/plus.png" class="pointer icon-link" onclick="addMailRow()"></br>
+					<td class="content_row_clear" id="notify_mail_adr"><span class="glyphicons glyphicons-plus pointer" onclick="addMailRow()"></span></br>
 						<? if (count($contactperson->getNotifymailadr()) > 0) { foreach ($contactperson->getNotifyMailAdr() as $notifymailadr){?>
 						    <input name="notifymailadr[]" type="mail" value="<?=$notifymailadr?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-						    <img src="images/icons/cross.png" onclick="JavaScript: $(this).prev().remove(); $(this).remove();"/></br>
+							<span class="glyphicons glyphicons-remove"onclick="JavaScript: $(this).prev().remove(); $(this).remove();"></span></br>
 						<? }}?>
 					</td>
 				</tr>

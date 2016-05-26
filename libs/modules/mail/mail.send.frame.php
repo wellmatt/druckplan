@@ -884,7 +884,7 @@ $(function () {
 
 <div style="width: 100%; overflow: hidden;">
     <div class="row col-xs-12">
-        <div class="col-xs-4"><img src="../../../images/icons/mail--plus.png"><span style="font-size: 13px"><?=$_LANG->get('eMail')?></span></div>
+        <div class="col-xs-4"<span class="glyphicons glyphicons-message-plus"></span><span style="font-size: 13px"><?=$_LANG->get('eMail')?></span></div>
         <div class="col-xs-4" style="text-align: right;"><?=$savemsg?></div>
         <div class="col-xs-2" style="text-align: right;"><span onclick="$('#exec').val('save');$('#mail_form').submit();" class="btn btn-success">Speichern</span></div>
         <div class="col-xs-2" style="text-align: right;"><span onclick="$('#mail_form').submit();" class="btn btn-info">Senden</span></div>
@@ -1003,7 +1003,7 @@ $(function () {
                           if (($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE") && count($attachments))
                           {
                               foreach ($attachments as $attachment) {
-                                  echo '<p>'.$attachment['name'].'<input type="hidden" name="old_attach[]" value="'.$attachment["filename"].'"><img class="pointer" onclick="$(this).parent().remove();" src="../../../images/icons/cross.png"/></p>';
+                                  echo '<p>'.$attachment['name'].'<input type="hidden" name="old_attach[]" value="'.$attachment["filename"].'"><span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span></p>';
                               }
                           }
                           ?>

@@ -559,13 +559,13 @@ echo $quickmove->generate();
 							<td class="content_row_clear" valign="top">
 								<span  onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$businessContact->getPhoneForDial()?>')"
 									title="<?=$businessContact->getPhoneForDial()." ".$_LANG->get('anrufen');?>" class="pointer icon-link">
-									<img src=" images/icons/glyphicons-443-earphone.svg" alt="TEL"> <?=$businessContact->getPhone()?>
+									<span class="glyphicons glyphicons-earphone"><?=$businessContact->getPhone()?></span>
 								</span>
 								<br>
-								<img src="images/icons/glyphicons-450-fax.svg" alt="FAX"> <?=$businessContact->getFax()?><br>
-								<img src="images/icons/glyphicons-371-globe-af.svg" alt="WEB">
+								<span class="glyphicons glyphicons-fax"><?=$businessContact->getFax()?></span><br>
+								<span class="glyphicons glyphicons-globe-af"></span>
 									<a class="icon-link" href="<?=$businessContact->getWebForHref()?>" target="_blank"><?=$businessContact->getWeb()?></a> <br>
-								<img src="images/icons/glyphicons-11-envelope.svg" alt="MAIL"> <?=$businessContact->getEmail()?>
+								<span class="glyphicons glyphicons-envelope"><?=$businessContact->getEmail()?></span>
 							</td>
 						</tr>
 						<tr>
@@ -678,17 +678,17 @@ echo $quickmove->generate();
 										<?if ($phone != false){?>  
 										<a class="icon-link" href="#" title="<?=$phone." ".$_LANG->get('anrufen');?>"
 											onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$phone?>')"											
-											><img src="images/icons/glyphicons-443-earphone.svg"></a>
+											><span class="glyphicons glyphicons-earphone"></span></a>
 										<?}?>
 									</td>
 									<td>
-										<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=phone" title="<?=$cp->getEmail();?>"><img src="images/icons/glyphicons-11-envelope.svg"></a>
+										<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=phone" title="<?=$cp->getEmail();?>"><span class="glyphicons glyphicons-envelope"></span></a>
 									</td>
 									<td>
 										<?if ($mobilephone != false){?>
 										<a class="icon-link" href="#" title="<?=$mobilephone." ".$_LANG->get('anrufen');?>"
 											onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$mobilephone?>')"
-										 ><img src="images/icons/mobile-phone.png"></a>
+										 ><span class="glyphicons glyphicons-iphone"></span></a>
 										<?}?>
 									</td>
 								</tr>
@@ -846,8 +846,8 @@ echo $quickmove->generate();
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="customernumber" id="customernumber" 
 					    		value="<?=$businessContact->getCustomernumber()?>">
-					    <img src="images/icons/glyphicons-222-unshare.svg" onclick="generadeCustomerNumber()" class="pointer"
-					    	 title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>">
+						<span class="glyphicons glyphicons-unshare pointer"onclick="generadeCustomerNumber()" title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>"></span>
+
 					</td>
 				</tr>
 				<tr>
@@ -961,9 +961,8 @@ echo $quickmove->generate();
 					<td class="content_row_header"><?=$_LANG->get('Kreditor-Nr.')?></td>
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="kreditor" id="kreditor"
-					    		value="<?=$businessContact->getKreditor()?>"> 
-					    <img src="images/icons/glyphicons-222-unshare.svg" onclick="generadeCreditorNumber()" class="pointer"
-					    		title="<?=$_LANG->get('Neue Kreditoren-Nr. erzeugen');?>">
+					    		value="<?=$businessContact->getKreditor()?>">
+						<span class="glyphicons glyphicons-unshare pointer" onclick="generadeCreditorNumber()" title="<?=$_LANG->get('Neue Kreditoren-Nr. erzeugen');?>"></span>
 					</td>
 				</tr>
 				<tr>
@@ -971,8 +970,7 @@ echo $quickmove->generate();
 					<td class="content_row_clear icon-link">
 					    <input class="text" style="width:100px" name="debitor" id="debitor"
 					    		value="<?=$businessContact->getDebitor()?>">
-					    <img src="images/icons/glyphicons-222-unshare.svg" onclick="generadeDebitorNumber()" class="pointer"
-					    		title="<?=$_LANG->get('Neue Debitoren-Nr. erzeugen');?>">
+						<span class="glyphicons glyphicons-unshare pointer" onclick="generadeDebitorNumber()" title="<?=$_LANG->get('Neue Debitoren-Nr. erzeugen');?>"></span>
 					</td>
 				</tr>
 				<tr>
@@ -1047,7 +1045,7 @@ echo $quickmove->generate();
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear" align="right">
-					<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-433-plus.svg"> <?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?></a>
+					<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?></span></a>
 				</td>
 			</tr>
 			<?php $addressInvoice = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
@@ -1061,7 +1059,7 @@ echo $quickmove->generate();
 				<td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
 				<td><? echo $ai->getZip()." ".$ai->getCity();?></td>
 				<td class="content_row_clear" align="right">
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-31-pencil.svg"></a>
+	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 	        	</td>
 	        </tr>
 	        <?php 
@@ -1086,7 +1084,7 @@ echo $quickmove->generate();
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear" align="right">
 					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id=<?=$businessContact->getID()?>" class="icon-link"
-						><img src="images/icons/glyphicons-433-plus.svg"> <?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?></a>
+						><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?></span></a>
 				</td>
 			</tr>
 			<?php 
@@ -1109,7 +1107,7 @@ echo $quickmove->generate();
 							echo "green_small.gif";
 						}
 					?>" title="<?=$_LANG->get('Shop-Freigabe')?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-31-pencil.svg"></a>
+	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 	        	</td>
 	        </tr>
 	        <?php 
@@ -1137,7 +1135,7 @@ echo $quickmove->generate();
 				<td class="content_row_clear">&emsp;</td>
 				<td class="content_row_clear" align="right" colspan="3">
 					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&id=<?=$businessContact->getID()?>" class="icon-link"
-						><img src="images/icons/glyphicons-433-plus.svg"> <?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></a>
+						><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></span></a>
 				</td>
 			</tr>
 			<? //$contactPerson = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
@@ -1147,7 +1145,7 @@ echo $quickmove->generate();
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
 					valign="top">
 					<?php echo $cp->getNameAsLine(); ?> &ensp; </br>
-					<? if ($cp->getBirthDate()) echo '<img src="images/icons/glyphicons-273-cake.svg"/>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
+					<? if ($cp->getBirthDate()) echo '<span class="glyphicons glyphicons-cake"></span>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
 					valign="top">
@@ -1184,7 +1182,7 @@ echo $quickmove->generate();
 				</td>
 				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"> &ensp;</td>
 				<td class="content_row" align="right">
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>"><img src="images/icons/glyphicons-31-pencil.svg"></a>
+	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 	        	 </td>
 	        </tr>
 	        <?
@@ -1313,7 +1311,7 @@ echo $quickmove->generate();
 						<td width="280" class="content_header">
 							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
 							<?=$_LANG->get('Personalisierung (Positions Titel)');?>
-							<img onclick="addTitlePosition()" class="pointer icon-link" src="images/icons/glyphicons-433-plus.svg">
+							<span class="glyphicons glyphicons-plus pointer" onclick="addTitlePosition()"></span>
 						</td>
 						<td></td>
 						<td width="120" class="content_header" align="right">&ensp;</td>
@@ -1325,7 +1323,7 @@ echo $quickmove->generate();
 						{?>
 							<tr id="tr_positiontitle_<?=$i?>">
 								<td colspan="3">
-									<input type="text" value="<?=$position_title?>" style="width:350px" name="position_titles[]"><img onclick="removeTitlePosition(this)" alt="<?=$i?>" class="pointer icon-link" src="images/icons/cross-script.png"/>
+									<input type="text" value="<?=$position_title?>" style="width:350px" name="position_titles[]"><span class="glyphicons glyphicons-remove pointer" onclick="removeTitlePosition(this)"></span>
 								</td>
 							</tr>
 						<?$i++; }

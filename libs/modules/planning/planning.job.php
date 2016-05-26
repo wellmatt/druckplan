@@ -225,7 +225,7 @@ function createSelects(id,count,workload)
 <table width="100%">
 	<tr>
 		<td width="200" class="content_header">
-			<img src="images/icons/application-form.png"> <? echo $_LANG->get('Jobs')?>
+            <span class="glyphicons glyphicons-pencil"></span> <? echo $_LANG->get('Jobs')?>
 		</td>
 		<td align="right"><?=$savemsg?></td>
 	</tr>
@@ -308,7 +308,7 @@ function createSelects(id,count,workload)
                    <td class="content_row" valign="top"><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
                    <td class="content_row" valign="top">&nbsp;</td>
                    <td class="content_row" valign="top">&nbsp;</td>
-                   <td class="content_row" valign="top"><img src="images/icons/cross.png" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$colinv->getId()?>&delete=<?php echo $opos->getId();?>');"></td>
+                   <td class="content_row" valign="top"><span class="glyphicons glyphicons-remove" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$colinv->getId()?>&delete=<?php echo $opos->getId();?>');"></span></td>
                    <?php /* $('.col_<?php echo $opos->getCollectiveinvoice();?>opos_<?php echo $opos->getId();?>').each(function(index){this.remove();}); $(this).parent().parent().remove(); $('#removeoposdiv').append('<input type=\'hidden\' name=\'removeopos[]\' value=\'<?php echo $opos->getId();?>\'>'); */?>
                </tr>
                <?php

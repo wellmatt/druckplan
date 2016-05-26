@@ -260,7 +260,7 @@ $(document).ready(function() {
 <table width="100%">
 	<tr>
 		<td width="150" class="content_header">
-			<img src="images/icons/clipboard-task.png"> 
+            <span class="glyphicons glyphicons-ipad"></span>
 			<span style="font-size: 13px"><?=$_LANG->get('Verknüpfte Tickets')?></span>
 		</td>
 		<td width="250" class="content_header" align="right">
@@ -272,11 +272,11 @@ $(document).ready(function() {
     	      $tmp_bc = new BusinessContact((int)$contactID);
     	      $main_contact = ContactPerson::getMainContact($tmp_bc);
     	      if ($tmp_bc->getId()>0 && $main_contact->getId()>0)
-    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new&customer='.$tmp_bc->getId().'&contactperson='.$main_contact->getId().'" class="icon-link"><img src="images/icons/ticket--plus.png"> ';
+    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new&customer='.$tmp_bc->getId().'&contactperson='.$main_contact->getId().'" class="icon-link"><span class="glyphicons glyphicons-ticket"></span> ';
     	      else
-    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> ';
+    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><span class="glyphicons glyphicons-ticket"></span> ';
     	  } else {
-    	      echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><img src="images/icons/ticket--plus.png"> ';
+    	      echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><span class="glyphicons glyphicons-ticket"></span>';
     	  }
           ?>
 		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>

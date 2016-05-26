@@ -145,8 +145,7 @@ $(document).ready(function() {
 				Geschäftskontakte
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&tabshow=1';">
-						 <img src="images/icons/glyphicons-433-plus.svg">
-						 <?=$_LANG->get('Gesch&auml;ftskontakte hinzuf&uuml;gen')?>
+						 <span class="glyphicons glyphicons-plus"></span><?=$_LANG->get('Gesch&auml;ftskontakte hinzuf&uuml;gen')?>
 					 </button>
 				</span>
 			</h3>

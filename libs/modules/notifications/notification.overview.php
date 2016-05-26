@@ -116,8 +116,8 @@ $(document).ready(function() {
 
 <table width="100%">
 	<tr>
-		<td width="150" class="content_header"><img
-			src="images/icons/exclamation-diamond.png"> <span
+		<td width="150" class="content_header">
+			<span class="glyphicons glyphicons-exclamation-sign"></span> <span
 			style="font-size: 13px"><?=$_LANG->get('Benachrichtigungen')?></span></td>
 		<td width="250" class="content_header" align="right">
 		<?=$savemsg?>

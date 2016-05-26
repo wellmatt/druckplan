@@ -303,8 +303,8 @@
                 $row[] = $tmp_row;
             }
         }
-        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><img src="images/icons/pencil.png"></a>
-                  <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png"></a>';
+        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><span class="glyphicons glyphicons-pencil"></span></a>
+                  <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-file"></span></a>';
         $output['aaData'][] = $row;
     }
      

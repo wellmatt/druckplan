@@ -634,8 +634,8 @@ foreach($seldays as $selday) {
 						</td>
 						<td class="content_row_clear" width="10">&nbsp;</td>
 						<td class="content_row_clear" align="right">
-							<img src="images/icons/layer<?if($sm->getFinished()) echo "-tick";?>.png" class="pointer icon-link"
-							    onclick="setFinished(<?=$sm->getId()?>, <?=$x?>)" id="btn_finished_<?=$sm->getId()?>">
+							<span class="glyphicons glyphicons-unchecked pointer"<?if($sm->getFinished()) echo "-tick";?>
+							    onclick="setFinished(<?=$sm->getId()?>, <?=$x?>)" id="btn_finished_<?=$sm->getId()?>"></span>
 						</td>
 					</tr>
 				</table>

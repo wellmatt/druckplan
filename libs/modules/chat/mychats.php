@@ -25,8 +25,8 @@ foreach ($all_chats AS $chat){
 	echo '<tr class="tabellenlinie"><td>';
 	echo "<u><b>".$chat->getFrom()->getNameAsLine()."</b> ".$_LANG->get('schrieb am')." <b>".date("d.m.Y - H:i", $chat->getCrtdate()).":</b></u> ";
 	if ($chat->getState() == 1){?>
-				<img src="images/icons/status-busy.png" title="<?=$_LANG->get('Als gelesen markieren');?>" id="chat_<?=$chat->getId()?>"
-					 onclick="markasread(<?=$chat->getId()?>)" class="pointer">
+		<span class="glyphicons glyphicons-option-horizontal pointer" title="<?=$_LANG->get('Als gelesen markieren');?>" id="chat_<?=$chat->getId()?>"
+			  onclick="markasread(<?=$chat->getId()?>)"></span>
 		<?	}
 	echo " <i>".$chat->getTitle()."</i><br/>";
 	echo " ".$chat->getComment()."<br/>";

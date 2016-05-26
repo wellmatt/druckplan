@@ -36,9 +36,9 @@ function printSubTradegroups($parentId, $depth){
 					?> ">
 				</td>
 				<td class="content_row">
-                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$subgroup->getId()?>"><img src="images/icons/pencil.png"></a>
+                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$subgroup->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 				&ensp;
-                <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$subgroup->getId()?>')"><img src="images/icons/cross-script.png"></a>            
+                <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$subgroup->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
             </td>
 			</tr>
 		<? printSubTradegroups($subgroup->getId(), $depth+1);
@@ -54,7 +54,7 @@ function printSubTradegroups($parentId, $depth){
 				Warengruppen
 				<span class="pull-right">
 					  <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-						  <img src="images/icons/drawer--plus.png">
+						  <span class="glyphicons glyphicons-package"></span>
 						  <?=$_LANG->get('Warengruppe hinzuf&uuml;gen')?>
 					  </button>
 		  		</span>
@@ -93,9 +93,9 @@ function printSubTradegroups($parentId, $depth){
 						  </td>
 					  <?}?>
 					  <td class="content_row">
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>"><img src="images/icons/pencil.png"></a>
+						  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><img src="images/icons/cross-script.png"></a>
+						  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 				  <?	printSubTradegroups($tradegroup->getID(), 0);

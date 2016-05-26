@@ -88,10 +88,10 @@ $(document).ready(function() {
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <img  src="images/icons/user-detective.png">
+            <span class="glyphicons glyphicons-user"></span>
             Private Kontakte
                 <span class = pull-right>
-                    <img src="images/icons/glyphicons-433-plus.svg">
+                   <span class="glyphicons glyphicons-plus"></span>
                     <button class="btn btn-xs btn-success"onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
                         <?=$_LANG->get('Neuer Kontakt') ?>
                 </span>

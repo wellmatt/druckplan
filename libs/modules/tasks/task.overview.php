@@ -140,10 +140,10 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
                         <?=$task->getCrt_usr()->getNameAsLine()?>
                     </td>
 					<td class="content_row">
-		                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$task->getId()?>"><img src="images/icons/pencil.png" title="<?=$_LANG->get('Bearbeiten')?>"></a>
+		                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$task->getId()?>"><span class="glyphicons glyphicons-pencil" title="<?=$_LANG->get('Bearbeiten')?>"></span></a>
 						&ensp;
 		                <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$task->getId()?>')"
-		                	><img src="images/icons/cross-script.png" title="<?=$_LANG->get('Entfernen')?>"></a>            
+		                	><span class="glyphicons glyphicons-remove" title="<?=$_LANG->get('Entfernen')?>"></span></a>
 	            	</td>
 				</tr>
 				<? $x++;

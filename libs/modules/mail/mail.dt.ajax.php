@@ -272,7 +272,7 @@
             {
                 $attach_names = implode('
 ', $attachments);
-                $row[] = '<img src="images/icons/attachment.svg" title="'.$attach_names.'"> '.$list->first()->getEnvelope()->subject;
+                $row[] = '<span class="glyphicons glyphicons-paperclip" title="'.$attach_names.'"></span> '.$list->first()->getEnvelope()->subject;
             }
             else 
                 $row[] = $list->first()->getEnvelope()->subject;

@@ -61,7 +61,7 @@ onfocus="markfield(this,0)" onblur="markfield(this,1)">
 foreach (array_keys($data) as $day)
 {
     ?>
-    <h1 class="content_header" ><img src="./images/icons/calendar-blue.png"> &nbsp; <?=date('d.m.Y', $day)?></h1>
+    <h1 class="content_header" ><span class="glyphicons glyphicons-calendar"></span> &nbsp; <?=date('d.m.Y', $day)?></h1>
 
     <?
     foreach(array_keys($data[$day]) as $location)

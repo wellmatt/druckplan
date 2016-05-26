@@ -115,7 +115,7 @@ function PersoOrderTableRefresh()
                 Personalisierungen
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-                        <img src="images/icons/applications-stack.png">
+                        <span class="glyphicons glyphicons-refresh"></span>
                         <?=$_LANG->get('Personalisierung hinzuf&uuml;gen')?>
                     </button>
                 </span>
@@ -153,13 +153,13 @@ function PersoOrderTableRefresh()
                       </div>
                       <span class="pull-right">
                           <button class="btn btn-xs btn-success" onclick="PersoTableRefresh();" href="Javascript:">
-                              <img src="images/icons/arrow-circle-double-135.png"/>
+                              <span class="glyphicons glyphicons-refresh"></span>
                               <?=$_LANG->get('Refresh')?>
                           </button>
                       </span>
                       <span class="pull-right">
                           <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/personalization/personalization.php&exec=reset';">
-                              <img src="images/icons/slash.png"/>
+                              <span class="glyphicons glyphicons-ban-circle"></span>
                               <?=$_LANG->get('Reset')?>
                           </button>
                       </span>

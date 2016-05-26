@@ -40,25 +40,25 @@ foreach ($messages as $message) {
 		<tr class="pointer <?=getRowColor($x)?>" id="msg_<?=$message["id"]?>" onmouseover="mark(this,0)" onmouseout="mark(this,1)">
 			<td class="content_row icon-link"><input type="checkbox" id="chk_msg" name="chk_msg_<?=$message["id"]?>" value="1" /></td>
 			<? if ($message["flags"]["\Seen"]) { ?>
-				<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><img id="mail_img_<?=$message["id"]?>" src="images/icons/mail-open.png" /></td>  <!-- document.location='<?=$link?>' -->
+				<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><span class="glyphicons glyphicons-message-full"id="mail_img_<?=$message["id"]?>"></span></td>  <!-- document.location='<?=$link?>' -->
 			<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><?=$from?></td>
 				<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><?=$subject?></td>
 			<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><?=$date?></td>
 			<? } else { ?>
-				<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><img id="mail_img_<?=$message["id"]?>" src="images/icons/mail.png" /></td>  <!-- document.location='<?=$link?>' -->
+				<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><span class="glyphicons glyphicons-envelope"id="mail_img_<?=$message["id"]?>"  ></span></td>  <!-- document.location='<?=$link?>' -->
 			<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><b><?=$from?></b></td>
 				<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><b><?=$subject?></b></td>
 			<td class="content_row icon-link" onclick="showMail(<?=$message["id"]?>)"><b><?=$date?></b></td>
 			<? } ?>
 			<td class="content_row icon-link">
 			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=newmail&subexec=forward&folder=<?=urlencode($currentFolder)?>&emailId=<?=$emailId?>&message=<?=$message["id"]?>">
-			<img src="images/icons/mail--arrow.png" title="Weiterleiten"/></a>
+				<span class="glyphicons glyphicons-message-out" title="Weiterleiten"></span></a>
 			&nbsp;
 			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=newmail&subexec=answer&folder=<?=urlencode($currentFolder)?>&emailId=<?=$emailId?>&message=<?=$message["id"]?>">
-			<img src="images/icons/mail--pencil.png" title="Antworten"/></a>
+				<span class="glyphicons glyphicons-message-new" title="Antworten"></span></a>
 			&nbsp;
 			<a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete&folder=<?=urlencode($currentFolder)?>&emailId=<?=$emailId?>&chk_msg_<?=$message["id"]?>=1">
-			<img src="images/icons/mail--minus.png" title="Löschen"/></a>
+				<span class="glyphicons glyphicons-message-minus" title="Löschen"></span></a>
 			&nbsp;
 			<img src="images/status/loading2.gif" id="img_mail_loading_<?=$message["id"]?>" style="display: none;"> 
 			</td>

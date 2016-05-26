@@ -252,7 +252,7 @@ $(function() {
     <?foreach($users as $u) { ?>
     <tr>
         <td class="content_row_clear"><input type="checkbox" name="add_user[]" value="<?=$u->getId()?>"></td>
-        <td class="content_row_clear"><img src="../../../images/icons/user.png" /></td>
+        <td class="content_row_clear"<span class="glyphicons glyphicons-user"></span></td>
         <td class="content_row_clear"><?=$u->getLogin()?></td>
         <td class="content_row_clear"><?=$u->getNameAsLine()?></td>
     </tr>
@@ -274,7 +274,7 @@ $(function() {
     <?foreach($groups as $g) { ?>
     <tr>
         <td class="content_row_clear"><input type="checkbox" name="add_group[]" value="<?=$g->getId()?>"></td>
-        <td class="content_row_clear"><img src="../../../images/icons/users.png" /></td>
+        <td class="content_row_clear"><span class="glyphicons glyphicons-user"></span></td>
         <td class="content_row_clear"><?=$g->getName()?></td>
         <td class="content_row_clear">
             <? foreach($g->getMembers() as $m) echo $m->getLogin().", "?>
@@ -298,7 +298,7 @@ $(function() {
     <?foreach($businesscontacts as $c) { ?>
     <tr>
         <td class="content_row_clear"><input type="checkbox" name="add_businesscontact[]" value="<?=$c->getId()?>"></td>
-        <td class="content_row_clear"><img src="../../../images/icons/building.png" /></td>
+        <td class="content_row_clear"><span class="glyphicons glyphicons-building"></span></td>
         <td class="content_row_clear"><?=$c->getNameAsLine()?></td>
         <td class="content_row_clear"><?=$c->getEmail()?></td>
     </tr>
@@ -307,7 +307,7 @@ $(function() {
 			foreach ($contactpersons as $contact){?>
 				<tr>
 				<td class="content_row_clear"><input type="checkbox" name="add_contactperson[]" value="<?=$contact->getId()?>"></td>
-				<td class="content_row_clear"><img src="../../../images/icons/user-business.png" /></td>
+				<td class="content_row_clear"><span class="glyphicons glyphicons-user"></span></td>
 				<td class="content_row_clear"><?=$contact->getNameAsLine()?></td>
 				<td class="content_row_clear"><?=$contact->getEmail()?></td>
 				</tr>	

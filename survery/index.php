@@ -115,7 +115,7 @@ if ($_USER == false)
     <table width="100%">
     	<tr>
     		<td width="200" class="content_header">
-    			<img src="../images/icons/chart.png"><span style="font-size: 13px"> <?=$_LANG->get('Frageb&ouml;gen')?> </span>
+                <span class="glyphicons glyphicons-ipad"></span><span style="font-size: 13px"> <?=$_LANG->get('Frageb&ouml;gen')?> </span>
     		</td>
     		<td width="200"><?=$savemsg?></td>
     	</tr>

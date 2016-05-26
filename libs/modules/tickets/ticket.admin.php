@@ -200,7 +200,7 @@ function addSourceRow()
 
 <table width="100%">
     <tr>
-        <td width="200" class="content_header"><img src="images/icons/gear.png"> <?=$_LANG->get('Ticket-Einstellungen')?></td>
+        <td width="200" class="content_header"<span class="glyphicons glyphicons-cogwheel"></span> <?=$_LANG->get('Ticket-Einstellungen')?></td>
         <td align="right"><?=$savemsg?></td>
     </tr>
 </table>
@@ -265,10 +265,10 @@ echo $quickmove->generate();
 							&nbsp;&nbsp;&nbsp;
 							<?php if ($ticket_categories[$y]->getProtected() == 0){?>
 							     <a href="index.php?page=<?=$_REQUEST['page']?>&delete_category=<?=$ticket_categories[$y]->getId()?>">
-							     <img src="images/icons/cross-script.png" class="pointer icon-link"></a>&nbsp;
+									 <span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 							<?php }?>
 							<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-								echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCategoryRow()">';
+								echo '<span class="glyphicons glyphicons-plus pointer" onclick="addCategoryRow()"></span>';
 							}?> 
 						</td>
 					</tr>
@@ -311,10 +311,10 @@ echo $quickmove->generate();
 							&nbsp;&nbsp;&nbsp;
 							<?php if ($ticket_prios[$y]->getProtected() == 0){?>
 							     <a href="index.php?page=<?=$_REQUEST['page']?>&delete_prio=<?=$ticket_prios[$y]->getId()?>">
-							     <img src="images/icons/cross-script.png" class="pointer icon-link"></a>&nbsp;
+									 <span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 							<?php }?>
 							<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-								echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPrioRow()">';
+								echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPrioRow()"></span>';
 							}?> 
 						</td>
 					</tr>
@@ -359,10 +359,10 @@ echo $quickmove->generate();
 							&nbsp;&nbsp;&nbsp;
 							<?php if ($ticket_states[$y]->getProtected() == 0){?>
 							     <a href="index.php?page=<?=$_REQUEST['page']?>&delete_state=<?=$ticket_states[$y]->getId()?>">
-							     <img src="images/icons/cross-script.png" class="pointer icon-link"></a>&nbsp;
+									 <span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 							<?php }?>
 							<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-								echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addStateRow()">';
+								echo '<span class="glyphicons glyphicons-plus pointer" onclick="addStateRow()"></span>';
 							}?> 
 						</td>
 					</tr>
@@ -431,7 +431,7 @@ echo $quickmove->generate();
             ?>
    			<input 	type="hidden" name="count_sources" id="count_sources" 
 				value="<? if(count($ticket_sources) > 0) echo count($ticket_sources); else echo "0";?>">
-			<img src="images/icons/plus.png" class="pointer icon-link" onclick="addSourceRow()">
+		   <span class="glyphicons glyphicons-plus pointer" onclick="addSourceRow()"></span>
             <table border="0" cellpadding="0" cellspacing="0" id="table-sources">
 				<colgroup>
 		        	<col width="40">
@@ -451,15 +451,15 @@ echo $quickmove->generate();
 						<td class="content_row_clear">
 						    <input type="hidden" name="sources_id_<?=$y?>" id="sources_id_<?=$y?>" value="<?php echo $ticket_sources[$y]->getId();?>">
 							<input 	name="sources_title_<?=$y?>" class="text" type="text" value ="<?=$ticket_sources[$y]->getTitle();?>" style="width: 200px">
-							<?php if ($ticket_sources[$y]->getDefault() == 1) echo '<img src="images/icons/asterisk.png">';?>
+							<?php if ($ticket_sources[$y]->getDefault() == 1) echo '<span class="glyphicons glyphicons-cogwheel"></span>';?>
 						</td>
 						<td class="content_row_clear">
 							<a href="index.php?page=<?=$_REQUEST['page']?>&source_default=<?=$ticket_sources[$y]->getId()?>">
-							<img src="images/icons/asterisk.png" class="pointer icon-link" title="als Standard setzen"></a>
+								<span class="glyphicons glyphicons-cogwheel pointer" title="als Standard setzen"></span></a>
 							&nbsp;
 							<?php if ($ticket_sources[$y]->getId() != 1 && $ticket_sources[$y]->getId() != 2 && $ticket_sources[$y]->getId() != 3 && $ticket_sources[$y]->getId() != 4){?>
 						    <a href="index.php?page=<?=$_REQUEST['page']?>&delete_source=<?=$ticket_sources[$y]->getId()?>">
-						    <img src="images/icons/cross-script.png" class="pointer icon-link"></a>&nbsp;
+								<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 						    <?php } ?>
 						</td>
 					</tr>

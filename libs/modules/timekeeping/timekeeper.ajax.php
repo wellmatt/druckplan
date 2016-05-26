@@ -97,12 +97,12 @@ if ($_REQUEST["ajax_action"] == "updateTimerTable"){
 						&emsp;&emsp;&emsp;
 						<?if ($_USER->isAdmin() || $_USER->getId() == $timer->getUser()->getId()){?>
 						<a href="libs/modules/timekeeping/timekeeper.newTimer.iframe.php?tm_id=<?=$timer->getId()?>&tm_objectid=<?=$timer_objectID?>&tm_moduleid=<?=$timer_moduleID?>" 
-							class="edittimer icon-link" ><img src="images/icons/pencil.png" title="<?=$_LANG->get('Zeit editieren');?>"></a>
+							class="edittimer icon-link" ><span class="glyphicons glyphicons-package" title="<?=$_LANG->get('Zeit editieren');?>"></span></a>
 						<?}?>
 						&emsp;
 						<?if ($_USER->isAdmin()){?>
 							<a class="icon-link" href="#"	onclick="deleteTimer(<?=$timer->getId()?>)"
-                				><img src="images/icons/cross-script.png"title="<?=$_LANG->get('L&ouml;schen');?>"></a>
+                				><span class="glyphicons glyphicons-remove" title="<?=$_LANG->get('L&ouml;schen');?>"></span></a>
                 		<?}?>
 					</td>
 					<td align="right">

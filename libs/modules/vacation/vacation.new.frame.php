@@ -134,7 +134,7 @@ $(function() {
 <table width="100%">
     <tr>
         <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/alarm-clock.png"> <?=$_LANG->get('Urlaub');?> -
+            <h1><span class="glyphicons glyphicons-alarm"></span> <?=$_LANG->get('Urlaub');?> -
             <? if ($_REQUEST["id"]) echo $_LANG->get('editieren'); else echo $_LANG->get('Neu')?></h1>
         </td>
         <td class="content_header"><?=$savemsg?></td>

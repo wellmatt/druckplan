@@ -30,7 +30,7 @@ $machines = Machine::getAllMachines(Machine::ORDER_GROUP_NAME);
                 Maschinen
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-                        <img src="images/icons/drill--plus.png">
+                        <span class="glyphicons glyphicons-wrench"></span>
                         <?=$_LANG->get('Maschine hinzuf&uuml;gen')?>
                     </button>
                 </span>
@@ -81,9 +81,9 @@ $machines = Machine::getAllMachines(Machine::ORDER_GROUP_NAME);
                         <? if($m->getLectorId()) echo '<span class="error">Importiert</span>'; else echo '&nbsp;'?>
                     </td>
                     <td class="content_row">
-                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$m->getId()?>"><img src="images/icons/pencil.png"></a>
-                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$m->getId()?>"><img src="images/icons/scripts.png"></a>
-                        <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$m->getId()?>')"><img src="images/icons/cross-script.png"></a>
+                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-wrench"></span></a>
+                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-file"></span></a>
+                        <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$m->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
                     </td>
                 </tr>
 

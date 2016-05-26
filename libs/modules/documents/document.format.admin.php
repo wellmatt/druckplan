@@ -21,7 +21,7 @@ if ($_REQUEST["exec"] == "save")
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-                <img src="images/icons/gear.png">
+                <span class="glyphicons glyphicons-cogwheel"></span>
                 Dokumenten Einstellungen
             </h3>
 	  </div>

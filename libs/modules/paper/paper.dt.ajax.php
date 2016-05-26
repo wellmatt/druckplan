@@ -218,9 +218,9 @@
                 $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
-        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/paper/paper.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><img src="images/icons/pencil.png"></a>
-                  <a class="icon-link" href="index.php?page=libs/modules/paper/paper.php&exec=copy&id='.$aRow[ $aColumns[0] ].'"><img src="images/icons/scripts.png"></a>
-                  <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/paper/paper.php&exec=delete&id='.$aRow[ $aColumns[0] ].'\')"><img src="images/icons/cross-script.png"></a>';
+        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/paper/paper.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-pencil"></span></a>
+                  <a class="icon-link" href="index.php?page=libs/modules/paper/paper.php&exec=copy&id='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-file"></span></a>
+                  <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/paper/paper.php&exec=delete&id='.$aRow[ $aColumns[0] ].'\')"><span class="glyphicons glyphicons-remove"></span></a>';
         $output['aaData'][] = $row;
     }
     

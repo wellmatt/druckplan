@@ -45,7 +45,7 @@ if ($main_searchstring != "" && $main_searchstring!=NULL){
 				<?=$bc->getId()?>&nbsp;
 			</td>
 			<td class="content_row pointer" onclick="document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$bc->getId()?>'">
-				<img src="./images/icons/user-business.png" title="Kunde">
+				<span class="glyphicons glyphicons-user" title="Kunde"></span>
 				<?=$bc->getNameAsLine()?>&nbsp;
 			</td>
 			<td class="content_row pointer" onclick="document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$bc->getId()?>'">
@@ -79,9 +79,9 @@ if ($main_searchstring != "" && $main_searchstring!=NULL){
 						<td class="content_row pointer" onclick="document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$bc->getId()?>'">
 							 &emsp;
 							 <?if($con->getTitle()=="Frau"){ // Unterschiedliche Icons fuer die Anrede?>
-							 	<img src="./images/icons/user-green-female.png" title="Kunde"> &ensp; 
+								 <span class="glyphicons glyphicons-user" title="Kunde"></span>  &ensp;
 							 <? } else {?>
-							 	<img src="./images/icons/user-green.png" title="Kunde"> &ensp;
+								 <span class="glyphicons glyphicons-user" title="Kunde"></span>  &ensp;
 							 <? } ?> 
 							<?=$con->getNameAsLine()?>&nbsp;
 						</td>

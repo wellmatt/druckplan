@@ -518,9 +518,9 @@ echo $quickmove->generate();
 	
 	<h1>
 		<?=$_LANG->get('Eingabefelder')?> 
-		&emsp; &emsp;  
-		<img src="images/icons/plus.png" class="pointer icon-link" onclick="addItemRow()"
-						 alt="Feld hinzuf&uuml;gen" title="Feld hinzuf&uuml;gen">
+		&emsp; &emsp;
+		<span class="glyphicons glyphicons-plus pointer" onclick="addItemRow()"
+						 title="Feld hinzuf&uuml;gen"></span>
 	</h1>
 	<div class="box1">
 		<table id="table-items">
@@ -718,7 +718,7 @@ echo $quickmove->generate();
 				<td class="content_row_header"><?=$_LANG->get('Menge')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
 				<td class="content_row_header"><?=$_LANG->get('Preis anzeigen')?></td>
-				<td class="content_row_header"><img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()"></td>
+				<td class="content_row_header"><span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow()"></span></td>
 			</tr>
 			<?
 			$x = count($allprices);

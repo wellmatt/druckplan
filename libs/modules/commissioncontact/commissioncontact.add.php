@@ -561,7 +561,7 @@ echo $quickmove->generate();
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear">&nbsp;</td>
 				<td class="content_row_clear">&nbsp;</td>
-				<td class="content_row_clear" align="right"><a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&id=<?=$commissionContact->getID()?>"><img src="images/icons/user--plus.png"> <?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></a></td>
+				<td class="content_row_clear" align="right"><a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&id=<?=$commissionContact->getID()?>"><span class="glyphicons glyphicons-user"></span> <?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></a></td>
 			</tr>
 			<?php $contactPerson = ContactPerson::getAllContactPersons($commissionContact,ContactPerson::ORDER_NAME);
 			foreach($contactPerson as $cp)
@@ -579,8 +579,8 @@ echo $quickmove->generate();
 				</td>
 				<td></td>
 				<td class="content_row_clear" align="right">
-	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$commissionContact->getID()?>"><img src="images/icons/pencil.png"></a>
-	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$cp->getId()?>&id=<?=$commissionContact->getID()?>" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$cp->getId()?>&id=<?=$commissionContact->getID()?>')"><img src="images/icons/cross-script.png"></a>
+	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$commissionContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$cp->getId()?>&id=<?=$commissionContact->getID()?>" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_cp&cpid=<?=$cp->getId()?>&id=<?=$commissionContact->getID()?>')"><span class="glyphicons glyphicons-pencil"></span></a>
 	        	 </td>
 	        </tr>
 	        <?

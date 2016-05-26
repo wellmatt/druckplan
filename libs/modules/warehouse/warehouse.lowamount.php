@@ -44,7 +44,7 @@ $all_stocks_lowamount = Warehouse::getAllStocksWithLowAmount();
 				<td class="content_row"><?=$stock->getamount()?> / <?=$stock->getMinimum()?></td>
 				<td class="content_row"> &ensp;
 <?					if($stock->getComment() != NULL && $stock->getComment() != ""){?>
-						<img src="./images/icons/balloon-ellipsis.png" alt="Kommentar" title="<?=$stock->getComment()?>" />	 
+				<span class="glyphicons glyphicons-ipad" title="<?=$stock->getComment()?>"></span>
 <?					} ?>
 				</td>
 			</tr>

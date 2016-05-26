@@ -141,10 +141,10 @@ function startStop(obj){
 			</select>
 		</td */?>
 		<td>
-			<img src="images/icons/clock--plus.png" title="<?=$_LANG->get('Zeitmessung starten');?>" 
+			<span class="glyphicons glyphicons-remove" title="<?=$_LANG->get('Zeitmessung starten');?>"
 				 id="img_timer_start_<?=$timer_moduleID?>_<?=$timer_objectID?>_<?=$timer_subObjectID?>" name="img_timer_start" 
-				 onclick="startTimer_<?=$timer_moduleID?>_<?=$timer_objectID?>_<?=$timer_subObjectID?>()" alt="<?=$_LANG->get('Zeitmessung starten');?>"
-				 style="display:<?=$display_start?>; padding-left: 10px;">
+				 onclick="startTimer_<?=$timer_moduleID?>_<?=$timer_objectID?>_<?=$timer_subObjectID?>()"
+				 style="display:<?=$display_start?>; padding-left: 10px;"></span>
 		</td>
 		<td>
 			<img src="./images/status/loading2.gif" name="img_timer_loading" 
@@ -153,12 +153,12 @@ function startStop(obj){
 		<td>
 			<a  href="libs/modules/timekeeping/timekeeper.stopPlaning.iframe.php" name="a_timer_stop" 
 				id="a_timer_stop_<?=$timer_moduleID?>_<?=$timer_objectID?>_<?=$timer_subObjectID?>"
-				style="display:<?=$display_stop?>;"><img src="images/icons/clock--minus.png" title="Stop" ></a>
+				style="display:<?=$display_stop?>;"><span class="glyphicons glyphicons-clock" title="Stop" ></span></a>
 			<a  href="libs/modules/timekeeping/timekeeper.stopPlaning.iframe.php" name="a_timer_othertimer" 
 				id="a_timer_othertimer_<?=$timer_moduleID?>_<?=$timer_objectID?>_<?=$timer_subObjectID?>"
 				style="display:<?=$display_othertimer?>;"
-				><img src="images/icons/exclamation-diamond.png" alt="<?=$_LANG->get('Achtung');?>" 
-						title="<?=$_LANG->get('Andere Zeitmessung bereits aktiv');?>"/></a>
+				><span class="glyphicons glyphicons-exclamation-sign"
+						title="<?=$_LANG->get('Andere Zeitmessung bereits aktiv');?>"></span></a>
 		</td>
 	</tr>
 </table>

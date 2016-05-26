@@ -121,7 +121,7 @@ function checkform(obj) {
 </head>
 
 <body>
-<img src="../../../images/icons/user-black.png" alt="" /> Gesch&auml;ftskontakt hinzuf&uuml;gen 
+<span class="glyphicons glyphicons-user"></span> Gesch&auml;ftskontakt hinzuf&uuml;gen
 &emsp; &emsp; &emsp;<? echo $savemsg.'<br/>';?>
 <table><tr><td width="500">
 <form action="commissioncontact.add.fancy.php" method="post" name="newuser_form_fancy" id="newuser_form_fancy"

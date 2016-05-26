@@ -92,13 +92,13 @@ function markasread(id){
 			<?	echo "<b>".$chat->getFrom()->getNameAsLine()."</b> ".$_LANG->get('schrieb am')." <b>".date("d.m.Y - H:i", $chat->getCrtdate()).":</b> ";
 				//  && ($chat->getTo()->getId() != $_USER->getId() || $partner_id == $_USER->getId())
 				if ($chat->getState() == 1){?>
-					<img src="images/icons/status-busy.png" id="chat2_<?=$chat->getId()?>"
+					<span class="glyphicons glyphicons-option-horizontal" id="chat2_<?=$chat->getId()?>"
 						 <?if ($chat->getTo()->getId() == $_USER->getId()){?>
 						 	onclick="markasread(<?=$chat->getId()?>)" class="pointer"  title="<?=$_LANG->get('Als gelesen markieren');?>" 
 						 <?} else {?>
 						 	 title="<?=$_LANG->get('Ungelesen');?>" 
-						 <?}?> 
-					>
+						 <?}?>
+					></span>
 			<?	}
 				echo " ".$chat->getTitle()."<br/>";
 				echo " ".nl2br($chat->getComment() );?>

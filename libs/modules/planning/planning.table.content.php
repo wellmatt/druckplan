@@ -156,7 +156,7 @@ foreach ($dates as $date)
                 else 
                     $statshtml .= printPrice($stat['ptime']) . ' / ' . printPrice($stat['atime']);
                 if ($stat['ptime']>=$stat['avtime'] || $stat['atime']>=$stat['avtime'])
-                    $statshtml .= ' / <b><font color="red">' . printPrice($stat['avtime']) . '</font></b>&nbsp;<img src="../../../images/icons/exclamation--frame.png"></br>';
+                    $statshtml .= ' / <b><font color="red">' . printPrice($stat['avtime']) . '</font></b>&nbsp;<span class="glyphicons glyphicons-exclamation-sign"></span></br>';
                 else 
                     $statshtml .= ' / ' . printPrice($stat['avtime']) . '</br>';
                 $statshtml .= '</td></tr>';
@@ -274,7 +274,7 @@ echo $html;
                     else
                         $statshtml .= printPrice($stat['ptime']) . ' / ' . printPrice($stat['atime']);
                     if ($stat['ptime']>=$stat['avtime'] || $stat['atime']>=$stat['avtime'])
-                        $statshtml .= ' / <b><font color="red">' . printPrice($stat['avtime']) . '</font></b>&nbsp;<img src="images/icons/exclamation--frame.png"></br>';
+                        $statshtml .= ' / <b><font color="red">' . printPrice($stat['avtime']) . '</font></b>&nbsp;<span class="glyphicons glyphicons-exclamation-sign"></span></br>';
                     else
                         $statshtml .= ' / ' . printPrice($stat['avtime']) . '</br>';
                     $statshtml .= '</td></tr>';
