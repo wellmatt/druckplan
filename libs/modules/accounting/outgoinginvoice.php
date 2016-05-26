@@ -372,7 +372,7 @@ $(function() {
 		</td>
 		<td colspan="5" align="right">
 			<a href="./docs/<?=$_USER->getId()?>-Rechnungsausgang.csv"  class="icon-link"
-					title="Rechnugen als CSV-Datei exportieren"><img src="images/icons/glyphicons-420-disk-export.svg">Export</a>
+					title="Rechnugen als CSV-Datei exportieren"><span class="glyphicons glyphicons-calculator">Export</span></a>
 		</td>
 		<td>&ensp;</td>
 	</tr>

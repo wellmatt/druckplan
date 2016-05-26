@@ -420,7 +420,7 @@ function checkCustomerNumber(obj){
 function addTitlePosition(){
 	var count = parseInt(document.getElementById('position_titles_count').value) + 1;
 	var obj = document.getElementById('table_positiontitles');
-	var insert = '<tr id="tr_positiontitle_'+count+'"><td colspan="3"><input type="text" style="width:350px" name="position_titles[]"><img onclick="removeTitlePosition(this)" alt="'+count+'" src="images/icons/cross-script.png"/></td></tr>';
+	var insert = '<tr id="tr_positiontitle_'+count+'"><td colspan="3"><input type="text" style="width:350px" name="position_titles[]"><span class="glyphicons glyphicons-remove" onclick="removeTitlePosition(this)" alt="'+count+'"></span></td></tr>';
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('position_titles_count').value = count;
 }
@@ -499,7 +499,7 @@ echo $quickmove->generate();
 		
 	<div id="tabs-0">
 	<?php if ($businessContact->getId()>0){?>
-    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><img src="images/icons/glyphicons-450-fax.svg"/></a></div>
+    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><span class="glyphicons glyphicons-phone-alt"></span></a></div>
     <?php }?>
 		<br>
 		<table width="100%">

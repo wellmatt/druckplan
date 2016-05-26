@@ -349,11 +349,11 @@ echo $quickmove->generate();
 									  foreach ($article->getOrderamounts() as $orderamount)
 									  {
 										  echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
-                                         <img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>';
+                                        <span class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span> &nbsp;';
 									  }
 									  ?>
 								  </div>
-								  <img src="images/icons/plus.png"	class="pointer icon-link" title="Bestellmenge hinzufügen" onclick="addOrderAmount();">
+								  <span class="glyphicons glyphicons-plus pointer" title="Bestellmenge hinzufügen" onclick="addOrderAmount();"></span>
 							  </td>
 						  </tr>
 						  <tr>
@@ -430,8 +430,8 @@ echo $quickmove->generate();
                                       echo '<td>';
                                       echo '<img src="images/products/' . $picture["url"] . '" width="130px" height="82px">' .
                                           '<a onclick="askDel(\'index.php?page=' . $_REQUEST['page'] . '&exec=edit&subexec=deletepic&aid=' . $article->getId() . '&picid=' . $picture["id"] . '\')"' .
-                                          'class="icon-link" href="#"><img src="images/icons/cross-script.png"' .
-                                          'title="' . $_LANG->get(' Bild l&ouml;schen') . '" style="margin-left: -15px; margin-bottom: 66px;"></a>';
+                                          'class="icon-link" href="#"><span class="glyphicons glyphicons-remove" title = "Bild löschen"></span>';
+
                                       echo '</td>';
                                   }
                                   echo '</tr>';
@@ -498,10 +498,8 @@ echo $quickmove->generate();
 											  $tmp_bc = new BusinessContact($shop_appr_bc)?>
 											  <tr>
 												  <td class="content_row_clear">
-													  <?php echo $tmp_bc->getNameAsLine();?> <img
-														  src="images/icons/cross.png" class="pointer"
-														  onclick="$(this).parent().remove();;" /> <input type="hidden"
-																										  name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId()?>" />
+													  <?php echo $tmp_bc->getNameAsLine();?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;" ></span>
+													  <input type="hidden" name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId()?>" />
 												  </td>
 											  </tr>
 										  <?php }?>
@@ -523,10 +521,8 @@ echo $quickmove->generate();
 											  $tmp_cp = new ContactPerson($shop_appr_cp)?>
 											  <tr>
 												  <td class="content_row_clear">
-													  <?php echo $tmp_cp->getNameAsLine();?> <img
-														  src="images/icons/cross.png" class="pointer"
-														  onclick="$(this).parent().remove();" /> <input type="hidden"
-																										 name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
+													  <?php echo $tmp_cp->getNameAsLine();?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();" ></span>
+													  <input type="hidden" name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
 												  </td>
 											  </tr>
 										  <?php }?>
@@ -590,7 +586,7 @@ echo $quickmove->generate();
 									  <?=$_USER->getClient()->getCurrency()?>
 									  &nbsp;&nbsp;&nbsp;
 									  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										  echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow()">';
+										  echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addPriceRow()"></span>';
 									  }?>
 								  </td>
 							  </tr>
@@ -664,7 +660,7 @@ echo $quickmove->generate();
 									<?=$_USER->getClient()->getCurrency()?>
 									&nbsp;&nbsp;&nbsp;
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										echo '<img src="images/icons/plus.png" class="pointer icon-link" onclick="addCostRow()">';
+										echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addCostRow()"></span>';
 									}?>
 								</td>
 							</tr>
@@ -721,7 +717,7 @@ echo $quickmove->generate();
 								  ?>
 								  <tr>
 									  <td class="content_row_header"><?php echo $api->getTitle();?>
-										  <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><img src="images/icons/cross.png" class="pointer"/></a></td>
+										  <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><span class="glyphicons glyphicons-remove pointer"></span></a></td>
 								  </tr>
 								  <?php
 							  }
@@ -892,7 +888,7 @@ echo $quickmove->generate();
         var amount = prompt("Bitte Bestellmenge angeben", "");
 
         if (amount != null) {
-            $("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<img src="images/icons/cross.png" class="pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></br></span>');
+            $("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<span class="glyphicons glyphicons-remove pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></span></br></span>');
         }
     }
 </script>
@@ -907,7 +903,7 @@ echo $quickmove->generate();
                 return false;
             },
             select: function( event, ui ) {
-                var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
+                var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;"></span>';
                 newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></td></tr>';
                 $("#shop_appr_bcs tr:last").after(newRow);
                 return false;
@@ -921,7 +917,7 @@ echo $quickmove->generate();
                 return false;
             },
             select: function( event, ui ) {
-                var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <img src="images/icons/cross.png" class="pointer" onclick="$(this).parent().remove();;"/>';
+                var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;"></span>';
                 newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></td></tr>';
                 $("#shop_appr_cps tr:last").after(newRow);
                 return false;

@@ -55,7 +55,7 @@ echo $quickmove->generate();
 // end of Quickmove generation ?>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="bulkletter_edit" id="bulkletter_edit"
-	  class="form-horizontal" role="form"  onSubmit="return checkForm(new Array(this.bulk_title, this.bulk_text))">
+	  class="form-horizontal" role="form">
 	<input type="hidden" name="exec" value="edit">
 	<input type="hidden" name="subexec" value="save">
 	<input type="hidden" name="bid" value="<?=$bulk->getId()?>">

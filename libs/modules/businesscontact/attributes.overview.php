@@ -24,7 +24,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Merkmale
 				<span class="pull-right">
-					<img src="images/icons/application-task.png">
+					<span class="glyphicons glyphicons-display"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&exec=new';" >
 						<?=$_LANG->get('Merkmal erstellen')?>
 					</button>
@@ -48,26 +48,26 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_customer() == 1){
-								echo "<img src='images/icons/tick.png'>";
+								echo "<span class=\"glyphicons glyphicons-ticket\"></span>";
 							}
 							?>
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_contact() == 1 ){
-								echo "<img src='images/icons/tick.png'>";
+								echo "<span class=\"glyphicons glyphicons-ticket\"></span>";
 							}
 							?>
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_colinv() == 1 ){
-								echo "<img src='images/icons/tick.png'>";
+								echo "<span class=\"glyphicons glyphicons-ticket\"></span>";
 							}
 							?>
 						</td>
 						<td class="content_row" align="center">
-							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><img src="images/icons/pencil.png"></a>
+							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 							&ensp;
-							<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><img	src="images/icons/cross-script.png"> </a>
+							<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
 						</td>
 					</tr>
 					<?		$x++;

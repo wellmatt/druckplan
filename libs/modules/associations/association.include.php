@@ -54,7 +54,7 @@ $associations = Association::getAssociationsForObject(get_class($association_obj
                 echo '> ' . $object_name;
                 echo '</a>';
                 if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
-                    echo '<img class="pointer" src="images/icons/cross.png" onclick=\'removeAsso('.$association->getId().'); $("#as_'.$as.'").remove();\'/>';
+                    echo '<span class="glyphicons glyphicons-remove pointer"  onclick=\'removeAsso('.$association->getId().'); $("#as_'.$as.'").remove();\'></span>';
                 echo '</li>';
                 $as++;
             }

@@ -292,7 +292,7 @@
             }
         }
         
-        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><img src="../images/icons/pencil.png"></a>';
+        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-pencil"></span></a>';
 // 		var_dump($row); echo "</br>";
         $output['aaData'][] = $row;
     }

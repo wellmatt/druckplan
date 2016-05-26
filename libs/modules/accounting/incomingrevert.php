@@ -653,7 +653,7 @@ $(function() {
 		<td align="center">
 			<a href="<?=$filename1?>"
 				title="<?=$_LANG->get('Offene Posten als CSV-Datei exportieren')?>"   class="icon-link"
-				><img src="images/icons/calculator--arrow.png"> <?=$_LANG->get('Export')?></a>
+				><span class="glyphicons glyphicons-calculator"><?=$_LANG->get('Export')?> </span></a>
 				
 			<? /*** ?>
 			<a href="./docs/<?=$_USER->getId()?>-Gutschrifteneingang_offen.csv"

@@ -214,7 +214,7 @@ $(function() {
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
-$quickmove->addItem('Zurück','#',"index.php?page=".$_REQUEST['page']."&exec=edit&id=".$_REQUEST["id"]."&tabshow=4'",'glyphicon-step-backward');
+$quickmove->addItem('Zurück','#',"document.location='index.php?page=".$_REQUEST['page']."&exec=edit&id=".$_REQUEST["id"]."&tabshow=4'",'glyphicon-step-backward');
 if($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)) {
 	$quickmove->addItem('Speichern', '#', "$('#user_form').submit();", 'glyphicon-floppy-disk');
 }

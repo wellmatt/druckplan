@@ -146,7 +146,7 @@ echo $quickmove->generate();
 							  <td class="content_row_header"><?=$_LANG->get('Input')?>**</td>
 							  <td class="content_row_header">
 								  &emsp;
-								  <img src="images/icons/plus.png" class="pointer icon-link" onclick="addAttibuteItem()">
+								  <span class="glyphicons glyphicons-plus pointer" onclick="addAttibuteItem()"></span>
 							  </td>
 						  </tr>
 						  <?

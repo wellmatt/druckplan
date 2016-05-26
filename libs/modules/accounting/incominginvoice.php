@@ -699,7 +699,7 @@ $(function() {
 		<td align="left">
 			<a href="<?=$filename1?>"  class="icon-link"
 				title="<?=$_LANG->get('Offene Posten als CSV-Datei exportieren')?>" 
-				><img src="images/icons/calculator--arrow.png" alt="-"> <?=$_LANG->get('Export')?></a>
+				><span class="glyphicons glyphicons-calculator" alt="-"><?=$_LANG->get('Export')?></span></a>
 			
 			<? /** 
 			 	* Seit 11.02.2014 soll alles in eine Liste geschrieben werden
@@ -717,7 +717,7 @@ $(function() {
 				if ($number_of_payments > 0){?>
 				&emsp;
 				<a href="<?=$sepa_filename?>" title="<?=$_LANG->get('XML-Datei f&uuml;r SFirm &ouml;ffnen')?>"  class="icon-link"
-					> <img src="images/icons/compile.png" alt="-">SFrim-Export</a>
+					> <span class="glyphicons glyphicons-package" alt="-">SFrim-Export</span></a>
 				<br/><br/>
 		<? 		}
 			} // Bank auswaehlen ?> &emsp; 

@@ -191,7 +191,7 @@ $(function() {
 		<td width="200"><?=$savemsg?></td>
 		<td width="200" class="content_header" align="right">
 			<span style="font-size: 14px">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><img src="images/icons/sticky-note--plus.png"> <?=$_LANG->get('Artikel hinzuf&uuml;gen')?></a>
+				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><span class="glyphicons glyphicons-note-empty"><?=$_LANG->get('Artikel hinzuf&uuml;gen')?></span></a>
 			</span>
 		</td>
 	</tr>
@@ -232,7 +232,7 @@ $(function() {
                     <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
                     <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
                     <input name="bc_cp" id="bc_cp" style="width:200px;" onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}" class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    <img src="images/icons/cross-script.png" class="pointer" onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();" title="Reset">
+                    <span class="glyphicons glyphicons-remove pointer" onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();" title="Reset"></span>
                 </td>
             </tr>
         </table>
