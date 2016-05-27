@@ -113,6 +113,11 @@ $quickmove->addItem('Speichern','#',"$('#step4_form').submit();",'glyphicon-flop
 if ($order->getArticleid()==0){
     $quickmove->addItem('Artikel Speichern','#',"askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=".$order->getId()."')",'glyphicon-floppy-disk');
 }
+elseif ($order->getArticleid()>0){
+    $quickmove->addItem('Zum Artikel',"index.php?page=libs/modules/article/article.php&exec=edit&aid=".$order->getArticleid(),'glyphicon-step-backward');
+    $quickmove->addItem('Artikel aktualisieren','#',"askDel('index.php?page=libs/modules/article/article.php&exec=uptfromorder&orderid=".$order->getId()."aid=".$order->getArticleid()."')",'glyphicon-floppy-disk');
+
+}
 if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){
     $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=".$order->getId()."')", 'glyphicon-trash', true);
 }
