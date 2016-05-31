@@ -922,7 +922,7 @@ echo $quickmove->generate();
                                         <td>
                                             <?php
                                             echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="addRow('.$group->getId().')"></span>';
-                                            echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="deleteRow('.$x.')">></span>';
+                                            echo '<span class="glyphicons glyphicons-plus-sign pointer" onclick="deleteRow('.$x.')"></span>';
                                             ?>
                                         </td>
                                     </tr>
