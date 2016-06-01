@@ -559,13 +559,13 @@ echo $quickmove->generate();
 							<td class="content_row_clear" valign="top">
 								<span  onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$businessContact->getPhoneForDial()?>')"
 									title="<?=$businessContact->getPhoneForDial()." ".$_LANG->get('anrufen');?>" class="pointer icon-link">
-									<span class="glyphicons glyphicons-earphone"><?=$businessContact->getPhone()?></span>
+									<span class="glyphicons glyphicons-earphone"></span>&nbsp;<?=$businessContact->getPhone()?>
 								</span>
 								<br>
-								<span class="glyphicons glyphicons-fax"><?=$businessContact->getFax()?></span><br>
+								<span class="glyphicons glyphicons-fax"></span>&nbsp;<?=$businessContact->getFax()?><br>
 								<span class="glyphicons glyphicons-globe-af"></span>
 									<a class="icon-link" href="<?=$businessContact->getWebForHref()?>" target="_blank"><?=$businessContact->getWeb()?></a> <br>
-								<span class="glyphicons glyphicons-envelope"><?=$businessContact->getEmail()?></span>
+								<span class="glyphicons glyphicons-envelope"></span>&nbsp;<?=$businessContact->getEmail()?>
 							</td>
 						</tr>
 						<tr>
@@ -1386,7 +1386,7 @@ echo $quickmove->generate();
 		<?if($businessContact->getId()){?>
             <h4>Notizen</h4>
             <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
-            <span style="float:right;" class="pointer" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">Neu</span>
+            <span <span class="glyphicons glyphicons-plus pointer" style="float:right;" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">Neu</span></span>
             <?php }?>
 			<table id="comment_table" width="100%" cellpadding="0"
 				cellspacing="0" class="stripe hover row-border order-column">

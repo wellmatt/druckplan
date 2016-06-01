@@ -29,8 +29,8 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Schriftarten
 				<span class="pull-right">
-					<span class="glyphicons glyphicons-edit"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
+						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Schrfitart hinzuf&uuml;gen')?>
 					</button>
 				</span>

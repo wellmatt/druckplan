@@ -180,76 +180,91 @@ $(function() {
     });
 });
 </script>
-
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"><span style="font-size: 13px"> <?=$_LANG->get('Artikel')?> </span></br>
-		</td>
-        <td valign="center" align="right">
-		</td>
-		<td width="200"><?=$savemsg?></td>
-		<td width="200" class="content_header" align="right">
-			<span style="font-size: 14px">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><span class="glyphicons glyphicons-note-empty"></span><?=$_LANG->get('Artikel hinzuf&uuml;gen')?></a>
-			</span>
-		</td>
-	</tr>
-</table>
-
-<div class="box1">
-
-    <div class="box2">
-        <table>
-            <tr align="left">
-                <td valing="top">Tags:&nbsp;&nbsp;</td>
-                <td valign="top"> 
-                    <input type="hidden" id="ajax_tags" name="ajax_tags"/>
-                    <input name="tags" id="tags" style="width:200px;" class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                </td>
-            </tr>
-            <tr align="left">
-                <td valing="top">Warengruppe:&nbsp;&nbsp;</td>
-                <td valign="top"> 
-                    <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
-                    <select name="tradegroup" id="tradegroup" style="width:200px;" class="text" onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    <option value="0">- Alle -</option>
-                    <?php 
-                    $all_tradegroups = Tradegroup::getAllTradegroups();
-                    foreach ($all_tradegroups as $tg)
-                    {?>
-						<option value="<?=$tg->getId()?>">
-						<?=$tg->getTitle()?></option>
-						<? printSubTradegroupsForSelect($tg->getId(), 0);
-					}
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td valing="top">Kunde/Ansprechpartner:&nbsp;&nbsp;</td>
-                <td valign="top"> 
-                    <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
-                    <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
-                    <input name="bc_cp" id="bc_cp" style="width:200px;" onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}" class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    <span class="glyphicons glyphicons-remove pointer" onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();" title="Reset"></span>
-                </td>
-            </tr>
-        </table>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
+            Artikel
+                 <span class="pull-right">
+                    <button class="btn btn-xs btn-success"
+                            onclick="document.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=new';">
+                        <span class="glyphicons glyphicons-plus"></span>
+                        <?= $_LANG->get('Artikel hinzuf&uuml;gen') ?>
+                    </button>
+                </span>
+        </h3>
     </div>
-    </br>
-	<table id="art_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
-        <thead>
-            <tr>
-                <th width="15"><?=$_LANG->get('ID')?></th>
-                <th width="105"><?=$_LANG->get('Bild')?></th>
-                <th><?=$_LANG->get('Titel')?></th>
-                <th width="80"><?=$_LANG->get('Art.-Nr.')?></th>
-                <th width="80"><?=$_LANG->get('Tags')?></th>
-                <th width="160"><?=$_LANG->get('Warengruppe')?></th>
-				<th width="100"><?=$_LANG->get('Shop-Freigabe')?></th>
-                <th width="120"><?=$_LANG->get('Optionen')?></th>
-            </tr>
-        </thead>
-	</table>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Filter
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Tags:</label>
+                          <div class="col-sm-5">
+                              <input type="hidden" id="ajax_tags" name="ajax_tags"/>
+                              <input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Warengruppe:</label>
+                          <div class="col-sm-5">
+                              <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
+                              <select name="tradegroup" id="tradegroup" class="form-control" onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                                  <option value="0">- Alle -</option>
+                                  <?php
+                                  $all_tradegroups = Tradegroup::getAllTradegroups();
+                                  foreach ($all_tradegroups as $tg)
+                                  {?>
+                                      <option value="<?=$tg->getId()?>">
+                                          <?=$tg->getTitle()?></option>
+                                      <? printSubTradegroupsForSelect($tg->getId(), 0);
+                                  }
+                                  ?>
+                              </select>
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Kunde/Ansprechpartner:</label>
+                          <div class="col-sm-5">
+                              <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
+                              <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
+                              <input name="bc_cp" id="bc_cp" class="form-control"  onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                          </div>
+                      </div>
+                      <div class="col-sm-12">
+                             <span class="pull-right">
+                                 <button class="btn btn-xs btn-success" onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();">
+                                     <span class="glyphicons glyphicons-remove pointer"></span>
+                                     <?=$_LANG->get('Reset')?>
+                                 </button>
+                             </span>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="table-responsive">
+            <table class="table table-hover" id="art_table">
+                <thead>
+                <tr>
+                    <th width="15"><?= $_LANG->get('ID') ?></th>
+                    <th width="105"><?= $_LANG->get('Bild') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th width="80"><?= $_LANG->get('Art.-Nr.') ?></th>
+                    <th width="80"><?= $_LANG->get('Tags') ?></th>
+                    <th width="160"><?= $_LANG->get('Warengruppe') ?></th>
+                    <th width="100"><?= $_LANG->get('Shop-Freigabe') ?></th>
+                    <th width="120"><?= $_LANG->get('Optionen') ?></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
 </div>
+

@@ -54,7 +54,7 @@ function printSubTradegroups($parentId, $depth){
 				Warengruppen
 				<span class="pull-right">
 					  <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-						  <span class="glyphicons glyphicons-package"></span>
+						  <span class="glyphicons glyphicons-plus"></span>
 						  <?=$_LANG->get('Warengruppe hinzuf&uuml;gen')?>
 					  </button>
 		  		</span>

@@ -24,8 +24,8 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Merkmale
 				<span class="pull-right">
-					<span class="glyphicons glyphicons-display"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&exec=new';" >
+						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Merkmal erstellen')?>
 					</button>
 				</span>
@@ -48,19 +48,19 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_customer() == 1){
-								echo "<span class=\"glyphicons glyphicons-ticket\"></span>";
+								echo "<span class=\"glyphicons glyphicons-ok\"></span>";
 							}
 							?>
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_contact() == 1 ){
-								echo "<span class=\"glyphicons glyphicons-ticket\"></span>";
+								echo "<span class=\"glyphicons glyphicons-ok\"></span>";
 							}
 							?>
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_colinv() == 1 ){
-								echo "<span class=\"glyphicons glyphicons-ticket\"></span>";
+								echo "<span class=\"glyphicons glyphicons-ok\"></span>";
 							}
 							?>
 						</td>

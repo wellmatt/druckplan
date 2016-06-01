@@ -12,7 +12,7 @@
 				Zahlungsbedingungen
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-						 <span class="glyphicons glyphicons-user"></span>
+						 <span class="glyphicons glyphicons-plus"></span>
 						 <?=$_LANG->get('Zahlungsbedingungen hinzuf&uuml;gen')?>
 				</span>
 			</h3>
@@ -53,7 +53,7 @@
 					  <td class="content_row">
 						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&pay_id=<?=$pt->getId();?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&pay_id=<?=$pt->getId();?>')"><span class="glyphicons glyphicons-pencil"></span></a>
+						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&pay_id=<?=$pt->getId();?>')"><span class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 				  <? $x++;

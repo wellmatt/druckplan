@@ -59,14 +59,14 @@ function askDel(myurl)
 		<h3 class="panel-title">
 			Kundenuploads
 			<span class= "pull-center">
-				<span class="glyphicons glyphicons-collapse"></span>
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&doupload=1)?>';" >
+					<span class="glyphicons glyphicons-collapse"></span>
 					<?=$_LANG->get('Upload');?>
 				</button>
 			</span>
 			<span class= "pull-right">
-				<span class="glyphicons glyphicons-filter"></span>
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&filter=<?=$filter2?>';" >
+					<span class="glyphicons glyphicons-filter"></span>
 					<?=$filter_msg?>
 				</button>
 			</span>

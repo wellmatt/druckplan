@@ -178,8 +178,8 @@ $(document).ready(function() {
 			<h3 class="panel-title">
 				Meine Tickets
 				<span class="pull-right">
-					<span class="glyphicons glyphicons-ticket"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=new';">
+						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Ticket erstellen') ?>
 					</button>
 				</span>

@@ -21,54 +21,58 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 	
 	$all_warnlevel = Warnlevel::getAllWarnlevel();
 	?>
-	
-	<table width="100%">
-		<tr>
-			<td width="200" class="content_header">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>" /> <?=$_LANG->get('Mahnstufen')?>
-			</td>
-			<td><?=$savemsg?></td>
-			<td width="200" class="content_header" align="right">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=new"><span class="glyphicons glyphicons-bank pointer "></span><?=$_LANG->get('Mahnstufe hinzuf&uuml;gen')?> </a>
-			</td>
-		</tr>
-	</table>
-	
-	<div class="box1">
-		<table width="100%" cellpadding="0" cellspacing="0">
-			<colgroup>
-				<col width="80">
-				<col width="150">
-				<col>
-				<col width="100">
-			</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('ID')?></td>
-				<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-				<td class="content_row_header"><?=$_LANG->get('Text')?></td>
-				<td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>"/>
+			Mahnstufen
+				<span class="pull-right">
+				<button class="btn btn-xs btn-success"
+						onclick="document.location. href='index.php?page=<?= $_REQUEST['page'] ?>&exec=new';">
+					<span class="glyphicons glyphicons-plus"></span>
+					<?= $_LANG->get('Mahnstufe hinzuf&uuml;gen') ?>
+				</button>
+			</span>
+		</h3>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<td class="content_row_header"><?= $_LANG->get('ID') ?></td>
+			<td class="content_row_header"><?= $_LANG->get('Titel') ?></td>
+			<td class="content_row_header"><?= $_LANG->get('Text') ?></td>
+			<td class="content_row_header"><?= $_LANG->get('Optionen') ?></td>
 			</tr>
 			<? $x = 0;
-			foreach($all_warnlevel as $warn){ ?>
-				<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
-					<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&wid=<?=$warn->getId()?>'">
-						<?=$warn->getId()?>&ensp;
+			foreach ($all_warnlevel as $warn) { ?>
+				<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)" onmouseout="mark(this,1)">
+					<td class="content_row pointer"
+						onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&wid=<?= $warn->getId() ?>'">
+						<?= $warn->getId() ?>&ensp;
 					</td>
-					<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&wid=<?=$warn->getId()?>'">
-						<?=$warn->getTitle()?>
+					<td class="content_row pointer"
+						onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&wid=<?= $warn->getId() ?>'">
+						<?= $warn->getTitle() ?>
 					</td>
-					<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&wid=<?=$warn->getId()?>'">
-						<?=substr($warn->getText(), 0, 250)?> <?if(strlen($warn->getText()) > 250 ) echo "...";?>
+					<td class="content_row pointer"
+						onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&wid=<?= $warn->getId() ?>'">
+						<?= substr($warn->getText(), 0, 250) ?><? if (strlen($warn->getText()) > 250) echo "..."; ?>
 					</td>
 					<td class="content_row">
-		                <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&wid=<?=$warn->getId()?>"><span class="glyphicons glyphicons-pencil pointer" title="<?=$_LANG->get('Bearbeiten')?>"></span> </a>
+						<a class="icon-link"
+						   href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&wid=<?= $warn->getId() ?>"><span
+								class="glyphicons glyphicons-pencil pointer"
+								title="<?= $_LANG->get('Bearbeiten') ?>"></span> </a>
 						&ensp;
-		                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$warn->getId()?>')"><span class="glyphicons glyphicons-remove pointer " title="<?=$_LANG->get('L&ouml;schen')?>"></span> </a>
-	            	</td>
+						<a class="icon-link" href="#"
+						   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&delid=<?= $warn->getId() ?>')"><span
+								class="glyphicons glyphicons-remove pointer "
+								title="<?= $_LANG->get('L&ouml;schen') ?>"></span> </a>
+					</td>
 				</tr>
 				<? $x++;
 			}// Ende foreach($all_article)
 			?>
 		</table>
 	</div>
-<?} ?>
+</div>
+<? } ?>

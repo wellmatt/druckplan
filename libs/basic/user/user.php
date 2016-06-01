@@ -27,8 +27,8 @@ if ($_REQUEST["exec"] == "edit")
 				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Benutzer
 				<span class="pull-right">
-					<span class="glyphicons glyphicons-user"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
+						<span class="glyphicons glyphicons-user"></span>
 						<?=$_LANG->get('Benutzer hinzuf&uuml;gen')?>
 					</button>
 				</span>

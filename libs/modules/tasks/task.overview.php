@@ -94,8 +94,8 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 		<h3 class="panel-title">
 		Aufgaben
 			<span class = pull-right>
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
+					<span class="glyphicons glyphicons-plus-sign"></span>
 					 <?=$_LANG->get('Aufgabe erstellen') ?>
 			</span>
 		</h3>

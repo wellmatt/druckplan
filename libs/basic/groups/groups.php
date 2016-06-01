@@ -18,8 +18,8 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
                Gruppen
                <span class="pull-right">
-                  <span class="glyphicons glyphicons-group pointer"></span>
                   <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
+                     <span class="glyphicons glyphicons-plus pointer"></span>
                      <?=$_LANG->get('Gruppe hinzuf&uuml;gen')?>
                   </button>
                </span>

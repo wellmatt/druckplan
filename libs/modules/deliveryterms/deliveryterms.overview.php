@@ -15,7 +15,7 @@ $delivterms = DeliveryTerms::getAllDeliveryConditions();
 				Lieferbedingungen
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-						 <span class="glyphicons glyphicons-user"></span>
+						 <span class="glyphicons glyphicons-plus"></span>
 						 <?=$_LANG->get('Lieferbedingungen hinzuf&uuml;gen')?>
 				</span>
 			</h3>

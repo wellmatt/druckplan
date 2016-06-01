@@ -336,7 +336,7 @@ echo $quickmove->generate();
                             }
                         }
                         ?>
-                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis (<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv"><span class="glyphicons glyphicons-display"></span></a>)</label>
+                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis (&nbsp;<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv"><span class="glyphicons glyphicons-file-export"></span></a>&nbsp;)</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="order_beilagen" name="order_beilagen"><?=$order->getBeilagen()?></textarea>
                         </div>
@@ -344,6 +344,7 @@ echo $quickmove->generate();
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="panel panel-default">
@@ -351,7 +352,10 @@ echo $quickmove->generate();
     			<h3 class="panel-title">
                     Kalkulationsübersicht
                     <span class="pull-right">
-                        <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=export&id=<?=$order->getId()?>" target="_blank"><span class="glyphicons glyphicons-display"><?=$_LANG->get('Exportieren')?></span></a>
+                         <button class="btn btn-xs btn-success"  onclick="document.location.href="index.php?page=<?=$_REQUEST['page']?>&exec=export&id=<?=$order->getId()?>">
+                             <span class="glyphicons glyphicons-file-export"></span>
+                             <?=$_LANG->get('Exportieren')?>
+                        </button>
                     </span>
                 </h3>
     	  </div>

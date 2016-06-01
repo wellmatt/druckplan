@@ -304,7 +304,7 @@
             }
         }
         $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><span class="glyphicons glyphicons-pencil"></span></a>
-                  <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-file"></span></a>';
+                  <a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&subexec=clone&id='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-copy"></span></a>';
         $output['aaData'][] = $row;
     }
      

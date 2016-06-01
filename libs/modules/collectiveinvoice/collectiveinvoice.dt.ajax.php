@@ -362,7 +362,7 @@
                 $row[] = $tmp_row;
             }
         }
-        $row[] = '<span class="glyphicons glyphicons-file-lock pointer" title="Duplizieren"onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&subexec=copy&ciid='.$aRow[ $aColumns[0] ].'\')"></span>';
+        $row[] = '<span class="glyphicons glyphicons-copy pointer" title="Duplizieren"onclick="askDel(\'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&subexec=copy&ciid='.$aRow[ $aColumns[0] ].'\')"></span>';
 
         $output['aaData'][] = $row;
     }

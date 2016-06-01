@@ -29,9 +29,9 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 					</span>
 					Serienbrief
 					<span class="pull-right">
-					  <span class="glyphicons glyphicons-file"></span>
 					  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-						  <?=$_LANG->get('Serienbrief')?>
+						  <span class="glyphicons glyphicons-plus"></span>
+						  <?=$_LANG->get('Serienbrief erstellen')?>
 					  </button>
 			  		</span>
 				</h3>

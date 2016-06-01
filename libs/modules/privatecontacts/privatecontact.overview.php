@@ -91,8 +91,8 @@ $(document).ready(function() {
             <span class="glyphicons glyphicons-user"></span>
             Private Kontakte
                 <span class = pull-right>
-                   <span class="glyphicons glyphicons-plus"></span>
                     <button class="btn btn-xs btn-success"onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
+                        <span class="glyphicons glyphicons-plus"></span>
                         <?=$_LANG->get('Neuer Kontakt') ?>
                 </span>
         </h3>

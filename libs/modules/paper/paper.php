@@ -107,7 +107,7 @@ $(document).ready(function() {
                     Papiere
                     <span class="pull-right">
                         <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-                            <span class="glyphicons glyphicons-file"></span>
+                            <span class="glyphicons glyphicons-plus"></span>
                             <?=$_LANG->get('Papier hinzuf&uuml;gen')?>
                         </button>
                     </span>

@@ -28,7 +28,7 @@
 				Maschinengruppen
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-						<span class="glyphicons glyphicons-cogwheel"></span>
+						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Maschinengruppe hinzuf&uuml;gen')?>
 					</button>
 				</span>
@@ -57,8 +57,8 @@
 						  <? if($m->getLectorId()) echo '<span class="error">'.$_LANG->get('Importiert').'</span>'; else echo '&nbsp;'?>
 					  </td>
 					  <td class="content_row">
-						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
-						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-wrench"></span></a>
+						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-copy"></span></a>
 						  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$m->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>

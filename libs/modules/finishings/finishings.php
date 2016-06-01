@@ -26,12 +26,12 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
 			<h3 class="panel-title">
 				Lacke
 				<span class="pull-right">
-					<span class="glyphicons glyphicons-french-press"></span>
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit';">
+						<span class="glyphicons glyphicons-plus"></span>
 						<?= $_LANG->get('Lack hinzuf&uuml;gen') ?>
 					</button>
 				</span>
-			</h3>
+			</h3>S
 		</div>
 		<div class="table-responsive">
 			<table class="table table-hover">

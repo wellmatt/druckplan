@@ -30,7 +30,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                 Falzarten
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
-                        <span class="glyphicons glyphicons-sort"></span>
+                        <span class="glyphicons glyphicons-plus"></span>
                             <?=$_LANG->get('Falzart hinzuf&uuml;gen')?>
                     </button>
                 </span>
