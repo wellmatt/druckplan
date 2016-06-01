@@ -585,10 +585,10 @@ class CollectiveInvoice{
 			case 0: $retval = "black";break;
 			case 1: $retval = "red";break;
 			case 2: $retval = "orange";break;
-			case 3: $retval = "yellow";break;
+			case 3: $retval = "#e4de02";break;
 			case 4: $retval = "purple";break;
-			case 5: $retval = "purple";break;
-			case 6: $retval = "purple";break;
+			case 5: $retval = "blue";break;
+			case 6: $retval = "lightblue";break;
 			case 7: $retval = "green";break;
 			default: $retval="gray";
 		}
