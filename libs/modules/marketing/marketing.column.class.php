@@ -14,19 +14,58 @@ class MarketingColumn{
 
     function __construct($id = 0)
     {
-        $this->list = new MarketingList();
         global $DB;
-        if ($id>0)
-        {
-            $sql = "SELECT * FROM marketing_columns WHERE id = {$id}";
-            if ($DB->num_rows($sql))
-            {
-                $res = $DB->select($sql);
-                $this->id = $res[0]["id"];
-                $this->title = $res[0]["title"];
-                $this->sort = $res[0]["sort"];
-                $this->list = new MarketingList($res[0]["list"]);
+        if ($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
             }
+            if ($valid_cache === false) {
+                $sql = "SELECT * FROM marketing_columns WHERE id = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $res = $DB->select($sql);
+                    $this->id = $res[0]["id"];
+                    $this->title = $res[0]["title"];
+                    $this->sort = $res[0]["sort"];
+                    $this->list = new MarketingList($res[0]["list"]);
+
+                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+                }
+            }
+        } else {
+            $this->list = new MarketingList();
         }
     }
 
@@ -40,11 +79,6 @@ class MarketingColumn{
 			sort = {$this->sort}
 			WHERE id = '{$this->id}'";
             $res = $DB->no_result($sql);
-            if ($res){
-                return true;
-            }else{
-                return false;
-            }
         }else{
             $sql = "INSERT INTO marketing_columns (title, sort, list)
 			VALUES ('{$this->title}', {$this->sort}, {$this->list->getId()})";
@@ -53,10 +87,13 @@ class MarketingColumn{
                 $sql = "SELECT max(id) id FROM marketing_columns";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
-                return true;
-            }else{
-                return false;
             }
+        }
+        if ($res){
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -108,6 +145,7 @@ class MarketingColumn{
             $res = $DB->no_result($sql);
             if($res)
             {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 unset($this);
                 return true;
             }

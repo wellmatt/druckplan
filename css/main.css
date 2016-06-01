@@ -412,6 +412,8 @@ li.user-header > p {
 .glyphicons::before {
 	display: inline-block;
 	padding: 0 0;
+	vertical-align: middle;
+	line-height: initial;
 }
 
 .panel-title {
@@ -440,4 +442,5 @@ a .glyphicons:hover {
 
 span .glyphicons {
 	vertical-align: middle;
+	line-height: initial;
 }
