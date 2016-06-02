@@ -129,17 +129,6 @@ if($_REQUEST["subexec"] == "save")
     $savemsg = getSaveMessage($paper->save());
 }
 ?>
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header">
-          <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-          <?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Papier hinzuf&uuml;gen')?>
-          <?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Papier &auml;ndern')?>
-          <?if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Papier kopieren')?>
-      </td>
-      <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
 
 <script language="javascript">
 message = '<?=$_LANG->get('Achtung \n\nDurch Aendern der Preisbasis werden alle Preise geloescht!')?>';
@@ -297,122 +286,365 @@ if ($paper->getId()>0){
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form" onSubmit="return checkform(new Array(this.paper_name))">
-<input name="exec" value="edit" type="hidden">
-<input name="subexec" value="save" type="hidden">
-<input name="id" value="<?=$paper->getId()?>" type="hidden">
-<input name="count_weight" id="count_weight" type="hidden" value="<?=count($paper->getWeights())?>">
-<input name="count_size" id="count_size" type="hidden" value="<?=count($paper->getSizes())?>">
-<div class="box1">
-<table width="100%">
-    <colgroup>
-        <col width="15%">
-        <col width="30%">
-		<col width="15%">
-		<col width="40%">
-    </colgroup>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Name')?> *</td>
-        <td class="content_row_clear">
-            <input name="paper_name" value="<?=$paper->getName()?>" class="text" style="width:300px">
-        </td>   
-    </tr>
-    
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Preisbasis')?></td>
-        <td class="content_row_clear">	
-		
-	
-<!--		Auskommentierter Radio Button
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form" class="form-horizontal" onSubmit="return checkform(new Array(this.paper_name))">
+    <input name="exec" value="edit" type="hidden">
+    <input name="subexec" value="save" type="hidden">
+    <input name="id" value="<?=$paper->getId()?>" type="hidden">
+    <input name="count_weight" id="count_weight" type="hidden" value="<?=count($paper->getWeights())?>">
+    <input name="count_size" id="count_size" type="hidden" value="<?=count($paper->getSizes())?>">
 
-		  <?=$_LANG->get('Preis')?> 
-<?php /*            <input name="paper_pricebase" value="<?=Paper::PRICE_PER_100KG?>" type="radio" id="paper_pricebase"
-                <?if($paper->getPriceBase() == Paper::PRICE_PER_100KG) echo "checked"?> onchange="warnPBChange(<?=Paper::PRICE_PER_100KG?>)"> 
-            <?=$_LANG->get('pro')?> 100kg */ ?>
-            <input name="paper_pricebase" value="<?=Paper::PRICE_PER_THOUSAND?>" type="radio" id="paper_pricebase"
-                <?if($paper->getPriceBase() == Paper::PRICE_PER_THOUSAND) echo "checked"?> onchange="warnPBChange(<?=Paper::PRICE_PER_THOUSAND?>)">--> 
-				
-				
-            <?=$_LANG->get('pro')?> 1.000 <?=$_LANG->get('Bogen')?>
-        </td>   
-    </tr>
-    
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Trägermaterial')?> *</td>
-        <td class="content_row_clear">
-            <input name="paper_dilivermat" value="<?=$paper->getDilivermat()?>" class="text" style="width:300px">
-        </td>   
-        <td class="content_row_header"><?=$_LANG->get('Kleber')?> *</td>
-        <td class="content_row_clear">
-            <input name="paper_glue" value="<?=$paper->getGlue()?>" class="text" style="width:300px">
-        </td>  
-    </tr>
-    
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Dicke gesamt in µm')?> *</td>
-        <td class="content_row_clear">
-            <input name="paper_thickness" value="<?=$paper->getThickness()?>" class="text" style="width:300px">
-        </td>   
-        <td class="content_row_header"><?=$_LANG->get('Gesamtgewicht in g/m2')?> *</td>
-        <td class="content_row_clear">
-            <input name="paper_totalweight" value="<?=$paper->getTotalweight()?>" class="text" style="width:300px">
-        </td>  
-    </tr>
-	
-	<tr>
-		<!--<td class="content_row_header" valign="top">Beschreibung</td>
-			<td><textarea name="paper_comment" style="width:300px" class="text"><?=$paper->getComment()?></textarea></td>-->
-			<td class="content_row_header"><?=$_LANG->get('Verf&uuml;gbare Gr&ouml;&szlig;en')?> <?=$_LANG->get('(BxH)')?></td>
-        <td class="content_row_clear" id="td-size">
-            <span id="span-size">
-            <? $i = 0; foreach ($paper->getSizes() as $s) {?>
-                <span id="paper_size_<?=$i?>">
-                    Breite <input name="paper_size_width_<?=$i?>" id="paper_size_width_<?=$i?>" class="text" style="width:40px" value="<?=$s["width"]?>"> mm 
-                    Höhe <input name="paper_size_height_<?=$i?>" id="paper_size_height_<?=$i?>" class="text" style="width:40px" value="<?=$s["height"]?>"> mm 
-                    <span class="glyphicons glyphicons-minus pointer"onclick="removeOption('size', <?=$i?>)"></span>&nbsp;&nbsp;&nbsp; <br>
-                </span>
-            <? $i++; } ?>                
-            </span>
-            <span class="glyphicons glyphicons-plus pointer" onclick="addSizeField()"></span>
-        </td>
-    
-        <td class="content_row_header"><?=$_LANG->get('Verf&uuml;gbare Grammaturen')?></td>
-        <td class="content_row_clear" id="td-weight">
-            <span id="span-weight">
-            <? $i = 0; foreach ($paper->getWeights() as $w) {?>
-                <span id="sp_paper_weight_<?=$i?>"><input name="paper_weight_<?=$i?>" id="paper_weight_<?=$i?>" class="text" style="width:40px" value="<?=$w?>"> g
-               <span class="glyphicons glyphicons-minus pointer"onclick="removeOption('weight', <?=$i?>)"></span>&nbsp;&nbsp;&nbsp;</span> <br>
-            <? $i++; } ?>
-            </span>
-            <span class="glyphicons glyphicons-plus pointer" onclick="addWeightField()"></span>
-        </td>
-		</tr>
-		<tr>		
-			<td class="content_row_header"><?=$_LANG->get('100Kg-Preis')?>
-			<td class="content_row_clear">
-				<input name="paper_100kg" value="<?php echo $paper->getPrice_100kg();?>" class="text" style="width:300px"><br>
-				<class="content_row_header"><?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?> 
-			</td>
-		</tr> 
-		<tr>		
-			<td class="content_row_header"><?=$_LANG->get('1qm-Preis')?>
-			<td class="content_row_clear">
-				<input name="paper_1qm" value="<?php echo $paper->getPrice_1qm();?>" class="text" style="width:300px"><br>
-				<class="content_row_header"><?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?> 
-			</td>
-		</tr>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Volumen')?>
-        <td class="content_row_clear">
-            <input name="paper_volume" value="<?php echo $paper->getVolume();?>" class="text" style="width:300px">
-        </td>
-    </tr>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Rolle')?>
-        <td class="content_row_clear">
-            <input name="paper_rolle" value="1" <?php if ($paper->getRolle()) echo ' checked ';?> type="checkbox">
-        </td>
-    </tr>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
+                <? if ($_REQUEST["exec"] == "new") echo $_LANG->get('Papier hinzuf&uuml;gen') ?>
+                <? if ($_REQUEST["exec"] == "edit") echo $_LANG->get('Papier &auml;ndern') ?>
+                <? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Papier kopieren') ?>
+                <span class="pull-right">
+                        <?= $savemsg ?>
+                    </span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8">
+                            <input name="paper_name" value="<?= $paper->getName() ?>" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Preisbasis</label>
+                        <div class="col-sm-8" class="form-text">
+                            <?= $_LANG->get('pro') ?> 1.000 <?= $_LANG->get('Bogen') ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Trägermaterial</label>
+                        <div class="col-sm-8">
+                            <input name="paper_dilivermat" value="<?= $paper->getDilivermat() ?>" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Dicke gesamt in µm</label>
+                        <div class="col-sm-8">
+                            <input name="paper_thickness" value="<?= $paper->getThickness() ?>" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Verf&uuml;gbare Gr&ouml;&szlig;en (BxH)</label>
+                        <div class="col-sm-6">
+                             <span id="span-size">
+                            <? $i = 0;
+                            foreach ($paper->getSizes() as $s) { ?>
+                                <span id="paper_size_<?= $i ?>">
+                             <div class="row">
+                                 <div class="col-sm-5">
+                                     Breite in mm <input name="paper_size_width_<?= $i ?>"
+                                                         id="paper_size_width_<?= $i ?>" class="form-control"
+                                                         value="<?= $s["width"] ?>">
+                                 </div>
+                                 <div class="col-sm-5">
+                                     Höhe in mm <input name="paper_size_height_<?= $i ?>"
+                                                       id="paper_size_height_<?= $i ?>" class="form-control"
+                                                       value="<?= $s["height"] ?>">
+                                 </div>
+                                 <span class="glyphicons glyphicons-minus pointer"
+                                       onclick="removeOption('size', <?= $i ?>)"></span>&nbsp;&nbsp;&nbsp; <br>
+                             </div>
+
+
+                                </span>
+                                <? $i++;
+                            } ?>
+                            </span>
+                            <span class="glyphicons glyphicons-plus pointer" onclick="addSizeField()"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">100KG-Preis *</label>
+                        <div class="col-sm-8">
+                            <input name="paper_100kg" value="<?php echo $paper->getPrice_100kg(); ?>"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">1qm-Preis *</label>
+                        <div class="col-sm-8">
+                            <input name="paper_1qm" value="<?php echo $paper->getPrice_1qm(); ?>" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Volumen</label>
+                        <div class="col-sm-8">
+                            <input name="paper_volume" value="<?php echo $paper->getVolume(); ?>" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Rolle</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" name="paper_rolle"
+                                   value="1" <?php if ($paper->getRolle()) echo ' checked '; ?> type="checkbox">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Kleber</label>
+                        <div class="col-sm-8">
+                            <input name="paper_glue" value="<?= $paper->getGlue() ?>" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Gesamtgewicht in g/m2</label>
+                        <div class="col-sm-8">
+                            <input name="paper_totalweight" value="<?= $paper->getTotalweight() ?>"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Verf&uuml;gbare Grammaturen</label>
+                        <div class="col-sm-8">
+                              <span id="span-weight">
+                                <? $i = 0;
+                                foreach ($paper->getWeights() as $w) { ?>
+                                    <span id="sp_paper_weight_<?= $i ?>">
+                                         <div class="row">
+                                             <div class="col-sm-10">
+                                                 <div class="input-group">
+                                                     <input name="paper_weight_<?= $i ?>" id="paper_weight_<?= $i ?>"
+                                                            class="form-control" value="<?= $w ?>">
+                                                     <span class="input-group-addon">g</span>
+                                                 </div>
+                                             </div>
+                                             <div class="col-sm-2">
+                                                 <span class="glyphicons glyphicons-minus pointer"
+                                                       onclick="removeOption('weight', <?= $i ?>)"></span>
+                                             </div>
+                                         </div>
+                                    </span>
+                                    <? $i++;
+                                } ?>
+                                </span>
+                            <span class="glyphicons glyphicons-plus pointer" onclick="addWeightField()"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Hinweis</label>
+                        <div class="col-sm-8 form-text">
+                            <?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Lieferanten
+                </h3>
+            </div>
+            <div class="panel-body">
+                <input type="hidden" name="supplier_counter" id="supplier_counter" value="<? if(count($paper->getSupplier()) > 0) echo count($paper->getSupplier()); else echo "0";?>">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-supplier">
+                        <? $i = 0; foreach($paper->getSupplier() as $s) {
+                            $tmp_supplier = new BusinessContact($s['id']);
+                            ?>
+                            <tr id="supplier_tr_<?=$i?>">
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <select id="supplier_<?=$i?>" name="supplier_<?=$i?>" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                                                <option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+                                                <? 	foreach ($allcustomer as $cust){?>
+                                                    <option value="<?=$cust->getId()?>"
+                                                        <?if ($tmp_supplier->getId() == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine()?></option>
+                                                <?	} //Ende ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-2 control-label">Papierbez. b. Lief.:</label>
+                                            <div class="col-sm-4">
+                                                <input name="supplier_descr_<?=$i?>" id="supplier_descr_<?=$i?>" value="<?php echo $s['descr'];?>" class="form-control">
+                                            </div>
+                                            <span class="glyphicons glyphicons-remove pointer" onclick="removeOption('supplier', <?=$i?>)"></span>
+                                        </div>
+
+                                </td>
+                            </tr>
+                            <?  $i++; } ?>
+                        <tr>
+                            <td><span class="glyphicons glyphicons-plus pointer"onclick="addSupplierRow()"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Preise
+                </h3>
+            </div>
+                <? if($paper->getPriceBase() == Paper::PRICE_PER_100KG) { ?>
+                <input type="hidden" name="price_counter" id="price_counter" value="<? if(count($paper->getPrices()) > 0) echo count($paper->getPrices()); else echo "1";?>">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-prices">
+                        <? $i = 0; foreach($paper->getPrices() as $p) { ?>
+                            <tr>
+                                <td>
+                                    <?=$_LANG->get('Von')?> <input name="price_weight_from_<?=$i?>" id="price_weight_from_<?=$i?>" class="text" value="<?=$p["weight_from"]?>"> g
+                                    <?=$_LANG->get('bis')?> <input name="price_weight_to_<?=$i?>" id="price_weight_to_<?=$i?>" class="text" style="width:40px" value="<?=$p["weight_to"]?>"> g
+                                </td>
+                                <td>
+                                    <?=$_LANG->get('ab')?> <input name="price_quantity_from_<?=$i?>" id="price_quantity_from_<?=$i?>" class="text" style="width:40px" value="<?=$p["quantity_from"]?>"> kg
+                                    <input name="price_<?=$i?>" id="price_<?=$i?>" class="text" style="width:60px;text-align:right" value="<?=printPrice($p["price"])?>">
+                                    <?=$_USER->getClient()->getCurrency()?>
+                                    <? if($i == count($paper->getPrices())-1)
+                                        echo '&nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-plus pointer"onclick="addPriceRow()"></span>'; ?>
+                                </td>
+                            </tr>
+                            <?  $i++; }
+                        if(count($paper->getPrices())== 0) { ?>
+                            <tr>
+                                <td>
+                                    Von <input name="price_weight_from_0" id="price_weight_from_0" class="text" style="width:40px"> g
+                                    bis <input name="price_weight_to_0" id="price_weight_to_0" class="text" style="width:40px"> g
+                                </td>
+                                <td>
+                                    ab <input name="price_quantity_from_0" id="price_quantity_from_0" class="text" style="width:40px"> kg
+                                    <input name="price_0" id="price_0" class="text" style="width:60px;text-align:right">
+                                    <?=$_USER->getClient()->getCurrency()?>
+                                    &nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow()"></span>
+                                </td>
+                            </tr>
+
+                        <? } ?>
+                    </table>
+                    <?  } else { ?>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <? foreach ($paper->getSizes() as $s) {
+                                $firstSize = true;
+                                foreach ($paper->getWeights() as $w)
+                                {
+                                    $firstWeight = true;
+                                    $paper_prices = $paper->getPrices();
+                                    $i = 0;
+                                    $prices = Array();
+                                    while($i < count($paper_prices))
+                                    {
+                                        if($paper_prices[$i]["size_width"] == $s["width"] &&
+                                            $paper_prices[$i]["size_height"] == $s["height"] &&
+                                            $paper_prices[$i]["weight_from"] == $w)
+                                        {
+                                            $prices[] = $paper_prices[$i];
+                                        }
+                                        $i++;
+                                    }
+
+                                    // Falls noch keine Preise existieren, Preise vorgaukeln
+                                    if(count($prices) == 0)
+                                        $prices[] = Array("size_width" => $s["width"], "size_height" => $s["height"]);
+
+                                    $x = 0;
+                                    foreach($prices as $price)
+                                    {
+
+                                        echo '<tr id="price_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$price["quantity_from"].'">
+                        <td class="content_row_clear">';
+
+                                        if ($firstSize)
+                                            echo $s["width"]." x ".$s["height"];
+                                        else
+                                            echo "&nbsp;";
+                                        $firstSize = false;
+                                        echo '<td>';
+
+                                        if ($firstWeight)
+                                            echo $w.' g';
+                                        else
+                                            echo '&nbsp;';
+
+                                        if ($price["quantity_from"]<=0)
+                                            $price["quantity_from"] = 1;
+                                        if ($price["price"]<=0)
+                                            $price["price"] = 1;
+
+                                        echo '<td>
+                            <input name="count_quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'" value="'.count($prices).'" type="hidden" id="count_quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'">
+                            '.$_LANG->get('Ab').' <input name="quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text"
+                                style="width:60px;text-align:right;" value="'.$price["quantity_from"].'"> '.$_LANG->get('Bogen').'
+                          </td>';
+
+                                        echo '</td>
+                        <td>';
+
+                                        echo $_LANG->get('Preis pro 1000 Bogen')." ";
+                                        echo '&nbsp;&nbsp;<input name="priceperthousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text"
+                            style="width:60px;text-align:right;" value="'.printPrice($price["price"]).'">
+                            '.$_USER->getClient()->getCurrency().'</td>';
+
+                                        echo '</td>
+                        <td>';
+
+
+                                        /*<input name="paper_100kg" value="" class="text" style="width:300px"><br>
+                                        <class="content_row_header"><?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?>
+                                    </td>*/
+
+                                        /*echo $_LANG->get('100KG Preis manuell')." ";
+                                        echo '&nbsp;&nbsp;<input name="pricepertousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text"
+                                                            style="width:60px;text-align:right;" value="'.printPrice($t["price"]). '">
+                                                            '.$_USER->getClient()->getCurrency().'
+                                                                &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
+                                                                </td>';*/
+
+                                        /* echo $_LANG->get('100KG Preis manuell')." ";
+                                         echo '&nbsp;&nbsp;<input name="paper_100kg" class="text"
+                                                             style="width:60px;text-align:right;" value="">
+                                                             '.$_USER->getClient()->getCurrency().'
+                                                                 &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
+                                                                 </td>';*/
+                                        echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')"></span>';
+                                        $firstWeight = false;
+                                        $x++;
+                                    }
+                                    echo '</tr>';
+
+                                }
+                            } ?>
+                        </table>
+                        <?  } ?>
+                    </div>
+                </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+    <!--		Auskommentierter Radio Button
+
+              <?=$_LANG->get('Preis')?>
+    <?php /*            <input name="paper_pricebase" value="<?=Paper::PRICE_PER_100KG?>" type="radio" id="paper_pricebase"
+                    <?if($paper->getPriceBase() == Paper::PRICE_PER_100KG) echo "checked"?> onchange="warnPBChange(<?=Paper::PRICE_PER_100KG?>)">
+                <?=$_LANG->get('pro')?> 100kg */ ?>
+                <input name="paper_pricebase" value="<?=Paper::PRICE_PER_THOUSAND?>" type="radio" id="paper_pricebase"
+                    <?if($paper->getPriceBase() == Paper::PRICE_PER_THOUSAND) echo "checked"?> onchange="warnPBChange(<?=Paper::PRICE_PER_THOUSAND?>)">-->
+
+
     <!--<tr>
         <td class="content_row_header"><?=$_LANG->get('Verf&uuml;gbare Gr&ouml;&szlig;en')?> <?=$_LANG->get('(BxH)')?></td>
         <td class="content_row_clear" id="td-size">
@@ -444,182 +676,7 @@ echo $quickmove->generate();
 	
           
     </tr>-->
-		</td>
-	</tr>
-</table>
-</div>
-</br>
-<h1><?=$_LANG->get('Lieferanten')?></h1>
-<div class="box2">
-<input type="hidden" name="supplier_counter" id="supplier_counter" value="<? if(count($paper->getSupplier()) > 0) echo count($paper->getSupplier()); else echo "0";?>">
-<table width="100%" id="table-supplier">
-    <colgroup>
-        <col width="250">
-        <col>
-    </colgroup>
-    <? $i = 0; foreach($paper->getSupplier() as $s) { 
-	$tmp_supplier = new BusinessContact($s['id']);
-	?>
-    <tr id="supplier_tr_<?=$i?>">
-        <td class="content_row_clear">
-			<select id="supplier_<?=$i?>" name="supplier_<?=$i?>" style="width:370px" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-				<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-			<? 	foreach ($allcustomer as $cust){?>
-					<option value="<?=$cust->getId()?>"
-						<?if ($tmp_supplier->getId() == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine()?></option>
-			<?	} //Ende ?>
-			</select>
-            Papierbez. b. Lief.: <input name="supplier_descr_<?=$i?>" id="supplier_descr_<?=$i?>" value="<?php echo $s['descr'];?>" style="width: 500px;">
-            <span class="glyphicons glyphicons-remove pointer" onclick="removeOption('supplier', <?=$i?>)"></span>
-        </td>
-    </tr>
-    <?  $i++; } ?>	
-	<tr>
-		<td><span class="glyphicons glyphicons-plus pointer"onclick="addSupplierRow()"></span></td>
-	</tr>
-</table>
-</div>
-<br>
-<h1><?=$_LANG->get('Preise')?></h1>
-<div class="box2">
-<? if($paper->getPriceBase() == Paper::PRICE_PER_100KG) { ?>
-<input type="hidden" name="price_counter" id="price_counter" value="<? if(count($paper->getPrices()) > 0) echo count($paper->getPrices()); else echo "1";?>">
-<table width="100%" id="table-prices">
-    <colgroup>
-        <col width="250">
-        <col>
-    </colgroup>
-    <? $i = 0; foreach($paper->getPrices() as $p) { ?>
-    <tr>
-        <td class="content_row_clear">
-            <?=$_LANG->get('Von')?> <input name="price_weight_from_<?=$i?>" id="price_weight_from_<?=$i?>" class="text" style="width:40px" value="<?=$p["weight_from"]?>"> g 
-            <?=$_LANG->get('bis')?> <input name="price_weight_to_<?=$i?>" id="price_weight_to_<?=$i?>" class="text" style="width:40px" value="<?=$p["weight_to"]?>"> g
-        </td>
-        <td class="content_row_clear">
-            <?=$_LANG->get('ab')?> <input name="price_quantity_from_<?=$i?>" id="price_quantity_from_<?=$i?>" class="text" style="width:40px" value="<?=$p["quantity_from"]?>"> kg
-            <input name="price_<?=$i?>" id="price_<?=$i?>" class="text" style="width:60px;text-align:right" value="<?=printPrice($p["price"])?>">
-            <?=$_USER->getClient()->getCurrency()?>
-            <? if($i == count($paper->getPrices())-1)
-                    echo '&nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-plus pointer"onclick="addPriceRow()"></span>'; ?>
-        </td>
-    </tr>
-    <?  $i++; }
-    if(count($paper->getPrices())== 0) { ?>
-    <tr>
-        <td class="content_row_clear">
-            Von <input name="price_weight_from_0" id="price_weight_from_0" class="text" style="width:40px"> g 
-            bis <input name="price_weight_to_0" id="price_weight_to_0" class="text" style="width:40px"> g
-        </td>
-        <td class="content_row_clear">
-            ab <input name="price_quantity_from_0" id="price_quantity_from_0" class="text" style="width:40px"> kg
-            <input name="price_0" id="price_0" class="text" style="width:60px;text-align:right">
-            <?=$_USER->getClient()->getCurrency()?>
-            &nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow()"></span>
-        </td>
-    </tr>
-    
-    <? } ?>
-</table>
-<?  } else { ?>
-<table width="100%">
-    <colgroup>
-        <col width="80">
-        <col width="80">
-        <col width="230">
-        <col width="230">
-        <col>
-    </colgroup>
-    <? foreach ($paper->getSizes() as $s) { 
-        $firstSize = true; 
-        foreach ($paper->getWeights() as $w)
-        {
-            $firstWeight = true;
-            $paper_prices = $paper->getPrices();
-            $i = 0;
-            $prices = Array();
-            while($i < count($paper_prices))
-            {
-                if($paper_prices[$i]["size_width"] == $s["width"] && 
-                        $paper_prices[$i]["size_height"] == $s["height"] && 
-                        $paper_prices[$i]["weight_from"] == $w)
-                {
-                    $prices[] = $paper_prices[$i];
-                }
-                $i++;
-            }
-            
-            // Falls noch keine Preise existieren, Preise vorgaukeln
-            if(count($prices) == 0)
-                $prices[] = Array("size_width" => $s["width"], "size_height" => $s["height"]);
 
-            $x = 0;
-            foreach($prices as $price)
-            {
-            
-                echo '<tr id="price_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$price["quantity_from"].'">
-                    <td class="content_row_clear">';
-                
-                if ($firstSize)
-                    echo $s["width"]." x ".$s["height"];
-                else
-                    echo "&nbsp;";
-                $firstSize = false;
-                echo '<td class="content_row_clear">';
-                
-                if ($firstWeight)
-                    echo $w.' g';
-                else 
-                    echo '&nbsp;';
-                
-                if ($price["quantity_from"]<=0)
-                    $price["quantity_from"] = 1;
-                if ($price["price"]<=0)
-                    $price["price"] = 1;
-                
-                echo '<td class="content_row_clear">
-                        <input name="count_quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'" value="'.count($prices).'" type="hidden" id="count_quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'">
-                        '.$_LANG->get('Ab').' <input name="quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text"
-                            style="width:60px;text-align:right;" value="'.$price["quantity_from"].'"> '.$_LANG->get('Bogen').'
-                      </td>';
-                
-                echo '</td>
-                    <td class="content_row_clear">';
-                
-                echo $_LANG->get('Preis pro 1000 Bogen')." ";
-                echo '&nbsp;&nbsp;<input name="priceperthousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text" 
-                        style="width:60px;text-align:right;" value="'.printPrice($price["price"]).'">
-                        '.$_USER->getClient()->getCurrency().'</td>';
 
-                echo '</td>
-                    <td class="content_row_clear">';
-		
-        
-            /*<input name="paper_100kg" value="" class="text" style="width:300px"><br>
-			<class="content_row_header"><?=$_LANG->get('* Überschreibt alle 1000 Bogenpreise "Ab 1 Bogen"  !!!')?> 
-        </td>*/				
 
-				/*echo $_LANG->get('100KG Preis manuell')." ";
-                echo '&nbsp;&nbsp;<input name="pricepertousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="text"
-                                    style="width:60px;text-align:right;" value="'.printPrice($t["price"]). '">  
-									'.$_USER->getClient()->getCurrency().'
-                                        &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
-                                        </td>';*/
-                
-               /* echo $_LANG->get('100KG Preis manuell')." ";
-                echo '&nbsp;&nbsp;<input name="paper_100kg" class="text"
-                                    style="width:60px;text-align:right;" value="">  
-									'.$_USER->getClient()->getCurrency().'
-                                        &nbsp;&nbsp;&nbsp;<img src="images/icons/plus.png" class="pointer icon-link" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')">
-                                        </td>';*/
-										echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')"></span>';
-                $firstWeight = false;
-                $x++;
-            }
-            echo '</tr>';
-            
-        }
-    } ?>        
-</table>
-<?  } ?>
-</div>
-</form>
+

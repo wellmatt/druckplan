@@ -56,8 +56,8 @@ $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#tradegroup_edit').submit();",'glyphicon-floppy-disk');
-if ($subgroup->getId()>0){
-	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$subgroup->getId()."');", 'glyphicon-trash', true);
+if ($tradegroup->getId()>0){
+	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$tradegroup->getId()."');", 'glyphicon-trash', true);
 }
 
 
