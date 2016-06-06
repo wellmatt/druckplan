@@ -31,7 +31,7 @@ $products = Product::getAllProducts();
                     <button class="btn btn-xs btn-success"
                             onclick="document.location. href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit';">
                         <span class="glyphicons glyphicons-plus"></span>
-                        <?= $_LANG->get('Plan erstellen') ?>
+                        <?= $_LANG->get('Produkt erstellen') ?>
                     </button>
 		  		</span>
             </h3>
