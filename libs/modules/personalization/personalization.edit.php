@@ -49,7 +49,7 @@ if($_REQUEST["subexec"] == "save"){
 		$all_items_counter = (int)$_REQUEST["count_quantity"];
 		for ($i=0 ; $i <= $all_items_counter ; $i++){
 			$item = new Personalizationitem((int)$_REQUEST["item_id_{$i}"]);
-			$item->setTitle(addslashes($_REQUEST["item_title_{$i}"]));
+			$item->setTitle($_REQUEST["item_title_{$i}"]);
 			$item->setXpos((float)sprintf("%.3f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["item_xpos_{$i}"]))));
 			$item->setYpos((float)sprintf("%.3f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["item_ypos_{$i}"]))));
 			$item->setWidth((float)sprintf("%.3f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["item_width_{$i}"]))));

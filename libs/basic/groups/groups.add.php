@@ -37,6 +37,8 @@ if ($_REQUEST["subexec"] == "save")
    $group->setRight(Group::RIGHT_ASSO_DELETE, (int)$_REQUEST["right_asso_delete"]);
    $group->setRight(Group::RIGHT_NOTES_BC, (int)$_REQUEST["right_notes_bc"]);
    $group->setRight(Group::RIGHT_APPROVE_VACATION, (int)$_REQUEST["right_approve_vacation"]);
+    $group->setRight(Group::RIGHT_TICKET_EDIT_INTERNAL, (int)$_REQUEST["right_ticket_edit_internal"]);
+    $group->setRight(Group::RIGHT_TICKET_EDIT_OFFICAL, (int)$_REQUEST["right_ticket_edit_offical"]);
    $savemsg = getSaveMessage($group->save());
    $savemsg .= $DB->getLastError();  
 }
@@ -200,7 +202,21 @@ echo $quickmove->generate();
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Ticket Ersteller ändern</label>
                   <div class="col-sm-1">
-                      <input type="checkbox" class="form-control"name="right_ticket_change_owner" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_CHANGE_OWNER)) echo "checked";?>>
+                      <input type="checkbox" class="form-control" name="right_ticket_change_owner" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_CHANGE_OWNER)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Ticket-Kommentar 'Intern' ändern</label>
+                  <div class="col-sm-1">
+                      <input type="checkbox" class="form-control" name="right_ticket_edit_internal" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_EDIT_INTERNAL)) echo "checked";?>>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Ticket-Kommentar 'Offiziell' ändern</label>
+                  <div class="col-sm-1">
+                      <input type="checkbox" class="form-control" name="right_ticket_edit_offical" value="1" <? if($group->hasRight(Group::RIGHT_TICKET_EDIT_OFFICAL)) echo "checked";?>>
                   </div>
               </div>
 

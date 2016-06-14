@@ -163,9 +163,7 @@ class Personalizationitem {
 					sort 			    = {$this->sort},
 					reverse				= {$this->reverse} 
 					WHERE id = {$this->id}";
-// 			echo $sql . "</br>";
-			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
-			return $DB->no_result($sql);
+			$res = $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO personalization_items
 					(status, boxtype, title, personalization_id, 
@@ -185,11 +183,13 @@ class Personalizationitem {
 				$sql = "SELECT max(id) id FROM personalization_items WHERE title = '{$this->title}' ";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
-				Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
-				return true;
-			} else {
-				return false;
 			}
+		}
+		if ($res){
+			Cachehandler::toCache(Cachehandler::genKeyword($this), $this);
+			return true;
+		} else {
+			return false;
 		}
 	}
 

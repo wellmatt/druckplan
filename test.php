@@ -36,13 +36,13 @@ $_CACHE = phpFastCache("memcached");
 
 //$_CACHE->clean();
 
-//$test = Cachehandler::fromCache('cc4c4a5dfgfca54345ddg2343f511399de3c49_Article_3');
-//prettyPrint($test);
-
-$m = new Memcached();
-$m->addServers(array(array('127.0.0.1',11211)));
-
-prettyPrint($m->getAllKeys());
+$test = Cachehandler::fromCache('cc4c4a5dfgfca54345ddg2343f511399de3c49_User_5');
+prettyPrint($test);
+//
+//$m = new Memcached();
+//$m->addServers(array(array('127.0.0.1',11211)));
+//
+//prettyPrint($m->getAllKeys());
 
 //$bc = new BusinessContact(1);
 //prettyPrint($bc);

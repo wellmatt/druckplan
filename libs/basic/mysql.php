@@ -89,5 +89,12 @@ class DBMysql {
 //      return mysql_error();
       return mysqli_error($this->conn);
    }
+
+
+   public function escape($string)
+   {
+      $ret = mysqli_real_escape_string($this->conn,$string);
+      return $ret;
+   }
    
 }

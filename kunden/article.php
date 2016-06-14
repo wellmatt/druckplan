@@ -62,7 +62,7 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
     					$_SESSION["shopping_basket"] = $shopping_basket;
     				}
 			    // else Meldung: Meldung nicht genug Artikel auf Lager!
-				header('Location: index.php?pid=60&articleid='.$_REQUEST["articleid"].'&exec=showArticleDetails');
+				echo '<script language="JavaScript">document.location.href="index.php?pid=60&articleid='.$_REQUEST["articleid"].'&exec=showArticleDetails";</script>';
 			}
 			?>	
 <form method="post" action="index.php" name="form_additems">
@@ -113,22 +113,25 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			  <div class="form" style="text-align: right">
 				  <div class="form-group" style="margin-bottom: 3px;">
 					  <label for="">Bestellmenge</label>
-					  <div class="input-group col-sm-3 col-sm-offset-9">
+					  <div class="col-sm-3 col-sm-offset-9">
 						  <?php
 						  if (count($article->getOrderamounts())>0){?>
-							  <select class="form-control" name="shopping_amount" id="shopping_amount">
-								  <option value=""></option>
-								  <?php
-								  foreach ($article->getOrderamounts() as $orderamount)
-								  {
-									  echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
-								  }
-								  ?>
-							  </select>
-							  <span class="input-group-addon">Stk</span>
+							  <div class="input-group">
+								  <select class="form-control" name="shopping_amount" id="shopping_amount">
+									  <option value=""></option>
+									  <?php
+									  foreach ($article->getOrderamounts() as $orderamount)
+									  {
+										  echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
+									  }
+									  ?>
+								  </select>
+								  <span class="input-group-addon">Stk</span>
+							  </div>
 						  <?php } else {?>
-							  <div class="col-sm-3 col-sm-offset-9">
-								  <input name="shopping_amount"  value="0"> Stk.
+							  <div class="input-group">
+								  <input name="shopping_amount" class="form-control" value="0">
+								  <span class="input-group-addon">Stk</span>
 							  </div>
 						  <?php }?>
 					  </div>

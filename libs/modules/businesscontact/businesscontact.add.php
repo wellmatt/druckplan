@@ -246,6 +246,7 @@ $(document).ready(function() {
 		"stateSave": false,
 		"pageLength": 10,
 		"dom": 'flrtip',
+		"aaSorting": [[ 1, "desc" ]],
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [            
 		    		{

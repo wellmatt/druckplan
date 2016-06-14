@@ -165,14 +165,15 @@ class Comment {
     /**
      * @param $module
      * @param $objectid
+     * @param string $orderby
      * @return Comment[]
      */
-    public static function getCommentsForObject($module,$objectid)
+    public static function getCommentsForObject($module,$objectid,$orderby = 'crtdate')
     {
         global $DB;
         $retval = Array();
         
-        $sql = "SELECT id FROM comments WHERE module = '{$module}' AND objectid = {$objectid} ORDER BY crtdate ASC";
+        $sql = "SELECT id FROM comments WHERE module = '{$module}' AND objectid = {$objectid} ORDER BY {$orderby} ASC";
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
             	$retval[] = new Comment($r["id"]);

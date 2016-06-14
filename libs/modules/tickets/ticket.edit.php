@@ -1560,25 +1560,13 @@ echo $quickmove->generate();
                         <div class="row">
                             <div class="form-group">
                                 <label for="" class="col-sm-2 control-label">Kommentar Typ</label>
-                                <div class="checkbox col-sm-2">
-                                    <label>
-                                        <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar
-                                    </label>
-                                </div>
-                                <div class="checkbox col-sm-2">
-                                    <label>
-                                        <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
-                                    </label>
-                                </div>
-                                <div class="checkbox col-sm-2">
-                                    <label>
-                                        <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)
-                                    </label>
-                                </div>
-                                <div class="checkbox col-sm-2">
-                                    <label>
-                                        <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
-                                    </label>
+                                <div class="col-sm-4">
+                                    <select name="tktc_type" id="tktc_type" class="form-control">
+                                        <option value="<?php echo Comment::VISABILITY_INTERNAL;?>">inter. Kommentar</option>
+                                        <option value="<?php echo Comment::VISABILITY_PUBLIC;?>">Offiz. Kommentar</option>
+                                        <option value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>">Offiz. Antwort (Mail)</option>
+                                        <option value="<?php echo Comment::VISABILITY_PRIVATE;?>">priv. Kommentar</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -1649,10 +1637,21 @@ echo $quickmove->generate();
                 </div> <!-- end ticket comment panel -->
 
                 <?php
-                $all_comments = Comment::getCommentsForObject(get_class($ticket), $ticket->getId());
-                $all_comments = array_reverse($all_comments);
-                if ($_REQUEST["sort"] == "asc") {
-                    $all_comments = array_reverse($all_comments);
+                switch ($_REQUEST["sort"]){
+                    case "asc":
+                        $all_comments = Comment::getCommentsForObject(get_class($ticket), $ticket->getId());
+                        break;
+                    case "tasc":
+                        $all_comments = Comment::getCommentsForObject(get_class($ticket), $ticket->getId(), 'visability, crtdate');
+                        break;
+                    case "tdesc":
+                        $all_comments = Comment::getCommentsForObject(get_class($ticket), $ticket->getId(), 'visability, crtdate');
+                        $all_comments = array_reverse($all_comments);
+                        break;
+                    default:
+                        $all_comments = Comment::getCommentsForObject(get_class($ticket), $ticket->getId());
+                        $all_comments = array_reverse($all_comments);
+                        break;
                 }
                 if (count($all_comments) > 0 && $ticket->getId() > 0) {
                     ?>
@@ -1663,9 +1662,24 @@ echo $quickmove->generate();
                                 <h3 class="panel-title">
                                     Kommentare
                                     <span class="pull-right">
-                                        <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?= $ticket->getId() ?>&sort=asc">
-                                            <span class="glyphicons glyphicons-arrow-up"></span>
-                                        </a>
+                                        <?php if ($_REQUEST["sort"] != "tasc") { ?>
+                                            <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=tasc">
+                                                <span class="glyphicons glyphicons-arrow-up" style="color: blue;" title="Sortierung: Typ aufsteigend"></span>
+                                            </a>
+                                        <?php } else { ?>
+                                            <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=tdesc">
+                                                <span class="glyphicons glyphicons-arrow-down" style="color: blue;" title="Sortierung: Typ absteigend"></span>
+                                            </a>
+                                        <?php } ?>
+                                        <?php if ($_REQUEST["sort"] != "asc") { ?>
+                                            <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=asc">
+                                                <span class="glyphicons glyphicons-arrow-up" title="Sortierung: Datum aufsteigend"></span>
+                                            </a>
+                                        <?php } else { ?>
+                                            <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&tktid=<?=$ticket->getId()?>&sort=desc">
+                                                <span class="glyphicons glyphicons-arrow-down" title="Sortierung: Datum absteigend"></span>
+                                            </a>
+                                        <?php } ?>
                                     </span>
                                 </h3>
                             </div>
@@ -1717,7 +1731,7 @@ echo $quickmove->generate();
                                                       ?>
                                                       <?php echo date("d.m.Y H:i", $comment->getCrtdate()); ?>
                                                       <?php
-                                                      if ($_USER->isAdmin() || $_USER == $comment->getCrtuser()) {
+                                                      if (($_USER->isAdmin() || $_USER == $comment->getCrtuser()) || ($comment->getVisability() == Comment::VISABILITY_INTERNAL && $_USER->hasRightsByGroup(Group::RIGHT_TICKET_EDIT_INTERNAL)) || ($comment->getVisability() == Comment::VISABILITY_PUBLIC && $_USER->hasRightsByGroup(Group::RIGHT_TICKET_EDIT_OFFICAL)) || ($comment->getVisability() == Comment::VISABILITY_PUBLICMAIL && $_USER->hasRightsByGroup(Group::RIGHT_TICKET_EDIT_OFFICAL))) {
                                                           echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                       }
                                                       ?>

@@ -56,7 +56,7 @@ function savePersonalization() {
             $all_items_counter = (int)$_REQUEST["count_quantity"];
             for ($i=0 ; $i <= $all_items_counter ; $i++){
                 $item = new Personalizationorderitem((int)$_REQUEST["item_id_{$i}"]);
-                $item->setValue(addslashes($_REQUEST["item_value_{$i}"]));
+                $item->setValue($_REQUEST["item_value_{$i}"]);
                 $item->setPersoID($perso_order->getPersoID());
                 $item->setPersoorderID($perso_order->getId());
                 $item->setPersoItemID($_REQUEST["item_persoitemid_{$i}"]);
@@ -161,6 +161,7 @@ if ($_REQUEST["exec"] == "edit" && $_REQUEST["subexec"] == "addToSchoppingbasket
 		$_SESSION["shopping_basket"] = $shopping_basket;
 	}
 	$_REQUEST["persoid"] = 0;
+	echo '<script language="JavaScript">document.location.href="index.php?pid=40&persoorderid='.$perso_order->getId().'&exec=edit";</script>';
 }
 
 // Entscheiden, ob man in einer neuen Personalisierung ist, oder in einer gespeicherten Bestellung

@@ -1011,6 +1011,14 @@ class CollectiveInvoice{
     }
 
 	/**
+	 * @return string $deliverydate
+	 */
+	public function getDeliverydateFormated()
+	{
+		return date('d.m.y',$this->deliverydate);
+	}
+
+	/**
      * @param number $deliverydate
      */
     public function setDeliverydate($deliverydate)

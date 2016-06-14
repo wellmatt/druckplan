@@ -129,16 +129,17 @@ $(document).ready(function() {
 		"order": [[ 0, "asc" ]],
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
 		"columns": [
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, },
-		            { "orderable": false, "sortable": false, }
-		          ],
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,},
+			{"orderable": false, "sortable": false,}
+		],
 		"language": 
 					{
 						"emptyTable":     "Keine Daten vorhanden",
@@ -419,18 +420,22 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 			newrow += ' style="display:none" ';
 		newrow += '></span>';
 	}
-	newrow += '</div></td><td valign="top"><div class="input-group"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""';
+	newrow += '</div></td><td valign="top"><div class="input-group" style="width: 100px"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""';
 	newrow += 'class="form-control"  style="width: 100px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 	newrow += '<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span></div>';
     newrow += '</td><td valign="top">';
-	newrow += '<div class="input-group">';
+	newrow += '<div class="input-group" style="width: 60px">';
 	newrow += '<input name="orderpos['+count+'][tax]" id="orderpos_tax_'+count+'" value="19" style="width: 60px" class="form-control"';
 	newrow += 'onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 	newrow += '<span class="input-group-addon">%</span></div></td>';
 	newrow += '<td valign="top"><span id="span_totalprice_'+count+'"></span>&nbsp;</td>';
 	newrow += '<td valign="top">';
 	newrow += '<input type="checkbox" checked value="1" name="orderpos['+count+'][inv_rel]">';		
-	newrow += '</td><td valign="top">';
+	newrow += '</td>';
+	newrow += '<td valign="top">';
+	newrow += '<input type="checkbox" checked value="1" name="orderpos['+count+'][rev_rel]">';
+	newrow += '</td>';
+	newrow += '<td valign="top">';
 	newrow += '<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Löschen')?>" onclick="$(this).parent().parent().remove(); $(\'#poscount\').val($(\'#poscount\').val()-1);">';
 	newrow += '<span class="glyphicons glyphicons-remove"></span></button>';
 	newrow += '</td></tr>';
@@ -887,6 +892,7 @@ echo $quickmove->generate();
 							<th>Steuer</th>
 							<th>Betrag</th>
 							<th>Dok.-rel.</th>
+							<th>GS-rel.</th>
 							<th>&nbsp;</th>
 						</tr>
 						</thead>
@@ -972,7 +978,7 @@ echo $quickmove->generate();
 										</div>
 									</td>
 									<td valign="top">
-										<div class="input-group">
+										<div class="input-group" style="width: 100px">
 											<input 	name="orderpos[<?=$i?>][price]" id="orderpos_price_<?=$i?>" class="form-control"
 													  value="<?= printPrice($position->getPrice())?>" style="width: 100px"
 													  onfocus="markfield(this,0)" onblur="markfield(this,1)">
@@ -980,7 +986,7 @@ echo $quickmove->generate();
 										</div>
 									</td>
 									<td valign="top">
-										<div class="input-group">
+										<div class="input-group" style="width: 60px">
 											<input 	name="orderpos[<?=$i?>][tax]" class="form-control" id="orderpos_tax_<?=$i?>"
 													  value="<?= printPrice($position->getTax(),0)?>" style="width: 60px">
 											<span class="input-group-addon">%</span>
@@ -992,6 +998,10 @@ echo $quickmove->generate();
 									<td valign="top">
 										<input type="checkbox" value="1" name="orderpos[<?=$i?>][inv_rel]"
 											<?if ($position->getInvrel() == 1) echo "checked";?>>
+									</td>
+									<td valign="top">
+										<input type="checkbox" value="1" name="orderpos[<?=$i?>][rev_rel]"
+											<?if ($position->getRevrel() == 1) echo "checked";?>>
 									</td>
 									<td valign="top">
 										<?php if ($position->getStatus() == 2){?>

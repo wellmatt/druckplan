@@ -29,6 +29,8 @@ class Group {
    const RIGHT_ASSO_DELETE = 32768;
    const RIGHT_NOTES_BC = 65536;
    const RIGHT_APPROVE_VACATION = 262144;
+   const RIGHT_TICKET_EDIT_INTERNAL = 524288;
+   const RIGHT_TICKET_EDIT_OFFICAL = 1048576;
    
    function __construct($id = 0, $adduser = true)
    {
