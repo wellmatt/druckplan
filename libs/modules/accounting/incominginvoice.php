@@ -331,7 +331,7 @@ $(function() {
                 buttonImage: "images/icons/glyphicons-46-calendar.svg",
                 buttonImageOnly: true
 			}
-     );
+     ); // test 123
 
 	$('.filter_to').datepicker(
 			{
