@@ -296,17 +296,20 @@
                     ";
                     $rResultPjState = mysql_query( $pj_state_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
                     while ($data = mysql_fetch_array($rResultPjState)){
-                    $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]); //
-                    if ($data["user_name"] != '')
-                    $pj_title .= ' ('.utf8_encode($data["user_name"]).')';
-                    else
-                    $pj_title .= ' ('.utf8_encode($data["group_name"]).')';
-                    $pj_title .= '
+                        if ($data["tktstateid"] != 1)
+                        {
+                            $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]); //
+                            if ($data["user_name"] != '')
+                                $pj_title .= ' ('.utf8_encode($data["user_name"]).')';
+                            else
+                                $pj_title .= ' ('.utf8_encode($data["group_name"]).')';
+                            $pj_title .= '
 ';
-                    if ($data["tktstateid"] != 3)
-                    $pj_all_closed = false;
-                    if ($data["tktstateid"] != 2)
-                    $pj_all_open = false;
+                            if ($data["tktstateid"] != 3)
+                                $pj_all_closed = false;
+                            if ($data["tktstateid"] != 2)
+                                $pj_all_open = false;
+                        }
                     }
                     if ($pj_all_open && $pj_all_closed == false)
                     {

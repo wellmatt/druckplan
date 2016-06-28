@@ -80,12 +80,12 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 	            	<td class="content_row" >
 	            	
 						<ul class="postnav_save_small" style="padding:0px">
-							<a href="<?=$bulk->getPdfLink(Bulkletter::DOCTYPE_EMAIL)?>"
+							<a href="<?=$bulk->getPdfLink(Document::VERSION_EMAIL)?>"
 								title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
 						</ul>
 					
 						<ul class="postnav_save_small" style="padding:0px">
-							<a href="<?=$bulk->getPdfLink(Bulkletter::DOCTYPE_PRINT)?>"
+							<a href="<?=$bulk->getPdfLink(Document::VERSION_PRINT)?>"
 								title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
 						</ul>
 					</td>

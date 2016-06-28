@@ -113,6 +113,7 @@ if($_REQUEST["subexec"] == "save")
     $product->setTradegroup(new Tradegroup($_REQUEST["product_tradegroup"]));
     $product->setLoadDymmyData((int)$_REQUEST["load_dummydata"]);
     $product->setSingleplateset((int)$_REQUEST["singleplateset"]);
+    $product->setBlockplateset((int)$_REQUEST["blockplateset"]);
     
     if ((int)$_REQUEST["load_dummydata"] == 1){
     	$product->setPagesFrom(1);
@@ -347,6 +348,14 @@ echo $quickmove->generate();
     	<td class="content_row_header" >
     		<input type="checkbox" value="1" name="singleplateset" <?if($product->getSingleplateset()) echo 'checked="checked"';?> title="" >
 		</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td class="content_row_header" valign="top"><?=$_LANG->get('Block')?></td>
+        <td class="content_row_header" >
+            <input type="checkbox" value="1" name="blockplateset" <?if($product->getBlockplateset()) echo 'checked="checked"';?> title="" >
+        </td>
     </tr>
 </table>
 </div>

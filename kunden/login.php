@@ -116,7 +116,7 @@ function checkform(obj){
 				</p>
 				<p class="logo-row">
 					<span class="error"><? if($_USER) echo $_USER->getError()?></span>
-					<img src="../images/page/contilas_logo.png" alt="logo" />
+					<img src="../images/page/Logo_Contilas_Kundenportal.png" alt="logo" />
 				<p class="submit-row">
 					<input type="submit" name="submit" value=""/>
 				</p>

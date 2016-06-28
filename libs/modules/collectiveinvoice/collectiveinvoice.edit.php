@@ -295,7 +295,10 @@ function updatePosDetails(id_i){
 			 function(data) {
 				var teile = data.split("-+-+-");
 				document.getElementById('orderpos_objid_'+id_i).value = teile[0];
-				document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
+				 if (document.getElementById('orderpos_price_'+id_i).value != "kein")
+					 document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
+				 else
+					 document.getElementById('orderpos_price_'+id_i).value = printPriceJs(0);
 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
 				document.getElementById('orderpos_comment_'+id_i).style.height = 100;
@@ -312,7 +315,10 @@ function updatePosDetails(id_i){
 			 function(data) {
 				var teile = data.split("-+-+-");
 				document.getElementById('orderpos_objid_'+id_i).value = teile[0];
-				document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
+				 if (document.getElementById('orderpos_price_'+id_i).value != "kein")
+					 document.getElementById('orderpos_price_'+id_i).value = printPriceJs(parseFloat(teile[1]));
+				 else
+					 document.getElementById('orderpos_price_'+id_i).value = printPriceJs(0);
 				document.getElementById('orderpos_tax_'+id_i).value = printPriceJs(parseFloat(teile[2]));
 				document.getElementById('orderpos_comment_'+id_i).value = teile[3];
 				document.getElementById('orderpos_comment_'+id_i).style.height = 100;
@@ -373,11 +379,21 @@ function addArticle(artid)
 			 function(data) {
 				var data = data[0];
 				addPositionRow(data.type,data.id,data.title,data.orderamounts,data.orderid)
-// 				document.getElementById('colinv_deliverycosts').value = data;
 	}); 
 }
 
-function addPositionRow(type,objectid,label,orderamounts,orderid){
+function addPartslist(listid)
+{
+	$.post("libs/modules/collectiveinvoice/collectiveinvoice.ajax.php",
+		{ajax_action: 'getPartslistData', listid: listid},
+		function(data) {
+			$.each(data, function(index) {
+				addPositionRow(data[index].type,data[index].id,data[index].title,data[index].orderamounts,data[index].orderid,data[index].price,data[index].quantity)
+			});
+		});
+}
+
+function addPositionRow(type,objectid,label,orderamounts,orderid,price = 0,quantity = 1){
 	$('.dataTables_empty').parent().remove();
 	var count = parseInt($('#poscount').val());
     var newrow = "";
@@ -403,7 +419,10 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	newrow += '<input type="hidden" name="orderpos['+count+'][obj_id]" id="orderpos_objid_'+count+'" value="'+objectid+'">';
 	newrow += '<input type="hidden" name="orderpos['+count+'][type]" id="orderpos_type_'+count+'" value="'+type+'"></td>';
 	newrow += '<td valign="top"><span id="orderpos_name_'+count+'">'+label+'</br></span>';
-	newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" class="text poscomment form-control" style="width: 220px"></textarea>';
+	if (type == 0)
+		newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" class="text poscomment form-control" style="width: 220px">'+label+'</textarea>';
+	else
+		newrow += '<textarea name="orderpos['+count+'][comment]" id="orderpos_comment_'+count+'" class="text poscomment form-control" style="width: 220px"></textarea>';
 	newrow += '</td><td valign="top"><div class="input-group" style="width: 160px">';
 	if (orderamounts.length>0)
 	{
@@ -413,14 +432,20 @@ function addPositionRow(type,objectid,label,orderamounts,orderid){
 	    });
 	    newrow += '</select>';
 	} else {
-		newrow += '<input name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="1" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+		newrow += '<input name="orderpos['+count+'][quantity]" id="orderpos_quantity_'+count+'" value="'+printPriceJs(parseFloat(quantity))+'" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 		newrow += '<span class="input-group-addon">';
-		newrow += '<span class="glyphicons glyphicons-refresh pointer"id="orderpos_uptpricebutton_'+count+'" onclick="updateArticlePrice('+count+')" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"></span>';
+		newrow += '<span class="glyphicons glyphicons-refresh pointer"id="orderpos_uptpricebutton_'+count+'" onclick="updateArticlePrice('+count+')" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>" ';
 		if (type == 3)
 			newrow += ' style="display:none" ';
 		newrow += '></span>';
 	}
-	newrow += '</div></td><td valign="top"><div class="input-group" style="width: 100px"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" value=""';
+	newrow += '</div></td><td valign="top"><div class="input-group" style="width: 100px"><input name="orderpos['+count+'][price]" id="orderpos_price_'+count+'" ';
+	if (price == 0)
+		newrow += ' value="" ';
+	else if (price == 'kein')
+		newrow += ' value="kein" ';
+	else if (price > 0)
+		newrow += ' value="'+printPriceJs(parseFloat(price))+'" ';
 	newrow += 'class="form-control"  style="width: 100px" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 	newrow += '<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span></div>';
     newrow += '</td><td valign="top">';
@@ -877,6 +902,10 @@ echo $quickmove->generate();
 							<span class="glyphicons glyphicons-remove pointer" title="neuer Artikel"></span>
 							Artikel
 						</button>
+						<button type="button" class="btn btn-default btn-sm" onclick="callBoxFancyArtFrame('libs/modules/collectiveinvoice/collectiveinvoice.partslistselector.php');">
+							<span class="glyphicons glyphicons-remove pointer" title="neue Stückliste"></span>
+							Stückliste
+						</button>
 					</span>
 					</h3>
 				</div>
@@ -1005,36 +1034,36 @@ echo $quickmove->generate();
 									</td>
 									<td valign="top">
 										<?php if ($position->getStatus() == 2){?>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Wiederherstellen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=restorepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Wiederherstellen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=restorepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-brightness-increase"></span>
 											</button>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Endgültig löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Endgültig löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-remove"></span>
 											</button>
 										<?php } else {?>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Vorrübergehend löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=softdeletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Vorrübergehend löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=softdeletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-remove"></span>
 											</button>
 											<?
 										}
 										if ($i == 0){
 											?>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-down"></span>
 											</button>
 											<?php
 										} else if ($i+1 >= count($collectinv->getPositions())){
 											?>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-up"></span>
 											</button>
 											<?php
 										} else {
 											?>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-down"></span>
 											</button>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-up"></span>
 											</button>
 											<?php
@@ -1042,7 +1071,7 @@ echo $quickmove->generate();
 										if ($position->getFile_attach()>0){
 											$tmp_attach = new Attachment($position->getFile_attach());
 											?>
-											<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Angehängte Datei herunterladen')?>" onclick="window.open('<?php echo Attachment::FILE_DESTINATION.$tmp_attach->getFilename();?>');">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Angehängte Datei herunterladen')?>" onclick="window.open('<?php echo Attachment::FILE_DESTINATION.$tmp_attach->getFilename();?>');">
 												<span class="glyphicons glyphicons-cd"></span>
 											</button>
 											<?php
@@ -1056,10 +1085,10 @@ echo $quickmove->generate();
 												$tmp_id = $_USER->getClient()->getId();
 												$hash = $docs[0]->getHash();
 												?>
-												<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Download mit Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_e.pdf');">
+												<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Download mit Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_e.pdf');">
 													<span class="glyphicons glyphicons-display"></span>
 												</button>
-												<button class="btn btn-default btn-sm pointer" title="<?= $_LANG->get('Download ohne Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_p.pdf');">
+												<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Download ohne Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_p.pdf');">
 													<span class="glyphicons glyphicons-display"></span>
 												</button>
 												<?php

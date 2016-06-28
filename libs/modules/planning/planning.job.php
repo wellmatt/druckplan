@@ -371,8 +371,8 @@ function createSelects(id,count,workload)
     	                           <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
     	                           <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getOrderid();?>"/>
     	                           <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $me->getMachine()->getId();?>"/>
-    	                           <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $me->getTime();?>"/>
-                                   <td class="content_row" valign="top"><?php echo $me->getMachine()->getName();?></td>
+    	                           <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $me->getTime()/60;?>"/>
+                                   <td class="content_row" valign="top"><?php echo $me->getMachine()->getName();?><?php if ($me->getPart()>0) echo ' - '.$me->getPartName();?></td>
                                    <td class="content_row" valign="top">
                                         <input type="text" name="crt_job[<?php echo $x;?>][start]" 
                               			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"

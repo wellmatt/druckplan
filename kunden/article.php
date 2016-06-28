@@ -160,6 +160,13 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 						  </button>
 					  </div>
 				  </div>
+				  <div class="row">
+					  <div class="col-sm-3 col-sm-offset-9">
+						  <button type="button" class="btn btn-success" onclick="window.location.href = 'index.php?pid=80';">
+							  <?=$_LANG->get('Warenkorb ansehen') ?>
+						  </button>
+					  </div>
+				  </div>
 			  </div>
 			  <br>
 			  <? if ($article->getShowShopPrice() == 1) { ?>

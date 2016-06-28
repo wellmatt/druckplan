@@ -361,11 +361,11 @@ if($_REQUEST["exec"] == "edit"){
                         $mail = new Horde_Mime_Mail();
                         $mail->addHeader('Date', date('r'));
                         $mail->addHeader('From', $_USER->getEmail());
-                        $mail_subject = "Antwort auf Ticket #".$ticket->getNumber();
+                        $mail_subject = "Ticket #".$ticket->getNumber()." - ".$ticket->getTitle();
                         $mail->addHeader('Subject', $mail_subject);
                         $mail_text = "Sehr geehrte(r) ".$ticket->getCustomer_cp()->getTitle()." ".$ticket->getCustomer_cp()->getName1().",<br>
                                       <br>
-                                      Eine neue Antwort im Ticket #".$ticket->getNumber()." wurde verfasst.<br>
+                                      Eine neue Nachricht im Ticket #".$ticket->getNumber()." - ".$ticket->getTitle()." wurde verfasst.<br>
                                       <br><br>------------------"
                                       .$ticketcomment->getComment().
                                       "<br>------------------<br><br>".$_USER->getSignature();
@@ -1805,9 +1805,14 @@ echo $quickmove->generate();
                                                         || $subcom->getVisability() == Comment::VISABILITY_INTERNAL
                                                         || $subcom->getCrtuser() == $_USER
                                                     ) {
+                                                        if ($comment->getCrtuser()->getId() > 0) {
+                                                            $crtby = $subcom->getCrtuser()->getNameAsLine();
+                                                        } elseif ($comment->getCrtcp()->getId() > 0) {
+                                                            $crtby = $subcom->getCrtcp()->getNameAsLine2();
+                                                        }
                                                         ?>
                                                         <div style="padding: 8px 0; background: #f7f7f7 none repeat scroll 0 0; border-bottom: 1px solid #eee; margin-left: 40px;">
-                                                            <img alt="User Image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $comment->getCrtuser()->getId();?>" class="img-circle img-sm" style="height: 30px !important; width: 30px !important; float: left;">
+                                                            <img alt="User Image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $subcom->getCrtuser()->getId();?>" class="img-circle img-sm" style="height: 30px !important; width: 30px !important; float: left;">
                                                             <div style="color: #555; margin-left: 40px;">
                                                                 <span
                                                                     style="color: #444; display: block; font-weight: 600;">

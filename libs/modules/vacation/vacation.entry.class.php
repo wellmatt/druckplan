@@ -19,7 +19,7 @@ class VacationEntry
 
     private $id;
     private $user;
-    private $days = 0;
+    private $days = 0.00;
     private $start = 0;
     private $end = 0;
     private $state = 1;
@@ -127,6 +127,25 @@ class VacationEntry
         $retval = 0;
 
         $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND user_id = {$userid} AND start >= {$year_start}";
+
+        if ($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $days)
+            {
+                $retval += $days["days"];
+            }
+        }
+        return $retval;
+    }
+
+    static function getDaysByUserAndType($user, $type = 1)
+    {
+        global $DB;
+        $userid = $user->getId();
+        $year_start = mktime(0,0,0,1,1,date('Y'));
+        $retval = 0;
+
+        $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND type = {$type} AND user_id = {$userid} AND start >= {$year_start}";
 
         if ($DB->num_rows($sql))
         {

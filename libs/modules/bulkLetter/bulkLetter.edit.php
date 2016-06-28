@@ -27,19 +27,9 @@ if($_REQUEST["subexec"] == "save"){
 	$savemsg = getSaveMessage($ret_save)." ".$DB->getLastError();
 	
 	if($ret_save){
-		$bulk->createDocument(Bulkletter::DOCTYPE_PRINT);
-		$bulk->createDocument(Bulkletter::DOCTYPE_EMAIL);
+		$bulk->createDocument();
 	}
 }
-
-
-/*if($_REQUEST["subexec"] == "create_print_document"){
-	$bulk->createDocument(Bulkletter::DOCTYPE_PRINT);
-}
-
-if($_REQUEST["subexec"] == "create_print"){
-	$bulk->createDocument(Bulkletter::DOCTYPE_EMAIL);
-}*/
 
 ?>
 
@@ -132,53 +122,44 @@ echo $quickmove->generate();
 					</div>
 				</div>
 				<?if ($bulk->getCrt_user()->getId() > 0){?>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
-						<td class="content_row_clear">
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Erstellt von</label>
+						<div class="col-sm-10 form-text">
 							<?if($bulk->getCrt_user()->getId() > 0) echo $bulk->getCrt_user()->getNameAsLine()?>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
-						<td class="content_row_clear">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Erstellt am</label>
+						<div class="col-sm-10 form-text">
 							<?if($bulk->getCrt_date() > 0) echo date('d.m.Y - H:i:s',$bulk->getCrt_date())?>
-						</td>
-					</tr>
+						</div>
+					</div>
 					<?if($bulk->getUpd_user()->getId() > 0){?>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Bearbeitet von')?></td>
-							<td class="content_row_clear">
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Bearbeitet von</label>
+							<div class="col-sm-10 form-text">
 								<?=$bulk->getUpd_user()->getNameAsLine()?>
-							</td>
-						</tr>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Bearbeitet am')?></td>
-							<td class="content_row_clear">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Bearbeitet am</label>
+							<div class="col-sm-10 form-text">
 								<?if($bulk->getUpd_date() > 0) echo date('d.m.Y - H:i:s',$bulk->getUpd_date())?>
-							</td>
-						</tr>
+							</div>
+						</div>
 					<?}?>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Download')?></td>
-						<td class="content_row_clear">
-							<table cellpadding="0" cellspacing="0">
-								<tr>
-									<td>
-										<ul class="postnav_save_small" style="padding:0px">
-											<a href="<?=$bulk->getPdfLink(Bulkletter::DOCTYPE_EMAIL)?>"
-											   title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
-										</ul>
-									</td>
-									<td>
-										<ul class="postnav_save_small" style="padding:0px">
-											<a href="<?=$bulk->getPdfLink(Bulkletter::DOCTYPE_PRINT)?>"
-											   title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
-										</ul>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+					<div class="row">
+						<div class="col-sm-2 control-label"><b>Download</b></div>
+						<div class="col-sm-1 control-label" style="text-align: left;">
+							<a href="<?=$bulk->getPdfLink(Document::VERSION_EMAIL)?>"
+							   title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
+						</div>
+						<div class="col-sm-1 control-label" style="text-align: left;">
+							<a href="<?=$bulk->getPdfLink(Document::VERSION_PRINT)?>"
+							   title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
+						</div>
+					</div>
 				<?}?>
 		</div>
 	</div>

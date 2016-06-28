@@ -29,7 +29,6 @@ require_once("./libs/basic/license/license.class.php");
 require_once("./vendor/autoload.php");
 // require_once 'libs/modules/timekeeping/timekeeper.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
-require_once 'libs/modules/organizer/mail/mailModel.class.php';
 require_once 'libs/modules/associations/association.class.php';
 require_once 'libs/modules/timer/timer.class.php';
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';

@@ -62,6 +62,9 @@ echo $quickmove->generate();
                         <td class="content_row_header"><?=$_LANG->get('Tage übernommen')?></td>
                         <td class="content_row_header"><?=$_LANG->get('Gasamt verf.')?></td>
                         <td class="content_row_header"><?=$_LANG->get('Urlaub')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Überstunden')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Krankheit')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Sonstiges')?></td>
                         <td class="content_row_header"><?=$_LANG->get('verbleibend')?></td>
                     </tr>
                 </thead>
@@ -90,7 +93,10 @@ echo $quickmove->generate();
                                 <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
                             </td>
                             <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast());?></td>
-                            <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUser($user));?></td>
+                            <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 1));?></td>
+                            <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 2));?></td>
+                            <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 3));?></td>
+                            <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 4));?></td>
                             <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast()-VacationEntry::getDaysByUser($user));?></td>
                         </tr>
                         <?php
@@ -101,6 +107,9 @@ echo $quickmove->generate();
                             <td class="content_row_header"><?php echo $user->getNameAsLine(); ?></td>
                             <td class="content_row_header"><input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]"></td>
                             <td class="content_row_header"><input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]"></td>
+                            <td class="content_row_header">N/A</td>
+                            <td class="content_row_header">N/A</td>
+                            <td class="content_row_header">N/A</td>
                             <td class="content_row_header">N/A</td>
                             <td class="content_row_header">N/A</td>
                             <td class="content_row_header">N/A</td>

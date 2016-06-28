@@ -6,6 +6,7 @@
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
 require_once 'thirdparty/tcpdf/tcpdf.php';
+require_once 'thirdparty/tcpdf/contilas.tcpdf.php';
 
 /**
  * Klasse fuer die Serienbriefen bzw. Massenanschreiben
@@ -16,9 +17,6 @@ class Bulkletter{
 	const ORDER_TITLE 			= " title ";
 	const ORDER_CREATE_DESC 	= " crt_date DESC";
 	const ORDER_CREATE_ASC		= " crt_date ASC";
-	
-	const DOCTYPE_PRINT			= 1;
-	const DOCTYPE_EMAIL			= 2;
 	
 	private $id = 0;				// ID
 	private $status = 1;			// 1 = erstellt, 2 = Versandfertig, 3=Verschickt
@@ -136,20 +134,36 @@ class Bulkletter{
 	/**
 	 * Erstellt das PDF-Dokument eines Anschreibens in Abhaengigkeit der Version (E-Mail vs. Print)
 	 */
-	public function createDocument($version= self::DOCTYPE_PRINT){
+	public function createDocument(){
 		global $_CONFIG;
 		global $_USER;
-		
-		$filename = $this->getPdfLink($version);
-		$img_path = "./docs/templates/briefbogen.jpg";
 
-		$pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);		
-		
-		require 'docs/templates/bulkletter.tmpl.php';
-// 		//NICHT VERGESSEN NUR SPORADISCH FIX
-//         $filename = "C:/Test.pdf" ;
-        //-------
-		$pdf->Output($filename, 'F');
+		foreach (Array(Document::VERSION_EMAIL,Document::VERSION_PRINT) as $version){
+			$docformat = DocumentFormat::getForDocType(DocumentFormat::TYPE_BULKLETTER);
+			$format[0] = $docformat->getWidth();
+			$format[1] = $docformat->getHeight();
+
+			$filename = $this->getPdfLink($version);
+
+			if ($version == Document::VERSION_EMAIL)
+			{
+				$pdf = new TCPDF_BG($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
+				$pdf->SetPrintHeader(true);
+				$pdf->SetPrintFooter(false);
+			}
+			else
+			{
+				$pdf = new TCPDF($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
+				$pdf->SetPrintHeader(false);
+				$pdf->SetPrintFooter(false);
+			}
+			$pdf->setPageOrientation($docformat->getOrientation(), TRUE, $docformat->getMarginBottom());
+			$pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
+			$pdf->AddPage();
+
+			require 'docs/templates/bulkletter.tmpl.php';
+			$pdf->Output($filename, 'F');
+		}
 	}
 	
 	/**
@@ -158,16 +172,32 @@ class Bulkletter{
 	 * @param int $version
 	 * @return string
 	 */
-	public function getPdfLink($version=self::DOCTYPE_PRINT){
+	public function getPdfLink($version = Document::VERSION_PRINT){
 		global $_CONFIG;
 		
-		if($version == self::DOCTYPE_EMAIL){
+		if($version == Document::VERSION_EMAIL){
 			$link = $_CONFIG->docsBaseDir."bulkletter/".$this->id."_Anschreiben_e.pdf";
 		} else {
 			$link = $_CONFIG->docsBaseDir."bulkletter/".$this->id."_Anschreiben_p.pdf";
 		}
 		
 		return $link;
+	}
+
+	function tofloat($num) {
+		$dotPos = strrpos($num, '.');
+		$commaPos = strrpos($num, ',');
+		$sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+
+		if (!$sep) {
+			return floatval(preg_replace("/[^0-9]/", "", $num));
+		}
+
+		return floatval(
+			preg_replace("/[^0-9]/", "", substr($num, 0, $sep)) . '.' .
+			preg_replace("/[^0-9]/", "", substr($num, $sep+1, strlen($num)))
+		);
 	}
 	
 	/**

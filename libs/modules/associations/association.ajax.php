@@ -39,7 +39,7 @@ if ($_REQUEST["ajax_action"] == "search_colinv"){
     $retval = Array();
     $colinvoices = CollectiveInvoice::getAllCollectiveInvoice(CollectiveInvoice::ORDER_NUMBER, " AND (number LIKE '%{$_REQUEST['term']}%' OR title LIKE '%{$_REQUEST['term']}%') ");
     foreach ($colinvoices as $colinvoice){
-        $retval[] = Array("label" => $colinvoice->getNumber(), "value" => $colinvoice->getId());
+        $retval[] = Array("label" => $colinvoice->getNumber().' - '.$colinvoice->getTitle(), "value" => $colinvoice->getId());
 	} 
 	$retval = json_encode($retval);
 	header("Content-Type: application/json");

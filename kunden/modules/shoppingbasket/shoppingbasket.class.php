@@ -251,6 +251,10 @@ class Shoppingbasket{
         	        
         	                if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
         	                    $tmp_article = new Article($entry->getId());
+
+								if ($tmp_article->getIsWorkHourArt() || $tmp_article->getOrderid()>0)
+									$needs_planning = true;
+
         	                    if ($tmp_article->getOrderid()>0)
         	                        $tmp_order_pos->setType(Orderposition::TYPE_ORDER);
         	                    else 
@@ -291,6 +295,11 @@ class Shoppingbasket{
     	            }
 	            }
 	            $tmp_saver2 = Orderposition::saveMultipleOrderpositions($save_items);
+				if ($needs_planning)
+				{
+					$col_inv->setNeeds_planning(1);
+					$col_inv->save();
+				}
 	        }
 	    }
 	    

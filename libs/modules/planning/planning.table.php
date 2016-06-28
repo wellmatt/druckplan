@@ -98,6 +98,8 @@ $(function() {
 		load_content();
 	});
 
+
+
     var popup_height = document.getElementById('popUpDiv').offsetHeight;
     var popup_width = document.getElementById('popUpDiv').offsetWidth;
     $("#popUpDiv").css('top',(($(window).height()-popup_height)/2));
@@ -116,7 +118,7 @@ function load_content(){
 	var stats = 0;
 	if ($('#chk_statistics').is(':checked'))
 		stats = 1;
-	$('#planningbox').load( "libs/modules/planning/planning.table.content.php?start="+$('#date_start').val()+"&end="+$('#date_end').val()+"&artmach="+$('#artmach').val()+"&stats="+stats, null, unblock );
+	$('#planningbox').load( "libs/modules/planning/planning.table.content.php?start="+$('#date_start').val()+"&end="+$('#date_end').val()+"&artmach="+$('#artmach').val()+"&stats="+stats+"&vo="+$('#vovalue').val(), null, unblock );
 }
 
 function popupshow(e,jobid){
@@ -160,9 +162,26 @@ function print(){
 	var stats = 0;
 	if ($('#chk_statistics').is(':checked'))
 		stats = 1;
-	var url = "libs/modules/planning/planning.table.content.php?start="+$('#date_start').val()+"&end="+$('#date_end').val()+"&artmach="+$('#artmach').val()+"&stats="+stats+"&print=1";
+	var url = "libs/modules/planning/planning.table.content.php?start="+$('#date_start').val()+"&end="+$('#date_end').val()+"&artmach="+$('#artmach').val()+"&stats="+stats+"&vo="+$('#vovalue').val()+"&print=1";
 	window.open(url);
 }
+</script>
+<script language="JavaScript" >
+	$(function() {
+		$( "#voselector" ).autocomplete({
+			source: "libs/modules/associations/association.ajax.php?ajax_action=search_colinv",
+			minLength: 2,
+			focus: function( event, ui ) {
+				$( "#voselector" ).val( ui.item.label );
+				return false;
+			},
+			select: function( event, ui ) {
+				$( "#voselector" ).val( ui.item.label );
+				$( "#vovalue" ).val( ui.item.value );
+				return false;
+			}
+		});
+	});
 </script>
 
 <div id="popUpDiv">
@@ -217,8 +236,10 @@ echo $quickmove->generate();
         	 <? foreach ($pl_artmachs['articles'] as $art) {?>
         	 <option value="V<?=$art->getId()?>"><?=$art->getTitle()?></option>
         	 <? } ?>
-             </select> 
-    	Statistik: <input type="checkbox" style="width:20px" id="chk_statistics" name="chk_statistics"
+             </select>
+		  Vorgang: <input type="text" id="voselector"><input type="hidden" id="vovalue">
+		  </select>
+		  Statistik: <input type="checkbox" style="width:20px" id="chk_statistics" name="chk_statistics"
     			class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
     			onfocus="markfield(this,0)" onblur="markfield(this,1)"
     			value="1"/>

@@ -9,20 +9,24 @@
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 
 switch ($this->getCustomerFilter()){
-    case 0: $filter = BusinessContact::FILTER_CUST_SOLL;
-    case 1: $filter = BusinessContact::FILTER_CUST_IST;
-    case 2: $filter = BusinessContact::FILTER_CUST;
-    case 3: $filter = BusinessContact::FILTER_SUPP;
-    case 4: $filter = BusinessContact::FILTER_ALL;
+    case 0: $filter = BusinessContact::FILTER_CUST_SOLL; break;
+    case 1: $filter = BusinessContact::FILTER_CUST_IST; break;
+    case 2: $filter = BusinessContact::FILTER_CUST; break;
+    case 3: $filter = BusinessContact::FILTER_SUPP; break;
+    default: $filter = BusinessContact::FILTER_ALL; break;
 }
 
 $attrib_filter = $this->getCustomerAttrib();
 $all_busicon = Array();
 
-foreach ($attrib_filter as $atfil){
-    $tmp_atfil = explode(",",$atfil);
-    $tmp_busicon = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, $filter, $tmp_atfil[0], $tmp_atfil[1]);
-    $all_busicon = array_merge($all_busicon,$tmp_busicon);
+if (count($attrib_filter)>0){
+    foreach ($attrib_filter as $atfil){
+        $tmp_atfil = explode(",",$atfil);
+        $tmp_busicon = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, $filter, $tmp_atfil[0], $tmp_atfil[1]);
+        $all_busicon = array_merge($all_busicon,$tmp_busicon);
+    }
+} else {
+    $tmp_busicon = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, $filter);
 }
 
 
@@ -35,16 +39,16 @@ foreach ($attrib_filter as $atfil){
     require_once 'libs/modules/autodoc/smarty_functions.php';
     
     // Fehlerabfang
-    
+
     // Allgemeine Funktionen
-    
+
     if ($smarty == NULL || is_a($smarty, 'Smarty') == FALSE)
         $smarty = new Smarty();
-    
+
     $smarty->registerPlugin("function", "PrintPrice", "smarty_function_printPrice");
-    
+
     $smarty->registerPlugin("function", "ReplaceLn", "smarty_function_replace_ln");
-    
+
     $smarty->registerPlugin("function", "Trim", "smarty_function_trim");
 
 
@@ -101,9 +105,9 @@ $datei = ckeditor_to_smarty($tmp);
 
 $smarty->assign('Busicons',$all_busicon);
 
-$smarty->assign('IfEmail', self::DOCTYPE_EMAIL);
+$smarty->assign('IfEmail', Document::VERSION_EMAIL);
 
-$smarty->assign('IfPrint', self::DOCTYPE_PRINT);
+$smarty->assign('IfPrint', Document::VERSION_PRINT);
 
 $smarty->assign('Version', $version);
 
@@ -119,4 +123,4 @@ $htmldump = $smarty->fetch('string:'.$datei);
 
 $pdf->writeHTML($htmldump);
 
-?>
+unset($smarty);

@@ -32,6 +32,7 @@ class DocumentFormat{
     const TYPE_PERSONALIZATION_ORDER = 11; // Personalisierungsbestellung
     const TYPE_LABEL = 15; // Etiketten fuer Kartons/Palette
     const TYPE_PAPER_ORDER = 20; // Etiketten fuer Kartons/Palette
+    const TYPE_BULKLETTER = 25; // Etiketten fuer Kartons/Palette
 
     public $types = Array(
         self::TYPE_DELIVERY => 'Lieferschein',
@@ -42,7 +43,8 @@ class DocumentFormat{
         self::TYPE_OFFER => 'Angebot',
         self::TYPE_OFFERCONFIRM => 'Auftragsbestätigung',
         self::TYPE_PAPER_ORDER => 'Papier-Bestellung',
-        self::TYPE_REVERT => 'Gutschrift'
+        self::TYPE_REVERT => 'Gutschrift',
+        self::TYPE_BULKLETTER => 'Serienbrief',
     );
 
     /**
@@ -154,7 +156,8 @@ class DocumentFormat{
             self::TYPE_OFFER => 'Angebot',
             self::TYPE_OFFERCONFIRM => 'Auftragsbestätigung',
             self::TYPE_PAPER_ORDER => 'Papier-Bestellung',
-            self::TYPE_REVERT => 'Gutschrift'
+            self::TYPE_REVERT => 'Gutschrift',
+            self::TYPE_BULKLETTER => 'Serienbrief',
         );
         return $types;
     }

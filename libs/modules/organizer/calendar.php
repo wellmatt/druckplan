@@ -33,21 +33,151 @@ if ($_REQUEST["exec"])
 <script src='jscripts/calendar/moment.min.js'></script>
 <script src='jscripts/calendar/fullcalendar.min.js'></script>
 <script src='jscripts/calendar/de.js'></script>
+
+<?php 
+if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
+    echo "<script type=\"text/javascript\">$(document).ready(function() { callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid=".$_REQUEST["id"]."');});</script>";
+}
+?>
+
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<i class="fa fa-calendar"></i> Kalender
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <div class="row">
+			  <div class="col-md-9">
+				  <div id='loading'>loading...</div>
+				  <div id='calendar'></div>
+			  </div>
+			  <div class="col-md-3">
+				  <div id="datepicker0"></div>
+				  <div id="datepicker1"></div>
+				  <div id="datepicker2"></div>
+
+				  <div id="accordion">
+					  <h3>Stati & Anzeige</h3>
+					  <div style="padding: 10px;">
+						  <p>test</p>
+						  Status:<br>
+						  <span class="pointer" onclick="status_all();">alle</span> | <span class="pointer" onclick="status_none();">keine</span><br>
+						  <?php
+						  $ticket_states = TicketState::getAllStates();
+						  foreach ($ticket_states as $ticket_state){
+							  if ($ticket_state->getId() != 1 && $ticket_state->getId() != 3)
+								  echo '<input type="checkbox" onclick="refetchEvents();" value="'.$ticket_state->getId().'" class="chkb_legend"/> <font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font><br>';
+						  }
+						  echo '<br>';
+						  echo '<input type="checkbox" onclick="refetchEvents();" value="99991" class="chkb_legend"/> Aufträge<br>';
+						  echo '<input type="checkbox" onclick="refetchEvents();" value="99992" checked class="chkb_legend"/> Termine<br>';
+						  echo '<input type="checkbox" onclick="refetchEvents();" value="99993" class="chkb_legend"/> Urlaub<br>';
+						  ?>
+					  </div>
+					  <h3>Mitarbeiter</h3>
+					  <div style="padding: 10px;">
+						  <?php
+						  if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
+							  $users = User::getAllUser(User::ORDER_LOGIN);
+							  ?>
+							  <div class="row">
+								  <div class="col-md-12">
+									  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
+										  Kalender benutzten als: <select name="sel_user" id="sel_user" onchange="refetchEvents();" class="text">
+											  <? foreach ($users as $user) {?>
+												  <option value="<?=$user->getId()?>"
+													  <?
+													  if($user->getId() == $_USER->getId())
+														  echo "selected>";
+													  ?>
+												  ><?=$user->getFirstname()?> <?=$user->getLastname()?></option>
+											  <? } ?>
+										  </select>
+									  </form>
+								  </div>
+							  </div>
+							  <?
+						  } else {
+							  $sel_user = $_USER;
+							  echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
+						  }
+						  ?>
+						  <?php if ($_USER->hasRightsByGroup(Group::RIGHT_SEE_ALL_CALENDAR) || $_USER->isAdmin()) { ?>
+							  Kalender überlappen mit:<br>
+							  <?php
+							  foreach ($users as $user){
+								  if ($user->getId() != $_USER->getId())
+									  echo '<input type="checkbox" onclick="refetchEvents();" value="'.$user->getId().'" class="chkb_usercal"/>'.$user->getNameAsLine().'<br>';
+							  }
+						  } ?>
+					  </div>
+					  <h3>Legende</h3>
+					  <div style="padding: 10px;">
+						  <a style="background-color:#1f698e" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Öffentlich</span></div></a><br>
+						  <a style="background-color:#3a87ad" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Privat</span></div></a><br>
+						  <a style="background-color:#2a96cc" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Fremd</span></div></a><br>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+</div>
+
+<script>
+	$(function() {
+		$( "#datepicker0" ).datepicker({
+			showWeek: true,
+			showOtherMonths: false,
+			selectOtherMonths: false,
+			defaultDate: "-1m",
+			onSelect: function(dateText, inst) {
+				var date = moment(dateText, "DD.MM.YYYY");
+				$('#calendar').fullCalendar( 'gotoDate', date );
+			}
+		});
+		$( "#datepicker1" ).datepicker({
+			showWeek: true,
+			showOtherMonths: false,
+			selectOtherMonths: false,
+			onSelect: function(dateText, inst) {
+				var date = moment(dateText, "DD.MM.YYYY");
+				$('#calendar').fullCalendar( 'gotoDate', date );
+			}
+		});
+		$( "#datepicker2" ).datepicker({
+			showWeek: true,
+			showOtherMonths: false,
+			selectOtherMonths: false,
+			defaultDate: "+1m",
+			onSelect: function(dateText, inst) {
+				var date = moment(dateText, "DD.MM.YYYY");
+				$('#calendar').fullCalendar( 'gotoDate', date );
+			}
+		});
+	});
+</script>
+<script>
+	$(function() {
+		$( "#accordion" ).accordion();
+	});
+</script>
 <script>
 	$(document).ready(function() {
 
-		
+
 		$("a#hiddenclicker").fancybox({
 			'type'    : 'iframe',
 			'transitionIn'	:	'elastic',
 			'transitionOut'	:	'elastic',
-			'speedIn'		:	600, 
-			'speedOut'		:	200, 
-			'height'		:	800, 
+			'speedIn'		:	600,
+			'speedOut'		:	200,
+			'height'		:	1000,
+			'width'			:	1000,
 			'overlayShow'	:	true,
 			'helpers'		:   { overlay:null, closeClick:true }
 		});
-	
+
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -59,7 +189,7 @@ if ($_REQUEST["exec"])
 			selectable: true,
 			selectHelper: true,
 			select: function(start, end) {
-				callBoxFancy('libs/modules/organizer/calendar.newevent.php?start='+start.unix()+'&end='+end.unix());
+				callBoxFancy('libs/modules/organizer/calendar.newevent.php?start='+start.format()+'&end='+end.format());
 			},
 			eventClick: function(calEvent, jsEvent, view) {
 				if (!calEvent.url && !calEvent.holiday && !calEvent.foreign) {
@@ -68,38 +198,38 @@ if ($_REQUEST["exec"])
 			},
 			editable: true,
 			eventLimit: true,
-		    events: function(start, end, timezone, callback) {
-		    	var strUser = $( "#sel_user" ).val();
-			    var states = [];
-		    	$('.chkb_legend').each(function( index ) {
-		    		if ( $( this ).prop( "checked" ) )
-		    		{
-			    		states.push(this.value);
-		    		}
-		    	});
-			    var usercal = [];
-		    	$('.chkb_usercal').each(function( index ) {
-		    		if ( $( this ).prop( "checked" ) )
-		    		{
-		    			usercal.push(this.value);
-		    		}
-		    	});
-		    	
-		        $.ajax({
-		            url: 'libs/modules/organizer/calendar_getevents.php',
-		            dataType: 'json',
-		            data: {
-	 					user: strUser,
-		                start: start.format('YYYY-MM-DD'),
-		                end: end.format('YYYY-MM-DD'),
-		                states: states,
-		                usercal: usercal
-		            },
-		            success: function (eventstring) {
-                        callback(eventstring);
-		            }
-		        });
-		    },
+			events: function(start, end, timezone, callback) {
+				var strUser = $( "#sel_user" ).val();
+				var states = [];
+				$('.chkb_legend').each(function( index ) {
+					if ( $( this ).prop( "checked" ) )
+					{
+						states.push(this.value);
+					}
+				});
+				var usercal = [];
+				$('.chkb_usercal').each(function( index ) {
+					if ( $( this ).prop( "checked" ) )
+					{
+						usercal.push(this.value);
+					}
+				});
+
+				$.ajax({
+					url: 'libs/modules/organizer/calendar_getevents.php',
+					dataType: 'json',
+					data: {
+						user: strUser,
+						start: start.format('YYYY-MM-DD'),
+						end: end.format('YYYY-MM-DD'),
+						states: states,
+						usercal: usercal
+					},
+					success: function (eventstring) {
+						callback(eventstring);
+					}
+				});
+			},
 			loading: function(bool) {
 				$('#loading').toggle(bool);
 			},
@@ -128,35 +258,38 @@ if ($_REQUEST["exec"])
 					}
 				});
 			},
+			eventRender: function(event, element) {
+				element.attr('title', event.title);
+			},
 			timeFormat: 'H:mm'
 		});
-		
-	});
-	
-function callBoxFancy(my_href) {
-	var j1 = document.getElementById("hiddenclicker");
-	j1.href = my_href;
-	$('#hiddenclicker').trigger('click');
-}
-function refetchEvents()
-{
-	$('#calendar').fullCalendar( 'refetchEvents' );
-}
-function status_all()
-{
-	$('.chkb_legend').each(function( index ) {
-		$( this ).prop( "checked", true )
-	});
-	refetchEvents();
-}
 
-function status_none()
-{
-	$('.chkb_legend').each(function( index ) {
-		$( this ).prop( "checked", false )
 	});
-	refetchEvents();
-}
+
+	function callBoxFancy(my_href) {
+		var j1 = document.getElementById("hiddenclicker");
+		j1.href = my_href;
+		$('#hiddenclicker').trigger('click');
+	}
+	function refetchEvents()
+	{
+		$('#calendar').fullCalendar( 'refetchEvents' );
+	}
+	function status_all()
+	{
+		$('.chkb_legend').each(function( index ) {
+			$( this ).prop( "checked", true )
+		});
+		refetchEvents();
+	}
+
+	function status_none()
+	{
+		$('.chkb_legend').each(function( index ) {
+			$( this ).prop( "checked", false )
+		});
+		refetchEvents();
+	}
 </script>
 <style>
 	#calendar {
@@ -164,103 +297,3 @@ function status_none()
 		margin: 0 auto;
 	}
 </style>
-
-<?php 
-if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
-    echo "<script type=\"text/javascript\">$(document).ready(function() { callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid=".$_REQUEST["id"]."');});</script>";
-}
-?>
-
-<i class="fa fa-calendar"></i> <?=$_LANG->get('Kalender')?></br>
-<div class="row">
-    <div class="col-md-10">
-    	<div id='loading'>loading...</div>
-    	<div id='calendar'></div>
-    </div>
-    <div class="col-md-2">
-        <table width="100%" valing="top">
-            <tr>
-                <td align="right">
-                    <table>
-                        <tr><td>Status:</td></tr>
-                        <tr><td><span class="pointer" onclick="status_all();">alle</span> | <span class="pointer" onclick="status_none();">keine</span></td></tr>
-                        <?php 
-                        $ticket_states = TicketState::getAllStates();
-                        foreach ($ticket_states as $ticket_state){
-                            if ($ticket_state->getId() != 1 && $ticket_state->getId() != 3)
-                                echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="'.$ticket_state->getId().'" class="chkb_legend"/> <font color="'.$ticket_state->getColorcode().'">'.$ticket_state->getTitle().'</font></td></tr>';
-                        }
-                        echo '<tr><td>&nbsp;</br></td></tr>';
-                        echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="99991" class="chkb_legend"/> Aufträge</td></tr>';
-                        echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="99992" checked class="chkb_legend"/> Termine</td></tr>';
-                        ?>
-                        <tr>
-                            <td>
-                                <?php
-                                if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
-                                	$users = User::getAllUser(User::ORDER_LOGIN);
-                                	?>
-                                	</br>
-                                	<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="select_cal_user" id="select_cal_user">
-                                	Kalender benutzten als: <select name="sel_user" id="sel_user" style="width:150px" onchange="refetchEvents();" class="text">
-                                		<? foreach ($users as $user) {?>
-                                		<option value="<?=$user->getId()?>" 
-                                		<?
-                                			if($user->getId() == $_USER->getId())
-                                				echo "selected>";
-                                		?>
-                                		><?=$user->getFirstname()?> <?=$user->getLastname()?></option>
-                                		<? } ?>
-                                	</select>
-                                	</form>
-                                	<?
-                                } else {
-                                    $sel_user = $_USER;
-                                    echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
-                                }
-                                ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">&nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" onclick="refetchEvents();" value="99993" class="chkb_legend"/> Urlaub anzeigen</td>
-                        </tr>
-                        <?php if ($_USER->hasRightsByGroup(Group::RIGHT_SEE_ALL_CALENDAR) || $_USER->isAdmin()) { ?>
-                        <tr>
-                            <td colspan="2">&nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Kalender überlappen mit:</td>
-                        </tr>
-                        <tr>
-                            <?php 
-                            foreach ($users as $user){
-                                if ($user->getId() != $_USER->getId())
-                                    echo '<tr><td><input type="checkbox" onclick="refetchEvents();" value="'.$user->getId().'" class="chkb_usercal"/>'.$user->getNameAsLine().'</td></tr>';
-                            }
-                            ?>
-                        </tr>
-                        <?php } ?>
-                        <tr>
-                            <td colspan="2">&nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Legende:</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><a style="background-color:#1f698e" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Öffentlich</span></div></a></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><a style="background-color:#3a87ad" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Privat</span></div></a></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><a style="background-color:#2a96cc" class="fc-day-grid-event fc-h-event fc-event fc-start fc-end fc-draggable"><div class="fc-content"><span class="fc-title">Fremd</span></div></a></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>

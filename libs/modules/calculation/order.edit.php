@@ -1278,6 +1278,7 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperContentHeight($sizes["height"]);
 										$calc->setPaperContentWidth($sizes["width"]);
+										$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT)
 									{
@@ -1286,6 +1287,7 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperAddContentHeight($sizes["height"]);
 										$calc->setPaperAddContentWidth($sizes["width"]);
+										$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ENVELOPE)
 									{
@@ -1294,6 +1296,7 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperEnvelopeHeight($sizes["height"]);
 										$calc->setPaperEnvelopeWidth($sizes["width"]);
+										$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT2)
 									{
@@ -1302,6 +1305,7 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperAddContent2Height($sizes["height"]);
 										$calc->setPaperAddContent2Width($sizes["width"]);
+										$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT3)
 									{
@@ -1310,6 +1314,7 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperAddContent3Height($sizes["height"]);
 										$calc->setPaperAddContent3Width($sizes["width"]);
+										$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
 										$calc->save();
 									}
 								} // if (Type Offset || Type Digital)

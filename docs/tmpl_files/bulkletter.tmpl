@@ -1,32 +1,21 @@
+<!-- {foreach $Busicons as $Con} -->
 <p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
 
-<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CustomerName}<br />
-{$CustomerAddress}</span></span></p>
-
-<table border="0" cellspacing="1" style="width:450px">
-	<tbody>
-		<tr>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihre Nachricht</span></span></td>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihr Zeichen</span></span></td>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Unser Zeichen</span></span></td>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Datum</span></span></td>
-		</tr>
-		<tr>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirMessage}</span></span></td>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirSign}</span></span></td>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$OurSign}</span></span></td>
-			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CurrentDate}</span></span></td>
-		</tr>
-	</tbody>
-</table>
-
-<p>&nbsp;</p>
-<!-- {foreach $Busicons as $Con} -->
-
-<p>{$Con-&gt;getNameAsLine()}<!-- {If $IfEmail==$Version}--><img alt="" src="{$Img}" style="float:right" /><!-- {/If} --><br />
-{ReplaceLn var=$Con-&gt;getAddressAsLine()}</p>
+<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$Con-&gt;getNameAsLine()}<br />
+{ReplaceLn var=$Con-&gt;getAddressAsLine()}</span></span></p>
 
 <p>&nbsp;</p>
 
+<!--{if $Con->getMainContactperson()->getId() > 0 }-->
+    <!--{if $Con->getMainContactperson()->getTitle() == 'Herrn'}-->
+        Sehr geehrter Herr {$Con->getMainContactperson()->getName1()},<br />
+    <!--{else}-->
+        Sehr geehrte Frau {$Con->getMainContactperson()->getName1()},<br />
+    <!--{/if}-->
+<!--{else}-->
+    Sehr geehrte Damen und Herren,<br />
+<!--{/if}-->
+<p>&nbsp;</p>
 <p>{$Text}</p>
+<div pagebreak="true"></div>
 <!-- {/foreach}-->

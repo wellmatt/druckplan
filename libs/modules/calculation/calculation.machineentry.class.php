@@ -404,6 +404,31 @@ class Machineentry {
         }
     }
 
+    public function getPartName()
+    {
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return 'Inhalt 1';
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return 'Inhalt 2';
+                break;
+            case 3: // PAPER_ENVELOPE
+                return 'Umschlag';
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return 'Inhalt 3';
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return 'Inhalt 4';
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
     public function getMyPages()
     {
         $calc = new Calculation($this->calcId);

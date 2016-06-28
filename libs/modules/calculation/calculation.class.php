@@ -1130,33 +1130,36 @@ class Calculation
                 if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
                 {
                     $papers = 0;
-                    if($me->getPart() == Calculation::PAPER_CONTENT && $order->getProduct()->getSingleplateset() == 0) 
+                    if($me->getPart() == Calculation::PAPER_CONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
                         $papers = $this->getPagesContent() / $this->getProductsPerPaper(Calculation::PAPER_CONTENT); 
-                    } else if($me->getPart() == Calculation::PAPER_ADDCONTENT && $order->getProduct()->getSingleplateset() == 0)
+                    } else if($me->getPart() == Calculation::PAPER_ADDCONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
                         $papers = $this->getPagesAddContent() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT); 
-                    } else if($me->getPart() == Calculation::PAPER_ENVELOPE && $order->getProduct()->getSingleplateset() == 0)
+                    } else if($me->getPart() == Calculation::PAPER_ENVELOPE && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
                         $papers = $this->getPagesEnvelope() / $this->getProductsPerPaper(Calculation::PAPER_ENVELOPE); 
-                    } else if($me->getPart() == Calculation::PAPER_ADDCONTENT2 && $order->getProduct()->getSingleplateset() == 0)
+                    } else if($me->getPart() == Calculation::PAPER_ADDCONTENT2 && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
                         $papers = $this->getPagesAddContent2() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2); 
                     }
-                    else if($me->getPart() == Calculation::PAPER_ADDCONTENT3 && $order->getProduct()->getSingleplateset() == 0)
+                    else if($me->getPart() == Calculation::PAPER_ADDCONTENT3 && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
                     	$papers = $this->getPagesAddContent3() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3);
                     }
-                    if ($order->getProduct()->getSingleplateset() == 0){
+                    if ($order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0){
                         $tmp_plates += $chr->getColorsFront() * ceil($papers);
                         $tmp_plates += $chr->getColorsBack() * ceil($papers); // round($papers, 0, PHP_ROUND_HALF_DOWN);
                     } elseif ($order->getProduct()->getSingleplateset() == 1 && $me->getPart() == Calculation::PAPER_CONTENT){
                         $tmp_plates += $chr->getColorsFront();
                         $tmp_plates += $chr->getColorsBack();
+                    } elseif ($order->getProduct()->getBlockplateset() == 1){
+                        $tmp_plates += $chr->getColorsFront();
+                        $tmp_plates += $chr->getColorsBack();
                     }
 	            	//gln, umschlagen/umstuelpen
             		//if($me->getMachine()->getUmschlUmst())
-            		if($me->getUmschlagenUmstuelpen() && $order->getProduct()->getSingleplateset() == 0)
+            		if($me->getUmschlagenUmstuelpen() && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
         	        {
        	        	   $plates += ceil($tmp_plates / 2);
         	        } else {
@@ -1184,32 +1187,35 @@ class Calculation
                 	$chr = $calc->getChromaticitiesAddContent3();
                 
                 $papers = 0;
-                if($machineEntry->getPart() == Calculation::PAPER_CONTENT && $order->getProduct()->getSingleplateset() == 0)
+                if($machineEntry->getPart() == Calculation::PAPER_CONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                 {
                     $papers = $this->getPagesContent() / $this->getProductsPerPaper(Calculation::PAPER_CONTENT);
-                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT && $order->getProduct()->getSingleplateset() == 0)
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                 {
                     $papers = $this->getPagesAddContent() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT);
-                } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE && $order->getProduct()->getSingleplateset() == 0)
+                } else if($machineEntry->getPart() == Calculation::PAPER_ENVELOPE && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                 {
                     $papers = $this->getPagesEnvelope() / $this->getProductsPerPaper(Calculation::PAPER_ENVELOPE);
-                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2 && $order->getProduct()->getSingleplateset() == 0)
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2 && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                 {
                     $papers = $this->getPagesAddContent2() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2);
-                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3 && $order->getProduct()->getSingleplateset() == 0)
+                } else if($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3 && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                 {
                     $papers = $this->getPagesAddContent3() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3);
                 }
-                if ($order->getProduct()->getSingleplateset() == 0){
+                if ($order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0){
                     $tmp_plates += $chr->getColorsFront() * ceil($papers);
                     $tmp_plates += $chr->getColorsBack() * ceil($papers); // round($papers, 0, PHP_ROUND_HALF_DOWN);
                 } elseif ($order->getProduct()->getSingleplateset() == 1 && $machineEntry->getPart() == Calculation::PAPER_CONTENT){
                     $tmp_plates += $chr->getColorsFront();
                     $tmp_plates += $chr->getColorsBack();
+                } elseif ($order->getProduct()->getBlockplateset() == 1){
+                    $tmp_plates += $chr->getColorsFront();
+                    $tmp_plates += $chr->getColorsBack();
                 }
             	//gln, umschlagen/umstuelpen
            		//if($machineEntry->getMachine()->getUmschlUmst())
-           		if($machineEntry->getUmschlagenUmstuelpen() && $order->getProduct()->getSingleplateset() == 0)
+           		if($machineEntry->getUmschlagenUmstuelpen() && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
        	        {
    	        	   $plates += ceil($tmp_plates / 2);
     	        } else {

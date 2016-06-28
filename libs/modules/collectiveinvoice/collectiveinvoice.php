@@ -21,7 +21,7 @@ require_once 'libs/modules/associations/association.class.php';
 
 global $_LANG;
 global $_MENU;
-$_USER;
+global $_USER;
 
 $collectinv = new CollectiveInvoice((int)$_REQUEST['ciid']);
 $ci = $collectiveinvoice;
@@ -316,4 +316,3 @@ case 'createFromTicket':
 default:
 	require_once('collectiveinvoice.overview.php');
 }
-?>

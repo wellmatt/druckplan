@@ -38,6 +38,10 @@ $type = substr($_REQUEST["artmach"], 0, 1);
 $artmach = substr($_REQUEST["artmach"], 1);
 $statsenabled = $_REQUEST["stats"];
 $print = $_REQUEST["print"];
+$vo = $_REQUEST["vo"];
+if (isset($vo) && $vo != "" && is_numeric($vo)){
+    $vostring = ' AND object = '.$vo.' ';
+}
 
 if ($print == 1)
 {
@@ -74,14 +78,14 @@ foreach ($dates as $date)
     $day_start = mktime(0, 0, 0, date('m', strtotime($date)), date('d', strtotime($date)), date('Y', strtotime($date)));
     $day_end = mktime(23,59,59,date('m',strtotime($date)),date('d',strtotime($date)),date('Y',strtotime($date)));
     if ($type == "0")
-        $jobs = PlanningJob::getAllJobs(" AND start >= {$day_start} AND start <= {$day_end}");
+        $jobs = PlanningJob::getAllJobs(" AND start >= {$day_start} AND start <= {$day_end} $vostring");
     else if ($type == "K")
     {
-        $jobs = PlanningJob::getAllJobs(" AND type = 2 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end}");
+        $jobs = PlanningJob::getAllJobs(" AND type = 2 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end} $vostring");
     }
     else if ($type == "V")
     {
-        $jobs = PlanningJob::getAllJobs(" AND type = 1 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end}");
+        $jobs = PlanningJob::getAllJobs(" AND type = 1 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end} $vostring");
     }
     
     $stats = Array();
@@ -183,14 +187,14 @@ echo $html;
         $day_start = mktime(0, 0, 0, date('m', strtotime($date)), date('d', strtotime($date)), date('Y', strtotime($date)));
         $day_end = mktime(23,59,59,date('m',strtotime($date)),date('d',strtotime($date)),date('Y',strtotime($date)));
         if ($type == "0")
-            $jobs = PlanningJob::getAllJobs(" AND start >= {$day_start} AND start <= {$day_end}");
+            $jobs = PlanningJob::getAllJobs(" AND start >= {$day_start} AND start <= {$day_end} $vostring");
         else if ($type == "K")
         {
-            $jobs = PlanningJob::getAllJobs(" AND type = 2 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end}");
+            $jobs = PlanningJob::getAllJobs(" AND type = 2 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end} $vostring");
         }
         else if ($type == "V")
         {
-            $jobs = PlanningJob::getAllJobs(" AND type = 1 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end}");
+            $jobs = PlanningJob::getAllJobs(" AND type = 1 AND artmach = {$artmach} AND start >= {$day_start} AND start <= {$day_end} $vostring");
         }
     
         $stats = Array();

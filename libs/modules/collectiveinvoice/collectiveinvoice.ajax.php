@@ -27,6 +27,7 @@ require_once 'libs/modules/finishings/finishing.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/personalization/personalization.order.class.php';
+require_once 'libs/modules/partslists/partslist.class.php';
 session_start();
 
 $DB = new DBMysql();
@@ -208,6 +209,40 @@ if ($_REQUEST["ajax_action"] == "getArtData"){
     header("Content-Type: application/json");
     echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "getPartslistData"){
+	$retval = Array();
 
-?>
+	$tmp_list = new Partslist($_REQUEST["listid"]);
+	$tmp_articles = $tmp_list->getMyArticles();
 
+	$retval[] = Array(
+		"type"=>0,
+		"id"=>'',
+		"title"=>'Stückliste - '.$tmp_list->getTitle(),
+		"orderamounts"=>'',
+		"orderid"=>0,
+		"price"=>$tmp_list->getPrice(),
+	);
+
+	foreach ($tmp_articles as $listitem){
+		$type = 2;
+		if ($listitem->getArticle()->getOrderid()>0)
+			$type = 1;
+
+		$array = Array(
+			"type"=>$type,
+			"id"=>$listitem->getArticle()->getId(),
+			"title"=>$listitem->getArticle()->getTitle(),
+			"orderamounts"=>$listitem->getArticle()->getOrderamounts(),
+			"orderid"=>$listitem->getArticle()->getOrderid(),
+			"quantity"=>$listitem->getAmount(),
+		);
+		if ($tmp_list->getPrice()>0)
+			$array['price'] = 'kein';
+		$retval[] = $array;
+	}
+
+	$retval = json_encode($retval);
+	header("Content-Type: application/json");
+	echo $retval;
+}

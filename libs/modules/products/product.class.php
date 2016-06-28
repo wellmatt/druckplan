@@ -52,6 +52,7 @@ class Product {
     private $isIndivual = 0;
     
     private $singleplateset = 0;
+    private $blockplateset = 0;
 	
     function __construct($id = 0){
         global $DB;
@@ -97,6 +98,7 @@ class Product {
                 $this->isIndivual = $res["is_individual"];
                 $this->tradegroup = new Tradegroup($res["tradegroup"]);
                 $this->singleplateset = $res["singleplateset"];
+                $this->blockplateset = $res["blockplateset"];
                 $this->loadDymmyData = $res["load_dummydata"];
                 
                 //-------------------------------------------------------------------
@@ -241,6 +243,7 @@ class Product {
                         tradegroup = {$this->getTradegroup()->getId()},
                         is_individual = '{$this->isIndivual}',
                         singleplateset = '{$this->singleplateset}',
+                        blockplateset = '{$this->blockplateset}',
                         load_dummydata = {$this->loadDymmyData}
                     WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -830,7 +833,19 @@ class Product {
         $this->singleplateset = $singleplateset;
     }
 
-	
-	
+    /**
+     * @return int
+     */
+    public function getBlockplateset()
+    {
+        return $this->blockplateset;
+    }
+
+    /**
+     * @param int $blockplateset
+     */
+    public function setBlockplateset($blockplateset)
+    {
+        $this->blockplateset = $blockplateset;
+    }
 }
-?>
