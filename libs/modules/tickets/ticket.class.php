@@ -160,23 +160,6 @@ class Ticket {
             }
         }
     }
-
-
-    public static function getTicketsForObject($module,$objectid)
-    {
-        global $DB;
-        global $_USER;
-        $retval = Array();
-    
-        $sql = "SELECT ticketid FROM tickets_association WHERE module = {$module} AND objectid = {$objectid}";
-        if($DB->num_rows($sql)){
-            foreach($DB->select($sql) as $r){
-                $retval[] = new Ticket($r["id"]);
-            }
-        }
-    
-        return $retval;
-    }
     
     /**
      * Loeschfunktion fuer Kommentare.

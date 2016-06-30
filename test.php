@@ -36,8 +36,8 @@ $_CACHE = phpFastCache("memcached");
 
 //$_CACHE->clean();
 
-$test = Cachehandler::fromCache('cc4c4a5dfgfca54345ddg2343f511399de3c49_User_5');
-prettyPrint($test);
+//$test = Cachehandler::fromCache('cc4c4a5dfgfca54345ddg2343f511399de3c49_User_5');
+//prettyPrint($test);
 //
 //$m = new Memcached();
 //$m->addServers(array(array('127.0.0.1',11211)));
@@ -48,3 +48,11 @@ prettyPrint($test);
 //prettyPrint($bc);
 
 //prettyPrint($m->getAllKeys());
+
+$start_time = microtime(TRUE);
+
+$user = new Calculation(435);
+
+$end_time = microtime(TRUE);
+$shorten = number_format($end_time - $start_time,4);
+prettyPrint('Execution time: '.$shorten);

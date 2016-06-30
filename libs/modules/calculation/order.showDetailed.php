@@ -447,10 +447,10 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                               <li class="list-group-item">
                                                   <span class="badge">
                                                       <?php
-                                                      if ($calc->$content['chr']()->getReversePrinting() == 0 AND $calc->$content['chr']()->getColorsBack() == 1) {
-                                                          echo printBigInt(ceil($calc->$content['pages']() / ($calc->getProductsPerPaper($content['const']) * 2) * $calc->getAmount()));
+                                                      if ($calc->$content['chr']()->getReversePrinting() == 0 AND $calc->$content['chr']()->getColorsBack() == 0) {
+                                                          echo $calc->getPaperCount($content['const']) + $calc->$content['grant']();
                                                       } else {
-                                                          echo printBigInt(ceil($calc->$content['pages']() / $calc->getProductsPerPaper($content['const']) * $calc->getAmount()));
+                                                          echo 2 * ($calc->getPaperCount($content['const']) + $calc->$content['grant']());
                                                       } ?>
                                                   </span>
                                                   Druckleistung insgesamt

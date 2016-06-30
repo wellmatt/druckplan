@@ -70,7 +70,7 @@ $(document).ready(function() {
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"aaSorting": [[ 6, "desc" ]],
-		"dom": 'T<"clear">flrtip',        
+		"dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -100,6 +100,7 @@ $(document).ready(function() {
 			var iMin_cl = document.getElementById('ajax_cl_date_min').value;
 			var iMax_cl = document.getElementById('ajax_cl_date_max').value;
 			var withoutdue = document.getElementById('ajax_withoutdue').value;
+			var customer = document.getElementById('custsearch_id').value;
 		    aoData.push( { "name": "details", "value": "1", } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
@@ -115,6 +116,7 @@ $(document).ready(function() {
 		    aoData.push( { "name": "cl_start", "value": iMin_cl, } );
 		    aoData.push( { "name": "cl_end", "value": iMax_cl, } );
 		    aoData.push( { "name": "withoutdue", "value": withoutdue, } );
+			aoData.push( { "name": "bcid", "value": customer, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -201,6 +203,11 @@ $(document).ready(function() {
 
         callBoxFancytktoverview("libs/modules/tickets/ticket.summary.php?tktid="+tktid);
     });
+
+	$('#ticketsearch').keyup(function(){
+		ticketstable.search( $(this).val() ).draw();
+	})
+
 	$("a#hiddenclickertktoverview").fancybox({
 		'type'    : 'iframe',
 		'transitionIn'	:	'elastic',
@@ -268,9 +275,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-			buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
                 $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_date_min", "tkt_date_min": moment($('#date_min').val(), "DD-MM-YYYY").unix()});
@@ -282,9 +286,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-			buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
                 $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_date_max", "tkt_date_max": moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340});
@@ -297,9 +298,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-			buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_cl_date_min').val(moment($('#date_cl_min').val(), "DD-MM-YYYY").unix());
                 $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_cl_date_min", "tkt_cl_date_min": moment($('#date_cl_min').val(), "DD-MM-YYYY").unix()});
@@ -311,9 +309,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-			buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_cl_date_max').val(moment($('#date_cl_max').val(), "DD-MM-YYYY").unix()+86340);
                 $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_cl_date_max", "tkt_cl_date_max": moment($('#date_cl_max').val(), "DD-MM-YYYY").unix()+86340});
@@ -325,9 +320,6 @@ $(document).ready(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-	            showOn: "button",
-				buttonImage: "images/icons/calendar-blue.svg",
-	            buttonImageOnly: true,
 	            onSelect: function(selectedDate) {
 	                $('#ajax_date_due_min').val(moment($('#date_due_min').val(), "DD-MM-YYYY").unix());
 	                $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_date_due_min", "tkt_date_due_min": moment($('#date_due_min').val(), "DD-MM-YYYY").unix()});
@@ -339,9 +331,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-			buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_due_max').val(moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340);
                 $.post("libs/modules/tickets/ticket.ajax.php", {"ajax_action": "setFilter_date_due_max", "tkt_date_due_max": moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340});
@@ -419,6 +408,20 @@ $(document).ready(function() {
 		$('#ticketstable').dataTable().fnDraw(); 
 	})
 
+	$( "#custsearch" ).autocomplete({
+		source: "libs/modules/tickets/ticket.ajax.php?ajax_action=search_customer",
+		minLength: 2,
+		focus: function( event, ui ) {
+			$( "#custsearch" ).val( ui.item.label );
+			return false;
+		},
+		select: function( event, ui ) {
+			$( "#custsearch" ).val( ui.item.label );
+			$( "#custsearch_id" ).val( ui.item.value );
+			$('#ticketstable').dataTable().fnDraw();
+			return false;
+		}
+	});
 	
 } );
 
@@ -457,27 +460,27 @@ function TicketTableRefresh()
 
 							 <div class="form-group">
 								 <label for="" class="col-sm-4 control-label">Datum (erstellt)</label>
-								 <div class="col-sm-3">
+								 <div class="col-sm-4">
 									 <input name="ajax_date_min" id="ajax_date_min"
 											type="hidden" <?php if ($_SESSION['tkt_date_min']) echo 'value="' . $_SESSION['tkt_date_min'] . '"'; ?> />
 									 <input name="date_min" id="date_min"
 											 <?php if ($_SESSION['tkt_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_min']) . '"'; ?>
 											class="form-control"
 											onfocus="markfield(this,0)" onblur="markfield(this,1)"
-											title="<?= $_LANG->get('von'); ?>">&nbsp;&nbsp;
+											title="<?= $_LANG->get('von'); ?>">
 								 </div>
 							 </div>
 
 							 <div class="form-group">
 								 <label for="" class="col-sm-4 control-label">Datum (fällig)</label>
-								 <div class="col-sm-3">
+								 <div class="col-sm-4">
 									 <input name="ajax_date_due_min" id="ajax_date_due_min"
 											type="hidden" <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . $_SESSION['tkt_date_due_min'] . '"'; ?> />
 									 <input name="date_due_min" id="date_due_min"
 											 <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_min']) . '"'; ?>
 											class="form-control"
 											onfocus="markfield(this,0)" onblur="markfield(this,1)"
-											title="<?= $_LANG->get('von'); ?>">&nbsp;&nbsp;
+											title="<?= $_LANG->get('von'); ?>">
 								 </div>
 							 </div>
 
@@ -487,31 +490,45 @@ function TicketTableRefresh()
 
 							 <div class="form-group">
 								 <label for="" class="col-sm-3 control-label">Bis:</label>
-								 <div class="col-sm-3">
+								 <div class="col-sm-4">
 									 <input name="ajax_date_max" id="ajax_date_max"
 											type="hidden" <?php if ($_SESSION['tkt_date_max']) echo 'value="' . $_SESSION['tkt_date_max'] . '"'; ?> />
 									 <input name="date_max" id="date_max"
 												  <?php if ($_SESSION['tkt_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_max']) . '"'; ?>
 												 class="form-control"
 												 onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												 title="<?= $_LANG->get('bis'); ?>">&nbsp;&nbsp;
+												 title="<?= $_LANG->get('bis'); ?>">
 								 </div>
 							 </div>
 
 							 <div class="form-group">
 								 <label for="" class="col-sm-3 control-label">Bis:</label>
-								 <div class="col-sm-3">
+								 <div class="col-sm-4">
 									 <input name="ajax_date_due_max" id="ajax_date_due_max"
 											type="hidden" <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . $_SESSION['tkt_date_due_max'] . '"'; ?> />
 									<input name="date_due_max" id="date_due_max"
 												 <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_max']) . '"'; ?>
 												 class="form-control"
 												 onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												 title="<?= $_LANG->get('bis'); ?>">&nbsp;&nbsp;
+												 title="<?= $_LANG->get('bis'); ?>">
 								 </div>
 							 </div>
 						 </div>
 					 </div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Suche</label>
+						<div class="col-sm-7">
+							<input type="text" id="ticketsearch" class="form-control" placeholder="">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Kunde</label>
+						<div class="col-sm-7">
+							<input type="text" id="custsearch" name="custsearch" class="form-control"><input type="hidden" id="custsearch_id">
+						</div>
+					</div>
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kategorie</label>
@@ -624,40 +641,46 @@ function TicketTableRefresh()
 						</div>
 					</div>
 
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">ohne Fälligkeit:</label>
-						<div class="col-sm-4">
-							<input name="ajax_withoutdue" id="ajax_withoutdue" class="form-control"
-								   type="hidden" <?php if ($_SESSION['tkt_ajax_withoutdue']) echo ' value="' . $_SESSION['tkt_ajax_withoutdue'] . '" '; else echo ' value="1" '; ?>/>
-							<input name="withoutdue" id="withoutdue" type="checkbox" class="form-control"
-								   value="1" <?php if ($_SESSION['tkt_ajax_showclosed'] || $_SESSION['tkt_ajax_showclosed'] == Null) echo ' checked '; ?>/>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="" class="col-sm-8 control-label">ohne Fälligkeit</label>
+								<div class="col-sm-2">
+									<input name="ajax_withoutdue" id="ajax_withoutdue" class="form-control"
+										   type="hidden" <?php if ($_SESSION['tkt_ajax_withoutdue']) echo ' value="' . $_SESSION['tkt_ajax_withoutdue'] . '" '; else echo ' value="1" '; ?>/>
+									<input name="withoutdue" id="withoutdue" type="checkbox" class="form-control"
+										   value="1" <?php if ($_SESSION['tkt_ajax_showclosed'] || $_SESSION['tkt_ajax_showclosed'] == Null) echo ' checked '; ?>/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="" class="col-sm-8 control-label">zeige geschlossene</label>
+								<div class="col-sm-2">
+									<input name="ajax_showclosed" id="ajax_showclosed" class="form-control"
+										   type="hidden" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' value="' . $_SESSION['tkt_ajax_showclosed'] . '" '; ?>/>
+									<input name="showclosed" id="showclosed" type="checkbox" class="form-control"
+										   value="1" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' checked '; ?>/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<?php if ($_USER->isAdmin()) { ?>
+								<div class="form-group">
+									<label for="" class="col-sm-8 control-label">zeige gelöschte</label>
+									<div class="col-sm-2">
+										<input name="ajax_showdeleted" id="ajax_showdeleted" class="form-control"
+											   type="hidden" <?php if ($_SESSION['tkt_ajax_showdeleted']) echo ' value="' . $_SESSION['tkt_ajax_showdeleted'] . '" '; ?>/>
+										<input name="showdeleted" id="showdeleted" type="checkbox" class="form-control"
+											   value="1" <?php if ($_SESSION['tkt_ajax_showdeleted']) echo ' checked '; ?>/>
+									</div>
+								</div>
+							<?php } else { ?>
+								<input name="ajax_showdeleted" id="ajax_showdeleted" type="hidden" value="0" class="form-control"/>
+								<input name="showdeleted" id="showdeleted" type="hidden" value="0" class="form-control" />
+							<?php } ?>
 						</div>
 					</div>
-
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">zeige geschlossene:</label>
-						<div class="col-sm-4">
-							<input name="ajax_showclosed" id="ajax_showclosed" class="form-control"
-								   type="hidden" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' value="' . $_SESSION['tkt_ajax_showclosed'] . '" '; ?>/>
-							<input name="showclosed" id="showclosed" type="checkbox" class="form-control"
-								   value="1" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' checked '; ?>/>
-						</div>
-					</div>
-
-					<?php if ($_USER->isAdmin()) { ?>
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">zeige gelöschte:</label>
-						<div class="col-sm-4">
-							<input name="ajax_showdeleted" id="ajax_showdeleted" class="form-control"
-								   type="hidden" <?php if ($_SESSION['tkt_ajax_showdeleted']) echo ' value="' . $_SESSION['tkt_ajax_showdeleted'] . '" '; ?>/>
-							<input name="showdeleted" id="showdeleted" type="checkbox" class="form-control"
-								   value="1" <?php if ($_SESSION['tkt_ajax_showdeleted']) echo ' checked '; ?>/>
-						</div>
-					</div>
-					<?php } else { ?>
-						<input name="ajax_showdeleted" id="ajax_showdeleted" type="hidden" value="0" class="form-control"/>
-						<input name="showdeleted" id="showdeleted" type="hidden" value="0" class="form-control" />
-					<?php } ?>
 
 					<span class="pull-right">
 

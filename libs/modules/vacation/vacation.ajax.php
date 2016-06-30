@@ -19,7 +19,6 @@ require_once("libs/basic/translator/translator.class.php");
 require_once 'libs/basic/countries/country.class.php';
 require_once("libs/basic/groups/group.class.php");
 require_once("libs/modules/businesscontact/contactperson.class.php");
-require_once 'libs/modules/organizer/urlaub.class.php';
 require_once 'libs/modules/organizer/event_holiday.class.php';
 
 $DB = new DBMysql();

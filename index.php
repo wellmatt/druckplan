@@ -8,8 +8,6 @@ ob_start();
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
-
-// error_reporting(E_ERROR | E_WARNING | E_PARSE);
 if (strstr(__DIR__, "contilas2"))
 {
     error_reporting(-1);
@@ -27,7 +25,6 @@ require_once("./libs/basic/translator/translator.class.php");
 require_once("./libs/basic/countries/country.class.php");
 require_once("./libs/basic/license/license.class.php");
 require_once("./vendor/autoload.php");
-// require_once 'libs/modules/timekeeping/timekeeper.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/associations/association.class.php';
 require_once 'libs/modules/timer/timer.class.php';
@@ -469,10 +466,6 @@ function sleep(millis, callback) {
               </div>
             </li>
             <!-- /account -->
-            
-            
-            
-            
           </ul>
         </div>
       </div>
