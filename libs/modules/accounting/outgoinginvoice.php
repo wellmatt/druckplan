@@ -75,9 +75,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
 });
@@ -90,9 +90,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
 });
@@ -105,293 +105,299 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
 });
 </script>
-<table class="standard">
-	<tr>
-		<td style="height: 30"><nobr><b class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Rechnungs&uuml;bersicht')?></b></nobr></td>
-		<td style="text-align: center"><?=$savemsg?></td>
-	</tr>
-	<tr>
-		<td class="content_headerline" style="colspan: 3">&nbsp;</td>
-	</tr>
-</table>
-
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_invoicesearch">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post" name="xform_invoicesearch">
 	<input type="hidden" name="subexec" value="search">
-	<input type="hidden" name="mid" value="<?=$_REQUEST["mid"]?>">
-	<div class="box2">
-		<table width="100%" cellpadding="00" cellspacing="0">
-			<colgroup>
-				<col width="110">
-				<col>
-				<col width="110">
-				<col>
-			</colgroup>
-			<tr>
-				<td class="content_row_header" colspan="2">Filteroptionen</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Kunde');?></td>
-				<td class="content_row_clear">
-					<select type="text" id="filter_cust" name="filter_cust" style="width:220px"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<? 	foreach ($allcustomer as $cust){?>
-							<option value="<?=$cust->getId()?>"
-								<?if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine()?></option>
-					<?	} ?>
-					</select>
-				</td>
-				<td class="content_row_header"> <?=$_LANG->get('Zeitraum');?></td>
-				<td class="content_row_clear">
-					Von <input  type="text" name="filter_from" id="filter_from" class="text date" style="width: 80px"
-								value="<?=date("d.m.Y",$filter_from)?>" />
-					Bis <input  type="text" name="filter_to" id="filter_to" class="text date" style="width: 80px"
-								value="<?=date("d.m.Y",$filter_to)?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Status');?></td>
-				<td class="content_row_clear">
-					<select type="text" id="payed_status" name="payed_status" style="width:150px"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-						<option value="1"
-								<?if ($filters["payed_status"] == 1) echo "selected" ?>><?=$_LANG->get('offen')?></option>
-						<option value="2"
-								<?if ($filters["payed_status"] == 2) echo "selected" ?>><?=$_LANG->get('bezahlt')?></option>
-					</select>
-				</td>
-				<td colspan="2"> &emsp; </td>
-			</tr>
-			<tr>
-				
-				<td class="content_row_clear" align="right" colspan="4">
-					<input type="submit" value="<?=$_LANG->get('Suche starten')?>">
-				</td>
-			</tr>
-		</table>
+	<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
+				Rechnungs&uuml;bersicht
+					<span class="pull-right">
+						<?= $savemsg ?>
+					</span>
+			</h3>
+		</div>
+		<div class="panel-body">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Filteroptionen
+					</h3>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="" class="col-sm-2 control-label">Kunde</label>
+								<div class="col-sm-10">
+									<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
+											onblur="markfield(this,1)" class="form-control">
+										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+										<? foreach ($allcustomer as $cust) { ?>
+											<option value="<?= $cust->getId() ?>"
+												<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
+										<? } ?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-2 control-label">Status</label>
+								<div class="col-sm-10">
+									<select type="text" id="payed_status" name="payed_status"
+											onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+										<option value="1"
+											<? if ($filters["payed_status"] == 1) echo "selected" ?>><?= $_LANG->get('offen') ?></option>
+										<option value="2"
+											<? if ($filters["payed_status"] == 2) echo "selected" ?>><?= $_LANG->get('bezahlt') ?></option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="col-sm-2">
+								<label for="control-label">Zeitraum</label>
+							</div>
+							<div class="col-sm-1">
+								Von
+							</div>
+							<div class="col-sm-4">
+								<input type="text" name="filter_from" id="filter_from" class="form-control date"
+									   value="<?= date("d.m.Y", $filter_from) ?>"/>
+							</div>
+							<div class="col-sm-1">
+								Bis
+							</div>
+							<div class="col-sm-4">
+								<input type="text" name="filter_to" id="filter_to" class="form-control date"
+									   value="<?= date("d.m.Y", $filter_to) ?>"/>
+							</div>
+						</div>
+					</div>
+					<span class="pull-right">
+					<button class="btn btn-primary btn-success" type="submit">
+						<?= $_LANG->get('Suche starten') ?>
+					</button>
+					</span>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Rechnungen
+					</h3>
+				</div>
+				<div class="panel-body">
+					<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post"
+						  name="idx_invcform">
+						<input type="hidden" name="exec" value="save"/>
+						<input type="hidden" name="payed_status" value="<?= $filters["payed_status"] ?>"/>
+						<input type="hidden" name="filter_from" value="<?= date("d.m.Y", $filter_from) ?>"/>
+						<input type="hidden" name="filter_to" value="<?= date("d.m.Y", $filter_to) ?>"/>
+						<input type="hidden" name="filter_cust" value="<?= $filters["cust_id"] ?>"/>
+
+						<div class="table-responsive">
+							<table class="table table-hover">
+								<thead>
+								<tr>
+									<th class="content_row_header"><?= $_LANG->get('Re-Nr.') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Re-Typ') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Auftragsnr.') ?></th>
+									<th class="content_row_header" align="right"><?= $_LANG->get('Brutto') ?></th>
+									<th class="content_row_header" align="right"><?= $_LANG->get('Netto') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Kunde') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Provisionspartner') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Provision') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Titel') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('erstellt') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('F&auml;llig') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Bezahlt') ?></th>
+									<th class="content_row_header" align="center"><?= $_LANG->get('Optionen') ?></th>
+								</tr>
+								</thead>
+								<tbody>
+
+								<? // CSV-Datei der Rechnungen vorbereiten
+								$csv_file = fopen('./docs/' . $_USER->getId() . '-Rechnungsausgang.csv', "w");
+								//fwrite($csv_file, "Firma iPactor - �bersicht\n");
+
+								// Tabellenkopf der CSV-Datei (Rechnungen) schreiben
+								$csv_string .= "Re-Nr.; Auftragstitel; ";
+								$csv_string .= "Betrag Netto ; MWST ; Brutto ;";
+								$csv_string .= "Kunde; Debitor-Nr. ; Erstellt; Zahlbar bis; Bezahlt am; Bemerkung \n";
+
+								$x = 0;
+								foreach ($documents as $document) {
+
+									$order = null;
+									if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
+										$order = new Order($document->getRequestId());
+									} else if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
+										$order = new CollectiveInvoice($document->getRequestId());
+									}
+									$tmp_mwst = $document->getPriceBrutto() - $document->getPriceNetto();
+									$csv_string .= $document->getName() . ";" . $order->getTitle() . ";";
+									$csv_string .= printPrice($document->getPriceNetto()) . ";" . printPrice($tmp_mwst) . ";" . printPrice($document->getPriceBrutto()) . ";";
+									$csv_string .= $order->getCustomer()->getNameAsLine() . ";" . $order->getCustomer()->getDebitor() . ";";
+									$csv_string .= date("d.m.Y", $document->getCreateDate()) . ";" . date("d.m.Y", $document->getPayable()) . ";";
+									if ($document->getPayed() > 0) {
+										$csv_string .= date("d.m.Y", $document->getPayed());
+									}
+									$csv_string .= ";";
+									if ($document->getStornoDate() > 0) {
+										$csv_string .= " STORNO ";
+									}
+									$csv_string .= " \n";
+
+									if ($document->getStornoDate() == 0) {
+										$sum_netto += $document->getPriceNetto();
+										$sum_brutto += $document->getPriceBrutto();
+									}
+									?>
+									<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)"
+										onmouseout="mark(this, 1)">
+
+										<td>
+											<a href="#"
+											   onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
+												<?= $document->getName() ?>
+											</a>
+											<input type="hidden" name="doc_existingid_<?= $x ?>"
+												   name="doc_existingid_<?= $x ?>"
+												   value="<?= (int)$document->getId() ?>"/>
+											<? if ($document->getStornoDate() > 0) {
+												?>
+												<span class="glyphicons glyphicons-exclamation-sign"
+													  title="<?= $_LANG->get('Storno am') . " " . date("d.m.Y", $document->getStornoDate()) ?>">
+									</span>
+
+											<? } ?>
+										</td>
+										<td class="content_row">
+											<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
+											if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
+											?>
+										</td>
+										<td>
+											<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
+												?>
+												<a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?= $order->getId() ?>&step=4"><?= $order->getNumber() ?></a>
+												<?
+											}
+											if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
+												?>
+												<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?= $order->getId() ?>"><?= $order->getNumber() ?></a>
+											<? } ?>
+										</td>
+										<td><?= printPrice($document->getPriceBrutto()) ?> <?= $_USER->getClient()->getCurrency() ?></td>
+										<td><?= printPrice($document->getPriceNetto()) ?> <?= $_USER->getClient()->getCurrency() ?></td>
+										<td>
+											<?= $order->getCustomer()->getNameAsLine() ?>
+											&nbsp;
+										</td>
+										<td>
+											<?
+											if ($order->getCustomer()->getCommissionpartner() > 0) {
+												$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
+												echo $tmp_bcontact->getName1();
+											} else {
+												echo 'kein';
+											}
+											?>
+											&nbsp;
+										</td>
+										<td>
+											<?
+											if ($order->getCustomer()->getCommissionpartner() > 0) {
+												$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
+												echo printPrice(($document->getPriceBrutto() / 100 * $tmp_bcontact->getProvision())) ?> <?= $_USER->getClient()->getCurrency();
+											} else {
+												echo '';
+											}
+											?>
+											&nbsp;
+										</td>
+										<td>
+											<?= $order->getTitle() ?>
+											&nbsp;
+										</td>
+										<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
+										<td
+											<?php if ($document->getPayed() == 0) {
+												if (strtotime(date("d.m.Y 23:59:59", $document->getPayable())) > time())
+													echo "style='color:green'";
+												else echo "style='color:red'";
+											} ?>>
+											<? echo date("d.m.Y", $document->getPayable()); ?>&nbsp;
+										</td>
+
+										<td>
+											<input type="text" name="date_<?= $x ?>" id="date_<?= $x ?>"
+												   class="form-control date"
+												   value="<? if ($document->getPayed() > 0) echo date("d.m.Y", $document->getPayed()); ?>"/>
+										</td>
+										<td>
+											<!-- ul class="postnav_save_small_outinvc"><a href="#"
+			onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
+			<?= $_LANG->get('Anzeigen') ?></a>
+			</ul-->
+											<ul class="postnav_save_small_outinvc">
+												<a href="index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?= $document->getId() ?>"><?= $_LANG->get('Mahnung'); ?></a>
+											</ul>
+											<? if ($document->getStornoDate() == 0) {
+												?>
+												<ul class="postnav_save_small_outinvc">
+													<a href="#"
+													   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=storno&invid=<?= $document->getId() ?>')"><?= $_LANG->get('Storno'); ?>&emsp;&ensp;</a>
+												</ul>
+											<? } else { ?>
+												<br/>
+											<? } ?>
+										</td>
+									</tr>
+									<? $x++;
+								} ?>
+								<tr>
+									<td><?= $_LANG->get('Gesamtsumme') ?></td>
+									<td>
+										<?= printPrice($sum_brutto); ?> <?= $_USER->getClient()->getCurrency() ?>
+									</td>
+									<td>
+										<?= printPrice($sum_netto); ?> <?= $_USER->getClient()->getCurrency() ?>
+									</td>
+									<td>
+										<a href="./docs/<?= $_USER->getId() ?>-Rechnungsausgang.csv" class="icon-link"
+										   title="Rechnugen als CSV-Datei exportieren"><span
+												class="glyphicons glyphicons-calculator">Export</span></a>
+									</td>
+									<td>&ensp;</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+				</div>
+			</div>
+			<br/>
+			<? // Datei mit den offenen Rechnungen schliessen
+			$csv_string .= ";" . $_LANG->get('Summe') . ":;" . printPrice($sum_netto) . ";" . printPrice($sum_brutto) . "; ; ;";
+			$csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
+			fwrite($csv_file, $csv_string);
+			fclose($csv_file); ?>
+			<span class="pull-right">
+				<button class="btn btn-primary btn-success" type="submit">
+					<?= $_LANG->get('Speichern') ?>
+				</button>
+			</span>
+			<iframe style="width:1px;height:1px;display:none" id="idx_iframe_doc" src=""></iframe>
+		</div>
 	</div>
 </form>
-<br/>
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="idx_invcform"> 
-   <input type="hidden" name="exec" value="save" />
-   <input type="hidden" name="payed_status" value="<?=$filters["payed_status"]?>" />
-   <input type="hidden" name="filter_from" value="<?=date("d.m.Y",$filter_from)?>" />
-   <input type="hidden" name="filter_to" value="<?=date("d.m.Y",$filter_to)?>" />
-   <input type="hidden" name="filter_cust" value="<?=$filters["cust_id"]?>" />
-   
-<div class="box1">
 
-<table class="standard" style="padding: 3px">
-	<colgroup>
-		<col width="80px">
-		<col width="30px">
-		<col width="85px">
-		<col width="70px">
-		<col width="70px">
-		<col>
-		<col>
-		<col>
-		<col>
-		<col width="60px">
-		<col width="60px">
-		<col width="90px">
-		<col width="100px">
-	</colgroup>
-	<tr>
-		<td class="content_row_header" colspan="11"><?=$_LANG->get('Rechnungen')?></td>
-	</tr>
-	<tr>
-		<td class="content_row_header"><?=$_LANG->get('Re-Nr.')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Re-Typ')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Auftragsnr.')?></td>
-		<td class="content_row_header" align="right"><?=$_LANG->get('Brutto')?></td>
-		<td class="content_row_header" align="right"><?=$_LANG->get('Netto')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Kunde')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Provisionspartner')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Provision')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-		<td class="content_row_header"><?=$_LANG->get('erstellt')?></td>
-		<td class="content_row_header"><?=$_LANG->get('F&auml;llig')?></td>
-		<td class="content_row_header"><?=$_LANG->get('Bezahlt')?></td>
-		<td class="content_row_header" align="center"><?=$_LANG->get('Optionen')?></td>
-	</tr>
-
-	<? // CSV-Datei der Rechnungen vorbereiten
-	$csv_file = fopen('./docs/'.$_USER->getId().'-Rechnungsausgang.csv', "w");
-	//fwrite($csv_file, "Firma iPactor - �bersicht\n");
-	
-	// Tabellenkopf der CSV-Datei (Rechnungen) schreiben
-	$csv_string .= "Re-Nr.; Auftragstitel; ";
-	$csv_string .= "Betrag Netto ; MWST ; Brutto ;";
-	$csv_string .= "Kunde; Debitor-Nr. ; Erstellt; Zahlbar bis; Bezahlt am; Bemerkung \n";
-
-	$x = 0;
-	foreach ($documents as $document){  
-		
-	    $order = null;
-	    if($document->getRequestModule()== Document::REQ_MODULE_ORDER){
-	        $order = new Order($document->getRequestId());
-	    } else if ($document->getRequestModule()== Document::REQ_MODULE_COLLECTIVEORDER){
-	        $order = new CollectiveInvoice($document->getRequestId());
-	    } 
-	    $tmp_mwst = $document->getPriceBrutto()-$document->getPriceNetto();
-	    $csv_string .= $document->getName().";".$order->getTitle().";";
-	    $csv_string .= printPrice($document->getPriceNetto()).";".printPrice($tmp_mwst).";".printPrice($document->getPriceBrutto()).";";
-	    $csv_string .= $order->getCustomer()->getNameAsLine().";".$order->getCustomer()->getDebitor().";";
-	    $csv_string .= date("d.m.Y", $document->getCreateDate()).";".date("d.m.Y",$document->getPayable()).";";
-	    if($document->getPayed()>0){
-			$csv_string .= date("d.m.Y",$document->getPayed());
-		}
-		$csv_string .= ";";
-		if($document->getStornoDate() > 0){
-			$csv_string .= " STORNO ";
-		}
-	    $csv_string .= " \n";
-	    
-	    if($document->getStornoDate() == 0){
-	    	$sum_netto += $document->getPriceNetto();
-	    	$sum_brutto += $document->getPriceBrutto();
-	    }
-	    ?>
-	<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)"
-		onmouseout="mark(this, 1)">
-		
-		<td class="content_row" align="center">
-			<a href="#" 
-			onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?=$document->getId()?>&version=print'">
-				<?=$document->getName() ?>
-			</a>
-			<input type="hidden" name="doc_existingid_<?=$x?>" name="doc_existingid_<?=$x?>" value="<?=(int)$document->getId()?>" />
-			<?if($document->getStornoDate() > 0){?>
-				<span class="glyphicons glyphicons-exclamation-sign"
-				title="<?=$_LANG->get('Storno am')." ".date("d.m.Y",$document->getStornoDate())?>">
-				</span>
-
-			<?}?>
-		</td>
-		<td class="content_row">
-			<?	if($document->getRequestModule()== Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
-				if($document->getRequestModule()== Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
-			?>
-		</td>
-		<td class="content_row pointer">
-			<?if($document->getRequestModule()== Document::REQ_MODULE_ORDER){?>
-				<a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?=$order->getId()?>&step=4"><?=$order->getNumber()?></a>	
-			<?}
-			if($document->getRequestModule()== Document::REQ_MODULE_COLLECTIVEORDER){?> 
-				<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?=$order->getId()?>"><?=$order->getNumber()?></a>
-			<?}?>
-		</td>
-		<td class="content_row" style="text-align:right"><?=printPrice($document->getPriceBrutto())?> <?=$_USER->getClient()->getCurrency()?></td>
-		<td class="content_row" style="text-align:right"><?=printPrice($document->getPriceNetto())?> <?=$_USER->getClient()->getCurrency()?></td>
-		<td class="content_row">
-			<?=$order->getCustomer()->getNameAsLine()?>
-			&nbsp;
-		</td>
-		<td class="content_row">
-			<?
-			if ($order->getCustomer()->getCommissionpartner() > 0)
-			{
-				$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
-				echo $tmp_bcontact->getName1();
-			}
-			else
-			{
-				echo 'kein';
-			}
-			?>
-			&nbsp;
-		</td>
-		<td class="content_row">
-			<?
-			if ($order->getCustomer()->getCommissionpartner() > 0)
-			{
-				$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
-				echo printPrice(($document->getPriceBrutto() / 100 * $tmp_bcontact->getProvision()))?> <?=$_USER->getClient()->getCurrency();
-			}
-			else
-			{
-				echo '';
-			}
-			?>
-			&nbsp;
-		</td>
-		<td class="content_row">
-			<?=$order->getTitle()?>
-			&nbsp;
-		</td>
-		<td class="content_row"><?=date("d.m.Y", $document->getCreateDate())?></td>
-		<td class="content_row" 
-		<?php if($document->getPayed()==0){
-			if(strtotime(date("d.m.Y 23:59:59",$document->getPayable())) > time()) 
-		       echo "style='color:green'"; 
-		       else echo "style='color:red'";
-		}?>>
-		<? echo date("d.m.Y",$document->getPayable());?>&nbsp;</td>
-		
-		<td class="content_row">
-			<input  type="text" name="date_<?=$x?>" id="date_<?=$x?>" 
-					class="text date" style="width: 60px" 
-					value="<?if($document->getPayed()>0) echo date("d.m.Y",$document->getPayed());?>" />
-		</td>
-		<td class="content_row">
-			<!-- ul class="postnav_save_small_outinvc"><a href="#" 
-			onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?=$document->getId()?>&version=print'">
-			<?=$_LANG->get('Anzeigen')?></a>
-			</ul-->
-			<ul class="postnav_save_small_outinvc">
-				<a href="index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?=$document->getId()?>"><?=$_LANG->get('Mahnung');?></a>
-			</ul>
-			<?if($document->getStornoDate() == 0){?>
-			<ul class="postnav_save_small_outinvc">
-				<a href="#"
-					onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=storno&invid=<?=$document->getId()?>')"><?=$_LANG->get('Storno');?>&emsp;&ensp;</a>
-			</ul>
-			<?} else { ?>
-			<br/>
-			<?}?>
-		</td>
-	</tr>
-	<? $x++;
-	} ?>
-	<tr>
-		<td colspan="3" class="content_row_header" align="center"><?=$_LANG->get('Gesamtsumme')?></td>
-		<td class="content_row_header" style="text-align:right">
-			<?=printPrice($sum_brutto);?> <?=$_USER->getClient()->getCurrency()?>
-		</td>
-		<td class="content_row_header" style="text-align:right">
-			<?=printPrice($sum_netto);?> <?=$_USER->getClient()->getCurrency()?>
-		</td>
-		<td colspan="5" align="right">
-			<a href="./docs/<?=$_USER->getId()?>-Rechnungsausgang.csv"  class="icon-link"
-					title="Rechnugen als CSV-Datei exportieren"><span class="glyphicons glyphicons-calculator">Export</span></a>
-		</td>
-		<td>&ensp;</td>
-	</tr>
-</table>
-</div>
-
-<? // Datei mit den offenen Rechnungen schliessen
-	$csv_string .= ";".$_LANG->get('Summe').":;".printPrice($sum_netto).";".printPrice($sum_brutto)."; ; ;";
-	$csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
-	fwrite($csv_file, $csv_string);
-	fclose($csv_file); ?>
-
-<table class="standard">
-	<tr>
-		<td>&nbsp;</td>
-		<td style="text-align: right; width: 130px">
-		<input type="submit" class="button" value="<?=$_LANG->get('Speichern')?>" />
-		</td>
-	</tr>
-</table>
-</form>
-<iframe style="width:1px;height:1px;display:none" id="idx_iframe_doc" src=""></iframe>

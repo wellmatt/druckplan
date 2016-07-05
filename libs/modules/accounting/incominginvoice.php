@@ -294,9 +294,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
 
@@ -305,9 +305,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
 
@@ -316,9 +316,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
  
@@ -327,9 +327,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      ); // test 123
 
@@ -338,9 +338,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/glyphicons-46-calendar.svg",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "images/icons/glyphicons-46-calendar.svg",
+//                buttonImageOnly: true
 			}
      );
 });
@@ -468,12 +468,12 @@ $(function() {
 									  <tbody>
 									  <tr class="<?=$color?>" onmouseover="mark(this, 0)"
 										  onmouseout="mark(this, 1)">
-										  <td class="content_row" >
+										  <td>
 											  <input type="text" name="invc_crtdat_<?=$x?>" id="invc_crtdat_<?=$x?>"
 													 value="<? if ($invoice->getInvc_crtdat() > 0) echo date('d.m.Y', $invoice->getInvc_crtdat())?>"
 													 onfocus="markfield(this,0)" onblur="markfield(this,1)"  class="form-control invc_crtdat" />
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <input type="hidden" name="invc_existingid_<?=$x?>" name="invc_existingid_<?=$x?>"
 													 value="<?=(int)$invoice->getId()?>" />
 											  <select class="form-control" name="invc_supplierid_<?=$x?>" id="invc_supplierid_<?=$x?>"
@@ -487,7 +487,7 @@ $(function() {
 											  <input type="text" class="form-control" name="invc_title_<?=$x?>" value="<?=$invoice->getInvc_title()?>"
 													 onfocus="markfield(this,0)" onblur="markfield(this,1)">
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <?
 											  if ($invoice->getInvc_orders()){
 												  foreach ($invoice->getInvc_orders() as $tmp_invc_order){
@@ -508,7 +508,7 @@ $(function() {
 												  <?	} 	?>
 											  </select>
 										  </td>
-										  <td class="content_row" align="center">
+										  <td>
 											  <input type="checkbox" class="form-control" name="invc_uses_supplier_<?=$x?>" value="1" <?if($invoice->getInvc_supplierid() > 0) echo 'checked="checked"'?>
 													 onclick="if(this.checked)
 														 document.getElementById('invc_supplierid_<?=$x?>').style.display='';
@@ -516,38 +516,38 @@ $(function() {
 														 document.getElementById('invc_supplierid_<?=$x?>').style.display='none';"
 												  <? if((int)$invoice->getInvc_supplierid()) echo "checked='checked'"?>>
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <input type="text" class="form-control" name="invc_price_netto_<?=$x?>"
 													 value="<?=printPrice($invoice->getInvc_price_netto());?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 											  <?=$_USER->getClient()->getCurrency()?>
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <input type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"
 													 name="invc_taxes_active_<?=$x?>" id="invc_taxes_active_<?=$x?>"	value="<?=$invoice->getInvc_taxes_active();?>" /> %
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <? if((int)$invoice->getId()) {echo $invoice->getTaxPrice();echo " ".$_USER->getClient()->getCurrency();} else echo "- - - "?>
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <? if((int)$invoice->getId()) {echo $invoice->getBruttoPrice(); echo " ".$_USER->getClient()->getCurrency();} else echo "- - - "?>
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <input type="text" class="form-control"	name="invc_number_<?=$x?>" value="<?=$invoice->getInvc_number()?>">
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <input type="text" name="invc_payable_dat_<?=$x?>" id="invc_payable_dat_<?=$x?>"
 													 value="<? if ($invoice->getInvc_payable_dat() > 0) echo date('d.m.Y', $invoice->getInvc_payable_dat())?>"
 													 onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control invc_payable_dat" />
 										  </td>
-										  <td class="content_row">
+										  <td>
 											  <input type="text" name="invc_payed_dat_<?=$x?>" id="invc_payed_dat_<?=$x?>"
 													 value="<? if ($invoice->getInvc_payed_dat() > 0) echo date('d.m.Y', $invoice->getInvc_payed_dat())?>"
 													 onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control invc_payed_dat" />
 										  </td>
-										  <td class="content_row" align="center">
+										  <td>
 											  <input type="checkbox" class="form-control"	name="invc_sepa_activation_<?=$x?>" value="1"
 												  <? if (in_array($invoice, $sepa_inv)) echo 'checked="checked"';?>>
-										  <td class="content_row">
+										  <td>
 											  <ul class="postnav_del_small_invoice">
 												  <?	if($invoice->getId()){  ?>
 													  <a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$invoice->getId()?>&exec=del')"><?=$_LANG->get('L&ouml;schen')?></a>
@@ -583,7 +583,7 @@ $(function() {
 												  <input type="text" name="invc_crtdat_<?=$y?>" id="invc_crtdat_<?=$y?>"
 														 onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control invc_crtdat" />
 											  </td>
-											  <td class="content_row pointer">
+											  <td>
 												  <input type="hidden" name="invc_existingid_<?=$y?>" name="invc_existingid_<?=$y?>" value=0 />
 												  <select class="form-control" name="invc_supplierid_<?=$y?>" id="invc_supplierid_<?=$y?>"
 														  onfocus="markfield(this,0)" onblur="markfield(this,1)">
@@ -595,37 +595,45 @@ $(function() {
 												  <input type="text" class="form-control" name="invc_title_<?=$y?>" value=""
 														 onfocus="markfield(this,0)" onblur="markfield(this,1)">
 											  </td>
-											  <td class="content_row"></td>
-											  <td class="content_row pointer" align="center">
+											  <td></td>
+											  <td>
 												  <input type="checkbox" class="form-control" name="invc_uses_supplier_<?=$y?>" value="1" checked="checked"
 														 onclick="if(this.checked)
 															 document.getElementById('invc_supplierid_<?=$y?>').style.display='';
 															 else
 															 document.getElementById('invc_supplierid_<?=$y?>').style.display='none';">
 											  </td>
-											  <td class="content_row pointer">
-												  <input type="text" class="form-control" name="invc_price_netto_<?=$y?>" value=""
-														 onfocus="markfield(this,0)" onblur="markfield(this,1)">  <?=$_USER->getClient()->getCurrency()?>
+											  <td>
+												  <div class="input-group">
+													  <input type="text" class="form-control" name="invc_price_netto_<?=$y?>" value=""
+															 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+													  <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+												  </div>
+
 											  </td>
-											  <td class="content_row pointer">
-												  <input class="form-control" name="invc_taxes_active_<?=$y?>" id="invc_taxes_active_<?=$y?>"
-														 value="<?=$_USER->getClient()->getTaxes()?>"
-														 onfocus="markfield(this,0)" onblur="markfield(this,1)" onclick="this.value=''" /> %
+											  <td>
+												  <div class="input-group">
+													  <input class="form-control" name="invc_taxes_active_<?=$y?>" id="invc_taxes_active_<?=$y?>"
+															 value="<?=$_USER->getClient()->getTaxes()?>"
+															 onfocus="markfield(this,0)" onblur="markfield(this,1)" onclick="this.value=''" />
+													  <span class="input-group-addon">%</span>
+												  </div>
+
 											  </td>
-											  <td class="content_row pointer"><? echo "- - - "?></td>
-											  <td class="content_row pointer"><? echo "- - - "?></td>
-											  <td class="content_row pointer">
+											  <td><? echo "- - - "?></td>
+											  <td><? echo "- - - "?></td>
+											  <td>
 												  <input type="text" class="form-control"	name="invc_number_<?=$y?>">
 											  </td>
-											  <td class="content_row pointer">
+											  <td>
 												  <input type="text" name="invc_payable_dat_<?=$y?>" id="invc_payable_dat_<?=$y?>" onfocus="markfield(this,0)"
 														 onblur="markfield(this,1)" class="form-control invc_payable_dat">
 											  </td>
-											  <td class="content_row pointer">
+											  <td>
 												  <input type="text" name="invc_payed_dat_<?=$y?>" id="invc_payed_dat_<?=$y?>" onfocus="markfield(this,0)"
 														 onblur="markfield(this,1)" class="form-control invc_payed_dat">
 											  </td>
-											  <td class="content_row" colspan="2">
+											  <td>
 												  <ul class="postnav_del_small_invoice">
 													  <button class="btn btn-xs btn-success" onclick="document.location.href='#';">
 														  <?=$_LANG->get('L&ouml;schen')?>
@@ -653,7 +661,7 @@ $(function() {
 									  </thead>
 									  <tbody>
 									  <tr>
-										  <td align="left">
+										  <td>
 											  <button class="btn btn-xs btn-success" onclick="document.location.href='<?=$filename1?>'" title="<?=$_LANG->get('Offene Posten als CSV-Datei exportieren')?>">
 												  <span class="glyphicons glyphicons-calculator"></span><?=$_LANG->get('Export')?>
 											  </button>
@@ -669,7 +677,7 @@ $(function() {
 											  <?***/?>
 
 										  </td>
-										  <td align="center">
+										  <td>
 											  <?	if($_REQUEST["exec"] == "SEPA_gen"){	// Wenn SEPA-Datei erzeugen, dann Datei zum Download bereitstellen ...
 												  if ($number_of_payments > 0){?>
 													  &emsp;
@@ -682,27 +690,27 @@ $(function() {
 										  </td>
 										  <input type="hidden" name="bankname" id="bankname"/>
 										  <?	if($_USER->getClient()->getBankName() != "" && $_USER->getClient()->getBankName() != FALSE){?>
-											  <td style="text-align: left; width: 180px">
-												  <input type="button" class="button" value="SFirm (<?=substr($_USER->getClient()->getBankName(),0,10);?>) erzeugen"
-														 title="<?=$_LANG->get('Erzeuge eine XML-Datei zum Verbuchen der ausgew&auml;hlten Rechnungen in SFirm')?>"
-														 onclick="document.getElementById('bankname').value='1';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();" />
+											  <td>
+												  <button class="btn btn-xs btn-success" onclick="document.getElementById('bankname').value='1';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();">
+													  (<?=substr($_USER->getClient()->getBankName(),0,10);?>) erzeugen"
+												  </button>
 											  </td>
 										  <?	} ?>
 										  <?	if($_USER->getClient()->getBankName2() != "" && $_USER->getClient()->getBankName2() != FALSE){?>
-											  <td style="text-align: left; width: 180px">
-												  <input type="button" class="button" value="SFirm (<?=substr($_USER->getClient()->getBankName2(),0,10);?>) erzeugen"
-														 title="<?=$_LANG->get('Erzeuge eine XML-Datei zum Verbuchen der ausgew&auml;hlten Rechnungen in SFirm')?>"
-														 onclick="document.getElementById('bankname').value='2';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();" />
+											  <td>
+												  <button class="btn btn-xs btn-success" onclick="document.getElementById('bankname').value='2';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();">
+													  (<?=substr($_USER->getClient()->getBankName2(),0,10);?>) erzeugen"
+												  </button>
 											  </td>
 										  <?	} ?>
 										  <?	if($_USER->getClient()->getBankName3() != "" && $_USER->getClient()->getBankName3() != FALSE){?>
-											  <td style="text-align: left; width: 180px">
-												  <input type="button" class="button" value="SFirm (<?=substr($_USER->getClient()->getBankName3(),0,10);?>) erzeugen"
-														 title="<?=$_LANG->get('Erzeuge eine XML-Datei zum Verbuchen der ausgew&auml;hlten Rechnungen in SFirm')?>"
-														 onclick="document.getElementById('bankname').value='3';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();" />
+											  <td>
+												  <button class="btn btn-xs btn-success" onclick="document.getElementById('bankname').value='3';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();">
+													  (<?=substr($_USER->getClient()->getBankName3(),0,10);?>) erzeugen"
+												  </button>
 											  </td>
 										  <?	} ?>
-										  <td style="text-align: right; width: 130px">
+										  <td>
 											  <button type="submit" class="btn btn-xs btn-success" >
 												  <?=$_LANG->get('Speichern')?>
 											  </button>
