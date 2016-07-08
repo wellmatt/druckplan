@@ -196,8 +196,12 @@ $suppliers = BusinessContact::getAllBusinessContactsForLists(BusinessContact::OR
 										<td><? echo "- - - "?></td>
 										<td>&nbsp;</td>
 										<td>
-											<ul class="postnav_del" style="margin-top:7px;">
-												<a href="#" style="visibility: hidden"><?=$_LANG->get('L&ouml;schen')?></a>
+											<ul class="postnav_del">
+												<a
+													<button href="#" class="btn btn-xs btn-danger" >
+													<?=$_LANG->get('L&ouml;schen')?>
+													</button>
+												</a>
 											</ul>
 										</td>
 									</tr>

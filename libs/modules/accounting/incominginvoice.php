@@ -635,7 +635,7 @@ $(function() {
 											  </td>
 											  <td>
 												  <ul class="postnav_del_small_invoice">
-													  <button class="btn btn-xs btn-success" onclick="document.location.href='#';">
+													  <button class="btn btn-xs btn-danger" onclick="document.location.href='#';">
 														  <?=$_LANG->get('L&ouml;schen')?>
 													  </button>
 												  </ul>

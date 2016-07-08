@@ -524,13 +524,13 @@ $(function() {
 									<td>
 										<ul class="postnav_del_small_invoice">
 											<? if ($invoice->getId()) { ?>
-												<button class="btn btn-xs btn-success" href="#"
+												<button class="btn btn-xs btn-danger" href="#"
 														onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $invoice->getId() ?>&exec=del')">
 													<?= $_LANG->get('L&ouml;schen') ?>
 												</button>
 												<!-- input type="button" class="buttonRed" value="<?= $_LANG->get('L&ouml;schen') ?>" onclick="askDel('index.php?pid=<?= $_REQUEST["pid"] ?>&id=<?= $invoice->getId() ?>&exec=del')"-->
 											<? } else { ?>
-												<button class="btn btn-xs btn-success" href="#">
+												<button class="btn btn-xs btn-danger" href="#">
 													<?= $_LANG->get('L&ouml;schen') ?>
 												</button>
 											<? } ?>
@@ -617,7 +617,7 @@ $(function() {
 									</td>
 									<td>
 										<ul class="postnav_del_small_invoice">
-											<button class="btn btn-xs btn-success" href="#">
+											<button class="btn btn-xs btn-danger" href="#">
 												<?= $_LANG->get('L&ouml;schen') ?>
 											</button>
 										</ul>
@@ -642,106 +642,113 @@ $(function() {
 				<?=$_LANG->get('Speichern')?>
 			</button>
 		</span>
+		</br>
+		</br>
+		</br>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Ausbezahlte Gutschriften
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th><?=$_LANG->get('Ausbezahlt am')?></th>
+							<th><?=$_LANG->get(' Lieferant / Grund der Gutschrift')?></th>
+							<th><?=$_LANG->get('Brutto-Betrag')?></th>
+							<th><?=$_LANG->get('MwSt')?></th>
+							<th><?=$_LANG->get('MwSt-Betrag')?></th>
+							<th><?=$_LANG->get('Netto-Betrag')?></th>
+							<th><?=$_LANG->get('GS-Nummer')?></th>
+							<th><?=$_LANG->get('ausbezahlt')?></th>
+							<th>&nbsp;</th
+						</tr>
+						</thead>
+						<? // CSV-Datei der bezahlten Posten vorbereiten
+						$csv_file_payed = fopen('./docs/'.$_USER->getId().'-Gutschrifteneingang_ausbezahlt.csv', "w");
+						//fwrite($csv_file, "Firma iPactor - �bersicht\n");
+
+						//Tabellenkopf der CSV-Datei (offene Posten) schreiben
+						$csv_string_payed .= "Grund der Gutschrift; Betrag Netto ; MWST ; Brutto; MWST-Satz; ";
+						$csv_string_payed .= "Lieferant; Kreditor-Nr. ; GS-Nr. ; \n";
+						foreach ($paid as $invoice)
+						{
+							$tmp_supp = new BusinessContact($invoice->getRev_supplierid());
+							// Datei mit den bezahlten Eingangsrechnungen fuellen
+							$csv_string_payed .= $invoice->getRev_title().";".printPrice($invoice->getRev_price_netto()).";";
+							$csv_string_payed .= $invoice->getTaxPrice().";".$invoice->getBruttoPrice().";".$invoice->getTaxRate().";";
+							$csv_string_payed .= $tmp_supp->getNameAsLine().";".$tmp_supp->getKreditor().";";
+							$csv_string_payed .= $invoice->getRev_number().";";
+							/*if ($invoice->getRev_payed_dat() > 0){
+                                $csv_string_payed .= date('d.m.Y', $invoice->getRev_payed_dat());
+                            }*/
+							$csv_string_payed .= " \n";
+
+							if((int)$invoice->getRev_taxes_active())
+								$img_status = "status_green.gif";
+							else
+								$img_status = "status_red.gif";
+
+							if((int)$invoice->getRev_payed())
+								$img_status2 = "status_green.gif";
+							else
+								$img_status2 = "status_red.gif";
+							?>
+							<tbody>
+							<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)"
+								onmouseout="mark(this,1)">
+								<td><?=date('d.m.Y', $invoice->getRev_payed_dat())?></td>
+								<td><?=$tmp_supp->getNameAsLine()."<br/>".$invoice->getRev_title()?></td>
+								<td><?=$invoice->getBruttoPrice()?> <?=$_USER->getClient()->getCurrency()?></td>
+								<td><?=$invoice->getTaxRate()?></td>
+								<td><?=$invoice->getTaxPrice()?> <?=$_USER->getClient()->getCurrency()?></td>
+								<td><?=$invoice->getRev_price_netto()?> <?=$_USER->getClient()->getCurrency()?></td>
+								<td><?if($invoice->getRev_number()!="") echo $invoice->getRev_number(); else echo "- - - ";?></td>
+								<td><img
+										src="./images/icons/<?=$img_status2?>"></td>
+								<td>
+									<ul class="postnav_del_small">
+
+										<a
+										<button class="btn btn-xs btn-danger" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$invoice->getId()?>&exec=del')">
+											<?=$_LANG->get('L&ouml;schen')?>
+										</button>
+										</a>
+									</ul>
+								</td>
+							</tr>
+							</tbody>
+							<?
+						}
+
+						// Datei mit den offenen Eingangsrechnungen schliessen
+						$csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
+						fwrite($csv_file_payed, $csv_string_payed);
+						fclose($csv_file_payed);
+
+						if(!$paid)
+						{  ?>
+							<tr class="<?=getRowColor($x)?>">
+								<td><br>
+									<b class="msg_save_err"><?=$_LANG->get('Es sind keine ausbezahlten Vorg&auml;nge vorhanden.')?>
+									</b> <br>
+									<br>
+								</td>
+							</tr>
+							<?
+						}
+						?>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
-<div class="box1">
-<table class="standard">
-	<colgroup>
-		<col width="80">
-		<col>
-		<col width="95">
-		<col width="60">
-		<col width="95">
-		<col width="95">
-		<col width="130">
-		<col width="50">
-		<col width="100">
-	</colgroup>
-	<tr>
-		<td class="content_tbl_header" colspan="8"><h1><?=$_LANG->get('Ausbezahlte Gutschriften')?></h1></td>
-	</tr>
-	<tr>
-		<td class="content_row_header" style="color: green"><?=$_LANG->get('Ausbezahlt am')?></td>
-		<td class="content_row_header"><?=$_LANG->get(' Lieferant / Grund der Gutschrift')?></td>
-		<td class="content_row_header" style="text-align: right"><?=$_LANG->get('Brutto-Betrag')?></td>
-		<td class="content_row_header" style="text-align: right"><?=$_LANG->get('MwSt')?></td>
-		<td class="content_row_header" style="text-align: right"><?=$_LANG->get('MwSt-Betrag')?></td>
-		<td class="content_row_header" style="text-align: right"><?=$_LANG->get('Netto-Betrag')?></td>
-		<td class="content_row_header" style="text-align: right"><?=$_LANG->get('GS-Nummer')?></td>
-		<td class="content_row_header"><?=$_LANG->get('ausbezahlt')?></td>
-		<td class="content_row_header">&nbsp;</td>
-	</tr>
-	<? // CSV-Datei der bezahlten Posten vorbereiten
-	$csv_file_payed = fopen('./docs/'.$_USER->getId().'-Gutschrifteneingang_ausbezahlt.csv', "w");
-	//fwrite($csv_file, "Firma iPactor - �bersicht\n");
-	
-	//Tabellenkopf der CSV-Datei (offene Posten) schreiben
-	$csv_string_payed .= "Grund der Gutschrift; Betrag Netto ; MWST ; Brutto; MWST-Satz; ";
-	$csv_string_payed .= "Lieferant; Kreditor-Nr. ; GS-Nr. ; \n";
-	foreach ($paid as $invoice)
-	{
-		$tmp_supp = new BusinessContact($invoice->getRev_supplierid());
-		// Datei mit den bezahlten Eingangsrechnungen fuellen
-		$csv_string_payed .= $invoice->getRev_title().";".printPrice($invoice->getRev_price_netto()).";";
-		$csv_string_payed .= $invoice->getTaxPrice().";".$invoice->getBruttoPrice().";".$invoice->getTaxRate().";";
-		$csv_string_payed .= $tmp_supp->getNameAsLine().";".$tmp_supp->getKreditor().";";
-		$csv_string_payed .= $invoice->getRev_number().";";
-		/*if ($invoice->getRev_payed_dat() > 0){
-			$csv_string_payed .= date('d.m.Y', $invoice->getRev_payed_dat());
-		}*/
-		$csv_string_payed .= " \n";
-		
-		if((int)$invoice->getRev_taxes_active())
-		$img_status = "status_green.gif";
-		else
-		$img_status = "status_red.gif";
-
-		if((int)$invoice->getRev_payed())
-		$img_status2 = "status_green.gif";
-		else
-		$img_status2 = "status_red.gif";
-		?>
-	<tr class="<?=getRowColor($x)?>" onmouseover="mark(this, 0)"
-		onmouseout="mark(this,1)">
-		<td class="content_row" style="color: green"><?=date('d.m.Y', $invoice->getRev_payed_dat())?></td>
-		<td class="content_row"><?=$tmp_supp->getNameAsLine()."<br/>".$invoice->getRev_title()?></td>
-		<td class="content_row" style="text-align: right"><?=$invoice->getBruttoPrice()?> <?=$_USER->getClient()->getCurrency()?></td>
-		<td class="content_row" style="text-align: right"><?=$invoice->getTaxRate()?></td>
-		<td class="content_row" style="text-align: right"><?=$invoice->getTaxPrice()?> <?=$_USER->getClient()->getCurrency()?></td>
-		<td class="content_row" style="text-align: right"><?=$invoice->getRev_price_netto()?> <?=$_USER->getClient()->getCurrency()?></td>
-		<td class="content_row" style="text-align: right"><?if($invoice->getRev_number()!="") echo $invoice->getRev_number(); else echo "- - - ";?></td>
-		<td class="content_row" style="text-align: center"><img
-			src="./images/icons/<?=$img_status2?>"></td>
-		<td class="content_row">
-		<ul class="postnav_del_small" style="margin-bottom:3px;">
-			<a href="#" style="padding:10px 40px 10px 28px;height:26px"
-				onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$invoice->getId()?>&exec=del')"><?=$_LANG->get('L&ouml;schen')?></a>
-		</ul>
-		</td>
-	</tr>
-	<?
-	}
-	
-	// Datei mit den offenen Eingangsrechnungen schliessen
-	$csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
-	fwrite($csv_file_payed, $csv_string_payed);
-	fclose($csv_file_payed);
-	
-	if(!$paid)
-	{  ?>
-	<tr class="<?=getRowColor($x)?>">
-		<td class="content_row" colspan="10" style="text-align: center"><br>
-		<b class="msg_save_err"><?=$_LANG->get('Es sind keine ausbezahlten Vorg&auml;nge vorhanden.')?>
-		</b> <br>
-		<br>
-		</td>
-	</tr>
-	<?
-	}
-	?>
-</table>
-</div>
 
 <?/*** table class="standard">
 <tr>
