@@ -24,7 +24,6 @@ if($_REQUEST["exec"] == "save")
 
 $vac_user = VacationUser::getAll();
 $users = User::getAllUser();
-
 ?>
 
 <!-- FancyBox -->
@@ -37,6 +36,16 @@ $users = User::getAllUser();
 <script src='jscripts/calendar/moment.min.js'></script>
 <script src='jscripts/calendar/fullcalendar.min.js'></script>
 <script src='jscripts/calendar/de.js'></script>
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/tagit/tag-it.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -44,16 +53,19 @@ $quickmove->addItem('Speichern','#',"$('#vacuser').submit();",'glyphicon-floppy-
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">
-                Benutzer
-            </h3>
-	  </div>
-    </br>
-    <div class="table-responsive">
-        <h3>Benutzer Konfiguration</h3>
-        <table class="table table-hover">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="vacuser" id="vacuser">
+    <input type="hidden" name="exec" value="save">
+
+    <div class="panel panel-default">
+          <div class="panel-heading">
+                <h3 class="panel-title">
+                    Benutzer
+                </h3>
+          </div>
+        </br>
+        <div class="table-responsive">
+            <h3>Benutzer Konfiguration</h3>
+            <table class="table table-hover" id="vac">
                 <thead>
                     <tr>
                         <td class="content_row_header"><?=$_LANG->get('ID')?></td>
@@ -68,6 +80,7 @@ echo $quickmove->generate();
                         <td class="content_row_header"><?=$_LANG->get('verbleibend')?></td>
                     </tr>
                 </thead>
+                <tbody>
                 <?php
                 foreach($users as $user)
                 {
@@ -97,7 +110,7 @@ echo $quickmove->generate();
                             <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 2));?></td>
                             <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 3));?></td>
                             <td class="content_row_header"><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 4));?></td>
-                            <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast()-VacationEntry::getDaysByUser($user));?></td>
+                            <td class="content_row_header"><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast()-VacationEntry::getDaysByUserWithoutIll($user));?></td>
                         </tr>
                         <?php
                     } else {
@@ -118,57 +131,127 @@ echo $quickmove->generate();
                     }
                 }
                 ?>
-        </table>
-    </div>
-    </br>
-    <?php
-    $vacations = VacationEntry::getAll();
-    ?>
-    <div class="table-responsive">
-        <h3>Urlaub Übersicht</h3>
-    	<table class="table table-hover">
-            <thead>
-            <tr>
-                <td class="content_row_header"><?=$_LANG->get('ID')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Benutzer')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Tage')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Von')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Status')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Typ')?></td>
-                <td class="content_row_header"><?=$_LANG->get('Kommentar')?></td>
-            </tr>
-            </thead>
-            <?php
-            foreach ($vacations as $vacation) {
-                if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $vacation->getUser()->getId() != $_USER->getId())
-                    continue;
-                ?>
-                <tr class="pointer" <?php if ($_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) || $vacation->getState()==VacationEntry::STATE_OPEN) echo ' onclick="callBoxFancy(\'libs/modules/vacation/vacation.new.frame.php?eventid='.$vacation->getId().'\');" ';?>>
-                    <td class="content_row_header"><?php echo $vacation->getId();?></td>
-                    <td class="content_row_header"><?php echo $vacation->getUser()->getNameAsLine();?></td>
-                    <td class="content_row_header"><?php echo $vacation->getDays();?></td>
-                    <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getStart());?></td>
-                    <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getEnd());?></td>
-                    <td class="content_row_header"><?php echo $vacation->getStateFormated();?></td>
-                    <td class="content_row_header"><?php echo $vacation->getTypeFormated();?></td>
-                    <td class="content_row_header"><?php echo $vacation->getComment();?></td>
+                </tbody>
+            </table>
+        </div>
+        </br>
+        <?php
+        $vacations = VacationEntry::getAll();
+        ?>
+        <div class="table-responsive">
+            <h3>Urlaub Übersicht</h3>
+            <table class="table table-hover" id="vacs">
+                <thead>
+                <tr>
+                    <td class="content_row_header"><?=$_LANG->get('ID')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Benutzer')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Tage')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Von')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Status')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Typ')?></td>
+                    <td class="content_row_header"><?=$_LANG->get('Kommentar')?></td>
                 </tr>
+                </thead>
+                <tbody>
                 <?php
-            }
-            ?>
-        </table>
+                foreach ($vacations as $vacation) {
+                    if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $vacation->getUser()->getId() != $_USER->getId())
+                        continue;
+                    ?>
+                    <tr class="pointer" <?php if ($_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) || $vacation->getState()==VacationEntry::STATE_OPEN) echo ' onclick="callBoxFancy(\'libs/modules/vacation/vacation.new.frame.php?eventid='.$vacation->getId().'\');" ';?>>
+                        <td class="content_row_header"><?php echo $vacation->getId();?></td>
+                        <td class="content_row_header"><?php echo $vacation->getUser()->getNameAsLine();?></td>
+                        <td class="content_row_header"><?php echo $vacation->getDays();?></td>
+                        <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getStart());?></td>
+                        <td class="content_row_header"><?php echo date('d.m.Y',$vacation->getEnd());?></td>
+                        <td class="content_row_header"><?php echo $vacation->getStateFormated();?></td>
+                        <td class="content_row_header"><?php echo $vacation->getTypeFormated();?></td>
+                        <td class="content_row_header"><?php echo $vacation->getComment();?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        </br>
+        <div class="table-responsive">
+            <table class="table table-hover">
+            <div id='calendar'></div>
+        </div>
+        <div id="hidden_clicker" style="display:none">
+            <a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a>
+        </div>
     </div>
-    </br>
-    <div class="table-responsive">
-    	<table class="table table-hover">
-        <div id='calendar'></div>
-    </div>
-    <div id="hidden_clicker" style="display:none">
-        <a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a>
-    </div>
-</div>
+</form>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        var vac = $('#vac').DataTable( {
+            "paging": true,
+            "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+            "pageLength": <?php echo $perf->getDt_show_default();?>,
+            "dom": 'T<"clear">flrtip',
+            "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+            "language":
+            {
+                "emptyTable":     "Keine Daten vorhanden",
+                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": 	  "Keine Seiten vorhanden",
+                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix":    "",
+                "thousands":      ".",
+                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing":     "Verarbeite...",
+                "search":         "Suche:",
+                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+                "paginate": {
+                    "first":      "Erste",
+                    "last":       "Letzte",
+                    "next":       "N&auml;chste",
+                    "previous":   "Vorherige"
+                },
+                "aria": {
+                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        } );
+        var vacs = $('#vacs').DataTable( {
+            "paging": true,
+            "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+            "pageLength": <?php echo $perf->getDt_show_default();?>,
+            "dom": 'T<"clear">flrtip',
+            "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+            "language":
+            {
+                "emptyTable":     "Keine Daten vorhanden",
+                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": 	  "Keine Seiten vorhanden",
+                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix":    "",
+                "thousands":      ".",
+                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing":     "Verarbeite...",
+                "search":         "Suche:",
+                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+                "paginate": {
+                    "first":      "Erste",
+                    "last":       "Letzte",
+                    "next":       "N&auml;chste",
+                    "previous":   "Vorherige"
+                },
+                "aria": {
+                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        } );
+    } );
+</script>
 <script>
 
     $(document).ready(function() {

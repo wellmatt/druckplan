@@ -168,6 +168,11 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
 
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
 <link rel="stylesheet" href="../../../css/bootstrap.min.css">

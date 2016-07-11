@@ -141,26 +141,28 @@ if($_REQUEST["subexec"] == "save"){
 
 	if ($_FILES){
 		if (isset($_FILES['file']['name'])) {
-			$j = 0;     // Variable for indexing uploaded image.
-			for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
-				$target_path = "./images/products/";     // Declaring Path for uploaded images.
-				// Loop to get individual element from the array
-				$validextensions = array("jpeg", "jpg", "png");      // Extensions which are allowed.
-				$ext = explode('.', basename($_FILES['file']['name'][$i]));   // Explode file name from dot(.)
-				$file_extension = end($ext); // Store extensions in the variable.
-				$filename = md5(time().$_FILES["file"]["name"][$i]) . "." . $ext[count($ext) - 1];
-				$target_path = $target_path . $filename;     // Set the target path with a new name of image.
-				$j = $j + 1;      // Increment the number of uploaded images according to the files in array.
-				if (in_array($file_extension, $validextensions)) {
-					if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
-						// If file moved to uploads folder.
-						$savemsg .= '<br>' .$j. ').<span id="noerror">Bild erfolgreich hochgeladen!.</span><br/>';
-						$article->addPicture($filename);
-					} else {     //  If File Was Not Moved.
-						$savemsg .= '<br>' .$j. ').<span id="error">Bitte erneut versuchen!.</span><br/>';
+			if (isset($_FILES['file']['name'][0]) && $_FILES['file']['name'][0] != "" && $_FILES['file']['name'][0] != null){
+				$j = 0;     // Variable for indexing uploaded image.
+				for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+					$target_path = "./images/products/";     // Declaring Path for uploaded images.
+					// Loop to get individual element from the array
+					$validextensions = array("jpeg", "jpg", "png");      // Extensions which are allowed.
+					$ext = explode('.', basename($_FILES['file']['name'][$i]));   // Explode file name from dot(.)
+					$file_extension = end($ext); // Store extensions in the variable.
+					$filename = md5(time().$_FILES["file"]["name"][$i]) . "." . $ext[count($ext) - 1];
+					$target_path = $target_path . $filename;     // Set the target path with a new name of image.
+					$j = $j + 1;      // Increment the number of uploaded images according to the files in array.
+					if (in_array($file_extension, $validextensions)) {
+						if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
+							// If file moved to uploads folder.
+							$savemsg .= '<br>' .$j. ').<span id="noerror">Bild erfolgreich hochgeladen!.</span><br/>';
+							$article->addPicture($filename);
+						} else {     //  If File Was Not Moved.
+							$savemsg .= '<br>' .$j. ').<span id="error">Bitte erneut versuchen!.</span><br/>';
+						}
+					} else {     //   If File Size And File Type Was Incorrect.
+						$savemsg .= '<br>' .$j. ').<span id="error">***Ungültige Dateierweiterung***</span><br/>';
 					}
-				} else {     //   If File Size And File Type Was Incorrect.
-					$savemsg .= '<br>' .$j. ').<span id="error">***Ungültige Dateierweiterung***</span><br/>';
 				}
 			}
 		}
@@ -636,6 +638,7 @@ echo $quickmove->generate();
 								</td>
 								<td>
 									<select name="article_costprice_supplier_<?=$y?>" style="width:160px">
+										<option value="0">-> bitte wählen <-</option>
 										<?php
 										foreach ($allsupplier as $supplier){
 											if ($article->getId()>0){

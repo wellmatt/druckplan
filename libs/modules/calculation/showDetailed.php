@@ -472,7 +472,7 @@ $order = new Order($_REQUEST["order"]);
     <tr>
         <td valign="top"><b><?=$_LANG->get('Produktionskosten')?>:</b></td>
         <td valign="top"><b>
-            <?=printPrice($calc->getSubTotal())?> <?=$_USER->getClient()->getCurrency()?></b>
+            <?=printPrice($calc->getPricesub())?> <?=$_USER->getClient()->getCurrency()?></b>
         </td>
     </tr>
 </table>

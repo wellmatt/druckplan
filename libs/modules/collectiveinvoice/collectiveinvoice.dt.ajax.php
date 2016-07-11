@@ -150,7 +150,7 @@
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT id,number,cust_name,title,crtdate,`status`,bcid FROM
+    $sQuery = "SELECT DISTINCT id,number,cust_name,title,crtdate,`status`,bcid FROM
                (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,
                collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid, collectiveinvoice_attributes.attribute_id as caid, collectiveinvoice_attributes.item_id as caiid
                FROM collectiveinvoice
@@ -170,7 +170,7 @@
 //         SELECT FOUND_ROWS()
 //     ";
     $sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
+        SELECT DISTINCT COUNT(".$sIndexColumn.")
         FROM   
         (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
         collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid, collectiveinvoice_attributes.attribute_id as caid, collectiveinvoice_attributes.item_id as caiid
@@ -189,7 +189,7 @@
      
     /* Total data set length */
     $sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
+        SELECT DISTINCT COUNT(".$sIndexColumn.")
         FROM   
         (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
         FROM collectiveinvoice

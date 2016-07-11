@@ -162,6 +162,11 @@ if($_REQUEST["exec"] == "new"){
     }
     
 }
+if($_REQUEST["commentid"] && $_REQUEST["newvis"]){
+    $tmp_comm = new Comment($_REQUEST["commentid"]);
+    $tmp_comm->setVisability($_REQUEST["newvis"]);
+    $tmp_comm->save();
+}
 
 if($_REQUEST["exec"] == "edit"){
     $ticket = new Ticket($_REQUEST["tktid"]);
@@ -1710,21 +1715,67 @@ echo $quickmove->generate();
                                                   <?php echo $crtby; ?>
                                                   <?php if ($comment->getTitle() != '') echo ' - ' . $comment->getTitle(); ?>
                                                   <span class="pull-right" style="font-size: 12px; font-weight: 400;">
+                                                      <?php if ($_USER->isAdmin()){
+                                                          switch ($comment->getVisability()) {
+                                                              case Comment::VISABILITY_PUBLIC:
+                                                                  $style = 'style="width: 100px; background-color: #449d44;"';
+                                                                  break;
+                                                              case Comment::VISABILITY_PUBLICMAIL:
+                                                                  $style = 'style="width: 100px; background-color: #449d44;"';
+                                                                  break;
+                                                              case Comment::VISABILITY_INTERNAL:
+                                                                  $style = 'style="width: 100px; background-color: #31b0d5;"';
+                                                                  break;
+                                                              case Comment::VISABILITY_PRIVATE:
+                                                                  $style = 'style="width: 100px; background-color: #428bca;"';
+                                                                  break;
+                                                          }
+                                                          ?>
+                                                          <select name="comment_state" onchange="window.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?php echo $ticket->getId();?>&commentid=<?php echo $comment->getId();?>&newvis='+$(this).val()" class="small" <?php echo $style;?>>
+                                                              <?php
+                                                              foreach (Array(Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PUBLICMAIL,Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PRIVATE) as $item) {
+                                                                  if ($item == Comment::VISABILITY_PUBLIC) {
+                                                                      echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                      if ($item == $comment->getVisability())
+                                                                          echo ' selected ';
+                                                                      echo '>[PUBLIC]</option>';
+                                                                  } else if ($item == Comment::VISABILITY_PUBLICMAIL) {
+                                                                      echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                      if ($item == $comment->getVisability())
+                                                                          echo ' selected ';
+                                                                      echo '>[PUBLIC-MAIL]</option>';
+                                                                  } else if ($item == Comment::VISABILITY_INTERNAL) {
+                                                                      echo '<option class="label" value="' . $item . '" style="background: #31b0d5;" ';
+                                                                      if ($item == $comment->getVisability())
+                                                                          echo ' selected ';
+                                                                      echo '>[INTERN]</option>';
+                                                                  } else if ($item == Comment::VISABILITY_PRIVATE) {
+                                                                      echo '<option class="label" value="' . $item . '" style="background: #428bca;" ';
+                                                                      if ($item == $comment->getVisability())
+                                                                          echo ' selected ';
+                                                                      echo '>[PRIVATE]</option>';
+                                                                  }
+                                                              }
+                                                              ?>
+                                                          </select>
+                                                          <?php
+                                                      } else {
+                                                          switch ($comment->getVisability()) {
+                                                              case Comment::VISABILITY_PUBLIC:
+                                                                  echo '<span class="label" style="background-color: #449d44;">[PUBLIC]</span>';
+                                                                  break;
+                                                              case Comment::VISABILITY_PUBLICMAIL:
+                                                                  echo '<span class="label" style="background-color: #449d44;">[PUBLIC-MAIL]</span>';
+                                                                  break;
+                                                              case Comment::VISABILITY_INTERNAL:
+                                                                  echo '<span class="label" style="background-color: #31b0d5;">[INTERN]</span>';
+                                                                  break;
+                                                              case Comment::VISABILITY_PRIVATE:
+                                                                  echo '<span class="label" style="background-color: #428bca;">[PRIVATE]</span>';
+                                                                  break;
+                                                          }
+                                                      }?>
                                                       <?php
-                                                      switch ($comment->getVisability()) {
-                                                          case Comment::VISABILITY_PUBLIC:
-                                                              echo '<span class="label" style="background-color: #449d44;">[PUBLIC]</span>';
-                                                              break;
-                                                          case Comment::VISABILITY_PUBLICMAIL:
-                                                              echo '<span class="label" style="background-color: #449d44;">[PUBLIC-MAIL]</span>';
-                                                              break;
-                                                          case Comment::VISABILITY_INTERNAL:
-                                                              echo '<span class="label" style="background-color: #31b0d5;">[INTERN]</span>';
-                                                              break;
-                                                          case Comment::VISABILITY_PRIVATE:
-                                                              echo '<span class="label" style="background-color: #428bca;">[PRIVATE]</span>';
-                                                              break;
-                                                      }
                                                       if ($comment->getState() == 0) {
                                                           echo '<span class="label" style="background-color: #f0ad4e;">[GELÖSCHT]</span>';
                                                       }
@@ -1818,23 +1869,68 @@ echo $quickmove->generate();
                                                                     style="color: #444; display: block; font-weight: 600;">
                                                                     <?php echo $crtby; ?>
                                                                     <?php if ($subcom->getTitle() != '') echo ' - ' . $subcom->getTitle(); ?>
-                                                                    <span class="pull-right"
-                                                                          style="font-size: 12px; font-weight: 400;">
+                                                                    <span class="pull-right" style="font-size: 12px; font-weight: 400;">
+                                                                        <?php if ($_USER->isAdmin()){
+                                                                            switch ($subcom->getVisability()) {
+                                                                                case Comment::VISABILITY_PUBLIC:
+                                                                                    $style = 'style="width: 100px; background-color: #449d44;"';
+                                                                                    break;
+                                                                                case Comment::VISABILITY_PUBLICMAIL:
+                                                                                    $style = 'style="width: 100px; background-color: #449d44;"';
+                                                                                    break;
+                                                                                case Comment::VISABILITY_INTERNAL:
+                                                                                    $style = 'style="width: 100px; background-color: #31b0d5;"';
+                                                                                    break;
+                                                                                case Comment::VISABILITY_PRIVATE:
+                                                                                    $style = 'style="width: 100px; background-color: #428bca;"';
+                                                                                    break;
+                                                                            }
+                                                                            ?>
+                                                                            <select name="comment_state" onchange="window.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?php echo $ticket->getId();?>&commentid=<?php echo $subcom->getId();?>&newvis='+$(this).val()" class="small" <?php echo $style;?>>
+                                                                                <?php
+                                                                                foreach (Array(Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PUBLICMAIL,Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PRIVATE) as $item) {
+                                                                                    if ($item == Comment::VISABILITY_PUBLIC) {
+                                                                                        echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                                        if ($item == $subcom->getVisability())
+                                                                                            echo ' selected ';
+                                                                                        echo '>[PUBLIC]</option>';
+                                                                                    } else if ($item == Comment::VISABILITY_PUBLICMAIL) {
+                                                                                        echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                                        if ($item == $subcom->getVisability())
+                                                                                            echo ' selected ';
+                                                                                        echo '>[PUBLIC-MAIL]</option>';
+                                                                                    } else if ($item == Comment::VISABILITY_INTERNAL) {
+                                                                                        echo '<option class="label" value="' . $item . '" style="background: #31b0d5;" ';
+                                                                                        if ($item == $subcom->getVisability())
+                                                                                            echo ' selected ';
+                                                                                        echo '>[INTERN]</option>';
+                                                                                    } else if ($item == Comment::VISABILITY_PRIVATE) {
+                                                                                        echo '<option class="label" value="' . $item . '" style="background: #428bca;" ';
+                                                                                        if ($item == $subcom->getVisability())
+                                                                                            echo ' selected ';
+                                                                                        echo '>[PRIVATE]</option>';
+                                                                                    }
+                                                                                }
+                                                                                ?>
+                                                                            </select>
+                                                                            <?php
+                                                                        } else {
+                                                                            switch ($comment->getVisability()) {
+                                                                                case Comment::VISABILITY_PUBLIC:
+                                                                                    echo '<span class="label" style="background-color: #449d44;">[PUBLIC]</span>';
+                                                                                    break;
+                                                                                case Comment::VISABILITY_PUBLICMAIL:
+                                                                                    echo '<span class="label" style="background-color: #449d44;">[PUBLIC-MAIL]</span>';
+                                                                                    break;
+                                                                                case Comment::VISABILITY_INTERNAL:
+                                                                                    echo '<span class="label" style="background-color: #31b0d5;">[INTERN]</span>';
+                                                                                    break;
+                                                                                case Comment::VISABILITY_PRIVATE:
+                                                                                    echo '<span class="label" style="background-color: #428bca;">[PRIVATE]</span>';
+                                                                                    break;
+                                                                            }
+                                                                        }?>
                                                                         <?php
-                                                                        switch ($subcom->getVisability()) {
-                                                                            case Comment::VISABILITY_PUBLIC:
-                                                                                echo '<span class="label" style="background-color: #449d44;">[PUBLIC]</span>';
-                                                                                break;
-                                                                            case Comment::VISABILITY_PUBLICMAIL:
-                                                                                echo '<span class="label" style="background-color: #449d44;">[PUBLIC-MAIL]</span>';
-                                                                                break;
-                                                                            case Comment::VISABILITY_INTERNAL:
-                                                                                echo '<span class="label" style="background-color: #31b0d5;">[INTERN]</span>';
-                                                                                break;
-                                                                            case Comment::VISABILITY_PRIVATE:
-                                                                                echo '<span class="label" style="background-color: #428bca;">[PRIVATE]</span>';
-                                                                                break;
-                                                                        }
                                                                         if ($subcom->getState() == 0) {
                                                                             echo '<span class="label" style="background-color: #f0ad4e;">[GELÖSCHT]</span>';
                                                                         }
@@ -1842,7 +1938,7 @@ echo $quickmove->generate();
                                                                         <?php echo date("d.m.Y H:i", $subcom->getCrtdate()); ?>
                                                                         <?php
                                                                         if ($_USER->isAdmin() || $_USER == $subcom->getCrtuser()) {
-                                                                            echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
+                                                                            echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $subcom->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                                         }
                                                                         ?>
                                                                     </span>

@@ -342,7 +342,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Firma</label>
 							<div class="col-sm-5">
-								<input name="name1"
+								<input name="r_name1"
 									   class="form-control" value="<?=$address->getName1()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
@@ -352,7 +352,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Firmenzusatz</label>
 							<div class="col-sm-5">
-								<input name="name2"
+								<input name="r_name2"
 									   class="form-control" value="<?=$address->getName2()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
@@ -361,7 +361,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Adresse</label>
 							<div class="col-sm-5">
-								<input name="address1"
+								<input name="r_address1"
 									   class="form-control" value="<?=$address->getAddress1()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
@@ -370,7 +370,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Adresszusatz</label>
 							<div class="col-sm-5">
-								<input name="address2"
+								<input name="r_address2"
 									   class="form-control" value="<?=$address->getAddress2()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
@@ -379,11 +379,11 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label"></label>
 							<div class="col-sm-2">
-									<input name="zip"  class="form-control" value="<?=$address->getZip()?>"
+									<input name="r_zip"  class="form-control" value="<?=$address->getZip()?>"
 										   onfocus="markfield(this,0)" onblur="markfield(this,1)" placeholder="PLZ">
 							</div>
 							<div class="col-sm-3">
-									<input name="city"  class="form-control" value="<?=$address->getCity()?>"
+									<input name="r_city"  class="form-control" value="<?=$address->getCity()?>"
 										   onfocus="markfield(this,0)" onblur="markfield(this,1)" placeholder="Stadt">
 							</div>
 						</div>
@@ -391,7 +391,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Land</label>
 							<div class="col-sm-5">
-								<select name="country"
+								<select name="r_country"
 										class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 									<?
 									foreach($countries as $c)
@@ -408,7 +408,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Telefon</label>
 							<div class="col-sm-5">
-								<input name="phone"  class="form-control" value="<?=$address->getPhone()?>"
+								<input name="r_phone"  class="form-control" value="<?=$address->getPhone()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
 						</div>
@@ -416,7 +416,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Fax</label>
 							<div class="col-sm-5">
-								<input name="fax"  class="form-control" value="<?=$address->getFax()?>"
+								<input name="r_fax"  class="form-control" value="<?=$address->getFax()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
 						</div>
@@ -424,7 +424,7 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Mobil</label>
 							<div class="col-sm-5">
-								<input name="mobil"  class="form-control" value="<?=$address->getMobil()?>"
+								<input name="r_mobil"  class="form-control" value="<?=$address->getMobil()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
 						</div>

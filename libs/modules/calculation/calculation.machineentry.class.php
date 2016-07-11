@@ -65,46 +65,84 @@ class Machineentry {
         $this->finishing = new Finishing();
         $this->foldtype = new Foldtype();
         global $DB;
-        if($id > 0)
-        {
-            $sql = "SELECT * FROM orders_machines WHERE id = {$id}";
-            if($DB->num_rows($sql))
-            {
-                $r = $DB->select($sql);
-                $r = $r[0];
-                
-                $this->id = $r["id"];
-                $this->machine = new Machine($r["machine_id"]);
-                $this->machineGroup = $r["machine_group"];
-                $this->time = $r["time"];
-                $this->calcId = $r["calc_id"];
-                $this->chromaticity = new Chromaticity($r["chromaticity_id"]);
-                $this->price = $r["price"];
-                $this->part = $r["part"];
-                $this->finishing = new Finishing($r["finishing"]);
-                $this->info = $r["info"];
-                $this->supplierID = $r["supplier_id"];
-                $this->supplierInfo = $r["supplier_info"];
-                $this->supplierPrice = $r["supplier_price"];
-                $this->supplierStatus = $r["supplier_status"];
-                $this->supplierSendDate = $r["supplier_send_date"];
-                $this->supplierReceiveDate= $r["supplier_receive_date"];
-                $this->cutter_cuts = $r["cutter_cuts"];
-                $this->roll_dir = $r["roll_dir"];
-                $this->format_in_width = $r["format_in_width"];
-                $this->format_in_height = $r["format_in_height"];
-                $this->format_out_width = $r["format_out_width"];
-                $this->format_out_height = $r["format_out_height"];
-				$this->umschlUmst = $r["umschl_umst"]; // gln, umschlagen/umstuelpen
-				$this->umschl = $r["umschl"];
-				$this->umst = $r["umst"];
-				$this->color_detail = $r["color_detail"]; // gln, umschlagen/umstuelpen
-				$this->special_margin = $r["special_margin"];
-				$this->special_margin_text = $r["special_margin_text"];
-				$this->foldtype = new Foldtype((int)$r["foldtype"]);
-                $this->labelcount = $r["labelcount"];
-                $this->rollcount = $r["rollcount"];
-                $this->doubleutilization = $r["doubleutilization"];
+        if($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
+            }
+            if ($valid_cache === false) {
+                $sql = "SELECT * FROM orders_machines WHERE id = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $r = $DB->select($sql);
+                    $r = $r[0];
+
+                    $this->id = $r["id"];
+                    $this->machine = new Machine($r["machine_id"]);
+                    $this->machineGroup = $r["machine_group"];
+                    $this->time = $r["time"];
+                    $this->calcId = $r["calc_id"];
+                    $this->chromaticity = new Chromaticity($r["chromaticity_id"]);
+                    $this->price = $r["price"];
+                    $this->part = $r["part"];
+                    $this->finishing = new Finishing($r["finishing"]);
+                    $this->info = $r["info"];
+                    $this->supplierID = $r["supplier_id"];
+                    $this->supplierInfo = $r["supplier_info"];
+                    $this->supplierPrice = $r["supplier_price"];
+                    $this->supplierStatus = $r["supplier_status"];
+                    $this->supplierSendDate = $r["supplier_send_date"];
+                    $this->supplierReceiveDate = $r["supplier_receive_date"];
+                    $this->cutter_cuts = $r["cutter_cuts"];
+                    $this->roll_dir = $r["roll_dir"];
+                    $this->format_in_width = $r["format_in_width"];
+                    $this->format_in_height = $r["format_in_height"];
+                    $this->format_out_width = $r["format_out_width"];
+                    $this->format_out_height = $r["format_out_height"];
+                    $this->umschlUmst = $r["umschl_umst"]; // gln, umschlagen/umstuelpen
+                    $this->umschl = $r["umschl"];
+                    $this->umst = $r["umst"];
+                    $this->color_detail = $r["color_detail"]; // gln, umschlagen/umstuelpen
+                    $this->special_margin = $r["special_margin"];
+                    $this->special_margin_text = $r["special_margin_text"];
+                    $this->foldtype = new Foldtype((int)$r["foldtype"]);
+                    $this->labelcount = $r["labelcount"];
+                    $this->rollcount = $r["rollcount"];
+                    $this->doubleutilization = $r["doubleutilization"];
+
+                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+                }
             }
         }
     }
@@ -126,8 +164,7 @@ class Machineentry {
             if($filterGroup > 0)
                 $sql .= " AND machine_group = {$filterGroup}";
             $sql .= " ORDER BY {$order}";
-//            prettyPrint($sql);
-            
+
             if ($DB->num_rows($sql))
             {
                 foreach($DB->select($sql) as $r)
@@ -244,28 +281,43 @@ class Machineentry {
             $sql = "UPDATE orders_machines SET
                     {$set}
                     WHERE id = {$this->id}";
-//                     if ($this->id == 16)
-//                         echo $sql . "</br>";
-//            prettyPrint($sql);
-            return $DB->no_result($sql);
+            $res = $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO orders_machines SET {$set}";
             $res = $DB->no_result($sql);
-//                     if ($this->id == 16)
-//                         echo $sql . "</br>";
-//             echo $sql . "</br>";
-            // error_log(" --X-- ".$sql." --- ".$DB->getLastError()." --- <br>");
-//            prettyPrint($sql);
             if($res)
             {
                 $sql = "SELECT max(id) id FROM orders_machines WHERE calc_id = {$this->calcId}";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
-                
-                return true;
-            } else 
-                return false;
+                $res = true;
+            } else
+                $res = false;
             
+        }
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    function delete()
+    {
+        global $DB;
+        if($this->id > 0)
+        {
+            $sql = "DELETE FROM order_machines WHERE id = {$this->id}";
+            $res = $DB->no_result($sql);
+            if($res)
+            {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
+                unset($this);
+                return true;
+            }
+            return false;
         }
     }
     
@@ -284,22 +336,6 @@ class Machineentry {
             return $retval;
         } else
             return false;
-    }
-    
-    function delete()
-    {
-        global $DB;
-        if($this->id > 0)
-        {
-            $sql = "DELETE FROM order_machines WHERE id = {$this->id}";
-            $res = $DB->no_result($sql);
-            if($res)
-            {
-                unset($this);
-                return true;
-            }
-            return false;
-        }
     }
 
     public function calcStacks()
@@ -929,5 +965,9 @@ class Machineentry {
     {
         $this->doubleutilization = $doubleutilization;
     }
+
+    public function getUmschlUmst()
+    {
+        return null;
+    }
 }
-?>

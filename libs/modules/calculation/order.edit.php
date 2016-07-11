@@ -1148,7 +1148,8 @@ if((int)$_REQUEST["step"] == 3){
 			}
 		}
 
-		
+		$calc->setPricesub(tofloat($calc->getSubTotal()));
+		$calc->setPricetotal(tofloat($calc->getSummaryPrice()));
 		$calc->save();
 		echo $DB->getLastError();
 	}
@@ -1448,6 +1449,8 @@ if((int)$_REQUEST["step"] == 4)
 				$calc->setPaperAddContent2Grant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent2_{$m["id"]}"]))));
 				$calc->setPaperAddContent3Grant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent3_{$m["id"]}"]))));
 				$calc->setTitle($_REQUEST["calc_title_{$m["id"]}"]);
+//				$calc->setPricesub(tofloat($calc->getSubTotal()));
+//				$calc->setPricetotal(tofloat($calc->getSummaryPrice()));
 				$calc->save();
 				//echo $DB->getLastError();
 			}

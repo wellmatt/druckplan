@@ -794,6 +794,17 @@ echo $quickmove->generate();
                   <tr>
                       <td class="content_row_clear">&nbsp;</td>
                   </tr>
+                  <tr>
+                      <td class="content_row_header"><?=$_LANG->get('Farbkosten')?></td>
+                      <? foreach($calculations as $calc) { ?>
+                          <td class="content_row_clear value" align="center">
+                              <?php echo printPrice($calc->getColorCost(),2);?> €
+                          </td>
+                      <?  } ?>
+                  </tr>
+                  <tr>
+                      <td class="content_row_clear">&nbsp;</td>
+                  </tr>
 
                   <? // -------- START --------------- Positionskosten ---------------------------- ?>
                   <tr>
@@ -845,7 +856,7 @@ echo $quickmove->generate();
                       <tr>
                           <td class="content_row_header"><?=$_LANG->get('Zwischensumme')?></td>
                           <? foreach($calculations as $calc) { ?>
-                              <td class="content_row_header value" align="center"><?=printPrice($calc->getSubTotal() + ($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()))) + ($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()))) + ($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()))))?> <?=$_USER->getClient()->getCurrency()?></td>
+                              <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub())?> <?=$_USER->getClient()->getCurrency()?></td>
                           <? } ?>
                       </tr>
                       <tr>
@@ -869,7 +880,7 @@ echo $quickmove->generate();
                       <tr>
                           <td class="content_row_header"><?=$_LANG->get('Zwischensumme')?></td>
                           <? foreach($calculations as $calc) { ?>
-                              <td class="content_row_header value" align="center"><?=printPrice($calc->getSubTotal() + ($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()))) + ($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()))) + ($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()))) + ($calc->getSubTotal() / 100 * $calc->getMargin()))?> <?=$_USER->getClient()->getCurrency()?></td>
+                              <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub() + ($calc->getPricesub() / 100 * $calc->getMargin()))?> <?=$_USER->getClient()->getCurrency()?></td>
                           <? } ?>
                       </tr>
                       <tr>
@@ -900,10 +911,10 @@ echo $quickmove->generate();
                       <td class="content_row_header"><?=$_LANG->get('Endsumme')?></td>
                       <? foreach($calculations as $calc) { ?>
                           <td class="content_row_header value">
-                              <? if($calc->getSummaryPrice() < $calc->getSubTotal()) echo '<span class="error">';?>
-                              <?=printPrice($calc->getSummaryPrice() + ($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()))) + ($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()))) + ($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()))))?> <?=$_USER->getClient()->getCurrency()?>
-                              <? if($calc->getSummaryPrice() < $calc->getSubTotal()) echo '</span>';?>
-                              <input name="hidden_endprice_<?=$calc->getId()?>" id="hidden_endprice_<?=$calc->getId()?>" type="hidden" value="<?=printPrice($calc->getSummaryPrice() + ($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()))) + ($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()))) + ($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()))))?>">
+                              <? if($calc->getPricetotal() < $calc->getPricesub()) echo '<span class="error">';?>
+                              <?=printPrice($calc->getPricetotal())?> <?=$_USER->getClient()->getCurrency()?>
+                              <? if($calc->getPricetotal() < $calc->getPricesub()) echo '</span>';?>
+                              <input name="hidden_endprice_<?=$calc->getId()?>" id="hidden_endprice_<?=$calc->getId()?>" type="hidden" value="<?=printPrice($calc->getPricetotal())?>">
                           </td>
                       <? } ?>
                   </tr>
@@ -912,7 +923,7 @@ echo $quickmove->generate();
                       <td class="content_row_header"><?=$_LANG->get('Man. Endpreis')?></td>
                       <? foreach($calculations as $calc) { ?>
                           <td class="content_row_header value">
-                              <input name="man_override_<?=$calc->getId()?>" id="man_override_<?=$calc->getId()?>" onchange='ManualOverride(this)' style="width:60px;text-align:center" value="<?=printPrice($calc->getSummaryPrice() + ($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()))) + ($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()))) + ($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()))) + ($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getAmount())*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()))))?>">
+                              <input name="man_override_<?=$calc->getId()?>" id="man_override_<?=$calc->getId()?>" onchange='ManualOverride(this)' style="width:60px;text-align:center" value="<?=printPrice($calc->getPricetotal())?>">
                               <?=$_USER->getClient()->getCurrency()?>
                           </td>
                       <? } ?>
@@ -921,7 +932,7 @@ echo $quickmove->generate();
                   <tr>
                       <td class="content_row_clear"><?=$_LANG->get('St&uuml;ckpreis')?></td>
                       <? foreach($calculations as $calc) { ?>
-                          <td class="content_row_clear value"><?=printPrice($calc->getSummaryPrice() / $calc->getAmount())?> <?=$_USER->getClient()->getCurrency()?></td>
+                          <td class="content_row_clear value"><?=printPrice($calc->getPricetotal() / $calc->getAmount())?> <?=$_USER->getClient()->getCurrency()?></td>
                       <? } ?>
                   </tr>
 

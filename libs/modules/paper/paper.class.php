@@ -219,7 +219,6 @@ class Paper {
             $res = $DB->select($sql);
             $price = $amount * $res[0]["price"] / 1000;
         }
-//        echo $sql;
         return $price;
     }
     

@@ -119,6 +119,25 @@ class VacationEntry
         return $retval;
     }
 
+    static function getDaysByUserWithoutIll($user)
+    {
+        global $DB;
+        $userid = $user->getId();
+        $year_start = mktime(0,0,0,1,1,date('Y'));
+        $retval = 0;
+
+        $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND user_id = {$userid} AND type != 3 AND `start` >= {$year_start}";
+
+        if ($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $days)
+            {
+                $retval += $days["days"];
+            }
+        }
+        return $retval;
+    }
+
     static function getDaysByUser($user)
     {
         global $DB;
@@ -126,7 +145,7 @@ class VacationEntry
         $year_start = mktime(0,0,0,1,1,date('Y'));
         $retval = 0;
 
-        $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND user_id = {$userid} AND start >= {$year_start}";
+        $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND user_id = {$userid} AND `start` >= {$year_start}";
 
         if ($DB->num_rows($sql))
         {
@@ -145,7 +164,7 @@ class VacationEntry
         $year_start = mktime(0,0,0,1,1,date('Y'));
         $retval = 0;
 
-        $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND type = {$type} AND user_id = {$userid} AND start >= {$year_start}";
+        $sql = "SELECT days FROM vacation_entries WHERE state > 0 AND type = {$type} AND user_id = {$userid} AND `start` >= {$year_start}";
 
         if ($DB->num_rows($sql))
         {

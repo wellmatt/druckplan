@@ -163,7 +163,7 @@ if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 	}
 	$save_msg = getSaveMessage($save_msg);
 	$save_msg .= $DB->getLastError();
-	echo '<script language="JavaScript">document.location.href="index.php?pid=80";</script>';
+	echo '<script language="JavaScript">document.location.href="index.php?pid=80&success=1";</script>';
 }
 
 $overall_price = 0;
@@ -347,8 +347,11 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 
 		<div class="panel-body">
 			<?
-			if (count($shopping_basket_entrys) == 0){?>
-				<div class="alert alert-info" role="alert"><?echo $_LANG->get("Der Warenkorb ist leer")?></div>
+			if (count($shopping_basket_entrys) == 0 && $_REQUEST["success"] != 1){?>
+				<div class="alert alert-info" role="alert"><?echo $_LANG->get("Der Warenkorb ist leer!")?></div>
+				<?
+			} else if ($_REQUEST["success"] == 1) {?>
+				<div class="alert alert-info" role="alert"><?echo $_LANG->get("Bestellung erfolgreich abgesendet!")?></div>
 				<?
 			} ?>
 			<div class="form-horizontal">

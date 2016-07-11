@@ -113,7 +113,12 @@ class Calculation
 	private $format_in_addcontent2;
 	private $format_in_addcontent3;
 	private $format_in_envelope;
-	
+
+    // Prices
+
+    private $pricesub = 0.0;
+    private $pricetotal = 0.0;
+
 	// other
 	
 	private $title; // Kalkulation's Titel
@@ -136,123 +141,163 @@ class Calculation
         
         $this->paperAddContent3 = new Paper();
         $this->chromaticitiesAddContent3= new Chromaticity();
-        
-        if($id > 0)
-        {
-            $sql = "SELECT * FROM orders_calculations WHERE id = {$id}";
-            if($DB->num_rows($sql))
-            {
-                $r = $DB->select($sql);
-                $r = $r[0];
-                $this->id = $r["id"];
-                $this->orderId = $r["order_id"];
-                $this->productFormat = new Paperformat($r["product_format"]);
-                $this->productFormatHeight = $r["product_format_height"];
-                $this->productFormatWidth = $r["product_format_width"];
-                $this->productFormatHeightOpen = $r["product_format_height_open"];
-                $this->productFormatWidthOpen = $r["product_format_width_open"];
-                $this->pagesContent = $r["product_pages_content"];
-                $this->pagesAddContent = $r["product_pages_addcontent"];
-                $this->pagesEnvelope = $r["product_pages_envelope"];
-                $this->amount = $r["product_amount"];
-                $this->sorts = $r["product_sorts"];
-                $this->paperContent = new Paper($r["paper_content"]);
-                $this->paperContentHeight = $r["paper_content_height"];
-                $this->paperContentWidth = $r["paper_content_width"];
-                $this->paperContentWeight = $r["paper_content_weight"];
-                $this->paperAddContent = new Paper($r["paper_addcontent"]);
-                $this->paperAddContentHeight = $r["paper_addcontent_height"];
-                $this->paperAddContentWidth = $r["paper_addcontent_width"];
-                $this->paperAddContentWeight = $r["paper_addcontent_weight"];
-                $this->paperEnvelope = new Paper($r["paper_envelope"]);
-                $this->paperEnvelopeHeight = $r["paper_envelope_height"];
-                $this->paperEnvelopeWidth = $r["paper_envelope_width"];
-                $this->paperEnvelopeWeight = $r["paper_envelope_weight"];
-                $this->envelopeHeightOpen = $r["envelope_height_open"];
-                $this->envelopeWidthOpen = $r["envelope_width_open"];
-                $this->folding = new Foldtype($r["product_folding"]);
-                $this->addCharge = $r["add_charge"];
-                $this->margin = $r["margin"];
-                $this->discount = $r["discount"];
-                $this->state = $r["state"];
-                $this->calcAutoValues = $r["calc_auto_values"];
-                $this->calcDebug = $r["calc_debug"];
-                $this->chromaticitiesContent= new Chromaticity($r["chromaticities_content"]);
-                $this->chromaticitiesAddContent= new Chromaticity($r["chromaticities_addcontent"]);
-                $this->chromaticitiesEnvelope= new Chromaticity($r["chromaticities_envelope"]);
-                $this->paperContentGrant = $r["paper_content_grant"];
-                $this->paperAddContentGrant = $r["paper_addcontent_grant"];
-                $this->paperEnvelopeGrant = $r["paper_envelope_grant"];
-                $this->textProcessing = $r["text_processing"];
-                $this->foldschemeContent = $r["foldscheme_content"];
-                $this->foldschemeAddContent = $r["foldscheme_addcontent"];
-                $this->foldschemeEnvelope = $r["foldscheme_envelope"];
-                
-                // Anschnitt setzen
-				$this->cutContent = $r["cut_content"];
-                $this->cutAddContent = $r["cut_addcontent"];
-				$this->cutAddContent2 = $r["cut_addcontent2"];
-				$this->cutAddContent3 = $r["cut_addcontent3"];
-                $this->cutEnvelope = $r["cut_envelope"];
-                $this->colorControl = $r["color_control"];
-                // Zus Inhalt 2 fuellen
-                $this->pagesAddContent2 = $r["product_pages_addcontent2"];
-                $this->paperAddContent2 = new Paper($r["paper_addcontent2"]);
-                $this->paperAddContent2Width = $r["paper_addcontent2_width"];
-                $this->paperAddContent2Height = $r["paper_addcontent2_height"];
-                $this->paperAddContent2Weight = $r["paper_addcontent2_weight"];
-                $this->paperAddContent2Grant = $r["paper_addcontent2_grant"];
-                $this->chromaticitiesAddContent2 = new Chromaticity($r["chromaticities_addcontent2"]);
-                $this->foldschemeAddContent2 = $r["foldscheme_addcontent2"];
-                
-                // Zus Inhalt 3 fuellen
-                $this->pagesAddContent3 = $r["product_pages_addcontent3"];
-                $this->paperAddContent3 = new Paper($r["paper_addcontent3"]);
-                $this->paperAddContent3Width = $r["paper_addcontent3_width"];
-                $this->paperAddContent3Height = $r["paper_addcontent3_height"];
-                $this->paperAddContent3Weight = $r["paper_addcontent3_weight"];
-                $this->paperAddContent3Grant = $r["paper_addcontent3_grant"];
-                $this->chromaticitiesAddContent3 = new Chromaticity($r["chromaticities_addcontent3"]);
-                $this->foldschemeAddContent3 = $r["foldscheme_addcontent3"];
-				
-				// Schneidemachine (added by ascherer 22.07.14)
-				
-				$this->cutter_weight = $r["cutter_weight"];
-				$this->cutter_height = $r["cutter_height"];
-				$this->roll_dir = $r["roll_dir"];
-				
-				$this->format_in_content = $r["format_in_content"];
-				$this->format_in_addcontent = $r["format_in_addcontent"];
-				$this->format_in_addcontent2 = $r["format_in_addcontent2"];
-				$this->format_in_addcontent3 = $r["format_in_addcontent3"];
-				$this->format_in_envelope = $r["format_in_envelope"];
-				
-				$this->title = $r["title"];
-                
-                // configure Paper
-                $this->paperContent->setSelectedWeight($this->paperContentWeight);
-                $this->paperContent->setSelectedSize(Array("width" => $this->paperContentWidth, "height" => $this->paperContentHeight));
-                $this->paperAddContent->setSelectedWeight($this->paperAddContentWeight);
-                $this->paperAddContent->setSelectedSize(Array("width" => $this->paperAddContentWidth, "height" => $this->paperAddContentHeight));
-                $this->paperEnvelope->setSelectedWeight($this->paperEnvelopeWeight);
-                $this->paperEnvelope->setSelectedSize(Array("width" => $this->paperEnvelopeWidth, "height" => $this->paperEnvelopeHeight));
-                $this->paperAddContent2->setSelectedWeight($this->paperAddContent2Weight);
-                $this->paperAddContent2->setSelectedSize(Array("width" => $this->paperAddContent2Width, "height" => $this->paperAddContent2Height));
-                $this->paperAddContent3->setSelectedWeight($this->paperAddContent3Weight);
-                $this->paperAddContent3->setSelectedSize(Array("width" => $this->paperAddContent3Width, "height" => $this->paperAddContent3Height)); 
+
+        if($id > 0){
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
+                if (get_class($cached) == get_class($this)){
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var)
+                    {
+                        $method = "get".ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this,$method))
+                        {
+                            if(is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this,$method2)){
+                            if(is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
             }
-            
-            //--------------------------Artikel----------------------------------------------
-            $sql = "SELECT * FROM orders_articles WHERE calc_id = {$id}";
-            $all_art = Array();
-            if($DB->num_rows($sql)){
-            	$rows = $DB->select($sql);
-            	foreach ($rows as $ro){
-            		$all_art[] =  new Article($ro['article_id']);
-            		$this->articleamounts[$ro['article_id']] = $ro['amount'];
-            		$this->articlescales[$ro['article_id']] = $ro['scale'];
-            	}
-            	$this->articles = $all_art;
+            if ($valid_cache === false) {
+                $sql = "SELECT * FROM orders_calculations WHERE id = {$id}";
+                if ($DB->num_rows($sql)) {
+                    $r = $DB->select($sql);
+                    $r = $r[0];
+                    $this->id = $r["id"];
+                    $this->orderId = $r["order_id"];
+                    $this->productFormat = new Paperformat($r["product_format"]);
+                    $this->productFormatHeight = $r["product_format_height"];
+                    $this->productFormatWidth = $r["product_format_width"];
+                    $this->productFormatHeightOpen = $r["product_format_height_open"];
+                    $this->productFormatWidthOpen = $r["product_format_width_open"];
+                    $this->pagesContent = $r["product_pages_content"];
+                    $this->pagesAddContent = $r["product_pages_addcontent"];
+                    $this->pagesEnvelope = $r["product_pages_envelope"];
+                    $this->amount = $r["product_amount"];
+                    $this->sorts = $r["product_sorts"];
+                    $this->paperContent = new Paper($r["paper_content"]);
+                    $this->paperContentHeight = $r["paper_content_height"];
+                    $this->paperContentWidth = $r["paper_content_width"];
+                    $this->paperContentWeight = $r["paper_content_weight"];
+                    $this->paperAddContent = new Paper($r["paper_addcontent"]);
+                    $this->paperAddContentHeight = $r["paper_addcontent_height"];
+                    $this->paperAddContentWidth = $r["paper_addcontent_width"];
+                    $this->paperAddContentWeight = $r["paper_addcontent_weight"];
+                    $this->paperEnvelope = new Paper($r["paper_envelope"]);
+                    $this->paperEnvelopeHeight = $r["paper_envelope_height"];
+                    $this->paperEnvelopeWidth = $r["paper_envelope_width"];
+                    $this->paperEnvelopeWeight = $r["paper_envelope_weight"];
+                    $this->envelopeHeightOpen = $r["envelope_height_open"];
+                    $this->envelopeWidthOpen = $r["envelope_width_open"];
+                    $this->folding = new Foldtype($r["product_folding"]);
+                    $this->addCharge = $r["add_charge"];
+                    $this->margin = $r["margin"];
+                    $this->discount = $r["discount"];
+                    $this->state = $r["state"];
+                    $this->calcAutoValues = $r["calc_auto_values"];
+                    $this->calcDebug = $r["calc_debug"];
+                    $this->chromaticitiesContent = new Chromaticity($r["chromaticities_content"]);
+                    $this->chromaticitiesAddContent = new Chromaticity($r["chromaticities_addcontent"]);
+                    $this->chromaticitiesEnvelope = new Chromaticity($r["chromaticities_envelope"]);
+                    $this->paperContentGrant = $r["paper_content_grant"];
+                    $this->paperAddContentGrant = $r["paper_addcontent_grant"];
+                    $this->paperEnvelopeGrant = $r["paper_envelope_grant"];
+                    $this->textProcessing = $r["text_processing"];
+                    $this->foldschemeContent = $r["foldscheme_content"];
+                    $this->foldschemeAddContent = $r["foldscheme_addcontent"];
+                    $this->foldschemeEnvelope = $r["foldscheme_envelope"];
+
+                    // Anschnitt setzen
+                    $this->cutContent = $r["cut_content"];
+                    $this->cutAddContent = $r["cut_addcontent"];
+                    $this->cutAddContent2 = $r["cut_addcontent2"];
+                    $this->cutAddContent3 = $r["cut_addcontent3"];
+                    $this->cutEnvelope = $r["cut_envelope"];
+                    $this->colorControl = $r["color_control"];
+                    // Zus Inhalt 2 fuellen
+                    $this->pagesAddContent2 = $r["product_pages_addcontent2"];
+                    $this->paperAddContent2 = new Paper($r["paper_addcontent2"]);
+                    $this->paperAddContent2Width = $r["paper_addcontent2_width"];
+                    $this->paperAddContent2Height = $r["paper_addcontent2_height"];
+                    $this->paperAddContent2Weight = $r["paper_addcontent2_weight"];
+                    $this->paperAddContent2Grant = $r["paper_addcontent2_grant"];
+                    $this->chromaticitiesAddContent2 = new Chromaticity($r["chromaticities_addcontent2"]);
+                    $this->foldschemeAddContent2 = $r["foldscheme_addcontent2"];
+
+                    // Zus Inhalt 3 fuellen
+                    $this->pagesAddContent3 = $r["product_pages_addcontent3"];
+                    $this->paperAddContent3 = new Paper($r["paper_addcontent3"]);
+                    $this->paperAddContent3Width = $r["paper_addcontent3_width"];
+                    $this->paperAddContent3Height = $r["paper_addcontent3_height"];
+                    $this->paperAddContent3Weight = $r["paper_addcontent3_weight"];
+                    $this->paperAddContent3Grant = $r["paper_addcontent3_grant"];
+                    $this->chromaticitiesAddContent3 = new Chromaticity($r["chromaticities_addcontent3"]);
+                    $this->foldschemeAddContent3 = $r["foldscheme_addcontent3"];
+
+                    // Schneidemachine (added by ascherer 22.07.14)
+
+                    $this->cutter_weight = $r["cutter_weight"];
+                    $this->cutter_height = $r["cutter_height"];
+                    $this->roll_dir = $r["roll_dir"];
+
+                    $this->format_in_content = $r["format_in_content"];
+                    $this->format_in_addcontent = $r["format_in_addcontent"];
+                    $this->format_in_addcontent2 = $r["format_in_addcontent2"];
+                    $this->format_in_addcontent3 = $r["format_in_addcontent3"];
+                    $this->format_in_envelope = $r["format_in_envelope"];
+
+                    $this->title = $r["title"];
+
+                    $this->pricesub = $r["pricesub"];
+                    $this->pricetotal = $r["pricetotal"];
+
+                    // configure Paper
+                    $this->paperContent->setSelectedWeight($this->paperContentWeight);
+                    $this->paperContent->setSelectedSize(Array("width" => $this->paperContentWidth, "height" => $this->paperContentHeight));
+                    $this->paperAddContent->setSelectedWeight($this->paperAddContentWeight);
+                    $this->paperAddContent->setSelectedSize(Array("width" => $this->paperAddContentWidth, "height" => $this->paperAddContentHeight));
+                    $this->paperEnvelope->setSelectedWeight($this->paperEnvelopeWeight);
+                    $this->paperEnvelope->setSelectedSize(Array("width" => $this->paperEnvelopeWidth, "height" => $this->paperEnvelopeHeight));
+                    $this->paperAddContent2->setSelectedWeight($this->paperAddContent2Weight);
+                    $this->paperAddContent2->setSelectedSize(Array("width" => $this->paperAddContent2Width, "height" => $this->paperAddContent2Height));
+                    $this->paperAddContent3->setSelectedWeight($this->paperAddContent3Weight);
+                    $this->paperAddContent3->setSelectedSize(Array("width" => $this->paperAddContent3Width, "height" => $this->paperAddContent3Height));
+                }
+
+                //--------------------------Artikel----------------------------------------------
+                $sql = "SELECT * FROM orders_articles WHERE calc_id = {$id}";
+                $all_art = Array();
+                if ($DB->num_rows($sql)) {
+                    $rows = $DB->select($sql);
+                    foreach ($rows as $ro) {
+                        $all_art[] = new Article($ro['article_id']);
+                        $this->articleamounts[$ro['article_id']] = $ro['amount'];
+                        $this->articlescales[$ro['article_id']] = $ro['scale'];
+                    }
+                    $this->articles = $all_art;
+                }
+                Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
             }
         }
     }
@@ -398,14 +443,15 @@ class Calculation
 						format_in_envelope =	'{$this->format_in_envelope}',
 						
 						title =	'{$this->title}',
+						pricesub = {$this->pricesub},
+						pricetotal = {$this->pricetotal},
         				color_control = {$this->colorControl}, ";
         
         if($this->id > 0){
         	// Erst Artikel speichern
         	$sql = "DELETE FROM orders_articles WHERE calc_id = {$this->id}";
         	$DB->no_result($sql);
-        	// echo mysql_error();
-        	
+
         	if (count($this->articleamounts) > 0){
 	        	$sql = "INSERT INTO orders_articles (calc_id, article_id, amount, scale) VALUES";
 	        	foreach ($this->articleamounts as $key => $value){
@@ -413,8 +459,6 @@ class Calculation
 	        	}
 	        	$sql = substr($sql, 0, -2); // Das letzte Komma und Leerzeichen entfernen
 	        	$DB->no_result($sql);
-				// echo $sql . "</br>";
-	        	// echo mysql_error();
         	}
         	       	
         	// Dann Kalkulation speichern
@@ -424,27 +468,30 @@ class Calculation
                         upddat = UNIX_TIMESTAMP(),
                         updusr = {$_USER->getId()}
                     WHERE id = {$this->id}";
-            return $DB->no_result($sql);
-// 			echo $sql . "</br>";
+            $res = $DB->no_result($sql);
         } else
         {
             $sql = "INSERT INTO orders_calculations SET 
                     {$set}
                     crtdat = UNIX_TIMESTAMP(),
                     crtusr = {$_USER->getId()}";
-			//error_log("CALC-SQL: ".$sql);
             $res = $DB->no_result($sql);
-// 			echo $sql . "</br>";
-            //error_log("CALC-Err: ".mysql_error());
             if($res)
             {
                 $sql = "SELECT max(id) id FROM orders_calculations WHERE order_id = {$this->orderId}";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
-                return true;
+                $res = true;
             } else
-                return false;
+                $res = false;
         }
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
     }
 
     public function delete()
@@ -455,6 +502,7 @@ class Calculation
             $sql = "DELETE FROM orders_calculations WHERE id = {$this->id}";
             if($DB->no_result($sql))
             {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 unset($this);
                 return true;
             } else 
@@ -1308,17 +1356,43 @@ class Calculation
         }
         return $platesets;
     }
+
+    public function getColorCost()
+    {
+        $calc = $this;
+        $sum = 0.0;
+        if ($calc->getPagesContent())
+            $hasContent = true;
+        if ($calc->getPagesAddContent())
+            $hasAddContent = true;
+        if ($calc->getPagesEnvelope())
+            $hasEnvelope = true;
+        if ($calc->getPagesAddContent2())
+            $hasAddContent2 = true;
+        if ($calc->getPagesAddContent3())
+            $hasAddContent3 = true;
+
+        if ($hasContent) {
+            $sum += $calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_CONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()));
+        }
+        if ($hasAddContent){
+            $sum += $calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()));
+        }
+        if ($hasEnvelope){
+            $sum += $calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ENVELOPE))*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()));
+        }
+        if ($hasAddContent2){
+            $sum += $calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()));
+        }
+        if ($hasAddContent3){
+            $sum += $calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()));
+        }
+        return $sum;
+    }
     
     public function getSummaryPrice()
     {
         $sum = $this->getSubTotal();
-
-        $sum += ($this->getChromaticitiesContent()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesContent()->getColorsBack() + $this->getChromaticitiesContent()->getColorsFront())));
-        $sum += ($this->getChromaticitiesAddContent()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesAddContent()->getColorsBack() + $this->getChromaticitiesAddContent()->getColorsFront())));
-        $sum += ($this->getChromaticitiesAddContent2()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesAddContent2()->getColorsBack() + $this->getChromaticitiesAddContent2()->getColorsFront())));
-        $sum += ($this->getChromaticitiesAddContent3()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesAddContent3()->getColorsBack() + $this->getChromaticitiesAddContent3()->getColorsFront())));
-        $sum += ($this->getChromaticitiesEnvelope()->getPricekg() * (($this->getProductFormatWidth() * $this->getProductFormatHeight()/1000000) * ($this->getAmount())*(1.4*0.5/1000) * ($this->getChromaticitiesEnvelope()->getColorsBack() + $this->getChromaticitiesEnvelope()->getColorsFront())));
-
         $sum += $sum * $this->getMargin() / 100; // Mage
         $sum -= $sum * $this->getDiscount() / 100; // Rabatt
         $sum += $this->getAddCharge(); // Sonstiger Auf/Abschlag
@@ -1334,26 +1408,6 @@ class Calculation
             $machines[$m->getMachine()->getId()] += $m->getPrice();
         }
         
-        /****
-        // Summe der Kosten fuer die zusaetzlichen Artikel
-        $total_article_price = 0;	 
-        $all_calc_article = $this->articles;
-		if (count($all_calc_article) > 0){
-			foreach ($all_calc_article as $calc_art){
-				$tmpart_amount = $this->getArticleamount($calc_art->getId());
-				$tmpart_scale = $this->getArticlescale($calc_art->getId());
-				if ($tmpart_scale == 0){
-					$tmp_price = ($tmpart_amount * $calc_art->getPrice($tmpart_amount));
-				} elseif ($tmpart_scale == 1){
-					$tmp_price = ($tmpart_amount * $calc_art->getPrice($tmpart_amount * $this->amount) * $this->amount);
-				}
-				$total_article_price += $tmp_price; 
-			}
-		}
-        
-		$sum += $total_article_price;
-		***/
-        
         // Kosten der Positionen aufsummieren
         $total_position_price = 0;
         $all_positions = CalculationPosition::getAllCalculationPositions($this->id);
@@ -1367,8 +1421,9 @@ class Calculation
         $sum += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) + $this->paperContentGrant);
         $sum += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) + $this->paperAddContentGrant);
         $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) + $this->paperEnvelopeGrant);
-        $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContentGrant2);
-        $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContentGrant3);
+        $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContent2Grant);
+        $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContent3Grant);
+        $sum += $this->getColorCost();
         foreach ($machines as $m) {
             $sum += $m;
         }
@@ -2410,5 +2465,36 @@ class Calculation
     {
         $this->calcDebug = $calcDebug;
     }
+
+    /**
+     * @return float
+     */
+    public function getPricetotal()
+    {
+        return $this->pricetotal;
+    }
+
+    /**
+     * @param float $pricetotal
+     */
+    public function setPricetotal($pricetotal)
+    {
+        $this->pricetotal = $pricetotal;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPricesub()
+    {
+        return $this->pricesub;
+    }
+
+    /**
+     * @param float $pricesub
+     */
+    public function setPricesub($pricesub)
+    {
+        $this->pricesub = $pricesub;
+    }
 }
-?>

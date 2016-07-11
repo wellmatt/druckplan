@@ -178,6 +178,12 @@ if ((int)$_REQUEST["cid"] > 0){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
+
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
 <link rel="stylesheet" href="../../../css/bootstrap.min.css">
 <link type="text/css" href="../../../jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" />	
@@ -404,8 +410,8 @@ $(function () {
                         echo '<span id="art_'.$c_article->getId().'"><span id="artamount_'.$c_article->getId().'">'.$c_article->getAmount().'</span>x 
                               <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a>';
                         if ($_USER->isAdmin()){
-                              echo '<span class="glyphicons glyphicons-remove" onclick="removeArt('.$c_article->getId().')"></span>
-                                    <span class="glyphicons glyphicons-pencil" onclick="editArt('.$c_article->getId().','.$c_article->getAmount().')"></span>';
+                              echo '<span class="glyphicons glyphicons-remove pointer" onclick="removeArt('.$c_article->getId().')"></span>
+                                    <span class="glyphicons glyphicons-pencil pointer" onclick="editArt('.$c_article->getId().','.$c_article->getAmount().')"></span>';
                         }
                         echo '</span></br>';
                     } elseif ($c_article->getState() == 0 && $_USER->isAdmin()){
@@ -435,12 +441,12 @@ $(function () {
                     if ($c_attachment->getState() == 1){
                         echo '<span id="attach_'.$c_attachment->getId().'">
                               <a href="../../../'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a>
-                             <span class="glyphicons glyphicons-remove" onclick="removeAttach('.$c_attachment->getId().')"></span>
+                             <span class="glyphicons glyphicons-remove pointer" onclick="removeAttach('.$c_attachment->getId().')"></span>
                               </span></br>';
                     } elseif ($c_attachment->getState() == 0 && $_USER->isAdmin()) {
                         echo '<span id="attach_'.$c_attachment->getId().'"><del>
                               <a href="../../../'.Attachment::FILE_DESTINATION.$c_attachment->getFilename().'" download="'.$c_attachment->getOrig_filename().'">'.$c_attachment->getOrig_filename().'</a>
-                              </del><span class="glyphicons glyphicons-remove" onclick="removeAttach('.$c_attachment->getId().')"></span>
+                              </del><span class="glyphicons glyphicons-remove pointer" onclick="removeAttach('.$c_attachment->getId().')"></span>
                               </span></br>';
                     }
                 }

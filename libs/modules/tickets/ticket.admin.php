@@ -451,11 +451,11 @@ echo $quickmove->generate();
 						<td class="content_row_clear">
 						    <input type="hidden" name="sources_id_<?=$y?>" id="sources_id_<?=$y?>" value="<?php echo $ticket_sources[$y]->getId();?>">
 							<input 	name="sources_title_<?=$y?>" class="text" type="text" value ="<?=$ticket_sources[$y]->getTitle();?>" style="width: 200px">
-							<?php if ($ticket_sources[$y]->getDefault() == 1) echo '<span class="glyphicons glyphicons-cogwheel"></span>';?>
+							<?php if ($ticket_sources[$y]->getDefault() == 1) echo '<span class="glyphicons glyphicons-star"></span>';?>
 						</td>
 						<td class="content_row_clear">
 							<a href="index.php?page=<?=$_REQUEST['page']?>&source_default=<?=$ticket_sources[$y]->getId()?>">
-								<span class="glyphicons glyphicons-cogwheel pointer" title="als Standard setzen"></span></a>
+								<span class="glyphicons glyphicons-star pointer" title="als Standard setzen"></span></a>
 							&nbsp;
 							<?php if ($ticket_sources[$y]->getId() != 1 && $ticket_sources[$y]->getId() != 2 && $ticket_sources[$y]->getId() != 3 && $ticket_sources[$y]->getId() != 4){?>
 						    <a href="index.php?page=<?=$_REQUEST['page']?>&delete_source=<?=$ticket_sources[$y]->getId()?>">

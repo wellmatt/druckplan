@@ -1050,7 +1050,7 @@ class Order {
             $html .= '</table></div><br><div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
             $html .= '<colgroup><col width="15%"><col width="35%"><col width="15%"><col width="35%"></colgroup><tr>';
             $html .= '<td valign="top"><b>Produktionskosten:</b></td><td valign="top"><b>';
-            $html .= printPrice($calc->getSubTotal()).' €</b>';
+            $html .= printPrice($calc->getPricesub()).' €</b>';
             $html .= '</td></tr></table></div><br>';
             
             $i++;

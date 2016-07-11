@@ -159,7 +159,7 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT orders.id,orders.number,orders.crtdat,orders.`status`,'1' as type  
+        (SELECT orders.id,orders.number,orders.crtdat,orders.title,orders.`status`,'1' as type
         FROM orders WHERE orders.`status` > 0) a
         $sWhere
     ";
