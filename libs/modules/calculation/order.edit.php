@@ -1223,11 +1223,7 @@ if((int)$_REQUEST["step"] == 4)
 	        
 	        $tmp_calcs_arr[] = $calc->getId();
 	    }
-	    
-// 	    echo "</br>";
-// 	    var_dump($tmp_calcs_arr);
-// 	    echo "</br>";
-	   
+
 	    
 	    $calc_i = 0;
 		foreach($_REQUEST["addorder_amount"] as $amount)
@@ -1367,36 +1363,6 @@ if((int)$_REQUEST["step"] == 4)
 				}
 				
 				$savemsg = ""; //l�schen
-				//Artikel kopieren oder auf die Auflage umrechnen
-				$new_articlelist = Array();
-				$new_scalelist = Array();
-				$new_amountlist = Array();
-				$original_calc = new Calculation((int)$_REQUEST["origcalc"]);
-				$original_articles = $original_calc->getArticles();
-				
-				if (count($original_articles) > 0){
-    				foreach ($original_articles as $orig_art){
-    					// Artikel in die neue Liste hinzuf�gen
-    					$new_articlelist[]= new Article($orig_art->getId());
-    					
-    					// Richtige Anzahl setzen
-    								//if($original_calc->getArticlescale($orig_art->getId()) == 0){
-    					$new_amountlist[$orig_art->getId()] = $original_calc->getArticleamount($orig_art->getId());
-    								/*} //Wenn Umgerechnet werden muss
-    								elseif ($original_calc->getArticlescale($orig_art->getId()) == 1){
-    									$tmp_amount = $original_calc->getArticleamount($orig_art->getId());
-    									$tmp_newamount = $tmp_amount / $original_calc->getAmount();
-    									$new_amountlist[$orig_art->getId()] = ceil($tmp_newamount * $calc->getAmount());
-    								}*/
-    					
-    					// Staffelung setzen
-    					$new_scalelist[$orig_art->getId()] = $original_calc->getArticlescale($orig_art->getId());
-    				}
-				}
-				
-				$calc->setArticles($new_articlelist);
-				$calc->setArticleamounts($new_amountlist);
-				$calc->setArticlescales($new_scalelist);
 				$calc->save();
 				
 				
@@ -1449,8 +1415,8 @@ if((int)$_REQUEST["step"] == 4)
 				$calc->setPaperAddContent2Grant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent2_{$m["id"]}"]))));
 				$calc->setPaperAddContent3Grant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent3_{$m["id"]}"]))));
 				$calc->setTitle($_REQUEST["calc_title_{$m["id"]}"]);
-//				$calc->setPricesub(tofloat($calc->getSubTotal()));
-//				$calc->setPricetotal(tofloat($calc->getSummaryPrice()));
+				$calc->setPricesub(tofloat($calc->getSubTotal()));
+				$calc->setPricetotal(tofloat($calc->getSummaryPrice()));
 				$calc->save();
 				//echo $DB->getLastError();
 			}
@@ -1513,7 +1479,6 @@ if((int)$_REQUEST["step"] == 7){
 			}
 		}
 	}
-	
 }
 
 ?>
@@ -1560,7 +1525,6 @@ if((int)$_REQUEST["step"] == 7){
 				<li><a href="#"
 					   onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=4'">Kalkulations&uuml;bersicht</a>
 				</li>
-				<!-- <li><a href="#" onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=6'">Dokumente</a></li> -->
 				<li><a href="#"
 					   onclick="location.href='index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $_REQUEST['id'] ?>&exec=edit&step=7'">Detailierte
 						Übersicht</a></li>

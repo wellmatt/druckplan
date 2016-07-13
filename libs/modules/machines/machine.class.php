@@ -115,394 +115,137 @@ class Machine
         $this->group = new MachineGroup();
         
         global $DB;
-        if($id > 0){
-            $valid_cache = true;
-            if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
-                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
-                if (get_class($cached) == get_class($this)){
-                    $vars = array_keys(get_class_vars(get_class($this)));
-                    foreach ($vars as $var)
+        if($id > 0)
+        {
+            $sql = "SELECT * FROM machines WHERE id = {$id}";
+            if ($DB->num_rows($sql))
+            {
+                $r = $DB->select($sql);
+                $r = $r[0];
+
+                $this->id = $r["id"];
+                $this->name = $r["name"];
+                $this->documentText = $r["document_text"];
+                $this->priceBase = $r["pricebase"];
+                $this->group = new MachineGroup($r["group"]);
+                $this->state = $r["state"];
+                $this->type = $r["type"];
+                $this->price = $r["price"];
+                $this->border_left = $r["border_left"];
+                $this->border_right = $r["border_right"];
+                $this->border_top = $r["border_top"];
+                $this->border_bottom = $r["border_bottom"];
+                $this->colors_front = $r["colors_front"];
+                $this->colors_back = $r["colors_back"];
+                $this->timePlatechange = $r["time_platechange"];
+                $this->timeColorchange = $r["time_colorchange"];
+                $this->timeBase = $r["time_base"];
+                $this->unit = $r["unit"];
+                $this->finish = $r["finish"];
+                $this->finishPlateCost = $r["finish_plate_cost"];
+                $this->umschlUmst = $r["umschl_umst"];		//gln
+                $this->lectorId = $r["lector_id"];
+                $this->maxHours = $r["maxhours"];
+                $this->paperSizeHeight = $r["paper_size_height"];
+                $this->paperSizeWidth = $r["paper_size_width"];
+                $this->paperSizeMinHeight = $r["paper_size_min_height"];
+                $this->paperSizeMinWidth = $r["paper_size_min_width"];
+                $this->timeSetupStations = $r["time_setup_stations"];
+                $this->anzStations = $r["anz_stations"];
+                $this->pagesPerStation = $r["pages_per_station"];
+                $this->anzSignatures = $r["anz_signatures"];
+                $this->timeSignatures = $r["time_signatures"];
+                $this->timeEnvelope = $r["time_envelope"];
+                $this->timeTrimmer = $r["time_trimmer"];
+                $this->timeStacker = $r["time_stacker"];
+                $this->cutprice = $r["cutprice"];
+                $this->internaltext = $r["internaltext"];
+                $this->hersteller = $r["hersteller"];
+                $this->baujahr = $r["baujahr"];
+                $this->DPHeight = $r["DPHeight"];
+                $this->DPWidth = $r["DPWidth"];
+                $this->breaks = $r["breaks"];
+                $this->breaks_time = $r["breaks_time"];
+                $this->color = $r["color"];
+                $this->maxstacksize = $r["maxstacksize"];
+                
+                // Arbeiter
+                $tmp_qusrs = Array();
+                $sql = "SELECT * FROM machines_qualified_users WHERE machine = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
                     {
-                        $method = "get".ucfirst($var);
-                        $method2 = $method;
-                        $method = str_replace("_", "", $method);
-                        if (method_exists($this,$method))
-                        {
-                            if(is_object($cached->$method()) === false) {
-                                $this->$var = $cached->$method();
-                            } else {
-                                $class = get_class($cached->$method());
-                                $this->$var = new $class($cached->$method()->getId());
-                            }
-                        } elseif (method_exists($this,$method2)){
-                            if(is_object($cached->$method2()) === false) {
-                                $this->$var = $cached->$method2();
-                            } else {
-                                $class = get_class($cached->$method2());
-                                $this->$var = new $class($cached->$method2()->getId());
-                            }
-                        } else {
-                            prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
-                            $valid_cache = false;
-                        }
+                        $tmp_qusrs[] = new User((int)$r["user"]);	//gln
                     }
-                } else {
-                    $valid_cache = false;
                 }
-            } else {
-                $valid_cache = false;
-            }
-            if ($valid_cache === false) {
-                $sql = "SELECT * FROM machines WHERE id = {$id}";
-                if ($DB->num_rows($sql)) {
-                    $r = $DB->select($sql);
-                    $r = $r[0];
-
-                    $this->id = $r["id"];
-                    $this->name = $r["name"];
-                    $this->documentText = $r["document_text"];
-                    $this->priceBase = $r["pricebase"];
-                    $this->group = new MachineGroup($r["group"]);
-                    $this->state = $r["state"];
-                    $this->type = $r["type"];
-                    $this->price = $r["price"];
-                    $this->border_left = $r["border_left"];
-                    $this->border_right = $r["border_right"];
-                    $this->border_top = $r["border_top"];
-                    $this->border_bottom = $r["border_bottom"];
-                    $this->colors_front = $r["colors_front"];
-                    $this->colors_back = $r["colors_back"];
-                    $this->timePlatechange = $r["time_platechange"];
-                    $this->timeColorchange = $r["time_colorchange"];
-                    $this->timeBase = $r["time_base"];
-                    $this->unit = $r["unit"];
-                    $this->finish = $r["finish"];
-                    $this->finishPlateCost = $r["finish_plate_cost"];
-                    $this->umschlUmst = $r["umschl_umst"];        //gln
-                    $this->lectorId = $r["lector_id"];
-                    $this->maxHours = $r["maxhours"];
-                    $this->paperSizeHeight = $r["paper_size_height"];
-                    $this->paperSizeWidth = $r["paper_size_width"];
-                    $this->paperSizeMinHeight = $r["paper_size_min_height"];
-                    $this->paperSizeMinWidth = $r["paper_size_min_width"];
-                    $this->timeSetupStations = $r["time_setup_stations"];
-                    $this->anzStations = $r["anz_stations"];
-                    $this->pagesPerStation = $r["pages_per_station"];
-                    $this->anzSignatures = $r["anz_signatures"];
-                    $this->timeSignatures = $r["time_signatures"];
-                    $this->timeEnvelope = $r["time_envelope"];
-                    $this->timeTrimmer = $r["time_trimmer"];
-                    $this->timeStacker = $r["time_stacker"];
-                    $this->cutprice = $r["cutprice"];
-                    $this->internaltext = $r["internaltext"];
-                    $this->hersteller = $r["hersteller"];
-                    $this->baujahr = $r["baujahr"];
-                    $this->DPHeight = $r["DPHeight"];
-                    $this->DPWidth = $r["DPWidth"];
-                    $this->breaks = $r["breaks"];
-                    $this->breaks_time = $r["breaks_time"];
-                    $this->color = $r["color"];
-                    $this->maxstacksize = $r["maxstacksize"];
-
-                    // Arbeiter
-                    $tmp_qusrs = Array();
-                    $sql = "SELECT * FROM machines_qualified_users WHERE machine = {$this->id}";
-                    if ($DB->num_rows($sql)) {
-                        foreach ($DB->select($sql) as $r) {
-                            $tmp_qusrs[] = new User((int)$r["user"]);    //gln
-                        }
+                $this->qualified_users = $tmp_qusrs;
+                
+                // Laufzeiten
+                
+                $tmp_runninghours = Array();
+                $sql = "SELECT * FROM machines_worktimes WHERE machine = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $tmp_runninghours[(int)$r["weekday"]][] = Array("start"=>$r["start"],"end"=>$r["end"]);
                     }
-                    $this->qualified_users = $tmp_qusrs;
-
-                    // Laufzeiten
-
-                    $tmp_runninghours = Array();
-                    $sql = "SELECT * FROM machines_worktimes WHERE machine = {$this->id}";
-                    if ($DB->num_rows($sql)) {
-                        foreach ($DB->select($sql) as $r) {
-                            $tmp_runninghours[(int)$r["weekday"]][] = Array("start" => $r["start"], "end" => $r["end"]);
-                        }
+                }
+                $this->runninghours = $tmp_runninghours;
+                
+                // Farbigkeiten
+                $sql = "SELECT * FROM machines_chromaticities WHERE machine_id = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $this->chromaticities[] = new Chromaticity($r["chroma_id"]);
+                        $this->clickprices[] = $r["clickprice"];	//gln
                     }
-                    $this->runninghours = $tmp_runninghours;
-
-                    // Farbigkeiten
-                    $sql = "SELECT * FROM machines_chromaticities WHERE machine_id = {$this->id}";
-                    if ($DB->num_rows($sql)) {
-                        foreach ($DB->select($sql) as $r) {
-                            $this->chromaticities[] = new Chromaticity($r["chroma_id"]);
-                            $this->clickprices[] = $r["clickprice"];    //gln
-                        }
+                }
+                
+                //Laufleistungen
+                $sql = "SELECT * FROM machines_unitsperhour WHERE machine_id = {$this->id} ORDER BY units_from";
+                if($DB->num_rows($sql))
+                {
+                    $x = 0;
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $this->unitsPerHour[$x]["from"] = $r["units_from"];
+                        $this->unitsPerHour[$x]["per_hour"] = $r["units_amount"];
+                        $x++;
                     }
-
-                    //Laufleistungen
-                    $sql = "SELECT * FROM machines_unitsperhour WHERE machine_id = {$this->id} ORDER BY units_from";
-                    if ($DB->num_rows($sql)) {
-                        $x = 0;
-                        foreach ($DB->select($sql) as $r) {
-                            $this->unitsPerHour[$x]["from"] = $r["units_from"];
-                            $this->unitsPerHour[$x]["per_hour"] = $r["units_amount"];
-                            $x++;
-                        }
+                }
+                
+                $sql = "SELECT DISTINCT diff_id, diff_unit FROM machines_difficulties WHERE machine_id = {$this->id} ORDER BY diff_id ASC";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $this->difficulties[$r["diff_id"]]["unit"] = $r["diff_unit"];
+                        $this->difficulties[$r["diff_id"]]["id"] = $r["diff_id"];
                     }
-
-                    $sql = "SELECT DISTINCT diff_id, diff_unit FROM machines_difficulties WHERE machine_id = {$this->id} ORDER BY diff_id ASC";
-                    if ($DB->num_rows($sql)) {
-                        foreach ($DB->select($sql) as $r) {
-                            $this->difficulties[$r["diff_id"]]["unit"] = $r["diff_unit"];
-                            $this->difficulties[$r["diff_id"]]["id"] = $r["diff_id"];
-                        }
-                    }
-
-                    foreach ($this->difficulties as $diff) {
-                        $tmp_values = Array();
-                        $tmp_percent = Array();
-                        $sql = "SELECT * FROM machines_difficulties WHERE machine_id = {$this->id} AND diff_id = {$diff["id"]} ORDER BY value";
+                }
+                
+                foreach ($this->difficulties as $diff){
+                    $tmp_values = Array();
+                    $tmp_percent = Array();
+                    $sql = "SELECT * FROM machines_difficulties WHERE machine_id = {$this->id} AND diff_id = {$diff["id"]} ORDER BY value";
 //                     echo $sql."</br>";
-                        if ($DB->num_rows($sql)) {
-                            foreach ($DB->select($sql) as $r) {
-                                $tmp_values[] = $r["value"];
-                                $tmp_percent[] = $r["percent"];
-                            }
-                            $this->difficulties[$diff["id"]]["values"] = $tmp_values;
-                            $this->difficulties[$diff["id"]]["percents"] = $tmp_percent;
-                        }
-                    }
-
-                    Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
-                }
-            }
-        }
-    }
-
-    function save()
-    {
-        global $DB;
-        global $_LICENSE;
-        global $_USER;
-
-        if(!$_LICENSE->isAllowed($this))
-            return false;
-
-        $set = "name = '{$this->name}',
-                document_text = '{$this->documentText}',
-                pricebase = {$this->priceBase},
-                `group` = {$this->group->getId()},
-                state = {$this->state},
-                type = {$this->type},
-                price = {$this->price},
-                border_left = {$this->border_left},
-                border_right = {$this->border_right},
-                border_top = {$this->border_top},
-                border_bottom = {$this->border_bottom},
-                colors_front = {$this->colors_front},
-                colors_back = {$this->colors_back},
-                time_platechange = {$this->timePlatechange},
-                time_colorchange = {$this->timeColorchange},
-                time_base = {$this->timeBase},
-                unit = {$this->unit},
-                finish = {$this->finish},
-                finish_plate_cost = {$this->finishPlateCost},
-                lector_id = {$this->lectorId},
-                maxhours = {$this->maxHours},
-                paper_size_height =  {$this->paperSizeHeight},
-                paper_size_width = {$this->paperSizeWidth},
-                paper_size_min_height =  {$this->paperSizeMinHeight},
-                paper_size_min_width = {$this->paperSizeMinWidth},
-                time_setup_stations =  {$this->timeSetupStations},
-                anz_stations = {$this->anzStations},
-                pages_per_station = {$this->pagesPerStation},
-                anz_signatures = {$this->anzSignatures},
-                time_signatures = {$this->timeSignatures},
-                time_envelope = {$this->timeEnvelope},
-                time_trimmer = {$this->timeTrimmer},
-                time_stacker = {$this->timeStacker},
-                cutprice = {$this->cutprice},
-                internaltext = '{$this->internaltext}',
-                hersteller = '{$this->hersteller}',
-                baujahr = '{$this->baujahr}',
-                DPHeight = '{$this->DPHeight}',
-                DPWidth = '{$this->DPWidth}',
-                breaks = {$this->breaks},
-                breaks_time = {$this->breaks_time},
-                umschl_umst = {$this->umschlUmst},
-                maxstacksize = {$this->maxstacksize},
-                color = '{$this->color}', ";
-
-        if($this->id > 0)
-        {
-            $sql = "UPDATE machines SET
-                    {$set}
-                    upddat = UNIX_TIMESTAMP(),
-                    updusr = {$_USER->getId()}
-                    WHERE id = {$this->id}";
-            $res = $DB->no_result($sql);
-            if($res)
-            {
-                $sql = "DELETE FROM machines_qualified_users WHERE machine = {$this->id}";
-                $DB->no_result($sql);
-                foreach($this->qualified_users as $qusr)
-                {
-                    $sql = "INSERT INTO machines_qualified_users
-                    (machine, user)
-                    VALUES
-                    ({$this->id}, {$qusr->getId()})";
-                    $DB->no_result($sql);
-                }
-                $sql = "DELETE FROM machines_chromaticities WHERE machine_id = {$this->id}";
-                $DB->no_result($sql);
-                foreach($this->chromaticities as $chr) //gln
-                {
-                    $sql = "INSERT INTO machines_chromaticities
-                    (machine_id, chroma_id, clickprice)
-                    VALUES
-                    ({$this->id}, {$chr->getId()}, {$this->getCurrentClickprice($chr)})";
-                    $DB->no_result($sql);
-                }
-                $sql = "DELETE FROM machines_unitsperhour WHERE machine_id = {$this->id}";
-                $DB->no_result($sql);
-                foreach($this->unitsPerHour as $unit)
-                {
-                    $sql = "INSERT INTO machines_unitsperhour
-                                (machine_id, units_from, units_amount)
-                            VALUES({$this->id}, {$unit["from"]}, {$unit["per_hour"]})";
-                    $DB->no_result($sql);
-                }
-                $sql = "DELETE FROM machines_difficulties WHERE machine_id = {$this->id}";
-                $DB->no_result($sql);
-                foreach($this->difficulties as $diff)
-                {
-                    $x = 0;
-                    foreach($diff["values"] as $tmp_values){
-                        $sql = "INSERT INTO machines_difficulties
-                        (machine_id, diff_id, diff_unit, value, percent)
-                        VALUES({$this->id}, {$diff["id"]}, {$diff["unit"]}, {$diff["values"][$x]}, {$diff["percents"][$x]})";
-                        $DB->no_result($sql);
-                        $x++;
-                    }
-                }
-                $sql = "DELETE FROM machines_worktimes WHERE machine = {$this->id}";
-                $DB->no_result($sql);
-                for($i=0;$i<7;$i++)
-                {
-                    if (count($this->runninghours[$i])>0)
+                    if($DB->num_rows($sql))
                     {
-                        foreach($this->runninghours[$i] as $whours)
+                        foreach($DB->select($sql) as $r)
                         {
-                            if ($whours["start"] && $whours["end"])
-                            {
-                                $sql = "INSERT INTO machines_worktimes
-                                        (machine, weekday, start, end)
-                                        VALUES
-                                        ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
-                                $DB->no_result($sql);
-                            }
+                            $tmp_values[] = $r["value"];
+                            $tmp_percent[] = $r["percent"];
                         }
+                        $this->difficulties[$diff["id"]]["values"] = $tmp_values;
+                        $this->difficulties[$diff["id"]]["percents"] = $tmp_percent;
                     }
                 }
-                $res = true;
-            } else
-                $res = false;
-        } else
-        {
-            $sql = "INSERT INTO machines SET
-                    {$set}
-                    crtdat = UNIX_TIMESTAMP(),
-                    crtusr = {$_USER->getId()}";
-            $res = $DB->no_result($sql);
-
-            if($res)
-            {
-                $sql = "SELECT max(id) id FROM machines where name = '{$this->name}'";
-                $thisid = $DB->select($sql);
-                $this->id = $thisid[0]["id"];
-
-                foreach($this->qualified_users as $qusr)
-                {
-                    $sql = "INSERT INTO machines_qualified_users
-                    (machine, user)
-                    VALUES
-                    ({$this->id}, {$qusr->getId()})";
-                    $DB->no_result($sql);
-                }
-
-                foreach($this->chromaticities as $chr) //gln
-                {
-                    $sql = "INSERT INTO machines_chromaticities
-                    (machine_id, chroma_id, clickprice)
-                    VALUES
-                    ({$this->id}, {$chr->getId()}, {$this->getCurrentClickprice($chr)})";
-                    $DB->no_result($sql);
-                }
-
-                $sql = "DELETE FROM machines_unitsperhour WHERE machine_id = {$this->id}";
-                $DB->no_result($sql);
-                foreach($this->unitsPerHour as $unit)
-                {
-                    $sql = "INSERT INTO machines_unitsperhour
-                    (machine_id, units_from, units_amount)
-                    VALUES({$this->id}, {$unit["from"]}, {$unit["per_hour"]})";
-                    $DB->no_result($sql);
-                }
-
-                $sql = "DELETE FROM machines_difficulties WHERE machine_id = {$this->id}";
-                $DB->no_result($sql);
-                foreach($this->difficulties as $diff)
-                {
-                    $x = 0;
-                    foreach($diff["values"] as $tmp_values){
-                        $sql = "INSERT INTO machines_difficulties
-                        (machine_id, diff_id, diff_unit, value, percent)
-                        VALUES({$this->id}, {$diff["id"]}, {$diff["unit"]}, {$diff["values"][$x]}, {$diff["percents"][$x]})";
-                        $DB->no_result($sql);
-                        $x++;
-                    }
-                }
-                $sql = "DELETE FROM machines_worktimes WHERE machine = {$this->id}";
-                $DB->no_result($sql);
-
-                for($i=0;$i<7;$i++)
-                {
-                    if (count($this->runninghours[$i])>0)
-                    {
-                        foreach($this->runninghours[$i] as $whours)
-                        {
-                            if ($whours["start"] && $whours["end"])
-                            {
-                                $sql = "INSERT INTO machines_worktimes
-                                        (machine, weekday, start, end)
-                                        VALUES
-                                        ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
-                                $DB->no_result($sql);
-                            }
-                        }
-                    }
-                }
-                $res = true;
+                
             }
-        }
-        if ($res)
-        {
-            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
-            return true;
-        }
-        else
-            return false;
-    }
-
-    function delete()
-    {
-        global $DB;
-        if($this->id > 0)
-        {
-            $sql = "UPDATE machines SET state = 0 WHERE id = {$this->id}";
-            $res = $DB->no_result($sql);
-            if($res)
-            {
-                Cachehandler::removeCache(Cachehandler::genKeyword($this));
-                unset($this);
-                return true;
-            } else
-                return false;
         }
     }
 
@@ -597,6 +340,244 @@ class Machine
     
         }
         return new Machine();
+    }
+    
+    function save()
+    {
+
+        global $DB;
+        global $_LICENSE;
+        global $_USER;
+        
+        
+        if(!$_LICENSE->isAllowed($this))
+            return false;
+        
+        
+        $set = "name = '{$this->name}',
+                document_text = '{$this->documentText}',
+                pricebase = {$this->priceBase},
+                `group` = {$this->group->getId()},
+                state = {$this->state},
+                type = {$this->type},
+                price = {$this->price},
+                border_left = {$this->border_left},
+                border_right = {$this->border_right},
+                border_top = {$this->border_top},
+                border_bottom = {$this->border_bottom},
+                colors_front = {$this->colors_front},
+                colors_back = {$this->colors_back},
+                time_platechange = {$this->timePlatechange},
+                time_colorchange = {$this->timeColorchange},
+                time_base = {$this->timeBase},
+                unit = {$this->unit},
+                finish = {$this->finish},
+                finish_plate_cost = {$this->finishPlateCost},
+                lector_id = {$this->lectorId},
+                maxhours = {$this->maxHours},
+                paper_size_height =  {$this->paperSizeHeight},
+                paper_size_width = {$this->paperSizeWidth},
+                paper_size_min_height =  {$this->paperSizeMinHeight},
+                paper_size_min_width = {$this->paperSizeMinWidth},
+                time_setup_stations =  {$this->timeSetupStations},
+                anz_stations = {$this->anzStations},
+                pages_per_station = {$this->pagesPerStation},
+                anz_signatures = {$this->anzSignatures},
+                time_signatures = {$this->timeSignatures},
+                time_envelope = {$this->timeEnvelope},
+                time_trimmer = {$this->timeTrimmer},
+                time_stacker = {$this->timeStacker},
+                cutprice = {$this->cutprice},
+                internaltext = '{$this->internaltext}',
+                hersteller = '{$this->hersteller}',
+                baujahr = '{$this->baujahr}',
+                DPHeight = '{$this->DPHeight}',
+                DPWidth = '{$this->DPWidth}',
+                breaks = {$this->breaks},
+                breaks_time = {$this->breaks_time},
+                umschl_umst = {$this->umschlUmst},
+                maxstacksize = {$this->maxstacksize},
+                color = '{$this->color}', ";
+        
+        if($this->id > 0)
+        {
+            $sql = "UPDATE machines SET
+                    {$set}
+                    upddat = UNIX_TIMESTAMP(),
+                    updusr = {$_USER->getId()}
+                    WHERE id = {$this->id}";
+
+            $res = $DB->no_result($sql);
+            
+            if($res)
+            {
+                $sql = "DELETE FROM machines_qualified_users WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+                
+                foreach($this->qualified_users as $qusr)
+                {
+                    $sql = "INSERT INTO machines_qualified_users
+                    (machine, user)
+                    VALUES
+                    ({$this->id}, {$qusr->getId()})";
+                    $DB->no_result($sql);
+                }
+                
+                $sql = "DELETE FROM machines_chromaticities WHERE machine_id = {$this->id}";
+                $DB->no_result($sql);
+                
+                foreach($this->chromaticities as $chr) //gln
+                {
+                    $sql = "INSERT INTO machines_chromaticities
+                    (machine_id, chroma_id, clickprice)
+                    VALUES
+                    ({$this->id}, {$chr->getId()}, {$this->getCurrentClickprice($chr)})";
+                    $DB->no_result($sql);
+                }
+                
+                $sql = "DELETE FROM machines_unitsperhour WHERE machine_id = {$this->id}";
+                $DB->no_result($sql);
+                foreach($this->unitsPerHour as $unit)
+                {
+                    $sql = "INSERT INTO machines_unitsperhour
+                                (machine_id, units_from, units_amount)
+                            VALUES({$this->id}, {$unit["from"]}, {$unit["per_hour"]})";
+                    $DB->no_result($sql);
+                }
+                
+                $sql = "DELETE FROM machines_difficulties WHERE machine_id = {$this->id}";
+                $DB->no_result($sql);
+                foreach($this->difficulties as $diff)
+                {
+                    $x = 0;
+                    foreach($diff["values"] as $tmp_values){
+                        $sql = "INSERT INTO machines_difficulties
+                        (machine_id, diff_id, diff_unit, value, percent)
+                        VALUES({$this->id}, {$diff["id"]}, {$diff["unit"]}, {$diff["values"][$x]}, {$diff["percents"][$x]})";
+                        $DB->no_result($sql);
+//                         echo $sql."</br>";
+                        $x++;
+                    }
+                }
+                $sql = "DELETE FROM machines_worktimes WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+                
+                for($i=0;$i<7;$i++)
+                {
+                    if (count($this->runninghours[$i])>0)
+                    {
+                        foreach($this->runninghours[$i] as $whours)
+                        {
+                            if ($whours["start"] && $whours["end"])
+                            {
+                                $sql = "INSERT INTO machines_worktimes
+                                        (machine, weekday, start, end)
+                                        VALUES
+                                        ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
+                                $DB->no_result($sql);
+                            }
+                        }
+                    }
+                }
+                return true;
+            } else 
+                return false;
+        } else
+        {
+            $sql = "INSERT INTO machines SET 
+                    {$set}
+                    crtdat = UNIX_TIMESTAMP(),
+                    crtusr = {$_USER->getId()}";
+            $res = $DB->no_result($sql);
+
+            if($res)
+            {
+                $sql = "SELECT max(id) id FROM machines where name = '{$this->name}'";
+                $thisid = $DB->select($sql);
+                $this->id = $thisid[0]["id"];
+                
+                foreach($this->qualified_users as $qusr)
+                {
+                    $sql = "INSERT INTO machines_qualified_users
+                    (machine, user)
+                    VALUES
+                    ({$this->id}, {$qusr->getId()})";
+                    $DB->no_result($sql);
+                }
+                
+                foreach($this->chromaticities as $chr) //gln
+                {
+                    $sql = "INSERT INTO machines_chromaticities
+                    (machine_id, chroma_id, clickprice)
+                    VALUES
+                    ({$this->id}, {$chr->getId()}, {$this->getCurrentClickprice($chr)})";
+                    $DB->no_result($sql);
+                }
+                
+                $sql = "DELETE FROM machines_unitsperhour WHERE machine_id = {$this->id}";
+                $DB->no_result($sql);
+                foreach($this->unitsPerHour as $unit)
+                {
+                    $sql = "INSERT INTO machines_unitsperhour
+                    (machine_id, units_from, units_amount)
+                    VALUES({$this->id}, {$unit["from"]}, {$unit["per_hour"]})";
+                    $DB->no_result($sql);
+                }
+                
+                $sql = "DELETE FROM machines_difficulties WHERE machine_id = {$this->id}";
+                $DB->no_result($sql);
+                foreach($this->difficulties as $diff)
+                {
+                    $x = 0;
+                    foreach($diff["values"] as $tmp_values){
+                        $sql = "INSERT INTO machines_difficulties
+                        (machine_id, diff_id, diff_unit, value, percent)
+                        VALUES({$this->id}, {$diff["id"]}, {$diff["unit"]}, {$diff["values"][$x]}, {$diff["percents"][$x]})";
+                        $DB->no_result($sql);
+//                         echo $sql."</br>";
+                        $x++;
+                    }
+                }
+                $sql = "DELETE FROM machines_worktimes WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+                
+                for($i=0;$i<7;$i++)
+                {
+                    if (count($this->runninghours[$i])>0)
+                    {
+                        foreach($this->runninghours[$i] as $whours)
+                        {
+                            if ($whours["start"] && $whours["end"])
+                            {
+                                $sql = "INSERT INTO machines_worktimes
+                                        (machine, weekday, start, end)
+                                        VALUES
+                                        ({$this->id}, {$i}, {$whours['start']}, {$whours['end']})";
+                                $DB->no_result($sql);
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function delete()
+    {
+        global $DB;
+        if($this->id > 0)
+        {
+            $sql = "UPDATE machines SET state = 0 WHERE id = {$this->id}";
+            $res = $DB->no_result($sql);
+            if($res)
+            {
+                unset($this);
+                return true;
+            } else
+                return false;
+        }
     }
 
     function clearId()

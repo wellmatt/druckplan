@@ -437,7 +437,7 @@ function sleep(millis, callback) {
                       <!-- Menu Footer-->
                       <li class="user-footer">
                           <div class="col-xs-4 text-center">
-                              <a href="JavaScript: callBoxFancyIndex('http://contilas.de/changelog.htm');" class="btn btn-default btn-flat btn-xs">Changelog</a>
+<!--                              <a href="JavaScript: callBoxFancyIndex('http://contilas.de/changelog.htm');" class="btn btn-default btn-flat btn-xs">Changelog</a>-->
                           </div>
                           <div style="" class="col-xs-4 text-center">
                               <a href="mailto:support@contilas.de?Subject=Support" class="btn btn-default btn-flat btn-xs">Support</a>

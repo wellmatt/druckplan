@@ -968,6 +968,6 @@ class Machineentry {
 
     public function getUmschlUmst()
     {
-        return null;
+        return 0;
     }
 }

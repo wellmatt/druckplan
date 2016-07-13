@@ -349,13 +349,6 @@ class Calculation
     static function deleteCalculationsForUpdate($order_id, $calc_geaendert)
     {
         	global $DB;
-         	$sql = "DELETE FROM orders_machines  
-                WHERE calc_id in (select id from orders_calculations WHERE order_id = {$order_id} and id <> {$calc_geaendert}) ";
-// 			echo "geloescht in orders_machines fuer order_id ".$order_id." calc_geaendert ".$calc_geaendert.", ".$DB->num_rows($sql)." Saetze";
-         	$sql = "DELETE FROM orders_machines  
-                WHERE calc_id in (select id from orders_calculations WHERE order_id = {$order_id} and id <> {$calc_geaendert}) ";
-// 			echo "geloescht in orders_calculations fuer order_id ".$order_id." calc_geaendert ".$calc_geaendert.", ".$DB->num_rows($sql)." Saetze";
-        	
         	$sql = "DELETE FROM orders_calculations  
                 WHERE order_id = {$order_id} and id <> {$calc_geaendert} ";
             if($DB->no_result($sql))

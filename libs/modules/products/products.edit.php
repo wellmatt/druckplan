@@ -206,22 +206,6 @@ message='<?=$_LANG->get('Sind Sie sicher?')?>';
 			document.getElementById('span_amount_'+idx).style.display = '';
 	}
 </script>
-<!--<script>-->
-<!--    $(function () {-->
-<!--        var pm = $('#paper_magic').magicSuggest({-->
-<!--            data: 'libs/modules/paper/paper.ajax.php?exec=getAllPaper',-->
-<!--            valueField: 'id',-->
-<!--            displayField: 'name',-->
-<!--            expandOnFocus: true,-->
-<!--            maxSelection: 1,-->
-<!--            minChars: 3,-->
-<!--            selectFirst: true,-->
-<!--        });-->
-<!--        $(pm).on('triggerclick', function(e,m){-->
-<!--            alert("don't shoot me!");-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
 <!-- /FancyBox -->
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -234,144 +218,16 @@ if ($product->getId()>0){
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" id="machine_form" name="machine_form"
-      class="form-horizontal" onsubmit="return checkform(new Array(this.product_name))">
-    <input type="hidden" name="exec" value="edit">
-    <input type="hidden" name="subexec" value="save">
-    <input type="hidden" name="id" value="<?= $product->getId() ?>">
-    <input type="hidden" name="picture" id="picture" value="<?= $product->getPicture() ?>">
-    <input type="hidden" name="paper_count_content" id="paper_count_content"
-           value="<?= count($product->getSelectedPapersIds(Calculation::PAPER_CONTENT)) ?>">
-    <input type="hidden" name="paper_count_envelope" id="paper_count_envelope"
-           value="<?= count($product->getSelectedPapersIds(Calculation::PAPER_ENVELOPE)) ?>">
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Produkt kopieren') ?>
-                <? if ($_REQUEST["exec"] == "edit" && $product->getId() == 0) echo $_LANG->get('Produkt anlegen') ?>
-                <? if ($_REQUEST["exec"] == "edit" && $product->getId() != 0) echo $_LANG->get('Produkt bearbeiten') ?>
-                <span class="pull-right">
-                  <?= $savemsg ?>
-                </span>
-            </h3>
-
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Produktname</label>
-                        <div class="col-sm-9">
-                            <input name="product_name" value="<?= $product->getName() ?>" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Beschreibung</label>
-                        <div class="col-sm-9">
-                            <textarea name="product_description"
-                                      class="form-control"><?= $product->getDescription() ?></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Produkt besteht aus</label>
-                        <div class="col-sm-9">
-                            <input type="checkbox" value="1" name="product_hascontent"
-                                <? if ($product->getHasContent()) echo "checked"; ?>> <?= $_LANG->get('Inhalt') ?><br>
-                            <input type="checkbox" value="1" name="product_hasaddcontent"
-                                <? if ($product->getHasAddContent()) echo "checked"; ?>> <?= $_LANG->get('zus&auml;tzlichem Inhalt') ?>
-                            <br>
-                            <input type="checkbox" value="1" name="product_hasaddcontent2"
-                                <? if ($product->getHasAddContent2()) echo "checked"; ?>> <?= $_LANG->get('zus&auml;tzlichem Inhalt 2') ?>
-                            <br>
-                            <input type="checkbox" value="1" name="product_hasaddcontent3"
-                                <? if ($product->getHasAddContent3()) echo "checked"; ?>> <?= $_LANG->get('zus&auml;tzlichem Inhalt 3') ?>
-                            <br>
-                            <input type="checkbox" value="1" name="product_hasenvelope" onChange="togglePaperEnvelope()"
-                                   id="product_hasenvelope"
-                                <? if ($product->getHasEnvelope()) echo "checked"; ?>> <?= $_LANG->get('Umschlag') ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Bild</label>
-                        <div class="col-sm-9" id="picture_show">
-                            <?php if ($product->getPicture() != "") { ?>
-                                <img src="images/products/<?=$product->getPicture()?>">&nbsp;
-                            <?php }?>
-                        </div>
-                    </div>
-                    </br>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Produktbild</label>
-                        <div class="col-sm-9">
-                            <a href="libs/modules/products/picture.iframe.php" id="picture_select"
-                               class="products">
-                                <button class="btn btn-xs btn-success">
-                                    <?= $_LANG->get('&auml;ndern') ?>
-                                </button></a>
-                            <? if ($product->getPicture() != "") { ?>
-                                <button class="btn btn-xs btn-success" onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $product->getId() ?>&deletePicture=1'">
-                                    <?= $_LANG->get('L&ouml;schen') ?>
-                                </button>
-                            <? } ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Umsatzsteuer</label>
-                        <div class="col-sm-9">
-                            <div class="input-group">
-                                <input name="taxes" value="<?= printPrice($product->getTaxes()) ?>"
-                                       class="form-control">
-                                <span class="input-group-addon">%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Produkttyp</label>
-                        <div class="col-sm-9">
-                            <input type="radio" name="product_type"
-                                   value="<?= Product::TYPE_NORMAL ?>" <? if ($product->getType() == Product::TYPE_NORMAL) echo "checked"; ?>> <?= $_LANG->get('Normal') ?>
-                            &nbsp;
-                            <input type="radio" name="product_type"
-                                   value="<?= Product::TYPE_BOOKPRINT ?>" <? if ($product->getType() == Product::TYPE_BOOKPRINT) echo "checked"; ?>> <?= $_LANG->get('Buchdruck') ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Warengruppe</label>
-                        <div class="col-sm-9">
-                            <select id="product_tradegroup" name="product_tradegroup" class="form-control">
-                                <option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-                                <? foreach ($all_tradegroups as $tg) { ?>
-                                    <option value="<?= $tg->getId() ?>"
-                                        <? if ($product->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle() ?></option>
-                                    <? printSubTradegroupsForSelect($tg->getId(), 0);
-                                } //Ende foreach($all_tradegroups) ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Selben Plattensatz</label>
-                        <div class="col-sm-2">
-                            <input class="form-control" type="checkbox" value="1"
-                                   name="singleplateset" <? if ($product->getSingleplateset()) echo 'checked="checked"'; ?>
-                                   title="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Block</label>
-                        <div class="col-sm-2">
-                            <input class="form-control" type="checkbox" value="1" name="blockplateset" <?if($product->getBlockplateset()) echo 'checked="checked"';?> title="" >
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
+<table width="100%">
+   <tr>
+      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+          <? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Produkt kopieren')?>
+          <? if ($_REQUEST["exec"] == "edit" && $product->getId() == 0) echo $_LANG->get('Produkt anlegen')?>
+          <? if ($_REQUEST["exec"] == "edit" && $product->getId() != 0) echo $_LANG->get('Produkt bearbeiten')?>
+      </td>
+      <td align="right"><?=$savemsg?></td>
+   </tr>
+</table>
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form" onsubmit="return checkform(new Array(this.product_name))">
 <input type="hidden" name="exec" value="edit">
@@ -380,7 +236,113 @@ echo $quickmove->generate();
 <input type="hidden" name="picture" id="picture" value="<?=$product->getPicture()?>">
 <input type="hidden" name="paper_count_content" id="paper_count_content" value="<?=count($product->getSelectedPapersIds(Calculation::PAPER_CONTENT))?>">
 <input type="hidden" name="paper_count_envelope" id="paper_count_envelope" value="<?=count($product->getSelectedPapersIds(Calculation::PAPER_ENVELOPE))?>">
-
+<div class="box1">
+<table width="100%">
+    <colgroup>
+        <col width="180">
+        <col width="300">
+        <col width="180">
+        <col width="300">
+    </colgroup>
+    <tr>
+        <td class="content_row_header"><?=$_LANG->get('Produktname')?> *</td>
+        <td class="content_row_clear">
+            <input name="product_name" value="<?=$product->getName()?>" style="width:300px;" class="text">
+        </td>
+        <td class="content_row_header" rowspan="2" valign="top">
+            <?=$_LANG->get('Produktbild')?> *<br>
+            <a href="libs/modules/products/picture.iframe.php" id="picture_select" class="products"><input type="button" class="button" value="<?=$_LANG->get('&auml;ndern')?>"></a>
+            <? if($product->getPicture() != "") {?>
+                <input type="button" class="buttonRed" value="<?=$_LANG->get('L&ouml;schen')?>" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$product->getId()?>&deletePicture=1'">
+            <? } ?>
+        </td>
+        <td class="content_row_clear" rowspan="2" valign="top" id="picture_show">
+            <img src="images/products/<?=$product->getPicture()?>">&nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung')?></td>
+        <td class="content_row_clear">
+            <textarea name="product_description" style="width:300px;height:100px" class="text"><?=$product->getDescription()?></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="content_row_header" valign="top" rowspan="4"><?=$_LANG->get('Produkt besteht aus')?></td>
+        <td class="content_row_clear" rowspan="4">
+            <input type="checkbox" value="1" name="product_hascontent"
+                <?if($product->getHasContent()) echo "checked";?>> <?=$_LANG->get('Inhalt')?><br>
+            <input type="checkbox" value="1" name="product_hasaddcontent"
+                <?if($product->getHasAddContent()) echo "checked";?>> <?=$_LANG->get('zus&auml;tzlichem Inhalt')?><br>
+			<input type="checkbox" value="1" name="product_hasaddcontent2"
+                <?if($product->getHasAddContent2()) echo "checked";?>> <?=$_LANG->get('zus&auml;tzlichem Inhalt 2')?><br>
+            <input type="checkbox" value="1" name="product_hasaddcontent3"
+                <?if($product->getHasAddContent3()) echo "checked";?>> <?=$_LANG->get('zus&auml;tzlichem Inhalt 3')?><br>
+            <input type="checkbox" value="1" name="product_hasenvelope" onChange="togglePaperEnvelope()" id="product_hasenvelope"
+                <?if($product->getHasEnvelope()) echo "checked";?>> <?=$_LANG->get('Umschlag')?>
+        </td>
+        <td class="content_row_header" valign="top"><?=$_LANG->get('Umsatzsteuer')?></td>
+        <td class="content_row_clear" valign="top">
+            <input name="taxes" value="<?=printPrice($product->getTaxes())?>" class="text" style="width:60px"> %
+        </td>
+    </tr>
+    <!-- tr>
+        <td class="content_row_header" valign="top"><?=$_LANG->get('Zuschussbogen')?></td>
+        <td class="content_row_clear" valign="top">
+            <input name="grantpaper" value="<?=printBigInt($product->getGrantPaper())?>" class="text" style="width:60px">
+            <span title="<?=$_LANG->get('Prozentual zur Anzahl der B&ouml;gen der Bestellung')?>">%</span>
+        </td>
+    </tr -->
+    <tr>
+        <td class="content_row_header" valign="top"><?=$_LANG->get('Produkttyp')?></td>
+        <td class="content_row_clear" valign="top">
+            <input type="radio" name="product_type" value="<?=Product::TYPE_NORMAL?>" <?if($product->getType() == Product::TYPE_NORMAL) echo "checked";?>> <?=$_LANG->get('Normal')?>
+            <input type="radio" name="product_type" value="<?=Product::TYPE_BOOKPRINT?>" <?if($product->getType() == Product::TYPE_BOOKPRINT) echo "checked";?>> <?=$_LANG->get('Buchdruck')?>
+        </td>
+    </tr>
+    <tr>
+    	<td class="content_row_header" valign="top"><?=$_LANG->get('Warengruppe')?></td>
+    	<td class="content_row_clear" valign="top">
+    		<select id="product_tradegroup" name="product_tradegroup" style="width: 170px">
+					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+					<?	foreach ($all_tradegroups as $tg){?>
+							<option value="<?=$tg->getId()?>"
+							<?if ($product->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
+						<?	printSubTradegroupsForSelect($tg->getId(), 0);
+						} //Ende foreach($all_tradegroups) ?>
+			</select>
+    	</td>
+    	<?/*if($_CONFIG->shopActivation){?>
+	        <td class="content_row_header" valign="top"><?=$_LANG->get('Shop-Freigabe')?></td>
+	        <td class="content_row_clear" valign="top">
+	            <input type="checkbox" value="1" name="product_shoprel" id="product_shoprel"
+	                <?if($product->getShoprel()==1) echo "checked";?>>
+	        </td>
+        <?}*/?>
+    </tr>
+<!--<tr>
+    	<td class="content_row_header" valign="top"><?=$_LANG->get('Dummy-Daten Laden')?></td>
+    	<td class="content_row_header" >
+    		<input type="checkbox" value="1" name="load_dummydata" <?if($product->getLoadDymmyData()) echo 'checked="checked"';?>
+    				title="<?echo $_LANG->get('Laden von Dummy-Daten in Kalkulationen.')."\n";
+    						 echo $_LANG->get('Produktformate und Papier m&uuml;ssen trotzdem angegeben werden');?>" >
+		</td>
+    </tr> -->
+    <tr>
+    	<td class="content_row_header" valign="top"><?=$_LANG->get('Selben Plattensatz')?></td>
+    	<td class="content_row_header" >
+    		<input type="checkbox" value="1" name="singleplateset" <?if($product->getSingleplateset()) echo 'checked="checked"';?> title="" >
+		</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td class="content_row_header" valign="top"><?=$_LANG->get('Block')?></td>
+        <td class="content_row_header" >
+            <input type="checkbox" value="1" name="blockplateset" <?if($product->getBlockplateset()) echo 'checked="checked"';?> title="" >
+        </td>
+    </tr>
+</table>
+</div>
 <br>
 <h1><?=$_LANG->get('Papiere')?> <?=$_LANG->get('Inhalt')?> / <?=$_LANG->get('zus. Inhalt')?></h1>
 <div class="box2">
