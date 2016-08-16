@@ -109,13 +109,28 @@ $all_comments = Comment::getCommentsForObjectSummary(get_class($ticket),$ticket-
 $art_array = Array();
 
 foreach ($all_comments as $comment){
-    if ($comment->getState() > 0 && count($comment->getArticles()) > 0){
-        foreach ($comment->getArticles() as $c_article){
-            if ($c_article->getState() > 0)
-            {
-                $art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
-                $art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
-                $art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
+    if ($comment->getState() > 0) {
+        if (count($comment->getArticles()) > 0) {
+            foreach ($comment->getArticles() as $c_article) {
+                if ($c_article->getState() > 0) {
+                    $art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
+                    $art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
+                    $art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
+                }
+            }
+        }
+        $subs = Comment::getCommentsForObject(get_class($comment),$comment->getId());
+        if (count($subs)>0){
+            foreach ($subs as $sub) {
+                if ($sub->getState() > 0 && count($sub->getArticles())>0){
+                    foreach ($sub->getArticles() as $c_article) {
+                        if ($c_article->getState() > 0) {
+                            $art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
+                            $art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
+                            $art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
+                        }
+                    }
+                }
             }
         }
     }
@@ -178,18 +193,45 @@ $totalprice = 0;
 				<th width="20%"><u>Datum</u></th>
 			</tr>
 		</tfoot>
-		<?php foreach ($all_comments as $comment){
-		    if ($comment->getState() > 0 && count($comment->getArticles()) > 0){
-		        foreach ($comment->getArticles() as $c_article){
-		        if ($c_article->getState()>0){?>
-        <tr>
-            <td valign="top"><?php echo $c_article->getArticle()->getTitle();?></td>
-            <td valign="top"><?php echo printPrice($c_article->getAmount(),2);?></td>
-            <td valign="top"><?php echo $comment->getComment();?></td>
-            <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
-            <td valign="top"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?></td>
-        </tr>
-        <?php }}}}?>
+		<?php
+        foreach ($all_comments as $comment){
+		    if ($comment->getState() > 0){
+                if (count($comment->getArticles()) > 0){
+                    foreach ($comment->getArticles() as $c_article){
+                        if ($c_article->getState()>0){?>
+                            <tr>
+                                <td valign="top"><?php echo $c_article->getArticle()->getTitle();?></td>
+                                <td valign="top"><?php echo printPrice($c_article->getAmount(),2);?></td>
+                                <td valign="top"><?php echo $comment->getComment();?></td>
+                                <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
+                                <td valign="top"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?></td>
+                            </tr>
+                            <?php
+                        }
+                    }
+                }
+                $subs = Comment::getCommentsForObject(get_class($comment),$comment->getId());
+                if (count($subs)>0){
+                    foreach ($subs as $sub) {
+                        if ($sub->getState() > 0 && count($sub->getArticles())>0){
+                            foreach ($sub->getArticles() as $c_article) {
+                                if ($c_article->getState() > 0) {?>
+                                    <tr>
+                                        <td valign="top"><?php echo $c_article->getArticle()->getTitle();?></td>
+                                        <td valign="top"><?php echo printPrice($c_article->getAmount(),2);?></td>
+                                        <td valign="top"><?php echo $sub->getComment();?></td>
+                                        <td valign="top"><?php echo $sub->getCrtuser()->getNameAsLine();?></td>
+                                        <td valign="top"><?php echo date("d.m.Y H:i",$sub->getCrtdate());?></td>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ?>
     </table>
 </div>
 <br>
@@ -210,14 +252,33 @@ $totalprice = 0;
 				<th><u>Datum</u></th>
 			</tr>
 		</tfoot>
-		<?php $x=0;foreach ($all_comments as $comment){
+		<?php
+        $x=0;
+        foreach ($all_comments as $comment){
 		    if ($comment->getState() > 0){?>
-        <tr class="<?=getRowColor($x)?>">
-            <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
-            <td valign="top"><?php echo $comment->getComment();?></td>
-            <td valign="top"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?></td>
-        </tr>
-        <?php $x++;}}?>
+                <tr class="<?=getRowColor($x)?>">
+                    <td valign="top"><?php echo $comment->getCrtuser()->getNameAsLine();?></td>
+                    <td valign="top"><?php echo $comment->getComment();?></td>
+                    <td valign="top"><?php echo date("d.m.Y H:i",$comment->getCrtdate());?></td>
+                </tr>
+                <?php
+                $x++;
+                $subs = Comment::getCommentsForObject(get_class($comment),$comment->getId());
+                if (count($subs)>0){
+                    foreach ($subs as $sub) {
+                        if ($sub->getState() > 0){?>
+                            <tr class="<?=getRowColor($x)?>">
+                                <td valign="top"><?php echo $sub->getCrtuser()->getNameAsLine();?></td>
+                                <td valign="top"><?php echo $sub->getComment();?></td>
+                                <td valign="top"><?php echo date("d.m.Y H:i",$sub->getCrtdate());?></td>
+                            </tr>
+                            <?php
+                        }
+                    }
+                }
+            }
+        }
+        ?>
     </table>
 </div>
 </body>

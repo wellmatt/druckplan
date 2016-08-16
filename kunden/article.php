@@ -97,12 +97,12 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 						  <div class="row">
 							  <? if ($all_pictures[0]["url"] == NULL || $all_pictures[0]["url"] == "") { ?>
 								  <img src="../images/icons/image.png"
-									   title="<?= $_LANG->get('Kein Bild hinterlegt'); ?>">
+									   title="<?= $_LANG->get('Kein Bild hinterlegt'); ?>" style="max-height: 300px; max-width: 200px;">
 								  &ensp;
 							  <? } else { ?>
 								  <? foreach ($all_pictures AS $pic) { ?>
 									  <a href="../images/products/<?= $pic["url"] ?>" target="_blank"><img
-											  src="../images/products/<?= $pic["url"] ?>"></a>
+											  src="../images/products/<?= $pic["url"] ?>" style="max-height: 300px; max-width: 200px;"></a>
 									  &ensp;
 								  <? } ?>
 							  <? } ?>

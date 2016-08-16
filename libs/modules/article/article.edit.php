@@ -246,13 +246,13 @@ function printSubTradegroupsForSelect($parentId, $depth){
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
-$quickmove->addItem('Speichern','#',"$('#article_edit').submit();",'glyphicon-floppy-disk');
 if ($article->getId()>0){
 	$quickmove->addItem('Neuer Vorgang','index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user&startart='.$article->getId(),null,'glyphicon-book');
 }
 if ($article->getOrderid()>0){
 	$quickmove->addItem('Zur Kalkulation','index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$article->getOrderid().'&step=4',null,'glyphicon-book');
 }
+$quickmove->addItem('Speichern','#',"$('#article_edit').submit();",'glyphicon-floppy-disk');
 if ($_USER->isAdmin() && $article->getId()>0){
 	$quickmove->addItem('Löschen', '#', "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&did=".$article->getId()."');", 'glyphicon-trash', true);
 }

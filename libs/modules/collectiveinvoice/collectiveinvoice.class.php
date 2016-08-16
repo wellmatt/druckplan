@@ -53,6 +53,8 @@ class CollectiveInvoice{
 	private $rdyfordispatch = 0;		// Ware bereit zur Lieferung
 	private $thirdparty = 0;			// Fremdleistung ja/nein
 	private $thirdpartycomment = "";	// Hinweis zur Fremdleistung
+
+	private $ticket = 0;				// TicketID falls durch ticket erstellt
     
     // Doc texts
 
@@ -160,6 +162,7 @@ class CollectiveInvoice{
 					$this->rdyfordispatch = $r["rdyfordispatch"];
 					$this->thirdparty = $r["thirdparty"];
 					$this->thirdpartycomment = $r["thirdpartycomment"];
+					$this->ticket = $r["ticket"];
 
 					// doc texts
 					$this->offer_header = $r["offer_header"];
@@ -225,7 +228,8 @@ class CollectiveInvoice{
                     invoice_header = '{$this->invoice_header}',  
                     invoice_footer = '{$this->invoice_footer}',  
                     revert_header = '{$this->revert_header}',  
-                    revert_footer = '{$this->revert_footer}',    
+                    revert_footer = '{$this->revert_footer}',
+                    ticket = {$this->ticket},
                     
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
@@ -242,7 +246,7 @@ class CollectiveInvoice{
 				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
-				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment)
+				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket)
 			VALUES
 				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
@@ -252,7 +256,7 @@ class CollectiveInvoice{
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
 				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}',
-				 {$this->thirdparty},'{$this->thirdpartycomment}')";
+				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket})";
 			$res = $DB->no_result($sql);
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
@@ -1332,5 +1336,21 @@ class CollectiveInvoice{
 	public function setThirdpartycomment($thirdpartycomment)
 	{
 		$this->thirdpartycomment = $thirdpartycomment;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTicket()
+	{
+		return $this->ticket;
+	}
+
+	/**
+	 * @param int $ticket
+	 */
+	public function setTicket($ticket)
+	{
+		$this->ticket = $ticket;
 	}
 }

@@ -947,6 +947,7 @@ if ($_REQUEST["returnhome"] == 1){
 } else {
     $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 }
+$quickmove->addItem('Aktualisieren','#',"window.location='index.php?page=".$_REQUEST['page']."&exec=edit&tktid=".$ticket->getId()."';",'glyphicon-refresh');
 $quickmove->addItem('Speichern','#',"$('#ticket_edit').submit();",'glyphicon-floppy-disk');
 
 if ($_USER->getId() == $ticket->getCrtuser()->getId() || $_USER->getId() == $ticket->getAssigned_user()->getId() || $_USER->isAdmin()){

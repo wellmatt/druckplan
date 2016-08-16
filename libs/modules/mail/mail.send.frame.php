@@ -680,6 +680,13 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
 <!-- The basic File Upload plugin -->
 <script src="../../../jscripts/jquery/js/jquery.fileupload.js"></script>
 <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/main.css" />
+
 <!-- // file upload -->
 
 <script>

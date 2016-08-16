@@ -356,7 +356,7 @@ class User {
         $users = Array();
 
         $sql = " SELECT id FROM user 
-        		 WHERE user_level > 0 
+        		 WHERE user_level > 0 AND user_active = 1
         		 ".$filter."
                  ORDER BY {$order}";
         

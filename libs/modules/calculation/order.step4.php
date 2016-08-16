@@ -71,29 +71,60 @@ foreach ($calculations as $c){
         newwindow = focus();
     }
 
+    function EndpriceCheck(num1, num2){
+        return (num1 > num2)? num1-num2 : num2-num1;
+    }
+
     function ManualOverride(obj)
     {
-        calc_ele = obj.name;
         var id;
+        calc_ele = obj.name;
         id = calc_ele.match(/^man_override_(\d+)/)[1];
-        var charge = document.getElementById('add_charge_'+id).value;
-        charge = charge.replace(".","");
-        charge = parseFloat(charge.replace(",","."));
         var endprice = document.getElementById('hidden_endprice_'+id).value;
         endprice = endprice.replace(".","");
         endprice = parseFloat(endprice.replace(",","."));
-        var override = parseFloat(obj.value.replace(",","."));
-        var add = "";
-        var new_charge = 0;
-        if (endprice > override) {
-            add = "-";
-            new_charge = endprice - override;
+
+        var override = document.getElementById('man_override_'+id).value;
+        override = override.replace(".","");
+        override = parseFloat(override.replace(",","."));
+
+        var charge = document.getElementById('hidden_add_charge_'+id).value;
+        charge = charge.replace(".","");
+        charge = parseFloat(charge.replace(",","."));
+
+        if (override>endprice){
+            var diff = override-endprice;
+            var output = charge+diff;
         } else {
-            new_charge = override - endprice;
+            var diff = endprice-override;
+            var output = charge-diff;
         }
-        new_charge = new_charge.toString().replace(".",",");
-        var output = add+new_charge;
+
+        output = output.toString().replace(".",",");
         document.getElementById('add_charge_'+id).value = output;
+
+
+//        calc_ele = obj.name;
+//        var id;
+//        id = calc_ele.match(/^man_override_(\d+)/)[1];
+//        var charge = document.getElementById('add_charge_'+id).value;
+//        charge = charge.replace(".","");
+//        charge = parseFloat(charge.replace(",","."));
+//        var endprice = document.getElementById('hidden_endprice_'+id).value;
+//        endprice = endprice.replace(".","");
+//        endprice = parseFloat(endprice.replace(",","."));
+//        var override = parseFloat(obj.value.replace(",","."));
+//        var add = "";
+//        var new_charge = 0;
+//        if (endprice > override) {
+//            add = "-";
+//            new_charge = endprice - override;
+//        } else {
+//            new_charge = override - endprice;
+//        }
+//        new_charge = new_charge.toString().replace(".",",");
+//        var output = add+new_charge;
+//        document.getElementById('add_charge_'+id).value = output;
     }
 
     $(document).ready(function() {
@@ -904,6 +935,7 @@ echo $quickmove->generate();
                           <td class="content_row_clear value">
                               <input name="add_charge_<?=$calc->getId()?>" id="add_charge_<?=$calc->getId()?>" style="width:60px;text-align:center" value="<?=printPrice($calc->getAddCharge())?>">
                               <?=$_USER->getClient()->getCurrency()?>
+                              <input name="hidden_add_charge_<?=$calc->getId()?>" id="hidden_add_charge_<?=$calc->getId()?>" value="<?=printPrice($calc->getAddCharge())?>" type="hidden">
                           </td>
                       <?  } ?>
                   </tr>

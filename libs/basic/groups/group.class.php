@@ -86,7 +86,7 @@ class Group {
       global $DB;
       $groups = Array();
       
-      $sql = "SELECT id FROM groups WHERE group_status = 1 " .$filter;
+      $sql = "SELECT id FROM groups WHERE group_status = 1 " . $filter;
 
       if ($DB->num_rows($sql))
       {

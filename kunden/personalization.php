@@ -208,7 +208,22 @@ if ($_REQUEST["exec"] == "edit"){
 			"module" => Document::REQ_MODULE_PERSONALIZATION));
 	}
 	?>
-
+	<script language="JavaScript">
+		function checkField(id)
+		{
+			// Nach absprache mit Anissa wieder rausgenommen vorerst
+//			var original = String($("#item_value_default_"+id).val());
+//			var value = String($("#item_value_"+id).val());
+//			if (original.indexOf("\\t") > -1)
+//			{
+//				if (value.indexOf("\\t") < 0)
+//				{
+//					$("#item_value_"+id).val(original);
+//					alert('Sie dürfen "\\t" aus diesem Feld nicht entfernen!');
+//				}
+//			}
+		}
+	</script>
 
 	<form action="index.php" method="post" name="cust_perso_edit" id="cust_perso_edit"
 		  onSubmit="return checkform(new Array(this.persoorder_title))" class="form-horizontal">
@@ -327,7 +342,7 @@ if ($_REQUEST["exec"] == "edit"){
 																	  <?
 																  } else {
 																	  if ($tmp_type == 1) {?>
-																		  <input name="item_value_<?=$y?>" class="form-control" <? if ($tmp_label == "spacer") { echo ' type="hidden" '; } else { echo ' type="text" '; } ?>
+																		  <input name="item_value_<?=$y?>" id="item_value_<?=$y?>" class="form-control" <? if ($tmp_label == "spacer") { echo ' type="hidden" '; } else { echo ' type="text" '; } ?>
 																			  <? if ($perso_order->getStatus() > 1) echo "disabled "; ?>
 																			  <? if ($persoitem->getReadOnly() == 1) echo "readonly ";
 																			  if ($tmp_label == "spacer") {
@@ -335,7 +350,7 @@ if ($_REQUEST["exec"] == "edit"){
 																			  } else {
 																				  if($page_type == "perso"){
 																					  if ($item->getPreDefined() == 1) {
-																						  echo 'value ="' . htmlspecialchars($tmp_label) . '" ';
+																						  echo 'value ="' . htmlspecialchars($tmp_label) . '" onchange="checkField('.$y.')" ';
 																					  } else {
 																						  echo 'value ="' . htmlspecialchars($tmp_titel) . '" ';
 																					  }
@@ -344,6 +359,14 @@ if ($_REQUEST["exec"] == "edit"){
 																				  }
 																			  }
 																			  ?> >
+																		  <?php
+																		  if($page_type == "perso"){
+																			  if ($item->getPreDefined() == 1){
+																				  ?>
+																				  <input type="hidden" id="item_value_default_<?=$y?>" value="<?php echo htmlspecialchars($tmp_label);?>">
+																				  <?php
+																			  }
+																		  }?>
 																	  <?} else {?>
 																		  <textarea name="item_value_<?=$y?>" class="form-control" type="text" style="height: 30px;"
 																			  <? if ($perso_order->getStatus() > 1) echo "disabled";?>
@@ -427,7 +450,7 @@ if ($_REQUEST["exec"] == "edit"){
 																			  } else {
 																				  if($page_type == "perso"){
 																					  if ($item->getPreDefined() == 1) {
-																						  echo 'value ="' . htmlspecialchars($tmp_label) . '" ';
+																						  echo 'value ="' . htmlspecialchars($tmp_label) . '" onchange="checkField('.$y.')" ';
 																					  } else {
 																						  echo 'value ="' . htmlspecialchars($tmp_titel) . '" ';
 																					  }
@@ -436,6 +459,14 @@ if ($_REQUEST["exec"] == "edit"){
 																				  }
 																			  }
 																			  ?> >
+																			  <?php
+																			  if($page_type == "perso"){
+																				  if ($item->getPreDefined() == 1){
+																					  ?>
+																					  <input type="hidden" id="item_value_default_<?=$y?>" value="<?php echo htmlspecialchars($tmp_label);?>">
+																					  <?php
+																				  }
+																			  }?>
 																	  <?} else {?>
 																		  <textarea name="item_value_<?=$y?>" class="form-control" type="text" style="height: 30px;"
 																			  <? if ($perso_order->getStatus() > 1) echo "disabled";?>

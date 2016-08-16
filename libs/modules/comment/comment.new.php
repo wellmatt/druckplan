@@ -101,6 +101,15 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
         $save_ok = $tc_article->save();
         if ($save_ok){
             $comment->setArticles(Array($tc_article));
+
+            if ($_REQUEST["stop_timer"] == 1){
+                $timer = Timer::getLastUsed();
+                if ($timer->getState() == Timer::TIMER_RUNNING){
+                    $timer->stop();
+                    $time_ok = true;
+                }
+                unset($timer);
+            }
         }
     }
     if ($save_ok && $_REQUEST['tktc_files']){
@@ -152,8 +161,7 @@ if($_REQUEST["exec"] == "save" && $_REQUEST["tktc_module"] && $_REQUEST["tktc_ob
                 $ticketlog->save();
             }
             
-//             Notification::generateNotificationsFromAbo(get_class($tmp_ticket), "Comment", $tmp_ticket->getNumber(), $tmp_ticket->getId());
-            echo '<script language="JavaScript">parent.$.fancybox.close(); 
+            echo '<script language="JavaScript">parent.$.fancybox.close();
                   parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$tmp_ticket->getId().'";</script>';
         } else if ($_REQUEST["tktc_module"] == "BusinessContact") {
             echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href=parent.location.href+"&tabshow=5";</script>';
@@ -265,6 +273,16 @@ $(function () {
       		 }
       	 });
 	});
+    function copyfromtimer()
+    {
+        var article = $("#tktc_article",parent.document).val();
+        var articleid = $("#tktc_article_id",parent.document).val();
+        var amount = $("#tktc_article_amount",parent.document).val();
+        $("#tktc_article").val(article);
+        $("#tktc_article_id").val(articleid);
+        $("#tktc_article_amount").val(amount);
+        $("#stop_timer").val(1);
+    }
 </script>
 
 <div class="box1" style="text-align: center;">
@@ -342,6 +360,10 @@ $(function () {
               <input type="hidden" id="tktc_article_id" name="tktc_article_id"/></br>
           </td>
       </tr>
+        <tr>
+            <td width="25%"><input type="hidden" id="stop_timer" name="stop_timer" value="0"></td>
+            <td width="25%"><a href="#" onclick="copyfromtimer();">aus gestopptem Timer übernehmen</a></td>
+        </tr>
       <tr>
           <td width="25%">Anhänge:</td>
           <td width="25%" valign="top">

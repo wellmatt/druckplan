@@ -248,7 +248,7 @@ $(document).ready(function() {
 		"dom": 'flrtip',
 		"aaSorting": [[ 1, "desc" ]],
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
-		"columns": [            
+		"columns": [
 		    		{
                         "className":      'details-control',
                         "orderable":      false,
@@ -271,15 +271,15 @@ $(document).ready(function() {
         var aData = $('#comment_table').dataTable().fnGetData(aPos[0]);
         callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[1]+'&tktid=0');
     });
-	
+
 	$("a#tktc_hiddenclicker").fancybox({
 		'type'          :   'iframe',
 		'transitionIn'	:	'elastic',
 		'transitionOut'	:	'elastic',
-		'speedIn'		:	600, 
-		'speedOut'		:	200, 
+		'speedIn'		:	600,
+		'speedOut'		:	200,
 		'width'         :   1024,
-		'height'		:	768, 
+		'height'		:	768,
 		'overlayShow'	:	true,
 		'helpers'		:   { overlay:null, closeClick:true }
 	});
@@ -287,7 +287,7 @@ $(document).ready(function() {
 	$('#comment_table tbody').on('click', 'tr td:first-child', function () {
         var tr = $(this).closest('tr');
         var row = search_tickets.row( tr );
- 
+
         if ( row.child.isShown() ) {
             // This row is already open - close it
             row.child.hide();
@@ -342,7 +342,7 @@ function dialNumber(link){
 
 $(function() {
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
-	
+
 	$('#login_expire').datepicker(
 			{
 				showOtherMonths: true,
@@ -398,8 +398,8 @@ function checkCustomerNumber(obj){
 	}
 
 	if (thisnumber != newnumber){
-		$.post("libs/modules/businesscontact/businesscontact.ajax.php", 
-				{exec: 'checkCustomerNumber', newnumber : newnumber}, 
+		$.post("libs/modules/businesscontact/businesscontact.ajax.php",
+				{exec: 'checkCustomerNumber', newnumber : newnumber},
 				 function(data) {
 					 data = data.substring(0,2);
 					if(data == "DA"){
@@ -407,12 +407,12 @@ function checkCustomerNumber(obj){
 						document.getElementById('customernumber').focus();
 						return false;
 					} else {
-						if (checkform(obj)==true){ 
+						if (checkform(obj)==true){
 							document.getElementById('user_form').submit();
 						}
 					}
 				});
-	} else { 
+	} else {
 		return checkform(obj);
 	}
 	return false;
@@ -467,23 +467,23 @@ if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-	
+
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form" enctype="multipart/form-data"
-	onSubmit="return checkCustomerNumber(new Array(this.name1));" > 
+	onSubmit="return checkCustomerNumber(new Array(this.name1));" >
 	<?// gucken, ob die Passwoerter (Webshop-Login) gleich sind und ob alle notwendigen Felder gef�llt sind?>
-	
-	<input type="hidden" name="exec" value="edit"> 
-	<input type="hidden" name="subexec" id="subexec" value="save"> 
+
+	<input type="hidden" name="exec" value="edit">
+	<input type="hidden" name="subexec" id="subexec" value="save">
 	<input type="hidden" name="subform" value="user_details">
 	<input type="hidden" name="id" value="<?=$businessContact->getId()?>">
-	
-<div class="demo">	
+
+<div class="demo">
 	<div id="tabs">
 		<ul>
 			<li><a href="#tabs-0"><? echo $_LANG->get('&Uuml;bersicht');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Stammdaten');?></a></li>
-			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li> 
-			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li> 
+			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li>
+			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li>
 			<li><a href="#tabs-3"><? echo $_LANG->get('Ansprechpartner');?></a></li>
 			<?php if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){?>
 		    <li><a href="#tabs-12"><? echo $_LANG->get('Notizen');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.Comment::getCommentCountForObject("BusinessContact", $businessContact->getId()).'</span>';?></a></li>
@@ -492,12 +492,11 @@ echo $quickmove->generate();
 			<li><a href="#tabs-8"><? echo $_LANG->get('Personalisierung');?></a></li>
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
 			<li><a href="#tabs-10"><? echo $_LANG->get('Rechnungseingang');?></a></li>
-<!--			<li><a href="#tabs-11">--><?// echo $_LANG->get('Kalkulationen');?><!--</a></li>-->
-			<li><a href="#tabs-13"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
+			<li><a href="#tabs-11"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
 		</ul>
-		
+
 		<? // ---------------------------- Uebesicht ueber den Geschaeftskontakt --------------------------?>
-		
+
 	<div id="tabs-0">
 	<?php if ($businessContact->getId()>0){?>
     <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><span class="glyphicons glyphicons-phone-alt"></span></a></div>
@@ -507,7 +506,7 @@ echo $quickmove->generate();
 		<tr>
 			<td width="700" class="content_header">
 			    <h3><?=$businessContact->getNameAsLine() ?><small><span style="display: inline-block; vertical-align: top;" class="
-			    <?php 
+			    <?php
 			    if($businessContact->isExistingCustomer())
 			    {
 			        echo "label label-success";
@@ -516,7 +515,7 @@ echo $quickmove->generate();
 			        echo "label label-info";
 			    }
 			    ?>">
-			    <?php 
+			    <?php
 			    if($businessContact->isExistingCustomer())
 			    {
 			        echo $_LANG->get('Bestandskunde');
@@ -526,7 +525,7 @@ echo $quickmove->generate();
 			    }
 			    ?>
 			    </span></small>
-			    <?php 
+			    <?php
 			    if($businessContact->isSupplier())
 			    {
 			        echo '<small><span style="display: inline-block; vertical-align: top;" class="label label-warning">Lieferant</span></small>';
@@ -538,7 +537,7 @@ echo $quickmove->generate();
 			<td width="200" class="content_header" align="right"><?=$savemsg?></td>
 		</tr>
 		</table>
-		
+
 		<table width="100%">
 			<colgroup>
 			<col width="750">
@@ -594,11 +593,11 @@ echo $quickmove->generate();
 								} ?>
 							</td>
 							<td class="content_row_clear" valign="top">
-								<?=$_LANG->get('Tickets:');?>: 
+								<?=$_LANG->get('Tickets:');?>:
 								<?if ($businessContact->getTicketenabled() == 1) echo $_LANG->get('AN'); else echo $_LANG->get('AUS'); ?> <br/>
-								<?=$_LANG->get('Personalisierung:');?>: 
+								<?=$_LANG->get('Personalisierung:');?>:
 								<?if ($businessContact->getPersonalizationenabled() == 1) echo $_LANG->get('AN'); else echo $_LANG->get('AUS'); ?> <br/>
-								<?=$_LANG->get('Artikel:');?>: 
+								<?=$_LANG->get('Artikel:');?>:
 								<?if ($businessContact->getArticleenabled() == 1) echo $_LANG->get('AN'); else echo $_LANG->get('AUS'); ?> <br/>
 								</br>
 								<?if ($businessContact->getNotes()!="") echo "Bemerkung:</br>".$businessContact->getNotes();?></br>
@@ -621,7 +620,7 @@ echo $quickmove->generate();
 										}
 									}
 									$tmp_output = substr($tmp_output, 0, -2); // Letztes Komma entfernen
-									if($j>0){ 
+									if($j>0){
 										echo $tmp_output.= "<br/>";
 									}
 								}?>
@@ -637,7 +636,7 @@ echo $quickmove->generate();
 					<col width="200">
 					<col>
 				</colgroup>
-			<?	foreach($contactPersons as $cp) { 
+			<?	foreach($contactPersons as $cp) {
 					$phone = $cp->getPhoneForDial("n");
 					$mobilephone = $cp->getPhoneForDial("m");?>
 					<tr <?if($cp->isMainContact())echo 'style="font-weight:bold;"'?>>
@@ -661,7 +660,7 @@ echo $quickmove->generate();
 										}
 									}
 									$tmp_output = substr($tmp_output, 0, -2); // Letztes Komma entfernen
-									if($j>0 && $attribute->getId() == 21){ 		// An dieser STelle nur Attribut "Funktion" ausgeben 
+									if($j>0 && $attribute->getId() == 21){ 		// An dieser STelle nur Attribut "Funktion" ausgeben
 										echo $tmp_output;
 									}
 								}?>
@@ -676,9 +675,9 @@ echo $quickmove->generate();
 								</colgroup>
 								<tr>
 									<td>
-										<?if ($phone != false){?>  
+										<?if ($phone != false){?>
 										<a class="icon-link" href="#" title="<?=$phone." ".$_LANG->get('anrufen');?>"
-											onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$phone?>')"											
+											onClick="dialNumber('<?=$_USER->getTelefonIP()?>/command.htm?number=<?=$phone?>')"
 											><span class="glyphicons glyphicons-earphone"></span></a>
 										<?}?>
 									</td>
@@ -702,10 +701,10 @@ echo $quickmove->generate();
 			</tr>
 		</table>
 	</div>
-	
+
 	<? /* ------------------------------------- STAMMDATEN ------------------------------------------------------ */ ?>
 
-	<div id="tabs-1">	
+	<div id="tabs-1">
 	<table width="100%">
 		<tr>
 			<td width="200" class="content_header">
@@ -715,7 +714,7 @@ echo $quickmove->generate();
 			<td width="200" class="content_header" align="right"><?=$savemsg?></td>
 		</tr>
 	</table>
-	
+
 	<table>
 		<tr>
 		<td width="400">
@@ -785,7 +784,7 @@ echo $quickmove->generate();
 								<?=$c->getName()?>
 							</option>
 							<?}
-		
+
 							?>
 					</select>
 					</td>
@@ -825,15 +824,15 @@ echo $quickmove->generate();
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Bemerkung');?>
 					</td>
-					<td class="content_row_clear"><textarea name="notes" rows="2" 
-					style="width: 250px" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$businessContact->getNotes()?></textarea> 
+					<td class="content_row_clear"><textarea name="notes" rows="2"
+					style="width: 250px" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$businessContact->getNotes()?></textarea>
 					</td>
 				</tr>
 				<tr><td>&emsp;</td></tr>
 			</table>
 		</td>
 		<td>&emsp;</td>
-		<td valign="top" width="400px">	
+		<td valign="top" width="400px">
 			<table width="100%">
 				<colgroup>
 					<col width="170">
@@ -845,7 +844,7 @@ echo $quickmove->generate();
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Kundennummer')?></td>
 					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="customernumber" id="customernumber" 
+					    <input class="text" style="width:100px" name="customernumber" id="customernumber"
 					    		value="<?=$businessContact->getCustomernumber()?>">
 						<span class="glyphicons glyphicons-unshare pointer"onclick="generadeCustomerNumber()" title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>"></span>
 
@@ -856,7 +855,7 @@ echo $quickmove->generate();
 					<td class="content_row_clear icon-link">
                         <select name="salesperson" id="salesperson">
                         <option value="0"></option>
-                        <?php 
+                        <?php
                         foreach ($all_user as $sup_user){
                             if ($businessContact->getSalesperson()->getId() == $sup_user->getId()){
                                 echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
@@ -871,7 +870,7 @@ echo $quickmove->generate();
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Matchcode')?></td>
 					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="matchcode" id="matchcode" 
+					    <input class="text" style="width:100px" name="matchcode" id="matchcode"
 					    		value="<?=$businessContact->getMatchcode()?>">
 					</td>
 				</tr>
@@ -899,7 +898,7 @@ echo $quickmove->generate();
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Unsere KD-Nr.')?></td>
 					<td class="content_row_clear">
-					    <input class="text" style="width:100px" name="numberatcustomer" 
+					    <input class="text" style="width:100px" name="numberatcustomer"
 					    		value="<?=$businessContact->getNumberatcustomer()?>">
 					</td>
 				</tr>
@@ -911,10 +910,10 @@ echo $quickmove->generate();
 					<td class="content_row_header"><?=$_LANG->get('Zahlungsart')?></td>
 					<td class="content_row_clear">
 					    <select name="payment" style="width:250px" class="text">
-					    	<option value="0" <? if ($businessContact->getPaymentTerms()->getId() == 0) 
+					    	<option value="0" <? if ($businessContact->getPaymentTerms()->getId() == 0)
 					    							echo "selected"?> >
 					    	</option>
-					        <? 
+					        <?
 					        foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
 					        {
 					            echo '<option value="'.$pt->getId().'"';
@@ -930,21 +929,21 @@ echo $quickmove->generate();
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('IBAN')?></td>
 					<td class="content_row_clear">
-					    <input class="text" style="width:300px" name="iban" 
-					    		value="<?=$businessContact->getIban()?>"> 
+					    <input class="text" style="width:300px" name="iban"
+					    		value="<?=$businessContact->getIban()?>">
 					</td>
 				</tr>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('BIC')?></td>
 					<td class="content_row_clear">
-					    <input class="text" style="width:150px" name="bic" 
-					    		value="<?=$businessContact->getBic()?>"> 
+					    <input class="text" style="width:150px" name="bic"
+					    		value="<?=$businessContact->getBic()?>">
 					</td>
 				</tr>
 				<tr>
 					<td class="content_row_header"><?=$_LANG->get('Rabatt')?></td>
 					<td class="content_row_clear">
-					    <input class="text" style="width:60px" name="discount" 
+					    <input class="text" style="width:60px" name="discount"
 					    		value="<?=printPrice($businessContact->getDiscount())?>"> %
 					</td>
 				</tr>
@@ -989,7 +988,7 @@ echo $quickmove->generate();
 							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 							<? $commissioncontacts = CommissionContact::getAllCommissionContacts(CommissionContact::ORDER_ID, CommissionContact::FILTER_ALL, CommissionContact::LOADER_BASIC);
 							foreach($commissioncontacts as $comcon)
-							{ 
+							{
 								echo '<option value="'.$comcon->getId().'" ';
 								if($businessContact->getCommissionpartner() == $comcon->getId()) echo 'selected="selected"';
 								echo '>'.$comcon->getName1().', '.$comcon->getCity().'</option>';
@@ -1002,7 +1001,7 @@ echo $quickmove->generate();
 					<td class="content_row_clear icon-link">
                         <select name="supervisor" id="supervisor">
                         <option value="0"></option>
-                        <?php 
+                        <?php
                         foreach ($all_user as $sup_user){
                             if ($businessContact->getSupervisor()->getId() == $sup_user->getId()){
                                 echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
@@ -1027,11 +1026,11 @@ echo $quickmove->generate();
 		</tr>
 	</table>
 	</div>
-	
+
 	<? // -------------------------------- ADRESSEN -------------------------------------------------------?>
-	
+
 	<div id="tabs-2">
-	
+
 	<?if($businessContact->getId()){?>
 		<table width="100%">
 			<colgroup>
@@ -1040,7 +1039,7 @@ echo $quickmove->generate();
 				<col>
 				<col>
 			</colgroup>
-			
+
 			<tr>
 				<td class="content_row_header"> <?php echo $_LANG->get('Rechnungsadresse');?></td>
 				<td class="content_row_clear">&nbsp;</td>
@@ -1063,8 +1062,8 @@ echo $quickmove->generate();
 	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 	        	</td>
 	        </tr>
-	        <?php 
-				
+	        <?php
+
 			}
 			?>
 		</table>
@@ -1078,7 +1077,7 @@ echo $quickmove->generate();
 				<col width="300">
 				<col>
 			</colgroup>
-			
+
 			<tr>
 				<td class="content_row_header"> <?php echo $_LANG->get('Lieferadresse');?></td>
 				<td class="content_row_clear">&nbsp;</td>
@@ -1088,7 +1087,7 @@ echo $quickmove->generate();
 						><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?></span></a>
 				</td>
 			</tr>
-			<?php 
+			<?php
 			$addressDelivery = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_DELIV);
 			foreach($addressDelivery as $ad)
 			{
@@ -1111,17 +1110,17 @@ echo $quickmove->generate();
 	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 	        	</td>
 	        </tr>
-	        <?php 
+	        <?php
 			}
 			?>
 		</table>
 	<?}?>
 	</div>
-	
+
 	<? // ------------------------------------- Ansprechpartner ----------------------------------------------?>
 	<div id="tabs-3">
 
-	<?if($businessContact->getId()){?>
+	<?if($businessContact->getId()>0){?>
 		<table width="100%" cellpadding="0" cellspacing="0">
 			<colgroup>
 				<col width="300">
@@ -1168,7 +1167,7 @@ echo $quickmove->generate();
 							}
 						}
 						$tmp_output = substr($tmp_output, 0, -2); // Letztes Komma entfernen
-						if($j>0){ 
+						if($j>0){
 							echo $tmp_output . "<br/>";
 						}
 					}?> &ensp;
@@ -1192,7 +1191,7 @@ echo $quickmove->generate();
 		</table>
 	<?}?>
 	<p></p>
-	
+
 	</div>
 	<? // ------------------------------------- Merkmale ----------------------------------------------?>
 		<div id="tabs-5">
@@ -1206,13 +1205,13 @@ echo $quickmove->generate();
 						<td width="200" class="content_header" align="right"><?=$savemsg?></td>
 					</tr>
 			</table>
-			
+
 			<table width="100%">
 					<colgroup>
 						<col width="180">
 						<col>
 					</colgroup>
-					
+
 					<tr>
 						<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
 						<td class="content_row_clear">
@@ -1276,25 +1275,12 @@ echo $quickmove->generate();
 				</table>
 			<p></p>
 		</div>
-	
-		<? // ------------------------------------- verbundene Tickets (Notizen) ----------------------------------------------?>
-		<?php /* ?>
-		<div id="tabs-6">
-		<?if($businessContact->getId() && $security_ticket_cat->cansee()){?>
-			
-			<? // Tickets laden, die dem Kunden zugeordnet wurden
-				$from_busicon = true;
-				$notes_only = true;
-				$contactID = $businessContact->getId();
-				require_once 'libs/modules/tickets/ticket.notesfor.php';?>
-		<? } ?>
-		</div>
-        <?php */ ?>
+
 		<? // ------------------------------------- verbundene Tickets ----------------------------------------------?>
-		
+
 		<div id="tabs-7">
 		<?if($businessContact->getId()){?>
-			
+
 			<? // Tickets laden, die dem Kunden zugeordnet wurden
 				$from_busicon = true;
 				$notes_only = false;
@@ -1304,13 +1290,13 @@ echo $quickmove->generate();
 		</div>
 
 		<? // ------------------------------------- Personalisierung ----------------------------------------------?>
-		
+
 		<div id="tabs-8">
 		<?if($businessContact->getId()){?>
 			<table id="table_positiontitles" width="100%">
 					<tr>
 						<td width="280" class="content_header">
-							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
+							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 							<?=$_LANG->get('Personalisierung (Positions Titel)');?>
 							<span class="glyphicons glyphicons-plus pointer" onclick="addTitlePosition()"></span>
 						</td>
@@ -1334,10 +1320,10 @@ echo $quickmove->generate();
 			<input type="hidden" value="<?=$i?>" name="position_titles_count" id="position_titles_count">
 		<? } ?>
 		</div>
-</form>		
+</form>
 
 		<? // ------------------------------------- Rechnungsausgang ----------------------------------------------?>
-		
+
 		<div id="tabs-9">
 		<?if($businessContact->getId()){
 		    $_REQUEST['page'] = "libs/modules/accounting/outgoinginvoice.php";
@@ -1348,7 +1334,7 @@ echo $quickmove->generate();
 		</div>
 
 		<? // ------------------------------------- Rechnungseingang ----------------------------------------------?>
-		
+
 		<div id="tabs-10">
 		<?if($businessContact->getId()){
 		    $_REQUEST['page'] = "libs/modules/accounting/incominginvoice.php";
@@ -1358,31 +1344,19 @@ echo $quickmove->generate();
 		} ?>
 		</div>
 
-		<? // ------------------------------------- Kalks ----------------------------------------------?>
-		<?php /*
-		<div id="tabs-11">
-		<?if($businessContact->getId()){
-		    $_REQUEST['page'] = "libs/modules/calculation/order.php";
-			$_REQUEST['cust_id'] = $businessContact->getId();
-			require_once('libs/modules/calculation/order.php');
-		}
-		$_REQUEST['page'] = "libs/modules/businesscontact/businesscontact.php";?>
-		</div>
-
- 		*/?>
 		<? // ------------------------------------- Vorgänge ----------------------------------------------?>
-		
-		<div id="tabs-13">
+
+		<div id="tabs-11">
 		<?if($businessContact->getId()){
 		    $_REQUEST['page'] = "libs/modules/collectiveinvoice/collectiveinvoice.overview.php";
 			$_REQUEST['cust_id'] = $businessContact->getId();
 			require_once('libs/modules/collectiveinvoice/collectiveinvoice.overview.php');
-		} 
+		}
 		$_REQUEST['page'] = "libs/modules/businesscontact/businesscontact.php";?>
 		</div>
 
 		<? // ------------------------------------- Notizen ----------------------------------------------?>
-		
+
 		<div id="tabs-12">
 		<?if($businessContact->getId()){?>
             <h4>Notizen</h4>

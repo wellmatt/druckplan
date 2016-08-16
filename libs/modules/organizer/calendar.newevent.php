@@ -49,11 +49,11 @@ $_REQUEST["eventid"] = (int)$_REQUEST["eventid"];
 $event = new Event($_REQUEST["eventid"]);
 
 
-if (($_REQUEST["end"] - $_REQUEST["start"]) == 86400)
+if ((strtotime($_REQUEST["end"]) - strtotime($_REQUEST["start"])) == 86400)
 {
-    $starttime = mktime(8,0,0,date('m',$_REQUEST["start"]),date('d',$_REQUEST["start"]),date('Y',$_REQUEST["start"]));
+    $starttime = mktime(8,0,0,date('m',strtotime($_REQUEST["start"])),date('d',strtotime($_REQUEST["start"])),date('Y',strtotime($_REQUEST["start"])));
     $event->setBegin($starttime);
-    $endtime = mktime(9,0,0,date('m',$_REQUEST["start"]),date('d',$_REQUEST["start"]),date('Y',$_REQUEST["start"]));
+    $endtime = mktime(9,0,0,date('m',strtotime($_REQUEST["start"])),date('d',strtotime($_REQUEST["start"])),date('Y',strtotime($_REQUEST["start"])));
     $event->setEnd($endtime);
 }
 

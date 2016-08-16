@@ -165,7 +165,7 @@
         contactperson.email
         FROM
         contactperson
-        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact) cps 
+        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact WHERE contactperson.active = 1) cps
         $sWhere
         $sOrder
         $sLimit
@@ -188,7 +188,7 @@
         contactperson.email
         FROM
         contactperson
-        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact) cps 
+        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact WHERE contactperson.active = 1) cps
         $sWhere
         $sOrder
     ";
@@ -211,7 +211,7 @@
         contactperson.email
         FROM
         contactperson
-        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact) cps
+        INNER JOIN businesscontact ON businesscontact.id = contactperson.businesscontact WHERE contactperson.active = 1) cps
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

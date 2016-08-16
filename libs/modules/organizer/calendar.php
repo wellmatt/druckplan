@@ -34,11 +34,6 @@ if ($_REQUEST["exec"])
 <script src='jscripts/calendar/fullcalendar.min.js'></script>
 <script src='jscripts/calendar/de.js'></script>
 
-<?php 
-if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
-    echo "<script type=\"text/javascript\">$(document).ready(function() { callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid=".$_REQUEST["id"]."');});</script>";
-}
-?>
 
 <div class="panel panel-default">
 	  <div class="panel-heading">
@@ -134,7 +129,8 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
 			onSelect: function(dateText, inst) {
 				var date = moment(dateText, "DD.MM.YYYY");
 				$('#calendar').fullCalendar( 'gotoDate', date );
-			}
+			},
+//			dateFormat: "mm/dd/yy"
 		});
 		$( "#datepicker1" ).datepicker({
 			showWeek: true,
@@ -143,7 +139,8 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
 			onSelect: function(dateText, inst) {
 				var date = moment(dateText, "DD.MM.YYYY");
 				$('#calendar').fullCalendar( 'gotoDate', date );
-			}
+			},
+//			dateFormat: "mm/dd/yy"
 		});
 		$( "#datepicker2" ).datepicker({
 			showWeek: true,
@@ -153,7 +150,8 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
 			onSelect: function(dateText, inst) {
 				var date = moment(dateText, "DD.MM.YYYY");
 				$('#calendar').fullCalendar( 'gotoDate', date );
-			}
+			},
+//			dateFormat: "mm/dd/yy"
 		});
 	});
 </script>
@@ -261,6 +259,19 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
 			eventRender: function(event, element) {
 				element.attr('title', event.title);
 			},
+			viewRender: function(view, element) {
+				var moment = $('#calendar').fullCalendar('getDate');
+
+				var m1 = moment.format('DD.MM.YYYY');
+				$( "#datepicker1" ).datepicker( "setDate", m1 );
+
+				var m0 = moment.subtract(1,'M').format('DD.MM.YYYY');
+				$( "#datepicker0" ).datepicker( "setDate", m0 );
+
+				var m2 = moment.add(2,'M').format('DD.MM.YYYY');
+				$( "#datepicker2" ).datepicker( "setDate", m2 );
+
+			},
 			timeFormat: 'H:mm'
 		});
 
@@ -297,3 +308,10 @@ if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
 		margin: 0 auto;
 	}
 </style>
+
+
+<?php
+if ($_REQUEST["exec"] == "showevent" && $_REQUEST["id"]){
+	echo "<script type=\"text/javascript\">$(document).ready(function() { callBoxFancy('libs/modules/organizer/calendar.newevent.php?eventid=".$_REQUEST["id"]."');});</script>";
+}
+?>

@@ -1363,6 +1363,8 @@ if((int)$_REQUEST["step"] == 4)
 				}
 				
 				$savemsg = ""; //l�schen
+				$calc->setPricesub(tofloat($calc->getSubTotal()));
+				$calc->setPricetotal(tofloat($calc->getSummaryPrice()));
 				$calc->save();
 				
 				

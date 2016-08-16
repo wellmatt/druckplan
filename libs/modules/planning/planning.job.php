@@ -325,7 +325,7 @@ function createSelects(id,count,workload)
                                 <tbody>
                                 <tr>
                                     <td><b><?php echo $opos_article->getTitle();?></b></td>
-                                    <td><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
+                                    <td class="content_row" valign="top"><?php echo date('d.m.Y H:i',$opj->getStart());?></td>
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
                                     <td><span class="glyphicons glyphicons-remove" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$colinv->getId()?>&delete=<?php echo $opos->getId();?>');"></span></td>

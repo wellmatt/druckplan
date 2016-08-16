@@ -11,7 +11,6 @@ require_once 'libs/modules/attachment/attachment.class.php';
 
 $all_user = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
 
-
 if ($_REQUEST['subexec'] == "copy")
 {
     $collectinv = new CollectiveInvoice(CollectiveInvoice::duplicate($collectinv->getId()));
@@ -531,11 +530,21 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			Auftrag<?php if ($collectinv->getId() > 0) echo ': ' . $collectinv->getNumber(); ?>
+			Vorgang<?php if ($collectinv->getId() > 0) echo ': ' . $collectinv->getNumber(); ?>
 			<? if ($collectinv->getId() > 0) {
 				$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact()); ?>
 				<span class="pull-right" style="margin-top: -6px;">
 						<div class="btn-group" role="group">
+							<?php
+							if ($collectinv->getId()>0 && $collectinv->getTicket()>0) {
+								?>
+								<button type="button"
+										onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=updatefromticket&ciid=<?= $collectinv->getId() ?>';"
+										class="btn btn-sm btn-default">Aus Ticket aktualisieren
+								</button>
+								<?php
+							}
+							?>
 							<button type="button"
 									onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=docs&ciid=<?= $collectinv->getId() ?>';"
 									class="btn btn-sm btn-default">Dokumente
@@ -543,7 +552,7 @@ echo $quickmove->generate();
 							<button type="button"
 									onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=notes&ciid=<?= $collectinv->getId() ?>';"
 									class="btn btn-sm btn-default"><?php if ($collectinv->getId() > 0) echo '<span id="notify_count" class="badge">' . Comment::getCommentCountForObject("CollectiveInvoice", $collectinv->getId()) . '</span>'; ?>
-								Notizen
+								VO-Notizen
 							</button>
 							<?php
 							$association_object = $collectinv;
