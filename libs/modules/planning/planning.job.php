@@ -221,250 +221,274 @@ function createSelects(id,count,workload)
     $('#workerstd_'+id).html(html);
 }
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                <span class="glyphicons glyphicons-pencil"></span>
+                Jobs
+                <span class="pull-right">
+                  <?=$savemsg?>
+                </span>
+            </h3>
+	  </div>
+	  <div class="panel-body">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+                            Job-Kopfdaten
+                        </h3>
+				  </div>
+				 <div class="table-responsive">
+				 	<table class="table table-hover">
+				 		<thead>
+				 			<tr>
+				 				<th></th>
+				 			</tr>
+				 		</thead>
+				 		<tbody>
+                        <tr>
+                            <td><?=$_LANG->get('Titel')?></td>
+                            <td><a href="<?php echo $header_parent_link;?>"><?php echo $header_title;?></a></td>
+                            <td><?=$_LANG->get('Nummer')?></td>
+                            <td><?php echo $header_number;?></td>
+                        </tr>
+                        <tr>
+                            <td><?=$_LANG->get('Erst. Datum')?></td>
+                            <td><?php echo date("d.m.Y",$header_crtdate);?></td>
+                            <td><?=$_LANG->get('Erst. Benutzer')?></td>
+                            <td><?php echo $header_crtusr->getNameAsLine();?></td>
+                        </tr>
+                        <tr>
+                            <td><?=$_LANG->get('Kunde')?></td>
+                            <td>
+                                <a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?php echo $header_businessc->getId();?>">
+                                    <?php echo $header_businessc->getNameAsLine();?>
+                                </a>
+                            </td>
+                            <td><?=$_LANG->get('Kunde Ansprechp.')?></td>
+                            <td>
+                                <a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=<?php echo $header_businesscp->getId();?>&id=<?php echo $header_businessc->getId();?>">
+                                    <?php echo $header_businesscp->getNameAsLine();?>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?=$_LANG->get('Int. Ansprechp.')?></td>
+                            <td><a href="javascript:void(0)" onclick="javascript:jqcc.cometchat.chatWith('<?php echo $header_intcontact->getId();?>');"><?php echo $header_intcontact->getNameAsLine();?></a></td>
+                            <td><?=$_LANG->get('Fällig')?></td>
+                            <td><?php if ($header_duedate>0) { echo date("d.m.Y",$header_duedate); } else { echo "N/A"; };?></td>
+                        </tr>
+                        <tr>
+                            <td><?=$_LANG->get('Bemerkung')?></td>
+                            <td><?php echo $header_comment;?></td>
+                            <td><?=$_LANG->get('FL-Bemerkung')?></td>
+                            <td><?php echo $colinv->getThirdpartycomment();?></td>
+                        </tr>
+				 		</tbody>
+				 	</table>
+				 </div>
+			</div>
+          <div class="panel panel-default">
+          	  <div class="panel-heading">
+          			<h3 class="panel-title">
+                        Job-Positionen
+                    </h3>
+          	  </div>
+          	  <div class="panel-body">
+                  <form class="form-horizontal" action="index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST["id"]?>" method="post" name="job_create" id="job_create">
+                      <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>">
+                      <input type="hidden" name="subexec" value="save">
+                      <div style="display: none;" id="removeoposdiv"></div>
+                      <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Artikel/Maschine</th>
+                                    <th>Prod. Beginn</th>
+                                    <th>Soll Zeit (Std.)</th>
+                                    <th>Anz. Arbeiter/Jobs</th>
+                                    <th>Zeit in Std. / Zugew.</th>
+                                </tr>
+                                </thead>
+                                <?php
+                                $time_total = 0;
+                                $x = 0;
 
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-            <span class="glyphicons glyphicons-pencil"></span> <? echo $_LANG->get('Jobs')?>
-		</td>
-		<td align="right"><?=$savemsg?></td>
-	</tr>
-</table>
-</br>
-<div class="box1">
-    <b>Job-Kopfdaten</b>
-	<table width="100%">
-		<tr>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Titel')?></td>
-			<td class="content_row" valign="top"><a href="<?php echo $header_parent_link;?>"><?php echo $header_title;?></a></td>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Nummer')?></td>
-			<td class="content_row" valign="top"><?php echo $header_number;?></td>
-		</tr>
-		<tr>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Erst. Datum')?></td>
-			<td class="content_row" valign="top"><?php echo date("d.m.Y",$header_crtdate);?></td>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Erst. Benutzer')?></td>
-			<td class="content_row" valign="top"><?php echo $header_crtusr->getNameAsLine();?></td>
-		</tr>
-		<tr>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Kunde')?></td>
-			<td class="content_row" valign="top">
-			 <a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?php echo $header_businessc->getId();?>">
-			     <?php echo $header_businessc->getNameAsLine();?>
-			 </a>
-			</td>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Kunde Ansprechp.')?></td>
-			<td class="content_row" valign="top">
-			 <a href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid=<?php echo $header_businesscp->getId();?>&id=<?php echo $header_businessc->getId();?>">
-			     <?php echo $header_businesscp->getNameAsLine();?>
-			 </a>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Int. Ansprechp.')?></td>
-			<td class="content_row" valign="top"><a href="javascript:void(0)" onclick="javascript:jqcc.cometchat.chatWith('<?php echo $header_intcontact->getId();?>');"><?php echo $header_intcontact->getNameAsLine();?></a></td>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Fällig')?></td>
-			<td class="content_row" valign="top"><?php if ($header_duedate>0) { echo date("d.m.Y",$header_duedate); } else { echo "N/A"; };?></td>
-		</tr>
-		<tr>
-			<td class="content_row content_row_header" valign="top"><?=$_LANG->get('Bemerkung')?></td>
-			<td class="content_row" valign="top"><?php echo $header_comment;?></td>
-            <td class="content_row content_row_header" valign="top"><?=$_LANG->get('FL-Bemerkung')?></td>
-            <td class="content_row" valign="top"><?php echo $colinv->getThirdpartycomment();?></td>
-		</tr>
-	</table>
-</div>
-<br/>
-<div class="box1">
-    <b>Job-Positionen</b>
-    <form action="index.php?page=<?=$_REQUEST['page']?>&id=<?=$_REQUEST["id"]?>" method="post" name="job_create" id="job_create">
-    <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>"> 
-    <input type="hidden" name="subexec" value="save"> 
-    <div style="display: none;" id="removeoposdiv"></div>
-	<table width="100%">
-	   <thead>
-    		<tr>
-    			<td class="content_row content_row_header" valign="top">Artikel/Maschine</td>
-    			<td class="content_row content_row_header" valign="top">Prod. Beginn</td>
-    			<td class="content_row content_row_header" valign="top">Soll Zeit (Std.)</td>
-    			<td class="content_row content_row_header" valign="top">Anz. Arbeiter/Jobs</td>
-    			<td class="content_row content_row_header" valign="top">Zeit in Std. / Zugew.</td>
-    		</tr>
-	   </thead>
-	   <?php 
-       $time_total = 0;
-       $x = 0;
-	   
-	   $orderpositions = Orderposition::getAllOrderposition($colinv->getId());
-	   foreach ($orderpositions as $opos)
-	   {
-	       $opos_pjs = PlanningJob::getJobsForObjectAndOpos($opos->getCollectiveinvoice(),$opos->getId());
-	       if (count($opos_pjs)>0 && !empty($opos_pjs))
-	       {
-	           $opos_article = new Article($opos->getObjectid());
-               ?>
-               <tr>
-                   <td class="content_row" valign="top"><b><?php echo $opos_article->getTitle();?></b></td>
-                   <td class="content_row" valign="top"><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
-                   <td class="content_row" valign="top">&nbsp;</td>
-                   <td class="content_row" valign="top">&nbsp;</td>
-                   <td class="content_row" valign="top"><span class="glyphicons glyphicons-remove" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$colinv->getId()?>&delete=<?php echo $opos->getId();?>');"></span></td>
-                   <?php /* $('.col_<?php echo $opos->getCollectiveinvoice();?>opos_<?php echo $opos->getId();?>').each(function(index){this.remove();}); $(this).parent().parent().remove(); $('#removeoposdiv').append('<input type=\'hidden\' name=\'removeopos[]\' value=\'<?php echo $opos->getId();?>\'>'); */?>
-               </tr>
-               <?php
-	           foreach ($opos_pjs as $opj)
-	           {
+                                $orderpositions = Orderposition::getAllOrderposition($colinv->getId());
+                                foreach ($orderpositions as $opos)
+                                {
+                                $opos_pjs = PlanningJob::getJobsForObjectAndOpos($opos->getCollectiveinvoice(),$opos->getId());
+                                if (count($opos_pjs)>0 && !empty($opos_pjs))
+                                {
+                                $opos_article = new Article($opos->getObjectid());
+                                ?>
+                                <tbody>
+                                <tr>
+                                    <td><b><?php echo $opos_article->getTitle();?></b></td>
+                                    <td><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td><span class="glyphicons glyphicons-remove" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$colinv->getId()?>&delete=<?php echo $opos->getId();?>');"></span></td>
+                                    <?php /* $('.col_<?php echo $opos->getCollectiveinvoice();?>opos_<?php echo $opos->getId();?>').each(function(index){this.remove();}); $(this).parent().parent().remove(); $('#removeoposdiv').append('<input type=\'hidden\' name=\'removeopos[]\' value=\'<?php echo $opos->getId();?>\'>'); */?>
+                                </tr>
+                                <?php
+                                foreach ($opos_pjs as $opj)
+                                {
 
-	               ?>
-                   <tr class="col_<?php echo $opos->getCollectiveinvoice();?>opos_<?php echo$opos->getId();?>">
-                          <td class="content_row" valign="top">
-                            <?php 
-                            if ($opj->getType() == PlanningJob::TYPE_V)
-                                echo $opj->getArtmach()->getTitle();
-                            else
-                                echo $opj->getArtmach()->getName();
-                            ?>
-                          </td>
-                          <td class="content_row" valign="top"><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
-              			   <td class="content_row" valign="top"><?php echo printPrice($opj->getTplanned(),2);?></td>
-                  		   <td class="content_row" valign="top">&nbsp;</td>
-                  		   <td class="content_row" valign="top">
-                  		    <?php if ($opj->getAssigned_user()->getId()>0) echo $opj->getAssigned_user()->getNameAsLine(); else echo $opj->getAssigned_group()->getName();
-                  		    echo ' (<a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='. $opj->getTicket()->getId() .'">' . $opj->getTicket()->getNumber() . ': '.$opj->getTicket()->getState()->getTitle().'</a>)'; ?>
-                  		   </td>
-                  	   </tr>
-                   <?php
-	           }
-	       } else {
-	           $button = " enabled ";
-    	       $opos_article = new Article($opos->getObjectid());
-               ?>
-               <tr>
-                   <td class="content_row" valign="top"><b><?php echo $opos_article->getTitle();?></b></td>
-                   <td class="content_row" valign="top">
-                       <input type="text" style="width:100px" id="<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>" 
-              			class="cal text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-               			onfocus="markfield(this,0)" onblur="markfield(this,1)"
-               			value="<?php echo date('d.m.Y H:i');?>" onchange="$('.artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>').val($(this).val());"/>
-             	   </td>
-                   <td class="content_row" valign="top">&nbsp;</td>
-                   <td class="content_row" valign="top">&nbsp;</td>
-                   <td class="content_row" valign="top">&nbsp;</td>
-               </tr>
-               <?php
-    	       if ($opos_article->getOrderid()>0)
-    	       {
-    	           $order = new Order($opos_article->getOrderid());
-    	           $calcs = Calculation::getAllCalculations($order);
-    	   
-    	           foreach ($calcs as $calc)
-    	           {
-    	               if ($calc->getState() && $calc->getAmount()==$opos->getQuantity())
-    	               {
-    	                   $mes = Machineentry::getAllMachineentries($calc->getId());
-    	                   foreach ($mes as $me)
-    	                   {
-                               ?>
-    	                       <tr>
-    	                           <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?php echo PlanningJob::TYPE_K;?>"/>
-    	                           <input type="hidden" name="crt_job[<?php echo $x;?>][object]" value="<?php echo $opos->getCollectiveinvoice();?>"/>
-    	                           <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
-    	                           <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getOrderid();?>"/>
-    	                           <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $me->getMachine()->getId();?>"/>
-    	                           <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $me->getTime()/60;?>"/>
-                                   <td class="content_row" valign="top"><?php echo $me->getMachine()->getName();?><?php if ($me->getPart()>0) echo ' - '.$me->getPartName();?></td>
-                                   <td class="content_row" valign="top">
-                                        <input type="text" name="crt_job[<?php echo $x;?>][start]" 
-                              			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
-                               			value="<?php echo date('d.m.Y H:i');?>" style="width:100px;"/>
-               			           </td>
-                       			   <td class="content_row" valign="top"><?php echo printPrice($me->getTime()/60,2);?></td>
-                           		   <td class="content_row" valign="top"><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
-                           		   <td class="content_row" valign="top" id="workerstd_<?php echo $x;?>">
-       		                            <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($me->getTime()/60,2);?>" style="width: 40px;"/>
-                   		                <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
-                                        <option disabled>-- Users --</option>
-                                        <?php 
-                                        foreach ($all_user as $tkt_user){
-                                            echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                                    ?>
+                                    <tr class="col_<?php echo $opos->getCollectiveinvoice();?>opos_<?php echo$opos->getId();?>">
+                                        <td>
+                                            <?php
+                                            if ($opj->getType() == PlanningJob::TYPE_V)
+                                                echo $opj->getArtmach()->getTitle();
+                                            else
+                                                echo $opj->getArtmach()->getName();
+                                            ?>
+                                        </td>
+                                        <td><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
+                                        <td><?php echo printPrice($opj->getTplanned(),2);?></td>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            <?php if ($opj->getAssigned_user()->getId()>0) echo $opj->getAssigned_user()->getNameAsLine(); else echo $opj->getAssigned_group()->getName();
+                                            echo ' (<a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='. $opj->getTicket()->getId() .'">' . $opj->getTicket()->getNumber() . ': '.$opj->getTicket()->getState()->getTitle().'</a>)'; ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                } else {
+                                    $button = " enabled ";
+                                    $opos_article = new Article($opos->getObjectid());
+                                    ?>
+                                    <tr>
+                                        <td><b><?php echo $opos_article->getTitle();?></b></td>
+                                        <td>
+                                            <input type="form-control" id="<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>"
+                                                   class="cal text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+                                                   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                                                   value="<?php echo date('d.m.Y H:i');?>" onchange="$('.artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>').val($(this).val());"/>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <?php
+                                    if ($opos_article->getOrderid()>0)
+                                    {
+                                        $order = new Order($opos_article->getOrderid());
+                                        $calcs = Calculation::getAllCalculations($order);
+
+                                        foreach ($calcs as $calc)
+                                        {
+                                            if ($calc->getState() && $calc->getAmount()==$opos->getQuantity())
+                                            {
+                                                $mes = Machineentry::getAllMachineentries($calc->getId());
+                                                foreach ($mes as $me)
+                                                {
+                                                    ?>
+                                                    <tr>
+                                                        <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?php echo PlanningJob::TYPE_K;?>"/>
+                                                        <input type="hidden" name="crt_job[<?php echo $x;?>][object]" value="<?php echo $opos->getCollectiveinvoice();?>"/>
+                                                        <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
+                                                        <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getOrderid();?>"/>
+                                                        <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $me->getMachine()->getId();?>"/>
+                                                        <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $me->getTime()/60;?>"/>
+                                                        <td class="content_row" valign="top"><?php echo $me->getMachine()->getName();?><?php if ($me->getPart()>0) echo ' - '.$me->getPartName();?></td>
+                                                        <td class="content_row" valign="top">
+                                                            <input type="text" name="crt_job[<?php echo $x;?>][start]"
+                                                                   class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
+                                                                   value="<?php echo date('d.m.Y H:i');?>" style="width:100px;"/>
+                                                        </td>
+                                                        <td><?php echo printPrice($me->getTime()/60,2);?></td>
+                                                        <td><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
+                                                        <td id="workerstd_<?php echo $x;?>">
+                                                            <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($me->getTime()/60,2);?>" style="width: 40px;"/>
+                                                            <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
+                                                                <option disabled>-- Users --</option>
+                                                                <?php
+                                                                foreach ($all_user as $tkt_user){
+                                                                    echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                                                                }
+                                                                ?>
+                                                                <option disabled>-- Groups --</option>
+                                                                <?php
+                                                                foreach ($all_groups as $tkt_groups){
+                                                                    echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                    $time_total += $me->getTime()/60;
+                                                    $x++;
+                                                    $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$me->getId()} AND artmach = {$me->getMachine()->getId()}");
+                                                    if (count($tmp_planned_jobs)==0)
+                                                        $jobs[] = Array("article"=>$opos_article->getTitle(), "title" => $me->getMachine()->getName(), "amount" => $me->getTime()/60, "type" => "ME", "objectid" => $me->getId());
+                                                }
+                                            }
                                         }
+                                    } else {
                                         ?>
-                                        <option disabled>-- Groups --</option>
-                                        <?php 
-                                        foreach ($all_groups as $tkt_groups){
-                                            echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
+                                        <tr>
+                                            <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?php echo PlanningJob::TYPE_V;?>"/>
+                                            <input type="hidden" name="crt_job[<?php echo $x;?>][object]" value="<?php echo $opos->getCollectiveinvoice();?>"/>
+                                            <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
+                                            <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getId();?>"/>
+                                            <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $opos_article->getId();?>"/>
+                                            <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $opos->getQuantity();?>"/>
+                                            <td class="content_row" valign="top"><?php echo $opos_article->getTitle();?></td>
+                                            <td class="content_row" valign="top">
+                                                <input type="text" name="crt_job[<?php echo $x;?>][start]"
+                                                       class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
+                                                       value="<?php echo date('d.m.Y H:i');?>" readonly style="width:100px; background-color:#EBEBE4;border:1px solid #ABADB3;padding:2px 1px;color:rgb(84, 84, 84);"/>
+                                            </td>
+                                            <td><?php echo printPrice($opos->getQuantity(),2);?></td>
+                                            <td><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
+                                            <td id="workerstd_<?php echo $x;?>">
+                                                <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($opos->getQuantity(),2);?>" style="width: 40px;"/>
+                                                <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
+                                                    <option disabled>-- Users --</option>
+                                                    <?php
+                                                    foreach ($all_user as $tkt_user){
+                                                        echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                                                    }
+                                                    ?>
+                                                    <option disabled>-- Groups --</option>
+                                                    <?php
+                                                    foreach ($all_groups as $tkt_groups){
+                                                        echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                        $time_total += $opos->getQuantity();
+                                        $x++;
+
+                                        $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$opos->getId()} AND artmach = {$opos_article->getId()}");
+                                        if ($opos_article->getIsWorkHourArt() && count($tmp_planned_jobs)==0)
+                                        {
+                                            $jobs[] = Array("article"=>$opos_article->getTitle(), "title" => $opos_article->getTitle(), "amount" => $opos->getQuantity(), "type" => "OP", "objectid" => $opos->getId());
                                         }
-                                        ?>
-                                        </select>
-                           		   </td>
-                           	   </tr>
-    	                       <?php
-    	                       $time_total += $me->getTime()/60;
-    	                       $x++;
-    	                       $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$me->getId()} AND artmach = {$me->getMachine()->getId()}");
-    	                       if (count($tmp_planned_jobs)==0)
-    	                           $jobs[] = Array("article"=>$opos_article->getTitle(), "title" => $me->getMachine()->getName(), "amount" => $me->getTime()/60, "type" => "ME", "objectid" => $me->getId());
-    	                   }
-    	               }
-    	           }
-    	       } else {
-    	           ?>
-                   <tr>
-                       <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?php echo PlanningJob::TYPE_V;?>"/>
-                       <input type="hidden" name="crt_job[<?php echo $x;?>][object]" value="<?php echo $opos->getCollectiveinvoice();?>"/>
-                       <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
-                       <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getId();?>"/>
-                       <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $opos_article->getId();?>"/>
-                       <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $opos->getQuantity();?>"/>
-                       <td class="content_row" valign="top"><?php echo $opos_article->getTitle();?></td>
-                       <td class="content_row" valign="top">
-                            <input type="text" name="crt_job[<?php echo $x;?>][start]" 
-                  			class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot" 
-                   			value="<?php echo date('d.m.Y H:i');?>" readonly style="width:100px; background-color:#EBEBE4;border:1px solid #ABADB3;padding:2px 1px;color:rgb(84, 84, 84);"/>
-    		           </td>
-              		   <td class="content_row" valign="top"><?php echo printPrice($opos->getQuantity(),2);?></td>
-               		   <td class="content_row" valign="top"><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
-               		   <td class="content_row" valign="top" id="workerstd_<?php echo $x;?>">
-       		                <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($opos->getQuantity(),2);?>" style="width: 40px;"/>
-       		                <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
-                            <option disabled>-- Users --</option>
-                            <?php 
-                            foreach ($all_user as $tkt_user){
-                                echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
-                            }
-                            ?>
-                            <option disabled>-- Groups --</option>
-                            <?php 
-                            foreach ($all_groups as $tkt_groups){
-                                echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
-                            }
-                            ?>
-                            </select>
-               		   </td>
-              	   </tr>
-                   <?php
-                   $time_total += $opos->getQuantity();
-                   $x++;
-                   
-    	           $tmp_planned_jobs = PlanningJob::getAllJobs(" AND object = {$_REQUEST["id"]} AND subobject = {$opos->getId()} AND artmach = {$opos_article->getId()}");
-    	           if ($opos_article->getIsWorkHourArt() && count($tmp_planned_jobs)==0)
-    	           {
-    	               $jobs[] = Array("article"=>$opos_article->getTitle(), "title" => $opos_article->getTitle(), "amount" => $opos->getQuantity(), "type" => "OP", "objectid" => $opos->getId());
-    	           }
-    	       }
-	       }
-	   }
-	   ?>
-		<tr>
-			<td class="content_row content_row_header" valign="top">Gesamt</td>
-            <td class="content_row" valign="top">&nbsp;</td>
-			<td class="content_row content_row_header" valign="top"><?php echo printPrice($time_total,2);?></td>
-            <td class="content_row" valign="top">&nbsp;</td>
-			<td class="content_row content_row_header" valign="top">
-			 <button type="submit" <?php if (count($opos_pjs)>0 && !empty($opos_pjs)) echo $button;?>class="btn btn-primary btn-xs">Job(s) erstellen</button>
-			</td>
-		</tr>
-	</table>
-	</form>
+                                    }
+                                }
+                                }
+                                ?>
+                                <tr>
+                                    <td>Gesamt</td>
+                                    <td>&nbsp;</td>
+                                    <td><?php echo printPrice($time_total,2);?></td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <button type="submit" <?php if (count($opos_pjs)>0 && !empty($opos_pjs)) echo $button;?>class="btn btn-primary btn-xs">Job(s) erstellen</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                      </div>
+                  </form>
+          	  </div>
+          </div>
+	  </div>
 </div>
-</br>

@@ -34,11 +34,11 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 		<div class="table-responsive">
 			<table class="table table-hover">
 				<tr>
-					<td class="content_row_header"><?= $_LANG->get('Name');?></td>
-					<td class="content_row_header" align="center"><?= $_LANG->get('Bei Kunden');?></td>
-					<td class="content_row_header" align="center"><?= $_LANG->get('Bei Ansprechpartner');?></td>
-					<td class="content_row_header" align="center"><?= $_LANG->get('Bei Vorgängen');?></td>
-					<td class="content_row_header" align="center"><?= $_LANG->get('Optionen');?></td>
+					<td><?= $_LANG->get('Name');?></td>
+					<td><?= $_LANG->get('Bei Kunden');?></td>
+					<td><?= $_LANG->get('Bei Ansprechpartner');?></td>
+					<td><?= $_LANG->get('Bei Vorgängen');?></td>
+					<td><?= $_LANG->get('Optionen');?></td>
 				</tr>
 				<?	$x=0;
 				foreach ($all_attributes AS $attribute){ ?>
@@ -64,7 +64,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 							}
 							?>
 						</td>
-						<td class="content_row" align="center">
+						<td>
 							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 							&ensp;
 							<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>

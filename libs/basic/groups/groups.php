@@ -54,7 +54,9 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                      </td>
                      <td class="content_row">
                         <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$group->getId()?>"><span class="glyphicons glyphicons-pencil pointer"></span></a>
-                        <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$group->getId()?>')"><span class="glyphicons glyphicons-remove pointer"></span></a>
+                        <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$group->getId()?>')">
+                           <span style="color: red;" class="glyphicons glyphicons-remove pointer"></span>
+                        </a>
                      </td>
                   </tr>
 

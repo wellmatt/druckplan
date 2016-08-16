@@ -246,7 +246,7 @@ $(document).ready(function() {
 				?>&nbsp;
 			</td>
 			<td class="content_row" align="right" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$bc->getId()?>'">
-				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$bc->getId()?>"><img src="images/icons/pencil.png"></a>
+				<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$bc->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 				&ensp;
 				<? if($_USER->isAdmin() && $_USER->getId() != 14){ ?>
 				<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$bc->getId()?>')"><img	src="images/icons/cross-script.png"> </a>

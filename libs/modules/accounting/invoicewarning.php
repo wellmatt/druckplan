@@ -181,117 +181,112 @@ if($_REQUEST["exec"] == "new"){
 					<h3 class="panel-title">
 						Mahnungen
 					</h3>
-				</div>
+			</div>
+				<div class="table-responsive">
 					<div class="table-responsive">
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<thead>
-								<tr>
-									<th><?= $_LANG->get('MA-Nr.') ?></th>
-									<th><?= $_LANG->get('Re-Typ') ?></th>
-									<th><?= $_LANG->get('Auftragsnr.') ?></th>
-									<th><?= $_LANG->get('Kunde') ?></th>
-									<th><?= $_LANG->get('erstellt') ?></th>
-									<th><?= $_LANG->get('F&auml;llig') ?></th>
-									<th><?= $_LANG->get('Bezahlt') ?></th>
-									<th><?= $_LANG->get('Optionen') ?></th>
-								</tr>
-								</thead>
-								<? // CSV-Datei der offenen Posten vorbereiten
-								$csv_file = fopen('./docs/' . $_USER->getId() . '-Mahnungen.csv', "w");
-								//fwrite($csv_file, "Firma iPactor - �bersicht\n");
+						<table class="table table-hover">
+							<thead>
+							<tr>
+								<th><?= $_LANG->get('MA-Nr.') ?></th>
+								<th><?= $_LANG->get('Re-Typ') ?></th>
+								<th><?= $_LANG->get('Auftragsnr.') ?></th>
+								<th><?= $_LANG->get('Kunde') ?></th>
+								<th><?= $_LANG->get('erstellt') ?></th>
+								<th><?= $_LANG->get('F&auml;llig') ?></th>
+								<th><?= $_LANG->get('Bezahlt') ?></th>
+								<th><?= $_LANG->get('Optionen') ?></th>
+							</tr>
+							</thead>
+							<? // CSV-Datei der offenen Posten vorbereiten
+							$csv_file = fopen('./docs/' . $_USER->getId() . '-Mahnungen.csv', "w");
+							//fwrite($csv_file, "Firma iPactor - �bersicht\n");
 
-								//Tabellenkopf der CSV-Datei (offene Posten) schreiben
-								$csv_string .= "MA-Nr.; Auftragstitel; ";
-								$csv_string .= "Betrag Netto ; MWST ; Brutto ;";
-								$csv_string .= "Kunde; Debitor-Nr. ; Erstellt; Zahlbar bis; Bezahlt am \n";
+							//Tabellenkopf der CSV-Datei (offene Posten) schreiben
+							$csv_string .= "MA-Nr.; Auftragstitel; ";
+							$csv_string .= "Betrag Netto ; MWST ; Brutto ;";
+							$csv_string .= "Kunde; Debitor-Nr. ; Erstellt; Zahlbar bis; Bezahlt am \n";
 
-								$x = 0;
-								foreach ($documents as $document) {
+							$x = 0;
+							foreach ($documents as $document) {
 
-									$order = null;
-									if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
-										$order = new Order($document->getRequestId());
-									} else if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
-										$order = new CollectiveInvoice($document->getRequestId());
-									}
-									$tmp_mwst = $document->getPriceBrutto() - $document->getPriceNetto();
-									$csv_string .= $document->getName() . ";" . $order->getTitle() . ";";
-									$csv_string .= printPrice($document->getPriceNetto()) . ";" . printPrice($tmp_mwst) . ";" . printPrice($document->getPriceBrutto()) . ";";
-									$csv_string .= $order->getCustomer()->getNameAsLine() . ";" . $order->getCustomer()->getDebitor() . ";";
-									$csv_string .= date("d.m.Y", $document->getCreateDate()) . ";" . date("d.m.Y", $document->getPayable()) . ";";
-									if ($document->getPayed() > 0) {
-										$csv_string .= date("d.m.Y", $document->getPayed());
-									}
-									$csv_string .= " \n";
+								$order = null;
+								if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
+									$order = new Order($document->getRequestId());
+								} else if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
+									$order = new CollectiveInvoice($document->getRequestId());
+								}
+								$tmp_mwst = $document->getPriceBrutto() - $document->getPriceNetto();
+								$csv_string .= $document->getName() . ";" . $order->getTitle() . ";";
+								$csv_string .= printPrice($document->getPriceNetto()) . ";" . printPrice($tmp_mwst) . ";" . printPrice($document->getPriceBrutto()) . ";";
+								$csv_string .= $order->getCustomer()->getNameAsLine() . ";" . $order->getCustomer()->getDebitor() . ";";
+								$csv_string .= date("d.m.Y", $document->getCreateDate()) . ";" . date("d.m.Y", $document->getPayable()) . ";";
+								if ($document->getPayed() > 0) {
+									$csv_string .= date("d.m.Y", $document->getPayed());
+								}
+								$csv_string .= " \n";
 
-									$sum_netto += $document->getPriceNetto();
-									$sum_brutto += $document->getPriceBrutto();
-									?>
-									<tbody>
-									<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)"
-										onmouseout="mark(this, 1)">
+								$sum_netto += $document->getPriceNetto();
+								$sum_brutto += $document->getPriceBrutto();
+								?>
+								<tbody>
+								<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)"
+									onmouseout="mark(this, 1)">
 
-										<td><?= $document->getName() ?>
-											<input type="hidden" name="doc_existingid_<?= $x ?>"
-												   name="doc_existingid_<?= $x ?>"
-												   value="<?= (int)$document->getId() ?>"/>
-										</td>
-										<td>
-											<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
-											if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
+									<td><?= $document->getName() ?>
+										<input type="hidden" name="doc_existingid_<?= $x ?>"
+											   name="doc_existingid_<?= $x ?>"
+											   value="<?= (int)$document->getId() ?>"/>
+									</td>
+									<td>
+										<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
+										if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
+										?>
+									</td>
+									<td>
+										<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
 											?>
-										</td>
-										<td>
-											<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
-												?>
-												<a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?= $order->getId() ?>&step=4"><?= $order->getNumber() ?></a>
-											<?
-											}
-											if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
-												?>
-												<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?= $order->getId() ?>"><?= $order->getNumber() ?></a>
-											<? } ?>
-											&nbsp;
-										</td>
-										<td>
-											<?= $order->getCustomer()->getNameAsLine() ?>
-											&nbsp;
-										</td>
-										<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
-										<td
-											<?php if ($document->getPayed() == 0) {
-												if (strtotime(date("d.m.Y 23:59:59", $document->getPayable())) > time())
-													echo "style='color:green'";
-												else echo "style='color:red'";
-											} ?>>
-											<? echo date("d.m.Y", $document->getPayable()); ?>&nbsp;</td>
+											<a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?= $order->getId() ?>&step=4"><?= $order->getNumber() ?></a>
+										<?
+										}
+										if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
+											?>
+											<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?= $order->getId() ?>"><?= $order->getNumber() ?></a>
+										<? } ?>
+										&nbsp;
+									</td>
+									<td>
+										<?= $order->getCustomer()->getNameAsLine() ?>
+										&nbsp;
+									</td>
+									<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
+									<td
+										<?php if ($document->getPayed() == 0) {
+											if (strtotime(date("d.m.Y 23:59:59", $document->getPayable())) > time())
+												echo "style='color:green'";
+											else echo "style='color:red'";
+										} ?>>
+										<? echo date("d.m.Y", $document->getPayable()); ?>&nbsp;</td>
 
-										<td>
-											<input type="text" name="date_<?= $x ?>" id="date_<?= $x ?>"
-												   class="form-control date"
-												   value="<? if ($document->getPayed() > 0) echo date("d.m.Y", $document->getPayed()); ?>"/>
-										</td>
-										<td>
-											<ul class="postnav_save_small_outinvc">
-												<a href="#"
-												   onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
-													<?= $_LANG->get('Anzeigen') ?>
-												</a>
-											</ul>
-										</td>
-									</tr>
-									</tbody>
-									<? $x++;
-								} ?>
-							</table>
-						</div>
+									<td>
+										<input type="text" name="date_<?= $x ?>" id="date_<?= $x ?>"
+											   class="form-control date"
+											   value="<? if ($document->getPayed() > 0) echo date("d.m.Y", $document->getPayed()); ?>"/>
+									</td>
+									<td>
+										<ul class="postnav_save_small_outinvc">
+											<a href="#"
+											   onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
+												<?= $_LANG->get('Anzeigen') ?>
+											</a>
+										</ul>
+									</td>
+								</tr>
+								</tbody>
+								<? $x++;
+							} ?>
+						</table>
 					</div>
-				<span class="pull-right">
-						<button class="btn btn-md btn-success" type="submit">
-							<?= $_LANG->get('Suche starten') ?>
-						</button>
-				</span>
+				</div>
 			</div>
 		</form>
 	</div>

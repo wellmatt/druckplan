@@ -97,60 +97,60 @@ $all_active_attributes = $colinv->getActiveAttributeItemsInput();
 <script	type="text/javascript" src="../../../jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <link rel="stylesheet" type="text/css" href="../../../jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
 
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Merkmale
+			</h3>
+		</div>
+		<div class="panel-body">
+			<form action="collectiveinvoice.attribute.frame.php" method="post" name="abo_form" class="form-horizontal">
+				<input type="hidden" name="subexec" value="save">
+				<input type="hidden" name="ciid" value="<?= $_REQUEST["ciid"] ?>">
 
-<form action="collectiveinvoice.attribute.frame.php" method="post" name="abo_form">
-<input type="hidden" name="subexec" value="save">
-<input type="hidden" name="ciid" value="<?=$_REQUEST["ciid"]?>">
-<table width="100%">
-    <tr>
-        <td width="300" class="content_header">
-            <h1><?=$_LANG->get('Merkmale');?></h1>
-        </td>
-        <td class="content_header"><?=$savemsg?></td>
-    </tr>
-</table>
-
-<input type="submit" value="<?=$_LANG->get('Speichern')?>" class="text">
-
-<div class="box1">
-<table id="table_users" width="500">
-    <thead>
-        <tr>
-            <th width="180"></th>
-			<th></th>
-		</tr>
-	</thead>
-	<?foreach ($all_attributes AS $attribute){?>
-		<tr>
-			<td class="content_row_header" valign="top"><?=$attribute->getTitle()?></td>
-			<td class="content_row_clear">
-			<? 	$allitems = $attribute->getItems();?>
-				<table>
-				<?	$x=0;
-					foreach ($allitems AS $item){
-						if ($x%5 == 0) echo "<tr>";
-						echo '<td width="200px">';
-						echo '<input name="attribute_item_check_'.$attribute->getId().'_'.$item["id"].'" ';
-						echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
-								if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
-						echo ">";
-						echo $item["title"];
-						if ($item["input"] == 1)
-						{
-						    echo ' <input name="attribute_item_input_'.$attribute->getId().'_'.$item["id"].'" ';
-						    echo ' value="';
-						    echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
-						    echo '" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-						}
-						echo "</td>";
-						if ($x%5 == 4) echo "</tr>";
-				 		$x++;
-					}?>
-				</table>
-			</td>
-		</tr>
-	<?}?>
-	</table>
-	<br>
-</div>
-</form>
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th width="180"></th>
+							<th></th>
+						</tr>
+						</thead>
+						<? foreach ($all_attributes AS $attribute) { ?>
+							<tbody>
+							<tr>
+								<td><?= $attribute->getTitle() ?></td>
+								<td>
+									<? $allitems = $attribute->getItems(); ?>
+										<? $x = 0;
+										foreach ($allitems AS $item) {
+											if ($x % 5 == 0) echo "<tr>";
+											echo '<td width="200px">';
+											echo '<input name="attribute_item_check_' . $attribute->getId() . '_' . $item["id"] . '" ';
+											echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
+											if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
+											echo ">";
+											echo $item["title"];
+											if ($item["input"] == 1) {
+												echo ' <input name="attribute_item_input_' . $attribute->getId() . '_' . $item["id"] . '" ';
+												echo ' value="';
+												echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
+												echo '" class="form-control" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+											}
+											echo "</td>";
+											if ($x % 5 == 4) echo "</tr>";
+											$x++;
+										} ?>
+								</td>
+							</tr>
+							</tbody>
+						<? } ?>
+					</table>
+				</div>
+				<span class="pull-right">
+					<?= $savemsg ?>
+					<input type="submit" value="<?=$_LANG->get('Speichern')?>" class="text">
+				</span>
+			</form>
+		</div>
+	</div>

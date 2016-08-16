@@ -244,6 +244,36 @@ class ContactPerson {
 	    	$retval .= ", " . $this->name2;
 		return  $retval;
 	}
+
+	/**
+	 * Liefert den Namen wie folgt: Anrede Nachname, Vorname
+	 *
+	 * @return string
+	 */
+	public function getNameAsLineAlt()
+	{
+		if($this->title)
+			$retval = $this->title." ";
+		$retval .= $this->alt_name1;
+		if ($this->alt_name2)
+			$retval .= ", " . $this->alt_name2;
+		return  $retval;
+	}
+
+	/**
+	 * Liefert den Namen wie folgt: Anrede Nachname, Vorname
+	 *
+	 * @return string
+	 */
+	public function getNameAsLinePrivate()
+	{
+		if($this->title)
+			$retval = $this->title." ";
+		$retval .= $this->priv_name1;
+		if ($this->priv_name2)
+			$retval .= ", " . $this->priv_name2;
+		return  $retval;
+	}
 	
 	/**
 	 * Selbe Funktion wie getNameAsLine, nur ohne Anrede
@@ -282,7 +312,14 @@ class ContactPerson {
             $retval .= "\n".$this->country->getCode()."-".$this->zip." ".$this->city;
         return $retval;		
 	}
-	
+
+	/**
+	 * @param null $businessContact
+	 * @param string $order
+	 * @param string $filter
+	 * @param int $loader
+	 * @return ContactPerson[]
+	 */
 	public static function getAllContactPersons($businessContact = NULL, $order = self::ORDER_ID, $filter = "", $loader = ContactPerson::LOADER_FULL)
 	{
 		global $DB;

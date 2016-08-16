@@ -264,9 +264,9 @@ if($_REQUEST["exec"] == "edit"){
 				<td class="content_row" align="center">
 					<?
 					if(Warehouse::hasGroupRight($_SESSION[user_id])){?>
-						<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&stockid=<?=$stock->getId()?>"><img src="images/icons/pencil.png"></a>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&stockid=<?=$stock->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						&ensp;
-						<a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&stockid=<?=$stock->getId()?>')"><img	src="images/icons/cross-script.png"> </a>
+						<a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&stockid=<?=$stock->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
 					<?} else {
 						echo "&ensp;<br/> &ensp;";
 					}
