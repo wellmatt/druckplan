@@ -33,6 +33,7 @@ require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'libs/modules/api/api.class.php';
 require_once 'libs/basic/quickmove.class.php';
+require_once 'libs/modules/dashboard/dashboard.class.php';
 
 require_once __DIR__.'/vendor/Horde/Autoloader.php';
 require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';
@@ -478,7 +479,12 @@ function sleep(millis, callback) {
 		if ($_REQUEST['page']) {
 			require_once($_REQUEST['page']);
 		} else {
-			require_once('./libs/basic/home.php');
+            if ($_USER->getHomepage() != '')
+            {
+                require_once('./'.$_USER->getHomepage());
+            } else {
+                require_once('./libs/basic/home.php');
+            }
 		}
 		?>
 <!-- 	</div> -->

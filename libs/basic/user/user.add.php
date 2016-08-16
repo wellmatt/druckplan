@@ -28,7 +28,6 @@ if ($_REQUEST["subexec"] == "deletemail")
 
 if ($_REQUEST["subexec"] == "save")
 {
-    
     $user->setLogin(trim(addslashes($_REQUEST["user_login"])));
     $user->setFirstname(trim(addslashes($_REQUEST["user_firstname"])));
     $user->setLastname(trim(addslashes($_REQUEST["user_lastname"])));
@@ -44,6 +43,8 @@ if ($_REQUEST["subexec"] == "save")
     $user->setCalBirthday((int)$_REQUEST["user_cal_birthday"]);
     $user->setCalTickets((int)$_REQUEST["user_cal_tickets"]);
     $user->setCalOrders((int)$_REQUEST["user_cal_orders"]);
+
+	$user->setHomepage($_REQUEST["menu_path"]);
 
 	if(isset($_FILES['avatar']) && $_FILES['avatar']['size'] > 0) {
 		$fileName = $_FILES['avatar']['name'];
@@ -151,10 +152,32 @@ if ($_REQUEST["subexec"] == "save")
     		}
     	}	
     }
+
+	if ($_REQUEST["dash"]){
+		DashBoard::clearForUser($user);
+		$r = 1;
+		foreach ($_REQUEST["dash"] as $dashrow) {
+			if (count($dashrow)>0){
+				$c = 1;
+				foreach ($dashrow as $dashitem) {
+					$d_e = new DashBoard();
+					$d_e->setUser($user);
+					$d_e->setRow($r);
+					$d_e->setColumn($c);
+					$d_e->setModule($dashitem);
+					$d_e->save();
+					$c++;
+				}
+			}
+			$r++;
+		}
+	}
+
     $savemsg = getSaveMessage($saver);
     $savemsg .= " ".$DB->getLastError();
      
 }
+$dash_widgets = DashBoard::getWidgets();
 
 $user = new User($_REQUEST["id"]);
 
@@ -169,6 +192,10 @@ $all_emails = Emailaddress::getAllEmailaddress(Emailaddress::ORDER_ADDRESS, $use
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <script src="jscripts/jvalidation/dist/localization/messages_de.min.js"></script>
 <script src="thirdparty/ckeditor/ckeditor.js"></script>
+<!-- FancyBox -->
+<script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+<script type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
 
 <script type="text/javascript">
 	$(function() {
@@ -203,6 +230,43 @@ function checkpass(obj){
 		return false;
 	}
 	return checkform(obj);
+}
+
+function addDashRow(){
+	var count = parseInt($('#dash_row_count').val())+1;
+	var insert = '<tr>';
+	insert += '<td>'+count+'</td>';
+	insert += '<td><select name="dash['+count+'][1]" class="form-control">';
+	<?php
+	foreach ($dash_widgets as $dash_widget) {
+		?>
+		insert += '<option value="<?=$dash_widget;?>"><?=$dash_widget;?></option>';
+		<?php
+	}
+	?>
+	insert += '</select></td>';
+	insert += '<td><select name="dash['+count+'][2]" class="form-control">';
+	<?php
+	foreach ($dash_widgets as $dash_widget) {
+	?>
+	insert += '<option value="<?=$dash_widget;?>"><?=$dash_widget;?></option>';
+	<?php
+	}
+	?>
+	insert += '</select></td>';
+	insert += '<td><select name="dash['+count+'][3]" class="form-control">';
+	<?php
+	foreach ($dash_widgets as $dash_widget) {
+	?>
+	insert += '<option value="<?=$dash_widget;?>"><?=$dash_widget;?></option>';
+	<?php
+	}
+	?>
+	insert += '</select></td>';
+	insert += '</tr>';
+
+	$('#dash_table').append(insert);
+	$('#dash_row_count').val(count);
 }
 
 function addEMailRow(){
@@ -251,6 +315,13 @@ function addEMailRow(){
 $(document).ready(function () {
     $('#user_form').validate({});
 });
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("a#menu_path").fancybox({
+			'type'    : 'iframe'
+		});
+	});
 </script>
 
 <?php // Qickmove generation
@@ -381,6 +452,18 @@ echo $quickmove->generate();
 									<input name="user_telefonip" class="form-control"
 										   value="<?= $user->getTelefonIP() ?>"
 										   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Startseite</label>
+								<div class="col-sm-9 form-text">
+									<input type="hidden" name="menu_path" id="menu_path" value="<?=$user->getHomepage();?>">
+									<div>
+										<span id="span_menu_path"><?=$user->getHomepage();?></span>
+										<a href="libs/basic/menu/modulepath.php" id="menu_path">
+											<span class="button"><?=$_LANG->get('Ausw&auml;hlen')?></span>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -673,6 +756,56 @@ echo $quickmove->generate();
 								</table>
 							</div>
 						</div>
+					</div>
+				</div>
+				<?php
+				$dashboard_rows = DashBoard::countRowsForUser($user);
+				?>
+				<input type="hidden" id="dash_row_count" value="<?php echo $dashboard_rows;?>">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							DashBoard Konfig
+							<span class="pull-right" onclick="addDashRow();"><span
+									class="glyphicons glyphicons-plus pointer"></span> Reihe</span>
+						</h3>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-hover" id="dash_table">
+							<thead>
+								<tr>
+									<th>Reihe</th>
+									<th>Spalte 1</th>
+									<th>Spalte 2</th>
+									<th>Spalte 3</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php
+							for ($r = 1; $r <= $dashboard_rows; $r++)
+							{
+								echo '<tr>';
+								echo '<td>'.$r.'</td>';
+								for ($c = 1; $c <= 3; $c++)
+								{
+									$dash_entry = DashBoard::getForUserAndPosition($user,$r,$c);
+									if ($dash_entry != null && $dash_entry->getId()>0){
+										echo '<td><select name="dash['.$r.']['.$c.']" class="form-control">';
+										foreach ($dash_widgets as $dash_widget) {
+											if ($dash_widget == $dash_entry->getModule()){
+												echo '<option selected value="' . $dash_widget . '">' . $dash_widget . '</option>';
+											} else {
+												echo '<option value="' . $dash_widget . '">' . $dash_widget . '</option>';
+											}
+										}
+										echo '</select></td>';
+									}
+								}
+								echo '</tr>';
+							}
+							?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<div class="panel panel-default">

@@ -65,6 +65,9 @@ class User {
 	private $workinghours = Array();
 
     private $avatar = null;
+
+    // Dashboard & Starting Page
+    private $homepage = 'libs/basic/dashboard/tickets.php';
 	
     /* Konstruktor
      * Falls id �bergeben, werden die entsprechenden Daten direkt geladen
@@ -152,6 +155,8 @@ class User {
 
                     $this->avatar = $res[0]["avatar"];
 
+                    $this->homepage = $res[0]["homepage"];
+
                     // Arbeiter
                     $tmp_worktimes = Array();
                     $sql = "SELECT * FROM user_worktimes WHERE user = {$this->id}";
@@ -209,6 +214,7 @@ class User {
             w_su = '{$this->w_su}',
             w_month = '{$this->w_month}',
             avatar = '{$avatar}',
+            homepage = '{$this->homepage}',
             telefon_ip = '{$this->telefonIP}'
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -231,14 +237,14 @@ class User {
             (user_firstname, user_lastname, user_email, user_phone, user_signature,
             user_active, user_level, login, password, client, user_forwardmail, user_lang,
             telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa,
-            w_su, w_month, avatar )
+            w_su, w_month, avatar, homepage )
             VALUES
             ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
             '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
             '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()},
             '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
             '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}',
-            '{$this->w_su}', '{$this->w_month}', '{$avatar}' )";
+            '{$this->w_su}', '{$this->w_month}', '{$avatar}', '{$this->homepage}' )";
             $res = $DB->no_result($sql);
 
             if ($res)
@@ -993,5 +999,21 @@ class User {
     public function setAvatar($avatar)
     {
         $this->avatar = $avatar;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHomepage()
+    {
+        return $this->homepage;
+    }
+
+    /**
+     * @param string $homepage
+     */
+    public function setHomepage($homepage)
+    {
+        $this->homepage = $homepage;
     }
 }

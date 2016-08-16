@@ -331,12 +331,21 @@ $(function() {
 										</td>
 										<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
 										<td
-											<?php if ($document->getPayed() == 0) {
-												if (strtotime(date("d.m.Y 23:59:59", $document->getPayable())) > time())
+											<?php
+											$payable = $document->getPayable();
+											$paynet = $order->getPaymentterm()->getNettodays();
+											if ($paynet > 0){
+												$payable = $payable + (60*60*24*$paynet);
+											}
+
+											if ($document->getPayed() == 0) {
+												if (strtotime(date("d.m.Y 23:59:59", $payable)) > time())
 													echo "style='color:green'";
 												else echo "style='color:red'";
 											} ?>>
-											<? echo date("d.m.Y", $document->getPayable()); ?>&nbsp;
+											<?
+											echo date("d.m.Y", $payable);
+											?>&nbsp;
 										</td>
 
 										<td>

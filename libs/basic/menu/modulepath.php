@@ -28,6 +28,7 @@ $dir = "libs/modules/";
 $modules = Array();
 
 // Spezielle Module von Hand setzen
+$modules[] = 'libs/basic/home.php';
 $modules[] = 'libs/basic/clients/client.php';
 $modules[] = 'libs/basic/groups/groups.php';
 $modules[] = 'libs/basic/menu/menuconfig.php';
