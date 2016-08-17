@@ -91,59 +91,70 @@ $(document).ready(function() {
 	}
 } );
 </script>
-
-<table border="0" cellpadding="2" cellspacing="0" width="100%">
-    <tbody>
-    	<tr>
-            <td width="100%" align="left">
-                <div class="btn-group" role="group">
-                  <button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default">Zurück</button>
-                </div>
-            </td>
-    	</tr>
-    </tbody>
-</table>
-<div class="box1" style="margin-top:50px;">
-<table width="100%">
-    <colgroup>
-        <col width="10%">
-        <col width="23%">
-        <col width="10%">
-        <col width="23%">
-        <col width="10%">
-        <col>
-    </colgroup>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Kundennummer')?>:</td>
-        <td class="content_row_clear"><?=$collectinv->getBusinessContact()->getId()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Auftrag')?>:</td>
-        <td class="content_row_clear"><?=$collectinv->getNumber()?></td>
-        <td class="content_row_header"><?=$_LANG->get('Telefon')?></td>
-        <td class="content_row_clear"><?=$collectinv->getBusinessContact()->getPhone()?></td>
-    </tr>
-    <tr>
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Name')?>:</td>
-        <td class="content_row_clear" valign="top"><?=nl2br($collectinv->getBusinessContact()->getNameAsLine())?></td>
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Adresse')?>:</td>
-        <td class="content_row_clear"  valign="top"><?=nl2br($collectinv->getBusinessContact()->getAddressAsLine())?></td>
-        <td class="content_row_header"  valign="top"><?=$_LANG->get('E-Mail')?></td>
-        <td class="content_row_clear" valign="top"><?=$collectinv->getBusinessContact()->getEmail()?></td>
-    </tr>
-</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                VO-Notizen
+            </h3>
+	  </div>
+	  <div class="panel-body">
+          <div class="table-responsive">
+              <table class="table table-hover">
+                  <thead>
+                      <tr>
+                          <td><?=$_LANG->get('Kundennummer')?>:</td>
+                          <td><?=$_LANG->get('Name')?>:</td>
+                          <td><?=$_LANG->get('Auftrag')?>:</td>
+                          <td><?=$_LANG->get('Adresse')?>:</td>
+                          <td><?=$_LANG->get('Telefon')?></td>
+                          <td><?=$_LANG->get('E-Mail')?></td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td><?=$collectinv->getBusinessContact()->getId()?></td>
+                          <td><?=nl2br($collectinv->getBusinessContact()->getNameAsLine())?></td>
+                          <td><?=$collectinv->getNumber()?></td>
+                          <td><?=nl2br($collectinv->getBusinessContact()->getAddressAsLine())?></td>
+                          <td><?=$collectinv->getBusinessContact()->getPhone()?></td>
+                          <td><?=$collectinv->getBusinessContact()->getEmail()?></td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div class="panel panel-default">
+          	  <div class="panel-heading">
+          			<h3 class="panel-title">
+                        Notizen
+                        <span class="pull-right">
+                            <button class="btn btn-xs pointer btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($collectinv);?>&tktc_objectid=<?php echo $collectinv->getId();?>');">
+                                <span class="glyphicons glyphicons-plus"></span>
+                                <?= $_LANG->get('Neu') ?>
+                            </button>
+                        </span>
+                    </h3>
+          	  </div>
+              <br>
+              <div class="table-responsive">
+                  <table id="comment_table" class="table table-hover">
+                      <thead>
+                      <tr>
+                          <th></th>
+                          <th><?=$_LANG->get('ID')?></th>
+                          <th><?=$_LANG->get('Titel')?></th>
+                          <th><?=$_LANG->get('erst. von')?></th>
+                          <th><?=$_LANG->get('Datum')?></th>
+                          <th><?=$_LANG->get('Sichtbarkeit')?></th>
+                      </tr>
+                      </thead>
+                  </table>
+              </div>
+          </div>
+          <span class="pull-right">
+              <button class="btn btn-sm btn-default" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>';">
+                  <span class="glyphicons glyphicons-plus"></span>
+                  <?= $_LANG->get('Zurück') ?>
+              </button>
+          </span>
+	  </div>
 </div>
-<br>
-<h4>Notizen</h4>
-<span style="float:right;" class="pointer" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($collectinv);?>&tktc_objectid=<?php echo $collectinv->getId();?>');">Neu</span>
-<table id="comment_table" width="100%" cellpadding="0"
-	cellspacing="0" class="stripe hover row-border order-column">
-	<thead>
-		<tr>
-			<th></th>
-			<th><?=$_LANG->get('ID')?></th>
-			<th><?=$_LANG->get('Titel')?></th>
-			<th><?=$_LANG->get('erst. von')?></th>
-			<th><?=$_LANG->get('Datum')?></th>
-			<th><?=$_LANG->get('Sichtbarkeit')?></th>
-		</tr>
-	</thead>
-</table>

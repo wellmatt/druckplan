@@ -55,48 +55,42 @@ $(function() {
     });
 });
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Vorgang anlegen
+                <span class="pull-right">
+                    <?=$savemsg?>
+                    <button class="btn btn-xs btn-success" type="button" id="add_new_client" onclick="document.location.href='libs/modules/businesscontact/businesscontact.add.fancy.php';">
+                        <span class="glyphicons glyphicons-user"></span>
+                        <?=$_LANG->get('Neuen Kunden anlegen')?>
+                    </button>
+                </span>
+            </h3>
+	  </div>
+	  <div class="panel-body">
+          <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" class="form-horizontal" name="neworder_form" id="neworder_form" onSubmit="return validateForm()">
+              <input type="hidden" name="exec" value="edit">
+              <input type="hidden" name="createNew" value="1">
 
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Vorgang anlegen')?></td>
-      <td align="right"><?=$savemsg?></td>
-      <td width="200" class="content_header">
-      	
-      	<a href="libs/modules/businesscontact/businesscontact.add.fancy.php" id="add_new_client">
-            <span class="glyphicons glyphicons-user" title="<?=$_LANG->get('Neuen Kunden anlegen')?>"></span>
-      		<?=$_LANG->get('Neuen Kunden anlegen')?>
-      	</a>
-      </td>
-   </tr>
-</table>
-
-<div class="box1">
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="neworder_form" id="neworder_form" onSubmit="return validateForm()">
-<input type="hidden" name="exec" value="edit">
-<input type="hidden" name="createNew" value="1">
-<table width="100%">
-    <colgroup>
-        <col width="180">
-        <col width="280">
-    </colgroup>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Kunden suchen')?></td>
-        <td id="td-selcustomer">
-			<input type="text" name="search" id="search" style="width:280px" required>
-			<input type="hidden" name="order_customer" id="order_customer" required>
-			<input type="hidden" name="order_contactperson" id="order_contactperson" required>
-			<input type="hidden" name="order_startart" id="order_startart" value="<?php echo $_REQUEST["startart"];?>">
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" align="right">
-            <input type="submit" value="<?=$_LANG->get('Auswählen')?>">
-        </td>
-    </tr>
-    
-</table>
-</form>
-<script>
-  $("#neworder_form").validate();
-</script>
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Kunden suchen</label>
+                  <div class="col-sm-4">
+                      <input type="text" name="search" id="search" class="form-control" required>
+                      <input type="hidden" name="order_customer" id="order_customer" required>
+                      <input type="hidden" name="order_contactperson" id="order_contactperson" required>
+                      <input type="hidden" name="order_startart" id="order_startart" value="<?php echo $_REQUEST["startart"];?>">
+                  </div>
+              </div>
+              <br>
+              <span class="pull-right">
+                  <button class="btn btn-origin btn-sucess" type="submit">
+                      <?=$_LANG->get('Auswählen')?>
+                  </button>
+              </span>
+          </form>
+	  </div>
 </div>
+<script>
+    $("#neworder_form").validate();
+</script>

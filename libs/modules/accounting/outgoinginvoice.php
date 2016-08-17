@@ -118,7 +118,6 @@ $(function() {
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
 				Rechnungsausgang
 					<span class="pull-right">
 						<?= $savemsg ?>

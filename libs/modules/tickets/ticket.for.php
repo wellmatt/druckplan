@@ -271,7 +271,6 @@ if ($from_busicon){
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="glyphicons glyphicons-ipad"></span>
             Verknüpfte Tickets
                 <span class="pull-right">
                     <?= $savemsg ?>

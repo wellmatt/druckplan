@@ -499,7 +499,7 @@ echo $quickmove->generate();
 
 	<div id="tabs-0">
 	<?php if ($businessContact->getId()>0){?>
-    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><span class="glyphicons glyphicons-phone-alt"></span></a></div>
+    <div style="text-align: right;"><a href="libs/modules/businesscontact/businesscontact.print.card.php?id=<?php echo $businessContact->getId();?>" target="_blank"><span class="glyphicons glyphicons-print"></span></a></div>
     <?php }?>
 		<br>
 		<table width="100%">

@@ -1212,7 +1212,7 @@ if ($order->getProduct()->getHasEnvelope()) { ?>
                 
                 <tr id="tr_envelope_format" <? if ($calc->getPaperEnvelope()->getId() == 0)
                             echo ' style="display:none"'; ?> >
-                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Umschlag offenes Format') ?></td>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Umschlag (offenes Format)') ?></td>
                     <td class="content_row_clear">
                         <div id="envelope_format">
                             <?= $_LANG->get('Breite') ?>

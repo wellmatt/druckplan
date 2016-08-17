@@ -284,38 +284,55 @@ $(function () {
         $("#stop_timer").val(1);
     }
 </script>
+<form action="comment.new.php" method="post" class="form-horizontal" name="comment_edit" enctype="multipart/form-data">
+    <input type="hidden" name="exec" value="save">
+    <input type="hidden" name="tktid" value="<?php echo $_REQUEST["tktid"]; ?>">
+    <input type="hidden" name="tktc_module" value="<?php echo $_REQUEST["tktc_module"]; ?>">
+    <input type="hidden" name="tktc_objectid" value="<?php echo $_REQUEST["tktc_objectid"]; ?>">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Notiz anlegen
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="" class="col-sm-1 control-label">Titel</label>
+                <div class="col-sm-11>
+                    <input name="tktc_title" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-1 control-label">Typ</label>
+                <div class="col-sm-11">
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)<br>
+                    <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar<br>
+                    <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <textarea name="tktc_comment" class="form-control" id="tktc_comment" rows="10" cols="80"></textarea>
+                </div>
+            </div>
+        <?php
+        if ($_REQUEST["tktid"]>0)
+        {
+        $tmp_ticket = new Ticket($_REQUEST["tktid"]);
+        ?>
+        <div class="form-group">
+            <label for="" class="col-sm-3 control-label"></label>
+            <div class="col-sm-9">
+                <input name="" id="" value="" class="form-control">
+            </div>
+        </div>
+    </div>
 
-<div class="box1" style="text-align: center;">
-<br>
-<form action="comment.new.php" method="post" name="comment_edit" enctype="multipart/form-data">
-	<input type="hidden" name="exec" value="save">
-	<input type="hidden" name="tktid" value="<?php echo $_REQUEST["tktid"];?>">
-	<input type="hidden" name="tktc_module" value="<?php echo $_REQUEST["tktc_module"];?>">
-	<input type="hidden" name="tktc_objectid" value="<?php echo $_REQUEST["tktc_objectid"];?>">
+
+
+
 	<table style="width:100%">
-      <tr>
-          <td width="25%">Titel:</td>
-          <td width="75%">
-                <input type="text" name="tktc_title" style="width: 300px;">
-          </td>
-      </tr>
-      <tr>
-          <td width="25%">Typ:</td>
-          <td width="75%">
-                <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLIC;?>"> Offiz. Kommentar<br>
-                <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>"> Offiz. Antwort (Mail)<br>
-                <input type="radio" name="tktc_type" checked value="<?php echo Comment::VISABILITY_INTERNAL;?>"> inter. Kommentar<br>
-                <input type="radio" name="tktc_type" value="<?php echo Comment::VISABILITY_PRIVATE;?>"> priv. Kommentar
-          </td>
-      </tr>
-      <tr>
-          <td width="100%" colspan="2"><textarea name="tktc_comment" id="tktc_comment" rows="10" cols="80"></textarea></br></td>
-      </tr>
-      <?php 
-      if ($_REQUEST["tktid"]>0)
-      {
-          $tmp_ticket = new Ticket($_REQUEST["tktid"]);
-      ?>
       <tr>
           <td width="25%">Benachrichtigen:</td>
           <td width="25%">

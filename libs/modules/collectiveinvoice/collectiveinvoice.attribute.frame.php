@@ -149,7 +149,10 @@ $all_active_attributes = $colinv->getActiveAttributeItemsInput();
 				</div>
 				<span class="pull-right">
 					<?= $savemsg ?>
-					<input type="submit" value="<?=$_LANG->get('Speichern')?>" class="text">
+					<button class="btn btn-origin btn-success" type="submit">
+						<span class="glyphicons glyphicons-plus"></span>
+						<?=$_LANG->get('Speichern')?>
+					</button>
 				</span>
 			</form>
 		</div>

@@ -158,16 +158,21 @@ $(document).ready(function() {
 				</h3>
 			</div>
 			<div class="panel-body">
-				Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-					<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<?
-					foreach ($all_attributes AS $attribute){
-						$allitems = $attribute->getItems();
-						foreach ($allitems AS $item){ ?>
-							<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
-						<? }
-					} ?>
-				</select>
+				<div class="form-group">
+					<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
+					<div class="col-sm-4">
+						<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+							<?
+							foreach ($all_attributes AS $attribute){
+								$allitems = $attribute->getItems();
+								foreach ($allitems AS $item){ ?>
+									<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
+								<? }
+							} ?>
+						</select>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

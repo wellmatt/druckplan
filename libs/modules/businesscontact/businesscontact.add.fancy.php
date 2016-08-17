@@ -133,14 +133,14 @@ function checkform(obj) {
 <span class="glyphicons glyphicons-user">Gesch&auml;ftskontakt hinzuf&uuml;gen</span>
 &emsp; &emsp; &emsp;<? echo $savemsg.'<br/>';?>
 <table><tr><td width="500">
-<form action="businesscontact.add.fancy.php" method="post" name="newuser_form_fancy" id="newuser_form_fancy"
+<form action="businesscontact.add.fancy.php" method="post" name="newuser_form_fancy" class="form-horizontal" id="newuser_form_fancy"
 	  onsubmit="return checkform(new Array(this.name1))" >
 	<input type="hidden" name="test_exec" value="test_vancy" >
 	<table>
 		<tr>
 			<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
 			<td class="content_row_clear">
-				<input name="name1" id="name1" style="width: 300px" class="text" value="<?=$newContact->getName1()?>"
+				<input name="name1" id="name1" style="width: 300px" class="form-control" value="<?=$newContact->getName1()?>"
 				onfocus="markfield(this,0)" onblur="markfield(this,1)">
 			</td>
 		</tr>
@@ -253,7 +253,7 @@ function checkform(obj) {
 		<tr>
 			<td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
 			<td class="content_row_clear">
-				<select name="client"style="width: 300px" class="text" 
+				<select name="client"style="width: 300px" class="text"
 						onfocus="markfield(this,0)"	onblur="markfield(this,1)">
 					<option value="<?=$_USER->getClient()->getId()?>" selected>
 						<?if(!$_USER->getClient()->isActive()) echo '<span color="red">';?>
@@ -285,7 +285,7 @@ function checkform(obj) {
 			<td class="content_row_header"><?=$_LANG->get('Zahlungsart')?></td>
 			<td class="content_row_clear">
 			    <select name="payment" style="width:300px" class="text">
-			        <? 
+			        <?
 			        foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
 			        {
 			            echo '<option value="'.$pt->getId().'">'.$pt->getName1().'</option>';
@@ -297,7 +297,7 @@ function checkform(obj) {
 		<tr>
 			<td class="content_row_header"><?=$_LANG->get('Rabatt')?></td>
 			<td class="content_row_clear">
-			    <input class="text" style="width:60px" name="discount" 
+			    <input class="text" style="width:60px" name="discount"
 			    value="<?=printPrice($newContact->getDiscount())?>"> %
 			</td>
 		</tr>
@@ -307,14 +307,14 @@ function checkform(obj) {
 				<textarea name="comment"style="width: 300px; height: 130px"><?=$newContact->getComment()?></textarea>
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td class="content_row_header">&nbsp;</td>
 			<td class="content_row_clear" align="right">
 				<input type="submit" value="Speichern">
 			</td>
 		</tr>
-	</table> 
+	</table>
 </form>
 </td></tr></table>
 

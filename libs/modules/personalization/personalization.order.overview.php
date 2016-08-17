@@ -137,9 +137,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
                 $.post("libs/modules/personalization/personalization.ajax.php", {"ajax_action": "setFilter_date_min", "porder_date_min": moment($('#date_min').val(), "DD-MM-YYYY").unix()});
@@ -151,9 +151,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//			showOn: "button",
+//			buttonImage: "images/icons/calendar-blue.png",
+//			buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
                 $.post("libs/modules/personalization/personalization.ajax.php", {"ajax_action": "setFilter_date_max", "porder_date_max": moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340});
@@ -183,25 +183,26 @@ function PersoOrderTableRefresh()
 		  			<h3 class="panel-title">Filter</h3>
 		  	  </div>
 		  	  <div class="panel-body">
-				  <table>
-					  <tr align="left">
-						  <td>Datum:&nbsp;&nbsp;</td>
-						  <td valign="left">
-							  <input name="ajax_date_min" id="ajax_date_min" type="hidden" <?php if ($_SESSION['porder_date_min']) echo 'value="'.$_SESSION['porder_date_min'].'"';?> />
-							  <input name="date_min" id="date_min" style="width:70px;" <?php if ($_SESSION['porder_date_min']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_min']).'"';?>  class="text"
-									 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-						  </td>
-						  <td valign="left">
-							  <input name="ajax_date_max" id="ajax_date_max" type="hidden" <?php if ($_SESSION['porder_date_max']) echo 'value="'.$_SESSION['porder_date_max'].'"';?> />
-							  bis: <input name="date_max" id="date_max" style="width:70px;" <?php if ($_SESSION['porder_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_max']).'"';?> class="text"
-										  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-						  </td>
-					  </tr>
-					  <tr align="left">
-						  <td>Kunde:&nbsp;&nbsp;</td>
-						  <td valign="left">
+				  <div class="form-horizontal">
+						   <div class="form-group">
+							   <label for="" class="col-sm-1 control-label">Datum</label>
+							   <div class="col-sm-3">
+								   <input name="ajax_date_min" id="ajax_date_min" type="hidden" <?php if ($_SESSION['porder_date_min']) echo 'value="'.$_SESSION['porder_date_min'].'"';?> />
+								   <input name="date_min" id="date_min" <?php if ($_SESSION['porder_date_min']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_min']).'"';?>  class="form-control"
+										  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
+							   </div>
+							   <label for="" class="col-sm-1 control-label">Bis:</label>
+							   <div class="col-sm-3">
+								   <input name="ajax_date_max" id="ajax_date_max" type="hidden" <?php if ($_SESSION['porder_date_max']) echo 'value="'.$_SESSION['porder_date_max'].'"';?> />
+								   <input name="date_max" id="date_max"<?php if ($_SESSION['porder_date_max']) echo 'value="'.date('d.m.Y',$_SESSION['porder_date_max']).'"';?> class="form-control"
+										  onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
+							   </div>
+						   </div>
+					  <div class="form-group">
+						  <label for="" class="col-sm-1 control-label">Kunde</label>
+						  <div class="col-sm-7">
 							  <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['porder_customer']) echo ' value="'.$_SESSION['porder_customer'].'" ';?>/>
-							  <select name="customer" id="customer" style="width:160px">
+							  <select name="customer" id="customer" class="form-control">
 								  <option value="" <?php if (!$_SESSION['porder_customer']) echo ' selected ';?>></option>
 								  <?php
 								  foreach ($customers as $customer){
@@ -214,15 +215,19 @@ function PersoOrderTableRefresh()
 								  }
 								  ?>
 							  </select>
-						  </td>
-					  </tr>
-					  <tr align="left">
-						  <td><a onclick="PersoOrderTableRefresh();" href="Javascript:"><span class="glyphicons glyphicons-refresh"></span> Refresh</a></td>
-					  </tr>
-					  <tr align="left">
-						  <td><a href="index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset"><span class="glyphicons glyphicons-ban-circle"></span> Reset</a></td>
-					  </tr>
-				  </table>
+						  </div>
+					  </div>
+					  <br>
+
+					  <button class="btn btn-xs btn-success" onclick="PersoOrderTableRefresh();" href="Javascript:">
+						  <span class="glyphicons glyphicons-refresh"></span>
+						  <?= $_LANG->get('Refresh') ?>
+					  </button>
+					  <button class="btn btn-xs btn-danger" onclick="document.location.href='index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset';">
+						  <span class="glyphicons glyphicons-ban-circle"></span>
+						  <?= $_LANG->get(' Reset') ?>
+					  </button>
+				  </div>
 		  	  </div>
 		  </div>
 	  </div>
