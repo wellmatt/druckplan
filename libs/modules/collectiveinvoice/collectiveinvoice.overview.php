@@ -46,7 +46,6 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 
 $(document).ready(function() {
     var colinv = $('#colinv').DataTable( {
-        // "scrollY": "1000px",
         "processing": true,
         "bServerSide": true,
         "sAjaxSource": "libs/modules/collectiveinvoice/collectiveinvoice.dt.ajax.php<?php if ($_REQUEST['cust_id']) echo '?cust_id='.$_REQUEST["cust_id"];?>",
@@ -153,7 +152,8 @@ $(document).ready(function() {
             	$('#colinv').dataTable().fnDraw();
             }
 	});
-	
+	$('#colinv').width("100%");
+
 } );
 </script>
 <div class="form-horizontal">
@@ -215,7 +215,7 @@ $(document).ready(function() {
 			</div>
 		</div>
 		<div class="table-responsive">
-			<table  id="colinv" class="table table-hover">
+			<table id="colinv" class="table table-hover" style="width: 100%">
 				<thead>
 					<tr>
 						<th><?=$_LANG->get('ID')?></th>
@@ -227,11 +227,6 @@ $(document).ready(function() {
 						<th><?=$_LANG->get('Optionen')?></th>
 					</tr>
 				</thead>
-				<tbody>
-				<tr>
-					<td></td>
-				</tr>
-				</tbody>
 			</table>
 		</div>
 	</div>
