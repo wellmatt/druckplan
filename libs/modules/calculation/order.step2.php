@@ -741,7 +741,7 @@ echo $quickmove->generate();
 
 
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" class="form-horizontal" name="product_config_form">
+<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="product_config_form">
     <input name="exec" value="edit" type="hidden"> 
     <input name="subexec" value="save" type="hidden"> 
     <input name="step" value="2" type="hidden">
@@ -779,613 +779,576 @@ echo $quickmove->generate();
     <input type="hidden" name="h_folding" id="h_folding" value="<?= $calc->getFolding()->getId() ?>">
 
     
-<div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">
-                Inhalt 1
-            </h3>
-	  </div>
-	  <div class="panel-body">
-          <div class="table-responsive">
-              <table class="table table-hover">
-                  <thead>
-                  <tr>
-                      <th></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                      <td><?= $_LANG->get('Endformat') ?>
-                      </td>
+
+    
+    <h1><?=$_LANG->get('Inhalt 1')?></h1>
+    <div class="box2">
+        <table width="100%">
+            <colgroup>
+                <col width="180">
+                <col>
+            </colgroup>
+            <tr>
+                <td class="content_row_header" valign="top"><?= $_LANG->get('Endformat') ?>
+                </td>
 
 
 
-                      <td valign="top">
-                          <?
-                          foreach ($order->getProduct()->getAvailablePaperFormats() as $pf) {
-                              echo '<input type="button" class="selectbutton" id="01_' . $pf->getId() . '" name="format" value="';
-                              echo $pf->getName() . "\n" . '(' . $pf->getWidth() . ' x ' . $pf->getHeight() . ' '.$_LANG->get('mm').')"';
-                              echo 'onclick="clickProductFormat(\'content\',this.id)"';
-                              if ($calc->getProductFormat()->getId() == $pf->getId())
-                                  echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                              echo '>' . "\n";
-                          }
-                          ?>
-                      </td>
-                  </tr>
+                <td valign="top">
+                 <?
+                    foreach ($order->getProduct()->getAvailablePaperFormats() as $pf) {
+                        echo '<input type="button" class="selectbutton" id="01_' . $pf->getId() . '" name="format" value="';
+                        echo $pf->getName() . "\n" . '(' . $pf->getWidth() . ' x ' . $pf->getHeight() . ' '.$_LANG->get('mm').')"';
+                        echo 'onclick="clickProductFormat(\'content\',this.id)"';
+                        if ($calc->getProductFormat()->getId() == $pf->getId())
+                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                        echo '>' . "\n";
+                    }
+                 ?>
+                </td>
+            </tr>
 
-                  <tr>
-                      <td></td>
-                      <td id="paper_free" <? //if($calc->getProductFormat() != 0) echo 'style="display:none"' ?>>
-                          <?= $_LANG->get('Breite') ?>
-                          <input name="order_product_width" class="form-control" id="order_product_width"
-                                 value="<?= $calc->getProductFormatWidth() ?>"> <?=$_LANG->get('mm')?>
-                          <?= $_LANG->get('H&ouml;he') ?>
-                          <input name="order_product_height" class="form-control" id="order_product_height"
-                                 value="<?= $calc->getProductFormatHeight() ?>"> <?=$_LANG->get('mm')?><br>
-                          <?= $_LANG->get('Breite') ?>
-                          <input name="order_product_width_open" class="form-control" id="order_product_width_open"
-                                 value="<?= $calc->getProductFormatWidthOpen() ?>"> <?=$_LANG->get('mm')?>
-                          <?= $_LANG->get('H&ouml;he') ?>
-                          <input name="order_product_height_open" class="form-control" id="order_product_height_open"
-                                 value="<?= $calc->getProductFormatHeightOpen() ?>"> <?=$_LANG->get('mm')?>
-                          <?= $_LANG->get('offenes Format') ?>
-                      </td>
-                      <td>Bitte beachten Sie bei einer Kalkulation von Rollenprodukten folgendes:<br/>
-                          Höhe und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
-                  </tr>
+            <tr>
+                <td class="content_row_clear"></td>
+                <td class="content_row_clear" id="paper_free" <? //if($calc->getProductFormat() != 0) echo 'style="display:none"' ?>>
+                           <?= $_LANG->get('Breite') ?>
+                    <input name="order_product_width" style="width:40px;text-align:center" class="text" id="order_product_width" 
+                           value="<?= $calc->getProductFormatWidth() ?>"> <?=$_LANG->get('mm')?>
+                           <?= $_LANG->get('H&ouml;he') ?>
+                    <input name="order_product_height" style="width:40px;text-align:center" class="text" id="order_product_height" 
+                           value="<?= $calc->getProductFormatHeight() ?>"> <?=$_LANG->get('mm')?><br>
+                           <?= $_LANG->get('Breite') ?>
+                    <input name="order_product_width_open" style="width:40px;text-align:center" class="text" id="order_product_width_open" 
+                           value="<?= $calc->getProductFormatWidthOpen() ?>"> <?=$_LANG->get('mm')?>
+                           <?= $_LANG->get('H&ouml;he') ?>
+                    <input name="order_product_height_open" style="width:40px;text-align:center" class="text" id="order_product_height_open" 
+                           value="<?= $calc->getProductFormatHeightOpen() ?>"> <?=$_LANG->get('mm')?>
+					<?= $_LANG->get('offenes Format') ?>
+                </td>
+                <td>Bitte beachten Sie bei einer Kalkulation von Rollenprodukten folgendes:<br/>
+                    Höhe und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
+            </tr>
 
-                  <?
-                  // Matrial Inhalt
-                  if ($order->getProduct()->getHasContent()) {
-                      ?>
-                      <tr>
-                          <td><?= $_LANG->get('Inhalt 1') ?></td>
-                          <td>
-                              <div id="paper">
-                                  <?
-                                  if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+            <?
+            // Matrial Inhalt
+            if ($order->getProduct()->getHasContent()) {
+                ?>
+                <tr>
+                    <td class="content_row_header"><?= $_LANG->get('Inhalt 1') ?></td>
+                    <td class="content_row_clear">
+                        <div id="paper">
+                            <?
+                            if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
-                                      foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
-                                          $paper = new Paper($paper["id"]);
-                                          echo '<input type="button"';
-                                          if ($calc->getPaperContent()->getId() == $paper->getId())
-                                              echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
+                                    $paper = new Paper($paper["id"]);
+                                    echo '<input type="button"';
+                                    if ($calc->getPaperContent()->getId() == $paper->getId())
+                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
 
-                                          echo ' class="selectbutton" id="02_' . $paper->getId() . '" name="paperprops" value="' . $paper->getName() . '"
+                                    echo ' class="selectbutton" id="02_' . $paper->getId() . '" name="paperprops" value="' . $paper->getName() . '" 
 											onclick="clickPaperContent(this.id)">' . "\n";
-                                      }
-
-                                      echo '<input type="button" class="selectbutton" name="custompaperprop" value="[+] Neues Papier..." onclick="navigateToPaperModule()" />';
-                                  }
-                                  ?>
-                              </div>
-                          </td>
-                      </tr>
-                      <?
-                  }
-
-
-
-                  // Matrial Inhalt Gewicht
-                  if ($order->getProduct()->getHasContent()) {
-                      ?>
-                      <tr>
-                          <td><?= $_LANG->get('Inhalt 1 Gewicht') ?>
-                          </td>
-                          <td>
-
-                              <div id="paper_weight"><?
-                                  if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                      $_REQUEST["product"] = (int) $_REQUEST["product"];
+                                }
+                                
+                                echo '<input type="button" class="selectbutton" name="custompaperprop" value="[+] Neues Papier..." onclick="navigateToPaperModule()" />';
+                            }
+                            ?>
+                        </div> 
+                    </td>
+                </tr>
+                <?
+            }
 
 
-                                      $papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT);
 
-                                      foreach (($papers[$calc->getPaperContent()->getId()]) as $weight => $val) {
-                                          if ($weight != "id") {
+            // Matrial Inhalt Gewicht
+            if ($order->getProduct()->getHasContent()) {
+                ?>
+                <tr>
+                    <td class="content_row_header"><?= $_LANG->get('Inhalt 1 Gewicht') ?>
+                    </td>
+                    <td class="content_row_clear">
 
-                                              echo '<input type="button" ';
-                                              if ($calc->getPaperContentWeight() == $weight)
-                                                  echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                        <div id="paper_weight"><?
+                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                    $_REQUEST["product"] = (int) $_REQUEST["product"];
 
-                                              echo 'class="selectbutton" id="03_' . $weight . '" name="paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+
+                    $papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT);
+
+                    foreach (($papers[$calc->getPaperContent()->getId()]) as $weight => $val) {
+                        if ($weight != "id") {
+
+                            echo '<input type="button" ';
+                            if ($calc->getPaperContentWeight() == $weight)
+                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+
+                            echo 'class="selectbutton" id="03_' . $weight . '" name="paperweight" value="' . $weight . ' '.$_LANG->get('g').'" 
 				onclick="clickContentWeight(this.id)">' . "\n";
-                                          }
-                                      }
-                                  }
-                                  ?>
-                              </div>
+                        }
+                    }
+                }
+                ?>
+                        </div>
 
-                          </td>
-                      </tr>
-                  <? } ?>
-
-
-                  <tr>
+                    </td>
+                </tr>
+<? } ?>
 
 
-                      <td><?= $_LANG->get('Inhalt 1 bedr. Seiten') ?></td>
-                      <td>
-                          <div id="number_pages">
-                              <?
-                              if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                  if($order->getProduct()->getType() == Product::TYPE_NORMAL)
-                                      foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
-                                          echo '<input type="button" ';
-                                          if ($calc->getPagesContent() == $pc)
-                                              echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                          echo 'class="selectbutton" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
-    				onclick="clickContentPages(this.id, false)">' . "\n";
-                                      }
-                                  else
-                                      echo '<input name="numberpages_content" value="'.$calc->getPagesContent().'" style="width:60px" class="text"
-                                        onfocus="focusContentPages()" onblur="setContentPages(this.value)">';
-                              }
-                              ?>
-                          </div>
-
-                      </td>
-
-                  </tr>
-
-                  <tr>
+            <tr>
 
 
-                      <td><?= $_LANG->get('Inhalt 1 Farbigkeit') ?></td>
-                      <td>
-                          <div id="print_chrom"> <?
-                              if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-
-                                  foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                      echo '<input type="button" ';
-                                      if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
-                                          echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                      echo ' class="selectbutton" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
-				onclick="clickContentChromaticity(this.id)">' . "\n";
-                                  }
-                              }
-                              ?>
-                          </div>
-                      </td>
-                  </tr>
-                  </tbody>
-              </table>
-          </div>
-      </div>
-
-
-    <? // Zusaetzlicher Inhalt
-    if ($order->getProduct()->getHasAddContent()) {?>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Inhalt 2
-                </h3>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><?= $_LANG->get('Inhalt 2') ?>
-                        </td>
-                        <td>
-
-                            <div id="additional_paper">
-                                <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-
+                <td class="content_row_header"><?= $_LANG->get('Inhalt 1 bedr. Seiten') ?></td>
+                <td>
+                    <div id="number_pages"> 
+                        <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            if($order->getProduct()->getType() == Product::TYPE_NORMAL)
+                                foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                     echo '<input type="button" ';
+                                    if ($calc->getPagesContent() == $pc)
+                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                    echo 'class="selectbutton" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '" 
+    				onclick="clickContentPages(this.id, false)">' . "\n";
+                                }
+                            else
+                                echo '<input name="numberpages_content" value="'.$calc->getPagesContent().'" style="width:60px" class="text"
+                                        onfocus="focusContentPages()" onblur="setContentPages(this.value)">';
+                        }
+                        ?>
+                    </div>
 
-                                    if ($calc->getPaperAddContent()->getId() == 0) {
+                </td>
+
+            </tr>
+
+            <tr>
+
+
+                <td class="content_row_header"><?= $_LANG->get('Inhalt 1 Farbigkeit') ?></td>
+                <td>
+                    <div id="print_chrom"> <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+
+                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                echo '<input type="button" ';
+                                if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
+                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                echo ' class="selectbutton" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '" 
+				onclick="clickContentChromaticity(this.id)">' . "\n";
+                            }
+                        }
+                        ?>
+					</div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+    <br>
+
+
+<? // Zusaetzlicher Inhalt
+if ($order->getProduct()->getHasAddContent()) {?>
+    <h1><?=$_LANG->get('Inhalt 2')?></h1>
+    <div class="box2">
+        <table width="100%">
+            <colgroup>
+                <col width="180">
+                <col>
+            </colgroup>
+                <tr>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 2') ?>
+                    </td>
+                    <td class="content_row_clear">
+
+                        <div id="additional_paper"> 
+                            <?
+                            if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+
+                                echo '<input type="button" '; 
+                                
+                                if ($calc->getPaperAddContent()->getId() == 0) {
                                         echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff" ';
                                     }
-
-                                    echo 'class="selectbutton" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+                                
+                                echo 'class="selectbutton" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '" 
 				onclick="clickAddPaper(this.id)">' . "\n";
-                                    $addSelected = false;
-                                    foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
-                                        $paper = new Paper($paper["id"]);
-                                        echo '<input type="button"';
-                                        if ($calc->getPaperAddContent()->getId() == $paper->getId()) {
-                                            $addSelected = true;
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                        }
-
-                                        echo ' class="selectbutton" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '"
-				onclick="clickAddPaper(this.id)">' . "\n";
-                                    }
-                                    if ($addSelected === false)
-                                        echo '<script language="javascript">document.getElementById(\'06_0\').style.backgroundColor = \'#e3e3e3\'</script>';
-                                }
-                                ?>
-                            </div>
-
-                        </td>
-                    </tr>
-                    <tr id="tr_addcontent_weight"<? if ($calc->getPaperAddContent()->getId() == 0)
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Inhalt 2 Gewicht') ?>
-                        </td>
-                        <td>
-                            <div id="additional_paperweight">
-                                <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                    $_REQUEST["product"] = (int) $_REQUEST["product"];
-
-
-                                    $papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT);
-
-                                    foreach (($papers[$calc->getPaperContent()->getId()]) as $weight => $val) {
-                                        if ($weight != "id") {
-
-                                            echo '<input type="button" ';
-                                            if ($calc->getpaperAddContentWeight() == $weight)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-
-                                            echo 'class="selectbutton" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
-				onclick="clickAddPaperWeight(this.id)">' . "\n";
-                                        }
-                                    }
-                                }
-                                ?>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    <tr id="tr_addcontent_pages"<? if ($calc->getPaperAddContent()->getId() == 0)
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Inhalt 2 bedr. Seiten') ?>
-                        </td>
-                        <td class="content_row_clear">
-                            <div id="additional_paperpages">
-
-                                <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                    if($order->getProduct()->getType() == Product::TYPE_NORMAL)
-                                        foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
-                                            echo '<input type="button" ';
-                                            if ($calc->getPagesAddContent() == $pc)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            echo 'class="selectbutton" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
-    				onclick="clickAddPaperPages(this.id)">' . "\n";
-                                        }
-                                    else
-                                        echo '<input name="numberpages_addcontent" value="'.$calc->getPagesAddContent().'" style="width:60px" class="text"
-                                    onfocus="focusAddContentPages()" onblur="setAddContentPages(this.value)">';
-                                }
-                                ?>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                    <tr id="tr_addcontent_chromaticity"<? if ($calc->getPaperAddContent()->getId() == 0)
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Inhalt 2 Farbigkeit') ?>
-                        </td>
-                        <td>
-                            <div id="additional_paperchroma"> <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                    $prod = new Product($_REQUEST["product"]);
-                                    foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                        echo '<input type="button"';
-                                        if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                        echo ' class="selectbutton" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '"
-				onclick="clickAddPaperChromaticity(this.id)">' . "\n";
-                                    }
-                                }
-                                ?>
-                            </div>
-
-                        </td>
-
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <?
-    }
-
-    require_once 'order.php.add.php';
-
-    // Material Umschlag
-    if ($order->getProduct()->getHasEnvelope()) { ?>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Umschlag
-                </h3>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><?= $_LANG->get('Material Umschlag') ?>
-                        </td>
-                        <td>
-                            <div id="envelope_paperprops">
-
-                                <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-
-                                    echo '<input type="button" ';
-
-                                    if ($calc->getPaperEnvelope()->getId() == 0) {
+                                $addSelected = false;
+                                foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
+                                    $paper = new Paper($paper["id"]);
+                                    echo '<input type="button"';
+                                    if ($calc->getPaperAddContent()->getId() == $paper->getId()) {
+                                        $addSelected = true;
                                         echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
                                     }
 
-                                    echo 'class="selectbutton" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '"
-				onclick="clickEnvelopePaper(this.id)">' . "\n";
-                                    $envSelected = false;
-                                    foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_ENVELOPE) as $paper) {
-                                        $paper = new Paper($paper["id"]);
-                                        echo '<input type="button"';
-                                        if ($calc->getPaperEnvelope()->getId() == $paper->getId()) {
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            $envSelected = true;
-                                        }
-
-                                        echo ' class="selectbutton" id="09_' . $paper->getId() . '" name="envpaper" value="' . $paper->getName() . '"
-				onclick="clickEnvelopePaper(this.id)">' . "\n";
-                                    }
-                                    if ($envSelected === false)
-                                        echo '<script language="javascript">document.getElementById(\'09_0\').style.backgroundColor = \'#e3e3e3\'</script>';
+                                    echo ' class="selectbutton" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '" 
+				onclick="clickAddPaper(this.id)">' . "\n";
                                 }
-                                ?>
+                                if ($addSelected === false)
+                                    echo '<script language="javascript">document.getElementById(\'06_0\').style.backgroundColor = \'#e3e3e3\'</script>';
+                            }
+                            ?>
+                        </div>
 
-                            </div>
-                        </td>
-                    </tr>
-                    <tr id="tr_envelope_weight" <? if ($calc->getPaperEnvelope()->getId() == 0)
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Mat. Umschlag Gewicht') ?>
-                        </td>
-                        <td>
-                            <div id="envelope_paperweight">
-                                <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                    $_REQUEST["product"] = (int) $_REQUEST["product"];
+                    </td>
+                </tr>
+                <tr id="tr_addcontent_weight"<? if ($calc->getPaperAddContent()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 2 Gewicht') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="additional_paperweight"> 
+                            <?
+                            if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                                $_REQUEST["product"] = (int) $_REQUEST["product"];
 
 
-                                    $papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_ENVELOPE);
+                                $papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT);
 
-                                    foreach (($papers[$calc->getPaperEnvelope()->getId()]) as $weight => $val) {
-                                        if ($weight != "id") {
-                                            echo '<input type="button" ';
-                                            if ($calc->getPaperEnvelopeWeight() == $weight)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                foreach (($papers[$calc->getPaperContent()->getId()]) as $weight => $val) {
+                                    if ($weight != "id") {
 
-                                            echo 'class="selectbutton" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                        echo '<input type="button" ';
+                                        if ($calc->getpaperAddContentWeight() == $weight)
+                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+
+                                        echo 'class="selectbutton" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'" 
+				onclick="clickAddPaperWeight(this.id)">' . "\n";
+                                    }
+                                }
+                            }
+                            ?>
+                        </div> 
+                    </td>
+                </tr>
+
+
+                <tr id="tr_addcontent_pages"<? if ($calc->getPaperAddContent()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 2 bedr. Seiten') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="additional_paperpages"> 
+
+                            <?
+                            if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                                if($order->getProduct()->getType() == Product::TYPE_NORMAL)
+                                    foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
+                                        echo '<input type="button" ';
+                                        if ($calc->getPagesAddContent() == $pc)
+                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                        echo 'class="selectbutton" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '" 
+    				onclick="clickAddPaperPages(this.id)">' . "\n";
+                                    }
+                                else 
+                                    echo '<input name="numberpages_addcontent" value="'.$calc->getPagesAddContent().'" style="width:60px" class="text"
+                                    onfocus="focusAddContentPages()" onblur="setAddContentPages(this.value)">';
+                            }
+                            ?>
+                        </div> 
+                    </td>
+
+                </tr>
+
+                <tr id="tr_addcontent_chromaticity"<? if ($calc->getPaperAddContent()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Inhalt 2 Farbigkeit') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="additional_paperchroma"> <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            $prod = new Product($_REQUEST["product"]);
+                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                echo '<input type="button"';
+                                if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
+                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                echo ' class="selectbutton" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '" 
+				onclick="clickAddPaperChromaticity(this.id)">' . "\n";
+                            }
+                        }
+                        ?>
+                        </div> 
+
+                    </td>
+
+                </tr>
+                </table>
+                </div>
+                <br>
+                <?
+            }
+            
+require_once 'order.php.add.php';            
+            
+// Material Umschlag
+if ($order->getProduct()->getHasEnvelope()) { ?>
+    <h1><?=$_LANG->get('Umschlag')?></h1>
+    <div class="box2">
+        <table width="100%">
+            <colgroup>
+                <col width="180">
+                <col>
+            </colgroup>
+                <tr>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Material Umschlag') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="envelope_paperprops"> 
+
+                            <?
+                            if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+
+                                echo '<input type="button" '; 
+                                
+                                if ($calc->getPaperEnvelope()->getId() == 0) {
+                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                    }
+                                
+                                echo 'class="selectbutton" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '" 
+				onclick="clickEnvelopePaper(this.id)">' . "\n";
+                                $envSelected = false;
+                                foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_ENVELOPE) as $paper) {
+                                    $paper = new Paper($paper["id"]);
+                                    echo '<input type="button"';
+                                    if ($calc->getPaperEnvelope()->getId() == $paper->getId()) {
+                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                        $envSelected = true;
+                                    }
+
+                                    echo ' class="selectbutton" id="09_' . $paper->getId() . '" name="envpaper" value="' . $paper->getName() . '" 
+				onclick="clickEnvelopePaper(this.id)">' . "\n";
+                                }
+                                if ($envSelected === false)
+                                    echo '<script language="javascript">document.getElementById(\'09_0\').style.backgroundColor = \'#e3e3e3\'</script>';
+                            }
+                            ?>
+
+                        </div> 
+                    </td>
+                </tr>
+                <tr id="tr_envelope_weight" <? if ($calc->getPaperEnvelope()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Mat. Umschlag Gewicht') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="envelope_paperweight"> 
+                            <?
+                            if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                                $_REQUEST["product"] = (int) $_REQUEST["product"];
+
+
+                                $papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_ENVELOPE);
+
+                                foreach (($papers[$calc->getPaperEnvelope()->getId()]) as $weight => $val) {
+                                    if ($weight != "id") {
+                                        echo '<input type="button" ';
+                                        if ($calc->getPaperEnvelopeWeight() == $weight)
+                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+
+                                        echo 'class="selectbutton" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'" 
 				onclick="clickEnvelopeWeight(this.id)">' . "\n";
-                                        }
                                     }
                                 }
-                                ?>
-                            </div>
-                        </td>
-                    </tr>
+                            }
+                            ?>         
+                        </div> 
+                    </td>
+                </tr>
 
-                    <tr id="tr_envelope_pages" <? if ($calc->getPaperEnvelope()->getId() == 0)
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Mat. Umschl. bedr. Seiten') ?>
-                        </td>
-                        <td>
-                            <div id="envelope_paperpages"> <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                <tr id="tr_envelope_pages" <? if ($calc->getPaperEnvelope()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Mat. Umschl. bedr. Seiten') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="envelope_paperpages"> <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
-                                    $pages = array("2", "4", "6", "8");
+                            $pages = array("2", "4", "6", "8");
 
-                                    foreach ($pages as $pc) {
-                                        echo '<input type="button" class="selectbutton"';
+                            foreach ($pages as $pc) {
+                                echo '<input type="button" class="selectbutton"';
 
-                                        if ($calc->getPagesEnvelope() == $pc)
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                        echo ' id="11_' . $pc . '" name="envpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                if ($calc->getPagesEnvelope() == $pc)
+                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                echo ' id="11_' . $pc . '" name="envpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '" 
 				onclick="clickEnvelopePages(this.id)">' . "\n";
-                                    }
-                                }
-                                ?>
+                            }
+                        }
+                        ?>
 
-                            </div>
-                        </td>
+                        </div> 
+                    </td>
 
-                    </tr>
+                </tr>
 
 
-                    <tr id="tr_envelope_chromaticity" <? if ($calc->getPaperEnvelope()->getId() == 0)
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Mat. Umschl. Farbigkeit') ?>
-                        </td>
-                        <td>
-                            <div id="envelope_paperchroma"> <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                    $prod = new Product($_REQUEST["product"]);
-                                    foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                        echo '<input type="button"';
-                                        if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                        echo ' class="selectbutton" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '"
+                <tr id="tr_envelope_chromaticity" <? if ($calc->getPaperEnvelope()->getId() == 0)
+                            echo ' style="display:none"'; ?>>
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Mat. Umschl. Farbigkeit') ?>
+                    </td>
+                    <td class="content_row_clear">
+                        <div id="envelope_paperchroma"> <?
+                        if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            $prod = new Product($_REQUEST["product"]);
+                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                echo '<input type="button"';
+                                if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
+                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                echo ' class="selectbutton" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '" 
 				onclick="clickEnvelopeChromaticity(this.id)">' . "\n";
-                                    }
-                                }
-                                ?>
+                            }
+                        }
+                        ?>
 
-                            </div>
+                        </div> 
 
-                        </td>
+                    </td>
 
-                    </tr>
-
-                    <tr id="tr_envelope_format" <? if ($calc->getPaperEnvelope()->getId() == 0)
-                        echo ' style="display:none"'; ?> >
-                        <td><?= $_LANG->get('Umschlag offenes Format') ?></td>
-                        <td>
-                            <div id="envelope_format">
-                                <?= $_LANG->get('Breite') ?>
-                                <input name="order_envelope_width_open" class="form-control" id="order_envelope_width_open"
-                                       value="<?= $calc->getEnvelopeWidthOpen() ?>"> <?=$_LANG->get('mm')?>
-                                <?= $_LANG->get('H&ouml;he') ?>
-                                <input name="order_envelope_height_open" class="form-control" id="order_envelope_height_open"
-                                       value="<?= $calc->getEnvelopeHeightOpen() ?>"> <?=$_LANG->get('mm')?>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                </tr>
+                
+                <tr id="tr_envelope_format" <? if ($calc->getPaperEnvelope()->getId() == 0)
+                            echo ' style="display:none"'; ?> >
+                    <td class="content_row_header" style="color:gray;"><?= $_LANG->get('Umschlag offenes Format') ?></td>
+                    <td class="content_row_clear">
+                        <div id="envelope_format">
+                            <?= $_LANG->get('Breite') ?>
+                            <input name="order_envelope_width_open" style="width:40px;text-align:center" class="text" id="order_envelope_width_open" 
+                                   value="<?= $calc->getEnvelopeWidthOpen() ?>"> <?=$_LANG->get('mm')?>
+                            <?= $_LANG->get('H&ouml;he') ?>       
+                            <input name="order_envelope_height_open" style="width:40px;text-align:center" class="text" id="order_envelope_height_open" 
+                                   value="<?= $calc->getEnvelopeHeightOpen() ?>"> <?=$_LANG->get('mm')?>
+                        </div>
+                    </td>      
+                </tr>         
+            </table>
         </div>
+    <br>
+<? } ?>
 
-
-    <? } ?>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                Optionen Weiterverarbeitung
-            </h3>
-        </div>
-        <? if ($order->getProduct()->hasMachineOfType(Machine::TYPE_FOLDER)) { ?>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><?= $_LANG->get('Falzung') ?></td>
-                        <td>
-                            <div id="order_folding"> <?
-                                if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
-                                    $_REQUEST["pages"] = (int) $_REQUEST["pages"];
-                                    $firstId = true;
-                                    foreach (Foldtype::getFoldTypesForPages($calc->getPagesContent()) as $ft) {
-                                        echo '<input type="button"';
-                                        if ($calc->getFolding()->getId() == $ft->getId())
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                        echo ' class="selectbutton" id="12_' . $ft->getId() . '" name="foldtype" value="' . $ft->getName() . '"
+    <h1>
+<?= $_LANG->get('Optionen Weiterverarbeitung') ?>
+    </h1>
+    <div class="box2">
+        <table width="100%">
+            <colgroup>
+                <col width="180">
+                <col>
+            </colgroup>
+<? if ($order->getProduct()->hasMachineOfType(Machine::TYPE_FOLDER)) { ?>
+                <tr>
+                    <td class="content_row_header"><?= $_LANG->get('Falzung') ?></td>
+                    <td class="content_row_header">
+                        <div id="order_folding"> <?
+    if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+        $_REQUEST["pages"] = (int) $_REQUEST["pages"];
+        $firstId = true;
+        foreach (Foldtype::getFoldTypesForPages($calc->getPagesContent()) as $ft) {
+            echo '<input type="button"';
+            if ($calc->getFolding()->getId() == $ft->getId())
+                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+            echo ' class="selectbutton" id="12_' . $ft->getId() . '" name="foldtype" value="' . $ft->getName() . '" 
 				onclick="clickFolding(this.id)">' . "\n";
-                                    }
-                                }
-                                ?>
+        }
+    }
+    ?>
 
 
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        <? } ?>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"></h3>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr id="tr_order_amount" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
-                    echo ' style="display:none"'; ?>>
-                    <td><?= $_LANG->get('Auflage') ?></td>
-                    <td>
-                        <div id="div_order_amount">
-                            <input name="order_amount" id="13_0" class="form-control" value="<?= $calc->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
-                            <?
-                            if ($_REQUEST["addorder_amount"])
-                            {	//gln
-                                foreach($_REQUEST["addorder_amount"] as $addamount)
-                                {
-                                    if((int)$addamount > 0)
-                                        echo '<input name="addorder_amount[]" style="width:60px" class="text" value="'.$addamount.'" onclick="clickAmount()" onfocus="clickAmount()"> ';
-                                }
-                            }
-                            else
-                            {
-                                //gln
-                                $calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
-                                //$count_calcs = count($calculations);
-//echo $count_calcs;
-                                foreach($calculations as $calcul)
-                                {
-                                    ?>
-                                    <input name="addorder_amount[]" class="form-control" value="<?= $calcul->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
-                                    <?
-                                }
-                            }
-                            ?>
-                        </div>
-                        <span class="glyphicons glyphicons-plus" onclick="addAmount()"></span>
+                        </div> 
                     </td>
                 </tr>
-                </tbody>
-            </table>
-        </div>
+<? } ?>
+        </table>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"></h3>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr id="tr_order_sorts" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
-                    echo ' style="display:none"'; ?>>
-                    <td><?= $_LANG->get('Sorten') ?></td>
-                    <td>
-                        <div id="div_order_sorts">
-                            <input name="order_sorts" id="23_0" class="form-control" value="<?= $calc->getSorts() ?>">
-                            <?
-                            if ($_REQUEST["addorder_sorts"])
-                            {	//gln
-                                foreach($_REQUEST["addorder_sorts"] as $addsorts)
-                                {
-                                    if((int)$addsorts > 0)
-                                        echo '<input name="addorder_sorts[]" style="width:60px" class="text" value="'.$addsorts.'"> ';
-                                }
-                            }
-                            else
+    </br>
+    
+    <div class="box2">
+        <table width="100%">
+            <colgroup>
+                <col width="180">
+                <col>
+            </colgroup>
+            <tr id="tr_order_amount" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
+    echo ' style="display:none"'; ?>>
+                <td class="content_row_header"><?= $_LANG->get('Auflage') ?></td>
+                <td class="content_row_clear">
+                    <div id="div_order_amount">
+                        <input name="order_amount" id="13_0" style="width:60px" class="text" value="<?= $calc->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
+                        <? 
+                        if ($_REQUEST["addorder_amount"]) 
+                        {	//gln
+                            foreach($_REQUEST["addorder_amount"] as $addamount)
                             {
-                                //gln
-                                $calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
-                                //$count_calcs = count($calculations);
-//echo $count_calcs;
-                                foreach($calculations as $calcul)
-                                {
-                                    ?>
-                                    <input name="addorder_sorts[]" class="form-control" value="<?= $calcul->getSorts() ?>">
-                                    <?
-                                }
+                                if((int)$addamount > 0)
+                                    echo '<input name="addorder_amount[]" style="width:60px" class="text" value="'.$addamount.'" onclick="clickAmount()" onfocus="clickAmount()"> ';
                             }
-                            ?>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                        }
+                        else
+	                    {
+	                    	//gln
+							$calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
+							//$count_calcs = count($calculations);
+//echo $count_calcs;
+							foreach($calculations as $calcul)  
+							{	
+							?>
+						        <input name="addorder_amount[]" style="width:60px" class="text" value="<?= $calcul->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
+							<?					
+							}           
+                        }
+                        ?>
+                    </div>
+                    <span class="glyphicons glyphicons-plus" onclick="addAmount()"></span>
+                </td>
+            </tr>
+
+        </table>
     </div>
+    </br>
+    <div class="box2">
+        <table width="100%">
+            <colgroup>
+                <col width="180">
+                <col>
+            </colgroup>
+            <tr id="tr_order_sorts" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
+    echo ' style="display:none"'; ?>>
+                <td class="content_row_header"><?= $_LANG->get('Sorten') ?></td>
+                <td class="content_row_clear">
+                    <div id="div_order_sorts">
+                        <input name="order_sorts" id="23_0" style="width:60px" class="text" value="<?= $calc->getSorts() ?>">
+                        <? 
+                        if ($_REQUEST["addorder_sorts"])
+                        {	//gln
+                            foreach($_REQUEST["addorder_sorts"] as $addsorts)
+                            {
+                                if((int)$addsorts > 0)
+                                    echo '<input name="addorder_sorts[]" style="width:60px" class="text" value="'.$addsorts.'"> ';
+                            }
+                        }
+                        else
+	                    {
+	                    	//gln
+							$calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
+							//$count_calcs = count($calculations);
+//echo $count_calcs;
+							foreach($calculations as $calcul)  
+							{	
+							?>
+						        <input name="addorder_sorts[]" style="width:60px" class="text" value="<?= $calcul->getSorts() ?>">
+							<?					
+							}           
+                        }
+                        ?>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    </br>    
+
 </form>

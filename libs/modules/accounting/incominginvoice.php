@@ -349,7 +349,7 @@ $(function() {
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
-			Eingangs-&Uuml;bersicht
+			Rechnungseingang
 				<span class="pull-right">
 					<?= $savemsg ?>
 				</span>

@@ -156,12 +156,13 @@ $(document).ready(function() {
 	
 } );
 </script>
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<h3 class="panel-title">
-			Vorgänge
+<div class="form-horizontal">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Vorgänge
 				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
-				<span class="pull-right">
+					<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">
 						<span class="glyphicons glyphicons-paired"></span>
 						<?=$_LANG->get('Vorgänge zusammenführen') ?>
@@ -175,31 +176,30 @@ $(document).ready(function() {
 						<?=$_LANG->get('Vorgang hinzuf&uuml;gen') ?>
 					</button>
 				</span>
-		</h3>
-	</div>
-	<div class="panel-body">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					Filter
-				</h3>
-			</div>
-			<div class="panel-body">
-				<table>
-					<tr align="left">
-						<td>Datum Filter:&nbsp;&nbsp;</td>
-						<td valign="left">
+			</h3>
+		</div>
+		<div class="panel-body">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Filter
+					</h3>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Datum Filter</label>
+						<div class="col-sm-2">
 							<input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-							<input name="date_min" id="date_min" style="width:70px;" class="text"
-								   onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-						</td>
-						<td valign="left">
+							<input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
+						</div>
+						<label for="" class="col-sm-1 control-label">Bis:</label>
+						<div class="col-sm-2">
 							<input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-							bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
-										onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-						</td>
-						<td valign="left">
-							Merkmal-Filter: <select id="filter_attrib" name="filter_attrib" style="width:110px"	onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+							<input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
+						</div>
+						<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
+						<div class="col-sm-3">
+							<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								<?
 								foreach ($all_attributes AS $attribute){
@@ -209,25 +209,31 @@ $(document).ready(function() {
 									<? }
 								} ?>
 							</select>
-						</td>
-					</tr>
-				</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="table-responsive">
-		<table id="colinv" class="table table-hover">
-			<thead>
-			<tr>
-				<th><?=$_LANG->get('ID')?></th>
-				<th><?=$_LANG->get('Nummer')?></th>
-				<th><?=$_LANG->get('Kunde')?></th>
-				<th><?=$_LANG->get('Titel')?></th>
-				<th><?=$_LANG->get('Angelegt am')?></th>
-				<th><?=$_LANG->get('Status')?></th>
-				<th><?=$_LANG->get('Optionen')?></th>
-			</tr>
-			</thead>
-		</table>
+		<div class="table-responsive">
+			<table  id="colinv" class="table table-hover">
+				<thead>
+					<tr>
+						<th><?=$_LANG->get('ID')?></th>
+						<th><?=$_LANG->get('Nummer')?></th>
+						<th><?=$_LANG->get('Kunde')?></th>
+						<th><?=$_LANG->get('Titel')?></th>
+						<th><?=$_LANG->get('Angelegt am')?></th>
+						<th><?=$_LANG->get('Status')?></th>
+						<th><?=$_LANG->get('Optionen')?></th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
+

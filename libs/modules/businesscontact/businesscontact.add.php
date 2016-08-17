@@ -421,7 +421,7 @@ function checkCustomerNumber(obj){
 function addTitlePosition(){
 	var count = parseInt(document.getElementById('position_titles_count').value) + 1;
 	var obj = document.getElementById('table_positiontitles');
-	var insert = '<tr id="tr_positiontitle_'+count+'"><td colspan="3"><input type="text" style="width:350px" name="position_titles[]"><span class="glyphicons glyphicons-remove" onclick="removeTitlePosition(this)" alt="'+count+'"></span></td></tr>';
+	var insert = '<tr id="tr_positiontitle_'+count+'"><td colspan="3"><div class="col-md-5"><input type="text" style="width:350px" class="form-control" name="position_titles[]"></div><div class="col-md-2"><span class="glyphicons glyphicons-remove" onclick="removeTitlePosition(this)" alt="'+count+'"></span></div></td></tr>';
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('position_titles_count').value = count;
 }
@@ -705,575 +705,566 @@ echo $quickmove->generate();
 	<? /* ------------------------------------- STAMMDATEN ------------------------------------------------------ */ ?>
 
 	<div id="tabs-1">
-	<table width="100%">
-		<tr>
-			<td width="200" class="content_header">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"><? if ($businessContact->getId()) echo $_LANG->get('Gesch&auml;ftskontakt &auml;ndern'); else echo $_LANG->get('Gesch&auml;ftskontakt hinzuf&uuml;gen');?>
-			</td>
-			<td></td>
-			<td width="200" class="content_header" align="right"><?=$savemsg?></td>
-		</tr>
-	</table>
+		<div class="panel panel-default">
+			  <div class="panel-heading">
+					<h3 class="panel-title">
+						<? if ($businessContact->getId()) echo $_LANG->get('Gesch&auml;ftskontakt &auml;ndern'); else echo $_LANG->get('Gesch&auml;ftskontakt hinzuf&uuml;gen');?>
+						<span class="pull-right">
+							<?=$savemsg?>
+						</span>
+					</h3>
+			  </div>
+			  <div class="panel-body">
+					<div class="form-horizontal">
+						 <div class="row">
+							 <div class="col-md-6">
+								 <div class="form-group">
+									 <label for="" class="col-sm-5 control-label">Adresse (allgemein)</label>
+								 </div>
+								 </br>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Firma</label>
+									 <div class="col-sm-9">
+										 <input name="name1" id="name1" value="<?=$businessContact->getName1()?>" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Firmenzusatz</label>
+									 <div class="col-sm-9">
+										 <input name="name2" class="form-control" value="<?=$businessContact->getName2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Adresse</label>
+									 <div class="col-sm-9">
+										 <input name="address1" class="form-control" value="<?=$businessContact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Adresszusatz</label>
+									 <div class="col-sm-9">
+										 <input name="address2" class="form-control" value="<?=$businessContact->getAddress2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Postleitzahl</label>
+									 <div class="col-sm-9">
+										 <input name="zip" class="form-control" value="<?=$businessContact->getZip()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Stadt</label>
+									 <div class="col-sm-9">
+										 <input name="city" class="form-control" value="<?=$businessContact->getCity()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Land</label>
+									 <div class="col-sm-9">
+										 <select name="country" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+											 <?
+											 foreach($countries as $c)
+											 {?>
+												 <option value="<?=$c->getId()?>"
+													 <?if ($businessContact->getCountry()->getId() == $c->getId()) echo "selected";?>>
+													 <?=$c->getName()?>
+												 </option>
+											 <?}
 
-	<table>
-		<tr>
-		<td width="400">
-			<table width="100%">
-				<colgroup>
-					<col width="170">
-					<col>
-				</colgroup>
-				<tr>
-					<td class="content_row_header" colspan="2"><?=$_LANG->get('Adresse (allgemein)');?></td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-					<td class="content_row_clear"><input name="name1" id="name1" style="width: 250px"
-						class="text" value="<?=$businessContact->getName1()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-					<td class="content_row_clear"><input name="name2"
-						style="width: 250px" class="text" value="<?=$businessContact->getName2()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Adresse');?>
-					</td>
-					<td class="content_row_clear"><input name="address1"
-						style="width: 250px" class="text" value="<?=$businessContact->getAddress1()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-					</td>
-					<td class="content_row_clear"><input name="address2"
-						style="width: 250px" class="text" value="<?=$businessContact->getAddress2()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Postleitzahl');?>
-					</td>
-					<td class="content_row_clear"><input name="zip"
-						style="width: 250px" class="text" value="<?=$businessContact->getZip()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Stadt');?>
-					</td>
-					<td class="content_row_clear"><input name="city"
-						style="width: 250px" class="text" value="<?=$businessContact->getCity()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-					<td class="content_row_clear"><select name="country" style="width: 250px"
-						class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<?
-							foreach($countries as $c)
-							{?>
-							<option value="<?=$c->getId()?>"
-							<?if ($businessContact->getCountry()->getId() == $c->getId()) echo "selected";?>>
-								<?=$c->getName()?>
-							</option>
-							<?}
+											 ?>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Telefon</label>
+									 <div class="col-sm-9">
+										 <input name="phone" class="form-control" value="<?=$businessContact->getPhone()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Fax</label>
+									 <div class="col-sm-9">
+										 <input name="fax" class="form-control" value="<?=$businessContact->getFax()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">E-Mail</label>
+									 <div class="col-sm-9">
+										 <input name="email" class="form-control" value="<?=$businessContact->getEmail()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Internetseite</label>
+									 <div class="col-sm-9">
+										 <input name="web" class="form-control" value="<?=$businessContact->getWeb()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Bemerkung</label>
+									 <div class="col-sm-9">
+										 <textarea name="notes" class="form-control" rows="2" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$businessContact->getNotes()?></textarea>
+									 </div>
+								 </div>
+							 </div>
+							 <div class="col-md-6">
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Kundennummer</label>
+									 <div class="col-sm-6">
+										 <input class="form-control" name="customernumber" id="customernumber" value="<?=$businessContact->getCustomernumber()?>">
+									 </div>
+									 <div class="col-sm-2">
+										 <span class="glyphicons glyphicons-unshare pointer" onclick="generadeCustomerNumber()" title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>"></span>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Betreuer Vertrieb</label>
+									 <div class="col-sm-8">
+										 <select name="salesperson" id="salesperson" class="form-control">
+											 <option value="0"></option>
+											 <?php
+											 foreach ($all_user as $sup_user){
+												 if ($businessContact->getSalesperson()->getId() == $sup_user->getId()){
+													 echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
+												 } else {
+													 echo '<option value="'.$sup_user->getId().'">'.$sup_user->getNameAsLine().'</option>';
+												 }
+											 }
+											 ?>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Matchcode</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="matchcode" id="matchcode" value="<?=$businessContact->getMatchcode()?>">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Kunde</label>
+									 <div class="col-sm-8">
+										 <select name="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+											 <option value="0" <? if(! ($businessContact->isExistingCustomer() && $businessContact->isPotentialCustomer())) echo "selected";?>></option>
+											 <option value="1" <? if($businessContact->isExistingCustomer()) echo "selected";?>>
+												 <?=$_LANG->get('Bestandskunde')?>
+											 </option>
+											 <option value="2" <? if($businessContact->isPotentialCustomer()) echo "selected";?>>
+												 <?=$_LANG->get('Interessent')?>
+											 </option>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Lieferant</label>
+									 <div class="col-sm-2">
+										 <input name="supplier" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"<? if ($businessContact->isSupplier()) echo "checked";?>>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Unsere KD-Nr.</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="numberatcustomer" value="<?=$businessContact->getNumberatcustomer()?>">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Zahlungsart</label>
+									 <div class="col-sm-8">
+										 <select name="payment" class="form-control">
+											 <option value="0" <? if ($businessContact->getPaymentTerms()->getId() == 0)
+												 echo "selected"?> >
+											 </option>
+											 <?
+											 foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
+											 {
+												 echo '<option value="'.$pt->getId().'"';
+												 if ($pt->getId() == $businessContact->getPaymentTerms()->getId()){
+													 echo "selected";
+												 }
+												 echo'>'.$pt->getName().'</option>';
+											 }
+											 ?>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">IBAN</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="iban" value="<?=$businessContact->getIban()?>">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">BIC</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="bic" value="<?=$businessContact->getBic()?>">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Rabatt</label>
+									 <div class="col-sm-8">
+										 <div class="input-group">
+											 <input class="form-control" name="discount" value="<?=printPrice($businessContact->getDiscount())?>">
+											 <span class="input-group-addon">%</span>
+										 </div>
+									 </div>
+								 </div>
+								 <? if($businessContact->getLectorId() > 0) { ?>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label"><span class="error"><?=$_LANG->get('Lector-Import')?>: </span></label>
+									 <div class="col-sm-8">
+										 ID: <?=$businessContact->getId()?>
+									 </div>
+								 </div>
+								 <?  } ?>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Kreditor-Nr.</label>
+									 <div class="col-sm-6">
+										 <input class="form-control" name="kreditor" id="kreditor" value="<?=$businessContact->getKreditor()?>">
+									 </div>
+									 <div class="col-sm-2">
+										 <span class="glyphicons glyphicons-unshare pointer" onclick="generadeCreditorNumber()" title="<?=$_LANG->get('Neue Kreditoren-Nr. erzeugen');?>"></span>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Debitor-Nr.</label>
+									 <div class="col-sm-6">
+										 <input class="form-control" name="debitor" id="debitor" value="<?=$businessContact->getDebitor()?>">
+									 </div>
+									 <div class="col-sm-2">
+										 <span class="glyphicons glyphicons-unshare pointer" onclick="generadeDebitorNumber()" title="<?=$_LANG->get('Neue Debitoren-Nr. erzeugen');?>"></span>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Provisionspartner</label>
+									 <div class="col-sm-2">
+										 <input name="has_commissionpartner" id="has_commissionpartner" type="checkbox" class="form-control" value="1"
+											 <? if ($businessContact->getCommissionpartner()>0) echo "checked";?> onclick="commi_checkbox()">
+									 </div>
+								 </div>
+								 <div  style="display: <? if (!$businessContact->getCommissionpartner()>0) echo 'none';?>" id="commi_title">
+									 <label for="" class="col-sm-4 control-label"><?=$_LANG->get('Partner: ')?></label>
+									 <div class="col-sm-8">
+										 <select name="commissionpartner" class="form-control" id="commissionpartner">
+											 <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+											 <? $commissioncontacts = CommissionContact::getAllCommissionContacts(CommissionContact::ORDER_ID, CommissionContact::FILTER_ALL, CommissionContact::LOADER_BASIC);
+											 foreach($commissioncontacts as $comcon)
+											 {
+												 echo '<option value="'.$comcon->getId().'" ';
+												 if($businessContact->getCommissionpartner() == $comcon->getId()) echo 'selected="selected"';
+												 echo '>'.$comcon->getName1().', '.$comcon->getCity().'</option>';
+											 }?>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Betreuer Web</label>
+									 <div class="col-sm-8">
+										 <select name="supervisor" class="form-control" id="supervisor">
+											 <option value="0"></option>
+											 <?php
+											 foreach ($all_user as $sup_user){
+												 if ($businessContact->getSupervisor()->getId() == $sup_user->getId()){
+													 echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
+												 } else {
+													 echo '<option value="'.$sup_user->getId().'">'.$sup_user->getNameAsLine().'</option>';
+												 }
+											 }
+											 ?>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Tourenmerkmal</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="tourmarker" id="tourmarker" value="<?=$businessContact->getTourmarker()?>">
+									 </div>
+								 </div>
 
-							?>
-					</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-					</td>
-					<td class="content_row_clear"><input name="phone"
-						style="width: 250px" class="text" value="<?=$businessContact->getPhone()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Fax');?>
-					</td>
-					<td class="content_row_clear"><input name="fax"
-						style="width: 250px" class="text" value="<?=$businessContact->getFax()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('E-Mail');?>
-					</td>
-					<td class="content_row_clear"><input name="email"
-						style="width: 250px" class="text" value="<?=$businessContact->getEmail()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Internetseite');?>
-					</td>
-					<td class="content_row_clear"><input name="web"
-						style="width: 250px" class="text" value="<?=$businessContact->getWeb()?>"
-						onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Bemerkung');?>
-					</td>
-					<td class="content_row_clear"><textarea name="notes" rows="2"
-					style="width: 250px" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$businessContact->getNotes()?></textarea>
-					</td>
-				</tr>
-				<tr><td>&emsp;</td></tr>
-			</table>
-		</td>
-		<td>&emsp;</td>
-		<td valign="top" width="400px">
-			<table width="100%">
-				<colgroup>
-					<col width="170">
-					<col>
-				</colgroup>
-				<tr>
-					<td class="content_row_header" colspan="2">&nbsp;</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Kundennummer')?></td>
-					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="customernumber" id="customernumber"
-					    		value="<?=$businessContact->getCustomernumber()?>">
-						<span class="glyphicons glyphicons-unshare pointer"onclick="generadeCustomerNumber()" title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>"></span>
-
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Betreuer Vertrieb')?></td>
-					<td class="content_row_clear icon-link">
-                        <select name="salesperson" id="salesperson">
-                        <option value="0"></option>
-                        <?php
-                        foreach ($all_user as $sup_user){
-                            if ($businessContact->getSalesperson()->getId() == $sup_user->getId()){
-                                echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
-                            } else {
-                                echo '<option value="'.$sup_user->getId().'">'.$sup_user->getNameAsLine().'</option>';
-                            }
-                        }
-                        ?>
-                        </select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Matchcode')?></td>
-					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="matchcode" id="matchcode"
-					    		value="<?=$businessContact->getMatchcode()?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Kunde');?></td>
-					<td class="content_row_clear"><select name="customer" style="width: 250px"
-						class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<option value="0" <? if(! ($businessContact->isExistingCustomer() && $businessContact->isPotentialCustomer())) echo "selected";?>></option>
-							<option value="1" <? if($businessContact->isExistingCustomer()) echo "selected";?>>
-								<?=$_LANG->get('Bestandskunde')?>
-							</option>
-							<option value="2" <? if($businessContact->isPotentialCustomer()) echo "selected";?>>
-								<?=$_LANG->get('Interessent')?>
-							</option>
-					</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Lieferant');?></td>
-					<td class="content_row_clear">
-					 	<input name="supplier" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)"
-						<? if ($businessContact->isSupplier()) echo "checked";?>>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Unsere KD-Nr.')?></td>
-					<td class="content_row_clear">
-					    <input class="text" style="width:100px" name="numberatcustomer"
-					    		value="<?=$businessContact->getNumberatcustomer()?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header">&nbsp;</td>
-					<td class="content_row_clear">&nbsp;</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Zahlungsart')?></td>
-					<td class="content_row_clear">
-					    <select name="payment" style="width:250px" class="text">
-					    	<option value="0" <? if ($businessContact->getPaymentTerms()->getId() == 0)
-					    							echo "selected"?> >
-					    	</option>
-					        <?
-					        foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
-					        {
-					            echo '<option value="'.$pt->getId().'"';
-					            if ($pt->getId() == $businessContact->getPaymentTerms()->getId()){
-									echo "selected";
-								}
-					            echo'>'.$pt->getName().'</option>';
-					        }
-					        ?>
-					    </select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('IBAN')?></td>
-					<td class="content_row_clear">
-					    <input class="text" style="width:300px" name="iban"
-					    		value="<?=$businessContact->getIban()?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('BIC')?></td>
-					<td class="content_row_clear">
-					    <input class="text" style="width:150px" name="bic"
-					    		value="<?=$businessContact->getBic()?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Rabatt')?></td>
-					<td class="content_row_clear">
-					    <input class="text" style="width:60px" name="discount"
-					    		value="<?=printPrice($businessContact->getDiscount())?>"> %
-					</td>
-				</tr>
-				<? if($businessContact->getLectorId() > 0) { ?>
-				<tr>
-					<td class="content_row_header"><span class="error"><?=$_LANG->get('Lector-Import')?>: </span></td>
-					<td class="content_row_clear">ID: <?=$businessContact->getId()?></td>
-				</tr>
-				<tr>
-					<td class="content_row_header">&nbsp;</td>
-					<td class="content_row_clear">&nbsp;</td>
-				</tr>
-				<?  } ?>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Kreditor-Nr.')?></td>
-					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="kreditor" id="kreditor"
-					    		value="<?=$businessContact->getKreditor()?>">
-						<span class="glyphicons glyphicons-unshare pointer" onclick="generadeCreditorNumber()" title="<?=$_LANG->get('Neue Kreditoren-Nr. erzeugen');?>"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Debitor-Nr.')?></td>
-					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="debitor" id="debitor"
-					    		value="<?=$businessContact->getDebitor()?>">
-						<span class="glyphicons glyphicons-unshare pointer" onclick="generadeDebitorNumber()" title="<?=$_LANG->get('Neue Debitoren-Nr. erzeugen');?>"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Provisionspartner')?></td>
-					<td class="content_row_clear">
-						<input name="has_commissionpartner" id="has_commissionpartner" type="checkbox" value="1"
-							<? if ($businessContact->getCommissionpartner()>0) echo "checked";?>
-							onclick="commi_checkbox()">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" style="display: <? if (!$businessContact->getCommissionpartner()>0) echo 'none';?>" id="commi_title"><?=$_LANG->get('Partner: ')?></td>
-					<td>
-						<select name="commissionpartner" style="display: <? if (!$businessContact->getCommissionpartner()>0) echo 'none';?>" class="text" id="commissionpartner">
-							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-							<? $commissioncontacts = CommissionContact::getAllCommissionContacts(CommissionContact::ORDER_ID, CommissionContact::FILTER_ALL, CommissionContact::LOADER_BASIC);
-							foreach($commissioncontacts as $comcon)
-							{
-								echo '<option value="'.$comcon->getId().'" ';
-								if($businessContact->getCommissionpartner() == $comcon->getId()) echo 'selected="selected"';
-								echo '>'.$comcon->getName1().', '.$comcon->getCity().'</option>';
-							}?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Betreuer Web')?></td>
-					<td class="content_row_clear icon-link">
-                        <select name="supervisor" id="supervisor">
-                        <option value="0"></option>
-                        <?php
-                        foreach ($all_user as $sup_user){
-                            if ($businessContact->getSupervisor()->getId() == $sup_user->getId()){
-                                echo '<option value="'.$sup_user->getId().'" selected>'.$sup_user->getNameAsLine().'</option>';
-                            } else {
-                                echo '<option value="'.$sup_user->getId().'">'.$sup_user->getNameAsLine().'</option>';
-                            }
-                        }
-                        ?>
-                        </select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Tourenmerkmal')?></td>
-					<td class="content_row_clear icon-link">
-					    <input class="text" style="width:100px" name="tourmarker" id="tourmarker"
-					    		value="<?=$businessContact->getTourmarker()?>">
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td>&emsp;</td>
-		</tr>
-	</table>
+							 </div>
+						 </div>
+					</div>
+			  </div>
+		</div>
 	</div>
 
 	<? // -------------------------------- ADRESSEN -------------------------------------------------------?>
 
 	<div id="tabs-2">
-
 	<?if($businessContact->getId()){?>
-		<table width="100%">
-			<colgroup>
-				<col width="300">
-				<col width="300">
-				<col>
-				<col>
-			</colgroup>
+		<div class="panel panel-default">
+			  <div class="panel-heading">
+					<h3 class="panel-title">
+						Adressen
+					</h3>
+			  </div>
 
-			<tr>
-				<td class="content_row_header"> <?php echo $_LANG->get('Rechnungsadresse');?></td>
-				<td class="content_row_clear">&nbsp;</td>
-				<td class="content_row_clear">&nbsp;</td>
-				<td class="content_row_clear" align="right">
-					<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?></span></a>
-				</td>
-			</tr>
-			<?php $addressInvoice = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
-			foreach($addressInvoice as $ai)
-			{
-			?>
-			<tr>
-				<td><? echo $ai->getName1() . ' ' . $ai->getName2();
-				    if ($ai->getDefault() == 1) echo ' (Standard)';?>
-				</td>
-				<td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
-				<td><? echo $ai->getZip()." ".$ai->getCity();?></td>
-				<td class="content_row_clear" align="right">
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
-	        	</td>
-	        </tr>
-	        <?php
-
-			}
-			?>
-		</table>
-	<?}?>
-
-	<?if($businessContact->getId()){?>
-		<table width="100%">
-			<colgroup>
-				<col width="300">
-				<col width="300">
-				<col width="300">
-				<col>
-			</colgroup>
-
-			<tr>
-				<td class="content_row_header"> <?php echo $_LANG->get('Lieferadresse');?></td>
-				<td class="content_row_clear">&nbsp;</td>
-				<td class="content_row_clear">&nbsp;</td>
-				<td class="content_row_clear" align="right">
-					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id=<?=$businessContact->getID()?>" class="icon-link"
-						><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?></span></a>
-				</td>
-			</tr>
-			<?php
-			$addressDelivery = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_DELIV);
-			foreach($addressDelivery as $ad)
-			{
-			?>
-			<tr>
-				<td><? echo $ad->getName1() . ' ' . $ad->getName2();
-				    if ($ad->getDefault() == 1) echo ' (Standard)';?>
-				</td>
-				<td><? echo $ad->getAddress1()." ". $ad->getAddress2();?></td>
-				<td><? echo $ad->getZip()." ".$ad->getCity();?></td>
-				<td class="content_row_clear" align="right">
-					<?/*gln*/?>
-					<img src="images/status/
-					<? if ($ad->getShoprel() == 0){
-							echo "red_small.gif";
-						} else {
-							echo "green_small.gif";
-						}
-					?>" title="<?=$_LANG->get('Shop-Freigabe')?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-	            	<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id_a=<?=$ad->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
-	        	</td>
-	        </tr>
-	        <?php
-			}
-			?>
-		</table>
-	<?}?>
-	</div>
-
-	<? // ------------------------------------- Ansprechpartner ----------------------------------------------?>
-	<div id="tabs-3">
-
-	<?if($businessContact->getId()>0){?>
-		<table width="100%" cellpadding="0" cellspacing="0">
-			<colgroup>
-				<col width="300">
-				<col width="300">
-				<col width="300">
-				<col width="20">
-				<col width="120">
-			</colgroup>
-
-			<tr>
-				<td class="content_row_header"><? echo $_LANG->get('Ansprechpartner');?></td>
-				<td class="content_row_clear">&emsp;</td>
-				<td class="content_row_clear" align="right" colspan="3">
-					<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&id=<?=$businessContact->getID()?>" class="icon-link"
-						><span class="glyphicons glyphicons-plus"><?=$_LANG->get('Ansprechpartner hinzuf&uuml;gen')?></span></a>
-				</td>
-			</tr>
-			<? //$contactPerson = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
-			foreach($contactPersons as $cp){
-			?>
-			<tr <?if($cp->isMainContact())echo 'style="font-weight:bold;"'?>>
-				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
-					valign="top">
-					<?php echo $cp->getNameAsLine(); ?> &ensp; </br>
-					<? if ($cp->getBirthDate()) echo '<span class="glyphicons glyphicons-cake"></span>&nbsp;'.date("d.m.Y", $cp->getBirthDate());?>
-				</td>
-				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"
-					valign="top">
-					<?
-					$contact_attributes = Attribute::getAllAttributesForContactperson();
-					$active_cust_attributes= $cp->getActiveAttributeItemsInput();
-					foreach ($contact_attributes AS $attribute){
-						$tmp_output = "<i>".$attribute->getTitle().":</i> ";
-						$allitems = $attribute->getItems();
-						$j=0;
-						foreach ($allitems AS $item){
-							if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1){
-								$tmp_output .= $item["title"];
-								if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"] != ""){
-								    $tmp_output .= ": '".$active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"]."'";
-								}
-								$tmp_output .= ", ";
-								$j++;
-							}
-						}
-						$tmp_output = substr($tmp_output, 0, -2); // Letztes Komma entfernen
-						if($j>0){
-							echo $tmp_output . "<br/>";
-						}
-					}?> &ensp;
-				</td>
-				<td class="content_row pointer" valign="top"
-					onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'">
-					<? 	if($cp->getActiveAdress() == 1){ echo $cp->getPhone(); }
-						if($cp->getActiveAdress() == 2){ echo $cp->getAlt_phone(); }
-						if($cp->getActiveAdress() == 3){ echo $cp->getPriv_phone(); }
-						if($cp->getEmail()) echo "</br>".$cp->getEmail();
-					?> &ensp;
-				</td>
-				<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>'"> &ensp;</td>
-				<td class="content_row" align="right">
-	            	<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_cp&cpid=<?=$cp->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
-	        	 </td>
-	        </tr>
-	        <?
-			}
-			?>
-		</table>
-	<?}?>
-	<p></p>
-
-	</div>
-	<? // ------------------------------------- Merkmale ----------------------------------------------?>
-		<div id="tabs-5">
-			<table width="100%">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
 					<tr>
-						<td width="200" class="content_header">
-							<img src="glyphicons-188-more.svg">
-							<?=$_LANG->get('Merkmale');?>
-						</td>
-						<td></td>
-						<td width="200" class="content_header" align="right"><?=$savemsg?></td>
+						<th width="25%"><?php echo $_LANG->get('Rechnungsadresse');?></th>
+						<th width="25%">&nbsp;</th>
+						<th width="25%">&nbsp;</th>
+						<th width="25%">
+							<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>';">
+								<span class="glyphicons glyphicons-plus"></span>
+								<?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?>
+							</button>
+						</th>
 					</tr>
-			</table>
-
-			<table width="100%">
-					<colgroup>
-						<col width="180">
-						<col>
-					</colgroup>
-
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
-						<td class="content_row_clear">
-							<select name="language" style="width: 200px"
-									class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-								<? foreach($languages as $l){ ?>
-									<option value="<?=$l->getId()?>"
-										<?if ($businessContact->getLanguage()->getId() == $l->getId()) echo "selected";?>>
-										<?=$l->getName()?>
-									</option>
-								<?}?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
-						<td class="content_row_clear">
-							<select name="client" style="width: 200px" class="text" onfocus="markfield(this,0)"
-									onblur="markfield(this,1)">
-								<option value="<?=$_USER->getClient()->getId()?>" selected>
-									<?if(!$_USER->getClient()->isActive()) echo '<span color="red">';?>
-									<?=$_USER->getClient()->getName()?>
-									<?if(!$_USER->getClient()->isActive()) echo '</span>';?>
-								</option>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="content_row_header" colspan="2">&ensp;</td>
-					</tr>
-					<?foreach ($all_attributes AS $attribute){?>
+					</thead>
+					<?php $addressInvoice = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
+					foreach($addressInvoice as $ai)
+					{
+						?>
+						<tbody>
 						<tr>
-							<td class="content_row_header" valign="top"><?=$attribute->getTitle()?></td>
-							<td class="content_row_clear">
-							<? 	$allitems = $attribute->getItems();?>
-								<table>
-								<?	$x=0;
-									foreach ($allitems AS $item){
-										if ($x%5 == 0) echo "<tr>";
-										echo '<td width="200px">';
-										echo '<input name="attribute_item_check_'.$attribute->getId().'_'.$item["id"].'" ';
-										echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
-												if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
-										echo ">";
-										echo $item["title"];
-										if ($item["input"] == 1)
-										{
-										    echo ' <input name="attribute_item_input_'.$attribute->getId().'_'.$item["id"].'" ';
-										    echo ' value="';
-										    echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
-										    echo '" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-										}
-										echo "</td>";
-										if ($x%5 == 4) echo "</tr>";
-								 		$x++;
-									}?>
-								</table>
+							<td><? echo $ai->getName1() . ' ' . $ai->getName2();
+								if ($ai->getDefault() == 1) echo ' (Standard)';?>
+							</td>
+							<td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
+							<td><? echo $ai->getZip()." ".$ai->getCity();?></td>
+							<td>
+								<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 							</td>
 						</tr>
-					<?}?>
+						</tbody>
+						<?php
+
+					}
+					?>
 				</table>
+			</div>
+			<?}?>
+
+			<? if ($businessContact->getId()) { ?>
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th width="25%"><?php echo $_LANG->get('Lieferadresse');?></th>
+							<th width="25%">&nbsp;</th>
+							<th width="25%">&nbsp;</th>
+							<th width="25%">
+								<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>';">
+									<span class="glyphicons glyphicons-plus"></span>
+									<?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?>
+								</button>
+							</th>
+						</tr>
+						</thead>
+						<?php
+						$addressDelivery = Address::getAllAddresses($businessContact, Address::ORDER_NAME, Address::FILTER_DELIV);
+						foreach ($addressDelivery as $ad) {
+							?>
+							<tbody>
+							<tr>
+								<td><? echo $ad->getName1() . ' ' . $ad->getName2();
+									if ($ad->getDefault() == 1) echo ' (Standard)'; ?>
+								</td>
+								<td><? echo $ad->getAddress1() . " " . $ad->getAddress2(); ?></td>
+								<td><? echo $ad->getZip() . " " . $ad->getCity(); ?></td>
+								<td>
+									<?/*gln*/
+									?>
+									<img src="images/status/
+					<? if ($ad->getShoprel() == 0) {
+										echo "red_small.gif";
+									} else {
+										echo "green_small.gif";
+									}
+									?>" title="<?= $_LANG->get('Shop-Freigabe') ?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+									<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_ad&id_a=<?= $ad->getId() ?>&id=<?= $businessContact->getID() ?>"><span
+											class="glyphicons glyphicons-pencil"></span></a>
+								</td>
+							</tr>
+							</tbody>
+
+							<?php
+						}
+						?>
+					</table>
+				</div>
+			<? } ?>
+		</div>
+	</div>
+
+		<? // ------------------------------------- Ansprechpartner ----------------------------------------------?>
+		<div id="tabs-3">
+			<? if ($businessContact->getId() > 0) { ?>
+				<div class="panel panel-default">
+					  <div class="panel-heading">
+							<h3 class="panel-title">
+								Ansprechpartner
+								<span class="pull-right">
+									<button class="btn btn-xs btn-success" type="button"
+											onclick="document.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_cp&id=<?= $businessContact->getID() ?>';">
+										<span class="glyphicons glyphicons-plus"></span>
+										<?= $_LANG->get('Ansprechpartner hinzuf&uuml;gen') ?>
+									</button>
+								</span>
+							</h3>
+					  </div>
+
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+							<tr>
+							</tr>
+							</thead>
+							<? //$contactPerson = ContactPerson::getAllContactPersons($businessContact,ContactPerson::ORDER_NAME);
+							foreach ($contactPersons as $cp) {
+								?>
+								<tbody>
+								<tr <? if ($cp->isMainContact()) echo 'style="font-weight:bold;"' ?>>
+									<td class="content_row pointer"
+										onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_cp&cpid=<?= $cp->getId() ?>&id=<?= $businessContact->getID() ?>'"
+										valign="top">
+										<?php echo $cp->getNameAsLine(); ?> &ensp; </br>
+										<? if ($cp->getBirthDate()) echo '<span class="glyphicons glyphicons-cake"></span>&nbsp;' . date("d.m.Y", $cp->getBirthDate()); ?>
+									</td>
+									<td class="content_row pointer"
+										onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_cp&cpid=<?= $cp->getId() ?>&id=<?= $businessContact->getID() ?>'"
+										valign="top">
+										<?
+										$contact_attributes = Attribute::getAllAttributesForContactperson();
+										$active_cust_attributes = $cp->getActiveAttributeItemsInput();
+										foreach ($contact_attributes AS $attribute) {
+											$tmp_output = "<i>" . $attribute->getTitle() . ":</i> ";
+											$allitems = $attribute->getItems();
+											$j = 0;
+											foreach ($allitems AS $item) {
+												if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) {
+													$tmp_output .= $item["title"];
+													if ($active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"] != "") {
+														$tmp_output .= ": '" . $active_cust_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"] . "'";
+													}
+													$tmp_output .= ", ";
+													$j++;
+												}
+											}
+											$tmp_output = substr($tmp_output, 0, -2); // Letztes Komma entfernen
+											if ($j > 0) {
+												echo $tmp_output . "<br/>";
+											}
+										} ?> &ensp;
+									</td>
+									<td class="content_row pointer" valign="top"
+										onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_cp&cpid=<?= $cp->getId() ?>&id=<?= $businessContact->getID() ?>'">
+										<? if ($cp->getActiveAdress() == 1) {
+											echo $cp->getPhone();
+										}
+										if ($cp->getActiveAdress() == 2) {
+											echo $cp->getAlt_phone();
+										}
+										if ($cp->getActiveAdress() == 3) {
+											echo $cp->getPriv_phone();
+										}
+										if ($cp->getEmail()) echo "</br>" . $cp->getEmail();
+										?> &ensp;
+									</td>
+									<td class="content_row pointer"
+										onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_cp&cpid=<?= $cp->getId() ?>&id=<?= $businessContact->getID() ?>'"> &ensp;</td>
+									<td class="content_row" align="right">
+										<a class="icon-link"
+										   href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_cp&cpid=<?= $cp->getId() ?>&id=<?= $businessContact->getID() ?>"><span
+												class="glyphicons glyphicons-pencil"></span></a>
+									</td>
+								</tr>
+								</tbody>
+								<?
+							}
+							?>
+						</table>
+					</div>
+					<? } ?>
+				</div>
 			<p></p>
+		</div>
+	<? // ------------------------------------- Merkmale ----------------------------------------------?>
+		<div id="tabs-5">
+			<div class="form-horizontal">
+				<div class="panel panel-default">
+					  <div class="panel-heading">
+							<h3 class="panel-title">
+								Merkmale
+							</h3>
+					  </div>
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+							<tr>
+								<th></th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><?= $_LANG->get('Sprache') ?></td>
+								<td>
+									<div class="col-md-4">
+										<select name="language" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+											<? foreach ($languages as $l) { ?>
+												<option value="<?= $l->getId() ?>"
+													<? if ($businessContact->getLanguage()->getId() == $l->getId()) echo "selected"; ?>>
+													<?= $l->getName() ?>
+												</option>
+											<? } ?>
+										</select>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td><?= $_LANG->get('Mandant') ?></td>
+								<td>
+									<div class="col-md-4">
+										<select name="client" class="form-control" onfocus="markfield(this,0)"
+												onblur="markfield(this,1)">
+											<option value="<?= $_USER->getClient()->getId() ?>" selected>
+												<? if (!$_USER->getClient()->isActive()) echo '<span color="red">'; ?>
+												<?= $_USER->getClient()->getName() ?>
+												<? if (!$_USER->getClient()->isActive()) echo '</span>'; ?>
+											</option>
+										</select>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">&ensp;</td>
+							</tr>
+							<? foreach ($all_attributes AS $attribute) { ?>
+								<tr>
+									<td valign="top"><?= $attribute->getTitle() ?></td>
+									<td>
+										<? $allitems = $attribute->getItems(); ?>
+										<table>
+											<? $x = 0;
+											foreach ($allitems AS $item) {
+												if ($x % 5 == 0) echo "<tr>";
+												echo '<td width="200px">';
+												echo '<input name="attribute_item_check_' . $attribute->getId() . '_' . $item["id"] . '" ';
+												echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
+												if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
+												echo ">";
+												echo $item["title"];
+												if ($item["input"] == 1) {
+													echo ' <input name="attribute_item_input_' . $attribute->getId() . '_' . $item["id"] . '" ';
+													echo ' value="';
+													echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
+													echo '" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+												}
+												echo "</td>";
+												if ($x % 5 == 4) echo "</tr>";
+												$x++;
+											} ?>
+										</table>
+									</td>
+								</tr>
+							<? } ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<p></p>
+			</div>
 		</div>
 
 		<? // ------------------------------------- verbundene Tickets ----------------------------------------------?>
@@ -1293,32 +1284,41 @@ echo $quickmove->generate();
 
 		<div id="tabs-8">
 		<?if($businessContact->getId()){?>
-			<table id="table_positiontitles" width="100%">
-					<tr>
-						<td width="280" class="content_header">
-							<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-							<?=$_LANG->get('Personalisierung (Positions Titel)');?>
-							<span class="glyphicons glyphicons-plus pointer" onclick="addTitlePosition()"></span>
-						</td>
-						<td></td>
-						<td width="120" class="content_header" align="right">&ensp;</td>
-					</tr>
-					<?
-					if (count($businessContact->getPositionTitles()) > 0 ) {
-						$i = 0;
-						foreach($businessContact->getPositionTitles() as $position_title)
-						{?>
-							<tr id="tr_positiontitle_<?=$i?>">
-								<td colspan="3">
-									<input type="text" value="<?=$position_title?>" style="width:350px" name="position_titles[]"><span class="glyphicons glyphicons-remove pointer" onclick="removeTitlePosition(this)"></span>
-								</td>
+			<div class="form-horizontal">
+				<div class="panel panel-default">
+					  <div class="panel-heading">
+							<h3 class="panel-title">
+								Personalisierung (Positions Titel)
+								<span class="glyphicons glyphicons-plus pointer" onclick="addTitlePosition()"></span>
+							</h3>
+					  </div>
+					<div class="table-responsive">
+						<table id="table_positiontitles" class="table table-hover">
+							<thead>
+							<tr>
 							</tr>
-						<?$i++; }
-					}
-					?>
-			</table>
-			<input type="hidden" value="<?=$i?>" name="position_titles_count" id="position_titles_count">
-		<? } ?>
+							</thead>
+							<tbody>
+							<?
+							if (count($businessContact->getPositionTitles()) > 0 ) {
+								$i = 0;
+								foreach($businessContact->getPositionTitles() as $position_title)
+								{?>
+									<tr id="tr_positiontitle_<?=$i?>">
+										<td colspan="3">
+											<input type="text" value="<?=$position_title?>" class="form-control" name="position_titles[]"><span class="glyphicons glyphicons-remove pointer" onclick="removeTitlePosition(this)"></span>
+										</td>
+									</tr>
+									<?$i++; }
+							}
+							?>
+							</tbody>
+							<input type="hidden" value="<?=$i?>" name="position_titles_count" id="position_titles_count">
+						</table>
+						<? } ?>
+					</div>
+				</div>
+			</div>
 		</div>
 </form>
 
@@ -1358,25 +1358,37 @@ echo $quickmove->generate();
 		<? // ------------------------------------- Notizen ----------------------------------------------?>
 
 		<div id="tabs-12">
-		<?if($businessContact->getId()){?>
-            <h4>Notizen</h4>
-            <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
-            <span <span class="glyphicons glyphicons-plus pointer" style="float:right;" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">Neu</span></span>
-            <?php }?>
-			<table id="comment_table" width="100%" cellpadding="0"
-				cellspacing="0" class="stripe hover row-border order-column">
-				<thead>
+			<?if($businessContact->getId()){?>
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+							Notizen
+							<span class="pull-right">
+				<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
+								<button class="btn btn-xs btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">
+									<span class="glyphicons glyphicons-plus"></span>
+									<?= $_LANG->get('Neu') ?>
+								</button>
+				<?php }?>
+							</span>
+						</h3>
+				  </div>
+				<br>
+				<table id="comment_table" width="100%" cellpadding="0"
+					   cellspacing="0" class="stripe hover row-border order-column">
+					<thead>
 					<tr>
-        				<th></th>
-        				<th><?=$_LANG->get('ID')?></th>
-        				<th><?=$_LANG->get('Titel')?></th>
-        				<th><?=$_LANG->get('erst. von')?></th>
-        				<th><?=$_LANG->get('Datum')?></th>
-        				<th><?=$_LANG->get('Sichtbarkeit')?></th>
+						<th></th>
+						<th><?=$_LANG->get('ID')?></th>
+						<th><?=$_LANG->get('Titel')?></th>
+						<th><?=$_LANG->get('erst. von')?></th>
+						<th><?=$_LANG->get('Datum')?></th>
+						<th><?=$_LANG->get('Sichtbarkeit')?></th>
 					</tr>
-				</thead>
-			</table>
-		<?php }?>
+					</thead>
+				</table>
+				<?php }?>
+			</div>
 		</div>
 
 	<? // ------------------------------------- Navigations und Speicher Buttons ------------------------------------?>

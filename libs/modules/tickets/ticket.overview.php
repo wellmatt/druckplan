@@ -454,85 +454,54 @@ function TicketTableRefresh()
 			</div>
 			<div class="panel-body">
 				<div class="form-horizontal">
-					 <div class="row">
-
-						 <div class="col-md-6">
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-4 control-label">Datum (erstellt)</label>
-								 <div class="col-sm-4">
-									 <input name="ajax_date_min" id="ajax_date_min"
-											type="hidden" <?php if ($_SESSION['tkt_date_min']) echo 'value="' . $_SESSION['tkt_date_min'] . '"'; ?> />
-									 <input name="date_min" id="date_min"
-											 <?php if ($_SESSION['tkt_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_min']) . '"'; ?>
-											class="form-control"
-											onfocus="markfield(this,0)" onblur="markfield(this,1)"
-											title="<?= $_LANG->get('von'); ?>">
-								 </div>
-							 </div>
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-4 control-label">Datum (fällig)</label>
-								 <div class="col-sm-4">
-									 <input name="ajax_date_due_min" id="ajax_date_due_min"
-											type="hidden" <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . $_SESSION['tkt_date_due_min'] . '"'; ?> />
-									 <input name="date_due_min" id="date_due_min"
-											 <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_min']) . '"'; ?>
-											class="form-control"
-											onfocus="markfield(this,0)" onblur="markfield(this,1)"
-											title="<?= $_LANG->get('von'); ?>">
-								 </div>
-							 </div>
-
-						 </div>
-
-						 <div class="col-md-6">
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-3 control-label">Bis:</label>
-								 <div class="col-sm-4">
-									 <input name="ajax_date_max" id="ajax_date_max"
-											type="hidden" <?php if ($_SESSION['tkt_date_max']) echo 'value="' . $_SESSION['tkt_date_max'] . '"'; ?> />
-									 <input name="date_max" id="date_max"
-												  <?php if ($_SESSION['tkt_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_max']) . '"'; ?>
-												 class="form-control"
-												 onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												 title="<?= $_LANG->get('bis'); ?>">
-								 </div>
-							 </div>
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-3 control-label">Bis:</label>
-								 <div class="col-sm-4">
-									 <input name="ajax_date_due_max" id="ajax_date_due_max"
-											type="hidden" <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . $_SESSION['tkt_date_due_max'] . '"'; ?> />
-									<input name="date_due_max" id="date_due_max"
-												 <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_max']) . '"'; ?>
-												 class="form-control"
-												 onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												 title="<?= $_LANG->get('bis'); ?>">
-								 </div>
-							 </div>
-						 </div>
-					 </div>
-
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
+						<div class="col-sm-4">
+							<input name="ajax_date_min" id="ajax_date_min"
+								   type="hidden" <?php if ($_SESSION['tkt_date_min']) echo 'value="' . $_SESSION['tkt_date_min'] . '"'; ?> />
+							<input name="date_min" id="date_min"
+								<?php if ($_SESSION['tkt_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_min']) . '"'; ?> class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+						<label for="" class="col-sm-2 control-label">Bis:</label>
+						<div class="col-sm-4">
+							<input name="ajax_date_max" id="ajax_date_max"
+								   type="hidden" <?php if ($_SESSION['tkt_date_max']) echo 'value="' . $_SESSION['tkt_date_max'] . '"'; ?> />
+							<input name="date_max" id="date_max"
+								<?php if ($_SESSION['tkt_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_max']) . '"'; ?> class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Datum (fällig)</label>
+						<div class="col-sm-4">
+							<input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden" <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . $_SESSION['tkt_date_due_min'] . '"'; ?> />
+							<input name="date_due_min" id="date_due_min"
+								<?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_min']) . '"'; ?> class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+						<label for="" class="col-sm-2 control-label">Bis:</label>
+						<div class="col-sm-4">
+							<input name="ajax_date_due_max" id="ajax_date_due_max"
+								   type="hidden" <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . $_SESSION['tkt_date_due_max'] . '"'; ?> />
+							<input name="date_due_max" id="date_due_max"
+								<?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_max']) . '"'; ?> class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Suche</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input type="text" id="ticketsearch" class="form-control" placeholder="">
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kunde</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input type="text" id="custsearch" name="custsearch" class="form-control"><input type="hidden" id="custsearch_id">
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kategorie</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input name="ajax_category" id="ajax_category"
 								   type="hidden" <?php if ($_SESSION['tkt_ajax_category']) echo ' value="' . $_SESSION['tkt_ajax_category'] . '" '; ?>/>
 							<select name="category" id="category" class="form-control">
@@ -556,7 +525,7 @@ function TicketTableRefresh()
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Status</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input name="ajax_state" id="ajax_state"
 								   type="hidden" <?php if ($_SESSION['tkt_ajax_state']) echo ' value="' . $_SESSION['tkt_ajax_state'] . '" '; ?>/>
 							<select name="state" id="state" class="form-control">
@@ -579,7 +548,7 @@ function TicketTableRefresh()
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">erst.von</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input name="ajax_crtuser" id="ajax_crtuser"
 								   type="hidden" <?php if ($_SESSION['tkt_ajax_crtuser']) echo ' value="' . $_SESSION['tkt_ajax_crtuser'] . '" '; ?>/>
 							<select name="crtuser" id="crtuser" class="form-control">
@@ -601,7 +570,7 @@ function TicketTableRefresh()
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">zugewiesen an</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input name="ajax_assigned" id="ajax_assigned"
 								   type="hidden" <?php if ($_SESSION['tkt_ajax_assigned']) echo ' value="' . $_SESSION['tkt_ajax_assigned'] . '" '; ?>/>
 							<select name="assigned" id="assigned" class="form-control">
@@ -635,7 +604,7 @@ function TicketTableRefresh()
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Tourenmerkmal</label>
-						<div class="col-sm-7">
+						<div class="col-sm-10">
 							<input name="ajax_tourmarker" id="ajax_tourmarker" class="form-control"
 								   type="text" <?php if ($_SESSION['tkt_ajax_tourmarker']) echo ' value="' . $_SESSION['tkt_ajax_tourmarker'] . '" '; ?>/>
 						</div>

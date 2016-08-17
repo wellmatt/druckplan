@@ -146,9 +146,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
             	$('#ticketstable').dataTable().fnDraw();
@@ -159,9 +159,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
             	$('#ticketstable').dataTable().fnDraw();
@@ -172,9 +172,9 @@ $(document).ready(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-	            showOn: "button",
-	            buttonImage: "images/icons/calendar-blue.png",
-	            buttonImageOnly: true,
+//	            showOn: "button",
+//	            buttonImage: "images/icons/calendar-blue.png",
+//	            buttonImageOnly: true,
 	            onSelect: function(selectedDate) {
 	                $('#ajax_date_due_min').val(moment($('#date_due_min').val(), "DD-MM-YYYY").unix());
 	            	$('#ticketstable').dataTable().fnDraw();
@@ -185,9 +185,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_due_max').val(moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340);
             	$('#ticketstable').dataTable().fnDraw();
@@ -256,171 +256,269 @@ $(document).ready(function() {
 	
 } );
 </script>
-
-<table width="100%">
-	<tr>
-		<td width="150" class="content_header">
+<?php
+if ($from_busicon){
+    $tmp_bc = new BusinessContact((int)$contactID);
+    $main_contact = ContactPerson::getMainContact($tmp_bc);
+    if ($tmp_bc->getId()>0 && $main_contact->getId()>0)
+        $link = 'index.php?page=libs/modules/tickets/ticket.php&exec=new&customer='.$tmp_bc->getId().'&contactperson='.$main_contact->getId().'';
+    else
+        $link = 'index.php?page=libs/modules/tickets/ticket.php&exec=new"';
+} else {
+    $link = 'index.php?page=libs/modules/tickets/ticket.php&exec=new"';
+}
+?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
             <span class="glyphicons glyphicons-ipad"></span>
-			<span style="font-size: 13px"><?=$_LANG->get('Verknüpfte Tickets')?></span>
-		</td>
-		<td width="250" class="content_header" align="right">
-		<?=$savemsg?>
-		</td>
-		<td class="content_header" align="right">
-          <?php 
-    	  if ($from_busicon){
-    	      $tmp_bc = new BusinessContact((int)$contactID);
-    	      $main_contact = ContactPerson::getMainContact($tmp_bc);
-    	      if ($tmp_bc->getId()>0 && $main_contact->getId()>0)
-    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new&customer='.$tmp_bc->getId().'&contactperson='.$main_contact->getId().'" class="icon-link"><span class="glyphicons glyphicons-ticket"></span> ';
-    	      else
-    	          echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><span class="glyphicons glyphicons-ticket"></span> ';
-    	  } else {
-    	      echo '<a href="index.php?page=libs/modules/tickets/ticket.php&exec=new" class="icon-link"><span class="glyphicons glyphicons-ticket"></span>';
-    	  }
-          ?>
-		  <span style="font-size: 13px"><?=$_LANG->get('Ticket erstellen')?></span></a>
-		</td>
-	</tr>
-</table>
-
-
-<br/>
-<div class="box1">
-
-    <div class="box2">
-        <table>
-            <tr align="left">
-                <td>Datum (erstellt):&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>  
-                    <input name="date_min" id="date_min" style="width:70px;" class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                </td>
-                <td valign="left">
-                    <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>  
-                    bis: <input name="date_max" id="date_max" style="width:70px;" class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                </td>
-            </tr>
-            <tr align="left">
-                <td>Datum (fällig):&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>  
-                    <input name="date_due_min" id="date_due_min" style="width:70px;" class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                </td>
-                <td valign="left">
-                    <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>  
-                    bis: <input name="date_due_max" id="date_due_max" style="width:70px;" class="text" 
-                    onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                </td>
-            </tr>
-            <tr align="left">
-                <td>Kategorie:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_category" id="ajax_category" type="hidden"/>  
-                    <select name="category" id="category" style="width:160px">
-                        <option value=""></option> 
-                        <?php 
-                        $tkt_all_categories = TicketCategory::getAllCategories();
-                        foreach ($tkt_all_categories as $tkt_category){
-                            if ($tkt_category->cansee())
-                            {
-                                echo '<option value="'.$tkt_category->getId().'"';
-                                echo '>'.$tkt_category->getTitle().'</option>';
-                            }
-                        }
-                        ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td>Status:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_state" id="ajax_state" type="hidden"/>  
-                    <select name="state" id="state" style="width:160px">
-                    <option value="" selected></option> 
-                    <?php 
-                    $tkt_all_states = TicketState::getAllStates();
-                    foreach ($tkt_all_states as $tkt_state){
-                        if ($tkt_state->getId() != 1){
-                            echo '<option value="'.$tkt_state->getId().'"';
-                            echo '>'.$tkt_state->getTitle().'</option>';
-                        }
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td>erst. von:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_crtuser" id="ajax_crtuser" type="hidden"/>  
-                    <select name="crtuser" id="crtuser" style="width:160px">
-                    <option value="" selected></option> 
-                    <?php 
-                    $all_user = User::getAllUser(User::ORDER_NAME);
-                    foreach ($all_user as $tkt_user){
-                        echo '<option value="'.$tkt_user->getId().'"';
-                        echo '>'.$tkt_user->getNameAsLine().'</option>';
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td>zugewiesen an:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_assigned" id="ajax_assigned" type="hidden"/>  
-                    <select name="assigned" id="assigned" style="width:160px">
-                    <option value="" selected></option> 
-                    <option disabled>-- Users --</option>
-                    <?php 
-                    $all_user = User::getAllUser(User::ORDER_NAME);
-                    $all_groups = Group::getAllGroups(Group::ORDER_NAME);
-                    foreach ($all_user as $tkt_user){
-                        echo '<option value="u_'.$tkt_user->getId().'"';
-                        echo '>'.$tkt_user->getNameAsLine().'</option>';
-                    }
-                    ?>
-                    <option disabled>-- Groups --</option>
-                    <?php 
-                    foreach ($all_groups as $tkt_groups){
-                        echo '<option value="g_'.$tkt_groups->getId().'"';
-                        echo '>'.$tkt_groups->getName().'</option>';
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr align="left">
-                <td>zeige geschlossene:&nbsp;&nbsp;</td>
-                <td valign="left">
-                    <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
-                    <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
-                </td>
-            </tr>
-            </br>
-        </table>
+            Verknüpfte Tickets
+                <span class="pull-right">
+                    <?= $savemsg ?>
+                    <button class="btn btn-xs btn-success" type="button"
+                            onclick="document.location.href='<?php echo $link; ?>';">
+                        <span class="glyphicons glyphicons-ticket"></span>
+                        <?= $_LANG->get('Ticket erstellen') ?>
+                    </button>
+                </span>
+        </h3>
     </div>
-    </br>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Filter</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
+                        <div class="col-sm-4">
+                            <input name="ajax_date_min" id="ajax_date_min"
+                                   type="hidden" <?php if ($_SESSION['tkt_date_min']) echo 'value="' . $_SESSION['tkt_date_min'] . '"'; ?> />
+                            <input name="date_min" id="date_min"
+                                <?php if ($_SESSION['tkt_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_min']) . '"'; ?>
+                                   class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                        <label for="" class="col-sm-2 control-label">Bis:</label>
+                        <div class="col-sm-4">
+                            <input name="ajax_date_max" id="ajax_date_max"
+                                   type="hidden" <?php if ($_SESSION['tkt_date_max']) echo 'value="' . $_SESSION['tkt_date_max'] . '"'; ?> />
+                            <input name="date_max" id="date_max"
+                                <?php if ($_SESSION['tkt_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_max']) . '"'; ?>
+                                   class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Datum (fällig)</label>
+                        <div class="col-sm-4">
+                            <input name="ajax_date_due_min" id="ajax_date_due_min"
+                                   type="hidden" <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . $_SESSION['tkt_date_due_min'] . '"'; ?> />
+                            <input name="date_due_min" id="date_due_min"
+                                <?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_min']) . '"'; ?>
+                                   class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                        <label for="" class="col-sm-2 control-label">Bis:</label>
+                        <div class="col-sm-4">
+                            <input name="ajax_date_due_max" id="ajax_date_due_max"
+                                   type="hidden" <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . $_SESSION['tkt_date_due_max'] . '"'; ?> />
+                            <input name="date_due_max" id="date_due_max"
+                                <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_max']) . '"'; ?>
+                                   class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Kategorie</label>
+                        <div class="col-sm-10">
+                            <input name="ajax_category" id="ajax_category"
+                                   type="hidden" <?php if ($_SESSION['tkt_ajax_category']) echo ' value="' . $_SESSION['tkt_ajax_category'] . '" '; ?>/>
+                            <select name="category" id="category" class="form-control">
+                                <option
+                                    value="" <?php if (!$_SESSION['tkt_ajax_category']) echo ' selected '; ?>></option>
+                                <?php
+                                $tkt_all_categories = TicketCategory::getAllCategories();
+                                foreach ($tkt_all_categories as $tkt_category) {
+                                    if ($tkt_category->cansee()) {
+                                        echo '<option value="' . $tkt_category->getId() . '"';
+                                        if ($_SESSION['tkt_ajax_category'] == $tkt_category->getId()) {
+                                            echo ' selected ';
+                                        }
+                                        echo '>' . $tkt_category->getTitle() . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
 
-	<table id="ticketstable" width="100%" cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('#')?></th>
-                <th><?=$_LANG->get('Kategorie')?></th>
-                <th><?=$_LANG->get('Datum')?></th>
-                <th><?=$_LANG->get('erst. von')?></th>
-                <th><?=$_LANG->get('Fällig')?></th>
-                <th><?=$_LANG->get('Betreff')?></th>
-                <th><?=$_LANG->get('Status')?></th>
-                <th><?=$_LANG->get('Von')?></th>
-                <th><?=$_LANG->get('Priorität')?></th>
-                <th><?=$_LANG->get('Zugewiesen an')?></th>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Status</label>
+                        <div class="col-sm-10">
+                            <input name="ajax_state" id="ajax_state"
+                                   type="hidden" <?php if ($_SESSION['tkt_ajax_state']) echo ' value="' . $_SESSION['tkt_ajax_state'] . '" '; ?>/>
+                            <select name="state" id="state" class="form-control">
+                                <option value="" <?php if (!$_SESSION['tkt_ajax_state']) echo ' selected '; ?>></option>
+                                <?php
+                                $tkt_all_states = TicketState::getAllStates();
+                                foreach ($tkt_all_states as $tkt_state) {
+                                    if ($tkt_state->getId() != 1) {
+                                        echo '<option value="' . $tkt_state->getId() . '"';
+                                        if ($_SESSION['tkt_ajax_state'] == $tkt_state->getId()) {
+                                            echo ' selected ';
+                                        }
+                                        echo '>' . $tkt_state->getTitle() . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">erst.von</label>
+                        <div class="col-sm-10">
+                            <input name="ajax_crtuser" id="ajax_crtuser"
+                                   type="hidden" <?php if ($_SESSION['tkt_ajax_crtuser']) echo ' value="' . $_SESSION['tkt_ajax_crtuser'] . '" '; ?>/>
+                            <select name="crtuser" id="crtuser" class="form-control">
+                                <option
+                                    value="" <?php if (!$_SESSION['tkt_ajax_crtuser']) echo ' selected '; ?>></option>
+                                <?php
+                                $all_user = User::getAllUser(User::ORDER_NAME);
+                                foreach ($all_user as $tkt_user) {
+                                    echo '<option value="' . $tkt_user->getId() . '"';
+                                    if ($_SESSION['tkt_ajax_crtuser'] == $tkt_user->getId()) {
+                                        echo ' selected ';
+                                    }
+                                    echo '>' . $tkt_user->getNameAsLine() . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">zugewiesen an</label>
+                        <div class="col-sm-10">
+                            <input name="ajax_assigned" id="ajax_assigned"
+                                   type="hidden" <?php if ($_SESSION['tkt_ajax_assigned']) echo ' value="' . $_SESSION['tkt_ajax_assigned'] . '" '; ?>/>
+                            <select name="assigned" id="assigned" class="form-control">
+                                <option
+                                    value="" <?php if (!$_SESSION['tkt_ajax_assigned']) echo ' selected '; ?>></option>
+                                <option disabled>-- Users --</option>
+                                <?php
+                                $all_user = User::getAllUser(User::ORDER_NAME);
+                                $all_groups = Group::getAllGroups(Group::ORDER_NAME);
+                                foreach ($all_user as $tkt_user) {
+                                    echo '<option value="u_' . $tkt_user->getId() . '"';
+                                    if ($_SESSION['tkt_ajax_assigned'] == 'u_' . $tkt_user->getId()) {
+                                        echo ' selected ';
+                                    }
+                                    echo '>' . $tkt_user->getNameAsLine() . '</option>';
+                                }
+                                ?>
+                                <option disabled>-- Groups --</option>
+                                <?php
+                                foreach ($all_groups as $tkt_groups) {
+                                    echo '<option value="g_' . $tkt_groups->getId() . '"';
+                                    if ($_SESSION['tkt_ajax_assigned'] == 'g_' . $tkt_groups->getId()) {
+                                        echo ' selected ';
+                                    }
+                                    echo '>' . $tkt_groups->getName() . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">zeige geschlossene</label>
+                                <div class="col-sm-2">
+                                    <input name="ajax_showclosed" id="ajax_showclosed" class="form-control"
+                                           type="hidden" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' value="' . $_SESSION['tkt_ajax_showclosed'] . '" '; ?>/>
+                                    <input name="showclosed" id="showclosed" type="checkbox" class="form-control"
+                                           value="1" <?php if ($_SESSION['tkt_ajax_showclosed']) echo ' checked '; ?>/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table>
+                        <tr align="left"
+                            id="tr_cl_dates" <?php if (!$_SESSION['tkt_ajax_showclosed']) echo ' style="display: none" '; ?>>
+                            <td>Datum (geschlossen):&nbsp;&nbsp;</td>
+                            <td valign="left">
+                                <input name="ajax_cl_date_min" id="ajax_cl_date_min"
+                                       type="hidden" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . $_SESSION['tkt_cl_date_min'] . '"'; ?> />
+                                <input name="date_cl_min" id="date_cl_min"
+                                       style="width:70px;" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_min']) . '"'; ?>
+                                       class="text"
+                                       onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                                       title="<?= $_LANG->get('von'); ?>">&nbsp;&nbsp;
+                            </td>
+                            <td valign="left">
+                                <input name="ajax_cl_date_max" id="ajax_cl_date_max"
+                                       type="hidden" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . $_SESSION['tkt_cl_date_max'] . '"'; ?> />
+                                bis: <input name="date_cl_max" id="date_cl_max"
+                                            style="width:70px;" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_max']) . '"'; ?>
+                                            class="text"
+                                            onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                                            title="<?= $_LANG->get('bis'); ?>">&nbsp;&nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <table>
+            <tr align="left"
+                id="tr_cl_dates" <?php if (!$_SESSION['tkt_ajax_showclosed']) echo ' style="display: none" '; ?>>
+                <td>Datum (geschlossen):&nbsp;&nbsp;</td>
+                <td valign="left">
+                    <input name="ajax_cl_date_min" id="ajax_cl_date_min"
+                           type="hidden" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . $_SESSION['tkt_cl_date_min'] . '"'; ?> />
+                    <input name="date_cl_min" id="date_cl_min"
+                           style="width:70px;" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_min']) . '"'; ?>
+                           class="text"
+                           onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                           title="<?= $_LANG->get('von'); ?>">&nbsp;&nbsp;
+                </td>
+                <td valign="left">
+                    <input name="ajax_cl_date_max" id="ajax_cl_date_max"
+                           type="hidden" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . $_SESSION['tkt_cl_date_max'] . '"'; ?> />
+                    bis: <input name="date_cl_max" id="date_cl_max"
+                                style="width:70px;" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_max']) . '"'; ?>
+                                class="text"
+                                onfocus="markfield(this,0)" onblur="markfield(this,1)"
+                                title="<?= $_LANG->get('bis'); ?>">&nbsp;&nbsp;
+                </td>
             </tr>
-        </thead>
-	</table>
+        </table>
+        <div class="table-responsive">
+            <table id="ticketstable" width="100%" cellpadding="0" cellspacing="0" class="table table-hover">
+                <thead>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('#') ?></th>
+                    <th><?= $_LANG->get('Kategorie') ?></th>
+                    <th><?= $_LANG->get('Datum') ?></th>
+                    <th><?= $_LANG->get('erst. von') ?></th>
+                    <th><?= $_LANG->get('Fällig') ?></th>
+                    <th><?= $_LANG->get('Betreff') ?></th>
+                    <th><?= $_LANG->get('Status') ?></th>
+                    <th><?= $_LANG->get('Von') ?></th>
+                    <th><?= $_LANG->get('Priorität') ?></th>
+                    <th><?= $_LANG->get('Zugewiesen an') ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
