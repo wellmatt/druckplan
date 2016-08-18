@@ -79,9 +79,25 @@ $all_active_attributes = $colinv->getActiveAttributeItemsInput();
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
+
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/menu.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/main.print.css" media="print"/>
+
+<!-- MegaNavbar -->
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- /MegaNavbar -->
 
 
 <!-- jQuery -->

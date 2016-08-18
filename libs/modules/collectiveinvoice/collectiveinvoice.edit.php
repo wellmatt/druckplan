@@ -926,7 +926,6 @@ echo $quickmove->generate();
 							<th>Typ</th>
 							<th>Beschreibung</th>
 							<th>Menge</th>
-							<th></th>
 							<th>Preis</th>
 							<th>Steuer</th>
 							<th>Betrag</th>
@@ -1009,13 +1008,12 @@ echo $quickmove->generate();
 											echo '<input name="orderpos['.$i.'][quantity]" id="orderpos_quantity_'.$i.'" value="'.printPrice($position->getQuantity(),2).'" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 										}
 										?>
+										<span class="input-group-addon">
+											<span class="glyphicons glyphicons-refresh pointer" id="orderpos_uptpricebutton_<?=$i?>"
+												 onclick="updateArticlePrice(<?=$i?>)" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>"
+												<?if($position->getType() == 3) echo 'style="display:none"';?>></span>
+										</span>
 										</div>
-									</td>
-									<td>
-										<button class="btn btn-default btn-neutral" id="orderpos_uptpricebutton_<?=$i?>" title="<?=$_LANG->get('Staffelpreis aktualisieren')?>" onclick="updateArticlePrice(<?=$i?>)">
-											<span class="glyphicons glyphicons-refresh pointer"></span>
-											<?if($position->getType() == 3) echo 'style="display:none"';?>
-										</button>
 									</td>
 									<td valign="top">
 										<div class="input-group" style="width: 100px">
