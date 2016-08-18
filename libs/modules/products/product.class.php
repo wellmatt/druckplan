@@ -11,6 +11,7 @@ require_once 'libs/modules/paper/paper.class.php';
 require_once 'libs/modules/paperformats/paperformat.class.php';
 require_once 'libs/modules/calculation/calculation.class.php';
 require_once 'libs/modules/tradegroup/tradegroup.class.php';
+require_once 'libs/modules/chromaticity/chromaticity.class.php';
 
 class Product {
     const ORDER_ID = "id";
@@ -32,6 +33,7 @@ class Product {
     private $pagesTo = 0;
     private $pagesStep = 0;
     private $availablePaperFormats = Array();
+    private $availableChromaticities = Array();
     private $hasContent = 1;
     private $hasAddContent = 0;
     private $hasEnvelope = 0;
@@ -154,6 +156,15 @@ class Product {
                 {
                     foreach($DB->select($sql) as $r)
                         $this->availablePaperFormats[] = new Paperformat($r["format_id"]);
+                }
+
+                //--------------------------------------------------------------------
+                // Get available Chromaticities
+                $sql = "SELECT * FROM products_chromaticity WHERE product_id = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                        $this->availableChromaticities[] = new Chromaticity($r["chromaticity_id"]);
                 }
             }
         }
@@ -317,6 +328,19 @@ class Product {
                 ({$this->id}, {$pf->getId()})";
                 $DB->no_result($sql);
             }
+
+            //---------------------------------------------------------------------
+            // Farbigkeiten
+            $sql = "DELETE FROM products_chromaticity WHERE product_id = {$this->id}";
+            $DB->no_result($sql);
+            foreach($this->availableChromaticities as $pf)
+            {
+                $sql = "INSERT INTO products_chromaticity
+                (product_id, chromaticity_id)
+                VALUES
+                ({$this->id}, {$pf->getId()})";
+                $DB->no_result($sql);
+            }
         } else
         {
             $sql = "INSERT INTO products
@@ -406,6 +430,19 @@ class Product {
                                 (product_id, format_id)
                             VALUES
                                 ({$this->id}, {$pf->getId()})";
+                    $DB->no_result($sql);
+                }
+
+                //---------------------------------------------------------------------
+                // Farbigkeiten
+                $sql = "DELETE FROM products_chromaticity WHERE product_id = {$this->id}";
+                $DB->no_result($sql);
+                foreach($this->availableChromaticities as $pf)
+                {
+                    $sql = "INSERT INTO products_chromaticity
+                              (product_id, chromaticity_id)
+                            VALUES
+                              ({$this->id}, {$pf->getId()})";
                     $DB->no_result($sql);
                 }
                 
@@ -847,5 +884,21 @@ class Product {
     public function setBlockplateset($blockplateset)
     {
         $this->blockplateset = $blockplateset;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAvailableChromaticities()
+    {
+        return $this->availableChromaticities;
+    }
+
+    /**
+     * @param array $availableChromaticities
+     */
+    public function setAvailableChromaticities($availableChromaticities)
+    {
+        $this->availableChromaticities = $availableChromaticities;
     }
 }

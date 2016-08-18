@@ -73,7 +73,7 @@
                     if(document.getElementById('h_addcontent2_chromaticity').value == 0 || document.getElementById('h_addcontent2_chromaticity').value == '')
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAdd2PaperChroma', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                        {exec: 'updateAdd2PaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                         function(data) {
                             // Work on returned data
                         
@@ -241,7 +241,7 @@
                     if(document.getElementById('h_addcontent3_chromaticity').value == 0 || document.getElementById('h_addcontent3_chromaticity').value == '')
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAdd3PaperChroma', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                        {exec: 'updateAdd3PaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                         function(data) {
                             // Work on returned data
                         

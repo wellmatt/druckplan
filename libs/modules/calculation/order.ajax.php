@@ -477,7 +477,13 @@ if ($_REQUEST["exec"] == "printChrom") {
     $order = new Order((int)$_REQUEST[orderId]);
     $pages = (int)$_REQUEST["id"];
 
-    foreach (Chromaticity::getAllChromaticities() as $pc) {
+    if (count($order->getProduct()->getAvailableChromaticities())>0){
+        $chromas = $order->getProduct()->getAvailableChromaticities();
+    } else {
+        $chromas = Chromaticity::getAllChromaticities();
+    }
+
+    foreach ($chromas as $pc) {
         if($pages == 1)
         {
             if(!$pc->getReversePrinting())
@@ -492,7 +498,6 @@ if ($_REQUEST["exec"] == "printChrom") {
         }
     }
 }
-
 
 
 if ($_REQUEST["exec"] == "updatePaperprops") {
@@ -552,7 +557,6 @@ if ($_REQUEST["exec"] == "updatePaperWeight") {
 
 
 if ($_REQUEST["exec"] == "updateAddedPaper") {
-
     $prod = new Product($_REQUEST["product"]);
     echo '<input type="button" class="selectbutton" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '" 
 				onclick="clickAddPaper(this.id)"';  if($_REQUEST["hiddenAddPaper"] == 0) echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"'; echo'>'."\n";
@@ -586,8 +590,16 @@ if ($_REQUEST["exec"] == "updateAddPaperWeight") {
 
 if ($_REQUEST["exec"] == "updateAddPaperChroma") {
 
+    $order = new Order((int)$_REQUEST[orderId]);
+
+    if (count($order->getProduct()->getAvailableChromaticities())>0){
+        $chromas = $order->getProduct()->getAvailableChromaticities();
+    } else {
+        $chromas = Chromaticity::getAllChromaticities();
+    }
+
     $prod = new Product($_REQUEST["product"]);
-    foreach (Chromaticity::getAllChromaticities() as $pc) {
+    foreach ($chromas as $pc) {
         echo '<input type="button" class="selectbutton" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '" 
 				onclick="clickAddPaperChromaticity(this.id)">'."\n";
     }   
@@ -595,6 +607,7 @@ if ($_REQUEST["exec"] == "updateAddPaperChroma") {
 
 if ($_REQUEST["exec"] == "updateAddPaperPages") {
 
+    $order = new Order((int)$_REQUEST[orderId]);
     $prod = new Product($_REQUEST["product"]);
 
     if($prod->getType() == Product::TYPE_NORMAL)
@@ -643,9 +656,17 @@ if ($_REQUEST["exec"] == "updateEnvPaperWeight") {
 
 if ($_REQUEST["exec"] == "updateEnvPaperChroma") {
 
+    $order = new Order((int)$_REQUEST[orderId]);
+
+    if (count($order->getProduct()->getAvailableChromaticities())>0){
+        $chromas = $order->getProduct()->getAvailableChromaticities();
+    } else {
+        $chromas = Chromaticity::getAllChromaticities();
+    }
+
     $prod = new Product($_REQUEST["product"]);
     
-    foreach (Chromaticity::getAllChromaticities() as $pc) {
+    foreach ($chromas as $pc) {
         echo '<input type="button" class="selectbutton" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '" 
 				onclick="clickEnvelopeChromaticity(this.id)">'."\n";
     }
@@ -728,8 +749,16 @@ if ($_REQUEST["exec"] == "updateAdd2PaperWeight") {
  */
 if ($_REQUEST["exec"] == "updateAdd2PaperChroma") {
 
+    $order = new Order((int)$_REQUEST[orderId]);
+
+    if (count($order->getProduct()->getAvailableChromaticities())>0){
+        $chromas = $order->getProduct()->getAvailableChromaticities();
+    } else {
+        $chromas = Chromaticity::getAllChromaticities();
+    }
+
 	$prod = new Product($_REQUEST["product"]);
-	foreach (Chromaticity::getAllChromaticities() as $pc) {
+	foreach ($chromas as $pc) {
 		echo '<input type="button" class="selectbutton" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '"
 				onclick="clickAdd2PaperChromaticity(this.id)">'."\n";
 	}
@@ -799,8 +828,16 @@ if ($_REQUEST["exec"] == "updateAdd3PaperWeight") {
 */
 if ($_REQUEST["exec"] == "updateAdd3PaperChroma") {
 
+    $order = new Order((int)$_REQUEST[orderId]);
+
+    if (count($order->getProduct()->getAvailableChromaticities())>0){
+        $chromas = $order->getProduct()->getAvailableChromaticities();
+    } else {
+        $chromas = Chromaticity::getAllChromaticities();
+    }
+
 	$prod = new Product($_REQUEST["product"]);
-	foreach (Chromaticity::getAllChromaticities() as $pc) {
+	foreach ($chromas as $pc) {
 		echo '<input type="button" class="selectbutton" id="32_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '"
 				onclick="clickAdd3PaperChromaticity(this.id)">'."\n";
 	}

@@ -46,6 +46,7 @@ if($_REQUEST["subexec"] == "save")
     $verfmachs = Array();
     $paperweights = Array();
     $paper_formats = Array();
+    $paper_chromas = Array();
     foreach (array_keys($_REQUEST) as $key)
     {
         if(preg_match("/mach_def_(?P<id>\d+)/", $key, $m))
@@ -83,8 +84,14 @@ if($_REQUEST["subexec"] == "save")
             $paper_formats[] = new Paperformat($m["id"]);
         }
 
+        if(preg_match("/paper_chroma_(?P<id>\d+)/", $key, $m))
+        {
+            $paper_chromas[] = new Chromaticity($m["id"]);
+        }
+
 
     }
+    prettyPrint($paper_chromas);
 
     $product->setName(trim(addslashes($_REQUEST["product_name"])));
     $product->setDescription(trim(addslashes($_REQUEST["product_description"])));
@@ -96,6 +103,7 @@ if($_REQUEST["subexec"] == "save")
     $product->setPagesTo((int)$_REQUEST["pages_to"]);
     $product->setPagesStep((int)$_REQUEST["pages_step"]);
     $product->setAvailablePaperFormats($paper_formats);
+    $product->setAvailableChromaticities($paper_chromas);
     $product->setHasContent((int)$_REQUEST["product_hascontent"]);
     $product->setHasAddContent((int)$_REQUEST["product_hasaddcontent"]);
     $product->setHasAddContent2((int)$_REQUEST["product_hasaddcontent2"]);
@@ -593,6 +601,51 @@ echo $quickmove->generate();
               	 		</tbody>
               	 	</table>
               	 </div>
+              </div>
+              </br>
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <h3 class="panel-title">
+                          Farbigkeit
+                          <span class="pull-right">*Wenn keine Farbigkeit gewählt wird, sind alle möglich</span>
+                      </h3>
+                  </div>
+                  <div class="table-responsive">
+                      <table class="table table-hover">
+                          <thead>
+                          <tr>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <? $i = 1;?>
+                          <tr class="<?=getRowColor($i)?>">
+                              <?
+                              $avail = Array();
+                              foreach($product->getAvailableChromaticities() as $pf)
+                                  $avail[$pf->getId()] = true;
+                              $x = 1;
+                              foreach(Chromaticity::getAllChromaticities() as $pf)
+                              {
+                                  echo '<td><input name="paper_chroma_'.$pf->getId().'" type="checkbox" value="1" ';
+                                  if($avail[$pf->getId()]) echo "checked";
+                                  echo '> ' .$pf->getName().' </td>';
+
+                                  if($x % 4 == 0)
+                                  {
+                                      $i++;
+                                      echo '</tr><tr class="'.getRowColor($i).'">';
+                                  }
+                                  $x++;
+                              }
+                              ?>
+                          </tr>
+                          </tbody>
+                      </table>
+                  </div>
               </div>
               </br>
               <div class="panel panel-default">

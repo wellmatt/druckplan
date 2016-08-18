@@ -226,7 +226,7 @@ function clickContentChromaticity(id)
                     if(document.getElementById('h_addcontent_paper').value == 0 || document.getElementById('h_addcontent_paper').value == '')
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAddedPaper', product: <?= $order->getProduct()->getId() ?>, id: id, hiddenAddPaper : document.getElementById('h_addcontent_paper').value }, 
+                        {exec: 'updateAddedPaper', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id, hiddenAddPaper : document.getElementById('h_addcontent_paper').value },
                         function(data) {
                             // Work on returned data        
                             document.getElementById('additional_paper').innerHTML = data;
@@ -235,7 +235,7 @@ function clickContentChromaticity(id)
                     if(document.getElementById('h_envelope_paper').value == 0)
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateEnvPaper', product: <?= $order->getProduct()->getId() ?>, id: id, hiddenEnvPaper : document.getElementById('h_envelope_paper').value}, 
+                        {exec: 'updateEnvPaper', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id, hiddenEnvPaper : document.getElementById('h_envelope_paper').value},
                         function(data) {
                             // Work on returned data
                             document.getElementById('envelope_paperprops').innerHTML = data;
@@ -247,7 +247,7 @@ function clickContentChromaticity(id)
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
                         {exec: 'updateAdded2Paper', 
-                            product: <?= $order->getProduct()->getId() ?>, id: id, hiddenAddPaper : document.getElementById('h_addcontent2_paper').value }, 
+                            product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id, hiddenAddPaper : document.getElementById('h_addcontent2_paper').value },
                         function(data) {
                             // Work on returned data        
                             document.getElementById('additional2_paper').innerHTML = data;
@@ -257,7 +257,7 @@ function clickContentChromaticity(id)
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
                         {exec: 'updateAdded3Paper', 
-                            product: <?= $order->getProduct()->getId() ?>, id: id, hiddenAddPaper : document.getElementById('h_addcontent_paper').value }, 
+                            product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id, hiddenAddPaper : document.getElementById('h_addcontent_paper').value },
                         function(data) {
                             // Work on returned data        
                             document.getElementById('additional3_paper').innerHTML = data;
@@ -267,7 +267,7 @@ function clickContentChromaticity(id)
                     if(document.getElementById('h_envelope_paper').value == 0 || document.getElementById('h_envelope_paper').value == '')
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateEnvPaper', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                        {exec: 'updateEnvPaper', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                         function(data) {
                             // Work on returned data
                             document.getElementById('envelope_paperprops').innerHTML = data;
@@ -359,7 +359,7 @@ function clickContentChromaticity(id)
                     if(document.getElementById('h_addcontent_chromaticity').value == 0 || document.getElementById('h_addcontent_chromaticity').value == '')
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAddPaperChroma', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                        {exec: 'updateAddPaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                         function(data) {
                             // Work on returned data
                         
@@ -383,7 +383,7 @@ function clickContentChromaticity(id)
                     if(document.getElementById('h_addcontent_pages').value == 0 || document.getElementById('h_addcontent_pages').value == '')
                     {
                         $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAddPaperPages', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                        {exec: 'updateAddPaperPages', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                         function(data) {
                             // Work on returned data
                             document.getElementById('additional_paperpages').innerHTML = data;
@@ -516,7 +516,7 @@ function clickContentChromaticity(id)
                         {
                     
                             $.post("libs/modules/calculation/order.ajax.php", 
-                            {exec: 'updateEnvPaperChroma', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                            {exec: 'updateEnvPaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                             function(data) {
                                 // Work on returned data
                         
@@ -930,8 +930,13 @@ echo $quickmove->generate();
                 <td>
                     <div id="print_chrom"> <?
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                $chromas = $order->getProduct()->getAvailableChromaticities();
+                            } else {
+                                $chromas = Chromaticity::getAllChromaticities();
+                            }
 
-                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                            foreach ($chromas as $pc) {
                                 echo '<input type="button" ';
                                 if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
                                     echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
@@ -1061,8 +1066,14 @@ if ($order->getProduct()->getHasAddContent()) {?>
                     <td class="content_row_clear">
                         <div id="additional_paperchroma"> <?
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                $chromas = $order->getProduct()->getAvailableChromaticities();
+                            } else {
+                                $chromas = Chromaticity::getAllChromaticities();
+                            }
+
                             $prod = new Product($_REQUEST["product"]);
-                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                            foreach ($chromas as $pc) {
                                 echo '<input type="button"';
                                 if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
                                     echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
@@ -1193,8 +1204,14 @@ if ($order->getProduct()->getHasEnvelope()) { ?>
                     <td class="content_row_clear">
                         <div id="envelope_paperchroma"> <?
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                $chromas = $order->getProduct()->getAvailableChromaticities();
+                            } else {
+                                $chromas = Chromaticity::getAllChromaticities();
+                            }
+
                             $prod = new Product($_REQUEST["product"]);
-                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                            foreach ($chromas as $pc) {
                                 echo '<input type="button"';
                                 if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
                                     echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
