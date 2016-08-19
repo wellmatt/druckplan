@@ -271,18 +271,6 @@ class Calculation
 
                     $this->pricesub = $r["pricesub"];
                     $this->pricetotal = $r["pricetotal"];
-
-                    // configure Paper
-                    $this->paperContent->setSelectedWeight($this->paperContentWeight);
-                    $this->paperContent->setSelectedSize(Array("width" => $this->paperContentWidth, "height" => $this->paperContentHeight));
-                    $this->paperAddContent->setSelectedWeight($this->paperAddContentWeight);
-                    $this->paperAddContent->setSelectedSize(Array("width" => $this->paperAddContentWidth, "height" => $this->paperAddContentHeight));
-                    $this->paperEnvelope->setSelectedWeight($this->paperEnvelopeWeight);
-                    $this->paperEnvelope->setSelectedSize(Array("width" => $this->paperEnvelopeWidth, "height" => $this->paperEnvelopeHeight));
-                    $this->paperAddContent2->setSelectedWeight($this->paperAddContent2Weight);
-                    $this->paperAddContent2->setSelectedSize(Array("width" => $this->paperAddContent2Width, "height" => $this->paperAddContent2Height));
-                    $this->paperAddContent3->setSelectedWeight($this->paperAddContent3Weight);
-                    $this->paperAddContent3->setSelectedSize(Array("width" => $this->paperAddContent3Width, "height" => $this->paperAddContent3Height));
                 }
 
                 //--------------------------Artikel----------------------------------------------
@@ -299,6 +287,17 @@ class Calculation
                 }
                 Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
             }
+            // configure Paper
+            $this->paperContent->setSelectedWeight($this->paperContentWeight);
+            $this->paperContent->setSelectedSize(Array("width" => $this->paperContentWidth, "height" => $this->paperContentHeight));
+            $this->paperAddContent->setSelectedWeight($this->paperAddContentWeight);
+            $this->paperAddContent->setSelectedSize(Array("width" => $this->paperAddContentWidth, "height" => $this->paperAddContentHeight));
+            $this->paperEnvelope->setSelectedWeight($this->paperEnvelopeWeight);
+            $this->paperEnvelope->setSelectedSize(Array("width" => $this->paperEnvelopeWidth, "height" => $this->paperEnvelopeHeight));
+            $this->paperAddContent2->setSelectedWeight($this->paperAddContent2Weight);
+            $this->paperAddContent2->setSelectedSize(Array("width" => $this->paperAddContent2Width, "height" => $this->paperAddContent2Height));
+            $this->paperAddContent3->setSelectedWeight($this->paperAddContent3Weight);
+            $this->paperAddContent3->setSelectedSize(Array("width" => $this->paperAddContent3Width, "height" => $this->paperAddContent3Height));
         }
     }
 
@@ -1380,7 +1379,7 @@ class Calculation
         if ($hasAddContent3){
             $sum += $calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()));
         }
-        return $sum;
+        return tofloat($sum);
     }
     
     public function getSummaryPrice()
@@ -1416,7 +1415,8 @@ class Calculation
         $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) + $this->paperEnvelopeGrant);
         $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContent2Grant);
         $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContent3Grant);
-        $sum += $this->getColorCost();
+        $colorcost = $this->getColorCost();
+        $sum += $colorcost;
         foreach ($machines as $m) {
             $sum += $m;
         }

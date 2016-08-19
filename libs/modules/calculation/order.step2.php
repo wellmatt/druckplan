@@ -355,16 +355,15 @@ function clickContentChromaticity(id)
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent_paper_weight').value = id;
-                
-                    if(document.getElementById('h_addcontent_chromaticity').value == 0 || document.getElementById('h_addcontent_chromaticity').value == '')
+
+                    if(document.getElementById('h_addcontent_pages').value == 0 || document.getElementById('h_addcontent_pages').value == '')
                     {
-                        $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAddPaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
-                        function(data) {
-                            // Work on returned data
-                        
-                            document.getElementById('additional_paperchroma').innerHTML = data;
-                        });
+                        $.post("libs/modules/calculation/order.ajax.php",
+                            {exec: 'updateAddPaperPages', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
+                            function(data) {
+                                // Work on returned data
+                                document.getElementById('additional_paperpages').innerHTML = data;
+                            });
                     }
                 }
             
@@ -379,16 +378,28 @@ function clickContentChromaticity(id)
                     document.getElementById(id).style.color="#fff";
                     id=id.substr(3);
                     document.getElementById('h_addcontent_chromaticity').value = id;
-                
-                    if(document.getElementById('h_addcontent_pages').value == 0 || document.getElementById('h_addcontent_pages').value == '')
-                    {
-                        $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateAddPaperPages', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
-                        function(data) {
+
+                    <? if ($order->getProduct()->getHasEnvelope()) { ?>
+                        if(document.getElementById('h_envelope_paper').value == 0 || document.getElementById('h_envelope_paper').value == '')
+                        {
+                            $.post("libs/modules/calculation/order.ajax.php",
+                                {exec: 'updateEnvPaper', product: <?= $order->getProduct()->getId() ?>, id: id},
+                                function(data) {
+                                    // Work on returned data
+
+                                    document.getElementById('envelope_paperprops').innerHTML = data;
+                                });
+                        }
+                    <? } else if ($order->getProduct()->hasMachineOfType(Machine::TYPE_FOLDER)) { ?>
+                        $.post("libs/modules/calculation/order.ajax.php", {exec: 'updateFoldtypes', pages: document.getElementsByName('h_content_pages')[0].value, id: id}, function(data) {
                             // Work on returned data
-                            document.getElementById('additional_paperpages').innerHTML = data;
+                            document.getElementById('order_folding').innerHTML = data;
+                            //		calcOpenFormat();
                         });
-                    }
+                    <? } else { ?>
+                        document.getElementById('tr_order_amount').style.display = '';
+                        document.getElementById('tr_order_sorts').style.display = '';
+                    <? } ?>
                 }
 
 
@@ -404,27 +415,16 @@ function clickContentChromaticity(id)
                 id=id.substr(3);
                 document.getElementById('h_addcontent_pages').value = id;
 
-<? if ($order->getProduct()->getHasEnvelope()) { ?>
-                    if(document.getElementById('h_envelope_paper').value == 0 || document.getElementById('h_envelope_paper').value == '')
-                    {
-                        $.post("libs/modules/calculation/order.ajax.php", 
-                        {exec: 'updateEnvPaper', product: <?= $order->getProduct()->getId() ?>, id: id}, 
+                if(document.getElementById('h_addcontent_chromaticity').value == 0 || document.getElementById('h_addcontent_chromaticity').value == '')
+                {
+                    $.post("libs/modules/calculation/order.ajax.php",
+                        {exec: 'updateAddPaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
                         function(data) {
                             // Work on returned data
 
-                            document.getElementById('envelope_paperprops').innerHTML = data;
+                            document.getElementById('additional_paperchroma').innerHTML = data;
                         });
-                    } 
-<? } else if ($order->getProduct()->hasMachineOfType(Machine::TYPE_FOLDER)) { ?>
-                    $.post("libs/modules/calculation/order.ajax.php", {exec: 'updateFoldtypes', pages: document.getElementsByName('h_content_pages')[0].value, id: id}, function(data) {
-                        // Work on returned data 
-                        document.getElementById('order_folding').innerHTML = data;
-                        //		calcOpenFormat();
-                    });
-<? } else { ?>
-                    document.getElementById('tr_order_amount').style.display = '';
-                    document.getElementById('tr_order_sorts').style.display = '';
-<? } ?>
+                }
             }
 
 
@@ -511,17 +511,17 @@ function clickContentChromaticity(id)
                         document.getElementById(id).style.color="#fff";
                         id=id.substr(3);
                         document.getElementById('h_envelope_paper_weight').value = id;
-                
-                        if(document.getElementById('h_envelope_chromaticity').value == 0 || document.getElementById('h_envelope_chromaticity').value == '')
+
+                        if(document.getElementById('h_envelope_pages').value == 0 || document.getElementById('h_envelope_pages').value == '')
                         {
-                    
-                            $.post("libs/modules/calculation/order.ajax.php", 
-                            {exec: 'updateEnvPaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
-                            function(data) {
-                                // Work on returned data
-                        
-                                document.getElementById('envelope_paperchroma').innerHTML = data;
-                            });
+
+                            $.post("libs/modules/calculation/order.ajax.php",
+                                {exec: 'updateEnvPaperPages', orderId: <?= $order->getId() ?>, id: id},
+                                function(data) {
+                                    // Work on returned data
+
+                                    document.getElementById('envelope_paperpages').innerHTML = data;
+                                });
                         }
                     }
             
@@ -538,18 +538,7 @@ function clickContentChromaticity(id)
                         id=id.substr(3);
                 
                         document.getElementById('h_envelope_chromaticity').value = id;
-                
-                        if(document.getElementById('h_envelope_pages').value == 0 || document.getElementById('h_envelope_pages').value == '')
-                        {
-                    
-                            $.post("libs/modules/calculation/order.ajax.php", 
-                            {exec: 'updateEnvPaperPages', orderId: <?= $order->getId() ?>, id: id}, 
-                            function(data) {
-                                // Work on returned data
-                        
-                                document.getElementById('envelope_paperpages').innerHTML = data;
-                            });
-                        }
+
 
                         // Offenes Format Umschlag anzeigen
                         document.getElementById('tr_envelope_format').style.display = '';
@@ -591,6 +580,17 @@ function clickContentChromaticity(id)
     	                    }
     							
     					});
+
+                        <? if ($order->getProduct()->hasMachineOfType(Machine::TYPE_FOLDER)) { ?>
+                            $.post("libs/modules/calculation/order.ajax.php", {exec: 'updateFoldtypes', pages: document.getElementsByName('h_content_pages')[0].value, id: id}, function(data) {
+                                // Work on returned data
+                                document.getElementById('order_folding').innerHTML = data;
+                                //		calcOpenFormat();
+                            });
+                        <? } else { ?>
+                            document.getElementById('tr_order_amount').style.display = '';
+                            document.getElementById('tr_order_sorts').style.display = '';
+                        <? } ?>
                             
                     }
             
@@ -628,49 +628,53 @@ function clickContentChromaticity(id)
                     var prod_width = parseInt(document.getElementById('order_product_width').value);
                     var prod_height = parseInt(document.getElementById('order_product_height').value);
 
-                    // Get chromaticity factor
-                    var chroma = document.getElementById('h_envelope_chromaticity').value;
-                    $.post("libs/modules/calculation/order.ajax.php", {exec: "getReversePrinting", chromaId: chroma}, function(data) {
-						// Work on returned data
-						if(data == 0)
-							chromaFactor = 2;
-						else
-							chromaFactor = 1;
-							
-	                    if(id == 2)
-	                    {
-	                        document.getElementById('order_envelope_width_open').value = prod_width * 1 * chromaFactor;
-	                        document.getElementById('order_envelope_height_open').value = prod_height;
-	                    } else if(id == 4)
-	                    {
-	                        document.getElementById('order_envelope_width_open').value = prod_width * 2 * chromaFactor;
-	                        document.getElementById('order_envelope_height_open').value = prod_height;
-	                    } else if (id == 6)
-	                    {
-	                        document.getElementById('order_envelope_width_open').value = prod_width * 3 * chromaFactor;
-	                        document.getElementById('order_envelope_height_open').value = prod_height;
-	                    } else if (id == 8)
-	                    {
-	                        document.getElementById('order_envelope_width_open').value = prod_width * 4 * chromaFactor;
-	                        document.getElementById('order_envelope_height_open').value = prod_height;
-	                    } else if (id == 10)
-	                    {
-	                        document.getElementById('order_envelope_width_open').value = prod_width * 5 * chromaFactor;
-	                        document.getElementById('order_envelope_height_open').value = prod_height;
-	                    }
-							
-					});
-                    
-				<? if ($order->getProduct()->hasMachineOfType(Machine::TYPE_FOLDER)) { ?>
-                            $.post("libs/modules/calculation/order.ajax.php", {exec: 'updateFoldtypes', pages: document.getElementsByName('h_content_pages')[0].value, id: id}, function(data) {
-                                // Work on returned data 
-                                document.getElementById('order_folding').innerHTML = data;
-                                //		calcOpenFormat();
+
+                    if(document.getElementById('h_envelope_chromaticity').value == 0 || document.getElementById('h_envelope_chromaticity').value == '')
+                    {
+
+                        $.post("libs/modules/calculation/order.ajax.php",
+                            {exec: 'updateEnvPaperChroma', product: <?= $order->getProduct()->getId() ?>, orderId: <?= $order->getId() ?>, id: id},
+                            function(data) {
+                                // Work on returned data
+
+                                document.getElementById('envelope_paperchroma').innerHTML = data;
                             });
-				<? } else { ?>
-                            document.getElementById('tr_order_amount').style.display = '';
-                            document.getElementById('tr_order_sorts').style.display = '';
-				<? } ?>
+                    }
+
+                    // Get chromaticity factor
+//                    var chroma = document.getElementById('h_envelope_chromaticity').value;
+//                    $.post("libs/modules/calculation/order.ajax.php", {exec: "getReversePrinting", chromaId: chroma}, function(data) {
+//						// Work on returned data
+//						if(data == 0)
+//							chromaFactor = 2;
+//						else
+//							chromaFactor = 1;
+//
+//	                    if(id == 2)
+//	                    {
+//	                        document.getElementById('order_envelope_width_open').value = prod_width * 1 * chromaFactor;
+//	                        document.getElementById('order_envelope_height_open').value = prod_height;
+//	                    } else if(id == 4)
+//	                    {
+//	                        document.getElementById('order_envelope_width_open').value = prod_width * 2 * chromaFactor;
+//	                        document.getElementById('order_envelope_height_open').value = prod_height;
+//	                    } else if (id == 6)
+//	                    {
+//	                        document.getElementById('order_envelope_width_open').value = prod_width * 3 * chromaFactor;
+//	                        document.getElementById('order_envelope_height_open').value = prod_height;
+//	                    } else if (id == 8)
+//	                    {
+//	                        document.getElementById('order_envelope_width_open').value = prod_width * 4 * chromaFactor;
+//	                        document.getElementById('order_envelope_height_open').value = prod_height;
+//	                    } else if (id == 10)
+//	                    {
+//	                        document.getElementById('order_envelope_width_open').value = prod_width * 5 * chromaFactor;
+//	                        document.getElementById('order_envelope_height_open').value = prod_height;
+//	                    }
+//
+//					});
+                    
+
 	
                     }
             
