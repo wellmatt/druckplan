@@ -298,7 +298,7 @@ $(function () {
         <div class="panel-body">
             <div class="form-group">
                 <label for="" class="col-sm-1 control-label">Titel</label>
-                <div class="col-sm-11>
+                <div class="col-sm-11">
                     <input name="tktc_title" type="text" class="form-control">
                 </div>
             </div>

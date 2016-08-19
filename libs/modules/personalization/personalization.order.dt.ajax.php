@@ -366,15 +366,15 @@
             }
         }
         $tmp_options = '<a class="icon-link" target="_blank" href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash1"].'_e.pdf">
-                       <span class="glyphicons glyphicons-chat" title="Download Vorderseite mit Hintergrund"></span></a>
+                      <span class="glyphicons glyphicons-download-alt" title="Download Vorderseite mit Hintergrund"></span></a>
     	               <a href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash1"].'_p.pdf" class="icon-link" target="_blank">
-                       <span class="glyphicons glyphicons-display" title="Download Vorderseite ohne Hintergrund"></span></a></br>';
+                       <span class="glyphicons glyphicons-download-alt" title="Download Vorderseite ohne Hintergrund"></span></a></br>';
         if ($aRow["hash2"] != $aRow["hash1"] && $aRow["hash2"] != "")
         {
             $tmp_options .= '<a class="icon-link" target="_blank" href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash2"].'_e.pdf">
-                            <span class="glyphicons glyphicons-display" title="Download R&uuml;ckseite mit Hintergrund"></span></a>
+                           <span class="glyphicons glyphicons-download-alt" title="Download R&uuml;ckseite mit Hintergrund"></span></a>
         	                 <a href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash2"].'_p.pdf" class="icon-link" target="_blank">
-                             <span class="glyphicons glyphicons-display" title="Download R&uuml;ckseite ohne Hintergrund"></span></a>';
+                            <span class="glyphicons glyphicons-download-alt" title="Download R&uuml;ckseite ohne Hintergrund"></span></a>';
         }
         $tmp_options .= '&ensp;<a class="icon-link" href="#" onclick="askDel(\'index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=delete&delid='.$aRow[ $aColumns[0] ].'\')"><span class="glyphicons glyphicons-remove"></span></a>';
         $row[] = $tmp_options;

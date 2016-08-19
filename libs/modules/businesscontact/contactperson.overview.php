@@ -85,16 +85,17 @@ $(document).ready(function() {
     <div class="panel-heading">
         <h3 class="panel-title">Ansprechpartner</h3>
     </div>
+    <br>
     <div class="table-responsive">
-        <table id="cp_table" class="table table-hover">
-            <thead>
-            <tr>
-                <th width="10">ID</th>
-                <th>Name</th>
-                <th>Firma</th>
-                <th width="80">Optionen</th>
-            </tr>
-            </thead>
-        </table>
+    	<table  id="cp_table" class="table table-hover">
+    		<thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Firma</th>
+                    <th>Optionen</th>
+                </tr>
+    		</thead>
+    	</table>
     </div>
 </div>

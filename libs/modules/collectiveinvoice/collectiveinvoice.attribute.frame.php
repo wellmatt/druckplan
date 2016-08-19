@@ -128,7 +128,9 @@ $all_active_attributes = $colinv->getActiveAttributeItemsInput();
 					<table class="table table-hover">
 						<thead>
 						<tr>
-							<th width="180"></th>
+							<th></th>
+							<th></th>
+							<th></th>
 							<th></th>
 						</tr>
 						</thead>
@@ -146,6 +148,7 @@ $all_active_attributes = $colinv->getActiveAttributeItemsInput();
 											echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
 											if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
 											echo ">";
+											echo "  ";
 											echo $item["title"];
 											if ($item["input"] == 1) {
 												echo ' <input name="attribute_item_input_' . $attribute->getId() . '_' . $item["id"] . '" ';
@@ -166,7 +169,6 @@ $all_active_attributes = $colinv->getActiveAttributeItemsInput();
 				<span class="pull-right">
 					<?= $savemsg ?>
 					<button class="btn btn-origin btn-success" type="submit">
-						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Speichern')?>
 					</button>
 				</span>

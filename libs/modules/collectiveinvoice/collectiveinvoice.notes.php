@@ -152,7 +152,6 @@ $(document).ready(function() {
           </div>
           <span class="pull-right">
               <button class="btn btn-sm btn-default" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>';">
-                  <span class="glyphicons glyphicons-plus"></span>
                   <?= $_LANG->get('Zurück') ?>
               </button>
           </span>

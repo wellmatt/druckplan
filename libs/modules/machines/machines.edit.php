@@ -486,406 +486,618 @@ $(function() {
 	});
 });
 </script>
+<?php // Qickmove generation
+$quickmove = new QuickMove();
+$quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
+$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+$quickmove->addItem('Speichern','#',"$('#machine_form').submit();",'glyphicon-floppy-disk');
 
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-          <? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Maschine kopieren')?>
-          <? if ($_REQUEST["exec"] == "edit" && $machine->getId() == 0) echo $_LANG->get('Maschine anlegen')?>
-          <? if ($_REQUEST["exec"] == "edit" && $machine->getId() != 0) echo $_LANG->get('Maschine bearbeiten')?>
-      </td>
-      <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
-
-<?php
-if ($machine->getId() > 0){
-      // Associations
-      $association_object = $machine;
-      include 'libs/modules/associations/association.include.php';
-      //-> END Associations
+if ($machine->getId()>0){
+	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id".$machine->getId()."');", 'glyphicon-trash', true);
 }
-?>
+echo $quickmove->generate();
+// end of Quickmove generation ?>
 
-<div id="fl_menu">
-	<div class="label">Quick Move</div>
-	<div class="menu">
-        <a href="#top" class="menu_item">Seitenanfang</a>
-        <a href="index.php?page=<?=$_REQUEST['page']?>" class="menu_item">Zurück</a>
-        <a href="#" class="menu_item" onclick="$('#machine_form').submit();">Speichern</a>
-    </div>
-</div>
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal" id="machine_form" name="machine_form"
+	  onSubmit="return checkform(new Array(this.machine_name, this.machine_group,this.machine_type,this.machine_pricebase))">
+	<input type="hidden" name="exec" value="edit">
+	<input type="hidden" name="subexec" value="save">
+	<input type="hidden" name="id" value="<?= $machine->getId() ?>">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Maschine kopieren') ?>
+				<? if ($_REQUEST["exec"] == "edit" && $machine->getId() == 0) echo $_LANG->get('Maschine anlegen') ?>
+				<? if ($_REQUEST["exec"] == "edit" && $machine->getId() != 0) echo $_LANG->get('Maschine bearbeiten') ?>
+				<span class="pull-right">
+					<?= $savemsg ?>
+				</span>
+			</h3>
+		</div>
+		<div class="panel-body">
+			<?php
+			if ($machine->getId() > 0) {
+				// Associations
+				$association_object = $machine;
+				include 'libs/modules/associations/association.include.php';
+				//-> END Associations
+			}
+			?>
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+							Kopfdaten
+						</h3>
+				  </div>
+				  <div class="panel-body">
+					   <div class="row">
+						   <div class="col-md-6">
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Bezeichnung</label>
+								   <div class="col-sm-9">
+									   <input name="machine_name" id="" value="<?=$machine->getName()?>" class="form-control">
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Dokumententext (wird bei "Verarbeitung" gedruckt)</label>
+								   <div class="col-sm-9">
+									   <textarea name="machine_documenttext" class="form-control"><?=$machine->getDocumentText()?></textarea>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Maschinengruppe</label>
+								   <div class="col-sm-9">
+									   <select name="machine_group" class="form-control">
+										   <option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;
+											   <?
+											   foreach (MachineGroup::getAllMachineGroups() as $g)
+											   {
+												   echo '<option value="'.$g->getId().'" ';
+												   if($machine->getGroup()->getId() == $g->getId()) echo "selected";
+												   echo '>'.$g->getName().'</option>';
+											   }
+											   ?>
+									   </select>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Maschinentyp</label>
+								   <div class="col-sm-9">
+									   <select id="machine_type" name="machine_type" class="form-control" onchange="checkMachineType(this.value);showHide(this.value);">
+										   <option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+										   <option value="<?=Machine::TYPE_DRUCKMASCHINE_OFFSET?>" <? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo "selected";?>><?=$_LANG->get('Druckmaschine Offset / Buchdruck')?></option>
+										   <option value="<?=Machine::TYPE_DRUCKMASCHINE_DIGITAL?>" <? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo "selected";?>><?=$_LANG->get('Druckmaschine Digital')?></option>
+										   <option value="<?=Machine::TYPE_CTP?>" <? if($machine->getType() == Machine::TYPE_CTP) echo "selected";?>><?=$_LANG->get('Computer To Plate')?></option>
+										   <option value="<?=Machine::TYPE_FOLDER?>" <? if($machine->getType() == Machine::TYPE_FOLDER) echo "selected";?>><?=$_LANG->get('Falzmaschine')?></option>
+										   <option value="<?=Machine::TYPE_CUTTER?>" <? if($machine->getType() == Machine::TYPE_CUTTER) echo "selected";?>><?=$_LANG->get('Schneidemaschine')?></option>
+										   <option value="<?=Machine::TYPE_LASERCUTTER?>" <? if($machine->getType() == Machine::TYPE_LASERCUTTER) echo "selected";?>><?=$_LANG->get('Stanze / Laser-Stanze')?></option>
+										   <option value="<?=Machine::TYPE_LAGENFALZ?>" <? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo "selected";?>><?=$_LANG->get('Lagenfalz-/Zusammentragmaschine')?></option>
+										   <option value="<?=Machine::TYPE_SAMMELHEFTER?>" <? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo "selected";?>><?=$_LANG->get('Sammelhefter')?></option>
+										   <option value="<?=Machine::TYPE_MANUELL?>" <? if($machine->getType() == Machine::TYPE_MANUELL) echo "selected";?>><?=$_LANG->get('Manuelle Arbeit')?></option>
+										   <option value="<?=Machine::TYPE_OTHER?>" <? if($machine->getType() == Machine::TYPE_OTHER) echo "selected";?>><?=$_LANG->get('Andere')?></option>
+									   </select>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Preistyp</label>
+								   <div class="col-sm-9">
+									   <?/*gln <select name="machine_pricebase" style="width:300px" class="text">*/?>
+									   <select id="machine_pricebase" name="machine_pricebase" class="form-control" onchange="if (document.getElementById('machine_type').value == <?=Machine::TYPE_DRUCKMASCHINE_DIGITAL?>) showHideClpr(this.value);">
+										   <option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+										   <option value="<?=Machine::PRICE_AUFLAGE?>" <? if($machine->getPriceBase() == Machine::PRICE_AUFLAGE) echo "selected";?>><?=$_LANG->get('Preis nach Auflage')?></option>
+										   <option value="<?=Machine::PRICE_BOGEN?>" <? if($machine->getPriceBase() == Machine::PRICE_BOGEN) echo "selected";?>><?=$_LANG->get('Preis nach Bogen')?></option>
+										   <option value="<?=Machine::PRICE_DRUCKPLATTE?>" <? if($machine->getPriceBase() == Machine::PRICE_DRUCKPLATTE) echo "selected";?>><?=$_LANG->get('Preis nach Druckplatten')?></option>
+										   <option value="<?=Machine::PRICE_MINUTE?>" <? if($machine->getPriceBase() == Machine::PRICE_MINUTE) echo "selected";?>><?=$_LANG->get('Preis nach Minuten')?></option>
+										   <option value="<?=Machine::PRICE_PAUSCHAL?>" <? if($machine->getPriceBase() == Machine::PRICE_PAUSCHAL) echo "selected";?>><?=$_LANG->get('Pauschalpreis')?></option>
+										   <option value="<?=Machine::PRICE_SQUAREMETER?>" <? if($machine->getPriceBase() == Machine::PRICE_SQUAREMETER) echo "selected";?>><?=$_LANG->get('Preis pro Quadratmeter Bogen/Rolle')?></option>
+										   <option value="<?=Machine::PRICE_DPSQUAREMETER?>" <? if($machine->getPriceBase() == Machine::PRICE_DPSQUAREMETER) echo "selected";?>><?=$_LANG->get('Preis pro Quadratmeter Druckplatte')?></option>
+										   <option value="<?=Machine::PRICE_VARIABEL?>" <? if($machine->getPriceBase() == Machine::PRICE_VARIABEL) echo "selected";?>><?=$_LANG->get('Preis variabel')?></option>
+									   </select>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Preis</label>
+								   <div class="col-sm-9">
+									   <div class="input-group">
+										   <input id="machine_price" name="machine_price" value="<?=printPrice($machine->getPrice(),4)?>" class="form-control">
+										   <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+									   </div>
+								   </div>
+							   </div>
+							   <? if($machine->getLectorId() != 0) { ?>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label"><span class="error"><?=$_LANG->get('Importiert von Lector')?></span></label>
+								   <div class="col-sm-9">
+									   Lector-ID: <?=$machine->getLectorId()?>
+								   </div>
+							   </div>
+							   <? } ?>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Farbe (Planung)</label>
+								   <div class="col-sm-9">
+									   <input id="machine_color" name="machine_color" value="<?=$machine->getColor()?>" class="form-control" size="6" maxlength="6">
+								   </div>
+							   </div>
+						   </div>
+						   <div class="col-md-6">
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">int. Beschreibung</label>
+								   <div class="col-sm-9">
+									   <textarea name="machine_internaltext" class="form-control"><?=$machine->getInternalText()?></textarea>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Hersteller</label>
+								   <div class="col-sm-9">
+									   <textarea name="machine_hersteller" class="form-control"><?=$machine->getHersteller()?></textarea>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Baujahr</label>
+								   <div class="col-sm-9">
+									   <textarea name="machine_baujahr" class="form-control"><?=$machine->getBaujahr()?></textarea>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Druckplatten</label>
+								   <div class="col-sm-4">
+									   <div class="input-group">
+										   <input id="machine_DPWidth" name="machine_DPWidth" title="<?=$_LANG->get('Breite');?>" value="<?=printPrice($machine->getDPWidth(),4)?>" class="form-control">
+										   <span class="input-group-addon">mm</span>
+									   </div>
+								   </div>
+								   <label for="" class="col-sm-1 control-label">x</label>
+								   <div class="col-sm-4">
+									   <div class="input-group">
+										   <input id="machine_DPHeight" name="machine_DPHeight" title="<?=$_LANG->get('Höhe');?>" value="<?=printPrice($machine->getDPHeight(),4)?>" class="form-control" >
+										   <span class="input-group-addon">mm</span>
+									   </div>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form" onSubmit="return checkform(new Array(this.machine_name, this.machine_group,this.machine_type,this.machine_pricebase))">
-<input type="hidden" name="exec" value="edit">
-<input type="hidden" name="subexec" value="save">
-<input type="hidden" name="id" value="<?=$machine->getId()?>">
-<div class="box1">
-<b>Kopfdaten</b>
-<table cellpadding="0" cellspacing="0" border="0">
-	<tr>
-		<td valign="top">
-			<table width="500" cellpadding="0" cellspacing="0" border="0">
-				<colgroup>
-					<col width="180">
-					<col>
-				</colgroup>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Bezeichnung')?> *</td>
-					<td class="content_row_clear">
-						<input name="machine_name" value="<?=$machine->getName()?>" style="width:300px;" class="text">
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top"><?=$_LANG->get('Dokumententext (wird bei "Verarbeitung" gedruckt)')?></td>
-					<td class="content_row_clear">
-						<textarea name="machine_documenttext" style="width:300px;height:100px" class="text"><?=$machine->getDocumentText()?></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top"><?=$_LANG->get('Maschinengruppe')?> *</td>
-					<td class="content_row_clear">
-						<select name="machine_group" style="width:300px" class="text">
-							<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;
-							<?
-							foreach (MachineGroup::getAllMachineGroups() as $g)
-							{
-								echo '<option value="'.$g->getId().'" ';
-								if($machine->getGroup()->getId() == $g->getId()) echo "selected";
-								echo '>'.$g->getName().'</option>';
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Max Stapelhöhe</label>
+								   <div class="col-sm-9">
+									   <div class="input-group">
+										   <input id="machine_maxstacksize" name="machine_maxstacksize" value="<?=$machine->getMaxstacksize();?>" class="form-control">
+										   <span class="input-group-addon">mm</span>
+									   </div>
+								   </div>
+							   </div>
+						   </div>
+					   </div>
+				  </div>
+			</div>
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+							Maschinendaten
+						</h3>
+				  </div>
+				  <div class="panel-body">
+					   <div class="row">
+						   <div class="col-md-6">
+							   <div id="tr_machine_colors_front" class="form-group">
+								   <label for="" class="col-sm-3 control-label">Farben Vorderseite</label>
+								   <div class="col-sm-2">
+									   <input name="colors_front" class="form-control" value="<?=$machine->getColors_front()?>">
+								   </div>
+							   </div>
+							   <div id="tr_machine_colors_back" class="form-group">
+								   <label for="" class="col-sm-3 control-label">Farben R&uuml;ckseite</label>
+								   <div class="col-sm-2">
+									   <input name="colors_back" value="<?=$machine->getColors_back()?>" class="form-control">
+								   </div>
+							   </div>
+							   <div id="tr_machine_paper_size" class="form-group">
+								   <label for="" class="col-sm-3 control-label">Max. Papiergr&ouml;&szlig;e</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="paper_size_width" class="form-control"  title="<?=$_LANG->get('Breite');?>" value="<?=$machine->getPaperSizeWidth()?>">
+										   <span class="input-group-addon">mm</span>
+									   </div>
+								   </div>
+								   <label for="" class="col-sm-1 control-label">x</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="paper_size_height" class="form-control"  title="<?=$_LANG->get('Höhe');?>" value="<?=$machine->getPaperSizeHeight()?>">
+										   <span class="input-group-addon">mm</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_paper_min_size" class="form-group">
+								   <label for="" class="col-sm-3 control-label">Min. Papiergr&ouml;&szlig;e</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="paper_size_min_width" class="form-control" title="<?=$_LANG->get('Breite');?>" value="<?=$machine->getPaperSizeMinWidth()?>">
+										   <span class="input-group-addon">mm</span>
+									   </div>
+								   </div>
+								   <label for="" class="col-sm-1 control-label">x</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="paper_size_min_height" class="form-control" title="<?=$_LANG->get('Höhe');?>" value="<?=$machine->getPaperSizeMinHeight()?>">
+										   <span class="input-group-addon">mm</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_border" class="form-group">
+								   <label for="" class="col-sm-3 control-label">nicht bedruckbarer Bereich</label>
+								   <div class="col-sm-6">
+									   <table class="table table-hover">
+										   <tr>
+											   <td></td>
+											   <td>
+												   <div class="input-group">
+													   <input class="form-control" name="border_top"  value="<?=$machine->getBorder_top()?>">
+													   <span class="input-group-addon">mm</span>
+												   </div>
+											   </td>
+
+											   <td></td>
+										   </tr>
+										   <tr>
+											   <td>
+												   <div class="input-group">
+													   <input class="form-control" name="border_left" value="<?=$machine->getBorder_left()?>">
+													   <span class="input-group-addon">mm</span>
+												   </div>
+											   </td>
+											   <td></td>
+											   <td>
+												   <div class="input-group">
+													   <input class="form-control" name="border_right" value="<?=$machine->getBorder_right()?>">
+													   <span class="input-group-addon">mm</span>
+												   </div>
+											   </td>
+										   </tr>
+										   <tr>
+											   <td></td>
+											   <td>
+												   <div class="input-group">
+													   <input class="form-control" name="border_bottom" value="<?=$machine->getBorder_bottom()?>">
+													   <span class="input-group-addon">mm</span>
+												   </div>
+											   </td>
+											   <td></td>
+										   </tr>
+									   </table>
+								   </div>
+							   </div>
+							   <div id="tr_machine_timebase" class="form-group">
+								   <label for="" class="col-sm-3 control-label">Grundzeit</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_base" class="form-control" value="<?=$machine->getTimeBase()?>">
+										   <span class="input-group-addon"> min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_breaks" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Max. Br&uuml;che</label>
+								   <div class="col-sm-3">
+									   <input name="breaks" value="<?=$machine->getBreaks()?>" class="form-control">
+								   </div>
+							   </div>
+							   <div id="tr_machine_breaks_time" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">R&uuml;sten pro Bruch</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="breaks_time" value="<?=$machine->getBreaks_time()?>" class="form-control">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div  id="tr_machine_timeplatechange" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Zeit pro Plattenwechsel</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_platechange" class="form-control" value="<?=$machine->getTimePlatechange()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_timecolorchange" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Zeit pro Farbwechsel</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_colorchange" class="form-control" value="<?=$machine->getTimeColorchange()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_setup_stations" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Zeit Einrichtung Station</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_setup_stations" class="form-control" value="<?=$machine->getTimeSetupStations()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_anz_stations" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Anzahl Stationen</label>
+								   <div class="col-sm-3">
+									   <input name="anz_stations" class="form-control" value="<?=$machine->getAnzStations()?>">
+								   </div>
+							   </div>
+							   <div id="tr_machine_pages_per_station" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Seiten pro Station</label>
+								   <div class="col-sm-3">
+									   <input name="pages_per_station" class="form-control" value="<?=$machine->getPagesPerStation()?>">
+								   </div>
+							   </div>
+							   <div  id="tr_machine_anz_signatures" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">Anzahl Signaturen</label>
+								   <div class="col-sm-3">
+									   <input name="anz_signatures" class="form-control" value="<?=$machine->getAnzSignatures()?>">
+								   </div>
+							   </div>
+							   <div id="tr_machine_time_signatures" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">R&uuml;stzeit pro Signatur</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_signatures" class="form-control" value="<?=$machine->getTimeSignatures()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_time_envelope" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">R&uuml;stzeit Umschlaganleger</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_envelope" class="form-control" value="<?=$machine->getTimeEnvelope()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div  id="tr_machine_time_trimmer" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">'R&uuml;stzeit Dreischneider</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_trimmer" class="form-control" value="<?=$machine->getTimeTrimmer()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+							   <div id="tr_machine_time_stacker" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">R&uuml;stzeit Kreuzleger</label>
+								   <div class="col-sm-3">
+									   <div class="input-group">
+										   <input name="time_stacker" class="form-control" value="<?=$machine->getTimeStacker()?>">
+										   <span class="input-group-addon">min</span>
+									   </div>
+								   </div>
+							   </div>
+						   </div>
+						   <div class="col-md-6">
+							   <div id="tr_machine_chromaticity" class="form-group" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ) echo ""; else echo "none;"?>">
+								   <label for="" class="col-sm-3 control-label">verf&uuml;gbare Farbigkeiten</label>
+								   <div class="col-sm-9">
+									   <table class="table table-hover" cellpadding="0" cellspacing="0" border="0">
+										   <?
+
+										   function chromaActive($chr, $machine)
+										   {
+											   foreach ($machine->getChromaticities() as $c)
+											   {
+												   if($chr->getId() == $c->getId())
+													   return true;
+											   }
+											   return false;
+										   }
+										   //gln
+										   $anzeige = true;
+										   $chrs = Chromaticity::getAllChromaticities(Chromaticity::ORDER_NAME);
+										   foreach($chrs as $chr)
+										   {
+											   ?>
+											   <tr>
+												   <td class="content_row_header">
+													   <?
+													   echo '<input name="chroma_'.$chr->getId().'" type="checkbox" value="1" ';
+													   if(chromaActive($chr, $machine) === true) echo "checked";
+													   echo '>'.$chr->getName()."<br>";
+													   ?>
+												   </td>
+												   <td name="anz_click1" class="content_row_header" valign="top" align="right" style="display:<? if($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ) echo ""; else echo "none;"?>"><?if($anzeige) echo $_LANG->get('Click');else echo "";?></td>
+												   <td name="anz_click2" style="display:<? if($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ) echo ""; else echo "none;"?>">
+													   <?
+													   if(chromaActive($chr, $machine) === true)
+														   echo '<input name="click_'.$chr->getId().'" style="width:60px;text-align:center" value="'. printPrice($machine->getCurrentClickprice($chr), 4).'"> '. $_USER->getClient()->getCurrency();
+													   else
+														   echo '<input name="click_'.$chr->getId().'" style="width:60px;text-align:center" value="'. printPrice(0, 4).'"> '. $_USER->getClient()->getCurrency();
+													   ?>
+												   </td>
+											   </tr>
+											   <?
+											   $anzeige = false;
+										   }
+										   ?>
+									   </table>
+								   </div>
+								   <div class="form-group" id="tr_machine_finish" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;"?>">>
+									   <label for="" class="col-sm-3 control-label">Option Lack verf&uuml;gbar</label>
+									   <div class="col-sm-2">
+										   <input name="finish" class="form-control" value="1" type="checkbox" <?if($machine->getFinish() == 1) echo "checked";?>>
+									   </div>
+									   <label for="" class="col-sm-3 control-label">Preis Lackplatte</label>
+									   <div class="col-sm-4">
+										   <div class="input-group">
+											   <input name="finish_plate_cost" class="form-control" value="<?=printPrice($machine->getFinishPlateCost())?>" >
+											   <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+										   </div>
+									   </div>
+								   </div>
+								   <?/* gln 13.05.2014, Umschlagen/Umstuelpen */?>
+								   <div class="form-group" id="tr_machine_umschl_umst" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
+									   <label for="" class="col-sm-3 control-label">Option umschlagen/umst&uuml;lpen</label>
+									   <div class="col-sm-2">
+										   <input name="umschl_umst" value="1" class="form-control" type="checkbox" <?if($machine->getUmschlUmst() == 1) echo "checked";?>>
+									   </div>
+								   </div>
+								   <?/* ascherer 19.08.14, Schneidemaschine */?>
+								   <div class="form-group" id="tr_machine_cut_price" style="display:<? if($machine->getType() == Machine::TYPE_CUTTER) echo ""; else echo "none;"?>">
+									   <label for="" class="col-sm-3 control-label">Schnittpreis</label>
+									   <div class="col-sm-9">
+										   <input name="cut_price" class="form-control" value="<?=printPrice($machine->getCutPrice(), 4)?>">
+									   </div>
+								   </div>
+								   <div id="tr_machine_paperperhour" class="form-group">
+									   <label for="" class="col-sm-3 control-label">Laufleistung</label>
+									   <div class="col-sm-9">
+										   <input name="" id="" value="" class="form-control">
+									   </div>
+								   </div>
+
+
+
+
+
+
+
+
+							   </div>
+						   </div>
+					   </div>
+
+				  </div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Arbeiter
+					</h3>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<?php
+						$all_users = User::getAllUser();
+						$qid_arr = Array();
+						foreach ($machine->getQualified_users() as $qid) {
+							$qid_arr[] = $qid->getId();
+						}
+						$qi = 0;
+						foreach ($all_users as $qusr) {
+							if ($qi == 0) echo '<tr>';
+							?>
+							<td>
+								<input type="checkbox" name="qusr[]" <?php if (in_array($qusr->getId(), $qid_arr)) echo ' checked '; ?> value="<?php echo $qusr->getId(); ?>"/>
+								<?php echo $qusr->getNameAsLine(); ?></td>
+							<?php if ($qi == 4) {
+								echo '</tr>';
+								$qi = -1;
+							} ?>
+							<?php $qi++;
+						} ?>
+					</table>
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Laufzeiten
+					</h3>
+				</div>
+				<?php
+				unset($whours);
+				unset($times);
+				$times = $machine->getRunninghours();
+				$daynames = Array("Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag");
+				?>
+				<div class="col-md-4">
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<?php
+							for ($i = 0; $i < 7; $i++) {
+								?>
+								<tr>
+									<td><?= $_LANG->get($daynames[$i]); ?></td>
+									<td>
+										<?php
+										$count = 0;
+										if (count($times[$i]) > 0) {
+											foreach ($times[$i] as $whours) {
+												?>
+												<div class="form-group">
+													<div class="col-sm-5">
+														<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_start" type="text" class="form-control" value="<?php echo date("H:i", $whours["start"]); ?>" name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][start]">
+													</div>
+													<label for="" class="col-sm-2 control-label">bis</label>
+													<div class="col-sm-5">
+														<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_end" type="text" class="form-control" value="<?php echo date("H:i", $whours["end"]); ?>" name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][end]">
+													</div>
+												</div>
+												<script language="JavaScript">
+													$(document).ready(function () {
+														var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+														var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+
+														$.timepicker.timeRange(
+															startTimeTextBox,
+															endTimeTextBox,
+															{
+																minInterval: (1000 * 900), // 0,25hr
+																timeFormat: 'HH:mm',
+																start: {}, // start picker options
+																end: {} // end picker options
+															}
+														);
+													});
+												</script>
+												<?php
+												$count++;
+											}
+										}
+										?>
+										<div class="form-group">
+											<div class="col-sm-5">
+												<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_start" type="text" class="form-control" value="" name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][start]">
+											</div>
+											<label for="" class="col-sm-2 control-label">bis</label>
+											<div class="col-sm-5">
+												<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_end" type="text" class="form-control" value="" name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][end]">
+											</div>
+										</div>
+										<script language="JavaScript">
+											$(document).ready(function () {
+												var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
+												var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+
+												$.timepicker.timeRange(
+													startTimeTextBox,
+													endTimeTextBox,
+													{
+														minInterval: (1000 * 900), // 0,25hr
+														timeFormat: 'HH:mm',
+														start: {}, // start picker options
+														end: {} // end picker options
+													}
+												);
+											});
+										</script>
+									</td>
+								</tr>
+								<?php
 							}
 							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top"><?=$_LANG->get('Maschinentyp')?> *</td>
-					<td class="content_row_clear">
-						<select id="machine_type" name="machine_type" style="width:300px" class="text" onchange="checkMachineType(this.value);showHide(this.value);">
-							<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-							<option value="<?=Machine::TYPE_DRUCKMASCHINE_OFFSET?>" <? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo "selected";?>><?=$_LANG->get('Druckmaschine Offset / Buchdruck')?></option>
-							<option value="<?=Machine::TYPE_DRUCKMASCHINE_DIGITAL?>" <? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo "selected";?>><?=$_LANG->get('Druckmaschine Digital')?></option>
-							<option value="<?=Machine::TYPE_CTP?>" <? if($machine->getType() == Machine::TYPE_CTP) echo "selected";?>><?=$_LANG->get('Computer To Plate')?></option>
-							<option value="<?=Machine::TYPE_FOLDER?>" <? if($machine->getType() == Machine::TYPE_FOLDER) echo "selected";?>><?=$_LANG->get('Falzmaschine')?></option>
-							<option value="<?=Machine::TYPE_CUTTER?>" <? if($machine->getType() == Machine::TYPE_CUTTER) echo "selected";?>><?=$_LANG->get('Schneidemaschine')?></option>
-							<option value="<?=Machine::TYPE_LASERCUTTER?>" <? if($machine->getType() == Machine::TYPE_LASERCUTTER) echo "selected";?>><?=$_LANG->get('Stanze / Laser-Stanze')?></option>
-							<option value="<?=Machine::TYPE_LAGENFALZ?>" <? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo "selected";?>><?=$_LANG->get('Lagenfalz-/Zusammentragmaschine')?></option>
-							<option value="<?=Machine::TYPE_SAMMELHEFTER?>" <? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo "selected";?>><?=$_LANG->get('Sammelhefter')?></option>
-							<option value="<?=Machine::TYPE_MANUELL?>" <? if($machine->getType() == Machine::TYPE_MANUELL) echo "selected";?>><?=$_LANG->get('Manuelle Arbeit')?></option>
-							<option value="<?=Machine::TYPE_OTHER?>" <? if($machine->getType() == Machine::TYPE_OTHER) echo "selected";?>><?=$_LANG->get('Andere')?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top"><?=$_LANG->get('Preistyp')?> *</td>
-					<td class="content_row_clear">
-						<?/*gln <select name="machine_pricebase" style="width:300px" class="text">*/?>
-						<select id="machine_pricebase" name="machine_pricebase" style="width:300px" class="text" onchange="if (document.getElementById('machine_type').value == <?=Machine::TYPE_DRUCKMASCHINE_DIGITAL?>) showHideClpr(this.value);">
-							<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-							<option value="<?=Machine::PRICE_AUFLAGE?>" <? if($machine->getPriceBase() == Machine::PRICE_AUFLAGE) echo "selected";?>><?=$_LANG->get('Preis nach Auflage')?></option>
-							<option value="<?=Machine::PRICE_BOGEN?>" <? if($machine->getPriceBase() == Machine::PRICE_BOGEN) echo "selected";?>><?=$_LANG->get('Preis nach Bogen')?></option>
-							<option value="<?=Machine::PRICE_DRUCKPLATTE?>" <? if($machine->getPriceBase() == Machine::PRICE_DRUCKPLATTE) echo "selected";?>><?=$_LANG->get('Preis nach Druckplatten')?></option>
-							<option value="<?=Machine::PRICE_MINUTE?>" <? if($machine->getPriceBase() == Machine::PRICE_MINUTE) echo "selected";?>><?=$_LANG->get('Preis nach Minuten')?></option>
-							<option value="<?=Machine::PRICE_PAUSCHAL?>" <? if($machine->getPriceBase() == Machine::PRICE_PAUSCHAL) echo "selected";?>><?=$_LANG->get('Pauschalpreis')?></option>
-							<option value="<?=Machine::PRICE_SQUAREMETER?>" <? if($machine->getPriceBase() == Machine::PRICE_SQUAREMETER) echo "selected";?>><?=$_LANG->get('Preis pro Quadratmeter Bogen/Rolle')?></option>
-							<option value="<?=Machine::PRICE_DPSQUAREMETER?>" <? if($machine->getPriceBase() == Machine::PRICE_DPSQUAREMETER) echo "selected";?>><?=$_LANG->get('Preis pro Quadratmeter Druckplatte')?></option>
-							<option value="<?=Machine::PRICE_VARIABEL?>" <? if($machine->getPriceBase() == Machine::PRICE_VARIABEL) echo "selected";?>><?=$_LANG->get('Preis variabel')?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Preis')?></td>
-					<td class="content_row_clear">
-						<input id="machine_price" name="machine_price" value="<?=printPrice($machine->getPrice(),4)?>" style="width:60px;text-align:right;" class="text"> <?=$_USER->getClient()->getCurrency()?>
-					</td>
-				</tr>
-				<? if($machine->getLectorId() != 0) { ?>
-				<tr>
-					<td class="content_row_header"><span class="error"><?=$_LANG->get('Importiert von Lector')?></span></td>
-					<td class="content_row_clear">
-						Lector-ID: <?=$machine->getLectorId()?>
-					</td>
-				</tr>
-				<? } ?>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Farbe (Planung)')?></td>
-					<td class="content_row_clear">
-						<input id="machine_color" name="machine_color" value="<?=$machine->getColor()?>" class="text" size="6" maxlength="6">
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td valign="top">
-			<table width="500" cellpadding="0" cellspacing="0" border="0">
-				<colgroup>
-					<col width="180">
-					<col>
-				</colgroup>
-				<tr>
-					<td class="content_row_header" valign="top">int. Beschreibung</td>
-					<td class="content_row_clear" valign="top">
-						<textarea name="machine_internaltext" style="width:300px;height:100px" class="text"><?=$machine->getInternalText()?></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top">Hersteller</td>
-					<td class="content_row_clear" valign="top">
-						<textarea name="machine_hersteller" style="width:300px;height:100px" class="text"><?=$machine->getHersteller()?></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top">Baujahr</td>
-					<td class="content_row_clear" valign="top">
-						<textarea name="machine_baujahr" style="width:300px;height:100px" class="text"><?=$machine->getBaujahr()?></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top">Druckplatten</td>
-					<td class="content_row_clear" valign="top">
-						<input id="machine_DPHeight" name="machine_DPHeight" value="<?=printPrice($machine->getDPHeight(),4)?>" style="width:60px;text-align:right;" class="text"> x
-						<input id="machine_DPWidth" name="machine_DPWidth" value="<?=printPrice($machine->getDPWidth(),4)?>" style="width:60px;text-align:right;" class="text"> mm
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header" valign="top">Max Stapelhöhe (mm)</td>
-					<td class="content_row_clear" valign="top">
-						<input id="machine_maxstacksize" name="machine_maxstacksize" value="<?=$machine->getMaxstacksize();?>" style="width:60px;text-align:right;" class="text">
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</div>
-<br>
+						</table>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
 <div class="box2">
 <b>Maschinendaten</b>
 <table cellpadding="0" cellspacing="0" border="0"><tr><td valign="top">
-<table width="500">
-    <colgroup>
-        <col width="180">
-        <col>
-    </colgroup>
-    <tr id="tr_machine_colors_front" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Farben')?> <?=$_LANG->get('Vorderseite')?></td>
-        <td class="content_row_clear">
-            <input name="colors_front" style="width:60px;text-align:center" value="<?=$machine->getColors_front()?>">
-
-        </td>
-    </tr>
-    <tr id="tr_machine_colors_back" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Farben')?> <?=$_LANG->get('R&uuml;ckseite')?></td>
-        <td class="content_row_clear">
-            <input name="colors_back" style="width:60px;text-align:center" value="<?=$machine->getColors_back()?>">
-        </td>
-    </tr>
-    <tr id="tr_machine_paper_size" style="display:<? if($machine->getType() != Machine::TYPE_CTP) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Max. Papiergr&ouml;&szlig;e')?></td>
-        <td class="content_row_clear">
-            <?=$_LANG->get('Breite')?>: <input name="paper_size_width" style="width:40px;text-align:center" value="<?=$machine->getPaperSizeWidth()?>"> mm x
-            <?=$_LANG->get('H&ouml;he')?>: <input name="paper_size_height" style="width:40px;text-align:center" value="<?=$machine->getPaperSizeHeight()?>"> mm
-        </td>
-    </tr>
-    <tr id="tr_machine_paper_min_size" style="display:<? if($machine->getType() != Machine::TYPE_CTP) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Min. Papiergr&ouml;&szlig;e')?></td>
-        <td class="content_row_clear">
-            <?=$_LANG->get('Breite')?>: <input name="paper_size_min_width" style="width:40px;text-align:center" value="<?=$machine->getPaperSizeMinWidth()?>"> mm x
-            <?=$_LANG->get('H&ouml;he')?>: <input name="paper_size_min_height" style="width:40px;text-align:center" value="<?=$machine->getPaperSizeMinHeight()?>"> mm
-        </td>
-    </tr>
-    <tr id="tr_machine_border" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('nicht bedruckbarer Bereich')?></td>
-        <td class="content_row_clear" align="center">
-            <table>
-                <tr>
-                    <td></td>
-                    <td class="content_row_clear"><input name="border_top" style="width:40px;text-align:center" value="<?=$machine->getBorder_top()?>"> mm</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="content_row_clear"><input name="border_left" style="width:40px;text-align:center" value="<?=$machine->getBorder_left()?>"> mm</td>
-                    <td></td>
-                    <td class="content_row_clear"><input name="border_right" style="width:40px;text-align:center" value="<?=$machine->getBorder_right()?>"> mm</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="content_row_clear"><input name="border_bottom" style="width:40px;text-align:center" value="<?=$machine->getBorder_bottom()?>"> mm</td>
-                    <td></td>
-                </tr>
-
-            </table>
-
-        </td>
-    </tr>
-    <tr id="tr_machine_timebase">
-        <td class="content_row_header"><?=$_LANG->get('Grundzeit')?></td>
-        <td class="content_row_clear">
-            <input name="time_base" style="width:60px;text-align:center" value="<?=$machine->getTimeBase()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_breaks" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Max. Br&uuml;che')?></td>
-        <td class="content_row_clear">
-            <input name="breaks" value="<?=$machine->getBreaks()?>" style="width:60px;text-align:center">
-        </td>
-    </tr>
-    <tr id="tr_machine_breaks_time" style="display:<? if($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('R&uuml;sten pro Bruch')?></td>
-        <td class="content_row_clear">
-            <input name="breaks_time" value="<?=$machine->getBreaks_time()?>"  style="width:60px;text-align:center"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_timeplatechange" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Zeit pro Plattenwechsel')?></td>
-        <td class="content_row_clear">
-            <input name="time_platechange" style="width:60px;text-align:center" value="<?=$machine->getTimePlatechange()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_timecolorchange" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Zeit pro Farbwechsel')?></td>
-        <td class="content_row_clear">
-            <input name="time_colorchange" style="width:60px;text-align:center" value="<?=$machine->getTimeColorchange()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_setup_stations" style="display:<? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Zeit Einrichtung Station')?></td>
-        <td class="content_row_clear">
-            <input name="time_setup_stations" style="width:60px;text-align:center" value="<?=$machine->getTimeSetupStations()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_anz_stations" style="display:<? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Anzahl Stationen')?></td>
-        <td class="content_row_clear">
-            <input name="anz_stations" style="width:60px;text-align:center" value="<?=$machine->getAnzStations()?>">
-        </td>
-    </tr>
-    <tr id="tr_machine_pages_per_station" style="display:<? if($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Seiten pro Station')?></td>
-        <td class="content_row_clear">
-            <input name="pages_per_station" style="width:60px;text-align:center" value="<?=$machine->getPagesPerStation()?>">
-        </td>
-    </tr>
-    <tr id="tr_machine_anz_signatures" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('Anzahl Signaturen')?></td>
-        <td class="content_row_clear">
-            <input name="anz_signatures" style="width:60px;text-align:center" value="<?=$machine->getAnzSignatures()?>">
-        </td>
-    </tr>
-    <tr id="tr_machine_time_signatures" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('R&uuml;stzeit pro Signatur')?></td>
-        <td class="content_row_clear">
-            <input name="time_signatures" style="width:60px;text-align:center" value="<?=$machine->getTimeSignatures()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_time_envelope" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('R&uuml;stzeit Umschlaganleger')?> *</td>
-        <td class="content_row_clear">
-            <input name="time_envelope" style="width:60px;text-align:center" value="<?=$machine->getTimeEnvelope()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_time_trimmer" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('R&uuml;stzeit Dreischneider')?> *</td>
-        <td class="content_row_clear">
-            <input name="time_trimmer" style="width:60px;text-align:center" value="<?=$machine->getTimeTrimmer()?>"> min
-        </td>
-    </tr>
-    <tr id="tr_machine_time_stacker" style="display:<? if($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;"?>">
-        <td class="content_row_header"><?=$_LANG->get('R&uuml;stzeit Kreuzleger')?> *</td>
-        <td class="content_row_clear">
-            <input name="time_stacker" style="width:60px;text-align:center" value="<?=$machine->getTimeStacker()?>"> min
-        </td>
-    </tr>
-</table>
 </td><td valign="top">
 <table width="500">
-    <colgroup>
-        <col width="180">
-        <col>
-    </colgroup>
-    <tr id="tr_machine_chromaticity" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ) echo ""; else echo "none;"?>">
-        <td class="content_row_header" valign="top"><?=$_LANG->get('verf&uuml;gbare Farbigkeiten')?></td>
-        <td class="content_row_clear">
-        <table cellpadding="0" cellspacing="0" border="0">
-	    <colgroup>
-	        <col>
-	        <col width="60">
-	        <col>
-    	</colgroup>
-        <?
-
-        function chromaActive($chr, $machine)
-        {
-            foreach ($machine->getChromaticities() as $c)
-            {
-                if($chr->getId() == $c->getId())
-                    return true;
-            }
-            return false;
-        }
-        //gln
-        $anzeige = true;
-        $chrs = Chromaticity::getAllChromaticities(Chromaticity::ORDER_NAME);
-        foreach($chrs as $chr)
-        {
-        ?>
-        	<tr>
-	        <td class="content_row_header">
-        <?
-            echo '<input name="chroma_'.$chr->getId().'" type="checkbox" value="1" ';
-            if(chromaActive($chr, $machine) === true) echo "checked";
-            echo '>'.$chr->getName()."<br>";
-            ?>
-            </td>
-	        <td name="anz_click1" class="content_row_header" valign="top" align="right" style="display:<? if($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ) echo ""; else echo "none;"?>"><?if($anzeige) echo $_LANG->get('Click');else echo "";?></td>
-            <td name="anz_click2" style="display:<? if($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ) echo ""; else echo "none;"?>">
-            <?
-            if(chromaActive($chr, $machine) === true)
-	            echo '<input name="click_'.$chr->getId().'" style="width:60px;text-align:center" value="'. printPrice($machine->getCurrentClickprice($chr), 4).'"> '. $_USER->getClient()->getCurrency();
-			else
-	            echo '<input name="click_'.$chr->getId().'" style="width:60px;text-align:center" value="'. printPrice(0, 4).'"> '. $_USER->getClient()->getCurrency();
-			?>
-			</td>
-			</tr>
-			<?
-			$anzeige = false;
-        }
-        ?>
-        </table>
-        </td>
-    </tr>
-    <tr id="tr_machine_finish" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;"?>">
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Option Lack verf&uuml;gbar')?></td>
-        <td class="content_row_clear">
-            <table cellspacing="0" cellpadding="0">
-                <tr>
-                    <td><input name="finish" value="1" type="checkbox" <?if($machine->getFinish() == 1) echo "checked";?>></td>
 
 
-                    <td class="content_row_clear"> &emsp;&emsp; <?=$_LANG->get('Preis Lackplatte')?></td>
-       <?/* gln </tr>
-                <tr> */?>
-                    <td class="content_row_clear">
-                        <input name="finish_plate_cost" value="<?=printPrice($machine->getFinishPlateCost())?>" style="width:40px;text-align:center;">
-                        <?=$_USER->getClient()->getCurrency()?>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-     <?/* gln 13.05.2014, Umschlagen/Umstuelpen */?>
-    <tr id="tr_machine_umschl_umst" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;"?>">
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Option umschlagen/umst&uuml;lpen')?></td>
-        <td class="content_row_clear">
-            <input name="umschl_umst" value="1" type="checkbox" <?if($machine->getUmschlUmst() == 1) echo "checked";?>>
-        </td>
-    </tr>
-     <?/* ascherer 19.08.14, Schneidemaschine */?>
-    <tr id="tr_machine_cut_price" style="display:<? if($machine->getType() == Machine::TYPE_CUTTER) echo ""; else echo "none;"?>">
-        <td class="content_row_header" valign="top"><?=$_LANG->get('Schnittpreis')?></td>
-        <td class="content_row_clear">
-            <input name="cut_price" value="<?=printPrice($machine->getCutPrice(), 4)?>">
-        </td>
-    </tr>
     <tr id="tr_machine_paperperhour">
         <td class="content_row_header" valign="top"><?=$_LANG->get('Laufleistung')?></td>
         <td class="content_row_clear" id="td_machine_paperperhour">
@@ -1010,102 +1222,52 @@ if ($machine->getId() > 0){
 
 </div>
 <br>
-<div class="box1">
-    <b>Arbeiter</b>
-	<table width="100%" cellpadding="0" cellspacing="0" border="0">
-	    <?php
-	    $all_users = User::getAllUser();
-	    $qid_arr = Array();
-	    foreach ($machine->getQualified_users() as $qid)
-	    {
-	        $qid_arr[] = $qid->getId();
-	    }
-	    $qi = 0;
-	    foreach ($all_users as $qusr){
-	       if ($qi==0) echo '<tr>';
-	       ?>
-		   <td class="content_row_header" valign="top" width="20%">
-		   <input type="checkbox" name="qusr[]" <?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?> value="<?php echo $qusr->getId();?>"/>
-		   <?php echo $qusr->getNameAsLine();?></td>
-		   <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
-		<?php $qi++;}?>
-	</table>
-</div>
-</br>
-<div class="box1">
-   <b>Laufzeiten:</b>
-   <?php
-   unset($whours);
-   unset($times);
-   $times = $machine->getRunninghours();
-   $daynames = Array("Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag");
-   ?>
-   <table>
-   <?php
-   for($i=0;$i<7;$i++)
-   {
-       ?>
-		<tr>
-			<td class="content_row_header" valign="top"><?=$_LANG->get($daynames[$i]);?></td>
-			<td class="content_row_clear">
-       <?php
-       $count = 0;
-       if (count($times[$i])>0)
-       {
-           foreach($times[$i] as $whours)
-           {
-                ?>
-			    <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="<?php echo date("H:i",$whours["start"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis
-                <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="<?php echo date("H:i",$whours["end"]);?>" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
-                <script language="JavaScript">
-                    $(document).ready(function () {
-                    	var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
-                    	var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
 
-                    	$.timepicker.timeRange(
-                    		startTimeTextBox,
-                    		endTimeTextBox,
-                    		{
-                    			minInterval: (1000*900), // 0,25hr
-                    			timeFormat: 'HH:mm',
-                    			start: {}, // start picker options
-                    			end: {} // end picker options
-                    		}
-                    	);
-                    });
-                </script>
-                <?php
-               $count++;
-           }
-       }
-       ?>
-			    <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_start" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][start]"> bis
-                <input id="wotime_<?php echo $i;?>_<?php echo $count;?>_end" type="text" value="" name="wotime[<?php echo $i;?>][<?php echo $count;?>][end]"></br>
-                <script language="JavaScript">
-                    $(document).ready(function () {
-                    	var startTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_start');
-                    	var endTimeTextBox = $('#wotime_<?php echo $i;?>_<?php echo $count;?>_end');
+	<?php if ($machine->getId() > 0){?>
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">Sperrzeiten</h3>
+		  </div>
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<tr>
+					<td>Sperrzeit Start</td>
+					<td>Sperrzeit Ende</td>
+				</tr>
+				<?php
+				$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
+				foreach ($all_locks as $lock){
+					if ($lock->getStart() >= time() || $lock->getStop() >= time()){
+						?>
+						<tr>
+							<td><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
+							<td><?php echo date("d.m.Y H:i", $lock->getStop());?>
+								<a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><img src="images/icons/cross-script.png"/></a></td>
+						</tr>
+					<?php }} ?>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><label for="" class="control-label">neue Sperrzeit:</label></td>
+					<td>
+						<div class="form-group">
+							<div class="col-sm-5">
+								<input type="text" id="lock_start" name="lock_start" class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+							</div>
+							<label for="" class="col-sm-2 control-label">bis</label>
+							<div class="col-sm-5">
+								<input type="text" id="lock_stop" name="lock_stop"	class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+<?php } ?>
 
-                    	$.timepicker.timeRange(
-                    		startTimeTextBox,
-                    		endTimeTextBox,
-                    		{
-                    			minInterval: (1000*900), // 0,25hr
-                    			timeFormat: 'HH:mm',
-                    			start: {}, // start picker options
-                    			end: {} // end picker options
-                    		}
-                    	);
-                    });
-                </script>
-			</td>
-		</tr>
-       <?php
-   }
-   ?>
-   </table>
-</div>
-</br>
 <?php if ($machine->getId() > 0){?>
 <div class="box1">
     <b>Sperrzeiten</b>
@@ -1132,8 +1294,8 @@ if ($machine->getId() > 0){
 		<tr>
 			<td class="content_row_clear" valign="top">neue Sperrzeit:</td>
 			<td class="content_row_clear" valign="top">
-			     <input type="text" style="width:160px" id="lock_start" name="lock_start"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
-			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/> -> <input type="text" style="width:160px" id="lock_stop" name="lock_stop"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" 
+			     <input type="text" style="width:160px" id="lock_start" name="lock_start"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/> -> <input type="text" style="width:160px" id="lock_stop" name="lock_stop"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
 			     onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
 			</td>
 		</tr>

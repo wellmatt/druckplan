@@ -60,51 +60,37 @@ $(function() {
     });
 });
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Kalkulation anlegen
+                <span class="pull-right">
+                  <?=$savemsg?>
+                </span>
+            </h3>
+	  </div>
+	  <div class="panel-body">
+          <form action="index.php?page=<?=$_REQUEST['page']?>" class="form-horizontal" method="post" name="neworder_form" id="neworder_form" onSubmit="return validateForm()">
+              <input type="hidden" name="exec" value="edit">
+              <input type="hidden" name="createNew" value="1">
+              <div class="form-group">
+                  <label for="" class="col-sm-3 control-label">Titel</label>
+                  <div id="td-title" class="col-sm-9">
+                      <input name="order_title" id="" value="" class="form-control">
+                  </div>
+              </div>
+              <input type="hidden" name="order_customer" id="order_customer" value="0">
+              <input type="hidden" name="order_contactperson" id="order_contactperson" value="0">
+              <br>
+              <span class="pull-right">
+                  <button class="btn btn-default btn-success" type="submit">
+                      <?= $_LANG->get('Anlegen') ?>
+                  </button>
+              </span>
+          </form>
+	  </div>
 
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <?=$_LANG->get('Kalkulation anlegen')?></td>
-      <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
-
-<div class="box1">
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="neworder_form" id="neworder_form" onSubmit="return validateForm()">
-<input type="hidden" name="exec" value="edit">
-<input type="hidden" name="createNew" value="1">
-<table width="100%">
-    <colgroup>
-        <col width="180">
-        <col width="280">
-    </colgroup>
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-        <td class="content_row" id="td-title">
-            <input name="order_title" style="width:280px" class="text">
-        </td>
-    </tr>
-	<input type="hidden" name="order_customer" id="order_customer" value="0">
-	<input type="hidden" name="order_contactperson" id="order_contactperson" value="0">
-    <?php /*
-    <tr>
-        <td class="content_row_header"><?=$_LANG->get('Kunden suchen')?></td>
-        <td class="content_row"  id="td-selcustomer">
-			<input type="text" name="search" id="search" style="width:280px" required>
-			<input type="hidden" name="order_customer" id="order_customer" required>
-			<input type="hidden" name="order_contactperson" id="order_contactperson" required>
-        </td>
-    </tr>
-    */ ?>
-    
-    <tr>
-        <td class="content_row" colspan="2" align="right">
-            <input type="submit" value="<?=$_LANG->get('Anlegen')?>">
-        </td>
-    </tr>
-    
-</table>
-</form>
-<script>
-  $("#neworder_form").validate();
-</script>
+    <script>
+        $("#neworder_form").validate();
+    </script>
 </div>

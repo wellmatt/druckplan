@@ -1095,10 +1095,10 @@ echo $quickmove->generate();
 												$hash = $docs[0]->getHash();
 												?>
 												<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Download mit Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_e.pdf');">
-													<span class="glyphicons glyphicons-display"></span>
+													<span class="glyphicons glyphicons-cd">
 												</button>
 												<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Download ohne Hintergrund')?>" onclick="window.open('./docs/personalization/<?php echo $tmp_id;?>.per_<?php echo $hash;?>_p.pdf');">
-													<span class="glyphicons glyphicons-display"></span>
+													<span class="glyphicons glyphicons-cd">
 												</button>
 												<?php
 											}
