@@ -1183,7 +1183,6 @@ if((int)$_REQUEST["step"] == 3){
 			}
 		}
 	}
-	
 	// Weiterleiten zu Step 4 oder in Step 3 bleiben
 	if((int)$_REQUEST["nextstep"] > 0){
 		echo '<script language="javascript">';

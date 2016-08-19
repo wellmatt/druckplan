@@ -67,7 +67,7 @@ class User {
     private $avatar = null;
 
     // Dashboard & Starting Page
-    private $homepage = 'libs/basic/dashboard/tickets.php';
+    private $homepage = 'libs/basic/home.php';
 	
     /* Konstruktor
      * Falls id �bergeben, werden die entsprechenden Daten direkt geladen

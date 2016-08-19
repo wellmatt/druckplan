@@ -479,7 +479,8 @@ echo $quickmove->generate();
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
                                   <? if($calc->getPaperContent()->getId() > 0)
-                                      echo $calc->getPaperContent()->getName().', '.$calc->getPaperContent()->getSelectedWeight().' '.$_LANG->get('g').'';?>
+                                      echo $calc->getPaperContent()->getName().', '.$calc->getPaperContent()->getSelectedWeight().' '.$_LANG->get('g').'';
+                                  ?>
                                   &nbsp;
                               </td>
                           <? }?>
@@ -498,7 +499,7 @@ echo $quickmove->generate();
                                       <?php
                                   } else {
                                       ?>
-                                      <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/10000,2)?> <?=$_LANG->get('Laufmeter')?>
+                                      <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/10000,2)?> <?=$_LANG->get('Laufmeter')?> (<?=printPrice((($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/10000) * tofloat($calc->getPaperContent()->getSelectedSize()["width"])/10000,2)?> <?=$_LANG->get('qm')?>)
                                       <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
                                       <?=$_USER->getClient()->getCurrency()?>
                                       <?php
