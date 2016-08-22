@@ -112,9 +112,6 @@ $(function() {
      );
 });
 </script>
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post" name="xform_invoicesearch">
-	<input type="hidden" name="subexec" value="search">
-	<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
@@ -132,6 +129,9 @@ $(function() {
 					</h3>
 				</div>
 				<div class="panel-body">
+					<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post" name="xform_invoicesearch">
+						<input type="hidden" name="subexec" value="search">
+						<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
@@ -186,6 +186,7 @@ $(function() {
 						<?= $_LANG->get('Suche starten') ?>
 					</button>
 					</span>
+					</form>
 				</div>
 			</div>
 			<div class="panel panel-default">
@@ -358,13 +359,16 @@ $(function() {
 			<?= $_LANG->get('Anzeigen') ?></a>
 			</ul-->
 											<ul class="postnav_save_small_outinvc">
-												<a href="index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?= $document->getId() ?>"><?= $_LANG->get('Mahnung'); ?></a>
+												<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?= $document->getId() ?>';">
+													<?= $_LANG->get('Mahnung') ?>
+												</button>
 											</ul>
 											<? if ($document->getStornoDate() == 0) {
 												?>
 												<ul class="postnav_save_small_outinvc">
-													<a href="#"
-													   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=storno&invid=<?= $document->getId() ?>')"><?= $_LANG->get('Storno'); ?>&emsp;&ensp;</a>
+													<button class="btn btn-xs btn-success" href="#" type="button" onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=storno&invid=<?= $document->getId() ?>')">
+														<?= $_LANG->get('Storno'); ?>&emsp;&ensp;
+													</button>
 												</ul>
 											<? } else { ?>
 												<br/>
@@ -407,5 +411,4 @@ $(function() {
 			<iframe style="width:1px;height:1px;display:none" id="idx_iframe_doc" src=""></iframe>
 		</div>
 	</div>
-</form>
 

@@ -509,7 +509,7 @@ $(function() {
 									?>
 									Summe: <input type="text" class="form-control" value="0"
 												  name="invc_order[<?= $x ?>][amount]"></br>
-									Auftrag: <select class="text" name="invc_order[<?= $x ?>][id]">
+									Auftrag: <select class="form-control" name="invc_order[<?= $x ?>][id]">
 										<option value="">&lt;<?= $_LANG->get('Auftrag ausw&auml;hlen') ?>&gt;</option>
 										<? $all_sup_orders = Order::getAllOrdersByCustomer($invoice->getInvc_supplierid());
 										foreach ($all_sup_orders AS $tmp_sup_order) { ?>
@@ -574,8 +574,11 @@ $(function() {
 								<td>
 									<ul class="postnav_del_small_invoice">
 										<? if ($invoice->getId()) { ?>
-											<a href="#"
-											   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $invoice->getId() ?>&exec=del')"><?= $_LANG->get('L&ouml;schen') ?></a>
+											<button class="btn btn-xs btn-danger" href="#" onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $invoice->getId() ?>&exec=del')">
+												<?= $_LANG->get('L&ouml;schen') ?>
+											</button>
+											<a
+											  </a>
 
 											<!-- input type="button" class="buttonRed" value="<?= $_LANG->get('L&ouml;schen') ?>" onclick="askDel('index.php?pid=<?= $_REQUEST["pid"] ?>&id=<?= $invoice->getId() ?>&exec=del')"-->
 										<? } else { ?>

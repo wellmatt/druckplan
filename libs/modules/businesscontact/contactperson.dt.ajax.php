@@ -257,8 +257,8 @@
             }
         }
 
-        $tmp_row = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid='.$aRow[ $aColumns[0] ].'&id='.$aRow[ "bcid" ].'"><span class="glyphicons glyphicons-user" title="zum Ansprechpartner"></span></a>
-		            <a href="mailto:'.$aRow[ "email" ].'"><span class="glyphicons glyphicons-envelope" title="Mail schicken"></span></a>';
+        $tmp_row = '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit_cp&cpid='.$aRow[ $aColumns[0] ].'&id='.$aRow[ "bcid" ].'"><span class="glyphicons glyphicons-user" title="zum Ansprechpartner"></span>&ensp;</a>
+		            <a href="mailto:'.$aRow[ "email" ].'"><span class="glyphicons glyphicons-envelope" title="Mail schicken">&ensp;</span></a>';
         
         $tmp_phone = $aRow[ "phone" ];
         if ($tmp_phone != "" || $tmp_phone != NULL){
@@ -272,7 +272,7 @@
                 $phone = "00".$phone;							// 00 voransetzen, wenn Ausland
             }
             $phonefordial = $phone;
-            $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><span class="glyphicons glyphicons-phone-alt" title="'.$aRow[ "phone" ].' anrufen"></span></a>';
+            $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><span class="glyphicons glyphicons-phone-alt" title="'.$aRow[ "phone" ].' anrufen"></span>&ensp;</a>';
         }
        
         $tmp_phone = $aRow[ "mobil" ];
@@ -287,10 +287,10 @@
                 $phone = "00".$phone;							// 00 voransetzen, wenn Ausland
             }
             $phonefordial = $phone;
-            $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><span class="glyphicons glyphicons-iphone" title="'.$aRow[ "mobil" ].' anrufen"></span></a>';
+            $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><span class="glyphicons glyphicons-iphone" title="'.$aRow[ "mobil" ].' anrufen"></span>&ensp;</a>';
         }
 		
-        $tmp_row .= '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ "bcid" ].'"><span class="glyphicons glyphicons-user" title="zum Geschäftskontakt"></span></a>';
+        $tmp_row .= '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ "bcid" ].'"><span class="glyphicons glyphicons-user" title="zum Geschäftskontakt"></span>&ensp;</a>';
         
 		$row[] = $tmp_row;
         $output['aaData'][] = $row;

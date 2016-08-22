@@ -53,64 +53,51 @@ function updateInvoicewarningText(warnid){
 			});
 }
 </script>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Mahnung erstellen
+				<span class="pull-right">
+					<?=$savemsg?>
+				</span>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <form action="index.php?page=libs/modules/accounting/invoicewarning.php" method="post" class="form-horizontal" name="warnlevel_edit" id="warnlevel_edit"
+				onSubmit="return checkForm(new Array(this.warn_title, this.warn_text))">
+			  <input type="hidden" name="exec" value="new">
+			  <input type="hidden" name="subexec" value="create">
+			  <input type="hidden" name="invid" value="<?=$_REQUEST["invid"]?>">
 
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Mahnung erstellen')?>
-		</td>
-		<td align="right"><?=$savemsg?></td>
-	</tr>
-</table>
+			  <div class="form-group">
+				  <label for="" class="col-sm-3 control-label">Mahnstufe</label>
+				  <div class="col-sm-9">
+					  <select id="warn_id" name="warn_id" class="form-control" onchange="updateInvoicewarningText(this.value)">
+						  <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+						  <?foreach ($all_wanlevel AS $warn){?>
+							  <option value="<?=$warn->getId()?>"><?=$warn->getTitle()?></option>
+						  <?}?>
+					  </select>
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-3 control-label">Text</label>
+				  <div class="col-sm-9">
+					  <textarea id="warn_text" name="warn_text" class="form-control"  rows="6"><?=$warn_text?></textarea>
+				  </div>
+			  </div>
+			  <br>
+			  <br>
+			  <button class="btn btn-origin btn-success" type="button" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>';">
+				  <?= $_LANG->get('Zur&uuml;ck') ?>
+			  </button>
+			  <span class="pull-right">
+				   <button class="btn btn-origin btn-success" type="submit">
+					   <?=$_LANG->get('Erstellen')?>
+				   </button>
+			  </span>
+		  </form>
+	  </div>
+</div>
 
-<form action="index.php?page=libs/modules/accounting/invoicewarning.php" method="post" name="warnlevel_edit" id="warnlevel_edit"   
-		onSubmit="return checkForm(new Array(this.warn_title, this.warn_text))">
-	<div class="box1">
-		<input type="hidden" name="exec" value="new"> 
-		<input type="hidden" name="subexec" value="create"> 
-		<input type="hidden" name="invid" value="<?=$_REQUEST["invid"]?>">
-		<table width="100%">
-			<colgroup>
-				<col width="170">
-				<col>
-			</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Mahnstufe')?> *</td>
-				<td class="content_row_clear">
-					<select id="warn_id" name="warn_id" class="text" style="width: 250px"
-							onchange="updateInvoicewarningText(this.value)">
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-						<?foreach ($all_wanlevel AS $warn){?>
-							<option value="<?=$warn->getId()?>"><?=$warn->getTitle()?></option>
-						<?}?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header" valign="top"><?=$_LANG->get('Text')?> *</td>
-				<td class="content_row_clear" valign="top">
-					<textarea id="warn_text" name="warn_text" class="text" style="width: 500px; height: 150px; "
-							  ><?=$warn_text?></textarea>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<br/>
-	<?// Speicher & Navigations-Button ?>
-	<table width="100%">
-	    <colgroup>
-	        <col width="180">
-	        <col>
-	    </colgroup> 
-	    <tr>
-	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-	        </td>
-	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Erstellen')?>">
-	        </td>
-	    </tr>
-	</table>
-</form>
+
