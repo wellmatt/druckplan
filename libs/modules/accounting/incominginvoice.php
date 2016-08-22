@@ -52,7 +52,6 @@ if($_REQUEST["exec"] == "save"){
 
 		if(strpos($reqkey, "invc_title_") !== false){
 		    $idx = substr($reqkey, strrpos($reqkey, "_") +1);
-		    $invc_orders = Array();
 
 		    if((!empty($_REQUEST["invc_price_netto_{$idx}"]))) { //(!empty($_REQUEST["invc_title_{$idx}"])) &&
 		        $inv = new Incominginvoice((int)$_REQUEST["invc_existingid_{$idx}"]);
@@ -86,14 +85,14 @@ if($_REQUEST["exec"] == "save"){
 		        else
 		            $inv->setInvc_payed(0);
 		        	
-		        // if(!$_REQUEST["invc_uses_supplier_{$idx}"])
-		            // $inv->setInvc_supplierid(0);
 
-// 		        print_r($_REQUEST["invc_order"][$idx]);
+				$invc_orders = Array();
 		        if($_REQUEST["invc_order"][$idx]){
-	                if ($_REQUEST["invc_order"][$idx]['amount'] > 0){
-	                  $invc_orders[] = $_REQUEST["invc_order"][$idx];
-	                }
+					foreach ($_REQUEST["invc_order"][$idx] as $inv_order) {
+						if ($inv_order['amount'] > 0){
+							$invc_orders[] = $inv_order;
+						}
+					}
 		        }
 		        $inv->setInvc_orders($invc_orders);
 
@@ -287,6 +286,8 @@ if($invoices == false || count($invoices) == 0){
 ?>
 <script type="text/javascript">
 $(function() {
+
+
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	
 	$('.invc_payable_dat').datepicker(
@@ -345,6 +346,26 @@ $(function() {
      );
 });
 </script>
+<script language="JavaScript">
+	$(document).ready(function () {
+		$( ".searchcolinv" ).autocomplete({
+			source: "libs/modules/associations/association.ajax.php?ajax_action=search_colinv2",
+			minLength: 2,
+			focus: function( event, ui ) {
+				$( this ).val( ui.item.label );
+				return false;
+			},
+			select: function( event, ui ) {
+				var hiddenele = document.getElementById($( this ).data( "inputname" ));
+				$( this ).val( ui.item.label );
+				$( hiddenele ).val( ui.item.value );
+				return false;
+			}
+		});
+	});
+</script>
+
+
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -497,26 +518,21 @@ $(function() {
 								</td>
 								<td>
 									<?
+									$xorder = 0;
 									if ($invoice->getInvc_orders()) {
 										foreach ($invoice->getInvc_orders() as $tmp_invc_order) {
-											$tmp_order = new Order($tmp_invc_order['id']);
-											echo '<input type="text" class="form-control" value="' . $tmp_invc_order['amount'] . '" name="invc_order[' . $x . '][amount]"><a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=' . $tmp_order->getId() . '&step=6"> ' . $tmp_order->getNumber() . '</a></br>';
-											echo '<input type="hidden" value="' . $tmp_order->getId() . '" name="invc_order[' . $x . '][id]">';
+											$tmp_colinv = new CollectiveInvoice($tmp_invc_order['id']);
+											echo '<input type="text" class="form-control" value="' . $tmp_invc_order['amount'] . '" name="invc_order[' . $x . ']['.$xorder.'][amount]"><a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=' . $tmp_colinv->getId() . '"> ' . $tmp_colinv->getNumber() . '</a></br>';
+											echo '<input type="hidden" value="' . $tmp_colinv->getId() . '" name="invc_order[' . $x . ']['.$xorder.'][id]">';
 											$xi++;
+											$xorder++;
 										}
 										echo '</br>';
 									}
 									?>
-									Summe: <input type="text" class="form-control" value="0"
-												  name="invc_order[<?= $x ?>][amount]"></br>
-									Auftrag: <select class="form-control" name="invc_order[<?= $x ?>][id]">
-										<option value="">&lt;<?= $_LANG->get('Auftrag ausw&auml;hlen') ?>&gt;</option>
-										<? $all_sup_orders = Order::getAllOrdersByCustomer($invoice->getInvc_supplierid());
-										foreach ($all_sup_orders AS $tmp_sup_order) { ?>
-											<option
-												value="<?= $tmp_sup_order->getId() ?>"><?= $tmp_sup_order->getNumber() ?></option>
-										<? } ?>
-									</select>
+									Summe: <input type="text" class="form-control" value="0" name="invc_order[<?= $x ?>][<?= $xorder ?>][amount]"></br>
+									Auftrag: <input type="text" class="form-control searchcolinv" name="invc_order_<?=$x?>" value="" data-inputname="invc_order[<?= $x ?>][<?= $xorder ?>][id]" placeholder="Auftrag suchen...">
+									<input type="hidden" name="invc_order[<?= $x ?>][<?= $xorder ?>][id]" id="invc_order[<?= $x ?>][<?= $xorder ?>][id]">
 								</td>
 								<td>
 									<input type="checkbox" class="form-control" name="invc_uses_supplier_<?= $x ?>"

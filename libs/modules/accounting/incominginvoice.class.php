@@ -104,7 +104,7 @@ class Incominginvoice {
 	/**
 	 * liefert alle Eingangsrechnungen
 	 * 
-	 * @return multitype:Incominginvoice
+	 * @return Incominginvoice[]
 	 */
 	public static function getAllInvoices($filter){
 		global $DB;

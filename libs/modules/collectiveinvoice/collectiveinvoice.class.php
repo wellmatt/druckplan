@@ -449,7 +449,7 @@ class CollectiveInvoice{
 	/**
 	 * Liefert alle Sammelrechnungen
 	 * 
-	 * @return Array : CollectiveInvoice
+	 * @return CollectiveInvoice[]
 	 */
 	static function getAllCollectiveInvoice($order = self::ORDER_NUMBER, $filter = ""){
 		global $DB;

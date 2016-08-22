@@ -183,6 +183,13 @@ if ($_USER == false)
 <link rel="stylesheet" type="text/css" href="./css/glyphicons-social.css" />
 <link rel="stylesheet" type="text/css" href="./css/main.css" />
 
+<!-- FLOT -->
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="jscripts/flot/excanvas.min.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.pie.js"></script>
+<script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.categories.js"></script>
+<!-- /FLOT -->
+
 <title>Druckplan - <?=$_USER->getClient()->getName()?></title>
 </head>
 <body>

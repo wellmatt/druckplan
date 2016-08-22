@@ -100,6 +100,58 @@ if (isset($_REQUEST["export"])){
 
 ?>
 
+
+<link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
+<script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
+
+<script language="JavaScript">
+    function generateAepos(){
+        var datefrom = $('#aepos_from').val();
+        var dateto = $('#aepos_to').val();
+        window.location.href='libs/modules/export/export.download.php?function=aepos_export&datefrom='+datefrom+'&dateto='+dateto;
+    }
+
+    $(function() {
+        $('#aepos_from').datetimepicker({
+            lang:'de',
+            i18n:{
+                de:{
+                    months:[
+                        'Januar','Februar','März','April',
+                        'Mai','Juni','Juli','August',
+                        'September','Oktober','November','Dezember',
+                    ],
+                    dayOfWeek:[
+                        "So.", "Mo", "Di", "Mi",
+                        "Do", "Fr", "Sa.",
+                    ]
+                }
+            },
+            timepicker:false,
+            format:'d.m.Y'
+        });
+        $('#aepos_to').datetimepicker({
+            lang:'de',
+            i18n:{
+                de:{
+                    months:[
+                        'Januar','Februar','März','April',
+                        'Mai','Juni','Juli','August',
+                        'September','Oktober','November','Dezember',
+                    ],
+                    dayOfWeek:[
+                        "So.", "Mo", "Di", "Mi",
+                        "Do", "Fr", "Sa.",
+                    ]
+                }
+            },
+            timepicker:false,
+            format:'d.m.Y'
+        });
+    });
+</script>
+
+
 <div class="panel panel-default">
       <div class="panel-heading">
             <h3 class="panel-title">
@@ -108,14 +160,14 @@ if (isset($_REQUEST["export"])){
       </div>
       <div class="panel-body">
           <div class="form-group">
-              <label for="" class="col-sm-2 control-label">Kontaktadressen</label>
-              <div class="col-sm-2">
+              <label for="" class="col-sm-10 control-label">Kontaktadressen</label>
+              <div class="col-sm-1">
                   <button class="btn btn-success" onclick="window.location.href='index.php?page=<?php echo $_REQUEST["page"];?>&export=asp';">Generieren</button>
               </div>
               <?php
               if (file_exists("docs/export_asp.csv")) {
                   ?>
-                  <div class="col-sm-2">
+                  <div class="col-sm-1">
                       <a href="docs/export_asp.csv" download="<?php echo date('Y.m.d');?>_Export_ASP.csv">
                         <button class="btn btn-success">Download</button>
                       </a>
@@ -123,6 +175,22 @@ if (isset($_REQUEST["export"])){
                   <?php
               }
               ?>
+          </div>
+          <hr>
+          <div class="form-group">
+              <label for="" class="col-sm-5 control-label">Auftr. Daten Aepos</label>
+              <label for="" class="col-sm-1 control-label">Von</label>
+              <div class="col-sm-2">
+                  <input type="text" id="aepos_from" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+              </div>
+              <label for="" class="col-sm-1 control-label">Bis</label>
+              <div class="col-sm-2">
+                  <input type="text" id="aepos_to" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+              </div>
+
+              <div class="col-sm-1">
+                  <button class="btn btn-success" onclick="generateAepos();">Generieren</button>
+              </div>
           </div>
       </div>
 </div>
