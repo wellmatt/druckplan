@@ -916,7 +916,7 @@ echo $quickmove->generate();
 										   ?>
 									   </table>
 								   </div>
-								   <div class="form-group" id="tr_machine_finish" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;"?>">>
+								   <div class="form-group" id="tr_machine_finish" style="display:<? if($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;"?>">
 									   <label for="" class="col-sm-3 control-label">Option Lack verf&uuml;gbar</label>
 									   <div class="col-sm-2">
 										   <input name="finish" class="form-control" value="1" type="checkbox" <?if($machine->getFinish() == 1) echo "checked";?>>
@@ -1097,7 +1097,6 @@ echo $quickmove->generate();
 </td><td valign="top">
 <table width="500">
 
-
     <tr id="tr_machine_paperperhour">
         <td class="content_row_header" valign="top"><?=$_LANG->get('Laufleistung')?></td>
         <td class="content_row_clear" id="td_machine_paperperhour">
@@ -1108,10 +1107,10 @@ echo $quickmove->generate();
             ?>
 
             <?=$_LANG->get('ab')?>
-            <input name="units_from_<?=$x?>" style="width:45px;text-align:center" value="<?=printBigInt($unit["from"])?>"> <?=$_LANG->get('St.')?> -
-            <input name="units_per_hour_<?=$x?>" style="width:45px;text-align:center" value="<?=printBigInt($unit["per_hour"])?>">
+            <input name="units_from_<?=$x?>" class="form-control" value="<?=printBigInt($unit["from"])?>"> <?=$_LANG->get('St.')?> -
+            <input name="units_per_hour_<?=$x?>" value="<?=printBigInt($unit["per_hour"])?>">
             <? if($first) { ?>
-            <select name="unit" style="width:90px" class="text">
+            <select name="unit" style="width:90px" class="form-control"">
                 <option value="<?=Machine::UNIT_PERHOUR_BOGEN?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_BOGEN) echo "selected"?>><?=$_LANG->get('Bogen')?></option>
                 <option value="<?=Machine::UNIT_PERHOUR_AUFLAGE?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_AUFLAGE) echo "selected"?>><?=$_LANG->get('Auflagen')?></option>
                 <option value="<?=Machine::UNIT_PERHOUR_SEITEN?>" <?if($machine->getUnit() == Machine::UNIT_PERHOUR_SEITEN) echo "selected"?>><?=$_LANG->get('Seiten')?></option>

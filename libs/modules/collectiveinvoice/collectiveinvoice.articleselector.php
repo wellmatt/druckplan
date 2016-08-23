@@ -93,6 +93,7 @@ function printSubTradegroupsForSelect($parentId, $depth){
 $(document).ready(function() {
     var art_table = $('#art_table').DataTable( {
         // "scrollY": "600px",
+        "autoWidth": false,
         "processing": true,
         "bServerSide": true,
         "sAjaxSource": "../../../libs/modules/article/article.dt.ajax.php",
@@ -236,7 +237,9 @@ $(function() {
 </script>
 <div class="panel panel-default">
 	  <div class="panel-heading">
-			<h3 class="panel-title">Artikel</h3>
+			<h3 class="panel-title">
+                Artikel
+            </h3>
 	  </div>
 	  <div class="panel-body">
 			<div class="panel panel-default">
@@ -290,16 +293,16 @@ $(function() {
           <div class="table-responsive">
               <table id="art_table" class="table table-hover">
                   <thead>
-                  <tr>
-                      <th><?=$_LANG->get('ID')?></th>
-                      <th><?=$_LANG->get('Bild')?></th>
-                      <th><?=$_LANG->get('Titel')?></th>
-                      <th><?=$_LANG->get('Art.-Nr.')?></th>
-                      <th><?=$_LANG->get('Tags')?></th>
-                      <th><?=$_LANG->get('Warengruppe')?></th>
-                      <th><?=$_LANG->get('Shop-Freigabe')?></th>
-                      <th><?=$_LANG->get('Optionen')?></th>
-                  </tr>
+                      <tr>
+                          <th><?=$_LANG->get('ID')?></th>
+                          <th><?=$_LANG->get('Bild')?></th>
+                          <th><?=$_LANG->get('Titel')?></th>
+                          <th><?=$_LANG->get('Art.-Nr.')?></th>
+                          <th><?=$_LANG->get('Tags')?></th>
+                          <th><?=$_LANG->get('Warengruppe')?></th>
+                          <th><?=$_LANG->get('Shop-Freigabe')?></th>
+                          <th><?=$_LANG->get('Optionen')?></th>
+                      </tr>
                   </thead>
               </table>
           </div>

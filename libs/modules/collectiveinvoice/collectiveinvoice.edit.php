@@ -185,9 +185,9 @@ $(document).ready(function() {
 			'speedOut'		:	200, 
 			'padding'		:	25, 
 			'margin'        :   25,
-			'scrolling'     :   'no',
-			'width'		    :	1000, 
-			'height'        :   800,
+			'scrolling'     :   'auto',
+			'width'		    :	1000,
+			'height'        :   900,
 			'onComplete'    :   function() {
 	                			  $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
 // 	                		      $('#fancybox-content').height($(this).contents().find('body').height()+300);

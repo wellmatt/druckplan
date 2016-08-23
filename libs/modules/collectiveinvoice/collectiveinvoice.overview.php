@@ -46,6 +46,7 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
 
 $(document).ready(function() {
     var colinv = $('#colinv').DataTable( {
+		"autoWidth": false,
         "processing": true,
         "bServerSide": true,
         "sAjaxSource": "libs/modules/collectiveinvoice/collectiveinvoice.dt.ajax.php<?php if ($_REQUEST['cust_id']) echo '?cust_id='.$_REQUEST["cust_id"];?>",
