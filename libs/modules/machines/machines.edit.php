@@ -641,11 +641,11 @@ echo $quickmove->generate();
 							   </div>
 							   <div class="form-group">
 								   <label for="" class="col-sm-3 control-label">Machinen URL</label>
-								   <div class="col-sm-8">
-									   <input id="machine_url" name="machine_url" value="<?=$machine->getMachurl();?>" class="form-control">
-								   </div>
-								   <div class="col-sm-1">
-									   <span onclick="window.open('<?=$machine->getMachurl();?>');" class="glyphicons glyphicons-home pointer" style="font-size: 20px;"></span>
+								   <div class="col-sm-9">
+									   <div class="input-group">
+										   <input id="machine_url" name="machine_url" value="<?=$machine->getMachurl();?>" class="form-control">
+										   <span class="glyphicons glyphicons-home"></span>
+									   </div>
 								   </div>
 							   </div>
 							   <div class="form-group">

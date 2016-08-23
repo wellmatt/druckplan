@@ -1570,8 +1570,8 @@ echo $quickmove->generate();
                                     <select name="tktc_type" id="tktc_type" class="form-control">
                                         <option value="<?php echo Comment::VISABILITY_INTERNAL;?>">inter. Kommentar</option>
                                         <option value="<?php echo Comment::VISABILITY_PUBLIC;?>">Offiz. Kommentar</option>
-                                        <option value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>">Offiz. Antwort (Mail)</option>
                                         <option value="<?php echo Comment::VISABILITY_PRIVATE;?>">priv. Kommentar</option>
+                                        <option value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>">Offiz. Antwort (Mail)</option>
                                     </select>
                                 </div>
                             </div>
@@ -1735,26 +1735,26 @@ echo $quickmove->generate();
                                                           <select name="comment_state" onchange="window.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?php echo $ticket->getId();?>&commentid=<?php echo $comment->getId();?>&newvis='+$(this).val()" class="small" <?php echo $style;?>>
                                                               <?php
                                                               foreach (Array(Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PUBLICMAIL,Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PRIVATE) as $item) {
-                                                                  if ($item == Comment::VISABILITY_PUBLIC) {
-                                                                      echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
-                                                                      if ($item == $comment->getVisability())
-                                                                          echo ' selected ';
-                                                                      echo '>[PUBLIC]</option>';
-                                                                  } else if ($item == Comment::VISABILITY_PUBLICMAIL) {
-                                                                      echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
-                                                                      if ($item == $comment->getVisability())
-                                                                          echo ' selected ';
-                                                                      echo '>[PUBLIC-MAIL]</option>';
-                                                                  } else if ($item == Comment::VISABILITY_INTERNAL) {
+                                                                  if ($item == Comment::VISABILITY_INTERNAL) {
                                                                       echo '<option class="label" value="' . $item . '" style="background: #31b0d5;" ';
                                                                       if ($item == $comment->getVisability())
                                                                           echo ' selected ';
                                                                       echo '>[INTERN]</option>';
+                                                                  } else if ($item == Comment::VISABILITY_PUBLIC) {
+                                                                      echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                      if ($item == $comment->getVisability())
+                                                                          echo ' selected ';
+                                                                      echo '>[PUBLIC]</option>';
                                                                   } else if ($item == Comment::VISABILITY_PRIVATE) {
                                                                       echo '<option class="label" value="' . $item . '" style="background: #428bca;" ';
                                                                       if ($item == $comment->getVisability())
                                                                           echo ' selected ';
                                                                       echo '>[PRIVATE]</option>';
+                                                                  } else if ($item == Comment::VISABILITY_PUBLICMAIL) {
+                                                                      echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                      if ($item == $comment->getVisability())
+                                                                          echo ' selected ';
+                                                                      echo '>[PUBLIC-MAIL]</option>';
                                                                   }
                                                               }
                                                               ?>
