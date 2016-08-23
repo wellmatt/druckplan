@@ -97,6 +97,7 @@ class Machine
 	private $internaltext;
 	private $hersteller;
 	private $baujahr;
+    private $machurl = '';
     
 	private $DPHeight;
 	private $DPWidth;
@@ -168,6 +169,7 @@ class Machine
                 $this->breaks_time = $r["breaks_time"];
                 $this->color = $r["color"];
                 $this->maxstacksize = $r["maxstacksize"];
+                $this->machurl = $r["machurl"];
                 
                 // Arbeiter
                 $tmp_qusrs = Array();
@@ -397,6 +399,7 @@ class Machine
                 breaks_time = {$this->breaks_time},
                 umschl_umst = {$this->umschlUmst},
                 maxstacksize = {$this->maxstacksize},
+                machurl = '{$this->machurl}',
                 color = '{$this->color}', ";
         
         if($this->id > 0)
@@ -1725,6 +1728,22 @@ class Machine
     public function setMaxstacksize($maxstacksize)
     {
         $this->maxstacksize = $maxstacksize;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMachurl()
+    {
+        return $this->machurl;
+    }
+
+    /**
+     * @param string $machurl
+     */
+    public function setMachurl($machurl)
+    {
+        $this->machurl = $machurl;
     }
 }
 ?>

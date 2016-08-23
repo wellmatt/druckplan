@@ -1007,7 +1007,7 @@ $(function () {
                       </span>
                       <div id="files" class="files">
                           <?php
-                          if (($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE") && count($attachments))
+                          if ($_REQUEST["preset"] == "FW" && count($attachments))
                           {
                               foreach ($attachments as $attachment) {
                                   echo '<p>'.$attachment['name'].'<input type="hidden" name="old_attach[]" value="'.$attachment["filename"].'"><span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span></p>';

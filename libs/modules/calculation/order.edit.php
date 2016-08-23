@@ -339,7 +339,8 @@ if((int)$_REQUEST["step"] == 2){
 
 // 						$calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_CONTENT) / 100); //Zuschuss
 
-						$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_CONTENT) / 100 * $perference->getZuschussPercent());
+						$calc->setPaperContentGrant($grant);
 
 						$calc->save();
 					}
@@ -408,7 +409,8 @@ if((int)$_REQUEST["step"] == 2){
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 ); //Zuschuss
 
-						$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 * $perference->getZuschussPercent());
+						$calc->setPaperAddContentGrant($grant);
 
 						$calc->save();
 					}
@@ -481,7 +483,8 @@ if((int)$_REQUEST["step"] == 2){
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100); //Zuschuss
 
-						$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100 * $perference->getZuschussPercent());
+						$calc->setPaperEnvelopeGrant($grant);
 
 						$calc->save();
 					}
@@ -552,7 +555,8 @@ if((int)$_REQUEST["step"] == 2){
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 ); //Zuschuss
 
-						$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 * $perference->getZuschussPercent());
+						$calc->setPaperAddContent2Grant($grant);
 
 						$calc->save();
 					}
@@ -623,7 +627,8 @@ if((int)$_REQUEST["step"] == 2){
 						// Zuschussbogen prozentual zu der Papiermenge
 // 						$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 ); //Zuschuss
 
-						$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 * $perference->getZuschussPercent());
+						$calc->setPaperAddContent3Grant($grant);
 
 						$calc->save();
 					}
@@ -995,7 +1000,8 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_CONTENT) / 100); //Zuschuss
-								$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
+								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_CONTENT) / 100 * $perference->getZuschussPercent());
+								$calc->setPaperContentGrant($grant);
 							} else {
 								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -1010,7 +1016,8 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100); //Zuschuss
-								$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
+								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 * $perference->getZuschussPercent());
+								$calc->setPaperAddContentGrant($grant);
 							} else {
 								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -1025,7 +1032,8 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100); //Zuschuss
-								$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
+								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100 * $perference->getZuschussPercent());
+								$calc->setPaperEnvelopeGrant($grant);
 							} else { 
 								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -1040,7 +1048,8 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100); //Zuschuss
-								$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
+								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 * $perference->getZuschussPercent());
+								$calc->setPaperAddContent2Grant($grant);
 							} else {
 								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -1055,7 +1064,8 @@ if((int)$_REQUEST["step"] == 3){
 								// $calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper() * $calc->getPlateSetCount($entry));
 								// Zuschussbogen prozentual zu der Papiermenge
 // 								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper() * $calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100); //Zuschuss
-								$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateCount($entry));
+								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 * $perference->getZuschussPercent());
+								$calc->setPaperAddContent3Grant($grant);
 							} else {
 								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper()); //Zuschuss
 							}
@@ -1274,7 +1284,8 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperContentHeight($sizes["height"]);
 										$calc->setPaperContentWidth($sizes["width"]);
-										$calc->setPaperContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+										$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_CONTENT) / 100 * $perference->getZuschussPercent());
+										$calc->setPaperContentGrant($grant);
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT)
 									{
@@ -1283,7 +1294,8 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperAddContentHeight($sizes["height"]);
 										$calc->setPaperAddContentWidth($sizes["width"]);
-										$calc->setPaperAddContentGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+										$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 * $perference->getZuschussPercent());
+										$calc->setPaperAddContentGrant($grant);
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ENVELOPE)
 									{
@@ -1292,7 +1304,8 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperEnvelopeHeight($sizes["height"]);
 										$calc->setPaperEnvelopeWidth($sizes["width"]);
-										$calc->setPaperEnvelopeGrant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+										$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100 * $perference->getZuschussPercent());
+										$calc->setPaperEnvelopeGrant($grant);
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT2)
 									{
@@ -1301,7 +1314,8 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperAddContent2Height($sizes["height"]);
 										$calc->setPaperAddContent2Width($sizes["width"]);
-										$calc->setPaperAddContent2Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+										$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 * $perference->getZuschussPercent());
+										$calc->setPaperAddContent2Grant($grant);
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT3)
 									{
@@ -1310,7 +1324,8 @@ if((int)$_REQUEST["step"] == 4)
 										// Update Papersize
 										$calc->setPaperAddContent3Height($sizes["height"]);
 										$calc->setPaperAddContent3Width($sizes["width"]);
-										$calc->setPaperAddContent3Grant($perference->getZuschussProDP() * $calc->getPlateCount($me));
+										$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 * $perference->getZuschussPercent());
+										$calc->setPaperAddContent3Grant($grant);
 										$calc->save();
 									}
 								} // if (Type Offset || Type Digital)

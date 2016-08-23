@@ -99,6 +99,7 @@ if($_REQUEST["subexec"] == "save")
     $machine->setInternalText($_REQUEST["machine_internaltext"]);
     $machine->setHersteller($_REQUEST["machine_hersteller"]);
     $machine->setBaujahr($_REQUEST["machine_baujahr"]);
+	$machine->setMachurl($_REQUEST["machine_url"]);
 
     $machine->setDPHeight((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["machine_DPHeight"]))));
     $machine->setDPWidth((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["machine_DPWidth"]))));
@@ -636,6 +637,15 @@ echo $quickmove->generate();
 								   <label for="" class="col-sm-3 control-label">Baujahr</label>
 								   <div class="col-sm-9">
 									   <textarea name="machine_baujahr" class="form-control"><?=$machine->getBaujahr()?></textarea>
+								   </div>
+							   </div>
+							   <div class="form-group">
+								   <label for="" class="col-sm-3 control-label">Machinen URL</label>
+								   <div class="col-sm-8">
+									   <input id="machine_url" name="machine_url" value="<?=$machine->getMachurl();?>" class="form-control">
+								   </div>
+								   <div class="col-sm-1">
+									   <span onclick="window.open('<?=$machine->getMachurl();?>');" class="glyphicons glyphicons-home pointer" style="font-size: 20px;"></span>
 								   </div>
 							   </div>
 							   <div class="form-group">

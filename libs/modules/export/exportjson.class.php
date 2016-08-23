@@ -66,7 +66,7 @@ class ExportJson{
                                 'articleid'=> $article->getId(),
                                 'product_width'=> $calc->getProductFormatWidth(),
                                 'product_height'=> $calc->getProductFormatHeight(),
-                                'chromaticity'=> $calc->getChromaticitiesContent(),
+                                'chromaticity'=> $calc->getChromaticitiesContent()->getColorsFront().'/'.$calc->getChromaticitiesContent()->getColorsBack(),
                                 'amount'=> $position->getAmount(),
                                 'delivdate'=> $colinv->getDeliverydate(),
                                 'data'=> $position->getFileattach()

@@ -1,4 +1,12 @@
 ﻿<?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
+
 require_once('perferences.class.php');
 require_once 'libs/modules/organizer/event_holiday.class.php';
 
@@ -30,6 +38,7 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setFormats_raw($tmp_formats_raw);
 	
 	$perf->setZuschussProDP(str_replace(",",".",str_replace(".","",$_REQUEST["zuschussprodp"])));
+	$perf->setZuschussPercent(str_replace(",",".",str_replace(".","",$_REQUEST["zuschusspercent"])));
 	$perf->setCalc_detailed_printpreview($_REQUEST["calc_detailed_printpreview"]);
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
@@ -233,6 +242,12 @@ echo $quickmove->generate();
                      <input type="text" name="zuschussprodp" id="zuschussprodp" value="<?=str_replace(".",",",$perf->getZuschussProDP());?>" />
                   </td>
                </tr>
+				<tr>
+					<td class="content_row_header" valign="top">Fortdruckzuschuss & Weiterverarbeitung:</td>
+					<td class="content_row_clear">
+						<input type="text" name="zuschusspercent" id="zuschusspercent" value="<?=str_replace(".",",",$perf->getZuschussPercent());?>" /> %
+					</td>
+				</tr>
                <tr>
                   <td class="content_row_header" valign="top">Detailierte Druckbogenvorschau:</td>
                   <td class="content_row_clear">
