@@ -609,6 +609,23 @@ function TicketTableRefresh()
 								   type="text" <?php if ($_SESSION['tkt_ajax_tourmarker']) echo ' value="' . $_SESSION['tkt_ajax_tourmarker'] . '" '; ?>/>
 						</div>
 					</div>
+					<div class="form-group" id="tr_cl_dates" <?php if (!$_SESSION['tkt_ajax_showclosed']) echo ' style="display: none" '; ?>>
+						<label for="" class="col-sm-2 control-label">Datum (geschlossen</label>
+						<div class="col-sm-4">
+							<input name="ajax_cl_date_min" id="ajax_cl_date_min"
+								   type="hidden" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . $_SESSION['tkt_cl_date_min'] . '"'; ?> />
+							<input name="date_cl_min" id="date_cl_min"<?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_min']) . '"'; ?> class="form-control"
+								   onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?= $_LANG->get('von'); ?>">
+						</div>
+						<label for="" class="col-sm-2 control-label">Bis:</label>
+						<div class="col-sm-4">
+							<input name="ajax_cl_date_max" id="ajax_cl_date_max"
+								   type="hidden" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . $_SESSION['tkt_cl_date_max'] . '"'; ?> />
+							<input name="date_cl_max" id="date_cl_max"
+								<?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_max']) . '"'; ?>
+								   class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?= $_LANG->get('bis'); ?>">
+						</div>
+					</div>
 
 					<div class="row">
 						<div class="col-md-3">
@@ -651,6 +668,7 @@ function TicketTableRefresh()
 						</div>
 					</div>
 
+
 					<span class="pull-right">
 
 					  <button class="btn btn-xs btn-success"  onclick="TicketTableRefresh();" href="Javascript:">
@@ -664,32 +682,8 @@ function TicketTableRefresh()
 					  </button>
 
 					</span>
-				</div>
 
-				<table>
-					<tr align="left"
-						id="tr_cl_dates" <?php if (!$_SESSION['tkt_ajax_showclosed']) echo ' style="display: none" '; ?>>
-						<td>Datum (geschlossen):&nbsp;&nbsp;</td>
-						<td valign="left">
-							<input name="ajax_cl_date_min" id="ajax_cl_date_min"
-								   type="hidden" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . $_SESSION['tkt_cl_date_min'] . '"'; ?> />
-							<input name="date_cl_min" id="date_cl_min"
-								   style="width:70px;" <?php if ($_SESSION['tkt_cl_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_min']) . '"'; ?>
-								   class="text"
-								   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-								   title="<?= $_LANG->get('von'); ?>">&nbsp;&nbsp;
-						</td>
-						<td valign="left">
-							<input name="ajax_cl_date_max" id="ajax_cl_date_max"
-								   type="hidden" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . $_SESSION['tkt_cl_date_max'] . '"'; ?> />
-							bis: <input name="date_cl_max" id="date_cl_max"
-										style="width:70px;" <?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_max']) . '"'; ?>
-										class="text"
-										onfocus="markfield(this,0)" onblur="markfield(this,1)"
-										title="<?= $_LANG->get('bis'); ?>">&nbsp;&nbsp;
-						</td>
-					</tr>
-				</table>
+				</div>
 			</div>
 		</div>
 	</div>
