@@ -454,7 +454,10 @@ function commi_checkbox(){
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
-$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
+if ($_REQUEST["returntosales"] == 1)
+	$quickmove->addItem('Zurück','index.php?page=libs/modules/salescontacts/salescontacts.overview.php',null,'glyphicon-step-backward');
+else
+	$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 
 if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_BC) || $_USER->isAdmin()) {
 	$quickmove->addItem('Speichern', '#', "$('#user_form').submit();", 'glyphicon-floppy-disk');
@@ -481,6 +484,7 @@ echo $quickmove->generate();
 	<div id="tabs">
 		<ul>
 			<li><a href="#tabs-0"><? echo $_LANG->get('&Uuml;bersicht');?></a></li>
+			<?php if ($_USER->getBCshowOnlyOverview() == 0){?>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Stammdaten');?></a></li>
 			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li>
@@ -493,6 +497,7 @@ echo $quickmove->generate();
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
 			<li><a href="#tabs-10"><? echo $_LANG->get('Rechnungseingang');?></a></li>
 			<li><a href="#tabs-11"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
+			<?php } ?>
 		</ul>
 
 		<? // ---------------------------- Uebesicht ueber den Geschaeftskontakt --------------------------?>
@@ -702,6 +707,7 @@ echo $quickmove->generate();
 		</table>
 	</div>
 
+	<?php if ($_USER->getBCshowOnlyOverview() == 0){?>
 	<? /* ------------------------------------- STAMMDATEN ------------------------------------------------------ */ ?>
 
 	<div id="tabs-1">
@@ -1392,7 +1398,7 @@ echo $quickmove->generate();
 		</div>
 
 	<? // ------------------------------------- Navigations und Speicher Buttons ------------------------------------?>
-
+	<?php } ?>
 	</div>
 </div>
 <!--//-->

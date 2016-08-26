@@ -91,6 +91,14 @@ if ($_REQUEST["ajax_action"] == "search_bc_cp"){
     header("Content-Type: application/json");
     echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "getDescription"){
+	$retval = '';
+	if ($_REQUEST["id"]){
+		$article = new Article((int)$_REQUEST["id"]);
+		$retval = $article->getDesc();
+	}
+	echo $retval;
+}
 
 ?>
 

@@ -22,6 +22,7 @@ class Perferences
     // Ticket
 
     private $default_ticket_id = 0;
+    private $commentArtDesc = 0;
 
     // Datatables
 
@@ -48,6 +49,7 @@ class Perferences
             $this->dt_show_default = (int)$r["dt_show_default"];
             $this->dt_state_save = (bool)$r["dt_state_save"];
             $this->mail_domain = $r["mail_domain"];
+            $this->commentArtDesc = $r["commentArtDesc"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -87,6 +89,7 @@ class Perferences
                zuschusspercent 	= '{$this->ZuschussPercent}',
                calc_detailed_printpreview 	= '{$this->calc_detailed_printpreview}',
                default_ticket_id 	= {$this->default_ticket_id},
+               commentArtDesc 	= {$this->commentArtDesc},
                dt_show_default 	= {$this->dt_show_default},
                dt_state_save 	= {$tmp_dt_state_save},
                mail_domain 	= '{$this->mail_domain}'
@@ -221,6 +224,20 @@ class Perferences
     {
         $this->mail_domain = $mail_domain;
     }
-}
 
-?>
+    /**
+     * @return int
+     */
+    public function getCommentArtDesc()
+    {
+        return $this->commentArtDesc;
+    }
+
+    /**
+     * @param int $commentArtDesc
+     */
+    public function setCommentArtDesc($commentArtDesc)
+    {
+        $this->commentArtDesc = $commentArtDesc;
+    }
+}

@@ -27,6 +27,8 @@ require_once './libs/modules/article/article.class.php';
 require_once('./kunden/modules/shoppingbasket/shoppingbasket.class.php');
 require_once './libs/modules/warehouse/warehouse.class.php';
 require_once './libs/modules/organizer/nachricht.class.php';
+require_once './libs/modules/storage/storage.area.class.php';
+require_once './libs/modules/storage/storage.position.class.php';
 
 //----------------------------------------------------------------------------------
 // TODO anpassen

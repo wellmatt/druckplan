@@ -38,10 +38,14 @@ class User {
     private $loggedIn = false;
      
     private $strError = "";
-	
+
+    // Calendar settings
 	private $calendar_tickets;
 	private $calendar_orders;
 	private $calendar_birthdays;
+
+    // BusinessContact settings
+    private $BCshowOnlyOverview = 0;
 	
 	// Workhours
 	
@@ -143,6 +147,7 @@ class User {
                     $this->calendar_birthdays = $res[0]["cal_birthdays"];
                     $this->calendar_tickets = $res[0]["cal_tickets"];
                     $this->calendar_orders = $res[0]["cal_orders"];
+                    $this->BCshowOnlyOverview = $res[0]["BCshowOnlyOverview"];
 
                     $this->w_mo = $res[0]["w_mo"];
                     $this->w_tu = $res[0]["w_tu"];
@@ -202,6 +207,7 @@ class User {
             cal_birthdays = {$this->calendar_birthdays},
             cal_tickets = {$this->calendar_tickets},
             cal_orders = {$this->calendar_orders},
+            BCshowOnlyOverview = {$this->BCshowOnlyOverview},
             client = {$this->client->getId()},
             login = '{$this->login}',
             password = '{$this->password}',
@@ -237,14 +243,14 @@ class User {
             (user_firstname, user_lastname, user_email, user_phone, user_signature,
             user_active, user_level, login, password, client, user_forwardmail, user_lang,
             telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa,
-            w_su, w_month, avatar, homepage )
+            w_su, w_month, avatar, homepage, BCshowOnlyOverview )
             VALUES
             ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
             '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
             '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()},
             '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
             '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}',
-            '{$this->w_su}', '{$this->w_month}', '{$avatar}', '{$this->homepage}' )";
+            '{$this->w_su}', '{$this->w_month}', '{$avatar}', '{$this->homepage}', {$this->BCshowOnlyOverview} )";
             $res = $DB->no_result($sql);
 
             if ($res)
@@ -1015,5 +1021,21 @@ class User {
     public function setHomepage($homepage)
     {
         $this->homepage = $homepage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBCshowOnlyOverview()
+    {
+        return $this->BCshowOnlyOverview;
+    }
+
+    /**
+     * @param int $BCshowOnlyOverview
+     */
+    public function setBCshowOnlyOverview($BCshowOnlyOverview)
+    {
+        $this->BCshowOnlyOverview = $BCshowOnlyOverview;
     }
 }

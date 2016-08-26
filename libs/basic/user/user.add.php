@@ -43,6 +43,7 @@ if ($_REQUEST["subexec"] == "save")
     $user->setCalBirthday((int)$_REQUEST["user_cal_birthday"]);
     $user->setCalTickets((int)$_REQUEST["user_cal_tickets"]);
     $user->setCalOrders((int)$_REQUEST["user_cal_orders"]);
+	$user->setBCshowOnlyOverview((int)$_REQUEST["BCshowOnlyOverview"]);
 
 	$user->setHomepage($_REQUEST["menu_path"]);
 
@@ -529,6 +530,14 @@ echo $quickmove->generate();
 								<div class="col-sm-1">
 									<input name="user_cal_orders" type="checkbox" value="1" class="form-control"
 										<? if ($user->getCalOrders()) echo "checked"; ?>
+										   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">GK nur Übersicht</label>
+								<div class="col-sm-1">
+									<input name="BCshowOnlyOverview" type="checkbox" value="1" class="form-control"
+										<? if ($user->getBCshowOnlyOverview()) echo "checked"; ?>
 										   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 								</div>
 							</div>

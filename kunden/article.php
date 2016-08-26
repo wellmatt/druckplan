@@ -15,7 +15,12 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 			$article = new Article((int)$_REQUEST["articleid"]);
 			$all_pictures = $article->getAllPictures();
 			$art_prices = $article->getPrices();
-			$wh_count = Warehouse::getTotalStockByArticle($article->getId());
+
+			$spositions = StoragePosition::getAllForArticle($article);
+			$stored = 0;
+			foreach ($spositions as $sposition) {
+				$stored += $sposition->getAmount();
+			}
 			
 			if ($_SESSION["shopping_basket"]){
 				$shopping_basket = $_SESSION["shopping_basket"];
@@ -136,10 +141,12 @@ $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, A
 						  <?php }?>
 					  </div>
 				  </div>
+				  <?php if ($article->getUsesstorage()){ ?>
 				  <div class="form-group" style="margin-bottom: 3px;">
 					  <label for="">Auf Lager</label>
-					  <div class="input-group col-sm-3 col-sm-offset-9"><?=$wh_count?></div>
+					  <div class="input-group col-sm-3 col-sm-offset-9"><?=$stored?></div>
 				  </div>
+				  <?php } ?>
 				  <div class="form-group" style="margin-bottom: 3px;">
 					  <label for="">Lieferadresse</label>
 					  <div class="input-group col-sm-3 col-sm-offset-9">

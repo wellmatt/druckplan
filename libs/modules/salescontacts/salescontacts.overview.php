@@ -133,7 +133,7 @@ $(document).ready(function() {
         var aPos = $('#bcon_table').dataTable().fnGetPosition(this);
         var aData = $('#bcon_table').dataTable().fnGetData(aPos[0]);
 //         alert(aData.join('\n'));
-        document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='+aData[0];
+        document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&returntosales=1&id='+aData[0];
         // at this point aData is an array containing all the row info, use it to retrieve what you need.
     });
     

@@ -38,8 +38,7 @@ if ($_REQUEST["exec"] == "save")
             $cat = new TicketCategory($cid);
             $cat->setTitle($ctitle);
             $cat->setSort((int)$csort);
-//             $cat->save();
-            
+
             $tmp_groups_cansee = Array();
             $tmp_groups_cancreate = Array();
             
@@ -97,10 +96,11 @@ if ($_REQUEST["exec"] == "save")
         }
     }
     
-    if ($_REQUEST["ticket_id"] > 0){
-        $perf->setDefault_ticket_id((int)$_REQUEST["ticket_id"]);
-        $perf->save();
-    }
+	if ((int)$_REQUEST["ticket_artdesc"] == 0)
+		$perf->setCommentArtDesc(0);
+	else
+		$perf->setCommentArtDesc(1);
+	$perf->save();
 }
 
 ?>
@@ -220,10 +220,10 @@ echo $quickmove->generate();
 <div class="box1">
 	<div id="tabs">
 		<ul>
+			<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>
 			<li><a href="#tabs-0"><? echo $_LANG->get('Kategorien');?></a></li>
 			<li><a href="#tabs-1"><? echo $_LANG->get('Priorit&auml;ten');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('Stati');?></a></li>
-			<?php /*<li><a href="#tabs-3"><? echo $_LANG->get('Einstellungen');?></a></li>*/?>
 			<li><a href="#tabs-4"><? echo $_LANG->get('Gruppenrechte');?></a></li>
 			<li><a href="#tabs-5"><? echo $_LANG->get('Herkunft');?></a></li>
 		</ul>
@@ -369,30 +369,20 @@ echo $quickmove->generate();
 				<? } ?>
 			</table>
        </div>
-       <?php /*
        <div id="tabs-3">
-       <?php 
-       if ($perf->getDefault_ticket_id() > 0){
-           $tmp_def_ticket = new Ticket($perf->getDefault_ticket_id());
-           $tmp_ticket_label = $tmp_def_ticket->getNumber() . " - " . $tmp_def_ticket->getTitle();
-           $tmp_ticket_id = $tmp_def_ticket->getId();
-       }
-       ?>
             <table width="100%" border="0" cellpadding="0" cellspacing="0">
                <colgroup>
                   <col width="150">
                   <col>
                </colgroup>
                <tr>
-                  <td class="content_row_header" valign="top">Login Timer Ticket:</td>
+                  <td class="content_row_header" valign="top">Artikelbeschreibung übernehmen</td>
                   <td class="content_row_clear">
-                     <input type="text" name="ticket" id="ticket" value="<?php echo $tmp_ticket_label;?>" style="width: 250px"/>
-                     <input type="hidden" name="ticket_id" id="ticket_id" value="<?php echo $tmp_ticket_id;?>"/>
+                     <input type="checkbox" name="ticket_artdesc" id="ticket_artdesc" <?php if($perf->getCommentArtDesc()>0) echo ' checked ';?> value="1"/>
                   </td>
                </tr>
             </table>
        </div>
-       */?>
 
        <div id="tabs-4">
    			<table>

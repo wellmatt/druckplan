@@ -235,7 +235,8 @@ class CollectiveInvoice{
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
 		} else {
-			$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_COLINV);
+			if ($this->number == "- - -" || $this->number == null)
+				$this->number = $this->getClient()->createOrderNumber(Client::NUMBER_COLINV);
 			$this->crtdate = $now;
 			$this->crtuser = $_USER;
 			$sql = "INSERT INTO collectiveinvoice

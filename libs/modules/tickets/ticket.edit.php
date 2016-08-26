@@ -721,6 +721,20 @@ $(function() {
     		 if ($("#tktc_article_amount").val() == ""){
     			 $( "#tktc_article_amount" ).val("1");
     		 }
+             if (<?php echo $perf->getCommentArtDesc();?>==1){
+                 $.ajax({
+                     type: "POST",
+                     url: "libs/modules/article/article.ajax.php",
+                     data: { ajax_action: "getDescription", id: ui.item.value },
+                     success: function(data)
+                     {
+                         CKEDITOR.instances.tktc_comment.setData( data, function()
+                         {
+                             this.checkDirty();  // true
+                         });
+                     }
+                 });
+             }
     		 return false;
 		 }
 	 });
@@ -930,6 +944,20 @@ function callBoxFancyAbo(my_href) {
         j1.href = my_href;
         $('#hiddenclicker_preview').trigger('click');
     }
+    function createFromSelectedColInv(){
+        var elements = [];
+        $( ".comment-select" ).each(function( index ) {
+            if ($(this).is(':checked')){
+                elements.push($(this).val());
+            }
+        });
+        if (elements.length > 0) {
+            elements = elements.join(",");
+            askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=createFromTicketComments&tktcids=' + elements + '&tktid=<?= $ticket->getId() ?>');
+        } else {
+            alert("Bitte mindestens ein Kommentar auswählen!");
+        }
+    }
 </script>
 <div id="hidden_clicker_preview" style="display:none"><a id="hiddenclicker_preview" href="http://www.google.com" >Hidden Clicker</a></div>
 
@@ -1014,8 +1042,8 @@ echo $quickmove->generate();
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="#" onclick="showSummary();">Summary internal</a>
-                                        <a href="#" onclick="showSummaryExt();">Summary external</a>
+                                        <a href="#" onclick="showSummary();">Interne Summary</a>
+                                        <a href="#" onclick="showSummaryExt();">Öffentliche Summary</a>
                                     </li>
                                 </ul>
                             </div>
@@ -1099,6 +1127,9 @@ echo $quickmove->generate();
                                         <a href="#"
                                            onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=createFromTicket&tktid=<?= $ticket->getId() ?>');">Ticket
                                             Vorgang</a>
+                                        <a href="#"
+                                           onclick="createFromSelectedColInv();">Ticket
+                                            Vorgang (nur ausgewählte)</a>
                                         <a href="#"
                                            onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&order_customer=<?php echo $ticket->getCustomer()->getId(); ?>&order_contactperson=<?php echo $ticket->getCustomer_cp()->getId(); ?>&order_title=<?php echo $ticket->getTitle(); ?>');">Vorgang
                                             erstellen</a>
@@ -1734,7 +1765,7 @@ echo $quickmove->generate();
                                                           ?>
                                                           <select name="comment_state" onchange="window.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?php echo $ticket->getId();?>&commentid=<?php echo $comment->getId();?>&newvis='+$(this).val()" class="small" <?php echo $style;?>>
                                                               <?php
-                                                              foreach (Array(Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PUBLICMAIL,Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PRIVATE) as $item) {
+                                                              foreach (Array(Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PRIVATE,Comment::VISABILITY_PUBLICMAIL) as $item) {
                                                                   if ($item == Comment::VISABILITY_INTERNAL) {
                                                                       echo '<option class="label" value="' . $item . '" style="background: #31b0d5;" ';
                                                                       if ($item == $comment->getVisability())
@@ -1787,6 +1818,7 @@ echo $quickmove->generate();
                                                           echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                       }
                                                       ?>
+                                                      <input type="checkbox" class="comment-select" value="<?php echo $comment->getId(); ?>">
                                                   </span>
                                               </span><!-- /.username -->
                                                 <div class="row" style="margin-left: 0px;">
@@ -1889,27 +1921,27 @@ echo $quickmove->generate();
                                                                             ?>
                                                                             <select name="comment_state" onchange="window.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?php echo $ticket->getId();?>&commentid=<?php echo $subcom->getId();?>&newvis='+$(this).val()" class="small" <?php echo $style;?>>
                                                                                 <?php
-                                                                                foreach (Array(Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PUBLICMAIL,Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PRIVATE) as $item) {
-                                                                                    if ($item == Comment::VISABILITY_PUBLIC) {
-                                                                                        echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
-                                                                                        if ($item == $subcom->getVisability())
-                                                                                            echo ' selected ';
-                                                                                        echo '>[PUBLIC]</option>';
-                                                                                    } else if ($item == Comment::VISABILITY_PUBLICMAIL) {
-                                                                                        echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
-                                                                                        if ($item == $subcom->getVisability())
-                                                                                            echo ' selected ';
-                                                                                        echo '>[PUBLIC-MAIL]</option>';
-                                                                                    } else if ($item == Comment::VISABILITY_INTERNAL) {
+                                                                                foreach (Array(Comment::VISABILITY_INTERNAL,Comment::VISABILITY_PUBLIC,Comment::VISABILITY_PRIVATE,Comment::VISABILITY_PUBLICMAIL) as $item) {
+                                                                                    if ($item == Comment::VISABILITY_INTERNAL) {
                                                                                         echo '<option class="label" value="' . $item . '" style="background: #31b0d5;" ';
                                                                                         if ($item == $subcom->getVisability())
                                                                                             echo ' selected ';
                                                                                         echo '>[INTERN]</option>';
+                                                                                    } else if ($item == Comment::VISABILITY_PUBLIC) {
+                                                                                        echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                                        if ($item == $subcom->getVisability())
+                                                                                            echo ' selected ';
+                                                                                        echo '>[PUBLIC]</option>';
                                                                                     } else if ($item == Comment::VISABILITY_PRIVATE) {
                                                                                         echo '<option class="label" value="' . $item . '" style="background: #428bca;" ';
                                                                                         if ($item == $subcom->getVisability())
                                                                                             echo ' selected ';
                                                                                         echo '>[PRIVATE]</option>';
+                                                                                    } else if ($item == Comment::VISABILITY_PUBLICMAIL) {
+                                                                                        echo '<option class="label" value="' . $item . '" style="background: #449d44;" ';
+                                                                                        if ($item == $subcom->getVisability())
+                                                                                            echo ' selected ';
+                                                                                        echo '>[PUBLIC-MAIL]</option>';
                                                                                     }
                                                                                 }
                                                                                 ?>
@@ -1942,6 +1974,7 @@ echo $quickmove->generate();
                                                                             echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $subcom->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                                         }
                                                                         ?>
+                                                                        <input type="checkbox" class="comment-select" value="<?php echo $comment->getId(); ?>">
                                                                     </span>
                                                                 </span><!-- /.username -->
                                                             <?php if ($subcom->getState() > 0) { ?>
