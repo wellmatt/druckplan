@@ -652,25 +652,26 @@ echo $quickmove->generate();
 						<?foreach ($all_attributes AS $attribute){?>
 							<tbody>
 								<tr>
-									<td><?=$attribute->getTitle()?></td>
-									<td>
+									<td class="content_row_header" valign="top"><?=$attribute->getTitle()?></td>
+									<td class="content_row_clear">
 										<? 	$allitems = $attribute->getItems();?>
-										<table>
+										<table class="table table-hover">
 											<?	$x=0;
 											foreach ($allitems AS $item){
 												if ($x%5 == 0) echo "<tr>";
 												echo '<td>';
-												echo '<input class=form-control name="attribute_item_check_'.$attribute->getId().'_'.$item["id"].'" ';
+												echo '<input name="attribute_item_check_'.$attribute->getId().'_'.$item["id"].'" ';
 												echo ' value="1" type="checkbox" onfocus="markfield(this,0)" onblur="markfield(this,1)"';
 												if ($all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["value"] == 1) echo "checked";
 												echo ">";
+												echo '&nbsp';
 												echo $item["title"];
 												if ($item["input"] == 1)
 												{
-													echo ' <input class=form-control name="attribute_item_input_'.$attribute->getId().'_'.$item["id"].'" ';
+													echo ' <input name="attribute_item_input_'.$attribute->getId().'_'.$item["id"].'" ';
 													echo ' value="';
 													echo $all_active_attributes["{$attribute->getId()}_{$item["id"]}"]["inputvalue"];
-													echo '" type="text" class=form-control onfocus="markfield(this,0)" onblur="markfield(this,1)">';
+													echo '" type="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
 												}
 												echo "</td>";
 												if ($x%5 == 4) echo "</tr>";

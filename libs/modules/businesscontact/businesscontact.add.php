@@ -1370,12 +1370,14 @@ echo $quickmove->generate();
 						<h3 class="panel-title">
 							Notizen
 							<span class="pull-right">
-				<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
-								<button class="btn btn-xs btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">
-									<span class="glyphicons glyphicons-plus"></span>
-									<?= $_LANG->get('Neu') ?>
-								</button>
-				<?php }?>
+				 <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
+								<span
+									<button class="btn btn-xs btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">
+										<span class="glyphicons glyphicons-plus pointer" style="float:right;" </span>
+											<?= $_LANG->get(' Neu') ?>
+									</button>
+							</span>
+							<?php }?>
 							</span>
 						</h3>
 				  </div>
