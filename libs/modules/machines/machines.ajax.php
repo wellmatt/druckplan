@@ -61,38 +61,81 @@ if($_REQUEST["exec"] == "updateDifficultyFields")
     if($val != $unit)
     {
         // Andere Einheit ausgew�hlt
-        echo "<table><tr id=\"tr_difficulty_fields_".$id."\"><td>";
-        echo '<input style="width:40px" name="machine_difficulty['.$id.'][values][]"><br><input style="width:40px" name="machine_difficulty['.$id.'][percents][]"> % ';
-        echo "</td></tr></table>";
-        echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$id.')"></span>';
-        
+?>
+
+        <div id="tr_difficulty_fields_<?php echo $id ;?>" class="form-group">
+            <label for="" class="col-sm-3 control-label">&nbsp;</label>
+            <div class="col-sm-3">
+                <input class=form-control name="machine_difficulty['.$id.'][values][]">
+            </div>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <input class="form-control" name="machine_difficulty['.$id.'][percents][]">
+                 <span class="input-group-addon">%</span>
+                </div>
+            </div>
+            <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>
+        </div>
+
+<?php
     } else
     {
         // Alte Einheit ausgew�hlt
         if(count($mach->getDifficulties()) > 0)
         {
-            echo "<table><tr id=\"tr_difficulty_fields_'.$id.'\">";
-            $x = 0;
-            foreach($mach->getDifficulties() as $diff)
-            {
-                if ($diff["id"] == $id){
-                    foreach($diff["values"] as $diff_values){
-                        echo '<td>';
-                        echo '<input style="width:40px" name="machine_difficulty['.$id.'][values][]" value="'.$diff["values"][$x].'"><br>';
-                        echo '<input style="width:40px" name="machine_difficulty['.$id.'][percents][]" value="'.$diff["percents"][$x].'"> % ';
-                        echo "</td>";
-                        $x++;
+?>
+                <?php
+                $x = 0;
+                foreach($mach->getDifficulties() as $diff)
+                {
+                    if ($diff["id"] == $id){
+                        foreach($diff["values"] as $diff_values){
+                ?>
+                            <div id="tr_difficulty_fields_<?php echo $id; ?>" class="form-group">
+                                <label for="" class="col-sm-3 control-label">&nbsp;</label>
+                                <div class="col-sm-3">
+                                    <input class="form-control" name="machine_difficulty[<?php echo $id; ?>][values][]"
+                                           value="<?php echo $diff["values"][$x]; ?>">
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <input class="form-control"
+                                               name="machine_difficulty[<?php echo $id; ?>][percents][]"
+                                               value="<?php echo $diff["percents"][$x]; ?>">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>
+                            </div>
+
+
+                            <?php
+                            $x++;
+                        }
                     }
                 }
-            }
-            echo "</tr></table>";
-            echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$id.')"></span>';
+                ?>
+
+
+<?php
         } else
         {
-            echo "<table><tr id=\"tr_difficulty_fields_".$id."\"><td>";
-            echo '<input style="width:40px" name="machine_difficulty['.$id.'][values][]"><br><input style="width:40px" name="machine_difficulty['.$id.'][percents][]"> % ';
-            echo "</td></tr></table>";
-            echo '<span class="glyphicons glyphicons-plus pointer" onclick="addDifficultyField('.$id.')"></span>';
+            ?>
+            <div id="tr_difficulty_fields_<?php echo $id ;?>" class="form-group">
+                <label for="" class="col-sm-3 control-label">&nbsp;</label>
+                <div class="col-sm-3">
+                    <input class="form-control" name="machine_difficulty[<?php echo $id ;?>][values][]">
+                </div>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input class="form-control" name="machine_difficulty[<?php echo $id ;?>][percents][]">
+                        <span class="input-group-addon">%</span>
+                    </div>
+                </div>
+                <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>
+            </div>
+
+<?php
         }
     }
 }

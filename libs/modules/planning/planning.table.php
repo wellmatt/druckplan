@@ -203,51 +203,75 @@ echo $quickmove->generate();
 // end of Quickmove generation ?>
 
 
-	
-<div class="row">
-  <div class="col-md-4">
-    <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-    <span style="font-size: 13px"><?=$_LANG->get('Planungstabelle')?></span>
-  </div>
-  <div class="col-md-4" style="text-align: right;"><?=$savemsg?></div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Planungstabelle
+					<span class="pull-right">
+						<?= $savemsg ?>
+					</span>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Filter
+				</h3>
+			</div>
+			<div class="panel-body">
+				<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal"
+					  name="planning_table" id="planning_table" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="" class="col-sm-1 control-label">Von:</label>
+						<div class="col-sm-3">
+							<input type="text" id="date_start" name="date_start"
+								   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
+								   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+								   value="<? echo date('d.m.Y', $date_start); ?>"/>
+						</div>
+						<label for="" class="col-sm-1 control-label">Bis:</label>
+						<div class="col-sm-3">
+							<input type="text" id="date_end" name="date_end"
+								   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
+								   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+								   value="<? echo date('d.m.Y', $date_end); ?>"/>
+						</div>
+						<label for="" class="col-sm-1 control-label">Object:</label>
+						<div class="col-sm-3">
+							<select name="artmach" id="artmach" class="form-control">
+								<option value="0" selected>alle</option>
+								<option value="" disabled>Maschinen</option>
+								<? foreach ($pl_artmachs['machines'] as $mach) { ?>
+									<option value="K<?= $mach->getId() ?>"><?= $mach->getName() ?></option>
+								<? } ?>
+								<option value="" disabled>Artikel</option>
+								<? foreach ($pl_artmachs['articles'] as $art) { ?>
+									<option value="V<?= $art->getId() ?>"><?= $art->getTitle() ?></option>
+								<? } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-1 control-label">Vorgang:</label>
+						<div class="col-sm-3">
+							<input type="text" id="voselector" class="form-control"><input type="hidden" id="vovalue">
+						</div>
+						<label for="" class="col-sm-1 control-label">Statistik:</label>
+						<div class="col-sm-1">
+							<input type="checkbox" id="chk_statistics" name="chk_statistics"
+								   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
+								   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+								   value="1"/>
+						</div>
+						<br>
+							  <span class="pull-right">
+								  <button type="button" class="btn btn-sm btn-default" id="show">anzeigen</button>
+							  </span>
+					</div>
+			</div>
+		</div>
+		<div id="planningbox">
+		</div>
+	</div>
 </div>
-</br>
-
-
-
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="planning_table" id="planning_table" enctype="multipart/form-data">
-    <div class="row">
-      <div class="col-md-11">
-        Von: <input type="text" style="width:100px" id="date_start" name="date_start"
-    			class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
-    			onfocus="markfield(this,0)" onblur="markfield(this,1)"
-    			value="<? echo date('d.m.Y', $date_start);?>"/>
-    	Bis: <input type="text" style="width:100px" id="date_end" name="date_end"
-    			class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
-    			onfocus="markfield(this,0)" onblur="markfield(this,1)"
-    			value="<? echo date('d.m.Y', $date_end);?>"/>
-	    Object: <select name="artmach" id="artmach" style="width:150px" class="text">
-             <option value="0" selected>alle</option>
-             <option value="" disabled>Maschinen</option>
-        	 <? foreach ($pl_artmachs['machines'] as $mach) {?>
-        	 <option value="K<?=$mach->getId()?>"><?=$mach->getName()?></option>
-        	 <? } ?>
-             <option value="" disabled>Artikel</option>
-        	 <? foreach ($pl_artmachs['articles'] as $art) {?>
-        	 <option value="V<?=$art->getId()?>"><?=$art->getTitle()?></option>
-        	 <? } ?>
-             </select>
-		  Vorgang: <input type="text" id="voselector"><input type="hidden" id="vovalue">
-		  </select>
-		  Statistik: <input type="checkbox" style="width:20px" id="chk_statistics" name="chk_statistics"
-    			class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
-    			onfocus="markfield(this,0)" onblur="markfield(this,1)"
-    			value="1"/>
-             <button type="button" class="btn btn-sm btn-default" id="show">anzeigen</button>
-      </div>
-      <div class="col-md-1"><a onclick="print();">Drucken</a></div>
-    </div>
-    </br>
-    <div class="box1" id="planningbox">
-    </div>
-</form>

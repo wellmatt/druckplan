@@ -698,9 +698,9 @@ function clickContentChromaticity(id)
             
             function addAmount() 
             {
-                var text = '<input name="addorder_amount[]" style="width:60px" class="text" value="" > ';
+                var text = '<input name="addorder_amount[]"  class="form-control" value="" > ';
                 document.getElementById('div_order_amount').insertAdjacentHTML('beforeEnd', text);
-                var text = '<input name="addorder_sorts[]" style="width:60px" class="text" value="1" > ';
+                var text = '<input name="addorder_sorts[]"  class="form-control" value="1" > ';
                 document.getElementById('div_order_sorts').insertAdjacentHTML('beforeEnd', text);
             } 
 
@@ -944,11 +944,8 @@ echo $quickmove->generate();
                                 }
                                 ?>
                             </div>
-
                         </td>
-
                     </tr>
-
                     <tr>
 
 
@@ -1330,15 +1327,15 @@ echo $quickmove->generate();
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>Auflage</th>
+                        <th>Sorten</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr id="tr_order_amount" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
                         echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Auflage') ?></td>
                         <td>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <div id="div_order_amount">
                                     <input name="order_amount" id="13_0" class="form-control" value="<?= $calc->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
                                     <?
@@ -1368,28 +1365,9 @@ echo $quickmove->generate();
                             </div>
                             <span class="glyphicons glyphicons-plus" onclick="addAmount()"></span>
                         </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"></h3>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr id="tr_order_sorts" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
-                        echo ' style="display:none"'; ?>>
-                        <td><?= $_LANG->get('Sorten') ?></td>
-                        <td>
-                            <div class="col-md-3">
+                        <td id="tr_order_sorts" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
+                            echo ' style="display:none"'; ?>>
+                            <div class="col-md-6">
                                 <div id="div_order_sorts">
                                     <input name="order_sorts" id="23_0" class="form-control" value="<?= $calc->getSorts() ?>">
                                     <?
