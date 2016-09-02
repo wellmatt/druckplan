@@ -47,19 +47,15 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
 <script language="javascript">
     function clickProductFormat(type, id)
     {
-        for(var i=0;i<document.getElementsByName('format').length;i++){
-            document.getElementsByName('format')[i].style.backgroundImage="url(images/page/organizer.png)";
-            document.getElementsByName('format')[i].style.color="#000";
-        }
-        
-        document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)"; 
-        document.getElementById(id).style.color="#fff";
+        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
         id=id.substr(3);
         document.getElementById('h_product_format').value = id;
-        
+
         if(id != 0)
         {
-            //document.getElementById('paper_free').style.display = 'none';
+
+            document.getElementById('paper_free').style.display = 'none';
             updateFormat(id);
         } else
         {
@@ -96,13 +92,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
     function clickPaperContent(id)
     {
-        for(var i=0;i<document.getElementsByName('paperprops').length;i++){
-            document.getElementsByName('paperprops')[i].style.backgroundImage="url(images/page/organizer.png)";
-            document.getElementsByName('paperprops')[i].style.color="#000";
-        }
-        
-        document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-        document.getElementById(id).style.color="#fff";
+        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
         id=id.substr(3);
         
         document.getElementById('h_content_paper').value = id;
@@ -118,14 +108,8 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
     
     function clickContentWeight(id)
-    {    
-        for(var i=0;i<document.getElementsByName('paperweight').length;i++){
-            document.getElementsByName('paperweight')[i].style.backgroundImage="url(images/page/organizer.png)";
-            document.getElementsByName('paperweight')[i].style.color="#000";
-        }
-        
-        document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-        document.getElementById(id).style.color="#fff";
+    {
+        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
         id=id.substr(3);
         
         document.getElementById('h_content_paper_weight').value = id;        
@@ -142,12 +126,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
     function clickContentPages(id)
     {
-        for(var i=0;i<document.getElementsByName('numberpages_content').length;i++){
-            document.getElementsByName('numberpages_content')[i].style.backgroundImage="url(images/page/organizer.png)";
-            document.getElementsByName('numberpages_content')[i].style.color="#000";
-        }
-        document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-        document.getElementById(id).style.color="#fff";
+        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
         id=id.substr(3);
         if (id != document.getElementById('h_content_pages').value)
             oldPages = document.getElementById('h_content_pages').value;
@@ -162,11 +141,6 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
                 document.getElementById('print_chrom').innerHTML = data;
             });
 
-            for(var i=0;i<document.getElementsByName('chroma').length;i++){
-                document.getElementsByName('chroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                document.getElementsByName('chroma')[i].style.color="#000";
-            }
-
             document.getElementById('h_content_chromaticity').value = 0;
         }
     }
@@ -175,6 +149,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     // Falls Eingabe per Textfeld erfolgt
     function focusContentPages()
     {
+        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
         id=0;
         if(document.getElementById('h_content_chromaticity').value == 0 || document.getElementById('h_content_chromaticity').value == '' || oldPages == 1 || id == 1)
         {
@@ -184,10 +159,6 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
                 document.getElementById('print_chrom').innerHTML = data;
             });
 
-            for(var i=0;i<document.getElementsByName('chroma').length;i++){
-                document.getElementsByName('chroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                document.getElementsByName('chroma')[i].style.color="#000";
-            }
 
             document.getElementById('h_content_chromaticity').value = 0;
         }
@@ -210,14 +181,8 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
 function clickContentChromaticity(id)
             {
-                
-                for(var i=0;i<document.getElementsByName('chroma').length;i++){
-                    document.getElementsByName('chroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('chroma')[i].style.color="#000";
-                }
-                
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
+                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 
                 document.getElementById('h_content_chromaticity').value = id;
@@ -298,12 +263,7 @@ function clickContentChromaticity(id)
             
             function clickAddPaper(id)
             {
-                for(var i=0;i<document.getElementsByName('addpaper').length;i++){
-                    document.getElementsByName('addpaper')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('addpaper')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
+                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                 id=id.substr(3);
                 
                 document.getElementById('h_addcontent_paper').value = id;
@@ -346,12 +306,7 @@ function clickContentChromaticity(id)
             
                 function clickAddPaperWeight(id)
                 {
-                    for(var i=0;i<document.getElementsByName('addpaperweight').length;i++){
-                        document.getElementsByName('addpaperweight')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('addpaperweight')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
+                    $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent_paper_weight').value = id;
@@ -370,12 +325,7 @@ function clickContentChromaticity(id)
             
                 function clickAddPaperChromaticity(id)
                 {
-                    for(var i=0;i<document.getElementsByName('addpaperchroma').length;i++){
-                        document.getElementsByName('addpaperchroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('addpaperchroma')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
+                    $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                     id=id.substr(3);
                     document.getElementById('h_addcontent_chromaticity').value = id;
 
@@ -406,12 +356,7 @@ function clickContentChromaticity(id)
 
             function clickAddPaperPages(id)
             {
-                for(var i=0;i<document.getElementsByName('addpaperpages').length;i++){
-                    document.getElementsByName('addpaperpages')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('addpaperpages')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
+                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                 id=id.substr(3);
                 document.getElementById('h_addcontent_pages').value = id;
 
@@ -466,12 +411,7 @@ function clickContentChromaticity(id)
             
             function clickEnvelopePaper(id)
             {
-                for(var i=0;i<document.getElementsByName('envpaper').length;i++){
-                    document.getElementsByName('envpaper')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('envpaper')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
+                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                 id=id.substr(3);
                 document.getElementById('h_envelope_paper').value = id;
                 oldval = document.getElementById('h_envelope_paper_weight').value;
@@ -503,12 +443,7 @@ function clickContentChromaticity(id)
             
                     function clickEnvelopeWeight(id)
                     {
-                        for(var i=0;i<document.getElementsByName('envpaperweight').length;i++){
-                            document.getElementsByName('envpaperweight')[i].style.backgroundImage="url(images/page/organizer.png)";
-                            document.getElementsByName('envpaperweight')[i].style.color="#000";
-                        }
-                        document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                        document.getElementById(id).style.color="#fff";
+                        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                         id=id.substr(3);
                         document.getElementById('h_envelope_paper_weight').value = id;
 
@@ -529,12 +464,7 @@ function clickContentChromaticity(id)
             
                     function clickEnvelopeChromaticity(id)
                     {
-                        for(var i=0;i<document.getElementsByName('envpaperchroma').length;i++){
-                            document.getElementsByName('envpaperchroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                            document.getElementsByName('envpaperchroma')[i].style.color="#000";
-                        }
-                        document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                        document.getElementById(id).style.color="#fff";
+                        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                         id=id.substr(3);
                 
                         document.getElementById('h_envelope_chromaticity').value = id;
@@ -615,12 +545,7 @@ function clickContentChromaticity(id)
     
                 function clickEnvelopePages(id)
                 {
-                    for(var i=0;i<document.getElementsByName('envpaperpages').length;i++){
-                        document.getElementsByName('envpaperpages')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('envpaperpages')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
+                    $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                     id=parseInt(id.substr(3));
                     document.getElementById('h_envelope_pages').value = id;
 
@@ -680,13 +605,7 @@ function clickContentChromaticity(id)
             
             function clickFolding(id)
             {
-                for(var i=0;i<document.getElementsByName('foldtype').length;i++){
-                    document.getElementsByName('foldtype')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('foldtype')[i].style.color="#000";
-                }   
-                
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
+                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
                 id=id.substr(3);
                 
                 document.getElementById('h_folding').value = id;
@@ -798,17 +717,15 @@ echo $quickmove->generate();
                     </thead>
                     <tbody>
                     <tr>
-                        <td><?= $_LANG->get('Endformat') ?>
-                        </td>
-
-                        <td valign="top">
+                        <td><?= $_LANG->get('Endformat') ?></td>
+                        <td style=" margin-top: 30px; margin-right: 30px;  margin-bottom: 50px; margin-left: 80px;" valign="top">
                             <?
                             foreach ($order->getProduct()->getAvailablePaperFormats() as $pf) {
-                                echo '<input type="button" class="selectbutton" id="01_' . $pf->getId() . '" name="format" value="';
+                                echo '  <input type="button" class="btn btn-default btn-info" id="01_' . $pf->getId() . '" name="format" value="';
                                 echo $pf->getName() . "\n" . '(' . $pf->getWidth() . ' x ' . $pf->getHeight() . ' '.$_LANG->get('mm').')"';
                                 echo 'onclick="clickProductFormat(\'content\',this.id)"';
                                 if ($calc->getProductFormat()->getId() == $pf->getId())
-                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                    echo ' ';
                                 echo '>' . "\n";
                             }
                             ?>
@@ -818,35 +735,45 @@ echo $quickmove->generate();
                     <tr>
                         <td></td>
                         <td id="paper_free" <? //if($calc->getProductFormat() != 0) echo 'style="display:none"' ?>>
-                            <div class="form-group">
-                                <label for="" class="col-sm-2 control-label">Breite</label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <input name="order_product_width" class="form-control" id="order_product_width" value="<?= $calc->getProductFormatWidth() ?>">
-                                        <span class="input-group-addon">mm</span>
+                            <div class="col-md-6">
+                                 <div class="row">
+                                     <div class="form-group">
+                                         <label for="" class="col-sm-2 control-label">Breite</label>
+                                         <div class="col-sm-4">
+                                             <div class="input-group">
+                                                 <input name="order_product_width" class="form-control" id="order_product_width" value="<?= $calc->getProductFormatWidth() ?>">
+                                                 <span class="input-group-addon">mm</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="form-group">
+                                         <label for="" class="col-sm-2 control-label">Höhe</label>
+                                         <div class="col-sm-4">
+                                             <div class="input-group">
+                                                 <input name="order_product_height" class="form-control" id="order_product_height" value="<?= $calc->getProductFormatHeight() ?>">
+                                                 <span class="input-group-addon">mm</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Breite (offenes Format)</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <input name="order_product_width_open" class="form-control" id="order_product_width_open" value="<?= $calc->getProductFormatWidthOpen() ?>">
+                                                <span class="input-group-addon">mm</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <label for="" class="col-sm-2 control-label">Höhe</label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <input name="order_product_height" class="form-control" id="order_product_height" value="<?= $calc->getProductFormatHeight() ?>">
-                                        <span class="input-group-addon">mm</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="" class="col-sm-2 control-label">Breite (offenes Format)</label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <input name="order_product_width_open" class="form-control" id="order_product_width_open" value="<?= $calc->getProductFormatWidthOpen() ?>">
-                                        <span class="input-group-addon">mm</span>
-                                    </div>
-                                </div>
-                                <label for="" class="col-sm-2 control-label">Höhe (offenes Format)</label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <input name="order_product_height_open" class="form-control" id="order_product_height_open" value="<?= $calc->getProductFormatHeightOpen() ?>">
-                                        <span class="input-group-addon">mm</span>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Höhe (offenes Format)</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <input name="order_product_height_open" class="form-control" id="order_product_height_open" value="<?= $calc->getProductFormatHeightOpen() ?>">
+                                                <span class="input-group-addon">mm</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -862,7 +789,7 @@ echo $quickmove->generate();
                         <tr>
                             <td><?= $_LANG->get('Inhalt 1') ?></td>
                             <td>
-                                <div id="paper">
+                                <div  style=" padding: 30px;" id="paper">
                                     <?
                                     if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
@@ -870,13 +797,13 @@ echo $quickmove->generate();
                                             $paper = new Paper($paper["id"]);
                                             echo '<input type="button"';
                                             if ($calc->getPaperContent()->getId() == $paper->getId())
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                echo ' ';
 
-                                            echo ' class="selectbutton" id="02_' . $paper->getId() . '" name="paperprops" value="' . $paper->getName() . '"
+                                            echo ' class="btn btn-default btn-info" id="02_' . $paper->getId() . '" name="paperprops" value="' . $paper->getName() . '"
 											onclick="clickPaperContent(this.id)">' . "\n";
                                         }
 
-                                        echo '<input type="button" class="selectbutton" name="custompaperprop" value="[+] Neues Papier..." onclick="navigateToPaperModule()" />';
+                                        echo '<input type="button" class="btn btn-default btn-info" name="custompaperprop" value="[+] Neues Papier..." onclick="navigateToPaperModule()" />';
                                     }
                                     ?>
                                 </div>
@@ -907,9 +834,9 @@ echo $quickmove->generate();
 
                                                 echo '<input type="button" ';
                                                 if ($calc->getPaperContentWeight() == $weight)
-                                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                    echo ' ';
 
-                                                echo 'class="selectbutton" id="03_' . $weight . '" name="paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                                echo ' class="btn btn-default btn-info" id="03_' . $weight . '" name="paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickContentWeight(this.id)">' . "\n";
                                             }
                                         }
@@ -934,8 +861,8 @@ echo $quickmove->generate();
                                         foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                             echo '<input type="button" ';
                                             if ($calc->getPagesContent() == $pc)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            echo 'class="selectbutton" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                                echo ' ';
+                                            echo ' class="btn btn-default btn-info" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickContentPages(this.id, false)">' . "\n";
                                         }
                                     else
@@ -957,8 +884,8 @@ echo $quickmove->generate();
                                     foreach (Chromaticity::getAllChromaticities() as $pc) {
                                         echo '<input type="button" ';
                                         if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                        echo ' class="selectbutton" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
+                                            echo ' ';
+                                        echo '  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
 				onclick="clickContentChromaticity(this.id)">' . "\n";
                                     }
                                 }
@@ -1000,10 +927,10 @@ echo $quickmove->generate();
                                         echo '<input type="button" ';
 
                                         if ($calc->getPaperAddContent()->getId() == 0) {
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff" ';
+                                            echo ' ';
                                         }
 
-                                        echo 'class="selectbutton" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+                                        echo ' class="btn btn-default btn-info" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickAddPaper(this.id)">' . "\n";
                                         $addSelected = false;
                                         foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
@@ -1011,10 +938,10 @@ echo $quickmove->generate();
                                             echo '<input type="button"';
                                             if ($calc->getPaperAddContent()->getId() == $paper->getId()) {
                                                 $addSelected = true;
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                echo ' ';
                                             }
 
-                                            echo ' class="selectbutton" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '"
+                                            echo '  class="btn btn-default btn-info" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '"
 				onclick="clickAddPaper(this.id)">' . "\n";
                                         }
                                         if ($addSelected === false)
@@ -1043,9 +970,9 @@ echo $quickmove->generate();
 
                                                 echo '<input type="button" ';
                                                 if ($calc->getpaperAddContentWeight() == $weight)
-                                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                    echo ' ';
 
-                                                echo 'class="selectbutton" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                                echo 'class="btn btn-default btn-info" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickAddPaperWeight(this.id)">' . "\n";
                                             }
                                         }
@@ -1069,8 +996,8 @@ echo $quickmove->generate();
                                             foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                                 echo '<input type="button" ';
                                                 if ($calc->getPagesAddContent() == $pc)
-                                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                                echo 'class="selectbutton" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                                    echo ' ';
+                                                echo ' class="btn btn-default btn-info" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickAddPaperPages(this.id)">' . "\n";
                                             }
                                         else
@@ -1094,8 +1021,8 @@ echo $quickmove->generate();
                                         foreach (Chromaticity::getAllChromaticities() as $pc) {
                                             echo '<input type="button"';
                                             if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            echo ' class="selectbutton" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '"
+                                                echo '';
+                                            echo ' class="btn btn-default btn-info" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '"
 				onclick="clickAddPaperChromaticity(this.id)">' . "\n";
                                         }
                                     }
@@ -1142,21 +1069,21 @@ echo $quickmove->generate();
                                         echo '<input type="button" ';
 
                                         if ($calc->getPaperEnvelope()->getId() == 0) {
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                            echo ' ';
                                         }
 
-                                        echo 'class="selectbutton" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+                                        echo ' class="btn btn-default btn-info" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickEnvelopePaper(this.id)">' . "\n";
                                         $envSelected = false;
                                         foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_ENVELOPE) as $paper) {
                                             $paper = new Paper($paper["id"]);
                                             echo '<input type="button"';
                                             if ($calc->getPaperEnvelope()->getId() == $paper->getId()) {
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                echo ' ';
                                                 $envSelected = true;
                                             }
 
-                                            echo ' class="selectbutton" id="09_' . $paper->getId() . '" name="envpaper" value="' . $paper->getName() . '"
+                                            echo '  class="btn btn-default btn-info" id="09_' . $paper->getId() . '" name="envpaper" value="' . $paper->getName() . '"
 				onclick="clickEnvelopePaper(this.id)">' . "\n";
                                         }
                                         if ($envSelected === false)
@@ -1184,9 +1111,9 @@ echo $quickmove->generate();
                                             if ($weight != "id") {
                                                 echo '<input type="button" ';
                                                 if ($calc->getPaperEnvelopeWeight() == $weight)
-                                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                    echo ' ';
 
-                                                echo 'class="selectbutton" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                                echo 'class="btn btn-default btn-info" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickEnvelopeWeight(this.id)">' . "\n";
                                             }
                                         }
@@ -1207,10 +1134,10 @@ echo $quickmove->generate();
                                         $pages = array("2", "4", "6", "8");
 
                                         foreach ($pages as $pc) {
-                                            echo '<input type="button" class="selectbutton"';
+                                            echo '<input type="button"  class="btn btn-default btn-info"';
 
                                             if ($calc->getPagesEnvelope() == $pc)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                echo ' ';
                                             echo ' id="11_' . $pc . '" name="envpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
 				onclick="clickEnvelopePages(this.id)">' . "\n";
                                         }
@@ -1234,8 +1161,8 @@ echo $quickmove->generate();
                                         foreach (Chromaticity::getAllChromaticities() as $pc) {
                                             echo '<input type="button"';
                                             if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            echo ' class="selectbutton" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '"
+                                                echo ' ';
+                                            echo '  class="btn btn-default btn-info" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '"
 				onclick="clickEnvelopeChromaticity(this.id)">' . "\n";
                                         }
                                     }
@@ -1303,8 +1230,8 @@ echo $quickmove->generate();
                                         foreach (Foldtype::getFoldTypesForPages($calc->getPagesContent()) as $ft) {
                                             echo '<input type="button"';
                                             if ($calc->getFolding()->getId() == $ft->getId())
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            echo ' class="selectbutton" id="12_' . $ft->getId() . '" name="foldtype" value="' . $ft->getName() . '"
+                                                echo ' ';
+                                            echo '  class="btn btn-default btn-info" id="12_' . $ft->getId() . '" name="foldtype" value="' . $ft->getName() . '"
 				onclick="clickFolding(this.id)">' . "\n";
                                         }
                                     }

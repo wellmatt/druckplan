@@ -1050,7 +1050,7 @@ echo $quickmove->generate();
 							<th width="25%">&nbsp;</th>
 							<th width="25%">&nbsp;</th>
 							<th width="25%">
-								<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>';">
+								<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id=<?=$businessContact->getID()?>';">
 									<span class="glyphicons glyphicons-plus"></span>
 									<?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?>
 								</button>

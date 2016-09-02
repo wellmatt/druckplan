@@ -66,11 +66,11 @@ if($_REQUEST["exec"] == "updateDifficultyFields")
         <div id="tr_difficulty_fields_<?php echo $id ;?>" class="form-group">
             <label for="" class="col-sm-3 control-label">&nbsp;</label>
             <div class="col-sm-3">
-                <input class=form-control name="machine_difficulty['.$id.'][values][]">
+                <input class=form-control name="machine_difficulty[<?php echo $id; ?>][values][]">
             </div>
             <div class="col-sm-3">
                 <div class="input-group">
-                    <input class="form-control" name="machine_difficulty['.$id.'][percents][]">
+                    <input class="form-control" name="machine_difficulty[<?php echo $id; ?>][percents][]">
                  <span class="input-group-addon">%</span>
                 </div>
             </div>

@@ -113,34 +113,33 @@ $(document).ready(function() {
     });
 } );
 </script>
-
-<table width="100%">
-	<tr>
-		<td width="150" class="content_header">
-			<span class="glyphicons glyphicons-exclamation-sign"></span> <span
-			style="font-size: 13px"><?=$_LANG->get('Benachrichtigungen')?></span></td>
-		<td width="250" class="content_header" align="right">
-		<?=$savemsg?>
-		</td>
-	</tr>
-</table>
-<br />
-
-<div class="box1">
-	<table id="notifytable" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column pointer">
-		<thead>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<span class="glyphicons glyphicons-exclamation-sign"></span>
+				Benachrichtigungen
+				<span class="pull-right">
+					<?=$savemsg?>
+				</span>
+			</h3>
+	  </div>
+	<br>
+	<div class="table-responsive">
+		<table id="notifytable" class="table table-hover">
+			<thead>
 			<tr>
 				<th><?=$_LANG->get('ID')?></th>
 				<th><?=$_LANG->get('Titel')?></th>
 				<th><?=$_LANG->get('Datum')?></th>
 			</tr>
-		</thead>
-		<tfoot>
+			</thead>
+			<tfoot>
 			<tr>
 				<th><?=$_LANG->get('ID')?></th>
 				<th><?=$_LANG->get('Titel')?></th>
 				<th><?=$_LANG->get('Datum')?></th>
 			</tr>
-		</tfoot>
-	</table>
+			</tfoot>
+		</table>
+	</div>
 </div>

@@ -35,10 +35,10 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                     echo '<input type="button" ';
 
                                     if ($calc->getPaperAddContent2()->getId() == 0) {
-                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff" ';
+                                        echo ' ';
                                     }
 
-                                    echo 'class="selectbutton" id="20_0" name="add2paper" value="' . $_LANG->get('nicht vorhanden') . '"
+                                    echo ' class="btn btn-default btn-info" id="20_0" name="add2paper" value="' . $_LANG->get('nicht vorhanden') . '"
 										onclick="clickAdd2Paper(this.id)">' . "\n";
                                     $addSelected = false;
                                     foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
@@ -46,10 +46,10 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                         echo '<input type="button"';
                                         if ($calc->getPaperAddContent2()->getId() == $paper->getId()) {
                                             $addSelected = true;
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                            echo ' ';
                                         }
 
-                                        echo ' class="selectbutton" id="20_' . $paper->getId() . '" name="add2paper" value="' . $paper->getName() . '"
+                                        echo '  class="btn btn-default btn-info" id="20_' . $paper->getId() . '" name="add2paper" value="' . $paper->getName() . '"
 												onclick="clickAdd2Paper(this.id)">' . "\n";
                                     }
                                     if ($addSelected === false)
@@ -74,9 +74,9 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                         if ($weight != "id") {
                                             echo '<input type="button" ';
                                             if ($calc->getpaperAddContent2Weight() == $weight)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                                echo ' ';
 
-                                            echo 'class="selectbutton" id="21_' . $weight . '" name="add2paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                            echo ' class="btn btn-default btn-info" id="21_' . $weight . '" name="add2paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 													onclick="clickAdd2PaperWeight(this.id)">' . "\n";
                                         }
                                     }
@@ -98,8 +98,8 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                         foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                             echo '<input type="button" ';
                                             if ($calc->getPagesAddContent2() == $pc)
-                                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                            echo 'class="selectbutton" id="23_' . $pc . '" name="add2paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                                echo ' ';
+                                            echo ' class="btn btn-default btn-info" id="23_' . $pc . '" name="add2paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     												onclick="clickAdd2PaperPages(this.id)">' . "\n";
                                         }
                                     else
@@ -123,9 +123,9 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                     foreach (Chromaticity::getAllChromaticities() as $pc) {
                                         echo '<input type="button"';
                                         if ($calc->getChromaticitiesAddContent2()->getId() == $pc->getId()){
-                                            echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                            echo ' ';
                                         }
-                                        echo ' class="selectbutton" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '"
+                                        echo ' class="btn btn-default btn-info" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '"
 									onclick="clickAdd2PaperChromaticity(this.id)">' . "\n";
                                     }
                                 }
@@ -170,10 +170,10 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                             echo '<input type="button" ';
 
                             if ($calc->getPaperAddContent3()->getId() == 0) {
-                                echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff" ';
+                                echo ' ';
                             }
 
-                            echo 'class="selectbutton" id="30_0" name="add3paper" value="' . $_LANG->get('nicht vorhanden') . '"
+                            echo ' class="btn btn-default btn-info" id="30_0" name="add3paper" value="' . $_LANG->get('nicht vorhanden') . '"
 										onclick="clickAdd3Paper(this.id)">' . "\n";
                             $addSelected = false;
                             foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
@@ -181,10 +181,10 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                                 echo '<input type="button"';
                                 if ($calc->getPaperAddContent3()->getId() == $paper->getId()) {
                                     $addSelected = true;
-                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                    echo ' ';
                                 }
 
-                                echo ' class="selectbutton" id="30_' . $paper->getId() . '" name="add3paper" value="' . $paper->getName() . '"
+                                echo '  class="btn btn-default btn-info" id="30_' . $paper->getId() . '" name="add3paper" value="' . $paper->getName() . '"
 												onclick="clickAdd3Paper(this.id)">' . "\n";
                             }
                             if ($addSelected === false)
@@ -209,9 +209,9 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                                 if ($weight != "id") {
                                     echo '<input type="button" ';
                                     if ($calc->getpaperAddContent3Weight() == $weight)
-                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                        echo ' ';
 
-                                    echo 'class="selectbutton" id="31_' . $weight . '" name="add3paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                    echo ' class="btn btn-default btn-info" id="31_' . $weight . '" name="add3paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 													onclick="clickAdd3PaperWeight(this.id)">' . "\n";
                                 }
                             }
@@ -233,8 +233,8 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                                 foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                     echo '<input type="button" ';
                                     if ($calc->getPagesAddContent3() == $pc)
-                                        echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
-                                    echo 'class="selectbutton" id="33_' . $pc . '" name="add3paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                        echo '';
+                                    echo ' class="btn btn-default btn-info" id="33_' . $pc . '" name="add3paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     												onclick="clickAdd3PaperPages(this.id)">' . "\n";
                                 }
                             else
@@ -258,9 +258,9 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                             foreach (Chromaticity::getAllChromaticities() as $pc) {
                                 echo '<input type="button"';
                                 if ($calc->getChromaticitiesAddContent3()->getId() == $pc->getId()){
-                                    echo ' style="background-image:url(images/page/organizer-selected.png);color:#fff"';
+                                    echo ' ';
                                 }
-                                echo ' class="selectbutton" id="33_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '"
+                                echo ' class="btn btn-default btn-info" id="33_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '"
 									onclick="clickAdd3PaperChromaticity(this.id)">' . "\n";
                             }
                         }

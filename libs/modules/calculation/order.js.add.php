@@ -13,12 +13,6 @@
             
             function clickAdd2Paper(id)
             {
-                for(var i=0;i<document.getElementsByName('add2paper').length;i++){
-                    document.getElementsByName('add2paper')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('add2paper')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
                 id=id.substr(3);
                 
                 document.getElementById('h_addcontent2_paper').value = id;
@@ -60,12 +54,6 @@
             
                 function clickAdd2PaperWeight(id)
                 {
-                    for(var i=0;i<document.getElementsByName('add2paperweight').length;i++){
-                        document.getElementsByName('add2paperweight')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('add2paperweight')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent2_paper_weight').value = id;
@@ -84,12 +72,6 @@
             
                 function clickAdd2PaperChromaticity(id)
                 {
-                    for(var i=0;i<document.getElementsByName('add2paperchroma').length;i++){
-                        document.getElementsByName('add2paperchroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('add2paperchroma')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
                     id=id.substr(3);
                     document.getElementById('h_addcontent2_chromaticity').value = id;
 
@@ -120,12 +102,6 @@
 
             function clickAdd2PaperPages(id)
             {
-                for(var i=0;i<document.getElementsByName('add2paperpages').length;i++){
-                    document.getElementsByName('add2paperpages')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('add2paperpages')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
                 id=id.substr(3);
                 document.getElementById('h_addcontent2_pages').value = id;
 
@@ -184,12 +160,6 @@
             
             function clickAdd3Paper(id)
             {
-                for(var i=0;i<document.getElementsByName('add3paper').length;i++){
-                    document.getElementsByName('add3paper')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('add3paper')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
                 id=id.substr(3);
                 
                 document.getElementById('h_addcontent3_paper').value = id;
@@ -231,12 +201,6 @@
             
                 function clickAdd3PaperWeight(id)
                 {
-                    for(var i=0;i<document.getElementsByName('add3paperweight').length;i++){
-                        document.getElementsByName('add3paperweight')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('add3paperweight')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent3_paper_weight').value = id;
@@ -255,12 +219,6 @@
             
                 function clickAdd3PaperChromaticity(id)
                 {
-                    for(var i=0;i<document.getElementsByName('add3paperchroma').length;i++){
-                        document.getElementsByName('add3paperchroma')[i].style.backgroundImage="url(images/page/organizer.png)";
-                        document.getElementsByName('add3paperchroma')[i].style.color="#000";
-                    }
-                    document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                    document.getElementById(id).style.color="#fff";
                     id=id.substr(3);
                     document.getElementById('h_addcontent3_chromaticity').value = id;
 
@@ -292,12 +250,6 @@
 
             function clickAdd3PaperPages(id)
             {
-                for(var i=0;i<document.getElementsByName('add3paperpages').length;i++){
-                    document.getElementsByName('add3paperpages')[i].style.backgroundImage="url(images/page/organizer.png)";
-                    document.getElementsByName('add3paperpages')[i].style.color="#000";
-                }
-                document.getElementById(id).style.backgroundImage="url(images/page/organizer-selected.png)";
-                document.getElementById(id).style.color="#fff";
                 id=id.substr(3);
                 document.getElementById('h_addcontent3_pages').value = id;
 

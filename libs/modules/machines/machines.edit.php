@@ -773,11 +773,11 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_border" class="form-group">
 								<label for="" class="col-sm-3 control-label">nicht bedruckbarer Bereich</label>
-								<div class="col-sm-6">
+								<div class="col-sm-7">
 									<table class="table table-hover">
 										<tr>
-											<td></td>
-											<td>
+											<td  style="border-top: medium none;"></td>
+											<td  style="border-top: medium none;">
 												<div class="input-group">
 													<input class="form-control" name="border_top"
 														   value="<?= $machine->getBorder_top() ?>">
@@ -785,18 +785,18 @@ echo $quickmove->generate();
 												</div>
 											</td>
 
-											<td></td>
+											<td  style="border-top: medium none;"></td>
 										</tr>
 										<tr>
-											<td>
+											<td  style="border-top: medium none;">
 												<div class="input-group">
 													<input class="form-control" name="border_left"
 														   value="<?= $machine->getBorder_left() ?>">
 													<span class="input-group-addon">mm</span>
 												</div>
-											</td>
-											<td></td>
-											<td>
+											</td  style="border-top: medium none;">
+											<td  style="border-top: medium none;"></td>
+											<td  style="border-top: medium none;">
 												<div class="input-group">
 													<input class="form-control" name="border_right"
 														   value="<?= $machine->getBorder_right() ?>">
@@ -805,15 +805,15 @@ echo $quickmove->generate();
 											</td>
 										</tr>
 										<tr>
-											<td></td>
-											<td>
+											<td  style="border-top: medium none;"></td>
+											<td  style="border-top: medium none;">
 												<div class="input-group">
 													<input class="form-control" name="border_bottom"
 														   value="<?= $machine->getBorder_bottom() ?>">
 													<span class="input-group-addon">mm</span>
 												</div>
 											</td>
-											<td></td>
+											<td  style="border-top: medium none;"></td>
 										</tr>
 									</table>
 								</div>
@@ -927,7 +927,7 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_time_trimmer" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">'R&uuml;stzeit Dreischneider</label>
+								<label for="" class="col-sm-3 control-label">R&uuml;stzeit Dreischneider</label>
 								<div class="col-sm-3">
 									<div class="input-group">
 										<input name="time_trimmer" class="form-control"
@@ -951,61 +951,6 @@ echo $quickmove->generate();
 						<div class="col-md-6">
 							<div id="tr_machine_chromaticity" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">verf&uuml;gbare Farbigkeiten</label>
-								<div class="col-sm-9">
-									<table class="table table-hover" cellpadding="0" cellspacing="0" border="0">
-										<?
-
-										function chromaActive($chr, $machine)
-										{
-											foreach ($machine->getChromaticities() as $c) {
-												if ($chr->getId() == $c->getId())
-													return true;
-											}
-											return false;
-										}
-
-										//gln
-										$anzeige = true;
-										$chrs = Chromaticity::getAllChromaticities(Chromaticity::ORDER_NAME);
-										foreach ($chrs as $chr) {
-											?>
-											<tr>
-												<td class="content_row_header">
-													<?
-													echo '<input name="chroma_' . $chr->getId() . '" type="checkbox" value="1" ';
-													if (chromaActive($chr, $machine) === true) echo "checked";
-													echo '>' . $chr->getName() . "<br>";
-													?>
-												</td>
-
-
-												<div class="input-group">
-													<input name="chr_markup"type="text" class="form-control" value="<?=printPrice($chr->getMarkup())?>">
-													<span class="input-group-addon">%</span>
-												</div>
-
-
-
-												<td name="anz_click1" class="content_row_header" valign="top"
-													align="right"
-													style="display:<? if ($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>"><? if ($anzeige) echo $_LANG->get('Click'); else echo ""; ?></td>
-												<td name="anz_click2"
-													style="display:<? if ($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
-													<?
-													if (chromaActive($chr, $machine) === true)
-														echo '<div class="input-group"><input name="click_' . $chr->getId() . '" class="form-control" value="' . printPrice($machine->getCurrentClickprice($chr), 4) . '"><span class="input-group-addon">' . $_USER->getClient()->getCurrency(). '</span></div>';
-													else
-														echo '<div class="input-group"><input name="click_' . $chr->getId() . '" class="form-control" value="' . printPrice(0, 4) . '"><span class="input-group-addon">' . $_USER->getClient()->getCurrency() . '</span></div>';
-													?>
-												</td>
-											</tr>
-											<?
-											$anzeige = false;
-										}
-										?>
-									</table>
-								</div>
 								<div class="form-group" id="tr_machine_finish"
 									 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
 									<label for="" class="col-sm-3 control-label">Option Lack verf&uuml;gbar</label>
@@ -1014,7 +959,7 @@ echo $quickmove->generate();
 											   type="checkbox" <? if ($machine->getFinish() == 1) echo "checked"; ?>>
 									</div>
 									<label for="" class="col-sm-3 control-label">Preis Lackplatte</label>
-									<div class="col-sm-4">
+									<div class="col-sm-3">
 										<div class="input-group">
 											<input name="finish_plate_cost" class="form-control"
 												   value="<?= printPrice($machine->getFinishPlateCost()) ?>">
@@ -1046,6 +991,70 @@ echo $quickmove->generate();
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+							Verfügbare Farbigkeit
+						</h3>
+				  </div>
+				  <div class="panel-body">
+					  <div class="table-responsive">
+						  <?php
+
+						  function chromaActive($chr, $machine)
+						  {
+							  foreach ($machine->getChromaticities() as $c) {
+								  if ($chr->getId() == $c->getId())
+									  return true;
+							  }
+							  return false;
+						  }
+						  $anzeige = true;
+						  $chrs = Chromaticity::getAllChromaticities(Chromaticity::ORDER_NAME);
+
+						  if ($chrs)
+							  $chrs = break_array($chrs,3);
+						  else
+							  $chrs = [];
+						  ?>
+						  <table>
+							  <?php
+							  if (count($chrs)>0) {
+								  foreach ($chrs as $item) {
+									  echo '<tr>';
+									  foreach ($item as $chr) {
+										  ?>
+										  <td width="10%">
+											  <?
+											  echo '<input name="chroma_' . $chr->getId() . '" type="checkbox" value="1" ';
+											  if (chromaActive($chr, $machine) === true) echo "checked";
+											  echo '> '  . $chr->getName() . "<br>";
+											  ?>
+										  </td>
+										  <td name="anz_click1" class="content_row_header" valign="top"
+											  align="right"
+											  style="display:<? if ($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>"><? if ($anzeige) echo $_LANG->get('Click'); else echo ""; ?></td>
+										  <td name="anz_click2"
+											  style="display:<? if ($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
+											  <?
+											  if (chromaActive($chr, $machine) === true)
+												  echo '<div class="col-sm-9"><div class="input-group"><input name="click_' . $chr->getId() . '" class="form-control" value="' . printPrice($machine->getCurrentClickprice($chr), 4) . '"><span class="input-group-addon">' . $_USER->getClient()->getCurrency(). '</span></div></div>';
+											  else
+												  echo '<div class="col-sm-9"><div class="input-group"><input name="click_' . $chr->getId() . '" class="form-control" value="' . printPrice(0, 4) . '"><span class="input-group-addon">' . $_USER->getClient()->getCurrency() . '</span></div></div>';
+											  ?>
+										  </td>
+										  <?php
+									  }
+									  echo '</tr>';
+									  $anzeige = false;
+								  }
+							  }
+							  ?>
+						  </table>
+					  </div>
+				  </div>
+			</div>
 			</div>
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -1262,7 +1271,7 @@ echo $quickmove->generate();
 						foreach ($all_users as $qusr) {
 							if ($qi == 0) echo '<tr>';
 							?>
-							<td>
+							<td style="border-top: medium none;">
 								<input type="checkbox"
 									   name="qusr[]" <?php if (in_array($qusr->getId(), $qid_arr)) echo ' checked '; ?>
 									   value="<?php echo $qusr->getId(); ?>"/>
@@ -1295,7 +1304,7 @@ echo $quickmove->generate();
 						for ($i = 0; $i < 7; $i++) {
 							?>
 							<tr>
-								<td><?= $_LANG->get($daynames[$i]); ?></td>
+								<td  width="10%"><?= $_LANG->get($daynames[$i]); ?></td>
 								<td>
 									<?php
 									$count = 0;
@@ -1303,14 +1312,14 @@ echo $quickmove->generate();
 										foreach ($times[$i] as $whours) {
 											?>
 											<div class="form-group">
-												<div class="col-sm-5">
+												<div class="col-sm-2">
 													<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_start"
 														   type="text" class="form-control"
 														   value="<?php echo date("H:i", $whours["start"]); ?>"
 														   name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][start]">
 												</div>
-												<label for="" class="col-sm-2 control-label">bis</label>
-												<div class="col-sm-5">
+												<label for="" style="text-align: center;" class="col-sm-1 control-label">bis</label>
+												<div class="col-sm-2">
 													<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_end"
 														   type="text" class="form-control"
 														   value="<?php echo date("H:i", $whours["end"]); ?>"
@@ -1340,13 +1349,13 @@ echo $quickmove->generate();
 									}
 									?>
 									<div class="form-group">
-										<div class="col-sm-5">
+										<div class="col-sm-2">
 											<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_start" type="text"
 												   class="form-control" value=""
 												   name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][start]">
 										</div>
-										<label for="" class="col-sm-2 control-label">bis</label>
-										<div class="col-sm-5">
+										<label for="" style="text-align: center;" class="col-sm-1 control-label">bis</label>
+										<div class="col-sm-2">
 											<input id="wotime_<?php echo $i; ?>_<?php echo $count; ?>_end" type="text"
 												   class="form-control" value=""
 												   name="wotime[<?php echo $i; ?>][<?php echo $count; ?>][end]">
@@ -1387,8 +1396,17 @@ echo $quickmove->generate();
 				<div class="table-responsive">
 					<table class="table table-hover">
 						<tr>
-							<td>Sperrzeit Start</td>
-							<td>Sperrzeit Ende</td>
+							<td></td>
+							<td>
+								 <div class="row">
+									 <div class="col-md-3">
+										 <label for="" class="control-label">Sperrzeit Start</label>
+									 </div>
+									 <div class="col-md-3">
+										 <label for="" class="control-label">Sperrzeit Ende</label>
+									 </div>
+								 </div>
+							</td>
 						</tr>
 						<?php
 						$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
@@ -1404,20 +1422,16 @@ echo $quickmove->generate();
 							<?php }
 						} ?>
 						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td><label for="" class="control-label">neue Sperrzeit:</label></td>
+							<td width="10%"><label for="" class="control-label">neue Sperrzeit:</label></td>
 							<td>
 								<div class="form-group">
-									<div class="col-sm-5">
+									<div class="col-sm-2">
 										<input type="text" id="lock_start" name="lock_start"
 											   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
 											   onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
 									</div>
-									<label for="" class="col-sm-1 control-label">bis</label>
-									<div class="col-sm-5">
+									<label for="" style="text-align: center;"  class="col-sm-1 control-label">bis</label>
+									<div class="col-sm-2">
 										<input type="text" id="lock_stop" name="lock_stop"
 											   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
 											   onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
