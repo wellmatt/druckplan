@@ -1,0 +1,378 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Laravel Generator APIs",
+        "version": "1.0.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/collectiveInvoices": {
+            "get": {
+                "tags": [
+                    "CollectiveInvoice"
+                ],
+                "summary": "Get a listing of the CollectiveInvoices.",
+                "description": "Get all CollectiveInvoices",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/CollectiveInvoice"
+                                    }
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CollectiveInvoice"
+                ],
+                "summary": "Store a newly created CollectiveInvoice in storage",
+                "description": "Store CollectiveInvoice",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "CollectiveInvoice that should be stored",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/CollectiveInvoice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/CollectiveInvoice"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/collectiveInvoices/{id}": {
+            "get": {
+                "tags": [
+                    "CollectiveInvoice"
+                ],
+                "summary": "Display the specified CollectiveInvoice",
+                "description": "Get CollectiveInvoice",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of CollectiveInvoice",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/CollectiveInvoice"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "CollectiveInvoice"
+                ],
+                "summary": "Update the specified CollectiveInvoice in storage",
+                "description": "Update CollectiveInvoice",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of CollectiveInvoice",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "CollectiveInvoice that should be updated",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/CollectiveInvoice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/CollectiveInvoice"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "CollectiveInvoice"
+                ],
+                "summary": "Remove the specified CollectiveInvoice from storage",
+                "description": "Delete CollectiveInvoice",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of CollectiveInvoice",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "type": "string"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CollectiveInvoice": {
+            "required": [
+                ""
+            ],
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "title": {
+                    "description": "title",
+                    "type": "string"
+                },
+                "number": {
+                    "description": "number",
+                    "type": "string"
+                },
+                "deliverycosts": {
+                    "description": "deliverycosts",
+                    "type": "number",
+                    "format": "float"
+                },
+                "comment": {
+                    "description": "comment",
+                    "type": "string"
+                },
+                "client": {
+                    "description": "client",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "businesscontact": {
+                    "description": "businesscontact",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "deliveryterm": {
+                    "description": "deliveryterm",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "paymentterm": {
+                    "description": "paymentterm",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "deliveryaddress": {
+                    "description": "deliveryaddress",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "invoiceaddress": {
+                    "description": "invoiceaddress",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "crtdate": {
+                    "description": "crtdate",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "crtuser": {
+                    "description": "crtuser",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "uptdate": {
+                    "description": "uptdate",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "uptuser": {
+                    "description": "uptuser",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "intent": {
+                    "description": "intent",
+                    "type": "string"
+                },
+                "intern_contactperson": {
+                    "description": "intern_contactperson",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "cust_message": {
+                    "description": "cust_message",
+                    "type": "string"
+                },
+                "cust_sign": {
+                    "description": "cust_sign",
+                    "type": "string"
+                },
+                "custContactperson": {
+                    "description": "custContactperson",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "deliverydate": {
+                    "description": "deliverydate",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "ext_comment": {
+                    "description": "ext_comment",
+                    "type": "string"
+                },
+                "thirdpartycomment": {
+                    "description": "thirdpartycomment",
+                    "type": "string"
+                },
+                "ticket": {
+                    "description": "ticket",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "offer_header": {
+                    "description": "offer_header",
+                    "type": "string"
+                },
+                "offer_footer": {
+                    "description": "offer_footer",
+                    "type": "string"
+                },
+                "offerconfirm_header": {
+                    "description": "offerconfirm_header",
+                    "type": "string"
+                },
+                "offerconfirm_footer": {
+                    "description": "offerconfirm_footer",
+                    "type": "string"
+                },
+                "factory_header": {
+                    "description": "factory_header",
+                    "type": "string"
+                },
+                "factory_footer": {
+                    "description": "factory_footer",
+                    "type": "string"
+                },
+                "delivery_header": {
+                    "description": "delivery_header",
+                    "type": "string"
+                },
+                "delivery_footer": {
+                    "description": "delivery_footer",
+                    "type": "string"
+                },
+                "invoice_header": {
+                    "description": "invoice_header",
+                    "type": "string"
+                },
+                "invoice_footer": {
+                    "description": "invoice_footer",
+                    "type": "string"
+                },
+                "revert_header": {
+                    "description": "revert_header",
+                    "type": "string"
+                },
+                "revert_footer": {
+                    "description": "revert_footer",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
