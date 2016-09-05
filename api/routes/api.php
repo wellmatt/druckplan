@@ -29,7 +29,7 @@ Route::resource('article_shop_approvals', 'ArticleShopApprovalAPIController');
 
 Route::resource('businesscontacts', 'BusinesscontactAPIController');
 
-Route::resource('contactpeople', 'ContactpersonAPIController');
+Route::resource('contactperson', 'ContactpersonAPIController');
 
 Route::resource('article_tags', 'ArticleTagAPIController');
 
@@ -77,13 +77,13 @@ Route::resource('foldtypes', 'FoldtypeAPIController');
 
 Route::resource('formats', 'FormatsAPIController');
 
-Route::resource('f_t_p_custuploads', 'FTPCustuploadAPIController');
+Route::resource('ftpcustuploads', 'FTPCustuploadAPIController');
 
 
 
 Route::resource('groups', 'GroupAPIController');
 
-Route::resource('f_t_p_downloads', 'FTPDownloadAPIController');
+Route::resource('ftpdownloads', 'FTPDownloadAPIController');
 
 Route::resource('invoiceemissions', 'InvoiceemissionAPIController');
 
