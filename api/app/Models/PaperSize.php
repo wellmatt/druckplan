@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="PaperSize",
- *      required={""},
+ *      required={"paper_id","width","height"},
  *      @SWG\Property(
  *          property="paper_id",
  *          description="paper_id",

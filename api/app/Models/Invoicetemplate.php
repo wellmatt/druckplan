@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Invoicetemplate",
- *      required={""},
+ *      required={"invc_title","invc_price_netto","invc_taxes_active","invc_crtusr","invc_crtdat","invc_companyid","invc_supplierid"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

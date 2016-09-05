@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="ArticlePicture",
- *      required={""},
+ *      required={"url","crtdate","articleid"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

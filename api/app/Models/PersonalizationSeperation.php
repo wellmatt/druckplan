@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="PersonalizationSeperation",
- *      required={""},
+ *      required={"sep_personalizationid","sep_min","sep_max","sep_price","sep_show"},
  *      @SWG\Property(
  *          property="sep_personalizationid",
  *          description="sep_personalizationid",

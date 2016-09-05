@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="UserGroup",
- *      required={""},
+ *      required={"user_id","group_id"},
  *      @SWG\Property(
  *          property="user_id",
  *          description="user_id",

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineChromaticity",
- *      required={""},
+ *      required={"machine_id","chroma_id","clickprice"},
  *      @SWG\Property(
  *          property="machine_id",
  *          description="machine_id",

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="SupOrder",
- *      required={""},
+ *      required={"number","supplier","title","eta","paymentterm","status","invoiceaddress","deliveryaddress","crtdate","crtuser","cpinternal","cpexternal"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

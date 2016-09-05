@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="TicketLog",
- *      required={""},
+ *      required={"ticket","crtusr","date","entry"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

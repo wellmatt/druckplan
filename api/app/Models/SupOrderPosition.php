@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="SupOrderPosition",
- *      required={""},
+ *      required={"suporder","article","amount","colinvoice"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="CollectiveinvoiceAttribute",
- *      required={""},
+ *      required={"collectiveinvoice_id","attribute_id","item_id","value","inputvalue"},
  *      @SWG\Property(
  *          property="collectiveinvoice_id",
  *          description="collectiveinvoice_id",

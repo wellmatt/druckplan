@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineDifficulty",
- *      required={""},
+ *      required={"machine_id","diff_id","diff_unit","value","percent"},
  *      @SWG\Property(
  *          property="machine_id",
  *          description="machine_id",

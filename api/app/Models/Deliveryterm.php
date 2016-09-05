@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Deliveryterm",
- *      required={""},
+ *      required={"active","client","name1","comment","charges","shoprel","tax"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

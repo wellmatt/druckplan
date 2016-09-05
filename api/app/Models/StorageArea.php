@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="StorageArea",
- *      required={""},
+ *      required={"name","description","location","corridor","shelf","line","layer","prio"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="TicketPriority",
- *      required={""},
+ *      required={"title","value","protected"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

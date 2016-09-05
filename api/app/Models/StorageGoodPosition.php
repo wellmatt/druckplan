@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="StorageGoodPosition",
- *      required={""},
+ *      required={"goods","article","amount"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

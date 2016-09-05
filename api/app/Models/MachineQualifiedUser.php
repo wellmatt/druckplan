@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineQualifiedUser",
- *      required={""},
+ *      required={"machine",user"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

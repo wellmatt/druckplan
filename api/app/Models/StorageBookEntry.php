@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="StorageBookEntry",
- *      required={""},
+ *      required={"area","article","type","origin","origin_pos","amount","alloc","crtdate","crtuser"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

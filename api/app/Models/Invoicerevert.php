@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Invoicerevert",
- *      required={""},
+ *      required={"rev_title","rev_number","rev_price_netto","rev_taxes_active","rev_payed","rev_payed_dat","rev_payable_dat","rev_crtusr","rev_crtdat","rev_companyid","rev_supplierid"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

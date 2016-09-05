@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Personalization",
- *      required={""},
+ *      required={"title","comment","status","picture","article","customer","crtdate","crtuser","uptdate","uptuser","direction","format","format_width","format_height","type","picture2","linebyline","hidden","anschnitt","preview"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

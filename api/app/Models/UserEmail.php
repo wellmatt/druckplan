@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="UserEmail",
- *      required={""},
+ *      required={"status","user_id","login","address","password","type","host","port","signature","use_imap","use_ssl"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

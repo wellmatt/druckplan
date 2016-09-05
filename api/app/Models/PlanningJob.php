@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="PlanningJob",
- *      required={""},
+ *      required={"object","type","opos","subobject","assigned_user","assigned_group","ticket","start","tplanned","tactual","state","artmach"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

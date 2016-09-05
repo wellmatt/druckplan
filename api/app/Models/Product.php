@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Product",
- *      required={""},
+ *      required={"state","name","description","picture","pages_from","pages_to","pages_step","has_content","has_addcontent","has_envelope","factor_width","factor_height","taxes","grant_paper","type","text_offer","text_offerconfirm","text_invoice","text_processing","shop_rel","tradegroup","is_individual","has_addcontent2","has_addcontent3","load_dummydata","singleplateset","blockplateset"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

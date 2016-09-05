@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineLock",
- *      required={""},
+ *      required={"machineid","start","stop"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

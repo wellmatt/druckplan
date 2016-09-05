@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Chromaticity",
- *      required={""},
+ *      required={"name","colors_front","colors_back","reverse_printing","markup","pricekg"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

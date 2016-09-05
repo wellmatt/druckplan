@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineWorkTime",
- *      required={""},
+ *      required={"machine","weekday","start","end"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

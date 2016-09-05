@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Address",
- *      required={""},
+ *      required={"active","businesscontact","name1","name2","address1","address2","zip","city","country","fax","phone","mobile","shoprel","is_default"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

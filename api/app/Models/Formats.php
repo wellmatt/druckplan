@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Formats",
- *      required={""},
+ *      required={"id","name","width","height"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

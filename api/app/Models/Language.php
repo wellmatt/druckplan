@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Language",
- *      required={""},
+ *      required={"id","language","language_int","language_code","language_active"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

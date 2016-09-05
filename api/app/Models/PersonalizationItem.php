@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="PersonalizationItem",
- *      required={""},
+ *      required={"status","title","xpos","ypos","height","width","boxtype","personalization_id","text_size","justification","font","color_c","color_m","color_y","color_k","spacing","dependency_id","reverse","predefined","position","readonly","tab","zzgroup","sort"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

@@ -5,7 +5,7 @@ ob_start();
 // Updated:       04.06.2013
 // Copyright:     2012-13 by iPactor GmbH. All Rights Reserved.
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited. abc
+// or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
 if (strstr(__DIR__, "contilas2"))

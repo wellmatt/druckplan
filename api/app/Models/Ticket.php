@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Ticket",
- *      required={""},
+ *      required={"title","crtdate","crtuser","duedate","closedate","closeuser","editdate","number","customer","customer_cp","assigned_user","assigned_group","state","category","priority","source","tourmarker","planned_time"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

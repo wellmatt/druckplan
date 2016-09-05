@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Event",
- *      required={""},
+ *      required={"user_id","public","title","description","begin","end","participants_ext","participants_int","adress"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

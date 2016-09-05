@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Paymentterm",
- *      required={""},
+ *      required={"active","client","name1","comment","skonto_days1","skonto1","skonto_days2","skonto2","netto_days","shop_rel"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

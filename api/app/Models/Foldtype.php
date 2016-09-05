@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Foldtype",
- *      required={""},
+ *      required={"status","name","beschreibung","vertical","horizontal","picture","breaks"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

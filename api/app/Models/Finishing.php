@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Finishing",
- *      required={""},
+ *      required={"lector_id","status","name","beschreibung","kosten"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

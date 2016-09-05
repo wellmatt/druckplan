@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="ArticlePricescale",
- *      required={""},
+ *      required={"article","type","min","max","price","supplier","artnum"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Tradegroup",
- *      required={""},
+ *      required={"tradegroup_state","tradegroup_title","tradegroup_desc","tradegroup_shoprel","tradegroup_parentid"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

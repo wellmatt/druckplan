@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="CollectiveinvoiceOrderposition",
- *      required={""},
+ *      required={"status","quantity","price","tax","comment","collectiveinvoice","type","inv_rel","object_id","rev_rel","file_attach","perso_order"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

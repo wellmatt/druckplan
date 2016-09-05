@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="FTPCustupload",
- *      required={""},
+ *      required={"ftp_cust_id","ftp_orgname","ftp_hash","ftp_status","ftp_conf_step","ftp_filesize","ftp_crtdat"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

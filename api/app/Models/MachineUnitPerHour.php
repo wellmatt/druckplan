@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineUnitPerHour",
- *      required={""},
+ *      required={"machine_id","units_from","units_amount"},
  *      @SWG\Property(
  *          property="machine_id",
  *          description="machine_id",

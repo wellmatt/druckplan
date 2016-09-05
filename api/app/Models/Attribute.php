@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Attribute",
- *      required={""},
+ *      required={"state","title","comment","module","objectid","crtuser","crtdate","enable_customer","enable_contacts","enable_colinv"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="PersonalizationOrderItem",
- *      required={""},
+ *      required={"persoid","persoorderid","persoitemid","value"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

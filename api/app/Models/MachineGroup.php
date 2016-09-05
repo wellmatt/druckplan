@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="MachineGroup",
- *      required={""},
+ *      required={"name","position","type","lector_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
