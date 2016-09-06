@@ -53,7 +53,7 @@ return array(
       | Turn this off to remove swagger generation on production
       |--------------------------------------------------------------------------
     */
-    "generateAlways" => true,
+    "generateAlways" => false,
 
     "api-key" => "auth_token",
 
@@ -76,7 +76,7 @@ return array(
       | Edit to set the api's base path
       |--------------------------------------------------------------------------
     */
-    "default-base-path" => "",
+    "default-base-path" => "/api/public",
 
     /*
       |--------------------------------------------------------------------------
@@ -92,6 +92,10 @@ return array(
     /*"viewHeaders" => array(
         'Content-Type' => 'text/plain'
     ),*/
+//    "viewHeaders" => array(
+//        'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS , PUT',
+//        'Access-Control-Allow-Origin' => '*',
+//    ),
 
     /*
       |--------------------------------------------------------------------------

@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="Attachment",
- *      required={" "title","crtdate","crtuser","state","module","objectid","filename","orig_filename"},
+ *      required={"title","crtdate","crtuser","state","module","objectid","filename","orig_filename"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

@@ -342,6 +342,41 @@ class Ticket {
         return $total;
     }
 
+    /**
+     * @return float
+     */
+    public function getNonTimeArticles()
+    {
+        $all_comments = Comment::getCommentsForObjectSummary(get_class($this),$this->id);
+        $total = 0.0;
+        foreach ($all_comments as $comment){
+            if ($comment->getState() > 0){
+                if (count($comment->getArticles()) > 0) {
+                    foreach ($comment->getArticles() as $c_article) {
+                        if ($c_article->getState() > 0) {
+                            if ($c_article->getArticle()->getIsWorkHourArt() == 0)
+                                $total += $c_article->getAmount();
+                        }
+                    }
+                }
+                $subs = Comment::getCommentsForObject(get_class($comment),$comment->getId());
+                if (count($subs)>0){
+                    foreach ($subs as $sub) {
+                        if ($sub->getState() > 0 && count($sub->getArticles())>0){
+                            foreach ($sub->getArticles() as $c_article) {
+                                if ($c_article->getState() > 0) {
+                                    if ($c_article->getArticle()->getIsWorkHourArt() == 0)
+                                        $total += $c_article->getAmount();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $total;
+    }
+
     public static function StatisticsTicketStates($from,$to)
     {
         global $DB;

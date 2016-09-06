@@ -7,7 +7,7 @@ use Eloquent as Model;
 /**
  * @SWG\Definition(
  *      definition="PrivatContactAccess",
- *      required={"prvtc_id",userid"},
+ *      required={"prvtc_id","userid"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",

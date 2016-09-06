@@ -337,7 +337,7 @@ echo $quickmove->generate();
 							  <td colspan="2">&emsp;</td>
 						  </tr>
 						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Arbeitszeit Artikel')?></td>
+							  <td class="content_row_header"><?=$_LANG->get('Zeit-Artikel')?></td>
 							  <td class="content_row_clear"><input id="article_isworkhourart"
 																   name="article_isworkhourart" class="text" type="checkbox"
 																   value="1"

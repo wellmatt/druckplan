@@ -931,19 +931,13 @@ class Machine
                 }
 
                 // DAFUQ gln RECHNUNGS FIX:
-                if ((isset($clickpr) && $clickpr > 0) && (isset($papers) && $papers > 0)){
-                    $price = $clickpr * $papers; // HIER CLICKPRICE
-                    if ($debug)
-                    {
-                        echo 'Klickpreis in diesem Fall: $price = '.$clickpr.' * '.$papers.'</br>';
-                    }
+                if ((isset($clickpr) && $clickpr > 0) && (isset($papers) && $papers > 0)) {
+                    $clickprice = $clickpr * $papers; // HIER CLICKPRICE
                 } else {
-                    $price = $this->price * $machineEntry->getTime(); // HIER PREIS PRO MINUTE
-                    if ($debug)
-                    {
-                        echo 'Minutenpreis in diesem Fall: $price = '.$this->price.' * '.$machineEntry->getTime().'</br>';
-                    }
+                    $clickprice = 0;
                 }
+
+                $price = $this->price * $machineEntry->getTime() + $clickprice; // HIER PREIS PRO MINUTE + CLICK
 
                 if($machineEntry->getMachine()->getType() == Machine::TYPE_CUTTER){
                     $price += $machineEntry->getCutter_cuts() * $machineEntry->getMachine()->getCutPrice();

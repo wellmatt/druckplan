@@ -96,7 +96,10 @@ $ticket = new Ticket($_REQUEST["tktid"]);
         <td valign="top"><b>Soll Zeit:</b></td>
         <td valign="top"><?php echo printPrice($ticket->getPlanned_time(),2);?></td>
         <td valign="top"><b>Ist Zeit:</b></td>
-        <td valign="top">Timer: <?php echo printPrice($ticket->getTotal_time(),2);?> / Artikel: <?php if ($ticket->getTimeFromArticles()-$ticket->getTotal_time()>0) echo printPrice($ticket->getTimeFromArticles()-$ticket->getTotal_time(),2); else echo '0,00';?> / Gesamt: <?php echo printPrice($ticket->getTimeFromArticles(),2);?></td>
+        <td valign="top">
+            Zeit-Artikel: <?php if ($ticket->getTimeFromArticles() > 0) echo printPrice($ticket->getTimeFromArticles(), 2); else echo '0,00'; ?>
+            / Gen.-Artikel: <?php if ($ticket->getNonTimeArticles() > 0) echo printPrice($ticket->getNonTimeArticles(), 2); else echo '0,00'; ?>
+        </td>
     </tr>
 </table>
 </div>
