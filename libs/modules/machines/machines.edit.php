@@ -1259,30 +1259,28 @@ echo $quickmove->generate();
 						Arbeiter
 					</h3>
 				</div>
-				<div class="table-responsive">
-					<table class="table table-hover">
-						<?php
-						$all_users = User::getAllUser();
-						$qid_arr = Array();
-						foreach ($machine->getQualified_users() as $qid) {
-							$qid_arr[] = $qid->getId();
-						}
-						$qi = 0;
-						foreach ($all_users as $qusr) {
-							if ($qi == 0) echo '<tr>';
-							?>
-							<td style="border-top: medium none;">
-								<input type="checkbox"
-									   name="qusr[]" <?php if (in_array($qusr->getId(), $qid_arr)) echo ' checked '; ?>
-									   value="<?php echo $qusr->getId(); ?>"/>
-								<?php echo $qusr->getNameAsLine(); ?></td>
-							<?php if ($qi == 4) {
-								echo '</tr>';
-								$qi = -1;
-							} ?>
-							<?php $qi++;
+				<div class="panel-body">
+					<?php
+					$all_users = User::getAllUser();
+					$qid_arr = Array();
+					foreach ($machine->getQualified_users() as $qid) {
+						$qid_arr[] = $qid->getId();
+					}
+					$qi = 0;
+					foreach ($all_users as $qusr) {
+						if ($qi == 0) echo '';
+						?>
+							<div class="col-sm-2">
+								<?php echo $qusr->getNameAsLine(); ?>
+							</div>
+							<div class="col-sm-1">
+								<input type="checkbox" name="qusr[]" <?php if (in_array($qusr->getId(), $qid_arr)) echo ' checked '; ?> value="<?php echo $qusr->getId(); ?>"/>
+							</div>
+						<?php if ($qi == 4) {
+							$qi = -1;
 						} ?>
-					</table>
+						<?php $qi++;
+					} ?>
 				</div>
 			</div>
 

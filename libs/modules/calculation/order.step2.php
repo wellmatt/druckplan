@@ -47,7 +47,11 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
 <script language="javascript">
     function clickProductFormat(type, id)
     {
-        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+        var buttons = $('[name=format]');
+        for (let x=0;x<buttons.length;x++){
+            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+        }
+        $("#"+id).removeClass("btn-info").addClass("btn-success");
 
         id=id.substr(3);
         document.getElementById('h_product_format').value = id;
@@ -55,7 +59,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
         if(id != 0)
         {
 
-            document.getElementById('paper_free').style.display = 'none';
+//            document.getElementById('paper_free').style.display = 'none';
             updateFormat(id);
         } else
         {
@@ -92,7 +96,13 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
     function clickPaperContent(id)
     {
-        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+        var buttons = $('[name=paperprops]');
+        for (let x=0;x<buttons.length;x++){
+            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+        }
+        $("#"+id).removeClass("btn-info").addClass("btn-success");
+
         id=id.substr(3);
         
         document.getElementById('h_content_paper').value = id;
@@ -109,7 +119,13 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
     function clickContentWeight(id)
     {
-        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+        var buttons = $('[name=paperweight]');
+        for (let x=0;x<buttons.length;x++){
+            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+        }
+        $("#"+id).removeClass("btn-info").addClass("btn-success");
+
         id=id.substr(3);
         
         document.getElementById('h_content_paper_weight').value = id;        
@@ -126,7 +142,13 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
     function clickContentPages(id)
     {
-        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+        var buttons = $('[name=numberpages_content]');
+        for (let x=0;x<buttons.length;x++){
+            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+        }
+        $("#"+id).removeClass("btn-info").addClass("btn-success");
+
         id=id.substr(3);
         if (id != document.getElementById('h_content_pages').value)
             oldPages = document.getElementById('h_content_pages').value;
@@ -141,6 +163,11 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
                 document.getElementById('print_chrom').innerHTML = data;
             });
 
+            var buttons = $('[name=chroma]');
+            for (let x=0;x<buttons.length;x++){
+                $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+            }
+            $("#"+id).removeClass("btn-info").addClass("btn-success");
             document.getElementById('h_content_chromaticity').value = 0;
         }
     }
@@ -149,7 +176,13 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     // Falls Eingabe per Textfeld erfolgt
     function focusContentPages()
     {
-        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+        var buttons = $('[name=chroma]');
+        for (let x=0;x<buttons.length;x++){
+            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+        }
+        $("#"+id).removeClass("btn-info").addClass("btn-success");
+
         id=0;
         if(document.getElementById('h_content_chromaticity').value == 0 || document.getElementById('h_content_chromaticity').value == '' || oldPages == 1 || id == 1)
         {
@@ -181,7 +214,13 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     
 function clickContentChromaticity(id)
             {
-                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+                var buttons = $('[name=chroma]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
 
                 id=id.substr(3);
                 
@@ -263,7 +302,13 @@ function clickContentChromaticity(id)
             
             function clickAddPaper(id)
             {
-                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+                var buttons = $('[name=addpaper]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 
                 document.getElementById('h_addcontent_paper').value = id;
@@ -306,7 +351,13 @@ function clickContentChromaticity(id)
             
                 function clickAddPaperWeight(id)
                 {
-                    $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+                    var buttons = $('[name=addpaperweight]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent_paper_weight').value = id;
@@ -325,7 +376,13 @@ function clickContentChromaticity(id)
             
                 function clickAddPaperChromaticity(id)
                 {
-                    $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+                    var buttons = $('[name=addpaperchroma]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                     id=id.substr(3);
                     document.getElementById('h_addcontent_chromaticity').value = id;
 
@@ -356,7 +413,13 @@ function clickContentChromaticity(id)
 
             function clickAddPaperPages(id)
             {
-                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+                var buttons = $('[name=addpaperpages]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 document.getElementById('h_addcontent_pages').value = id;
 
@@ -411,7 +474,12 @@ function clickContentChromaticity(id)
             
             function clickEnvelopePaper(id)
             {
-                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+                var buttons = $('[name=envpaper]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 document.getElementById('h_envelope_paper').value = id;
                 oldval = document.getElementById('h_envelope_paper_weight').value;
@@ -443,7 +511,13 @@ function clickContentChromaticity(id)
             
                     function clickEnvelopeWeight(id)
                     {
-                        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+
+                        var buttons = $('[name=envpaperweight]');
+                        for (let x=0;x<buttons.length;x++){
+                            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                        }
+                        $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                         id=id.substr(3);
                         document.getElementById('h_envelope_paper_weight').value = id;
 
@@ -464,7 +538,12 @@ function clickContentChromaticity(id)
             
                     function clickEnvelopeChromaticity(id)
                     {
-                        $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+                        var buttons = $('[name=envpaperchroma]');
+                        for (let x=0;x<buttons.length;x++){
+                            $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                        }
+                        $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                         id=id.substr(3);
                 
                         document.getElementById('h_envelope_chromaticity').value = id;
@@ -545,7 +624,13 @@ function clickContentChromaticity(id)
     
                 function clickEnvelopePages(id)
                 {
-                    $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+                    var buttons = $('[name=envpaperpages]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
+
+
                     id=parseInt(id.substr(3));
                     document.getElementById('h_envelope_pages').value = id;
 
@@ -605,7 +690,13 @@ function clickContentChromaticity(id)
             
             function clickFolding(id)
             {
-                $("#"+id).toggleClass( "btn-info").addClass("btn-success");
+                var buttons = $('[name=foldtype]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
+
                 id=id.substr(3);
                 
                 document.getElementById('h_folding').value = id;
@@ -718,10 +809,10 @@ echo $quickmove->generate();
                     <tbody>
                     <tr>
                         <td><?= $_LANG->get('Endformat') ?></td>
-                        <td style=" margin-top: 30px; margin-right: 30px;  margin-bottom: 50px; margin-left: 80px;" valign="top">
+                        <td valign="top">
                             <?
                             foreach ($order->getProduct()->getAvailablePaperFormats() as $pf) {
-                                echo '  <input type="button" class="btn btn-default btn-info" id="01_' . $pf->getId() . '" name="format" value="';
+                                echo '  <input type="button" class="btn btn-default btn-info" id="01_' . $pf->getId() . '" name="format" style="margin: 2px;" value="';
                                 echo $pf->getName() . "\n" . '(' . $pf->getWidth() . ' x ' . $pf->getHeight() . ' '.$_LANG->get('mm').')"';
                                 echo 'onclick="clickProductFormat(\'content\',this.id)"';
                                 if ($calc->getProductFormat()->getId() == $pf->getId())
@@ -735,7 +826,7 @@ echo $quickmove->generate();
                     <tr>
                         <td></td>
                         <td id="paper_free" <? //if($calc->getProductFormat() != 0) echo 'style="display:none"' ?>>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                  <div class="row">
                                      <div class="form-group">
                                          <label for="" class="col-sm-2 control-label">Breite</label>
@@ -799,7 +890,7 @@ echo $quickmove->generate();
                                             if ($calc->getPaperContent()->getId() == $paper->getId())
                                                 echo ' ';
 
-                                            echo ' class="btn btn-default btn-info" id="02_' . $paper->getId() . '" name="paperprops" value="' . $paper->getName() . '"
+                                            echo ' class="btn btn-default btn-info" id="02_' . $paper->getId() . '" name="paperprops" style="margin: 2px;" value="' . $paper->getName() . '"
 											onclick="clickPaperContent(this.id)">' . "\n";
                                         }
 
@@ -836,7 +927,7 @@ echo $quickmove->generate();
                                                 if ($calc->getPaperContentWeight() == $weight)
                                                     echo ' ';
 
-                                                echo ' class="btn btn-default btn-info" id="03_' . $weight . '" name="paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                                echo ' class="btn btn-default btn-info" id="03_' . $weight . '" name="paperweight" style="margin: 2px;" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickContentWeight(this.id)">' . "\n";
                                             }
                                         }
@@ -862,7 +953,7 @@ echo $quickmove->generate();
                                             echo '<input type="button" ';
                                             if ($calc->getPagesContent() == $pc)
                                                 echo ' ';
-                                            echo ' class="btn btn-default btn-info" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                            echo ' class="btn btn-default btn-info" id="04_' . $pc . '" name="numberpages_content" style="margin: 2px;" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickContentPages(this.id, false)">' . "\n";
                                         }
                                     else
@@ -885,7 +976,7 @@ echo $quickmove->generate();
                                         echo '<input type="button" ';
                                         if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
                                             echo ' ';
-                                        echo '  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
+                                        echo '  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" style="margin: 2px;" value="' . $pc->getName() . '"
 				onclick="clickContentChromaticity(this.id)">' . "\n";
                                     }
                                 }
@@ -930,7 +1021,7 @@ echo $quickmove->generate();
                                             echo ' ';
                                         }
 
-                                        echo ' class="btn btn-default btn-info" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+                                        echo ' class="btn btn-default btn-info" style="margin: 2px;" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickAddPaper(this.id)">' . "\n";
                                         $addSelected = false;
                                         foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
@@ -941,7 +1032,7 @@ echo $quickmove->generate();
                                                 echo ' ';
                                             }
 
-                                            echo '  class="btn btn-default btn-info" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '"
+                                            echo '  class="btn btn-default btn-info" style="margin: 2px;" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '"
 				onclick="clickAddPaper(this.id)">' . "\n";
                                         }
                                         if ($addSelected === false)
@@ -972,7 +1063,7 @@ echo $quickmove->generate();
                                                 if ($calc->getpaperAddContentWeight() == $weight)
                                                     echo ' ';
 
-                                                echo 'class="btn btn-default btn-info" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                                echo 'class="btn btn-default btn-info" id="07_' . $weight . '" name="addpaperweight" style="margin: 2px;"  value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickAddPaperWeight(this.id)">' . "\n";
                                             }
                                         }
@@ -994,10 +1085,10 @@ echo $quickmove->generate();
                                     if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
                                         if($order->getProduct()->getType() == Product::TYPE_NORMAL)
                                             foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
-                                                echo '<input type="button" ';
+                                                echo '<input style="margin: 2px;" type="button" ';
                                                 if ($calc->getPagesAddContent() == $pc)
                                                     echo ' ';
-                                                echo ' class="btn btn-default btn-info" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                                echo ' class="btn btn-default btn-info" id="08_' . $pc . '" name="addpaperpages"  value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickAddPaperPages(this.id)">' . "\n";
                                             }
                                         else
@@ -1019,10 +1110,10 @@ echo $quickmove->generate();
                                     if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
                                         $prod = new Product($_REQUEST["product"]);
                                         foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                            echo '<input type="button"';
+                                            echo '<input style="margin: 2px;" type="button"';
                                             if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
                                                 echo '';
-                                            echo ' class="btn btn-default btn-info" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '"
+                                            echo ' class="btn btn-default btn-info" id="14_' . $pc->getId() . '" name="addpaperchroma"  value="' . $pc->getName() . '"
 				onclick="clickAddPaperChromaticity(this.id)">' . "\n";
                                         }
                                     }
@@ -1072,7 +1163,7 @@ echo $quickmove->generate();
                                             echo ' ';
                                         }
 
-                                        echo ' class="btn btn-default btn-info" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+                                        echo ' class="btn btn-default btn-info" id="09_0"  name="envpaper" style="margin: 2px;" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickEnvelopePaper(this.id)">' . "\n";
                                         $envSelected = false;
                                         foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_ENVELOPE) as $paper) {
@@ -1083,7 +1174,7 @@ echo $quickmove->generate();
                                                 $envSelected = true;
                                             }
 
-                                            echo '  class="btn btn-default btn-info" id="09_' . $paper->getId() . '" name="envpaper" value="' . $paper->getName() . '"
+                                            echo '  class="btn btn-default btn-info" style="margin: 2px;" id="09_' . $paper->getId() . '" name="envpaper" value="' . $paper->getName() . '"
 				onclick="clickEnvelopePaper(this.id)">' . "\n";
                                         }
                                         if ($envSelected === false)
@@ -1113,7 +1204,7 @@ echo $quickmove->generate();
                                                 if ($calc->getPaperEnvelopeWeight() == $weight)
                                                     echo ' ';
 
-                                                echo 'class="btn btn-default btn-info" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+                                                echo 'class="btn btn-default btn-info" id="10_' . $weight . '" name="envpaperweight" style="margin: 2px;" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickEnvelopeWeight(this.id)">' . "\n";
                                             }
                                         }
@@ -1138,7 +1229,7 @@ echo $quickmove->generate();
 
                                             if ($calc->getPagesEnvelope() == $pc)
                                                 echo ' ';
-                                            echo ' id="11_' . $pc . '" name="envpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+                                            echo ' id="11_' . $pc . '" name="envpaperpages" style="margin: 2px;" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
 				onclick="clickEnvelopePages(this.id)">' . "\n";
                                         }
                                     }
@@ -1162,7 +1253,7 @@ echo $quickmove->generate();
                                             echo '<input type="button"';
                                             if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
                                                 echo ' ';
-                                            echo '  class="btn btn-default btn-info" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '"
+                                            echo '  class="btn btn-default btn-info" id="15_' . $pc->getId() . '" name="envpaperchroma" style="margin: 2px;" value="' . $pc->getName() . '"
 				onclick="clickEnvelopeChromaticity(this.id)">' . "\n";
                                         }
                                     }
@@ -1180,15 +1271,15 @@ echo $quickmove->generate();
                             <td>
                                 <div id="envelope_format">
                                     <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Breite</label>
-                                        <div class="col-sm-4">
+                                        <label for="" class="col-sm-1 control-label">Breite</label>
+                                        <div class="col-sm-2">
                                             <div class="input-group">
                                                 <input name="order_envelope_width_open" class="form-control" id="order_envelope_width_open" value="<?= $calc->getEnvelopeWidthOpen() ?>">
                                                 <span class="input-group-addon">mm</span>
                                             </div>
                                         </div>
-                                        <label for="" class="col-sm-2 control-label">Höhe</label>
-                                        <div class="col-sm-4">
+                                        <label for="" class="col-sm-1 control-label">Höhe</label>
+                                        <div class="col-sm-2">
                                             <div class="input-group">
                                                 <input name="order_envelope_height_open" class="form-control" id="order_envelope_height_open" value="<?= $calc->getEnvelopeHeightOpen() ?>">
                                                 <span class="input-group-addon">mm</span>
@@ -1231,7 +1322,7 @@ echo $quickmove->generate();
                                             echo '<input type="button"';
                                             if ($calc->getFolding()->getId() == $ft->getId())
                                                 echo ' ';
-                                            echo '  class="btn btn-default btn-info" id="12_' . $ft->getId() . '" name="foldtype" value="' . $ft->getName() . '"
+                                            echo '  class="btn btn-default btn-info" id="12_' . $ft->getId() . '" name="foldtype" style="margin: 2px;" value="' . $ft->getName() . '"
 				onclick="clickFolding(this.id)">' . "\n";
                                         }
                                     }
@@ -1250,82 +1341,76 @@ echo $quickmove->generate();
             <div class="panel-heading">
                 <h3 class="panel-title"></h3>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Auflage</th>
-                        <th>Sorten</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr id="tr_order_amount" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
-                        echo ' style="display:none"'; ?>>
-                        <td>
-                            <div class="col-md-6">
-                                <div id="div_order_amount">
-                                    <input name="order_amount" id="13_0" class="form-control" value="<?= $calc->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
-                                    <?
-                                    if ($_REQUEST["addorder_amount"])
-                                    {	//gln
-                                        foreach($_REQUEST["addorder_amount"] as $addamount)
-                                        {
-                                            if((int)$addamount > 0)
-                                                echo '<input name="addorder_amount[]"  class="form-control" value="'.$addamount.'" onclick="clickAmount()" onfocus="clickAmount()"> ';
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //gln
-                                        $calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
-                                        //$count_calcs = count($calculations);
+             <div class="row">
+                 <div class="col-md-3">
+                     <div id="tr_order_amount" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
+                         echo ' style="display:none"'; ?>>
+                         <div class="form-group">
+                             <label for="" class="col-sm-3 control-label">Auflage</label>
+                             <div id="div_order_amount" class="col-sm-6">
+                                 <input name="order_amount" id="13_0" class="form-control" value="<?= $calc->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
+                                 <?
+                                 if ($_REQUEST["addorder_amount"])
+                                 {	//gln
+                                     foreach($_REQUEST["addorder_amount"] as $addamount)
+                                     {
+                                         if((int)$addamount > 0)
+                                             echo '<input name="addorder_amount[]"  class="form-control" value="'.$addamount.'" onclick="clickAmount()" onfocus="clickAmount()"> ';
+                                     }
+                                 }
+                                 else
+                                 {
+                                     //gln
+                                     $calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
+                                     //$count_calcs = count($calculations);
 //echo $count_calcs;
-                                        foreach($calculations as $calcul)
-                                        {
-                                            ?>
-                                            <input name="addorder_amount[]" class="form-control" value="<?= $calcul->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
-                                            <?
-                                        }
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                            <span class="glyphicons glyphicons-plus" onclick="addAmount()"></span>
-                        </td>
-                        <td id="tr_order_sorts" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
-                            echo ' style="display:none"'; ?>>
-                            <div class="col-md-6">
-                                <div id="div_order_sorts">
-                                    <input name="order_sorts" id="23_0" class="form-control" value="<?= $calc->getSorts() ?>">
-                                    <?
-                                    if ($_REQUEST["addorder_sorts"])
-                                    {	//gln
-                                        foreach($_REQUEST["addorder_sorts"] as $addsorts)
-                                        {
-                                            if((int)$addsorts > 0)
-                                                echo '<input name="addorder_sorts[]" class="form-control" value="'.$addsorts.'"> ';
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //gln
-                                        $calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
-                                        //$count_calcs = count($calculations);
+                                     foreach($calculations as $calcul)
+                                     {
+                                         ?>
+                                         <input name="addorder_amount[]" class="form-control" value="<?= $calcul->getAmount() ?>" onclick="clickAmount()" onfocus="clickAmount()">
+                                         <?
+                                     }
+                                 }
+                                 ?>
+                             </div>
+                         </div>
+                         <span class="glyphicons glyphicons-plus" onclick="addAmount()"></span>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div id="tr_order_sorts" <? if ($calc->getId() == 0 && $_REQUEST["subexec"] != "copy")
+                         echo ' style="display:none"'; ?>>
+                         <div class="form-group">
+                             <label for="" class="col-sm-3 control-label">Sorten</label>
+                             <div class="col-sm-6" id="div_order_sorts">
+                                 <input name="order_sorts" id="23_0" class="form-control" value="<?= $calc->getSorts() ?>">
+                                 <?
+                                 if ($_REQUEST["addorder_sorts"])
+                                 {	//gln
+                                     foreach($_REQUEST["addorder_sorts"] as $addsorts)
+                                     {
+                                         if((int)$addsorts > 0)
+                                             echo '<input name="addorder_sorts[]" class="form-control" value="'.$addsorts.'"> ';
+                                     }
+                                 }
+                                 else
+                                 {
+                                     //gln
+                                     $calculations = Calculation::getCalculationsForUpdate($order, $calc, Calculation::ORDER_AMOUNT);
+                                     //$count_calcs = count($calculations);
 //echo $count_calcs;
-                                        foreach($calculations as $calcul)
-                                        {
-                                            ?>
-                                            <input name="addorder_sorts[]" class="form-control" value="<?= $calcul->getSorts() ?>">
-                                            <?
-                                        }
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                                     foreach($calculations as $calcul)
+                                     {
+                                         ?>
+                                         <input name="addorder_sorts[]" class="form-control" value="<?= $calcul->getSorts() ?>">
+                                         <?
+                                     }
+                                 }
+                                 ?>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
         </div>
 </form>

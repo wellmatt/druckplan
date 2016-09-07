@@ -292,7 +292,7 @@ $(function () {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                Notiz anlegen
+                Ticketkommentar
             </h3>
         </div>
         <div class="panel-body">
@@ -321,12 +321,6 @@ $(function () {
         {
         $tmp_ticket = new Ticket($_REQUEST["tktid"]);
         ?>
-        <div class="form-group">
-            <label for="" class="col-sm-3 control-label"></label>
-            <div class="col-sm-9">
-                <input name="" id="" value="" class="form-control">
-            </div>
-        </div>
     </div>
 
 

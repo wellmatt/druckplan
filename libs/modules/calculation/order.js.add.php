@@ -13,6 +13,12 @@
             
             function clickAdd2Paper(id)
             {
+                var buttons = $('[name=add2paper]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 
                 document.getElementById('h_addcontent2_paper').value = id;
@@ -54,6 +60,12 @@
             
                 function clickAdd2PaperWeight(id)
                 {
+                    var buttons = $('[name=add2paperweight]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent2_paper_weight').value = id;
@@ -72,6 +84,12 @@
             
                 function clickAdd2PaperChromaticity(id)
                 {
+                    var buttons = $('[name=add2paperchroma]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                     id=id.substr(3);
                     document.getElementById('h_addcontent2_chromaticity').value = id;
 
@@ -102,6 +120,12 @@
 
             function clickAdd2PaperPages(id)
             {
+                var buttons = $('[name=add2paperpages]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 document.getElementById('h_addcontent2_pages').value = id;
 
@@ -160,6 +184,12 @@
             
             function clickAdd3Paper(id)
             {
+                var buttons = $('[name=add3paper]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 
                 document.getElementById('h_addcontent3_paper').value = id;
@@ -201,6 +231,12 @@
             
                 function clickAdd3PaperWeight(id)
                 {
+                    var buttons = $('[name=add3paperweight]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                     id=id.substr(3);
                 
                     document.getElementById('h_addcontent3_paper_weight').value = id;
@@ -219,6 +255,12 @@
             
                 function clickAdd3PaperChromaticity(id)
                 {
+
+                    var buttons = $('[name=add3paperchroma]');
+                    for (let x=0;x<buttons.length;x++){
+                        $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                    }
+                    $("#"+id).removeClass("btn-info").addClass("btn-success");
                     id=id.substr(3);
                     document.getElementById('h_addcontent3_chromaticity').value = id;
 
@@ -250,6 +292,12 @@
 
             function clickAdd3PaperPages(id)
             {
+                var buttons = $('[name=add3paperpages]');
+                for (let x=0;x<buttons.length;x++){
+                    $(buttons[x]).removeClass("btn-success").addClass("btn-info");
+                }
+                $("#"+id).removeClass("btn-info").addClass("btn-success");
+
                 id=id.substr(3);
                 document.getElementById('h_addcontent3_pages').value = id;
 

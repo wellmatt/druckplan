@@ -464,7 +464,7 @@ if ($_REQUEST["exec"] == "numberPages") {
     
     if($product->getType() == Product::TYPE_NORMAL){
         foreach ($product->getAvailablePageCounts() as $pc) {
-            echo '<input type="button"  class="btn btn-default btn-info" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+            echo '<input type="button" style="margin: 5px;"  class="btn btn-default btn-info" id="04_' . $pc . '" name="numberpages_content" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickContentPages(this.id)">'."\n";
         }
     }
@@ -487,12 +487,12 @@ if ($_REQUEST["exec"] == "printChrom") {
         if($pages == 1)
         {
             if(!$pc->getReversePrinting())
-                echo '<input type="button"  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
+                echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
                     onclick="clickContentChromaticity(this.id)">'."\n";
                 
         } else 
         {
-            echo '<input type="button"  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
+            echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" value="' . $pc->getName() . '"
             onclick="clickContentChromaticity(this.id)">'."\n";
             
         }
@@ -507,7 +507,7 @@ if ($_REQUEST["exec"] == "updatePaperprops") {
 
     foreach ($prod->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paperId) {
         $paper = new Paper($paperId["id"]);
-        echo '<input type="button" class="btn btn-default btn-info" id="02_' . $paperId["id"] . '" name="paperprops" value="' . $paper->getName() . '"
+        echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="02_' . $paperId["id"] . '" name="paperprops" value="' . $paper->getName() . '"
 				onclick="clickPaperContent(this.id)">'."\n";
     }
 }
@@ -549,7 +549,7 @@ if ($_REQUEST["exec"] == "updatePaperWeight") {
     foreach (array_keys($paper) as $weight) {
         if ($weight != "id") {
 
-            echo '<input type="button"  class="btn btn-default btn-info" id="03_' . $weight . '" name="paperweight" value="' . $weight . ''.$_LANG->get('g').'"
+            echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="03_' . $weight . '" name="paperweight" value="' . $weight . ''.$_LANG->get('g').'"
 				onclick="clickContentWeight(this.id)"'; if($weight == $_REQUEST["oldval"]) echo ' '; echo'>'."\n";
         }
     }
@@ -558,11 +558,11 @@ if ($_REQUEST["exec"] == "updatePaperWeight") {
 
 if ($_REQUEST["exec"] == "updateAddedPaper") {
     $prod = new Product($_REQUEST["product"]);
-    echo '<input type="button"  class="btn btn-default btn-info" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+    echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickAddPaper(this.id)"';  if($_REQUEST["hiddenAddPaper"] == 0) echo ''; echo'>'."\n";
     foreach ($prod->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paperId) {
         $paper = new Paper($paperId["id"]);
-        echo '<input type="button"  class="btn btn-default btn-info" id="06_' . $paperId["id"] . '" name="addpaper" value="' . $paper->getName() . '"
+        echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="06_' . $paperId["id"] . '" name="addpaper" value="' . $paper->getName() . '"
 				onclick="clickAddPaper(this.id)">'."\n";
     }
 }
@@ -581,7 +581,7 @@ if ($_REQUEST["exec"] == "updateAddPaperWeight") {
     foreach (array_keys($paper) as $weight) {
         if ($weight != "id") {
 
-            echo '<input type="button"  class="btn btn-default btn-info" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+            echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="07_' . $weight . '" name="addpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickAddPaperWeight(this.id)"'; if($weight == $_REQUEST["oldval"]) echo ' '; echo '>'."\n";
         }
     }
@@ -600,7 +600,7 @@ if ($_REQUEST["exec"] == "updateAddPaperChroma") {
 
     $prod = new Product($_REQUEST["product"]);
     foreach ($chromas as $pc) {
-        echo '<input type="button"  class="btn btn-default btn-info" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '"
+        echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="14_' . $pc->getId() . '" name="addpaperchroma" value="' . $pc->getName() . '"
 				onclick="clickAddPaperChromaticity(this.id)">'."\n";
     }   
 }
@@ -612,7 +612,7 @@ if ($_REQUEST["exec"] == "updateAddPaperPages") {
 
     if($prod->getType() == Product::TYPE_NORMAL)
         foreach ($prod->getAvailablePageCounts() as $pc) {
-            echo '<input type="button"  class="btn btn-default btn-info" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+            echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="08_' . $pc . '" name="addpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickAddPaperPages(this.id)">'."\n";
         }
     else
@@ -626,11 +626,11 @@ if ($_REQUEST["exec"] == "updateAddPaperPages") {
 if ($_REQUEST["exec"] == "updateEnvPaper") {
 
     $prod = new Product($_REQUEST["product"]);
-    echo '<input type="button"  class="btn btn-default btn-info" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '"
+    echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="09_0"  name="envpaper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickEnvelopePaper(this.id)"'; if($_REQUEST["hiddenEnvPaper"] == 0) echo ' '; echo'>'."\n";
     foreach ($prod->getSelectedPapersIds(Calculation::PAPER_ENVELOPE) as $paperId) {
         $paper = new Paper($paperId["id"]);
-        echo '<input type="button"  class="btn btn-default btn-info" id="09_' . $paperId["id"] . '" name="envpaper" value="' . $paper->getName() . '"
+        echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="09_' . $paperId["id"] . '" name="envpaper" value="' . $paper->getName() . '"
 				onclick="clickEnvelopePaper(this.id)">'."\n";
     }
 }
@@ -647,7 +647,7 @@ if ($_REQUEST["exec"] == "updateEnvPaperWeight") {
     foreach (array_keys($paper) as $weight) {
         if ($weight != "id") {
 
-            echo '<input type="button" class="btn btn-default btn-info" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+            echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="10_' . $weight . '" name="envpaperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickEnvelopeWeight(this.id)"'; if($weight == $_REQUEST["oldval"]) echo ' '; echo '>'."\n";
         }
     }
@@ -667,7 +667,7 @@ if ($_REQUEST["exec"] == "updateEnvPaperChroma") {
     $prod = new Product($_REQUEST["product"]);
     
     foreach ($chromas as $pc) {
-        echo '<input type="button"  class="btn btn-default btn-info" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '"
+        echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="15_' . $pc->getId() . '" name="envpaperchroma" value="' . $pc->getName() . '"
 				onclick="clickEnvelopeChromaticity(this.id)">'."\n";
     }
     
@@ -680,7 +680,7 @@ if ($_REQUEST["exec"] == "updateEnvPaperPages") {
     
      $pages = array("2", "4", "6", "8");
      foreach ($pages as $pc) {
-         echo '<input type="button"  class="btn btn-default btn-info" id="11_' . $pc . '" name="envpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+         echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="11_' . $pc . '" name="envpaperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
 				onclick="clickEnvelopePages(this.id)">'."\n";
      }
 }
@@ -713,11 +713,11 @@ if($_REQUEST["exec"] == "getReversePrinting")
 if ($_REQUEST["exec"] == "updateAdded2Paper") {
 
 	$prod = new Product($_REQUEST["product"]);
-	echo '<input type="button"  class="btn btn-default btn-info" id="20_0" name="add2paper" value="' . $_LANG->get('nicht vorhanden') . '"
+	echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="20_0" name="add2paper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickAdd2Paper(this.id)"';  if($_REQUEST["hiddenAddPaper"] == 0) echo ' '; echo'>'."\n";
 	foreach ($prod->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paperId) {
 		$paper = new Paper($paperId["id"]);
-		echo '<input type="button"  class="btn btn-default btn-info" id="20_' . $paperId["id"] . '" name="add2paper" value="' . $paper->getName() . '"
+		echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="20_' . $paperId["id"] . '" name="add2paper" value="' . $paper->getName() . '"
 				onclick="clickAdd2Paper(this.id)">'."\n";
 	}
 }
@@ -738,7 +738,7 @@ if ($_REQUEST["exec"] == "updateAdd2PaperWeight") {
 	foreach (array_keys($paper) as $weight) {
 		if ($weight != "id") {
 
-			echo '<input type="button"  class="btn btn-default btn-info" id="21_' . $weight . '" name="add2paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+			echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="21_' . $weight . '" name="add2paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickAdd2PaperWeight(this.id)"'; if($weight == $_REQUEST["oldval"]) echo ' '; echo '>'."\n";
 		}
 	}
@@ -759,7 +759,7 @@ if ($_REQUEST["exec"] == "updateAdd2PaperChroma") {
 
 	$prod = new Product($_REQUEST["product"]);
 	foreach ($chromas as $pc) {
-		echo '<input type="button"  class="btn btn-default btn-info" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '"
+		echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="22_' . $pc->getId() . '" name="add2paperchroma" value="' . $pc->getName() . '"
 				onclick="clickAdd2PaperChromaticity(this.id)">'."\n";
 	}
 }
@@ -773,7 +773,7 @@ if ($_REQUEST["exec"] == "updateAdd2PaperPages") {
 
 	if($prod->getType() == Product::TYPE_NORMAL)
 		foreach ($prod->getAvailablePageCounts() as $pc) {
-		echo '<input type="button"  class="btn btn-default btn-info" id="23_' . $pc . '" name="add2paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+		echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="23_' . $pc . '" name="add2paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickAdd2PaperPages(this.id)">'."\n";
 	}
 	else
@@ -790,11 +790,11 @@ if ($_REQUEST["exec"] == "updateAdd2PaperPages") {
 if ($_REQUEST["exec"] == "updateAdded3Paper") {
 
 	$prod = new Product($_REQUEST["product"]);
-	echo '<input type="button" class="btn btn-default btn-info" id="30_0" name="add3paper" value="' . $_LANG->get('nicht vorhanden') . '"
+	echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="30_0" name="add3paper" value="' . $_LANG->get('nicht vorhanden') . '"
 				onclick="clickAdd3Paper(this.id)"';  if($_REQUEST["hiddenAddPaper"] == 0) echo ' '; echo'>'."\n";
 	foreach ($prod->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paperId) {
 		$paper = new Paper($paperId["id"]);
-		echo '<input type="button"  class="btn btn-default btn-info" id="30_' . $paperId["id"] . '" name="add3paper" value="' . $paper->getName() . '"
+		echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="30_' . $paperId["id"] . '" name="add3paper" value="' . $paper->getName() . '"
 				onclick="clickAdd3Paper(this.id)">'."\n";
 	}
 }
@@ -815,7 +815,7 @@ if ($_REQUEST["exec"] == "updateAdd3PaperWeight") {
 	foreach (array_keys($paper) as $weight) {
 		if ($weight != "id") {
 
-			echo '<input type="button"  class="btn btn-default btn-info" id="31_' . $weight . '" name="add3paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
+			echo '<input type="button" style="margin: 2px;"  class="btn btn-default btn-info" id="31_' . $weight . '" name="add3paperweight" value="' . $weight . ' '.$_LANG->get('g').'"
 					onclick="clickAdd3PaperWeight(this.id)"'; 
 				if($weight == $_REQUEST["oldval"]) echo ' ';
 			echo '>'."\n";
@@ -838,7 +838,7 @@ if ($_REQUEST["exec"] == "updateAdd3PaperChroma") {
 
 	$prod = new Product($_REQUEST["product"]);
 	foreach ($chromas as $pc) {
-		echo '<input type="button" class="btn btn-default btn-info" id="32_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '"
+		echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="32_' . $pc->getId() . '" name="add3paperchroma" value="' . $pc->getName() . '"
 				onclick="clickAdd3PaperChromaticity(this.id)">'."\n";
 	}
 }
@@ -852,7 +852,7 @@ if ($_REQUEST["exec"] == "updateAdd3PaperPages") {
 
 	if($prod->getType() == Product::TYPE_NORMAL)
 		foreach ($prod->getAvailablePageCounts() as $pc) {
-		echo '<input type="button" class="btn btn-default btn-info" id="33_' . $pc . '" name="add3paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
+		echo '<input type="button" style="margin: 2px;" class="btn btn-default btn-info" id="33_' . $pc . '" name="add3paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickAdd3PaperPages(this.id)">'."\n";
 	}
 	else

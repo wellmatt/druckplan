@@ -32,7 +32,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                 <?
                                 if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
-                                    echo '<input type="button" ';
+                                    echo '<input style="margin: 2px;" type="button" ';
 
                                     if ($calc->getPaperAddContent2()->getId() == 0) {
                                         echo ' ';
@@ -49,7 +49,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                             echo ' ';
                                         }
 
-                                        echo '  class="btn btn-default btn-info" id="20_' . $paper->getId() . '" name="add2paper" value="' . $paper->getName() . '"
+                                        echo '  class="btn btn-default btn-info" style="margin: 2px;" id="20_' . $paper->getId() . '" name="add2paper" value="' . $paper->getName() . '"
 												onclick="clickAdd2Paper(this.id)">' . "\n";
                                     }
                                     if ($addSelected === false)
@@ -72,7 +72,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
 
                                     foreach (($papers[$calc->getPaperContent()->getId()]) as $weight => $val) {
                                         if ($weight != "id") {
-                                            echo '<input type="button" ';
+                                            echo '<input style="margin: 2px;" type="button" ';
                                             if ($calc->getpaperAddContent2Weight() == $weight)
                                                 echo ' ';
 
@@ -96,7 +96,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                 if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
                                     if($order->getProduct()->getType() == Product::TYPE_NORMAL)
                                         foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
-                                            echo '<input type="button" ';
+                                            echo '<input style="margin: 2px;" type="button" ';
                                             if ($calc->getPagesAddContent2() == $pc)
                                                 echo ' ';
                                             echo ' class="btn btn-default btn-info" id="23_' . $pc . '" name="add2paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
@@ -121,7 +121,7 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                                 if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
                                     $prod = new Product($_REQUEST["product"]);
                                     foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                        echo '<input type="button"';
+                                        echo '<input style="margin: 2px;" type="button"';
                                         if ($calc->getChromaticitiesAddContent2()->getId() == $pc->getId()){
                                             echo ' ';
                                         }
@@ -167,7 +167,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                         <?
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
-                            echo '<input type="button" ';
+                            echo '<input style="margin: 2px;" type="button" ';
 
                             if ($calc->getPaperAddContent3()->getId() == 0) {
                                 echo ' ';
@@ -178,7 +178,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                             $addSelected = false;
                             foreach ($order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT) as $paper) {
                                 $paper = new Paper($paper["id"]);
-                                echo '<input type="button"';
+                                echo '<input style="margin: 2px;" type="button"';
                                 if ($calc->getPaperAddContent3()->getId() == $paper->getId()) {
                                     $addSelected = true;
                                     echo ' ';
@@ -207,7 +207,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
 
                             foreach (($papers[$calc->getPaperContent()->getId()]) as $weight => $val) {
                                 if ($weight != "id") {
-                                    echo '<input type="button" ';
+                                    echo '<input style="margin: 2px;" type="button" ';
                                     if ($calc->getpaperAddContent3Weight() == $weight)
                                         echo ' ';
 
@@ -231,7 +231,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
                             if($order->getProduct()->getType() == Product::TYPE_NORMAL)
                                 foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
-                                    echo '<input type="button" ';
+                                    echo '<input style="margin: 2px;" type="button" ';
                                     if ($calc->getPagesAddContent3() == $pc)
                                         echo '';
                                     echo ' class="btn btn-default btn-info" id="33_' . $pc . '" name="add3paperpages" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
@@ -256,7 +256,7 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
                             $prod = new Product($_REQUEST["product"]);
                             foreach (Chromaticity::getAllChromaticities() as $pc) {
-                                echo '<input type="button"';
+                                echo '<input style="margin: 2px;" type="button"';
                                 if ($calc->getChromaticitiesAddContent3()->getId() == $pc->getId()){
                                     echo ' ';
                                 }
