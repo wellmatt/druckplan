@@ -20,15 +20,15 @@ class DBMysql {
       $this->dbpass = $conf->pass;
       $this->dbname = $conf->name;
       
-//      $this->conn = mysql_connect($this->dbhost, $this->dbuser, $this->dbpass);
       $this->conn = mysqli_connect($this->dbhost,$this->dbuser,$this->dbpass);
-      if ($this->conn)
-         mysqli_select_db($this->conn,$this->dbname);
-//         mysql_select_db($this->dbname, $this->conn);
-      else
+      if ($this->conn) {
+         $res = mysqli_select_db($this->conn, $this->dbname);
+         if (!$res)
+            return false;
+      } else {
          return false;
+      }
       
-//      mysql_set_charset("utf8", $this->conn);
       mysqli_set_charset($this->conn,'utf8');
       
       return true;

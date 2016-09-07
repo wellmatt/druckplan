@@ -45,7 +45,9 @@ $autoloader->registerAutoloader();
 
 
 $DB = new DBMysql();
-$DB->connect($_CONFIG->db);
+$dbok = $DB->connect($_CONFIG->db);
+if (!$dbok)
+    die("Fehler beim Verbinden mit der Datenbank");
 $_DEBUG = new Debug();
 $_LICENSE = new License();
 

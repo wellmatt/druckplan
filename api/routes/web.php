@@ -19,7 +19,9 @@
 Route::post('oauth/access_token', function() {
     return Response::json(Authorizer::issueAccessToken());
 });
-Route::any(Config::get('swaggervel.doc-route').'/{page?}', function($page='api-docs.json') {
+
+//Route::any(Config::get('swaggervel.doc-route').'/{page?}', function($page='api-docs.json') {
+Route::any('/docs'.'/{page?}', function($page='api-docs.json') {
     $filePath = Config::get('swaggervel.doc-dir') . "/{$page}";
 
     if (File::extension($filePath) === "") {

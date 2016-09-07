@@ -935,6 +935,12 @@ if((int)$_REQUEST["step"] == 3){
 					} else {
 						$entry->setPrice($entry->getMachine()->getMachinePrice($entry));
 					}
+
+
+					if ($entry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL){
+						$entry->setDigigrant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_digigrant_{$id}"]))));
+					}
+
 					$entry->save();
 					
 					// Erweiterung der Fremdleistungen uebernehmen
@@ -1003,7 +1009,7 @@ if((int)$_REQUEST["step"] == 3){
 								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_CONTENT) / 100 * $perference->getZuschussPercent());
 								$calc->setPaperContentGrant($grant);
 							} else {
-								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
+								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT)
 						{
@@ -1019,7 +1025,7 @@ if((int)$_REQUEST["step"] == 3){
 								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 * $perference->getZuschussPercent());
 								$calc->setPaperAddContentGrant($grant);
 							} else {
-								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper()); //Zuschuss
+								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
 						} else if ($entry->getPart() == Calculation::PAPER_ENVELOPE)
 						{
@@ -1035,7 +1041,7 @@ if((int)$_REQUEST["step"] == 3){
 								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100 * $perference->getZuschussPercent());
 								$calc->setPaperEnvelopeGrant($grant);
 							} else { 
-								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper()); //Zuschuss
+								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT2)
 						{
@@ -1051,7 +1057,7 @@ if((int)$_REQUEST["step"] == 3){
 								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 * $perference->getZuschussPercent());
 								$calc->setPaperAddContent2Grant($grant);
 							} else {
-								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper()); //Zuschuss
+								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT3)
 						{
@@ -1067,7 +1073,7 @@ if((int)$_REQUEST["step"] == 3){
 								$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($entry)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 * $perference->getZuschussPercent());
 								$calc->setPaperAddContent3Grant($grant);
 							} else {
-								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper()); //Zuschuss
+								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
 						}
 

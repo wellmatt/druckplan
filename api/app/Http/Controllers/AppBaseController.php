@@ -9,8 +9,8 @@ use Response;
  * @SWG\Swagger(
  *   basePath="/api/v1",
  *   @SWG\Info(
- *     title="Laravel Generator APIs",
- *     version="1.0.0",
+ *     title="Contilas API",
+ *     version="1.0.1",
  *   )
  * )
  * This class should be parent class for other API controllers

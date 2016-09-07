@@ -393,6 +393,12 @@ echo $quickmove->generate();
                                                     echo '<input name="mach_color_detail_'.$x.'" id="mach_color_detail_'.$x.'" class="form-control" value="'.$mach->getColor_detail().'">';
                                                     echo '</div></div></div>';
 
+                                                    // Zuschuss
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Zuschuss</label><div class="input-group">';
+                                                    echo '<input name="mach_digigrant_'.$x.'" id="mach_digigrant_'.$x.'" class="form-control" value="'.printPrice($mach->getDigigrant(),2).'">';
+                                                    echo '</div></div></div>';
+
                                                     // Hinweise
                                                     echo '<div class="col-md-12"><div class="form-group">';
                                                     echo '<label class="control-label">Hinweise</label><div class="input-group col-md-10">';

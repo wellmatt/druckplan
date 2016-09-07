@@ -482,6 +482,27 @@ $(function() {
 	});
 });
 </script>
+<script>
+	$(function() {
+		$("a#association_hiddenclicker").fancybox({
+			'type'    : 'iframe',
+			'transitionIn'	:	'elastic',
+			'transitionOut'	:	'elastic',
+			'speedIn'		:	600,
+			'speedOut'		:	200,
+			'height'		:	350,
+			'overlayShow'	:	true,
+			'helpers'		:   { overlay:null, closeClick:true }
+		});
+	});
+	function callBoxFancyAsso(my_href) {
+		var j1 = document.getElementById("association_hiddenclicker");
+		j1.href = my_href;
+		$('#association_hiddenclicker').trigger('click');
+	}
+</script>
+<div id="association_hidden_clicker" style="display:none"><a id="association_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
+
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
@@ -512,98 +533,55 @@ echo $quickmove->generate();
 					if ($machine->getId() > 0) {
 						$association_object = $machine;
 						$associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId());
+						?>
+						<div class="btn-group dropdown">
+							<button type="button" class="btn btn-sm dropdown-toggle btn-default"
+									data-toggle="dropdown" aria-expanded="false">
+								Verknüpfungen <span class="badge"><?php echo count($associations); ?></span> <span
+									class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<?php
+								if (count($associations) > 0) {
+									$as = 0;
+									foreach ($associations as $association) {
+										if ($association->getModule1() == get_class($association_object) && $association->getObjectid1() == $association_object->getId()) {
+											$classname = $association->getModule2();
+											$object = new $classname($association->getObjectid2());
+											$link_href = Association::getPath($classname);
+											$object_name = Association::getName($object);
+										} else {
+											$classname = $association->getModule1();
+											$object = new $classname($association->getObjectid1());
+											$link_href = Association::getPath($classname);
+											$object_name = Association::getName($object);
+										}
+										echo '<li id="as_' . $as . '"><a href="index.php?page=' . $link_href . $object->getId() . '">';
+										echo $object_name;
+										echo '</a>';
+										if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+											echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'></span>';
+										echo '</li>';
+										$as++;
+									}
+								}
+								echo '<li class="divider"></li>';
+								echo '<li><a href="#" onclick="callBoxFancyAsso(\'libs/modules/associations/association.frame.php?module=' . get_class($association_object) . '&objectid=' . $association_object->getId() . '\');">Neue Verknüpfung</a></li>';
+								?>
+							</ul>
+						</div>
+						<script type="text/javascript">
+							function removeAsso(id) {
+								$.ajax({
+									type: "POST",
+									url: "libs/modules/associations/association.ajax.php",
+									data: {ajax_action: "delete_asso", id: id}
+								})
+							}
+						</script>
+						<?php
 					}
 					?>
-					<script type="text/javascript">
-						function removeAsso(id) {
-							$.ajax({
-								type: "POST",
-								url: "libs/modules/associations/association.ajax.php",
-								data: {ajax_action: "delete_asso", id: id}
-							})
-						}
-					</script>
-
-<script>
-	$(function() {
-		$("a#association_hiddenclicker").fancybox({
-			'type'    : 'iframe',
-			'transitionIn'	:	'elastic',
-			'transitionOut'	:	'elastic',
-			'speedIn'		:	600,
-			'speedOut'		:	200,
-			'height'		:	350,
-			'overlayShow'	:	true,
-			'helpers'		:   { overlay:null, closeClick:true }
-		});
-	});
-	function callBoxFancyAsso(my_href) {
-		var j1 = document.getElementById("association_hiddenclicker");
-		j1.href = my_href;
-		$('#association_hiddenclicker').trigger('click');
-	}
-</script>
-<div id="association_hidden_clicker" style="display:none"><a id="association_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
-
-<script>
-	$(function() {
-		$("a#hiddenclicker").fancybox({
-			'type'          :   'iframe',
-			'transitionIn'	:	'elastic',
-			'transitionOut'	:	'elastic',
-			'speedIn'		:	600,
-			'speedOut'		:	200,
-			'width'         :   1024,
-			'height'		:	768,
-			'scrolling'     :   'yes',
-			'overlayShow'	:	true,
-			'helpers'		:   { overlay:null, closeClick:true }
-		});
-	});
-	function callBoxFancyPreview(my_href) {
-		var j1 = document.getElementById("hiddenclicker");
-		j1.href = my_href;
-		$('#hiddenclicker').trigger('click');
-	}
-</script>
-<div id="hidden_clicker" style="display:none"><a id="hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
-
-		<div class="btn-group dropdown">
-			<button type="button" class="btn btn-sm dropdown-toggle btn-default"
-					data-toggle="dropdown" aria-expanded="false">
-				Verknüpfungen <span class="badge"><?php echo count($associations); ?></span> <span
-					class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<?php
-				if (count($associations) > 0) {
-					$as = 0;
-					foreach ($associations as $association) {
-						if ($association->getModule1() == get_class($association_object) && $association->getObjectid1() == $association_object->getId()) {
-							$classname = $association->getModule2();
-							$object = new $classname($association->getObjectid2());
-							$link_href = Association::getPath($classname);
-							$object_name = Association::getName($object);
-						} else {
-							$classname = $association->getModule1();
-							$object = new $classname($association->getObjectid1());
-							$link_href = Association::getPath($classname);
-							$object_name = Association::getName($object);
-						}
-						echo '<li id="as_' . $as . '"><a href="index.php?page=' . $link_href . $object->getId() . '">';
-						echo $object_name;
-						echo '</a>';
-						if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
-							echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'></span>';
-						echo '</li>';
-						$as++;
-					}
-				}
-				echo '<li class="divider"></li>';
-				echo '<li><a href="#" onclick="callBoxFancyAsso(\'libs/modules/associations/association.frame.php?module=' . get_class($association_object) . '&objectid=' . $association_object->getId() . '\');">Neue Verknüpfung</a></li>';
-				?>
-			</ul>
-		</div>
 				</span>
 			</h3>
 		</div>

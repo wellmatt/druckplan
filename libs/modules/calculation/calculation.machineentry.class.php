@@ -58,6 +58,8 @@ class Machineentry {
     private $labelcount = 0;
     private $rollcount = 0;
     private $doubleutilization = 0;             // Doppelter Nutzen
+
+    private $digigrant = 0.0;
     
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
@@ -140,6 +142,7 @@ class Machineentry {
                     $this->labelcount = $r["labelcount"];
                     $this->rollcount = $r["rollcount"];
                     $this->doubleutilization = $r["doubleutilization"];
+                    $this->digigrant = $r["digigrant"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -273,6 +276,7 @@ class Machineentry {
         				rollcount = {$this->rollcount},
         				labelcount = {$this->labelcount},
         				umschl_umst = {$this->umschlUmst},
+        				digigrant = {$this->digigrant},
         				umschl = {$this->umschl},
         				doubleutilization = {$this->doubleutilization},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
@@ -969,5 +973,21 @@ class Machineentry {
     public function getUmschlUmst()
     {
         return 0;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDigigrant()
+    {
+        return $this->digigrant;
+    }
+
+    /**
+     * @param float $digigrant
+     */
+    public function setDigigrant($digigrant)
+    {
+        $this->digigrant = $digigrant;
     }
 }
