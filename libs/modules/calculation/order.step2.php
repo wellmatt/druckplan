@@ -812,17 +812,18 @@ echo $quickmove->generate();
                         <td valign="top">
                             <?
                             foreach ($order->getProduct()->getAvailablePaperFormats() as $pf) {
-                                echo '  <input type="button" class="btn btn-default btn-info" id="01_' . $pf->getId() . '" name="format" style="margin: 2px;" value="';
+                                echo '  <input type="button" id="01_' . $pf->getId() . '" name="format" style="margin: 2px;" value="';
                                 echo $pf->getName() . "\n" . '(' . $pf->getWidth() . ' x ' . $pf->getHeight() . ' '.$_LANG->get('mm').')"';
                                 echo 'onclick="clickProductFormat(\'content\',this.id)"';
                                 if ($calc->getProductFormat()->getId() == $pf->getId())
-                                    echo ' ';
+                                    echo ' class="btn btn-default btn-success" ';
+                                else
+                                    echo ' class="btn btn-default btn-info" ';
                                 echo '>' . "\n";
                             }
                             ?>
                         </td>
                     </tr>
-
                     <tr>
                         <td></td>
                         <td id="paper_free" <? //if($calc->getProductFormat() != 0) echo 'style="display:none"' ?>>
@@ -880,7 +881,7 @@ echo $quickmove->generate();
                         <tr>
                             <td><?= $_LANG->get('Inhalt 1') ?></td>
                             <td>
-                                <div  style=" padding: 30px;" id="paper">
+                                <div id="paper">
                                     <?
                                     if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
@@ -888,9 +889,11 @@ echo $quickmove->generate();
                                             $paper = new Paper($paper["id"]);
                                             echo '<input type="button"';
                                             if ($calc->getPaperContent()->getId() == $paper->getId())
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            else
+                                               echo ' class="btn btn-default btn-info" ';
 
-                                            echo ' class="btn btn-default btn-info" id="02_' . $paper->getId() . '" name="paperprops" style="margin: 2px;" value="' . $paper->getName() . '"
+                                            echo ' id="02_' . $paper->getId() . '" name="paperprops" style="margin: 2px;" value="' . $paper->getName() . '"
 											onclick="clickPaperContent(this.id)">' . "\n";
                                         }
 
@@ -925,7 +928,9 @@ echo $quickmove->generate();
 
                                                 echo '<input type="button" ';
                                                 if ($calc->getPaperContentWeight() == $weight)
-                                                    echo ' ';
+                                                    echo ' class="btn btn-default btn-success" ';
+                                                else
+                                                    echo ' class="btn btn-default btn-info" ';
 
                                                 echo ' class="btn btn-default btn-info" id="03_' . $weight . '" name="paperweight" style="margin: 2px;" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickContentWeight(this.id)">' . "\n";
@@ -952,7 +957,9 @@ echo $quickmove->generate();
                                         foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                             echo '<input type="button" ';
                                             if ($calc->getPagesContent() == $pc)
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            else
+                                                echo ' class="btn btn-default btn-info" ';
                                             echo ' class="btn btn-default btn-info" id="04_' . $pc . '" name="numberpages_content" style="margin: 2px;" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickContentPages(this.id, false)">' . "\n";
                                         }
@@ -975,7 +982,9 @@ echo $quickmove->generate();
                                     foreach (Chromaticity::getAllChromaticities() as $pc) {
                                         echo '<input type="button" ';
                                         if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
-                                            echo ' ';
+                                            echo ' class="btn btn-default btn-success" ';
+                                        else
+                                            echo ' class="btn btn-default btn-info" ';
                                         echo '  class="btn btn-default btn-info" id="05_' . $pc->getId() . '" name="chroma" style="margin: 2px;" value="' . $pc->getName() . '"
 				onclick="clickContentChromaticity(this.id)">' . "\n";
                                     }
@@ -1018,7 +1027,10 @@ echo $quickmove->generate();
                                         echo '<input type="button" ';
 
                                         if ($calc->getPaperAddContent()->getId() == 0) {
-                                            echo ' ';
+                                            echo ' class="btn btn-default btn-info" ';
+                                        }
+                                        else {
+                                            echo ' class="btn btn-default btn-success" ';
                                         }
 
                                         echo ' class="btn btn-default btn-info" style="margin: 2px;" id="06_0" name="addpaper" value="' . $_LANG->get('nicht vorhanden') . '"
@@ -1029,7 +1041,10 @@ echo $quickmove->generate();
                                             echo '<input type="button"';
                                             if ($calc->getPaperAddContent()->getId() == $paper->getId()) {
                                                 $addSelected = true;
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            }
+                                            else {
+                                                echo ' class="btn btn-default btn-info" ';
                                             }
 
                                             echo '  class="btn btn-default btn-info" style="margin: 2px;" id="06_' . $paper->getId() . '" name="addpaper" value="' . $paper->getName() . '"
@@ -1061,7 +1076,9 @@ echo $quickmove->generate();
 
                                                 echo '<input type="button" ';
                                                 if ($calc->getpaperAddContentWeight() == $weight)
-                                                    echo ' ';
+                                                    echo ' class="btn btn-default btn-success" ';
+                                                else
+                                                    echo ' class="btn btn-default btn-info" ';
 
                                                 echo 'class="btn btn-default btn-info" id="07_' . $weight . '" name="addpaperweight" style="margin: 2px;"  value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickAddPaperWeight(this.id)">' . "\n";
@@ -1087,7 +1104,9 @@ echo $quickmove->generate();
                                             foreach ($order->getProduct()->getAvailablePageCounts() as $pc) {
                                                 echo '<input style="margin: 2px;" type="button" ';
                                                 if ($calc->getPagesAddContent() == $pc)
-                                                    echo ' ';
+                                                    echo ' class="btn btn-default btn-success" ';
+                                                else
+                                                    echo ' class="btn btn-default btn-info" ';
                                                 echo ' class="btn btn-default btn-info" id="08_' . $pc . '" name="addpaperpages"  value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
     				onclick="clickAddPaperPages(this.id)">' . "\n";
                                             }
@@ -1112,7 +1131,9 @@ echo $quickmove->generate();
                                         foreach (Chromaticity::getAllChromaticities() as $pc) {
                                             echo '<input style="margin: 2px;" type="button"';
                                             if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
-                                                echo '';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            else
+                                                echo ' class="btn btn-default btn-info" ';
                                             echo ' class="btn btn-default btn-info" id="14_' . $pc->getId() . '" name="addpaperchroma"  value="' . $pc->getName() . '"
 				onclick="clickAddPaperChromaticity(this.id)">' . "\n";
                                         }
@@ -1160,7 +1181,10 @@ echo $quickmove->generate();
                                         echo '<input type="button" ';
 
                                         if ($calc->getPaperEnvelope()->getId() == 0) {
-                                            echo ' ';
+                                            echo ' class="btn btn-default btn-success" ';
+                                        }
+                                        else {
+                                            echo ' class="btn btn-default btn-info" ';
                                         }
 
                                         echo ' class="btn btn-default btn-info" id="09_0"  name="envpaper" style="margin: 2px;" value="' . $_LANG->get('nicht vorhanden') . '"
@@ -1170,7 +1194,11 @@ echo $quickmove->generate();
                                             $paper = new Paper($paper["id"]);
                                             echo '<input type="button"';
                                             if ($calc->getPaperEnvelope()->getId() == $paper->getId()) {
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            }
+
+                                            else {
+                                                echo ' class="btn btn-default btn-info" ';
                                                 $envSelected = true;
                                             }
 
@@ -1202,7 +1230,9 @@ echo $quickmove->generate();
                                             if ($weight != "id") {
                                                 echo '<input type="button" ';
                                                 if ($calc->getPaperEnvelopeWeight() == $weight)
-                                                    echo ' ';
+                                                    echo ' class="btn btn-default btn-success" ';
+                                                else
+                                                    echo ' class="btn btn-default btn-info" ';
 
                                                 echo 'class="btn btn-default btn-info" id="10_' . $weight . '" name="envpaperweight" style="margin: 2px;" value="' . $weight . ' '.$_LANG->get('g').'"
 				onclick="clickEnvelopeWeight(this.id)">' . "\n";
@@ -1225,10 +1255,12 @@ echo $quickmove->generate();
                                         $pages = array("2", "4", "6", "8");
 
                                         foreach ($pages as $pc) {
-                                            echo '<input type="button"  class="btn btn-default btn-info"';
+                                            echo '<input type="button" ';
 
                                             if ($calc->getPagesEnvelope() == $pc)
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            else
+                                                echo ' class="btn btn-default btn-info" ';
                                             echo ' id="11_' . $pc . '" name="envpaperpages" style="margin: 2px;" value="' . $pc . ' ' . $_LANG->get('Seiten') . '"
 				onclick="clickEnvelopePages(this.id)">' . "\n";
                                         }
@@ -1252,7 +1284,9 @@ echo $quickmove->generate();
                                         foreach (Chromaticity::getAllChromaticities() as $pc) {
                                             echo '<input type="button"';
                                             if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            else
+                                                echo ' class="btn btn-default btn-info" ';
                                             echo '  class="btn btn-default btn-info" id="15_' . $pc->getId() . '" name="envpaperchroma" style="margin: 2px;" value="' . $pc->getName() . '"
 				onclick="clickEnvelopeChromaticity(this.id)">' . "\n";
                                         }
@@ -1321,7 +1355,9 @@ echo $quickmove->generate();
                                         foreach (Foldtype::getFoldTypesForPages($calc->getPagesContent()) as $ft) {
                                             echo '<input type="button"';
                                             if ($calc->getFolding()->getId() == $ft->getId())
-                                                echo ' ';
+                                                echo ' class="btn btn-default btn-success" ';
+                                            else
+                                                echo ' class="btn btn-default btn-info" ';
                                             echo '  class="btn btn-default btn-info" id="12_' . $ft->getId() . '" name="foldtype" style="margin: 2px;" value="' . $ft->getName() . '"
 				onclick="clickFolding(this.id)">' . "\n";
                                         }

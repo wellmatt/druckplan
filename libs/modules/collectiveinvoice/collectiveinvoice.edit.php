@@ -1057,22 +1057,22 @@ echo $quickmove->generate();
 										}
 										if ($i == 0){
 											?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-down"></span>
 											</button>
 											<?php
 										} else if ($i+1 >= count($collectinv->getPositions())){
 											?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-up"></span>
 											</button>
 											<?php
 										} else {
 											?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-down"></span>
 											</button>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
+											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
 												<span class="glyphicons glyphicons-arrow-up"></span>
 											</button>
 											<?php

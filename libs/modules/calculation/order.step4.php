@@ -138,15 +138,15 @@ foreach ($calculations as $c){
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
-$quickmove->addItem('Speichern','#',"$('#step4_form').submit();",'glyphicon-floppy-disk');
 if ($order->getArticleid()==0){
-    $quickmove->addItem('Artikel Speichern','#',"askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=".$order->getId()."')",'glyphicon-floppy-disk');
+    $quickmove->addItem('Artikel Speichern','#',"askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=".$order->getId()."')",'glyphicons glyphicons-article');
 }
 elseif ($order->getArticleid()>0){
     $quickmove->addItem('Zum Artikel',"index.php?page=libs/modules/article/article.php&exec=edit&aid=".$order->getArticleid(),'glyphicon-step-backward');
     $quickmove->addItem('Artikel aktualisieren','#',"askDel('index.php?page=libs/modules/article/article.php&exec=uptfromorder&orderid=".$order->getId()."&aid=".$order->getArticleid()."')",'glyphicon-floppy-disk');
 
 }
+$quickmove->addItem('Speichern','#',"$('#step4_form').submit();",'glyphicon-floppy-disk');
 if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){
     $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=".$order->getId()."')", 'glyphicon-trash', true);
 }
