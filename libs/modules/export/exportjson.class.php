@@ -91,7 +91,6 @@ class ExportJson{
                 ],
                 "products" => []
             ];
-            $products = [];
             $positions = Orderposition::getAllOrderposition($colinv->getId());
             foreach ($positions as $position) {
                 $parts = [];
