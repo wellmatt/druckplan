@@ -1,4 +1,11 @@
 <?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
 error_reporting(-1);
 ini_set('display_errors', 1);
 require_once("config.php");
@@ -26,24 +33,7 @@ require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/eventqueue/eventclass.interface.php';
-session_start();
-
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 
-$_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
-$_LANG = $_USER->getLang();
-
-
-$event = new EventQueue(0,Array(
-    "id" => 0,
-    "runtime" => time()-100,
-    "firedby" => 5,
-    "eventclass" => "EventClassTest",
-    "function" => "sendMail",
-    "eventargs" => Array("zeit"=>time(),"key"=>uniqid('',true))
-));
-$event->save();
-
-//$result = EventQueue::workqueue();
-//prettyPrint($result);
+EventQueue::workqueue();

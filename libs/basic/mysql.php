@@ -37,7 +37,6 @@ class DBMysql {
    // Disconnect
    function disconnect() {
       mysqli_close($this->conn);
-//      mysql_close($this->conn);
       $this->conn = false;
       
       return false;
@@ -45,12 +44,9 @@ class DBMysql {
    
    // select-anweisung
    function select($sql) {
-//      echo $sql . "</br>";
       $retval = Array();
-//      $res = mysql_query($sql, $this->conn);
       $res = mysqli_query($this->conn,$sql);
       if ($res) {
-//         while ($data = mysql_fetch_assoc($res))
          while ($data = mysqli_fetch_assoc($res))
          {
             $retval[] = $data;
@@ -62,22 +58,29 @@ class DBMysql {
    
    // falls keine Daten ausgelesen werden
    function no_result($sql) {
-//      echo $sql . "</br>";
-//      $res = mysql_query($sql);
       $res = mysqli_query($this->conn,$sql);
       if ($res)
          return true;
       else
          return false;
    }
+
+   //
+   function insert($sql) {
+      $res = mysqli_query($this->conn,$sql);
+      if ($res){
+         $id = mysqli_insert_id($this->conn);
+         if ($id > 0)
+            return $id;
+         else return false;
+      } else
+         return false;
+   }
    
    // num_rows
    function num_rows($sql) {
-//      echo $sql . "</br>";
-//      $res = mysql_query($sql, $this->conn);
       $res = mysqli_query($this->conn,$sql);
       if ($res)
-//         return mysql_num_rows($res);
          return mysqli_num_rows($res);
       else
          return 0;
@@ -86,7 +89,6 @@ class DBMysql {
    // get last error 
    function getLastError()
    {
-//      return mysql_error();
       return mysqli_error($this->conn);
    }
 
@@ -96,5 +98,8 @@ class DBMysql {
       $ret = mysqli_real_escape_string($this->conn,$string);
       return $ret;
    }
-   
+
+   public function getLastId(){
+      return mysqli_insert_id($this->conn);
+   }
 }

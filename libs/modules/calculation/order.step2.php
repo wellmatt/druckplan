@@ -979,7 +979,13 @@ echo $quickmove->generate();
                             <div id="print_chrom"> <?
                                 if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
 
-                                    foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                    if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                        $chromas = $order->getProduct()->getAvailableChromaticities();
+                                    } else {
+                                        $chromas = Chromaticity::getAllChromaticities();
+                                    }
+
+                                    foreach ($chromas as $pc) {
                                         echo '<input type="button" ';
                                         if ($calc->getChromaticitiesContent()->getId() == $pc->getId())
                                             echo ' class="btn btn-default btn-success" ';
@@ -1127,8 +1133,14 @@ echo $quickmove->generate();
                             <td>
                                 <div id="additional_paperchroma"> <?
                                     if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                                        if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                            $chromas = $order->getProduct()->getAvailableChromaticities();
+                                        } else {
+                                            $chromas = Chromaticity::getAllChromaticities();
+                                        }
+
                                         $prod = new Product($_REQUEST["product"]);
-                                        foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                        foreach ($chromas as $pc) {
                                             echo '<input style="margin: 2px;" type="button"';
                                             if ($calc->getChromaticitiesAddContent()->getId() == $pc->getId())
                                                 echo ' class="btn btn-default btn-success" ';
@@ -1280,8 +1292,14 @@ echo $quickmove->generate();
                             <td>
                                 <div id="envelope_paperchroma"> <?
                                     if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                                        if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                            $chromas = $order->getProduct()->getAvailableChromaticities();
+                                        } else {
+                                            $chromas = Chromaticity::getAllChromaticities();
+                                        }
+
                                         $prod = new Product($_REQUEST["product"]);
-                                        foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                        foreach ($chromas as $pc) {
                                             echo '<input type="button"';
                                             if ($calc->getChromaticitiesEnvelope()->getId() == $pc->getId())
                                                 echo ' class="btn btn-default btn-success" ';

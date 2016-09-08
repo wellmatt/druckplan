@@ -785,7 +785,7 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-sm-4 control-label">FL</label>
+								<label for="" class="col-sm-4 control-label">Fremdleistung</label>
 								<div class="col-sm-8">
 									<div class="checkbox">
 										<label>
@@ -795,7 +795,7 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div class="form-group" id="thirdpartycomment_title" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>">
-								<label for="" class="col-sm-4 control-label">FL-Bemerkung</label>
+								<label for="" class="col-sm-4 control-label">Bem.Fremdl.</label>
 								<div class="col-sm-8">
 									<textarea name="thirdpartycomment" id="thirdpartycomment" class="form-control" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
 								</div>
