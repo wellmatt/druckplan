@@ -129,8 +129,14 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                         <td>
                             <div id="additional2_paperchroma"> <?
                                 if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                                    if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                        $chromas = $order->getProduct()->getAvailableChromaticities();
+                                    } else {
+                                        $chromas = Chromaticity::getAllChromaticities();
+                                    }
+
                                     $prod = new Product($_REQUEST["product"]);
-                                    foreach (Chromaticity::getAllChromaticities() as $pc) {
+                                    foreach ($chromas as $pc) {
                                         echo '<input style="margin: 2px;" type="button"';
                                         if ($calc->getChromaticitiesAddContent2()->getId() == $pc->getId()){
                                             echo ' class="btn btn-default btn-success" ';
@@ -277,8 +283,14 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                 <td>
                     <div id="additional3_paperchroma"> <?
                         if ($calc->getId() > 0 || $_REQUEST["subexec"] == "copy") {
+                            if (count($order->getProduct()->getAvailableChromaticities())>0){
+                                $chromas = $order->getProduct()->getAvailableChromaticities();
+                            } else {
+                                $chromas = Chromaticity::getAllChromaticities();
+                            }
+
                             $prod = new Product($_REQUEST["product"]);
-                            foreach (Chromaticity::getAllChromaticities() as $pc) {
+                            foreach ($chromas as $pc) {
                                 echo '<input style="margin: 2px;" type="button"';
                                 if ($calc->getChromaticitiesAddContent3()->getId() == $pc->getId()){
                                     echo ' class="btn btn-default btn-success" ';
