@@ -27,21 +27,46 @@ class ExportJson{
 
     public function aepos_export()
     {
-        /**
-         * Result Array Structure
-         *
-         * id // int // colinv id
-         * number // string // colinv number
-         * title // string // colinv title
-         * crtdate // int // colinv create date
-         * positions // array
-         *      articleid // int // position article id
-         *      product_width // product format width
-         *      product_height // product format height
-         *      chromaticity // product chromaticity
-         *      amount // position amount
-         *      delivdate // delivery date
-         *      data // optional print data (pdf/image)
+        /*
+        {
+           "project":{
+              "name":"AU16-12345",
+              "account_manager":"Hans Wurst",
+              "description":"Sample Description",
+              "customer":{
+                 "name":"Lewald und Partner",
+                 "number":12332,
+                 "street":"Steinriede 13",
+                 "zipcode":"30827",
+                 "city":"Garbsen"
+              },
+              "products":[
+                 {
+                    "name":"Katalog 2017",
+                    "parts":[
+                       {
+                          "name":"Mantel 4 Seiten",
+                          "pages":4,
+                          "paper_class":{
+                             "name":"Matt gestrichen Bilderdruck",
+                             "fogra_name":"FOGRA39"
+                          },
+                          "data":"http://example.org/mantel.pdf"
+                       },
+                       {
+                          "name":"Inhalt 12 Seiten",
+                          "pages":12,
+                          "paper_class":{
+                             "name":"LWC",
+                             "fogra_name":"FOGRA46"
+                          },
+                          "data":"http://example.org/inhalt.pdf"
+                       }
+                    ]
+                 }
+              ]
+           }
+        }
          */
         $res = [];
 
@@ -52,41 +77,52 @@ class ExportJson{
         $colinvs = CollectiveInvoice::getAllCollectiveInvoice(CollectiveInvoice::ORDER_CRTDATE,$filter);
 
         foreach ($colinvs as $colinv) {
-
-            $posarray = [];
+            $project = [
+                "name" => $colinv->getNumber(),
+                "account_manager" => $colinv->getInternContact()->getNameAsLine(),
+                "description" => $colinv->getComment(),
+                "customer" => [
+                    "name" => $colinv->getCustomer()->getNameAsLine(),
+                    "number" => $colinv->getCustomer()->getCustomernumber(),
+                    "street" => $colinv->getCustomer()->getAddress1(),
+                    "zipcode" => $colinv->getCustomer()->getZip(),
+                    "city" => $colinv->getCustomer()->getCity()
+                ],
+                "products" => []
+            ];
+            $products = [];
             $positions = Orderposition::getAllOrderposition($colinv->getId());
             foreach ($positions as $position) {
+                $parts = [];
                 $article = new Article($position->getObjectid());
-                if ($article->getOrderid()>0){
+                if ($article->getOrderid() > 0) {
                     $order = new Order($article->getOrderid());
-                    $calcs = Calculation::getAllCalculations($order);
-                    foreach ($calcs as $calc) {
-                        if ($calc->getState() == 1 && $calc->getAmount() == $position->getAmount()){
-                            $posarray[] = Array (
-                                'articleid'=> $article->getId(),
-                                'product_width'=> $calc->getProductFormatWidth(),
-                                'product_height'=> $calc->getProductFormatHeight(),
-                                'chromaticity'=> $calc->getChromaticitiesContent()->getColorsFront().'/'.$calc->getChromaticitiesContent()->getColorsBack(),
-                                'amount'=> $position->getAmount(),
-                                'delivdate'=> $colinv->getDeliverydate(),
-                                'data'=> $position->getFileattach()
-                            );
+                    if ($order->getId() > 0 && $order->getProduct() != null && $order->getProduct()->getId() > 0){
+                        $calcs = Calculation::getAllCalculations($order);
+                        foreach ($calcs as $calc) {
+                            if ($calc->getState() == 1 && $calc->getAmount() == $position->getAmount()) {
+                                $details = $calc->getDetails();
+                                foreach ($details as $detail) {
+                                    $parts[] = [
+                                        "name" => $detail['name'],
+                                        "pages" => $detail['umfang'],
+                                        "paper_class" => [
+                                            "name" => $detail['papername']
+                                        ],
+                                        "data" => $position->getFileattach()
+                                    ];
+                                }
+                            }
                         }
+                        $project["products"][] = [
+                            "name" => $order->getProduct()->getName(),
+                            "parts" => $parts
+                        ];
                     }
                 }
             }
-
-            $res[] = Array(
-                'id'=> $colinv->getId(),
-                'number'=> $colinv->getNumber(),
-                'title'=> $colinv->getTitle(),
-                'crtdate'=> $colinv->getCrtdate(),
-                'positions'=> $posarray,
-            );
+            $res[] = Array("project"=>$project);
         }
-
         return json_encode($res);
     }
-
-
 }

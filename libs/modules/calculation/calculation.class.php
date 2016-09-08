@@ -629,6 +629,7 @@ class Calculation
         if ($this->getPaperContent()->getId()>0){
             $data = [];
             $data['paper'] = self::PAPER_CONTENT;
+            $data['papername'] = $this->getPaperContent()->getName();
             $data['name'] = 'Inhalt 1';
             $data['material'] = $this->getPaperContent()->getName();
             $data['gewicht'] = $this->getPaperContentWeight();
@@ -640,6 +641,7 @@ class Calculation
         if ($this->getPaperAddContent()->getId()>0){
             $data = [];
             $data['paper'] = self::PAPER_ADDCONTENT;
+            $data['papername'] = $this->getPaperAddContent()->getName();
             $data['name'] = 'Inhalt 2';
             $data['material'] = $this->getPaperAddContent()->getName();
             $data['gewicht'] = $this->getPaperAddContentWeight();
@@ -651,6 +653,7 @@ class Calculation
         if ($this->getPaperAddContent2()->getId()>0){
             $data = [];
             $data['paper'] = self::PAPER_ADDCONTENT2;
+            $data['papername'] = $this->getPaperAddContent2()->getName();
             $data['name'] = 'Inhalt 3';
             $data['material'] = $this->getPaperAddContent2()->getName();
             $data['gewicht'] = $this->getPaperAddContent2Weight();
@@ -662,6 +665,7 @@ class Calculation
         if ($this->getPaperAddContent3()->getId()>0){
             $data = [];
             $data['paper'] = self::PAPER_ADDCONTENT3;
+            $data['papername'] = $this->getPaperAddContent3()->getName();
             $data['name'] = 'Inhalt 4';
             $data['material'] = $this->getPaperAddContent3()->getName();
             $data['gewicht'] = $this->getPaperAddContent3Weight();
@@ -673,6 +677,7 @@ class Calculation
         if ($this->getPaperEnvelope()->getId()>0){
             $data = [];
             $data['paper'] = self::PAPER_ENVELOPE;
+            $data['papername'] = $this->getPaperEnvelope()->getName();
             $data['name'] = 'Umschlag';
             $data['material'] = $this->getPaperEnvelope()->getName();
             $data['gewicht'] = $this->getPaperEnvelopeWeight();
