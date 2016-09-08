@@ -552,6 +552,7 @@ $(document).ready(function(){
 		$('#newmail_hiddenclicker').trigger('click');
 	}
 </script>
+
 <div id="newmail_hidden_clicker" style="display:none"><a id="newmail_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
 <div id="popUpDiv">
     <span>Ziel-Mailbox auswählen:</span></br>
@@ -563,95 +564,93 @@ $(document).ready(function(){
       <div class="col-md-6" style="text-align: right;"><span onclick="mail_move();" class="btn btn-sm btn-default">Speichern</span></div>
     </div>
 </div>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Mail-Client
+				<span class="pull-right">
+					<?=$savemsg?>
+					<button type="button" onclick="callBoxFancyNewMail('libs/modules/mail/mail.send.frame.php');"; class="btn btn-sm btn-default">Neue Mail</button>
+					<!--          <button type="button" onclick="mail_markasread_multiple();" class="btn btn-sm btn-default">Als gelesen markieren</button>-->
+					<!--          <button type="button" onclick="mail_markasunread_multiple();" class="btn btn-sm btn-default">Als ungelesen markieren</button>-->
+					<!--          <button type="button" onclick="MailBoxSelectPopup();" class="btn btn-sm btn-default">verschieben</button>-->
+         		 	<button type="button" onclick="mail_delete_multiple();" class="btn btn-sm btn-danger">Löschen</button>
+				</span>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <input name="muid" id="muid" type="hidden" value="0"/>
+		  <input name="mailbox" id="mailbox" type="hidden" value="INBOX"/>
+		  <input name="mailid" id="mailid" type="hidden" value="<?php echo $mail_servers[0]["mailid"];?>"/>
 
-<div class="row">
-  <div class="col-md-4">
-    <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-    <span style="font-size: 13px"><?=$_LANG->get('Mail-Client')?></span>
-  </div>
-  <div class="col-md-4" style="text-align: right;"><?=$savemsg?></div>
+		  <div class="row">
+			  <div class="col-md-3">
+				  <?php
+				  if ($mailsettings)
+				  {
+					  $first = true;
+					  foreach ($mail_servers as $mail_server)
+					  {
+						  echo '<div class="box2">';
+						  echo '<ul class="list-unstyled">';
+						  echo '<span class="label label-info" style="text-align: right;">'.$mail_server["mail"].'</span></br></br>';
+
+						  unset($folders);
+						  try {
+							  $folders = $mail_server["imap"]->listMailboxes('*',Horde_Imap_Client::MBOX_SUBSCRIBED_EXISTS,Array("flat"=>false,"recursivematch"=>true,"attributes"=>true,"children"=>true));
+						  } catch (Horde_Imap_Client_Exception $e) {
+
+						  }
+
+						  foreach ($folders as $key => $value)
+						  {
+							  if ($key == "INBOX" && $first)
+							  {
+								  echo '<li><span mailid="'.$mail_server["mailid"].'" mailbox="'.$key.'" onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default label-success pointer">'.$key.'</span></li>';
+								  $first = false;
+							  }
+							  else
+								  echo '<li><span mailid="'.$mail_server["mailid"].'" mailbox="'.$key.'" onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default pointer">'.$key.'</span></li>';
+						  }
+
+						  echo '</ul>';
+						  echo '</div></br>';
+					  }
+				  }
+				  ?>
+			  </div>
+			  <div class="col-md-9">
+				  <div class="table-responsive">
+					  <table id="mailtable" class="table table-hover">
+						  <thead>
+						  <tr>
+							  <th></th>
+							  <th><?=$_LANG->get('Von')?></th>
+							  <th><?=$_LANG->get('An')?></th>
+							  <th><?=$_LANG->get('Betreff')?></th>
+							  <th><?=$_LANG->get('Datum')?></th>
+							  <th><?=$_LANG->get('Optionen')?></th>
+						  </tr>
+						  </thead>
+						  <tfoot>
+						  <tr>
+							  <th></th>
+							  <th><?=$_LANG->get('Von')?></th>
+							  <th><?=$_LANG->get('An')?></th>
+							  <th><?=$_LANG->get('Betreff')?></th>
+							  <th><?=$_LANG->get('Datum')?></th>
+							  <th><?=$_LANG->get('Optionen')?></th>
+						  </tr>
+						  </tfoot>
+					  </table>
+				  </div>
+			  </div>
+	  </div>
 </div>
-</br>
 
 <!-- <span onclick="MailBoxSelectPopup();" class="label label-danger pointer">Test Button</span> -->
 
-<div class="row">
-    <div class="col-md-12" align="right">
-        <div class="btn-group" role="group">
-          <button type="button" onclick="callBoxFancyNewMail('libs/modules/mail/mail.send.frame.php');"; class="btn btn-sm btn-default">Neue Mail</button>
-<!--          <button type="button" onclick="mail_markasread_multiple();" class="btn btn-sm btn-default">Als gelesen markieren</button>-->
-<!--          <button type="button" onclick="mail_markasunread_multiple();" class="btn btn-sm btn-default">Als ungelesen markieren</button>-->
-<!--          <button type="button" onclick="MailBoxSelectPopup();" class="btn btn-sm btn-default">verschieben</button>-->
-          <button type="button" onclick="mail_delete_multiple();" class="btn btn-sm btn-danger">Löschen</button>
-        </div>
-    </div>
-</div>
-</br>
 
-<input name="muid" id="muid" type="hidden" value="0"/>
-<input name="mailbox" id="mailbox" type="hidden" value="INBOX"/>
-<input name="mailid" id="mailid" type="hidden" value="<?php echo $mail_servers[0]["mailid"];?>"/>
 
-<div class="row">
-  <div class="col-md-3">
-    <?php 
-    if ($mailsettings)
-    {
-        $first = true;
-        foreach ($mail_servers as $mail_server)
-        {
-            echo '<div class="box2">';
-            echo '<ul class="list-unstyled">';
-            echo '<span class="label label-info" style="text-align: right;">'.$mail_server["mail"].'</span></br></br>';
 
-			unset($folders);
-			try {
-				$folders = $mail_server["imap"]->listMailboxes('*',Horde_Imap_Client::MBOX_SUBSCRIBED_EXISTS,Array("flat"=>false,"recursivematch"=>true,"attributes"=>true,"children"=>true));
-			} catch (Horde_Imap_Client_Exception $e) {
 
-			}
-
-            foreach ($folders as $key => $value)
-            {
-                if ($key == "INBOX" && $first)
-                {
-                    echo '<li><span mailid="'.$mail_server["mailid"].'" mailbox="'.$key.'" onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default label-success pointer">'.$key.'</span></li>';
-                    $first = false;
-                }
-                else
-                    echo '<li><span mailid="'.$mail_server["mailid"].'" mailbox="'.$key.'" onclick="$(\'#mailbox\').val(\''.$key.'\');$(\'#mailid\').val(\''.$mail_server["mailid"].'\');MailTableRefresh();FoldersRemoveClass();$(this).addClass(\'label-success\');" class="mailid_'.$mail_server["mailid"].' folderspan label label-default pointer">'.$key.'</span></li>';
-            }
-
-            echo '</ul>';
-            echo '</div></br>';
-        }
-    }
-    ?>
-  </div>
-  <div class="col-md-9">
-    <div class="box1">
-    	<table id="mailtable" width="100%" cellpadding="0" cellspacing="0" class="display stripe hover row-border order-column">
-    		<thead>
-    			<tr>
-    			    <th></th>
-    				<th><?=$_LANG->get('Von')?></th>
-    				<th><?=$_LANG->get('An')?></th>
-    				<th><?=$_LANG->get('Betreff')?></th>
-    				<th><?=$_LANG->get('Datum')?></th>
-    				<th><?=$_LANG->get('Optionen')?></th>
-    			</tr>
-    		</thead>
-    		<tfoot>
-    			<tr>
-    			    <th></th>
-    				<th><?=$_LANG->get('Von')?></th>
-    				<th><?=$_LANG->get('An')?></th>
-    				<th><?=$_LANG->get('Betreff')?></th>
-    				<th><?=$_LANG->get('Datum')?></th>
-    				<th><?=$_LANG->get('Optionen')?></th>
-    			</tr>
-    		</tfoot>
-    	</table>
-    </div>
-  </div>
-</div>

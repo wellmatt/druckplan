@@ -26,7 +26,7 @@ if($_REQUEST["subexec"] == "save")
     foreach (array_keys($_REQUEST) as $key)
     {
         if (preg_match("/chroma_(?P<id>\d+)/", $key, $m))
-		{ 
+		{
             $chromas[] = new Chromaticity($m["id"]);
             if ((int)$_REQUEST["machine_type"] == Machine::TYPE_DRUCKMASCHINE_DIGITAL && (int)$_REQUEST["machine_pricebase"] == Machine::PRICE_MINUTE)
    				$clicks[] = (float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["click_{$m["id"]}"])));
@@ -46,7 +46,7 @@ if($_REQUEST["subexec"] == "save")
             }
         }
     }
-    
+
 
     foreach ($_REQUEST["machine_difficulty"] as $tmp_req_difficulty){
         if ($tmp_req_difficulty["unit"] != 0 && count($tmp_req_difficulty["values"]) > 0){
@@ -56,8 +56,8 @@ if($_REQUEST["subexec"] == "save")
             $difficulties[$tmp_req_difficulty["id"]]["percents"] = $tmp_req_difficulty["percents"];
         }
     }
-    
-    
+
+
     $machine->setName(trim(addslashes($_REQUEST["machine_name"])));
     $machine->setDocumentText(trim(addslashes($_REQUEST["machine_documenttext"])));
     $machine->setGroup(new MachineGroup((int)$_REQUEST["machine_group"]));
@@ -95,7 +95,7 @@ if($_REQUEST["subexec"] == "save")
     $machine->setTimeTrimmer((int)$_REQUEST["time_trimmer"]);
     $machine->setTimeStacker((int)$_REQUEST["time_stacker"]);
     $machine->setCutPrice((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["cut_price"]))));
-   
+
     $machine->setInternalText($_REQUEST["machine_internaltext"]);
     $machine->setHersteller($_REQUEST["machine_hersteller"]);
     $machine->setBaujahr($_REQUEST["machine_baujahr"]);
@@ -103,10 +103,10 @@ if($_REQUEST["subexec"] == "save")
 
     $machine->setDPHeight((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["machine_DPHeight"]))));
     $machine->setDPWidth((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["machine_DPWidth"]))));
-    
+
     $machine->setBreaks((int)$_REQUEST["breaks"]);
     $machine->setBreaks_time((int)$_REQUEST["breaks_time"]);
-    
+
     $machine->setColor($_REQUEST["machine_color"]);
 	$machine->setMaxstacksize($_REQUEST["machine_maxstacksize"]);
 
@@ -118,7 +118,7 @@ if($_REQUEST["subexec"] == "save")
         }
     }
     $machine->setQualified_users($quser_list);
-    
+
 
     $tmp_wtime_arr = Array();
     if ($_REQUEST["wotime"])
@@ -138,7 +138,7 @@ if($_REQUEST["subexec"] == "save")
         }
     }
     $machine->setRunninghours($tmp_wtime_arr);
-    
+
     if ($machine->getId() == 0 &&  											// Wenn Maschine noch nicht existiert und eine Druckmaschine ist,
     		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET){		// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
     	$printer_counter = Machine::getNumberOfPrintingmachines();
@@ -150,7 +150,7 @@ if($_REQUEST["subexec"] == "save")
     } else { // andernfalls darf die Maschine angelegt werden
     	$savemsg = getSaveMessage($machine->save()).$DB->getLastError();
     }
-    
+
     if ($_REQUEST["lock_start"] && $_REQUEST["lock_start"] != "" && $_REQUEST["lock_stop"] && $_REQUEST["lock_stop"] != ""){
         $mlock = new MachineLock();
         $mlock->setMachineid($machine->getId());
@@ -158,7 +158,7 @@ if($_REQUEST["subexec"] == "save")
         $mlock->setStop(strtotime($_REQUEST["lock_stop"]));
         $mlock->save();
     }
-    
+
     /***
      ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || 	// und eine Druckmaschine ist,
     		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) ){	// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
@@ -196,7 +196,7 @@ function showHideClpr(val)
 			document.getElementsByName('anz_click2')[i].style.display = 'none';
 		}
 	}
-}	
+}
 function showHide(val)
 {
 	if(val == <?=Machine::TYPE_DRUCKMASCHINE_OFFSET?>)
@@ -222,9 +222,9 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
-	    
+
 	    showHideClpr(0); <?/*gln*/?>
-	    
+
 	} else if (val == <?=Machine::TYPE_DRUCKMASCHINE_DIGITAL?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
 		document.getElementById('tr_machine_paper_min_size').style.display = '';
@@ -399,7 +399,7 @@ function updateDifficultyFields(val, unit, id)
 	console.log("updateDifficultyFields");
 	if(val != '')
 	{
-        $.post("libs/modules/machines/machines.ajax.php", {exec: "updateDifficultyFields", val: val, machId: <?=$machine->getId()?>, unit: unit, id: id}, 
+        $.post("libs/modules/machines/machines.ajax.php", {exec: "updateDifficultyFields", val: val, machId: <?=$machine->getId()?>, unit: unit, id: id},
         	    function(data) {
     		document.getElementById('div_difficulty_fields_'+id).innerHTML = data;
     	});
@@ -424,7 +424,7 @@ function addDifficultyField(id)
     document.getElementsByName('difficulty_counter_'+id)[0].value = count+1;
 }
 
-<?php 
+<?php
 if($machine->getId() > 0){
     echo 'showHide('.$machine->getType().');';
 }
@@ -442,7 +442,7 @@ $(function() {
 		    'September','Oktober','November','Dezember',
 		   ],
 		   dayOfWeek:[
-		    "So.", "Mo", "Di", "Mi", 
+		    "So.", "Mo", "Di", "Mi",
 		    "Do", "Fr", "Sa.",
 		   ]
 		  }
@@ -460,7 +460,7 @@ $(function() {
 		    'September','Oktober','November','Dezember',
 		   ],
 		   dayOfWeek:[
-		    "So.", "Mo", "Di", "Mi", 
+		    "So.", "Mo", "Di", "Mi",
 		    "Do", "Fr", "Sa.",
 		   ]
 		  }
@@ -1118,6 +1118,8 @@ echo $quickmove->generate();
 							  }
 							  ?>
 						  </table>
+						  <br>
+						  *CPC = Cost per Click(Clickpreis)
 					  </div>
 				  </div>
 			</div>
