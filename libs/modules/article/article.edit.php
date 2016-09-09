@@ -70,6 +70,8 @@ if($_REQUEST["subexec"] == "save"){
 	{
 	   $tags = explode(";", $_REQUEST["article_tags"]);
 	   $article->setTags($tags);
+	} else {
+		$article->setTags(null);
 	}
 	
 	$tmp_shop_bc_arr = Array();
@@ -839,6 +841,7 @@ echo $quickmove->generate();
         insert += '</td>';
         insert += '<td>';
         insert += '<select name="article_costprice_supplier_'+count+'" style="width:160px">';
+		insert += '<option value="0">-> bitte wählen <-</option>';
         <?php foreach ($allsupplier as $supplier){?>
         insert += '<option value="<?=$supplier->getId()?>"><?=$supplier->getNameAsLine()?></option>';
         <?}?>

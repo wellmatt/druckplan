@@ -204,6 +204,7 @@
                       <ul class="dropdown-menu" role="menu">
                             <li>
                                 <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=RE&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>Antworten</a>
+                                <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=REALL&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>Allen Antworten</a>
                                 <a href="#" onclick="callBoxFancyNewMail(\'libs/modules/mail/mail.send.frame.php?preset=FW&mailid='.$_REQUEST["mailid"].'&mailbox='.$mailbox.'&muid='.$uids->ids[$i].'\');"/>Weiterleiten</a>
                                 <a href="#" onclick="$(\'#muid\').val('.$uids->ids[$i].');MailBoxSelectPopup();">Verschieben</a>
                                 <a href="#" onclick="mail_markasunread(this,'.$_REQUEST["mailid"].',\''.$mailbox.'\','.$uids->ids[$i].');">als ungelesen markieren</a>
@@ -259,13 +260,26 @@
                 }
                 $attachments[] = $p->getName();
             }
-            
+
+            $titlebr = '
+';
             $row[] = null;
             $mail_from = $list->first()->getEnvelope()->from->__toString();
             $mail_from = str_replace('"', '', $mail_from);
             $row[] = $mail_from;
-            $mail_to = $list->first()->getEnvelope()->to->__toString();
-            $mail_to = str_replace(",", "</br>", $mail_to);
+            $cc = 'CC: '.str_replace(",", $titlebr, $list->first()->getEnvelope()->cc->__toString());
+            $bc = 'BCC: '.str_replace(",", $titlebr, $list->first()->getEnvelope()->bcc->__toString());
+            $hint = '';
+            if (strlen($cc) < 5)
+                $cc = '';
+            else
+                $hint = '*';
+            if (strlen($bc) < 6)
+                $bc = '';
+            else
+                $hint = '*';
+            $title = $cc.$titlebr.$bc;
+            $mail_to = '<span title="'.$title.'">'.str_replace(",", "</br>", $list->first()->getEnvelope()->to->__toString()).$hint.'</span>';
             $row[] = $mail_to;
             
             if (count($attachments)>0)

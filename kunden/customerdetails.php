@@ -103,6 +103,12 @@ $languages = Translator::getAllLangs(Translator::ORDER_NAME);
 $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_NAME, Address::FILTER_DELIV_SHOP);
 $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_NAME, Address::FILTER_INVC);
 ?>
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="../css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="../jscripts/datatable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="../jscripts/datatable/numeric-comma.js"></script>
+<script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.bootstrap.js"></script>
 
 <script language="javascript">
 function askDel(myurl)
@@ -116,6 +122,73 @@ function askDel(myurl)
    }
    return false;
 }
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		var table_deliv = $('#table_deliv').DataTable({
+			"paging": true,
+			"stateSave": false,
+			"pageLength": 25,
+			"dom": 'flrtip',
+			"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+			"language":
+			{
+				"emptyTable":     "Keine Daten vorhanden",
+				"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+				"infoEmpty": 	  "Keine Seiten vorhanden",
+				"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+				"infoPostFix":    "",
+				"thousands":      ".",
+				"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+				"loadingRecords": "Lade...",
+				"processing":     "Verarbeite...",
+				"search":         "Suche:",
+				"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+				"paginate": {
+					"first":      "Erste",
+					"last":       "Letzte",
+					"next":       "N&auml;chste",
+					"previous":   "Vorherige"
+				},
+				"aria": {
+					"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+					"sortDescending": ": aktivieren um absteigend zu sortieren"
+				}
+			}
+		});
+		var table_inv = $('#table_inv').DataTable({
+			"paging": true,
+			"stateSave": false,
+			"pageLength": 25,
+			"dom": 'flrtip',
+			"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+			"language":
+			{
+				"emptyTable":     "Keine Daten vorhanden",
+				"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+				"infoEmpty": 	  "Keine Seiten vorhanden",
+				"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+				"infoPostFix":    "",
+				"thousands":      ".",
+				"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+				"loadingRecords": "Lade...",
+				"processing":     "Verarbeite...",
+				"search":         "Suche:",
+				"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+				"paginate": {
+					"first":      "Erste",
+					"last":       "Letzte",
+					"next":       "N&auml;chste",
+					"previous":   "Vorherige"
+				},
+				"aria": {
+					"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+					"sortDescending": ": aktivieren um absteigend zu sortieren"
+				}
+			}
+		});
+	});
 </script>
 <form id="change_customer" method="post" class="form-horizontal">
 	<input type="hidden" name="pid" value="<?=$_REQUEST["pid"]?>" >
@@ -452,21 +525,16 @@ function askDel(myurl)
 							</h3>
 					  </div>
 						  <div class="table-responsive">
-							  <table class="table table-hover">
-								  <tr>
-									  <td class="content_row"><b>Firma</b></td>
-									  <td class="content_row"><b>Adresse</b></td>
-									  <td class="content_row"><b>PLZ/Ort</b></td>
-									  <td class="content_row"><b>Land</b></td>
-									  <td class="content_row"><b>Telefon</b></td>
-								  </tr>
-								  <?/*<tr>
-								<td colspan="2"><b><?=$_LANG->get('Lieferadressen');?> </b></td>
-							</tr> */?>
-								  <tr>
-									  <?/* 	<td><b><?=$_LANG->get('Name');?> </b></td>
-								<td><b><?=$_LANG->get('Adresse');?> </b></td> */?>
-								  </tr>
+							  <table class="table table-hover" id="table_deliv">
+								  <thead>
+									  <tr>
+										  <th class="content_row"><b>Firma</b></th>
+										  <th class="content_row"><b>Adresse</b></th>
+										  <th class="content_row"><b>PLZ/Ort</b></th>
+										  <th class="content_row"><b>Land</b></th>
+										  <th class="content_row"><b>Telefon</b></th>
+									  </tr>
+								  </thead>
 								  <?	foreach($all_deliveryAddresses AS $deliv){ ?>
 									  <tr>
 										  <td>
@@ -503,21 +571,16 @@ function askDel(myurl)
 							</h3>
 					  </div>
 						  <div class="table-responsive">
-							  <table class="table table-hover">
-								  <tr>
-									  <td class="content_row"><b>Firma</b></td>
-									  <td class="content_row"><b>Adresse</b></td>
-									  <td class="content_row"><b>PLZ/Ort</b></td>
-									  <td class="content_row"><b>Land</b></td>
-									  <td class="content_row"><b>Telefon</b></td>
-								  </tr>
-								  <?/*<tr>
-								<td colspan="2"><b><?=$_LANG->get('Lieferadressen');?> </b></td>
-							</tr> */?>
-								  <tr>
-									  <?/* 	<td><b><?=$_LANG->get('Name');?> </b></td>
-								<td><b><?=$_LANG->get('Adresse');?> </b></td> */?>
-								  </tr>
+							  <table class="table table-hover" id="table_inv">
+								  <thead>
+									  <tr>
+										  <th class="content_row"><b>Firma</b></th>
+										  <th class="content_row"><b>Adresse</b></th>
+										  <th class="content_row"><b>PLZ/Ort</b></th>
+										  <th class="content_row"><b>Land</b></th>
+										  <th class="content_row"><b>Telefon</b></th>
+									  </tr>
+								  </thead>
 								  <?	foreach($all_invoiceAddresses AS $invoiceadr){ ?>
 									  <tr>
 										  <td>

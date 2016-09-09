@@ -568,6 +568,18 @@ echo $quickmove->generate();
                                                     echo '<input name="mach_color_detail_'.$x.'" id="mach_color_detail_'.$x.'" class="form-control" value="'.$mach->getColor_detail().'">';
                                                     echo '</div></div></div>';
 
+                                                    // ZuschussDP
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Zuschuss DP</label><div class="input-group">';
+                                                    echo '<input name="mach_dpgrant_'.$x.'" id="mach_dpgrant_'.$x.'" class="form-control" value="'.printPrice($mach->getDpgrant(),2).'">';
+                                                    echo '</div></div></div>';
+
+                                                    // ZuschussPercent
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Zuschuss</label><div class="input-group">';
+                                                    echo '<input name="mach_percentgrant_'.$x.'" id="mach_percentgrant_'.$x.'" class="form-control" value="'.printPrice($mach->getPercentgrant(),2).'">';
+                                                    echo '<span class="input-group-addon">%</span></div></div></div>';
+
                                                     // Hinweise
                                                     echo '<div class="col-md-12"><div class="form-group">';
                                                     echo '<label class="control-label">Hinweise</label><div class="input-group col-md-10">';
