@@ -731,7 +731,7 @@ $(function() {
                 data: { "tktid": d[1], "inline": "true" },
                 success: function(data)
                 {
-                    row.child( '<div class="box2">'+data+'</div>' ).show();
+                    row.child( '<div class="panel panel-default"><div class="panel-body">'+data+'</div>' ).show();
                     $( ".details-control-loading" ).removeClass( 'details-control-loading' );
                     tr.removeClass('highlight');
                     if ( idx === -1 ) {

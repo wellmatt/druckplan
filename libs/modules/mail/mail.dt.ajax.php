@@ -198,7 +198,7 @@
             $options = '
             <div class="btn-group" role="group">
                 <div class="btn-group dropdown" style="margin-left: 0px;">
-                      <button type="button" class="btn btn-xs dropdown-toggle btn-default" data-toggle="dropdown" aria-expanded="false">
+                      <button type="button" class="btn btn-xs dropdown-toggle btn-info" data-toggle="dropdown" aria-expanded="false">
                         Mehr <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" role="menu">
