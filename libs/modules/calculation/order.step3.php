@@ -572,31 +572,6 @@ echo $quickmove->generate();
                                                     echo '<input name="mach_info_'.$x.'" id="mach_info_'.$x.'" class="form-control" value="'.$mach->getInfo().'">';
                                                     echo '</div></div></div>';
 
-                                                    // Umschlagen / Umstuelpen
-                                                    if ($mach->getMachine()->getUmschlUmst() > 0)
-                                                    {
-                                                        echo '<div class="col-md-4"><div class="form-group">';
-                                                        echo '<div class="checkbox"><label>';
-                                                        echo '<input type="checkbox" onchange="switchUmschUmst('.$x.');" id="umschl_'.$x.'" name="umschl_'.$x.'" value="1" ';
-                                                        if($mach->getUmschl()) echo ' checked="checked"';
-                                                        echo '>';
-                                                        echo ' Umschlagen</label></div></div></div>';
-
-
-
-                                                        echo '<div class="col-md-4"><div class="form-group">';
-                                                        echo '<div class="checkbox"><label>';
-                                                        echo '<input type="checkbox" onchange="switchUmschUmst('.$x.');" id="umst_'.$x.'" name="umst_'.$x.'" value="1" ';
-                                                        if($mach->getUmst()) echo ' checked="checked"';
-                                                        echo '>';
-                                                        echo ' Umst&uuml;lpen</label></div></div></div>';
-
-                                                        echo '<input type="hidden" id="umschl_umst_'.$x.'" name="umschl_umst_'.$x.'" value="';
-                                                        if($mach->getUmschlagenUmstuelpen()) echo '1'; else echo '0';
-                                                        echo '"';
-                                                        echo '>';
-                                                    }
-
                                                     ?>
                                                 </td>
                                                 <td id="td-papersize-<? echo $x;?>">
@@ -632,8 +607,18 @@ echo $quickmove->generate();
                                                         }
                                                         echo '</select>';
 
-
-
+                                                        // Umschlagen / Umstuelpen
+                                                        if ($mach->getMachine()->getUmschlUmst() > 0)
+                                                        {
+                                                            echo '<div class="form-group">';
+                                                            echo '<select name="umschl_umst_'.$x.'" class="form-control">';
+                                                            ?>
+                                                            <option value="0">Sch&ouml;n & Widerdruck</option>
+                                                            <option value="1" <?php if($mach->getUmschlagenUmstuelpen()) echo ' selected ';?>>Umschlagen / Umst&uuml;lpen</option>
+                                                            </select>
+                                                            </div>
+                                                            <?php
+                                                        }
                                                         ?>
                                                     </div>
                                                 </td>

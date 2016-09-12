@@ -923,11 +923,6 @@ if((int)$_REQUEST["step"] == 3){
 					//gln, umschlagen/umstuelpen
 					$entry->setUmschlagenUmstuelpen((int)$_REQUEST["umschl_umst_{$id}"]);
 
-					if (isset($_REQUEST["umschl_{$id}"]))
-						$entry->setUmschl((int)$_REQUEST["umschl_{$id}"]);
-					if (isset($_REQUEST["umst_{$id}"]))
-						$entry->setUmst((int)$_REQUEST["umst_{$id}"]);
-
 					//error_log($id." umschlumst ".$_REQUEST["umschl_umst_{$id}"]);
 					$entry->setInfo(trim(addslashes($_REQUEST["mach_info_{$id}"])));
 

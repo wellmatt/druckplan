@@ -516,7 +516,7 @@ echo $quickmove->generate();
                               <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                               <? foreach($calculations as $calc) { ?>
                                   <td class="content_row_clear value">
-                                      <input name="grant_content_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperContentGrant())?>"> <?=$_LANG->get('Bogen')?>
+                                      <?=printBigInt($calc->getPaperContentGrant())?> <?=$_LANG->get('Bogen')?>
                                   </td>
                               <? } ?>
                           </tr>
@@ -578,7 +578,7 @@ echo $quickmove->generate();
                           <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <input name="grant_addcontent_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContentGrant())?>"> <?=$_LANG->get('Bogen')?>
+                                  <?=printBigInt($calc->getPaperAddContentGrant())?> <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -634,8 +634,7 @@ echo $quickmove->generate();
                           <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <input name="grant_addcontent2_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContent2Grant())?>">
-                                  <?=$_LANG->get('Bogen')?>
+                                  <?=printBigInt($calc->getPaperAddContent2Grant())?> <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -689,8 +688,7 @@ echo $quickmove->generate();
                           <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <input name="grant_addcontent3_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperAddContent3Grant())?>">
-                                  <?=$_LANG->get('Bogen')?>
+                                  <?=printBigInt($calc->getPaperAddContent3Grant())?> <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>
@@ -746,7 +744,7 @@ echo $quickmove->generate();
                           <td class="content_row_clear"><i><?=$_LANG->get('inkl. Zuschuss')?></i></td>
                           <? foreach($calculations as $calc) { ?>
                               <td class="content_row_clear value">
-                                  <input name="grant_envelope_<?=$calc->getId()?>" style="width:40px;text-align:center" value="<?=printBigInt($calc->getPaperEnvelopeGrant())?>"> <?=$_LANG->get('Bogen')?>
+                                  <?=printBigInt($calc->getPaperEnvelopeGrant())?> <?=$_LANG->get('Bogen')?>
                               </td>
                           <? } ?>
                       </tr>

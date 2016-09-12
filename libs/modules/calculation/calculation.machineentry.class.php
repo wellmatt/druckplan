@@ -978,7 +978,7 @@ class Machineentry {
 
     public function getUmschlUmst()
     {
-        return 0;
+        return $this->umschlUmst;
     }
 
     /**
