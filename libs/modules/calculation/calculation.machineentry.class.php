@@ -60,6 +60,8 @@ class Machineentry {
     private $doubleutilization = 0;             // Doppelter Nutzen
 
     private $digigrant = 0.0;
+    private $dpgrant = 0.0;
+    private $percentgrant = 0.0;
     
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
@@ -143,6 +145,8 @@ class Machineentry {
                     $this->rollcount = $r["rollcount"];
                     $this->doubleutilization = $r["doubleutilization"];
                     $this->digigrant = $r["digigrant"];
+                    $this->dpgrant = $r["dpgrant"];
+                    $this->percentgrant = $r["percentgrant"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -277,6 +281,8 @@ class Machineentry {
         				labelcount = {$this->labelcount},
         				umschl_umst = {$this->umschlUmst},
         				digigrant = {$this->digigrant},
+        				percentgrant = {$this->percentgrant},
+        				dpgrant = {$this->dpgrant},
         				umschl = {$this->umschl},
         				doubleutilization = {$this->doubleutilization},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
@@ -989,5 +995,37 @@ class Machineentry {
     public function setDigigrant($digigrant)
     {
         $this->digigrant = $digigrant;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDpgrant()
+    {
+        return $this->dpgrant;
+    }
+
+    /**
+     * @param float $dpgrant
+     */
+    public function setDpgrant($dpgrant)
+    {
+        $this->dpgrant = $dpgrant;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPercentgrant()
+    {
+        return $this->percentgrant;
+    }
+
+    /**
+     * @param float $percentgrant
+     */
+    public function setPercentgrant($percentgrant)
+    {
+        $this->percentgrant = $percentgrant;
     }
 }

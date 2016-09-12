@@ -466,7 +466,7 @@ if (count($mailadresses)>0)
     $savemsg = '<span class="label label-danger">Keine Mail-Konten hinterlegt</span>';
 }
 
-if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
+if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE" || $_REQUEST["preset"] == "REALL")
 {
     $mailadress = new Emailaddress($_REQUEST["mailid"]);
     
@@ -510,6 +510,9 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE")
         $list = $client->fetch($_REQUEST["mailbox"], $query, array(
             'ids' => $uid
         ));
+
+        $orig_mail_fromall = $list->first()->getEnvelope()->from->__toString().', '.$list->first()->getEnvelope()->cc->__toString();
+        $orig_mail_fromall = str_replace('"', '', $orig_mail_fromall);
         
         $orig_mail_from = $list->first()->getEnvelope()->from->__toString();
         $orig_mail_from = str_replace('"', '', $orig_mail_from);
@@ -937,7 +940,9 @@ $(function () {
             <div class=" col-xs-11">
                 <div class="input-group">
                     <span class="input-group-addon">@</span>
-                    <input type="text" id="mail_to" name="mail_to" value="<?php if ($_REQUEST["preset"]=="RE") echo $orig_mail_from;?>" class="form-control">
+                    <input type="text" id="mail_to" name="mail_to"
+                           value="<?php if ($_REQUEST["preset"]=="RE") echo $orig_mail_from; else if ($_REQUEST["preset"]=="REALL") echo $orig_mail_fromall;?>"
+                           class="form-control">
                 </div>
             </div>
           </div>

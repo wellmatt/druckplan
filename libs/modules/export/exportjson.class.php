@@ -6,6 +6,7 @@
  *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
  *  
  */
+require_once 'libs/modules/attachment/attachment.class.php';
 
 
 class ExportJson{
@@ -102,14 +103,23 @@ class ExportJson{
                         foreach ($calcs as $calc) {
                             if ($calc->getState() == 1 && $calc->getAmount() == $position->getAmount()) {
                                 $details = $calc->getDetails();
+
+                                if ($position->getFile_attach()>0) {
+                                    $tmp_attach = new Attachment($position->getFile_attach());
+                                    $url = 'http://contilas2.mein-druckplan.de/docs/attachments/'.$tmp_attach->getFilename();
+                                    $filename = $tmp_attach->getOrig_filename();
+                                } else {
+                                    $url = '';
+                                    $filename = '';
+                                }
                                 foreach ($details as $detail) {
                                     $parts[] = [
                                         "name" => $detail['name'],
-                                        "pages" => $detail['umfang'],
+                                        "pages" => (int)$detail['umfang'],
                                         "paper_class" => [
-                                            "name" => $detail['papername']
+                                            "name" => $detail['papername'],
                                         ],
-                                        "data" => $position->getFileattach()
+                                        "data" => ["url" => $url, "filename" => $filename]
                                     ];
                                 }
                             }
