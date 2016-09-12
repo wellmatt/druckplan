@@ -277,7 +277,7 @@ echo $quickmove->generate();
 
                                                     // Hinweise
                                                     echo '<div class="col-md-12"><div class="form-group">';
-                                                    echo '<label class="control-label">Hinweise</label><div class="input-group col-md-10">';
+                                                    echo '<label class="control-label">Hinweise</label><div class="input-group col-md-12">';
                                                     echo '<input name="mach_info_'.$x.'" id="mach_info_'.$x.'" class="form-control" value="'.$mach->getInfo().'">';
                                                     echo '</div></div></div>';
 
@@ -376,32 +376,37 @@ echo $quickmove->generate();
                                                         echo '</div></div>';
                                                     }
 
+
+
+
                                                     // Manueller Aufschlag
                                                     echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Man. Aufschlag</label><div class="input-group">';
+                                                    echo '<label class="control-label">Manueller Aufschlag</label><div class="input-group">';
                                                     echo '<input type="text" name="mach_special_margin_'.$x.'" class="form-control" value="'.str_replace(".", ",", $mach->getSpecial_margin()).'">';
                                                     echo '<span class="input-group-addon">%</span></div></div></div>';
 
                                                     echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Aufs. Text</label><div class="input-group">';
+                                                    echo '<label class="control-label"><br />Aufsschlag Text</label><div class="input-group">';
                                                     echo '<input type="text" name="mach_special_margin_text_'.$x.'" class="form-control" value="'.$mach->getSpecial_margin_text().'">';
-                                                    echo '</div></div></div>';
-
-                                                    // Farbton
-                                                    echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Farbton</label><div class="input-group">';
-                                                    echo '<input name="mach_color_detail_'.$x.'" id="mach_color_detail_'.$x.'" class="form-control" value="'.$mach->getColor_detail().'">';
                                                     echo '</div></div></div>';
 
                                                     // Zuschuss
                                                     echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Zuschuss</label><div class="input-group">';
+                                                    echo '<label class="control-label"><br/>Zuschuss Bogen</label><div class="input-group">';
                                                     echo '<input name="mach_digigrant_'.$x.'" id="mach_digigrant_'.$x.'" class="form-control" value="'.printPrice($mach->getDigigrant(),2).'">';
                                                     echo '</div></div></div>';
 
+                                                    // Farbton
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Farbton <br/>Sonderfarbe / Info</label><div class="input-group">';
+                                                    echo '<input name="mach_color_detail_'.$x.'" id="mach_color_detail_'.$x.'" class="form-control" value="'.$mach->getColor_detail().'">';
+                                                    echo '</div></div></div>';
+
+
+
                                                     // Hinweise
                                                     echo '<div class="col-md-12"><div class="form-group">';
-                                                    echo '<label class="control-label">Hinweise</label><div class="input-group col-md-10">';
+                                                    echo '<label class="control-label">Hinweise</label><div class="input-group col-md-12">';
                                                     echo '<input name="mach_info_'.$x.'" id="mach_info_'.$x.'" class="form-control" value="'.$mach->getInfo().'">';
                                                     echo '</div></div></div>';
 
@@ -495,6 +500,23 @@ echo $quickmove->generate();
                                                         echo '</div></div></div>';
                                                     }
 
+
+
+
+                                                    // Rollendruck
+                                                    if ($calc->getPaperContent()->getRolle() == 1)
+                                                    {
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Etiketten pro Rolle</label><div class="input-group">';
+                                                        echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
+                                                        echo '</div></div></div>';
+
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';
+                                                        echo '<input name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
+                                                        echo '</div></div></div>';
+                                                    }
+
                                                     // Laufrichtung
                                                     echo '<div class="col-md-4"><div class="form-group">';
                                                     echo '<label class="control-label">Laufrichtung</label><div class="input-group">';
@@ -514,6 +536,42 @@ echo $quickmove->generate();
                                                     echo '</select>';
                                                     echo '</div></div></div>';
 
+                                                    // Manueller Aufschlag
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Manueller Aufschlag</label><div class="input-group">';
+                                                    echo '<input type="text" name="mach_special_margin_'.$x.'" class="form-control" value="'.str_replace(".", ",", $mach->getSpecial_margin()).'">';
+                                                    echo '<span class="input-group-addon">%</span></div></div></div>';
+
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Aufschlag Text</label><div class="input-group">';
+                                                    echo '<input type="text" name="mach_special_margin_text_'.$x.'" class="form-control" value="'.$mach->getSpecial_margin_text().'">';
+                                                    echo '</div></div></div>';
+
+
+
+                                                    // ZuschussDP
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Zuschuss Bogen <br/> / pro Druckplatte</label><div class="input-group">';
+                                                    echo '<input name="mach_dpgrant_'.$x.'" id="mach_dpgrant_'.$x.'" class="form-control" value="'.printPrice($mach->getDpgrant(),2).'">';
+                                                    echo '</div></div></div>';
+
+                                                    // ZuschussPercent
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Zuschuss in % Weiterverabeitung / Fortdruck</label><div class="input-group">';
+                                                    echo '<input name="mach_percentgrant_'.$x.'" id="mach_percentgrant_'.$x.'" class="form-control" value="'.printPrice($mach->getPercentgrant(),2).'">';
+                                                    echo '<span class="input-group-addon">%</span></div></div></div>';
+
+                                                    // Farbton
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Farbton <br/>Sonderfarbe / Info</label><div class="input-group">';
+                                                    echo '<input name="mach_color_detail_'.$x.'" id="mach_color_detail_'.$x.'" class="form-control" value="'.$mach->getColor_detail().'">';
+                                                    echo '</div></div></div>';
+                                                    // Hinweise
+                                                    echo '<div class="col-md-12"><div class="form-group">';
+                                                    echo '<label class="control-label">Hinweise</label><div class="input-group col-md-12">';
+                                                    echo '<input name="mach_info_'.$x.'" id="mach_info_'.$x.'" class="form-control" value="'.$mach->getInfo().'">';
+                                                    echo '</div></div></div>';
+
                                                     // Umschlagen / Umstuelpen
                                                     if ($mach->getMachine()->getUmschlUmst() > 0)
                                                     {
@@ -523,6 +581,8 @@ echo $quickmove->generate();
                                                         if($mach->getUmschl()) echo ' checked="checked"';
                                                         echo '>';
                                                         echo ' Umschlagen</label></div></div></div>';
+
+
 
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<div class="checkbox"><label>';
@@ -536,55 +596,6 @@ echo $quickmove->generate();
                                                         echo '"';
                                                         echo '>';
                                                     }
-
-                                                    // Rollendruck
-                                                    if ($calc->getPaperContent()->getRolle() == 1)
-                                                    {
-                                                        echo '<div class="col-md-4"><div class="form-group">';
-                                                        echo '<label class="control-label">Etiketten pro Rolle</label><div class="input-group">';
-                                                        echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
-                                                        echo '</div></div></div>';
-
-                                                        echo '<div class="col-md-4"><div class="form-group">';
-                                                        echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';
-                                                        echo '<input name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
-                                                        echo '</div></div></div>';
-                                                    }
-
-                                                    // Manueller Aufschlag
-                                                    echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Man. Aufschlag</label><div class="input-group">';
-                                                    echo '<input type="text" name="mach_special_margin_'.$x.'" class="form-control" value="'.str_replace(".", ",", $mach->getSpecial_margin()).'">';
-                                                    echo '<span class="input-group-addon">%</span></div></div></div>';
-
-                                                    echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Aufs. Text</label><div class="input-group">';
-                                                    echo '<input type="text" name="mach_special_margin_text_'.$x.'" class="form-control" value="'.$mach->getSpecial_margin_text().'">';
-                                                    echo '</div></div></div>';
-
-                                                    // Farbton
-                                                    echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Farbton</label><div class="input-group">';
-                                                    echo '<input name="mach_color_detail_'.$x.'" id="mach_color_detail_'.$x.'" class="form-control" value="'.$mach->getColor_detail().'">';
-                                                    echo '</div></div></div>';
-
-                                                    // ZuschussDP
-                                                    echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Zuschuss DP</label><div class="input-group">';
-                                                    echo '<input name="mach_dpgrant_'.$x.'" id="mach_dpgrant_'.$x.'" class="form-control" value="'.printPrice($mach->getDpgrant(),2).'">';
-                                                    echo '</div></div></div>';
-
-                                                    // ZuschussPercent
-                                                    echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label">Zuschuss</label><div class="input-group">';
-                                                    echo '<input name="mach_percentgrant_'.$x.'" id="mach_percentgrant_'.$x.'" class="form-control" value="'.printPrice($mach->getPercentgrant(),2).'">';
-                                                    echo '<span class="input-group-addon">%</span></div></div></div>';
-
-                                                    // Hinweise
-                                                    echo '<div class="col-md-12"><div class="form-group">';
-                                                    echo '<label class="control-label">Hinweise</label><div class="input-group col-md-10">';
-                                                    echo '<input name="mach_info_'.$x.'" id="mach_info_'.$x.'" class="form-control" value="'.$mach->getInfo().'">';
-                                                    echo '</div></div></div>';
 
                                                     ?>
                                                 </td>
@@ -620,6 +631,8 @@ echo $quickmove->generate();
                                                             echo $s["width"].' x '.$s["height"].'</option>';
                                                         }
                                                         echo '</select>';
+
+
 
                                                         ?>
                                                     </div>
@@ -991,51 +1004,27 @@ echo $quickmove->generate();
     }
     ?>
 <hr>
-<div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">Verarbeitungsoptionen</h3>
-	  </div>
-	  <div class="panel-body">
-			<div class="form-horizontal">
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Verarbeitung</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" name="text_processing" rows="5"><?=$calc->getTextProcessing()?></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="color_control" value="1" <?if($calc->getColorControl() == 1) echo 'checked="checked"';?>> Farbkontrollstreifen aktiv
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-	  </div>
-</div>
-    
-<div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">Schneideoptionen</h3>
-	  </div>
-	  <div class="panel-body">
-          <div class="table-responsive">
-          	<table class="table table-hover">
-          		<thead>
-          			<tr>
-          				<th>&nbsp;</th>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Schneideoptionen</h3>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>&nbsp;</th>
                         <th>Inhalt 1</th>
                         <th>Inhalt 2</th>
                         <th>Inhalt 3</th>
                         <th>Inhalt 4</th>
                         <th>Umschlag</th>
-          			</tr>
-          		</thead>
-          		<tbody>
-          			<tr>
-          				<td>Rohbogenformat</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Rohbogenformat</td>
                         <td>
                             <? if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) {
                                 echo '<select name="format_in_content" class="form-control">';
@@ -1102,47 +1091,47 @@ echo $quickmove->generate();
                                 echo '</select>';
                             } ?>
                         </td>
-          			</tr>
+                    </tr>
                     <tr>
                         <td>Anschnitt</td>
                         <td>
                             <? 	if ($calc->getPagesContent() > 0 && $calc->getPaperContent()->getId() > 0) { ?>
                                 <div class="input-group">
-                                <input name="cut_content" id="cut_content" class="form-control"
-                                       value="<?=printPrice($calc->getCutContent())?>">
-                                <span class="input-group-addon">mm</span></div>
+                                    <input name="cut_content" id="cut_content" class="form-control"
+                                           value="<?=printPrice($calc->getCutContent())?>">
+                                    <span class="input-group-addon">mm</span></div>
                             <?	} ?>
                         </td>
                         <td>
                             <? 	if ($calc->getPagesAddContent() > 0 && $calc->getPaperAddContent()->getId() > 0) { ?>
                                 <div class="input-group">
-                                <input name="cut_addcontent" id="cut_addcontent" class="form-control"
-                                       value="<?=printPrice($calc->getCutAddContent())?>">
-                                <span class="input-group-addon">mm</span></div>
+                                    <input name="cut_addcontent" id="cut_addcontent" class="form-control"
+                                           value="<?=printPrice($calc->getCutAddContent())?>">
+                                    <span class="input-group-addon">mm</span></div>
                             <?	} ?>
                         </td>
                         <td>
                             <? 	if ($calc->getPagesAddContent2() > 0 && $calc->getPaperAddContent2()->getId() > 0) { ?>
                                 <div class="input-group">
-                                <input name="cut_addcontent2" id="cut_addcontent2" class="form-control"
-                                       value="<?=printPrice($calc->getCutAddContent2())?>">
-                                <span class="input-group-addon">mm</span></div>
+                                    <input name="cut_addcontent2" id="cut_addcontent2" class="form-control"
+                                           value="<?=printPrice($calc->getCutAddContent2())?>">
+                                    <span class="input-group-addon">mm</span></div>
                             <?	} ?>
                         </td>
                         <td>
                             <? 	if ($calc->getPagesAddContent3() > 0 && $calc->getPaperAddContent3()->getId() > 0) { ?>
                                 <div class="input-group">
-                                <input name="cut_addcontent3" id="cut_addcontent3" class="form-control"
-                                       value="<?=printPrice($calc->getCutAddContent3())?>">
-                                <span class="input-group-addon">mm</span></div>
+                                    <input name="cut_addcontent3" id="cut_addcontent3" class="form-control"
+                                           value="<?=printPrice($calc->getCutAddContent3())?>">
+                                    <span class="input-group-addon">mm</span></div>
                             <?	} ?>
                         </td>
                         <td>
                             <? 	if ($calc->getPagesEnvelope() > 0 && $calc->getPaperEnvelope()->getId() > 0) { ?>
                                 <div class="input-group">
-                                <input name="cut_envelope" id="cut_envelope" class="form-control"
-                                       value="<?=printPrice($calc->getCutEnvelope())?>">
-                                <span class="input-group-addon">mm</span></div>
+                                    <input name="cut_envelope" id="cut_envelope" class="form-control"
+                                           value="<?=printPrice($calc->getCutEnvelope())?>">
+                                    <span class="input-group-addon">mm</span></div>
                             <?	} ?>
                         </td>
                     </tr>
@@ -1184,11 +1173,38 @@ echo $quickmove->generate();
                             } ?>
                         </td>
                     </tr>
-          		</tbody>
-          	</table>
-          </div>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">Verarbeitungsoptionen</h3>
+	  </div>
+	  <div class="panel-body">
+			<div class="form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Verarbeitung</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="text_processing" rows="5"><?=$calc->getTextProcessing()?></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="color_control" value="1" <?if($calc->getColorControl() == 1) echo 'checked="checked"';?>> Farbkontrollstreifen aktiv
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 	  </div>
 </div>
+    
+
 
 <input type="hidden" name="counter_machs" id="counter_machs" value="<?=$x?>">
 </form>
