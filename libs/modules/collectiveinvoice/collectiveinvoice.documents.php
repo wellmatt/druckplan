@@ -23,6 +23,9 @@ if($_REQUEST["createDoc"]){
     $doc = new Document();
     $doc->setRequestId($collectinv->getId());
     $doc->setRequestModule(Document::REQ_MODULE_COLLECTIVEORDER);
+
+	if((int)$_REQUEST["letterhead"] > 0)
+		$doc->setLetterhead((int)$_REQUEST["letterhead"]);
     
     if($_REQUEST["createDoc"] == "offer")
     {
@@ -55,7 +58,6 @@ if($_REQUEST["createDoc"]){
     	$doc->setType(Document::TYPE_REVERT);
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
-    
 
     if($_REQUEST["createDoc"] == "factory" || $_REQUEST["createDoc"] == "label"){
         $doc->createDoc(Document::VERSION_PRINT, false, false);
@@ -324,7 +326,21 @@ if(count($docs) > 0){
 	<td class="content_row_clear">- - -</td>
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offer"><?=$_LANG->get('Generieren')?></a>
+			<?php
+			$letterheads = Letterhead::getAllForType(1);
+			?>
+			<select name="letterhead_offer" id="letterhead_offer" class="form-control" style="margin-bottom: 5px;">
+				<?php
+				foreach ($letterheads as $item) {
+					if ($item->getStd() == 1)
+						echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					else
+						echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+				}
+				?>
+			</select>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offer"
+			onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offer').val());"><?=$_LANG->get('Generieren')?></a>
 		</ul>
 	</td>
 	
@@ -401,7 +417,21 @@ if(count($docs) > 0){
 	<td class="content_row_clear">- - -</td>
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offerconfirm"><?=$_LANG->get('Generieren')?></a>
+			<?php
+			$letterheads = Letterhead::getAllForType(Document::TYPE_OFFERCONFIRM);
+			?>
+			<select name="letterhead_offerconfirm" id="letterhead_offerconfirm" class="form-control" style="margin-bottom: 5px;">
+				<?php
+				foreach ($letterheads as $item) {
+					if ($item->getStd() == 1)
+						echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					else
+						echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+				}
+				?>
+			</select>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offerconfirm"
+			   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offerconfirm').val());"><?=$_LANG->get('Generieren')?></a>
 		</ul>
 	</td>
 	
@@ -480,7 +510,21 @@ if(count($docs) > 0){
 		<td class="content_row_clear">- - -</td>
 		<td class="content_row_clear">
 			<ul class="postnav_text_save">
-			    <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=factory"><?=$_LANG->get('Generieren')?></a>
+				<?php
+				$letterheads = Letterhead::getAllForType(Document::TYPE_FACTORY);
+				?>
+				<select name="letterhead_factory" id="letterhead_factory" class="form-control" style="margin-bottom: 5px;">
+					<?php
+					foreach ($letterheads as $item) {
+						if ($item->getStd() == 1)
+							echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+						else
+							echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					}
+					?>
+				</select>
+				<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=factory"
+				   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_factory').val());"><?=$_LANG->get('Generieren')?></a>
 			</ul>
 		</td>
 		
@@ -550,7 +594,21 @@ if(count($docs) > 0){
 	<td class="content_row_clear">- - -</td>
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=delivery"><?=$_LANG->get('Generieren')?></a>
+			<?php
+			$letterheads = Letterhead::getAllForType(Document::TYPE_FACTORY);
+			?>
+			<select name="letterhead_delivery" id="letterhead_delivery" class="form-control" style="margin-bottom: 5px;">
+				<?php
+				foreach ($letterheads as $item) {
+					if ($item->getStd() == 1)
+						echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					else
+						echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+				}
+				?>
+			</select>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=delivery"
+			   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_delivery').val());"><?=$_LANG->get('Generieren')?></a>
 		</ul>
 	</td>
 	
@@ -633,7 +691,21 @@ if(count($docs) > 0){
 	</td>
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=label" onclick="$(this).attr('href',$(this).attr('href')+'&label_box_amount='+$('#label_box_amount').val()+'&label_print_logo='+$('#label_print_logo').val()+'&label_title='+$('#label_title').val())"><?=$_LANG->get('Generieren')?></a>
+			<?php
+			$letterheads = Letterhead::getAllForType(Document::TYPE_LABEL);
+			?>
+			<select name="letterhead_label" id="letterhead_label" class="form-control" style="margin-bottom: 5px;">
+				<?php
+				foreach ($letterheads as $item) {
+					if ($item->getStd() == 1)
+						echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					else
+						echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+				}
+				?>
+			</select>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=label"
+			   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_label').val()+'&label_box_amount='+$('#label_box_amount').val()+'&label_print_logo='+$('#label_print_logo').val()+'&label_title='+$('#label_title').val());"><?=$_LANG->get('Generieren')?></a>
 		</ul>
 	</td>
 </tr>
@@ -701,7 +773,21 @@ if(count($docs) > 0){
 	<td class="content_row_clear">- - -</td>
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=invoice"><?=$_LANG->get('Generieren')?></a>
+			<?php
+			$letterheads = Letterhead::getAllForType(Document::TYPE_INVOICE);
+			?>
+			<select name="letterhead_invoice" id="letterhead_invoice" class="form-control" style="margin-bottom: 5px;">
+				<?php
+				foreach ($letterheads as $item) {
+					if ($item->getStd() == 1)
+						echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					else
+						echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+				}
+				?>
+			</select>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=invoice"
+			   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_invoice').val());"><?=$_LANG->get('Generieren')?></a>
 		</ul>
 	</td>
 	
@@ -778,7 +864,21 @@ if(count($docs) > 0){
 	<td class="content_row_clear">- - -</td>
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
-			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=revert"><?=$_LANG->get('Generieren')?></a>
+			<?php
+			$letterheads = Letterhead::getAllForType(Document::TYPE_REVERT);
+			?>
+			<select name="letterhead_revert" id="letterhead_revert" class="form-control" style="margin-bottom: 5px;">
+				<?php
+				foreach ($letterheads as $item) {
+					if ($item->getStd() == 1)
+						echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+					else
+						echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+				}
+				?>
+			</select>
+			<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=revert"
+			   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_revert').val());"><?=$_LANG->get('Generieren')?></a>
 		</ul>
 	</td>
 	

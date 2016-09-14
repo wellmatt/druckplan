@@ -641,6 +641,11 @@ echo $quickmove->generate();
 											   onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $collectinv->getCustomer()->getId(); ?>&contactperson=<?php echo $collectinv->getCustContactperson()->getId(); ?>&asso_class=<?php echo get_class($collectinv); ?>&asso_object=<?php echo $collectinv->getId() ?>&tkt_title=<?php echo $collectinv->getNumber() . ' - ' . $collectinv->getTitle(); ?>');">Ticket
 												erstellen (verknüpft)</a>
 										</li>
+										<li>
+											<a href="#" onclick="window.location.href='libs/modules/export/export.download.php?function=aepos_export&colinvid=<?php echo $collectinv->getId();?>';">
+												AEPOS Export
+											</a>
+										</li>
 									</ul>
 								</div>
 							<?php } ?>

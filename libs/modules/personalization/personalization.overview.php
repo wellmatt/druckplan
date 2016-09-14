@@ -61,7 +61,6 @@ $(document).ready(function() {
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
 		            null,
-		            { "sortable": false },
 		            null,
 		            null,
 		            null,
@@ -172,7 +171,6 @@ function PersoOrderTableRefresh()
             <thead>
             <tr>
                 <th width="20"><?=$_LANG->get('ID')?></th>
-                <th width="105"><?=$_LANG->get('Bild')?></th>
                 <th><?=$_LANG->get('Titel')?></th>
                 <th width="170"><?=$_LANG->get('Kunde')?></th>
                 <th width="170"><?=$_LANG->get('Artikel')?></th>

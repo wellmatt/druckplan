@@ -145,7 +145,7 @@ case 'save':
 	// Positionen speichern/ändern/erstellen
 	$orderpositions = Array(); 
 	$xi=0;
-	$au_suffix=1;
+//	$au_suffix=1;
 	foreach ($_REQUEST["orderpos"] as $single_order){
 		if ( !( $_REQUEST["orderpos"][$xi]["id"] == "0" && 			// Wenn in den "Neu"-Feldern nichts drin steht
 				$_REQUEST["orderpos"][$xi]["comment"] == "" &&		// soll er auch nichts speichern
@@ -176,12 +176,12 @@ case 'save':
 			    $needs_planning = true;
 			
 			//AUftragsnummer anpassen (mit Suffix versehen)
-			if ($newpos->getType() == 1){
-				$tmp_order = new Order($newpos->getObjectid());
-				$tmp_order->setCollectiveinvoiceId($collectinv->getId());
-				$tmp_order->save();
-				$au_suffix++;
-			}
+//			if ($newpos->getType() == 1 && $tmp_art->getOrderid() > 0){
+//				$tmp_order = new Order($tmp_art->getOrderid());
+//				$tmp_order->setCollectiveinvoiceId($collectinv->getId());
+//				$tmp_order->save();
+//				$au_suffix++;
+//			}
 			$orderpositions[] = $newpos;
 			$xi++;
 		}

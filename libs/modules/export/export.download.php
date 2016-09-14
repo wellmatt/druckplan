@@ -23,8 +23,20 @@ if ($_REQUEST["function"]){
         $dateto = null;
 
     $func = $_REQUEST["function"];
-    $exporter = new ExportJson($datefrom, $dateto);
-    $json = $exporter->$func();
+
+    switch ($func){
+        case "aepos_export":
+            $exporter = new ExportJson($datefrom, $dateto);
+            if ((int)$_REQUEST["colinvid"] > 0){
+                $colinv = new CollectiveInvoice((int)$_REQUEST["colinvid"]);
+                $json = $exporter->$func($colinv);
+            } else {
+                $json = $exporter->$func();
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 header('Content-disposition: attachment; filename=export.json');

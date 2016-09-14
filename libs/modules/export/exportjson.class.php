@@ -26,7 +26,11 @@ class ExportJson{
         $this->dateto = $dateto;
     }
 
-    public function aepos_export()
+    /**
+     * @param CollectiveInvoice $colinv
+     * @return string
+     */
+    public function aepos_export(CollectiveInvoice $colinv = null)
     {
         /*
          * https://gist.github.com/tobmatth/f2ffb8e182366f1afd2ef8b2e4719239
@@ -72,11 +76,19 @@ class ExportJson{
          */
         $res = [];
 
-        $filter = "";
-        if ($this->datefrom > 0 && $this->dateto > 0){
-            $filter = " AND crtdate >= {$this->datefrom} && crtdate <= {$this->dateto} ";
+        if ($colinv == null){
+
+            $filter = "";
+            if ($this->datefrom > 0 && $this->dateto > 0){
+                $filter = " AND crtdate >= {$this->datefrom} && crtdate <= {$this->dateto} ";
+            }
+            $colinvs = CollectiveInvoice::getAllCollectiveInvoice(CollectiveInvoice::ORDER_CRTDATE,$filter);
+
+        } else {
+
+            $colinvs = [$colinv];
+
         }
-        $colinvs = CollectiveInvoice::getAllCollectiveInvoice(CollectiveInvoice::ORDER_CRTDATE,$filter);
 
         foreach ($colinvs as $colinv) {
             $project = [
@@ -104,8 +116,8 @@ class ExportJson{
                             if ($calc->getState() == 1 && $calc->getAmount() == $position->getAmount()) {
                                 $details = $calc->getDetails();
 
-                                if ($position->getFile_attach()>0) {
-                                    $tmp_attach = new Attachment($position->getFile_attach());
+                                $tmp_attach = new Attachment($position->getFile_attach());
+                                if ($position->getFile_attach()>0 && !(strstr($tmp_attach->getOrig_filename(),'.pdf') === false)) {
                                     $url = 'http://contilas2.mein-druckplan.de/docs/attachments/'.$tmp_attach->getFilename();
                                     $filename = $tmp_attach->getOrig_filename();
                                 } else {
@@ -133,6 +145,11 @@ class ExportJson{
             }
             $res[] = Array("project"=>$project);
         }
-        return json_encode($res);
+
+        if ($colinv != null && $colinv->getId()>0 && count($res) == 1){
+            $res = $res[0];
+        }
+
+        return json_encode($res, JSON_UNESCAPED_SLASHES);
     }
 }

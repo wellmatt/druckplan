@@ -11,7 +11,9 @@ require_once 'libs/modules/personalization/persopdf.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
 require_once 'thirdparty/tcpdf/contilas.tcpdf.php';
 require_once 'libs/modules/perferences/perferences.class.php';
-require_once 'document.format.class.php';
+require_once 'libs/modules/documentformats/documentformat.class.php';
+require_once 'libs/modules/letterhead/letterhead.class.php';
+require_once 'fpdipdf.class.php';
 
 class Document
 {
@@ -85,6 +87,8 @@ class Document
     private $paper_order_pid = 0; // nur f�r Papier Bestellungen
     
     private $preview = 0; // vorschau
+
+    private $letterhead = false;
 
     function __construct($id = 0)
     {
@@ -224,6 +228,21 @@ class Document
             }
         }
         return false;
+    }
+
+    public static function getTypes()
+    {
+        return [
+            "Angebot" => 1,
+            "Angebotsbestätigung" => 2,
+            "Lieferschein" => 3,
+            "Rechnung" => 4,
+            "Drucktasche" => 5,
+            "Mahnung" => 6,
+            "Gutschrift" => 7,
+            "Etikett" => 15,
+            "Papierbestellung" => 20
+        ];
     }
 
     /**
@@ -551,26 +570,76 @@ class Document
                 }
             }
         } else {
-
-            $docformat = DocumentFormat::getForDocType($this->type);
-            $format[0] = $docformat->getWidth();
-            $format[1] = $docformat->getHeight();
-
-            if ($version == self::VERSION_EMAIL)
-            {
-                $pdf = new TCPDF_BG($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
-                $pdf->SetPrintFooter(false);
+            $letterhead = new Letterhead($this->letterhead);
+            if ($this->letterhead === false || ($this->letterhead != false && $letterhead->getId() == 0)){
+                $letterhead = Letterhead::fetchSingle(Array(Array('column'=>'std','value'=>1),Array('column'=>'type','value'=>$this->type)));
             }
-            else
-            {
-                $pdf = new TCPDF($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
-                $pdf->SetPrintHeader(false);
-                $pdf->SetPrintFooter(false);
-            }
-            $pdf->setPageOrientation($docformat->getOrientation(), TRUE, $docformat->getMarginBottom());
-            $pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
-            $pdf->AddPage();
+            if ($letterhead->getId() > 0){
 
+                $letterhead1 = $letterhead->getFilename1();
+                $letterhead2 = $letterhead->getFilename2();
+                $docformat1 = $letterhead->getDocformat1();
+                $docformat2 = $letterhead->getDocformat2();
+                $docwidth = $docformat1->getWidth();
+                $docheight = $docformat1->getHeight();
+                $docori = $docformat1->getOrientation();
+                $docori2 = $docformat2->getOrientation();
+
+                if ($version == self::VERSION_EMAIL)
+                {
+                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+                    $pdf->setHeaderfile($letterhead1);
+                    $pdf->SetPrintHeader(true);
+                    $pdf->SetPrintFooter(false);
+                }
+                else
+                {
+                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintFooter(false);
+                }
+
+                $pdf->setPageOrientation($docori, TRUE, $docformat1->getMarginBottom());
+                $pdf->SetMargins($this->tofloat($docformat1->getMarginLeft()), $this->tofloat($docformat1->getMarginTop()), $this->tofloat($docformat1->getMarginRight()), TRUE);
+                $pdf->AddPage();
+
+                if (self::VERSION_EMAIL) {
+                    $pdf->setHeaderfile($letterhead2);
+                    $pdf->setPageOrientation($docori2, TRUE, $docformat2->getMarginBottom());
+                    $pdf->SetMargins($this->tofloat($docformat2->getMarginLeft()), $this->tofloat($docformat2->getMarginTop()), $this->tofloat($docformat2->getMarginRight()), TRUE);
+                }
+
+            } else {
+
+                $letterhead1 = '';
+                $docformat = DocumentFormat::fetchSingle(Array(Array('column'=>'std','value'=>1),Array('column'=>'doctype','value'=>$this->type)));
+                $use_letterhead = false;
+
+                $docwidth = $docformat->getWidth();
+                $docheight = $docformat->getHeight();
+                $docori = $docformat->getOrientation();
+
+                if ($version == self::VERSION_EMAIL)
+                {
+                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+                    if ($use_letterhead) {
+                        $pdf->setHeaderfile($letterhead1);
+                        $pdf->SetPrintHeader(true);
+                    }
+                    $pdf->SetPrintFooter(false);
+                }
+                else
+                {
+                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintFooter(false);
+                }
+
+                $pdf->setPageOrientation($docori, TRUE, $docformat->getMarginBottom());
+                $pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
+                $pdf->AddPage();
+
+            }
         }
         
         // apply specific template
@@ -882,7 +951,20 @@ class Document
         $this->preview = $preview;
     }
 
-    
-    
+    /**
+     * @return int
+     */
+    public function getLetterhead()
+    {
+        return $this->letterhead;
+    }
+
+    /**
+     * @param int $letterhead
+     */
+    public function setLetterhead($letterhead)
+    {
+        $this->letterhead = $letterhead;
+    }
 }
 ?>

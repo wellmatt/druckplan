@@ -611,9 +611,9 @@ echo $quickmove->generate();
                                                         if ($mach->getMachine()->getUmschlUmst() > 0)
                                                         {
                                                             echo '<div class="form-group">';
-                                                            echo '<select name="umschl_umst_'.$x.'" class="form-control">';
+                                                            echo '<select name="umschl_umst_'.$x.'" class="form-control" style="margin-top:10px;">';
                                                             ?>
-                                                            <option value="0">Sch&ouml;n & Widerdruck</option>
+                                                            <option value="0" <?php if(!$mach->getUmschlagenUmstuelpen()) echo ' selected ';?>>Sch&ouml;n & Widerdruck</option>
                                                             <option value="1" <?php if($mach->getUmschlagenUmstuelpen()) echo ' selected ';?>>Umschlagen / Umst&uuml;lpen</option>
                                                             </select>
                                                             </div>
