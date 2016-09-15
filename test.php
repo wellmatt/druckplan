@@ -34,16 +34,23 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
+$_REQUEST["ciid"] = "68";
+$_REQUEST["type"] = "1";
 
-$event = new EventQueue(0,Array(
-    "id" => 0,
-    "runtime" => time()-100,
-    "firedby" => 5,
-    "eventclass" => "EventClassTest",
-    "function" => "sendMail",
-    "eventargs" => Array("zeit"=>time(),"key"=>uniqid('',true))
-));
-$event->save();
-
-//$result = EventQueue::workqueue();
-//prettyPrint($result);
+if ($_REQUEST["type"])
+    $type = (int)$_REQUEST["type"];
+else
+    $type = Document::TYPE_OFFER;
+$collectinv = new CollectiveInvoice((int)$_REQUEST["ciid"]);
+$doc = new Document();
+$doc->setRequestId($collectinv->getId());
+$doc->setRequestModule(Document::REQ_MODULE_COLLECTIVEORDER);
+$doc->setType($type);
+$doc->setPreview(1);
+if ($type == 5 || $type == 15) {
+    $hash = $doc->createDoc(Document::VERSION_PRINT, false, false);
+    $file = $doc->getFilename(Document::VERSION_PRINT);
+} else {
+    $hash = $doc->createDoc(Document::VERSION_EMAIL);
+    $file = $doc->getFilename(Document::VERSION_EMAIL);
+}

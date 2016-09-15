@@ -6,6 +6,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 chdir('../../../');
+error_reporting(-1);
+ini_set('display_errors', 1);
 require_once("config.php");
 require_once("libs/basic/mysql.php");
 require_once("libs/basic/globalFunctions.php");
@@ -53,9 +55,11 @@ if ($_REQUEST["ciid"])
     $doc->setPreview(1);
     if ($type == 5 || $type == 15) {
         $hash = $doc->createDoc(Document::VERSION_PRINT, false, false);
+        prettyPrint($hash);
         $file = $doc->getFilename(Document::VERSION_PRINT);
     } else {
         $hash = $doc->createDoc(Document::VERSION_EMAIL);
+        prettyPrint($hash);
         $file = $doc->getFilename(Document::VERSION_EMAIL);
     }
 }

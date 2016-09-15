@@ -585,19 +585,16 @@ class Document
                 $docori = $docformat1->getOrientation();
                 $docori2 = $docformat2->getOrientation();
 
-                if ($version == self::VERSION_EMAIL)
-                {
-                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+
+                $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+                if ($version == self::VERSION_EMAIL){
                     $pdf->setHeaderfile($letterhead1);
                     $pdf->SetPrintHeader(true);
-                    $pdf->SetPrintFooter(false);
-                }
-                else
-                {
-                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
+                } else {
                     $pdf->SetPrintHeader(false);
-                    $pdf->SetPrintFooter(false);
                 }
+                $pdf->SetPrintFooter(false);
+
 
                 $pdf->setPageOrientation($docori, TRUE, $docformat1->getMarginBottom());
                 $pdf->SetMargins($this->tofloat($docformat1->getMarginLeft()), $this->tofloat($docformat1->getMarginTop()), $this->tofloat($docformat1->getMarginRight()), TRUE);
@@ -610,35 +607,7 @@ class Document
                 }
 
             } else {
-
-                $letterhead1 = '';
-                $docformat = DocumentFormat::fetchSingle(Array(Array('column'=>'std','value'=>1),Array('column'=>'doctype','value'=>$this->type)));
-                $use_letterhead = false;
-
-                $docwidth = $docformat->getWidth();
-                $docheight = $docformat->getHeight();
-                $docori = $docformat->getOrientation();
-
-                if ($version == self::VERSION_EMAIL)
-                {
-                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
-                    if ($use_letterhead) {
-                        $pdf->setHeaderfile($letterhead1);
-                        $pdf->SetPrintHeader(true);
-                    }
-                    $pdf->SetPrintFooter(false);
-                }
-                else
-                {
-                    $pdf = new FPDIPdf($docori, 'mm', Array($docwidth,$docheight), true, 'UTF-8', false);
-                    $pdf->SetPrintHeader(false);
-                    $pdf->SetPrintFooter(false);
-                }
-
-                $pdf->setPageOrientation($docori, TRUE, $docformat->getMarginBottom());
-                $pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
-                $pdf->AddPage();
-
+                return false;
             }
         }
         
