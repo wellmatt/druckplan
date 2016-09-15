@@ -1148,7 +1148,7 @@ function removeAttach(id)
 
 				}
 				?> <a href="libs/modules/organizer/nachrichten.addrcpt.php"  class="icon-link"
-					id="add_to"><span class="glyphicons glyphicons-plus"title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></span></a>
+					id="add_to"><span class="glyphicons glyphicons-plus" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></span></a>
 				</td>
 			</tr>
 			<tr>

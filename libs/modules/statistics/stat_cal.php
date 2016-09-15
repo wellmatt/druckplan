@@ -10,17 +10,17 @@ require_once 'libs/modules/statistics/statistics.class.php';
 require_once 'libs/basic/globalFunctions.php';
 require_once 'libs/modules/calculation/calculation.class.php';
 
-function printSubTradegroupsForSelect($parentId, $depth)
+function printSubTradegroupsForSelect($parentId, $depth, $selected = 0)
 {
     $all_subgroups = Tradegroup::getAllTradegroups($parentId);
     foreach ($all_subgroups AS $subgroup) {
         global $x;
         $x++; ?>
-        <option value="<?= $subgroup->getId() ?>">
+        <option <?php if ($selected == $subgroup->getId()) echo ' selected ';?> value="<?= $subgroup->getId() ?>">
             <? for ($i = 0; $i < $depth + 1; $i++) echo "&emsp;" ?>
             <?= $subgroup->getTitle() ?>
         </option>
-        <? printSubTradegroupsForSelect($subgroup->getId(), $depth + 1);
+        <? printSubTradegroupsForSelect($subgroup->getId(), $depth + 1, $selected);
     }
 }
 
@@ -97,19 +97,19 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                     <label for="" class="col-sm-1 control-label">Status</label>
                                     <div class="col-sm-3">
                                         <select name="stat_status" id="" class="form-control">
-                                            <option value="0">- Alle -</option>
-                                            <option value="1">Angelegt</option>
-                                            <option value="2">Gesendet u. Bestellt</option>
-                                            <option value="3">angenommen</option>
-                                            <option value="4">In Produktion</option>
-                                            <option value="5">Erledigt</option>
+                                            <option <?php if ((int)$_REQUEST["stat_status"]==0) echo ' selected ';?> value="0">- Alle -</option>
+                                            <option <?php if ((int)$_REQUEST["stat_status"]==1) echo ' selected ';?> value="1">Angelegt</option>
+                                            <option <?php if ((int)$_REQUEST["stat_status"]==2) echo ' selected ';?> value="2">Gesendet u. Bestellt</option>
+                                            <option <?php if ((int)$_REQUEST["stat_status"]==3) echo ' selected ';?> value="3">angenommen</option>
+                                            <option <?php if ((int)$_REQUEST["stat_status"]==4) echo ' selected ';?> value="4">In Produktion</option>
+                                            <option <?php if ((int)$_REQUEST["stat_status"]==5) echo ' selected ';?> value="5">Erledigt</option>
                                         </select>
                                     </div>
                                     <label for="" class="col-sm-1 control-label">Kunde</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="search_customer"
+                                        <input type="text" class="form-control" value="<?php echo $_REQUEST["search_customer"];?>" name="search_customer"
                                                id="search_customer">
-                                        <input type="hidden" name="stat_customer" id="stat_customer">
+                                        <input type="hidden" name="stat_customer" value="<?php echo $_REQUEST["search_customer"];?>" id="stat_customer">
                                     </div>
                                     <label for="" class="col-sm-1 control-label">Warengruppe</label>
                                     <div class="col-sm-3">
@@ -119,22 +119,22 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
                                             $all_tradegroups = Tradegroup::getAllTradegroups();
                                             foreach ($all_tradegroups as $tg) {
                                                 ?>
-                                                <option value="<?= $tg->getId() ?>">
+                                                <option <?php if ((int)$_REQUEST["stat_tradegroup"] == $tg->getId()) echo ' selected ';?>  value="<?= $tg->getId() ?>">
                                                     <?= $tg->getTitle() ?></option>
-                                                <? printSubTradegroupsForSelect($tg->getId(), 0);
+                                                <? printSubTradegroupsForSelect($tg->getId(), 0, (int)$_REQUEST["stat_tradegroup"]);
                                             }
                                             ?>
                                         </select>
                                     </div>
                                     <label for="" class="col-sm-1 control-label">Artikel</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="search_article" id="search_article">
-                                        <input type="hidden" name="stat_article" id="stat_article">
+                                        <input type="text" class="form-control"  value="<?php echo $_REQUEST["search_article"];?>" name="search_article" id="search_article">
+                                        <input type="hidden" name="stat_article  value="<?php echo $_REQUEST["search_article"];?>"" id="stat_article">
                                     </div>
                                     <label for="" class="col-sm-1 control-label">Benutzer</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="search_user" id="search_user">
-                                        <input type="hidden" name="stat_user" id="stat_user">
+                                        <input type="text" class="form-control" value="<?php echo $_REQUEST["search_user"];?>" name="search_user" id="search_user">
+                                        <input type="hidden" name="stat_user" value="<?php echo $_REQUEST["search_user"];?>" id="stat_user">
                                     </div>
                                 </div>
                             </div>
@@ -213,6 +213,20 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
             dataType: "json",
             select: function (event, ui) {
                 $('#stat_customer').val(ui.item.value);
+                $('#search_customer').val(ui.item.label);
+                return false;
+            }
+        });
+
+        $("#search_user").autocomplete({
+            delay: 0,
+            source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_user',
+            minLength: 2,
+            dataType: "json",
+            select: function (event, ui) {
+                $('#stat_user').val(ui.item.value);
+                $('#search_user').val(ui.item.label);
+                return false;
             }
         });
 
@@ -223,24 +237,8 @@ $calstats = Statistics::Calcstat( $start, $end, $businesscontact, $tradegroup, $
             dataType: "json",
             select: function (event, ui) {
                 $('#stat_article').val(ui.item.value);
-            }
-        });
-        $("#search_tradegroup").autocomplete({
-            delay: 0,
-            source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_article',
-            minLength: 2,
-            dataType: "json",
-            select: function (event, ui) {
-                $('#stat_tradegroup').val(ui.item.value);
-            }
-        });
-        $("#search_status").autocomplete({
-            delay: 0,
-            source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_article',
-            minLength: 2,
-            dataType: "json",
-            select: function (event, ui) {
-                $('#stat_status').val(ui.item.value);
+                $('#search_article').val(ui.item.label);
+                return false;
             }
         });
 

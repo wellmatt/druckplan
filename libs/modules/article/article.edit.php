@@ -224,26 +224,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <!-- <link rel="stylesheet" type="text/css" href="jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" media="screen" /> -->
 
-
-<table width="100%">
-	<tr>
-		<td width="350" class="content_header"><img
-			src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzufügen')?>
-			<?if ($_REQUEST["exec"] == "edit") 
-			{
-			    echo $_LANG->get('Artikel bearbeiten');
-			    if ($article->getOrderid()>0)
-			        echo " - aus <a href='index.php?page=libs/modules/calculation/order.php&exec=edit&id={$article->getOrderid()}&step=4'><u>Kalkulation</u></a> generiert";
-			}?>
-			<?if ($_REQUEST["exec"] == "fromorder" || $_REQUEST["exec"] == "uptfromorder")  echo $_LANG->get('Artikel aus Kalkulation generieren')?>
-			<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
-		</td>
-		<td align="right"><?=$savemsg?></td>
-	</tr>
-</table>
-</br>
-
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
@@ -261,525 +241,556 @@ if ($_USER->isAdmin() && $article->getId()>0){
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="article_edit" id="article_edit" onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))" enctype="multipart/form-data">
-	<input type="hidden" name="exec" value="edit"> 
-	<input type="hidden" name="subexec" value="save"> 
-	<input type="hidden" name="fromorder" value="<?php if ($_REQUEST["fromorder"]) echo "1"; else echo "0";?>"> 
-	<input type="hidden" name="aid" value="<?=$article->getId()?>">
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzufügen')?>
+				<?if ($_REQUEST["exec"] == "edit")
+				{
+					echo $_LANG->get('Artikel bearbeiten');
+					if ($article->getOrderid()>0)
+						echo " - aus <a href='index.php?page=libs/modules/calculation/order.php&exec=edit&id={$article->getOrderid()}&step=4'><u>Kalkulation</u></a> generiert";
+				}?>
+				<?if ($_REQUEST["exec"] == "fromorder" || $_REQUEST["exec"] == "uptfromorder")  echo $_LANG->get('Artikel aus Kalkulation generieren')?>
+				<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
+				<span class="pull-right">
+					<?=$savemsg?>
+				</span>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" class="form-horizontal" name="article_edit" id="article_edit" onSubmit="return checkArticleNumber(new Array(this.article_title, this.article_number))" enctype="multipart/form-data">
+			  <input type="hidden" name="exec" value="edit">
+			  <input type="hidden" name="subexec" value="save">
+			  <input type="hidden" name="fromorder" value="<?php if ($_REQUEST["fromorder"]) echo "1"; else echo "0";?>">
+			  <input type="hidden" name="aid" value="<?=$article->getId()?>">
 
-	<input type="hidden" name="new_picture" id="new_picture" value="">
-	<input type="hidden" name="new_picture_origname" id="new_picture_origname" value="">
+			  <input type="hidden" name="new_picture" id="new_picture" value="">
+			  <input type="hidden" name="new_picture_origname" id="new_picture_origname" value="">
 
-	<div class="row">
-		<? // -------------------- Atikel Kopfdaten --------------------------------------------------- ?>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Kopfdaten</h3>
-				  </div>
-				  <div class="panel-body">
-					  <table width="100%">
-						  <colgroup>
-							  <col width="180">
-							  <col>
-						  </colgroup>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-							  <td class="content_row_clear"><input id="article_title"
-																   name="article_title" type="text" class="text"
-																   value="<?=$article->getTitle()?>" style="width: 370px"></td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Artikelnummer')?> *</td>
-							  <td class="content_row_clear"><input id="article_number"
-																   name="article_number" type="text" class="text"
-																   value="<?=$article->getNumber()?>" style="width: 180px"></td>
-						  </tr>
-						  <?php if ($article->getId()>0){?>
-							  <tr>
-								  <td class="content_row_header"><?=$_LANG->get('Artikel-ID')?> *</td>
-								  <td class="content_row_clear"><?=$article->getId()?></td>
-							  </tr>
-						  <?php }?>
-						  <tr>
-							  <?php
-							  $tags = $article->getTags();
-							  if (count($tags)>0)
-								  $tags = implode(";", $tags);
-							  ?>
-							  <td class="content_row_header"><?=$_LANG->get('Tags')?></td>
-							  <td class="content_row_clear"><input id="article_tags"
-																   name="article_tags" type="text" class="text"
-																   value="<?php echo $tags; ?>" style="width: 180px"></td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header" valign="top"><?=$_LANG->get('Beschreibung')?></td>
-							  <td class="content_row_clear"><textarea id="article_desc" name="article_desc" rows="4" cols="50" class="text artdesc"><?=stripslashes($article->getDesc())?></textarea>
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Warengruppe')?></td>
-							  <td class="content_row_clear"><select id="article_tradegroup"
-																	name="article_tradegroup" style="width: 170px" required>
-									  <!-- <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option> -->
-									  <?if ($article->getTradegroup() == NULL){
-										  foreach ($all_tradegroups as $tg){
-											  echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
-										  }
-									  } else {
-										  foreach ($all_tradegroups as $tg){?>
-											  <option value="<?=$tg->getId()?>"
-												  <?if ($article->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
-											  <?	printSubTradegroupsForSelect($tg->getId(), 0);
-										  } //Ende foreach($all_tradegroups)
-									  }//Ende else?>
-								  </select></td>
-						  </tr>
-						  <tr>
-							  <td colspan="2">&emsp;</td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Zeit-Artikel')?></td>
-							  <td class="content_row_clear"><input id="article_isworkhourart"
-																   name="article_isworkhourart" class="text" type="checkbox"
-																   value="1"
-									  <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>></td>
-						  </tr>
-						  <tr valign="top">
-							  <td class="content_row_header"><?=$_LANG->get('Mögl. Bestellmengen (Shop)')?></td>
-							  <td class="content_row_clear">
-								  <div id="orderamounts">
-									  <?php
-									  foreach ($article->getOrderamounts() as $orderamount)
-									  {
-										  echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
-                                        <span class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span> &nbsp;';
-									  }
-									  ?>
+			  <div class="row">
+				  <? // -------------------- Atikel Kopfdaten --------------------------------------------------- ?>
+				  <div class="col-md-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Kopfdaten</h3>
+						  </div>
+						  <div class="panel-body">
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Titel</label>
+								  <div class="col-sm-9">
+									  <input id="article_title" name="article_title" type="text" class="form-control" value="<?=$article->getTitle()?>">
 								  </div>
-								  <span class="glyphicons glyphicons-plus pointer" title="Bestellmenge hinzufügen" onclick="addOrderAmount();"></span>
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Verpackungseinheit/-gewicht')?></td>
-							  <td class="content_row_clear"><input id="article_orderunit"
-																   name="article_orderunit" type="text" class="text"
-																   value="<?=$article->getOrderunit()?>" style="width: 80px">
-								  <?=$_LANG->get('Stk.');?>
-								  <input id="article_orderunitweight"
-										 name="article_orderunitweight" type="text" class="text"
-										 value="<?=printPrice($article->getOrderunitweight(), 4)?>"
-										 style="text-align: right; width: 80px">
-								  <?=$_LANG->get('Kg.');?>
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Umsatzsteuer')?> *</td>
-							  <td class="content_row_clear"><input id="article_tax"
-																   name="article_tax" type="text" class="text"
-																   value="<?=printPrice($article->getTax())?>" style="width: 184px">
-								  %</td>
-						  </tr>
-						  <tr>
-							  <td colspan="2">&emsp;</td>
-						  </tr>
-						  <tr>
-							  <td colspan="2">&emsp;</td>
-						  </tr>
-						  <?if ($article->getId() != 0 && $article->getCrt_user() != 0){?>
-							  <tr>
-								  <td class="content_row_header"><?=$_LANG->get('Angelegt')?></td>
-								  <td class="content_row_clear">
-									  <?=date('d.m.Y - H:i', $article->getCrt_date())?> <?=$_LANG->get('Uhr')?>
-									  <?=$_LANG->get('von')?>
-									  <?// var_dump($article->getCrt_user()); ?>
-									  <?=$article->getCrt_user()->getFirstname()?> <?=$article->getCrt_user()->getLastname()?>
-								  </td>
-
-							  </tr>
-							  <?if ($article->getUpt_user() != 0 && $article->getUpt_date() != 0){?>
-								  <tr>
-									  <td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert von')?></td>
-									  <td class="content_row_clear">
-										  <?=date('d.m.Y - H:i', $article->getUpt_date())?> <?=$_LANG->get('Uhr')?>
-										  <?=$_LANG->get('von')?>
-										  <?=$article->getUpt_user()->getFirstname()?> <?=$article->getUpt_user()->getLastname()?>
-									  </td>
-								  </tr>
-							  <?}?>
-						  <?}?>
-					  </table>
-				  </div>
-			</div>
-		</div>
-		<? // -------------------- Artikel Bilder --------------------------------------------------- ?>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Bilder</h3>
-				  </div>
-				  <div class="panel-body">
-                      <?php
-                      if ($all_pictures)
-                          $picarray = break_array($all_pictures,4);
-                      else
-                          $picarray = [];
-                      ?>
-                      <table>
-                          <?php
-                          if ($all_pictures>0) {
-                              foreach ($picarray as $item) {
-                                  echo '<tr>';
-                                  foreach ($item as $picture) {
-                                      echo '<td>';
-                                      echo '<img src="images/products/' . $picture["url"] . '" width="130px" height="82px">' .
-                                          '<a onclick="askDel(\'index.php?page=' . $_REQUEST['page'] . '&exec=edit&subexec=deletepic&aid=' . $article->getId() . '&picid=' . $picture["id"] . '\')"' .
-                                          'class="icon-link" href="#"><span class="glyphicons glyphicons-remove" title = "Bild löschen"></span>';
-
-                                      echo '</td>';
-                                  }
-                                  echo '</tr>';
-                              }
-                          }
-                          ?>
-                      </table>
-                      <br>
-                      <div id="filediv">
-                          <input name="file[]" type="file" id="file"/>
-                      </div>
-                      <br>
-                      <input type="button" id="add_more" class="btn-sm" value="mehr Bilder hinzufügen"/>
-                      <input type="button" value="Hochladen" name="upload" id="upload" class="btn-sm btn-success" onclick="$('#article_edit').submit();"/>
-				  </div>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Shop Einstellungen</h3>
-				  </div>
-				  <div class="panel-body">
-					  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Shop: Preis anzeigen')?></td>
-							  <td class="content_row_clear"><input id="article_show_shop_price"
-																   name="article_show_shop_price" class="text" type="checkbox"
-																   value="1"
-									  <?if ($article->getShowShopPrice() == 1) echo "checked"; ?>></td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Shop: Datei Upload')?></td>
-							  <td class="content_row_clear"><input
-									  id="article_shop_needs_upload" name="article_shop_needs_upload"
-									  class="text" type="checkbox" value="1"
-									  <?if ($article->getShop_needs_upload() == 1) echo "checked"; ?>>
-							  </td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Freigegeben für alle')?></td>
-							  <td class="content_row_clear"><input id="article_shoprel"
-																   name="article_shoprel" class="text" type="checkbox" value="1"
-									  <?if ($article->getShoprel() == 1) echo "checked"; ?>></td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Benutzerdefinierte-Freigabe')?></td>
-							  <td class="content_row_clear"></td>
-						  </tr>
-						  <tr>
-							  <td class="content_row_header" colspan="2">
-								  <table width="100%" cellpadding="0" cellspacing="0" border="0"
-										 id="shop_appr_bcs">
-									  <thead>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Geschäfskontakte')?></td>
-									  </tr>
-									  </thead>
-									  <?php
-									  $shop_appr = $article->getShop_approval();
-									  if (count($shop_appr["BCs"])>0){
-										  foreach ($shop_appr["BCs"] as $shop_appr_bc)
-										  {
-											  $tmp_bc = new BusinessContact($shop_appr_bc)?>
-											  <tr>
-												  <td class="content_row_clear">
-													  <?php echo $tmp_bc->getNameAsLine();?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;" ></span>
-													  <input type="hidden" name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId()?>" />
-												  </td>
-											  </tr>
-										  <?php }?>
-									  <?php }?>
-								  </table> Hinzufügen: <input type="text"
-															  id="shop_add_customer" value="" style="width: 300px" />
-								  <table width="100%" cellpadding="0" cellspacing="0" border="0"
-										 id="shop_appr_cps">
-									  <thead>
-									  <tr>
-										  <td class="content_row_header"><?=$_LANG->get('Ansprechpartner')?></td>
-									  </tr>
-									  </thead>
-									  <?php
-									  $shop_appr = $article->getShop_approval();
-									  if (count($shop_appr["CPs"])>0){
-										  foreach ($shop_appr["CPs"] as $shop_appr_cp)
-										  {
-											  $tmp_cp = new ContactPerson($shop_appr_cp)?>
-											  <tr>
-												  <td class="content_row_clear">
-													  <?php echo $tmp_cp->getNameAsLine();?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();" ></span>
-													  <input type="hidden" name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
-												  </td>
-											  </tr>
-										  <?php }?>
-									  <?php }?>
-								  </table> Hinzufügen: <input type="text"
-															  id="shop_add_customer_cp" value="" style="width: 300px" />
-							  </td>
-						  </tr>
-					  </table>
-				  </div>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Preisstaffeln VK</h3>
-				  </div>
-				  <div class="panel-body">
-					  <input type="hidden" name="count_quantity" id="count_quantity" value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
-					  <b>VK-Preisstaffeln</b>
-					  <table id="table-prices">
-						  <colgroup>
-							  <col width="40">
-							  <col width="80">
-							  <col width="120">
-							  <col width="120">
-						  </colgroup>
-						  <tr>
-							  <td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Von')?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-							  <td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-						  </tr>
-						  <?
-						  $x = count($allprices);
-						  if ($x < 1){
-							  //$allprices[] = new Array
-							  $x++;
-						  }
-						  for ($y=0; $y < $x ; $y++){ ?>
-							  <tr>
-								  <td class="content_row_clear">
-									  <?=$y+1?>
-								  </td>
-								  <td class="content_row_clear"><input
-										  name="article_price_min_<?=$y?>" class="text" type="text"
-										  value="<?=$allprices[$y][sep_min]?>" style="width: 50px">
-									  <?=$_LANG->get('Stk.')?>
-								  </td>
-								  <td class="content_row_clear"><input
-										  name="article_price_max_<?=$y?>" class="text" type="text"
-										  value="<?=$allprices[$y][sep_max]?>" style="width: 50px">
-									  <?=$_LANG->get('Stk.')?>
-								  </td>
-								  <td class="content_row_clear"><input
-										  name="article_price_price_<?=$y?>" class="text" type="text"
-										  value="<?=printPrice($allprices[$y][sep_price])?>"
-										  style="width: 50px">
-									  <?=$_USER->getClient()->getCurrency()?>
-									  &nbsp;&nbsp;&nbsp;
-									  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										  echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addPriceRow()"></span>';
-									  }?>
-								  </td>
-							  </tr>
-						  <? } //Ende alle Preis-Staffeln?>
-					  </table>
-					  <br />* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
-					  <br />* <?=$_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis')?>
-				  </div>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Preisstaffeln EK</h3>
-				  </div>
-				<input type="hidden" name="count_quantity_cost"	id="count_quantity_cost" value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
-				<table id="table_prices_cost" class="table table-condensed table-hover">
-					<thead>
-						<tr>
-							<th><?=$_LANG->get('Nr.')?></th>
-							<th><?=$_LANG->get('Von')?></th>
-							<th><?=$_LANG->get('Bis')?></th>
-							<th><?=$_LANG->get('Lieferant')?></th>
-							<th><?=$_LANG->get('Lief-Art.Nr.')?></th>
-							<th><?=$_LANG->get('Preis')?>*</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?
-						$x = count($allcostprices);
-						if ($x < 1){
-							//$allprices[] = new Array
-							$x++;
-						}
-						for ($y=0; $y < $x ; $y++){ ?>
-							<tr>
-								<td><?=$y+1?></td>
-								<td>
-									<input name="article_costprice_min_<?=$y?>" class="text" type="text"
-										value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
-									<?=$_LANG->get('Stk.')?>
-								</td>
-								<td>
-									<input name="article_costprice_max_<?=$y?>" class="text" type="text"
-										value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
-									<?=$_LANG->get('Stk.')?>
-								</td>
-								<td>
-									<select name="article_costprice_supplier_<?=$y?>" style="width:160px">
-										<option value="0">-> bitte wählen <-</option>
-										<?php
-										foreach ($allsupplier as $supplier){
-											if ($article->getId()>0){
-												if ($allcostprices[$y]['supplier'] == $supplier->getId()){
-													echo '<option value="'.$supplier->getId().'" selected>'.$supplier->getNameAsLine().'</option>';
-												} else {
-													echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
-												}
-											} else {
-												echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
-											}
-										}
-										?>
-									</select>
-								</td>
-								<td>
-									<input name="article_costprice_artnum_<?=$y?>" class="text" type="text" value="<?=$allcostprices[$y][supplier_artnum]?>" style="width: 100px">
-								</td>
-								<td><input name="article_costprice_price_<?=$y?>" class="text" type="text"
-										value="<?=printPrice($allcostprices[$y][sep_price])?>"
-										style="width: 50px">
-									<?=$_USER->getClient()->getCurrency()?>
-									&nbsp;&nbsp;&nbsp;
-									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addCostRow()"></span>';
-									}?>
-								</td>
-							</tr>
-						<? } //Ende alle Preis-Staffeln?>
-					</tbody>
-				</table>
-				<br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6" id="qusers" style="<?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Qualifizierte Benutzer</h3>
-				  </div>
-				  <div class="panel-body">
-					  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-						  <?php
-						  $all_users = User::getAllUser();
-						  $qid_arr = Array();
-						  foreach ($article->getQualified_users() as $qid)
-						  {
-							  $qid_arr[] = $qid->getId();
-						  }
-						  $qi = 0;
-						  foreach ($all_users as $qusr){
-							  if ($qi==0) echo '<tr>';
-							  ?>
-							  <td class="content_row_header" valign="top" width="20%"><input
-									  type="checkbox" name="qusr[]"
-									  <?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?>
-									  value="<?php echo $qusr->getId();?>" />
-								  <?php echo $qusr->getNameAsLine();?></td>
-							  <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
-							  <?php $qi++;}?>
-					  </table>
-				  </div>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">API</h3>
-				  </div>
-				  <div class="panel-body">
-					  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-						  <?php
-						  $api_objects = APIObject::getAllForObject($article->getId(), API::TYPE_ARTICLE);
-						  if (count($api_objects)>0){
-							  foreach ($api_objects as $api_object)
-							  {
-								  $api = new API($api_object->getApi());
-								  ?>
-								  <tr>
-									  <td class="content_row_header"><?php echo $api->getTitle();?>
-										  <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><span class="glyphicons glyphicons-remove pointer"></span></a></td>
-								  </tr>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Artikelnummer</label>
+								  <div class="col-sm-2">
+									  <input id="article_number" name="article_number" type="text" class="form-control" value="<?=$article->getNumber()?>">
+								  </div>
+							  </div>
+							  <?php if ($article->getId()>0){?>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Artikel-ID</label>
+								  <div class="col-sm-2">
+									  <input type="text" class="form-control" value="<?=$article->getId()?>">
+								  </div>
+							  </div>
+							  <?php }?>
+							  <div class="form-group">
 								  <?php
-							  }
-						  } else {
-							  echo '<tr><td>keine Zuordnungen vorhanden!</td></tr>';
-						  }
-						  ?>
-						  <tr><td><hr></td></tr>
-						  <?php
-						  $all_apis = API::getAllApisByType(API::TYPE_ARTICLE);
-						  if (count($all_apis)>0){
-							  ?>
-							  <tr>
-								  <td class="content_row_header">
-									  Neue Zuordnung:
-									  <select name="api_new" id="api_new">
-										  <option value="0">Api wählen</option>
+								  $tags = $article->getTags();
+								  if (count($tags)>0)
+									  $tags = implode(";", $tags);
+								  ?>
+								  <label for="" class="col-sm-3 control-label">Tags</label>
+								  <div class="col-sm-9">
+									  <input id="article_tags" name="article_tags" type="text" class="form-control" value="<?php echo $tags; ?>">
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Beschreibung</label>
+								  <div class="col-sm-9">
+									  <textarea id="article_desc" name="article_desc" rows="4" cols="50" class="form-control artdesc"><?=stripslashes($article->getDesc())?></textarea>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Warengruppe</label>
+								  <div class="col-sm-9">
+									  <select id="article_tradegroup" class="form-control" name="article_tradegroup" required>
+										  <!-- <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option> -->
+										  <?if ($article->getTradegroup() == NULL){
+											  foreach ($all_tradegroups as $tg){
+												  echo '<option value="'.$tg->getId().'">'.$tg->getTitle().'</option>';
+											  }
+										  } else {
+											  foreach ($all_tradegroups as $tg){?>
+												  <option value="<?=$tg->getId()?>"
+													  <?if ($article->getTradegroup()->getId() == $tg->getId()) echo "selected" ?>><?= $tg->getTitle()?></option>
+												  <?	printSubTradegroupsForSelect($tg->getId(), 0);
+											  } //Ende foreach($all_tradegroups)
+										  }//Ende else?>
+									  </select>
+								  </div>
+							  </div>
+							  <br>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Zeit-Artikel</label>
+								  <div class="col-sm-1">
+									  <input id="article_isworkhourart" name="article_isworkhourart" class="form-control" type="checkbox" value="1" <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Mögl. Bestellmengen (Shop)</label>
+								  <div class="col-sm-9">
+									  <div id="orderamounts">
 										  <?php
-										  foreach ($all_apis as $api)
+										  foreach ($article->getOrderamounts() as $orderamount)
 										  {
-											  ?>
-											  <option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
-											  <?php
+											  echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
+                                        <span class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span> &nbsp;';
 										  }
 										  ?>
-									  </select>
-								  </td>
-							  </tr>
-						  <?php }?>
-					  </table>
+									  </div>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-5 control-label">Verpackungseinheit/-gewicht</label>
+								  <div class="col-sm-3">
+									  <div class="input-group">
+										  <input id="article_orderunit" name="article_orderunit" type="text" class="form-control" value="<?=$article->getOrderunit()?>" >
+										  <span class="input-group-addon">Stk.</span>
+									  </div>
+								  </div>
+								  <div class="col-sm-4">
+									  <div class="input-group">
+										  <input id="article_orderunitweight" name="article_orderunitweight" type="text" class="form-control" value="<?=printPrice($article->getOrderunitweight(), 4)?>">
+										  <span class="input-group-addon">Kg.</span>
+									  </div>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Umsatzsteuer</label>
+								  <div class="col-sm-3">
+									  <div class="input-group">
+										  <input id="article_tax" name="article_tax" type="text" class="form-control" value="<?=printPrice($article->getTax())?>">
+										  <span class="input-group-addon">%</span>
+									  </div>
+								  </div>
+							  </div>
+							  <br>
+							  <br>
+							  <?if ($article->getId() != 0 && $article->getCrt_user() != 0){?>
+									  <div class="form-group">
+										  <label for="" class="col-sm-3 control-label">Angelegt</label>
+										  <div class="col-sm-9">
+											  <?=date('d.m.Y - H:i', $article->getCrt_date())?> <?=$_LANG->get('Uhr')?>
+											  <?=$_LANG->get('von')?>
+											  <?// var_dump($article->getCrt_user()); ?>
+											  <?=$article->getCrt_user()->getFirstname()?> <?=$article->getCrt_user()->getLastname()?>
+										  </div>
+									  </div>
+								  <?if ($article->getUpt_user() != 0 && $article->getUpt_date() != 0){?>
+									  <div class="form-group">
+										  <label for="" class="col-sm-3 control-label">Ge&auml;ndert von</label>
+										  <div class="col-sm-9">
+											  <?=date('d.m.Y - H:i', $article->getUpt_date())?> <?=$_LANG->get('Uhr')?>
+											  <?=$_LANG->get('von')?>
+											  <?=$article->getUpt_user()->getFirstname()?> <?=$article->getUpt_user()->getLastname()?>
+										  </div>
+									  </div>
+								  <?}?>
+							  <?}?>
+						  </div>
+					  </div>
 				  </div>
-			</div>
-		</div>
-		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Lager</h3>
-				</div>
-				<div class="panel-body">
-					<table width="100%" cellpadding="0" cellspacing="0" border="0">
-						<colgroup>
-							<col width="80">
-							<col>
-						</colgroup>
-						<tr>
-							<td class="content_row_header"><?=$_LANG->get('Lagerartikel')?></td>
-							<td class="content_row_clear">
-								<input id="usesstorage" name="usesstorage" class="text" type="checkbox" value="1"
-									<?if ($article->getUsesstorage() == 1) echo "checked"; ?>>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</form>
+				  <? // -------------------- Artikel Bilder --------------------------------------------------- ?>
+				  <div class="col-md-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Bilder</h3>
+						  </div>
+						  <div class="panel-body">
+							  <?php
+							  if ($all_pictures)
+								  $picarray = break_array($all_pictures,4);
+							  else
+								  $picarray = [];
+							  ?>
+							  <table>
+								  <?php
+								  if ($all_pictures>0) {
+									  foreach ($picarray as $item) {
+										  echo '<tr>';
+										  foreach ($item as $picture) {
+											  echo '<td>';
+											  echo '<img src="images/products/' . $picture["url"] . '" width="130px" height="82px">' .
+												  '<a onclick="askDel(\'index.php?page=' . $_REQUEST['page'] . '&exec=edit&subexec=deletepic&aid=' . $article->getId() . '&picid=' . $picture["id"] . '\')"' .
+												  'class="icon-link" href="#"><span class="glyphicons glyphicons-remove" title = "Bild löschen"></span>';
+
+											  echo '</td>';
+										  }
+										  echo '</tr>';
+									  }
+								  }
+								  ?>
+							  </table>
+							  <br>
+							  <div id="filediv">
+								  <input name="file[]" type="file" id="file"/>
+							  </div>
+							  <br>
+							  <input type="button" id="add_more" class="btn-sm" value="mehr Bilder hinzufügen"/>
+							  <input type="button" value="Hochladen" name="upload" id="upload" class="btn-sm btn-success" onclick="$('#article_edit').submit();"/>
+						  </div>
+					  </div>
+				  </div>
+				  <div class="col-md-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Shop Einstellungen</h3>
+						  </div>
+						  <div class="panel-body">
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Shop: Preis anzeigen</label>
+								  <div class="col-sm-2">
+									  <input id="article_show_shop_price" name="article_show_shop_price" class="form-control" type="checkbox" value="1"
+										  <?if ($article->getShowShopPrice() == 1) echo "checked"; ?>>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Shop: Datei Upload</label>
+								  <div class="col-sm-2">
+									  <input id="article_shop_needs_upload" name="article_shop_needs_upload" class="form-control" type="checkbox" value="1"<?if ($article->getShop_needs_upload() == 1) echo "checked"; ?>>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Freigegeben für alle</label>
+								  <div class="col-sm-2">
+									  <input id="article_shoprel" name="article_shoprel" class="form-control" type="checkbox" value="1"<?if ($article->getShoprel() == 1) echo "checked"; ?>>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="" class="col-sm-6 control-label">Benutzerdefinierte-Freigabe</label>
+								  <div class="col-sm-6">
+								  </div>
+							  </div>
+							 <table width="100%" cellpadding="0" cellspacing="0" border="0">
+								  <tr>
+									  <td class="content_row_header" colspan="2">
+										  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+												 id="shop_appr_bcs">
+											  <thead>
+											  <tr>
+												  <td><label for="" class="col-sm-3 control-label">Geschäftskontakt</label></td>
+											  </tr>
+											  </thead>
+											  <?php
+											  $shop_appr = $article->getShop_approval();
+											  if (count($shop_appr["BCs"])>0){
+												  foreach ($shop_appr["BCs"] as $shop_appr_bc)
+												  {
+													  $tmp_bc = new BusinessContact($shop_appr_bc)?>
+													  <tr>
+														  <td class="content_row_clear">
+															  <?php echo $tmp_bc->getNameAsLine();?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();" ></span>
+															  <input type="hidden" name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId()?>" />
+														  </td>
+													  </tr>
+												  <?php }?>
+											  <?php }?>
+										  </table>
+										  <div class="form-group">
+											  <label for="" class="col-sm-3 control-label">Hinzufügen:</label>
+											  <div class="col-sm-9">
+												  <input type="text" id="shop_add_customer" value="" class="form-control" />
+											  </div>
+										  </div>
+										  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+												 id="shop_appr_cps">
+											  <thead>
+											  <tr>
+												  <td><label for="" class="col-sm-3 control-label">Ansprechpartner</label></td>
+											  </tr>
+											  </thead>
+											  <?php
+											  $shop_appr = $article->getShop_approval();
+											  if (count($shop_appr["CPs"])>0){
+												  foreach ($shop_appr["CPs"] as $shop_appr_cp)
+												  {
+													  $tmp_cp = new ContactPerson($shop_appr_cp)?>
+													  <tr>
+														  <td class="content_row_clear">
+															  <?php echo $tmp_cp->getNameAsLine();?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();" ></span>
+															  <input type="hidden" name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId()?>" />
+														  </td>
+													  </tr>
+												  <?php }?>
+											  <?php }?>
+										  </table>
+										  <div class="form-group">
+											  <label for="" class="col-sm-3 control-label">Hinzufügen:</label>
+											  <div class="col-sm-9">
+												  <input type="text" class="form-control" id="shop_add_customer_cp" value=""/>
+											  </div>
+										  </div>
+									  </td>
+								  </tr>
+							  </table>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+			  <div class="row">
+				  <div class="col-md-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Preisstaffeln VK</h3>
+						  </div>
+						  <div class="panel-body">
+							  <input type="hidden" name="count_quantity" id="count_quantity" value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
+							  <b>VK-Preisstaffeln</b>
+							  <div class="table-responsive">
+							  	<table  id="table-prices" class="table table-hover">
+							  		<thead>
+										<tr>
+											<th><?=$_LANG->get('Nr.')?></th>
+											<th><?=$_LANG->get('Von')?></th>
+											<th><?=$_LANG->get('Bis')?></th>
+											<th><?=$_LANG->get('Preis')?>*</th>
+											<th></th>
+										</tr>
+							  		</thead>
+									<?
+									$x = count($allprices);
+									if ($x < 1){
+										//$allprices[] = new Array
+										$x++;
+									}
+									for ($y=0; $y < $x ; $y++){ ?>
+							  		<tbody>
+										<tr>
+											<td>
+												<div class="form-group">
+													<div class="col-sm-12">
+														<?=$y+1?>
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="col-sm-12">
+													<div class="input-group">
+														<input name="article_price_min_<?=$y?>" class="form-control" type="text" value="<?=$allprices[$y][sep_min]?>">
+														<span class="input-group-addon">Stk.</span>
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="col-sm-12">
+													<div class="input-group">
+														<input name="article_price_max_<?=$y?>" class="form-control" type="text" value="<?=$allprices[$y][sep_max]?>">
+														<span class="input-group-addon">Stk.</span>
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="col-sm-12">
+													<div class="input-group">
+														<input name="article_price_price_<?=$y?>" class="form-control" type="text" value="<?=printPrice($allprices[$y][sep_price])?>">
+														<span class="input-group-addon">€</span>
+													</div>
+												</div>
+											</td>
+											<td>
+												<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+													echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addPriceRow()"></span>';
+												}?>
+											</td>
+										</tr>
+							  		</tbody>
+							  	</table>
+								  <? } //Ende alle Preis-Staffeln?>
+							  </div>
+							  <br />* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
+							  <br />* <?=$_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis')?>
+						  </div>
+					  </div>
+				  </div>
+				  <div class="col-md-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Preisstaffeln EK</h3>
+						  </div>
+						  <input type="hidden" name="count_quantity_cost"	id="count_quantity_cost" value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
+						  <table id="table_prices_cost" class="table table-condensed table-hover">
+							  <thead>
+							  <tr>
+								  <th><?=$_LANG->get('Nr.')?></th>
+								  <th><?=$_LANG->get('Von')?></th>
+								  <th><?=$_LANG->get('Bis')?></th>
+								  <th><?=$_LANG->get('Lieferant')?></th>
+								  <th><?=$_LANG->get('Lief-Art.Nr.')?></th>
+								  <th><?=$_LANG->get('Preis')?>*</th>
+							  </tr>
+							  </thead>
+							  <tbody>
+							  <?
+							  $x = count($allcostprices);
+							  if ($x < 1){
+								  //$allprices[] = new Array
+								  $x++;
+							  }
+							  for ($y=0; $y < $x ; $y++){ ?>
+								  <tr>
+									  <td><?=$y+1?></td>
+									  <td>
+										  <input name="article_costprice_min_<?=$y?>" class="text" type="text"
+												 value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
+										  <?=$_LANG->get('Stk.')?>
+									  </td>
+									  <td>
+										  <input name="article_costprice_max_<?=$y?>" class="text" type="text"
+												 value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
+										  <?=$_LANG->get('Stk.')?>
+									  </td>
+									  <td>
+										  <select name="article_costprice_supplier_<?=$y?>" style="width:160px">
+											  <option value="0">-> bitte wählen <-</option>
+											  <?php
+											  foreach ($allsupplier as $supplier){
+												  if ($article->getId()>0){
+													  if ($allcostprices[$y]['supplier'] == $supplier->getId()){
+														  echo '<option value="'.$supplier->getId().'" selected>'.$supplier->getNameAsLine().'</option>';
+													  } else {
+														  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
+													  }
+												  } else {
+													  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
+												  }
+											  }
+											  ?>
+										  </select>
+									  </td>
+									  <td>
+										  <input name="article_costprice_artnum_<?=$y?>" class="text" type="text" value="<?=$allcostprices[$y][supplier_artnum]?>" style="width: 100px">
+									  </td>
+									  <td><input name="article_costprice_price_<?=$y?>" class="text" type="text"
+												 value="<?=printPrice($allcostprices[$y][sep_price])?>"
+												 style="width: 50px">
+										  <?=$_USER->getClient()->getCurrency()?>
+										  &nbsp;&nbsp;&nbsp;
+										  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
+											  echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addCostRow()"></span>';
+										  }?>
+									  </td>
+								  </tr>
+							  <? } //Ende alle Preis-Staffeln?>
+							  </tbody>
+						  </table>
+						  <br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
+					  </div>
+				  </div>
+			  </div>
+			  <div class="row">
+				  <div class="col-md-6" id="qusers" style="<?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Qualifizierte Benutzer</h3>
+						  </div>
+						  <div class="panel-body">
+							  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+								  <?php
+								  $all_users = User::getAllUser();
+								  $qid_arr = Array();
+								  foreach ($article->getQualified_users() as $qid)
+								  {
+									  $qid_arr[] = $qid->getId();
+								  }
+								  $qi = 0;
+								  foreach ($all_users as $qusr){
+									  if ($qi==0) echo '<tr>';
+									  ?>
+									  <td class="content_row_header" valign="top" width="20%"><input
+											  type="checkbox" name="qusr[]"
+											  <?php if(in_array($qusr->getId(), $qid_arr)) echo ' checked ';?>
+											  value="<?php echo $qusr->getId();?>" />
+										  <?php echo $qusr->getNameAsLine();?></td>
+									  <?php if ($qi==4) { echo '</tr>'; $qi = -1; }?>
+									  <?php $qi++;}?>
+							  </table>
+						  </div>
+					  </div>
+				  </div>
+				  <div class="col-md-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">API</h3>
+						  </div>
+						  <div class="panel-body">
+							  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+								  <?php
+								  $api_objects = APIObject::getAllForObject($article->getId(), API::TYPE_ARTICLE);
+								  if (count($api_objects)>0){
+									  foreach ($api_objects as $api_object)
+									  {
+										  $api = new API($api_object->getApi());
+										  ?>
+										  <tr>
+											  <td class="content_row_header"><?php echo $api->getTitle();?>
+												  <a href="index.php?page=libs/modules/article/article.php&exec=edit&aid=<?php echo $article->getId()?>&remove_apiobj=<?php echo $api_object->getId()?>"><span class="glyphicons glyphicons-remove pointer"></span></a></td>
+										  </tr>
+										  <?php
+									  }
+								  } else {
+									  echo '<tr><td>keine Zuordnungen vorhanden!</td></tr>';
+								  }
+								  ?>
+								  <tr><td><hr></td></tr>
+								  <?php
+								  $all_apis = API::getAllApisByType(API::TYPE_ARTICLE);
+								  if (count($all_apis)>0){
+									  ?>
+									  <tr>
+										  <td class="content_row_header">
+											  Neue Zuordnung:
+											  <select name="api_new" id="api_new">
+												  <option value="0">Api wählen</option>
+												  <?php
+												  foreach ($all_apis as $api)
+												  {
+													  ?>
+													  <option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
+													  <?php
+												  }
+												  ?>
+											  </select>
+										  </td>
+									  </tr>
+								  <?php }?>
+							  </table>
+						  </div>
+					  </div>
+				  </div>
+				  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">Lager</h3>
+						  </div>
+						  <div class="panel-body">
+							  <div class="form-group">
+								  <label for="" class="col-sm-3 control-label">Lagerartikel</label>
+								  <div class="col-sm-2">
+									  <input id="usesstorage" name="usesstorage" class="form-control" type="checkbox" value="1"<?if ($article->getUsesstorage() == 1) echo "checked"; ?>>
+								  </div>
+							  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </form>
+	  </div>
+</div>
+
+
 
 
 
@@ -811,17 +822,15 @@ echo $quickmove->generate();
         var count = parseInt(document.getElementById('count_quantity').value) + 1;
         var insert = '<tr><td class="content_row_clear">'+count+'</td>';
         insert += '<td>';
-        insert += '<input name="article_price_min_'+count+'" class="text" type="text"';
-        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '<div class="col-sm-12"><div class="input-group"><input name="article_price_min_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div>';
         insert += '</td>';
         insert += '<td>';
-        insert += '<input name="article_price_max_'+count+'" class="text" type="text"';
-        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+		insert += '<div class="col-sm-12"><div class="input-group"><input name="article_price_max_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div>';
         insert += '</td>';
         insert += '<td>';
-        insert += '<input name="article_price_price_'+count+'" class="text" type="text"';
-        insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
-        insert += '</td></tr>';
+		insert += '<div class="col-sm-12"><div class="input-group"><input name="article_price_price_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">€</span></div></div>';
+		insert += '</td><td>';
+		insert += '</td></tr>';
         obj.insertAdjacentHTML("BeforeEnd", insert);
         document.getElementById('count_quantity').value = count;
     }
