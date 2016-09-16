@@ -25,6 +25,7 @@ $tmp_all_calcs = Calculation::getAllCalculations($order,Calculation::ORDER_AMOUN
 foreach ($tmp_all_calcs as $tmp_calc){
     $quickmove->addItem('Auflage '.$tmp_calc->getAmount(),'index.php?page=libs/modules/calculation/order.php&id='.$order->getId().'&calc_id='.$tmp_calc->getId().'&exec=edit&step=3',null,'glyphicon glyphicon-pencil');
 }
+$quickmove->addItem('Druckbogenvorsch.','#',"window.open('index.php?page=".$_REQUEST['page']."&id=".$_REQUEST['id']."&exec=edit&step=5');",'glyphicons-note-empty');
 $quickmove->addItem('Weiter','#',"document.getElementsByName('nextstep')[0].value='4';document.step3_form.submit();",'glyphicon-chevron-right');
 $quickmove->addItem('Speichern','#',"document.step3_form.submit();",'glyphicon-floppy-disk');
 echo $quickmove->generate();
@@ -111,13 +112,13 @@ echo $quickmove->generate();
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="step3_form">
 
     <div class="row">
-        <div class="col-md-6">
-            <input type="checkbox" name="auto_calc_values" value="1" <?if($calc->getCalcAutoValues()) echo "checked";?>>
-            * <?=$_LANG->get('Werte automatisch kalkulieren')?>
-        </div>
-        <div class="col-md-6">
-            <input type="checkbox" name="debug_calc" value="1" <?if($calc->getCalcDebug()) echo "checked";?>>
-            * <?=$_LANG->get('Debug Ausgabe')?>
+        <div class="col-md-12">
+            <span class="pull-right">
+                <input type="checkbox" name="auto_calc_values" value="1" <?if($calc->getCalcAutoValues()) echo "checked";?>>
+                * <?=$_LANG->get('Werte automatisch kalkulieren')?> &nbsp;&nbsp;&nbsp;
+                    <input type="checkbox" name="debug_calc" value="1" <?if($calc->getCalcDebug()) echo "checked";?>>
+                * <?=$_LANG->get('Rechnungen ausgeben')?>
+            </span>
         </div>
     </div>
 

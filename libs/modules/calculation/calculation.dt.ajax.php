@@ -1,7 +1,7 @@
 <?php
     require_once '../../../config.php';
 
-    $aColumns = array( 'id', 'number', 'title', 'fremdleistung', 'crtdat', 'status' );
+    $aColumns = array( 'id', 'number', 'title', 'product', 'crtdat' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -134,6 +134,9 @@
     if ($_GET['end'] != ""){
         $sWhere .= " AND crtdat <= {$_GET['end']} ";
     }
+    if ($_GET['product'] != 0){
+        $sWhere .= " AND productid = {$_GET['product']} ";
+    }
     
     
     /*
@@ -141,9 +144,8 @@
      * Get data to display
      */
     $sQuery = "SELECT * FROM
-               (SELECT orders.id as id,orders.number,orders.title,
-               orders.crtdat,orders.`status`,'1' as type 
-               FROM orders WHERE orders.`status` > 0) a   
+               (SELECT orders.id AS id,orders.number,orders.title,orders.crtdat,products.`name` as product,products.id as productid,orders.`status`
+                FROM orders INNER JOIN products ON orders.product_id = products.id WHERE orders.`status` > 0) a
                $sWhere
                $sOrder
                $sLimit";
@@ -159,8 +161,8 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT orders.id,orders.number,orders.crtdat,orders.title,orders.`status`,'1' as type
-        FROM orders WHERE orders.`status` > 0) a
+       (SELECT orders.id AS id,orders.number,orders.title,orders.crtdat,products.`name` as product,products.id as productid,orders.`status`
+        FROM orders INNER JOIN products ON orders.product_id = products.id WHERE orders.`status` > 0) a
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -174,8 +176,8 @@
     $sQuery = "
         SELECT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT orders.id,orders.number,orders.title,orders.crtdat,orders.`status` 
-        FROM orders WHERE orders.`status` > 0) a
+       (SELECT orders.id AS id,orders.number,orders.title,orders.crtdat,products.`name` as product,products.id as productid,orders.`status`
+        FROM orders INNER JOIN products ON orders.product_id = products.id WHERE orders.`status` > 0) a
         WHERE status > 0
     ";
 //     var_dump($sQuery);
@@ -217,90 +219,9 @@
             {
                 $row[] = date("d.m.Y", $aRow[ $aColumns[$i] ]);
             }
-            else if ( $aColumns[$i] == 'status' )
+            else if ( $aColumns[$i] == 'product' )
             {
-                $tmp_row = '';
-                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=1">';
-                $tmp_row .= '<img class="select" src="./images/status/';
-                if($aRow[ $aColumns[$i] ] == 1){
-                    $tmp_row .= 'red.svg';
-                } else {
-                    $tmp_row .= 'black.svg';
-                }
-                $tmp_row .= '" title="Vorgang angelegt"></a>';
-
-            
-                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=2">';
-                $tmp_row .= '<img class="select" src="./images/status/';
-                if($aRow[ $aColumns[$i] ] == 2){
-                    $tmp_row .= 'orange.svg';
-                } else {
-                    $tmp_row .= 'black.svg';
-                }
-                $tmp_row .= '" title="Vorgang gesendet"></a>';
-
-            
-                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=3">';
-                $tmp_row .= '<img class="select" src="./images/status/';
-                if($aRow[ $aColumns[$i] ] == 3){
-                    $tmp_row .= 'yellow.svg';
-                } else {
-                    $tmp_row .= 'black.svg';
-                }
-                $tmp_row .= '" title="Vorgang angenommen"></a>';
-
-            
-                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=4">';
-                $tmp_row .= '<img class="select" src="./images/status/';
-                if($aRow[ $aColumns[$i] ] == 4){
-                    $tmp_row .= 'lila.svg';
-                } else {
-                    $tmp_row .= 'black.svg';
-                }
-                $tmp_row .= '" title="In Produktion"></a>';
-
-            
-                $tmp_row .= '<a href="index.php?page=libs/modules/calculation/order.php&id='.$aRow[ $aColumns[0] ].'&setStatus=5">';
-                $tmp_row .= '<img class="select" src="./images/status/';
-                if($aRow[ $aColumns[$i] ] == 5){
-                    $tmp_row .= 'green.svg';
-                } else {
-                    $tmp_row .= 'black.svg';
-                }
-                $tmp_row .= '" title="Erledigt"></a>';
-                
-                
-                $row[] = nl2br($tmp_row);
-            }
-            else if ( $aColumns[$i] == 'fremdleistung' )
-            {
-                $tmp_row = '';
-                $sQueryAttributes = 'SELECT orders_machines.supplier_status,orders_machines.supplier_id,CONCAT(businesscontact.name1,businesscontact.name2) as cust_name,
-                                     orders_machines.supplier_send_date,orders_machines.supplier_receive_date,orders_machines.supplier_info 
-                                     FROM orders INNER JOIN orders_calculations ON orders_calculations.order_id = orders.id
-                                     INNER JOIN orders_machines ON orders_machines.calc_id = orders_calculations.id
-                                     INNER JOIN businesscontact ON orders_machines.supplier_id = businesscontact.id
-                                     WHERE orders_machines.supplier_status > 0 AND orders_calculations.state = 1 AND orders.id = '.$aRow[ $aColumns[0] ];
-                $rAttributes = mysql_query( $sQueryAttributes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-                while ($data = mysql_fetch_row($rAttributes)){
-                    if($data[0] == 0){ $status = "TODO"; $img="red.svg";};
-                    if($data[0] == 1){ $status = "Bestellt"; $img="orange.svg";};
-                    if($data[0] == 2){ $status = "In Produktion"; $img="lila.svg";};
-                    if($data[0] == 3){ $status = "Im Haus"; $img="green.svg";};
-            		
-            		$title = $status." \n";
-            		if ($data[1] > 0 ) $title .= utf8_encode($data[2])."\n";
-            		if ($data[3] > 0 ) $title .= "Liefer-/Bestelldatum: ".date("d.m.Y", $data[3])." \n";
-            		if ($data[4] > 0 ) $title .= "Retour: ".date("d.m.Y", $data[4])." \n";
-            		$title .= utf8_encode($data[5])." \n";
-            		
-            		
-            		$tmp_row = '<img src="images/status/'.$img.'" alt="'.$status.'" title="'.$title.'">';
-                }
-                if ($tmp_row == ''){
-                    $tmp_row = 'keine';
-                }
-                $row[] = $tmp_row;
+                $row[] = utf8_encode($aRow[ $aColumns[$i] ]);
             }
         }
         $row[] = '<a class="icon-link" href="index.php?page=libs/modules/calculation/order.php&exec=edit&id='.$aRow[ $aColumns[0] ].'&step=4"><span class="glyphicons glyphicons-pencil"></span></a>

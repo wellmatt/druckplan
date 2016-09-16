@@ -160,220 +160,31 @@ echo $quickmove->generate();
     <input name="subexec" value="save" type="hidden">
     <input name="id" value="<?=$order->getId()?>" type="hidden">
 
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Auftragsdaten: <b><?= $order->getNumber() ?></b></h3>
         </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-1">
-                    <b><?= $_LANG->get('Produkt') ?>:</b>
+        <div class="row form-horizontal" style="margin-top: 5px;">
+            <div class="form-group">
+                <label for="" class="col-md-2 control-label">Titel</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="order_title" value="<?=$order->getTitle()?>" placeholder="Titel">
                 </div>
-                <div class="col-md-2">
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">Produkt</label>
+                <div class="col-sm-10 form-text">
                     <?= $order->getProduct()->getName() ?>
                 </div>
-                <div class="col-md-2">
-                    <b><?= $_LANG->get('Beschreibung') ?>:</b>
-                </div>
-                <div class="col-md-2">
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">Beschreibung</label>
+                <div class="col-sm-10 form-text">
                     <?= $order->getProduct()->getDescription() ?>
                 </div>
             </div>
-            <hr>
-            <div class="row form-horizontal">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="" class="col-md-2 control-label">Titel</label>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" name="order_title" value="<?=$order->getTitle()?>" placeholder="Titel">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row form-horizontal">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Rechnungsadresse</label>
-                        <div class="col-md-8">
-                            <select name="invoice_address" id="invoice_address" class="form-control">
-                                <option value=""><?=$_LANG->get('keine gesonderte Rechnungsadresse')?></option>
-                                <?
-                                foreach($order->getCustomer()->getInvoiceAddresses() as $invc)
-                                {
-                                    echo '<option value="'.$invc->getId().'" ';
-                                    if($order->getInvoiceAddress()->getId() == $invc->getId()) echo "selected";
-                                    echo '>'.$invc->getNameAsLine().', '.$invc->getAddressAsLine().'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Zahlungsbedingung</label>
-                        <div class="col-md-8">
-                            <select name="payment_terms" id="payment_terms" class="form-control">
-                                <option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
-                                <?
-                                foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $dt)
-                                {
-                                    echo '<option value="'.$dt->getId().'" ';
-                                    if($order->getPaymentTerms()->getId() == $dt->getId()) echo "selected";
-                                    echo '>'.$dt->getName1().'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Lieferdatum</label>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="idx_delivery_date" name="delivery_date" value="<? if($order->getDeliveryDate() > 0) echo date('d.m.Y', $order->getDeliveryDate())?>">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Verant. Mitarbeiter</label>
-                        <div class="col-md-8">
-                            <select name="intern_contactperson" id="intern_contactperson" class="form-control">
-                                <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
-                                <?
-                                foreach($all_user as $us)
-                                {
-                                    echo '<option value="'.$us->getId().'" ';
-                                    if($order->getInternContact()->getId() == $us->getId()) echo "selected";
-                                    echo '>'.$us->getNameAsLine().'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Ansprechpartner</label>
-                        <div class="col-md-8">
-                            <select name="cust_contactperson" id="cust_contactperson" class="form-control">
-                                <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
-                                <?
-                                foreach($order->getCustomer()->getContactpersons() as $cp)
-                                {
-                                    echo '<option value="'.$cp->getId().'" ';
-                                    if($order->getCustContactperson()->getId() == $cp->getId()) echo "selected";
-                                    echo '>'.$cp->getNameAsLine().'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Status</label>
-                        <div class="col-md-8">
-                            <div class="form-control">
-                                <?php
-                                $states = [
-                                    ['s' => '1', 'gif' => 'red.svg'],
-                                    ['s' => '2', 'gif' => 'orange.svg'],
-                                    ['s' => '3', 'gif' => 'yellow.svg'],
-                                    ['s' => '4', 'gif' => 'lila.svg'],
-                                    ['s' => '5', 'gif' => 'green.svg'],
-                                ];
-                                foreach ($states as $state){
-                                    ?>
-                                    <a href="index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&exec=edit&step=4&setStatus=<?=$state['s']?>">
-                                        <?
-                                        echo '<img class="select" title="'.getOrderStatus($state['s']).'" src="./images/status/';
-                                        if($order->getStatus() == $state['s'])
-                                            echo $state['gif'];
-                                        else
-                                            echo 'black.svg';
-                                        echo '">';
-                                        ?>
-                                    </a>
-                                    <?php
-                                }
-                                ?><?php echo getOrderStatus($order->getStatus(), true);?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Lieferadresse</label>
-                        <div class="col-md-8">
-                            <select name="delivery_address" id="delivery_address" class="form-control">
-                                <option value=""><?=$_LANG->get('an Standardadresse')?></option>
-                                <?php
-                                foreach($order->getCustomer()->getDeliveryAddresses() as $deliv)
-                                {
-                                    echo '<option value="'.$deliv->getId().'" ';
-                                    if($order->getDeliveryAddress()->getId() == $deliv->getId()) echo "selected";
-                                    echo '>'.$deliv->getNameAsLine().', '.$deliv->getAddressAsLine().'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Lieferbedingung</label>
-                        <div class="col-md-8">
-                            <select name="delivery_terms" id="delivery_terms" class="form-control">
-                                <option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt</option>
-                                <?
-                                foreach(DeliveryTerms::getAllDeliveryConditions(DeliveryTerms::ORDER_NAME) as $dt)
-                                {
-                                    echo '<option value="'.$dt->getId().'" ';
-                                    if($order->getDeliveryTerms()->getId() == $dt->getId()) echo "selected";
-                                    echo '>'.$dt->getName1().'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Lieferkosten</label>
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="delivery_cost" name="delivery_cost" value="<?=printPrice($order->getDeliveryCost())?>" placeholder="Lieferkosten">
-                                <span class="input-group-addon">€</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-md-4 control-label">Int. Bemerkungen</label>
-                        <div class="col-md-8">
-                            <textarea class="form-control" id="order_notes" name="order_notes"><?=$order->getNotes()?></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <?php
-                        // Beilagen Export
-                        if (strlen($order->getBeilagen()) > 0){
-                            if (strpos($order->getBeilagen(),"\r\n") === false){
-                                $filename1 = './docs/'.$_USER->getId().'-Beilagen.csv';
-                                $csv_file = fopen($filename1, "w");
-                                $csv_string = $order->getBeilagen();
-                                $csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
-                                fwrite($csv_file, $csv_string);
-                                fclose($csv_file);
-                            } else {
-                                $filename1 = './docs/'.$_USER->getId().'-Beilagen.csv';
-                                $csv_file = fopen($filename1, "w");
-                                $csv_string = "";
-                                foreach(explode("\r\n", $order->getBeilagen()) as $line) {
-                                    $csv_string .= $line . ";\n";
-                                }
-                                $csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
-                                fwrite($csv_file, $csv_string);
-                                fclose($csv_file);
-                            }
-                        }
-                        ?>
-                        <label for="" class="col-md-4 control-label">Beilagen-Hinweis (&nbsp;<a href="./docs/<?=$_USER->getId()?>-Beilagen.csv"><span class="glyphicons glyphicons-file-export"></span></a>&nbsp;)</label>
-                        <div class="col-md-8">
-                            <textarea class="form-control" id="order_beilagen" name="order_beilagen"><?=$order->getBeilagen()?></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
     </div>
 
     <div class="panel panel-default">
@@ -418,7 +229,7 @@ echo $quickmove->generate();
                   </tr>
                   <!-- added by ascherer -->
                   <tr class="color1">
-                      <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
+                      <td class="content_row_header"><?=$_LANG->get('Untertitel')?></td>
                       <? foreach($calculations as $calc) { ?>
                           <td class="content_row_clear value">
                               <input type="text" name="calc_title_<?=$calc->getId()?>" id="calc_title_<?=$calc->getId()?>" value="<?=$calc->getTitle()?>">

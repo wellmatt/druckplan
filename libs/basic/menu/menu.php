@@ -48,7 +48,7 @@ function print2ndLevel($tree, $i = 1)
 //     print_r($t);
     foreach($tree as $t)
     {
-        echo '<li><a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a></li>';
+        echo '<li><a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'&pagetitle='.$t->getName().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a></li>';
     }
 }
 
@@ -59,7 +59,7 @@ function printChildTree($tree, $i = 1)
         if ($t->getName() == "Planungstafel"){
             echo '<a class="" href="'.$t->getPath().'" target="_blank"><img src="'.$t->getIcon().'"> '.$t->getName().'</a>';
         } else {
-            echo '<a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a>';
+            echo '<a class="" href="#" onclick="document.location=\'index.php?page='.$t->getPath().'&pagetitle='.$t->getName().'\'"><img src="'.$t->getIcon().'"> '.$t->getName().'</a>';
         }
         
     }

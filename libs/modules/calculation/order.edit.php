@@ -1167,7 +1167,8 @@ if((int)$_REQUEST["step"] == 3){
 
 		// Preise kalkulieren
 		foreach(Machineentry::getAllMachineentries($calc->getId()) as $me){
-			if($me->getMachine()->getType() != Machine::TYPE_MANUELL){
+			if( $me->getMachine()->getType() != Machine::TYPE_MANUELL &&
+				($me->getMachine()->getPriceBase() == Machine::PRICE_VARIABEL && $me->getMachine()->getType() != Machine::TYPE_OTHER)){
 				$me->setPrice($me->getMachine()->getMachinePrice($me));
 				$me->save();
 			}

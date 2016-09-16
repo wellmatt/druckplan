@@ -35,37 +35,76 @@ class Comment {
     function __construct($id = 0){
         global $DB;
 
-        $this->crtuser	= new User(0);
-        $this->crtcp	= new ContactPerson(0);
-    
-        if($id>0){
-            $sql = "SELECT * FROM comments WHERE id = {$id}";
-            if($DB->num_rows($sql))
-            {
-                $r = $DB->select($sql);
-                $r = $r[0];
-                $this->id 				= (int)$r["id"];
-                $this->title 			= $r["title"];
-                $this->crtdate		    = $r["crtdate"];
-                $this->crtuser		    = new User($r["crtuser"]);
-                $this->crtcp		    = new ContactPerson($r["crtcp"]);
-                $this->state 			= (int)$r["state"];
-                $this->module	        = $r["module"];
-                $this->objectid			= (int)$r["objectid"];
-                $this->comment			= $r["comment"];
-                $this->visability   	= (int)$r["visability"];
-                $this->mailed       	= (int)$r["mailed"];
-    
+        if($id>0) {
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this, $id))) {
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this, $id));
+                if (get_class($cached) == get_class($this)) {
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var) {
+                        $method = "get" . ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this, $method)) {
+                            if (is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this, $method2)) {
+                            if (is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "' . $method . '" not found in Class "' . get_called_class() . '"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
             }
-            
-            $sql = "SELECT id FROM comments_article WHERE comment_id = {$id}";
-        	if($DB->num_rows($sql)){
-        	    $artretval = Array();
-    			foreach($DB->select($sql) as $r){
-    				$artretval[] = new CommentArticle($r["id"]);
-    			}
-    			$this->articles = $artretval;
-    		}
+            if ($valid_cache === false) {
+
+                $sql = "SELECT * FROM comments WHERE id = {$id}";
+                if($DB->num_rows($sql))
+                {
+                    $r = $DB->select($sql);
+                    $r = $r[0];
+                    $this->id 				= (int)$r["id"];
+                    $this->title 			= $r["title"];
+                    $this->crtdate		    = $r["crtdate"];
+                    $this->crtuser		    = new User($r["crtuser"]);
+                    $this->crtcp		    = new ContactPerson($r["crtcp"]);
+                    $this->state 			= (int)$r["state"];
+                    $this->module	        = $r["module"];
+                    $this->objectid			= (int)$r["objectid"];
+                    $this->comment			= $r["comment"];
+                    $this->visability   	= (int)$r["visability"];
+                    $this->mailed       	= (int)$r["mailed"];
+
+                }
+
+                $sql = "SELECT id FROM comments_article WHERE comment_id = {$id}";
+                if($DB->num_rows($sql)){
+                    $artretval = Array();
+                    foreach($DB->select($sql) as $r){
+                        $artretval[] = new CommentArticle($r["id"]);
+                    }
+                    $this->articles = $artretval;
+                }
+
+                Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            }
+        } else {
+            $this->crtuser	= new User(0);
+            $this->crtcp	= new ContactPerson(0);
         }
     }
 
@@ -88,7 +127,7 @@ class Comment {
             visability			= {$this->visability},
             mailed			= {$this->mailed}
             WHERE id = {$this->id}";
-            return $DB->no_result($sql);
+            $res = $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO comments
             (title, crtdate, crtuser, crtcp, state, module, objectid, comment, visability, mailed )
@@ -101,11 +140,15 @@ class Comment {
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
                 $this->crtdate = $now;
-                return true;
-            } else {
-                return false;
             }
         }
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
     }
 
     /**
@@ -122,6 +165,7 @@ class Comment {
     					state = 0
     					WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 unset($this);
                 return true;
             } else {

@@ -169,7 +169,11 @@ class Product {
             }
         }
     }
-    
+
+    /**
+     * @param string $order
+     * @return Product[]
+     */
     static function getAllProducts($order = self::ORDER_ID)
     {
         global $DB;

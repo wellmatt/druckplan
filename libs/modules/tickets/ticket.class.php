@@ -42,9 +42,7 @@ class Ticket {
     private $source;
     private $planned_time = 0;
     private $total_time = 0;
-    
-    private $associations = Array();
-    
+
     const SOURCE_EMAIL = 1;
     const SOURCE_PHONE = 2;
     const SOURCE_OTHER = 3;
@@ -52,52 +50,82 @@ class Ticket {
     
     function __construct($id = 0){
         global $DB;
-        global $_USER;
-    
-        $this->crtuser	        = new User(0);
-        $this->closeuser        = new User(0);
-        $this->customer	        = new BusinessContact(0);
-        $this->customer_cp	    = new ContactPerson(0);
-        $this->assigned_user    = new User(0);
-        $this->assigned_group   = new Group(0);
-        $this->category         = new TicketCategory(0);
-        $this->priority         = new TicketPriority(0);
-        $this->state            = new TicketState(0);
-        
-    
-        if($id>0){
-            $sql = "SELECT * FROM tickets WHERE id = {$id}";
-            if($DB->num_rows($sql))
-            {
-                $r = $DB->select($sql);
-                $r = $r[0];
-                $this->id 				= (int)$r["id"];
-                $this->title 			= $r["title"];
-                $this->crtdate		    = $r["crtdate"];
-                $this->crtuser		    = new User($r["crtuser"]);
-                $this->duedate		    = $r["duedate"];
-                $this->closedate		= $r["closedate"];
-                $this->closeuser		= new User($r["closeuser"]);
-                $this->editdate		    = $r["editdate"];
-                $this->number		    = $r["number"];
-                $this->customer		    = new BusinessContact((int)$r["customer"]);
-                $this->customer_cp	    = new ContactPerson((int)$r["customer_cp"]);
-                $this->assigned_user	= new User($r["assigned_user"]);
-                $this->assigned_group	= new Group($r["assigned_group"]);
-                $this->state 			= new TicketState((int)$r["state"]);
-                $this->category	        = new TicketCategory((int)$r["category"]);
-                $this->priority			= new TicketPriority((int)$r["priority"]);
-                $this->source   	    = $r["source"];
-                $this->planned_time   	= (float)$r["planned_time"];
+
+        if($id>0) {
+            $valid_cache = true;
+            if (Cachehandler::exists(Cachehandler::genKeyword($this, $id))) {
+                $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this, $id));
+                if (get_class($cached) == get_class($this)) {
+                    $vars = array_keys(get_class_vars(get_class($this)));
+                    foreach ($vars as $var) {
+                        $method = "get" . ucfirst($var);
+                        $method2 = $method;
+                        $method = str_replace("_", "", $method);
+                        if (method_exists($this, $method)) {
+                            if (is_object($cached->$method()) === false) {
+                                $this->$var = $cached->$method();
+                            } else {
+                                $class = get_class($cached->$method());
+                                $this->$var = new $class($cached->$method()->getId());
+                            }
+                        } elseif (method_exists($this, $method2)) {
+                            if (is_object($cached->$method2()) === false) {
+                                $this->$var = $cached->$method2();
+                            } else {
+                                $class = get_class($cached->$method2());
+                                $this->$var = new $class($cached->$method2()->getId());
+                            }
+                        } else {
+                            prettyPrint('Cache Error: Method "' . $method . '" not found in Class "' . get_called_class() . '"');
+                            $valid_cache = false;
+                        }
+                    }
+                } else {
+                    $valid_cache = false;
+                }
+            } else {
+                $valid_cache = false;
             }
-            
-            $sql = "SELECT SUM(stoptime-starttime) as time FROM timers WHERE module = 'Ticket' AND objectid = {$this->id} AND state = 2";
-            if($DB->num_rows($sql))
-            {
-                $r = $DB->select($sql);
-                $r = $r[0];
-                $this->total_time = $r["time"]/60/60;
+            if ($valid_cache === false) {
+
+                $sql = "SELECT * FROM tickets WHERE id = {$id}";
+                if($DB->num_rows($sql))
+                {
+                    $r = $DB->select($sql);
+                    $r = $r[0];
+                    $this->id 				= (int)$r["id"];
+                    $this->title 			= $r["title"];
+                    $this->crtdate		    = $r["crtdate"];
+                    $this->crtuser		    = new User($r["crtuser"]);
+                    $this->duedate		    = $r["duedate"];
+                    $this->closedate		= $r["closedate"];
+                    $this->closeuser		= new User($r["closeuser"]);
+                    $this->editdate		    = $r["editdate"];
+                    $this->number		    = $r["number"];
+                    $this->customer		    = new BusinessContact((int)$r["customer"]);
+                    $this->customer_cp	    = new ContactPerson((int)$r["customer_cp"]);
+                    $this->assigned_user	= new User($r["assigned_user"]);
+                    $this->assigned_group	= new Group($r["assigned_group"]);
+                    $this->state 			= new TicketState((int)$r["state"]);
+                    $this->category	        = new TicketCategory((int)$r["category"]);
+                    $this->priority			= new TicketPriority((int)$r["priority"]);
+                    $this->source   	    = $r["source"];
+                    $this->planned_time   	= (float)$r["planned_time"];
+                }
+
+                Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+
             }
+        } else {
+            $this->crtuser	        = new User(0);
+            $this->closeuser        = new User(0);
+            $this->customer	        = new BusinessContact(0);
+            $this->customer_cp	    = new ContactPerson(0);
+            $this->assigned_user    = new User(0);
+            $this->assigned_group   = new Group(0);
+            $this->category         = new TicketCategory(0);
+            $this->priority         = new TicketPriority(0);
+            $this->state            = new TicketState(0);
         }
     }
 
@@ -130,8 +158,7 @@ class Ticket {
             planned_time	= {$this->planned_time}, 
             source		    = {$this->source} 
             WHERE id = {$this->id}";
-//             var_dump($sql);
-            return $DB->no_result($sql);
+            $res = $DB->no_result($sql);
         } else {
             if ($this->crtuser)
                 $tmp_crtuser = $this->crtuser->getId();
@@ -147,18 +174,22 @@ class Ticket {
               {$this->customer_cp->getId()}, {$this->assigned_user->getId()}, {$this->assigned_group->getId()}, {$this->state->getId()}, {$this->category->getId()}, {$this->priority->getId()},
               {$this->source}, {$now}, $tmp_crtuser, {$this->planned_time})";
             $res = $DB->no_result($sql);
-//             echo $sql . "</br>";
             if ($res) {
                 $sql = "SELECT max(id) id FROM tickets WHERE title = '{$this->title}'";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
                 $this->crtdate = $now;
                 $this->crtuser = new User($tmp_crtuser);
-                return true;
-            } else {
-                return false;
             }
         }
+
+        if ($res)
+        {
+            Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            return true;
+        }
+        else
+            return false;
     }
     
     /**
@@ -175,6 +206,7 @@ class Ticket {
                     state = 1 
     				WHERE id = {$this->id}";
             if ($DB->no_result($sql)) {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
                 Notification::removeForObject("Ticket", $this->getId());
                 unset($this);
                 return true;
@@ -820,6 +852,16 @@ class Ticket {
      */
     public function getTotal_time()
     {
+        global $DB;
+        if ($this->total_time == 0){
+            $sql = "SELECT SUM(stoptime-starttime) as time FROM timers WHERE module = 'Ticket' AND objectid = {$this->id} AND state = 2";
+            if($DB->num_rows($sql))
+            {
+                $r = $DB->select($sql);
+                $r = $r[0];
+                $this->total_time = $r["time"]/60/60;
+            }
+        }
         return $this->total_time;
     }
 

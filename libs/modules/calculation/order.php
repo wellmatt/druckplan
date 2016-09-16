@@ -130,8 +130,10 @@ $(document).ready(function() {
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var iMin = document.getElementById('ajax_date_min').value;
 			var iMax = document.getElementById('ajax_date_max').value;
+            var product = document.getElementById('ajax_product').value;
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
+            aoData.push( { "name": "product", "value": product, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -142,7 +144,6 @@ $(document).ready(function() {
 		            null,
 		            null,
 		            null,
-		            { "sortable": false },
 		            null,
 		            null,
 		            { "sortable": false }
@@ -185,9 +186,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
             	$('#orders').dataTable().fnDraw();
@@ -198,9 +196,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.svg",
-            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
             	$('#orders').dataTable().fnDraw();
@@ -231,17 +226,31 @@ $(document).ready(function() {
             <div class="panel-body">
                 <table>
                     <tr align="left">
-                        <td>Datum Filter:&nbsp;&nbsp;</td>
-                        <td valign="left">
-                            <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                            <input name="date_min" id="date_min" style="width:70px;" class="text"
-                                   onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                        </td>
-                        <td valign="left">
-                            <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                            bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
-                                        onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                        </td>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Produkt</label>
+                            <div class="col-sm-10">
+                                <select name="ajax_product" id="ajax_product" class="form-control" onchange="$('#orders').dataTable().fnDraw();">
+                                    <option value="0">-- Alle --</option>
+                                    <?php
+                                    foreach (Product::getAllProducts() as $item) {
+                                        echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+                        <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Datum von</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="date_min" id="date_min" placeholder="">
+                            </div>
+                            <label for="" class="col-sm-2 control-label">bis</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="date_max" id="date_max" placeholder="">
+                            </div>
+                        </div>
                     </tr>
                 </table>
             </div>
@@ -252,13 +261,12 @@ $(document).ready(function() {
         <table id="orders" class="table table-hover">
 	        <thead>
                 <tr>
-                    <th width="10"><?=$_LANG->get('ID')?></th>
-                    <th width="100"><?=$_LANG->get('Nummer')?></th>
+                    <th><?=$_LANG->get('ID')?></th>
+                    <th><?=$_LANG->get('Nummer')?></th>
                     <th><?=$_LANG->get('Titel')?></th>
-                    <th width="200"><?=$_LANG->get('Fremdleistungen')?></th>
-                    <th width="90"><?=$_LANG->get('Angelegt am')?></th>
-                    <th width="150"><?=$_LANG->get('Status')?></th>
-                    <th width="80"><?=$_LANG->get('Optionen')?></th>
+                    <th><?=$_LANG->get('Produkt')?></th>
+                    <th><?=$_LANG->get('Angelegt am')?></th>
+                    <th><?=$_LANG->get('Optionen')?></th>
                 </tr>
 	        </thead>
         </table>

@@ -193,7 +193,15 @@ if ($_USER == false)
 <script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.categories.js"></script>
 <!-- /FLOT -->
 
-<title>Druckplan - <?=$_USER->getClient()->getName()?></title>
+<?php
+if ($_REQUEST["pagetitle"]){
+    $_SESSION["pagetitle"] = "Contilas > ".$_REQUEST["pagetitle"];
+}
+if (!$_SESSION["pagetitle"] || $_SESSION["pagetitle"] == null){
+    $_SESSION["pagetitle"] = "Contilas > ".$_USER->getClient()->getName();
+}
+?>
+<title><?php echo $_SESSION["pagetitle"];?></title>
 </head>
 <body>
 <div id="active_timer_ObjectID" style="display:none;">0</div>
@@ -269,7 +277,7 @@ function sleep(millis, callback) {
             
             <!-- Ticketliste -->
             <li>
-              <a href="index.php?page=libs/modules/tickets/ticket.php"><i class="fa"></i>&nbsp;<span class="hidden-sm">Ticketliste</span></a>
+              <a href="index.php?page=libs/modules/tickets/ticket.php&pagetitle=Tickets"><i class="fa"></i>&nbsp;<span class="hidden-sm">Ticketliste</span></a>
             </li>
             <!-- /Ticketliste -->
           
@@ -293,7 +301,7 @@ function sleep(millis, callback) {
             </script>
             
             <form class="navbar-form-expanded navbar-form navbar-left visible-lg-block visible-md-block visible-xs-block" role="search" 
-            action="index.php?page=libs/modules/search/search.php" method="post" name="mainsearch_form" id="mainsearch_form" onsubmit="return checkSearch()">
+            action="index.php?page=libs/modules/search/search.php&pagetitle=Suche" method="post" name="mainsearch_form" id="mainsearch_form" onsubmit="return checkSearch()">
               <div class="input-group">
                 <input type="text" id="mainsearch_string" name="mainsearch_string"  class="form-control" data-width="80px" data-width-expanded="170px" 
                 value="<?=$_REQUEST["mainsearch_string"] ?>" placeholder="Search..." name="query">
@@ -326,7 +334,7 @@ function sleep(millis, callback) {
                         <!-- divider -->
                         <li class="divider"></li>
                         <li style="padding-bottom:10px;padding-top:10px;display:block;position:relative;">
-                          <a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?=$tmp_ticket_home->getId()?>" style="padding-bottom:0px;padding-top:5px;display:block;position:relative;">
+                          <a href="index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?=$tmp_ticket_home->getId()?>&pagetitle=Ticket" style="padding-bottom:0px;padding-top:5px;display:block;position:relative;">
                             <span id="ticket_timer_home" class="timer duration btn btn-warning" data-duration="0" style="padding-bottom:0px;padding-top:0px;display:block;position:relative;"></span>
                           </a>
 		                  <input id="ticket_timer_timestamp_home" name="ticket_timer_timestamp_home" type="hidden" value="<?php echo $timer_start_home;?>"/>
@@ -396,7 +404,7 @@ function sleep(millis, callback) {
                         
             <!-- calendar -->
             <li id='li_calendar' class="dropdown-grid">
-              <a href="index.php?page=libs/modules/organizer/calendar.php"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span></a>
+              <a href="index.php?page=libs/modules/organizer/calendar.php&pagetitle=Kalender"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span></a>
             </li>
             <!-- /calendar -->
 
@@ -423,7 +431,7 @@ function sleep(millis, callback) {
                     });
                 }
             </script>
-              <a href="index.php?page=libs/modules/mail/mail.overview.php"><i class="fa fa-inbox"></i>&nbsp;<span class="hidden-sm">Mails&nbsp;</span><span id="nav_mail_count" class="badge"></span></a>
+              <a href="index.php?page=libs/modules/mail/mail.overview.php&pagetitle=Mail"><i class="fa fa-inbox"></i>&nbsp;<span class="hidden-sm">Mails&nbsp;</span><span id="nav_mail_count" class="badge"></span></a>
             </li>
             <!-- /mails -->
 
