@@ -210,10 +210,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
                                                     ?>
@@ -246,10 +247,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
 
@@ -313,10 +315,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
 
@@ -477,10 +480,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
 
@@ -656,10 +660,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
 
@@ -704,10 +709,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
                                                     ?>
@@ -740,10 +746,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
 
@@ -773,10 +780,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
                                                     ?>
@@ -797,10 +805,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
                                                     ?>
@@ -821,10 +830,11 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_manprice_'.$x.'" value="'.printPrice($mach->getPrice()).'" class="form-control">';
                                                         echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         if($mach->getMachineGroupObject()->getType() == MachineGroup::TYPE_EXTERN){
-                                                            echo '<br> &nbsp; ';
-                                                            echo $_LANG->get('EK').':  &ensp; <input name="mach_supplierprice_'.$x.'" ';
-                                                            echo 'class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
-                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" > '.$_USER->getClient()->getCurrency();
+                                                            echo '<div class="col-md-4"><div class="form-group">';
+                                                            echo '<label class="control-label">EK</label><div class="input-group">';
+                                                            echo '<input name="mach_supplierprice_'.$x.'" class="form-control" title="'.$_LANG->get('Einkaufspreis').'"';
+                                                            echo 'value="'.printPrice($mach->getSupplierPrice()).'" type="text" >';
+                                                            echo '<span class="input-group-addon">€</span></div></div></div>';
                                                         }
                                                     }
 
