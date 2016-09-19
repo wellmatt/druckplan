@@ -217,7 +217,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                           <?php } ?>
 
                                                           <li class="list-group-item">
-                                                              <span class="badge"><?php echo $me->getMachine()->getTimeBase();?> min.</span>
+                                                              <span class="badge"><?=printPrice($me->getMachine()->getTimeBase())?> min.</span>
                                                               Grundzeit
                                                           </li>
                                                           <?php if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {?>
@@ -227,7 +227,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                               </li>
                                                           <?php } ?>
                                                           <li class="list-group-item">
-                                                              <span class="badge"><?php echo $me->getTime();?></span>
+                                                              <span class="badge"><?=printPrice($me->getTime())?> min.</span>
                                                               Gesamtzeit
                                                           </li>
 

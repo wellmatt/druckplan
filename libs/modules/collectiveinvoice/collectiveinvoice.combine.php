@@ -143,29 +143,29 @@ $(document).ready(function() {
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	$('#date_min').datepicker(
-		{
-			showOtherMonths: true,
-			selectOtherMonths: true,
-			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+        {
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            dateFormat: 'dd.mm.yy',
+//            showOn: "button",
+//			buttonImage: "images/icons/calendar-blue.svg",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
-            	$('#comb_colinv').dataTable().fnDraw();
+                $('#colinv').dataTable().fnDraw();
             }
 	});
 	$('#date_max').datepicker(
-		{
-			showOtherMonths: true,
-			selectOtherMonths: true,
-			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+        {
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            dateFormat: 'dd.mm.yy',
+//            showOn: "button",
+//			buttonImage: "images/icons/calendar-blue.svg",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
-            	$('#comb_colinv').dataTable().fnDraw();
+                $('#colinv').dataTable().fnDraw();
             }
 	});
 	$('#customer').change(function(){	
@@ -197,59 +197,55 @@ $(document).ready(function() {
                           Kopfdaten werden vom ersten ausgewählten Vorgang übernommen!
                   </h3>
               </div>
-              <div class="panel-body">
 
-                  <div class="table-responsive">
-                      <table class="table table-hover">
-                          <tr align="left">
-                              <td>Datum Filter:&nbsp;&nbsp;</td>
-                              <td valign="left">
+                  <div class="panel-body">
+                      <div class="form-group">
+
+                              <label for="" class="col-sm-2 control-label">Datum Filter &nbsp;&nbsp;Von:</label>
+                              <div class="col-sm-2">
                                   <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                                  <input name="date_min" id="date_min" style="width:70px;" class="text"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                              </td>
-                              <td valign="left">
+                                  <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+                              </div>
+
+                              <label for="" class="col-sm-1 control-label">Bis:</label>
+                              <div class="col-sm-2">
                                   <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                                  bis: <input name="date_max" id="date_max" style="width:70px;" class="text"
-                                              onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                              </td>
-                          </tr>
-                          <tr align="left">
-                              <td>Kunde:&nbsp;&nbsp;</td>
-                              <td valign="left">
-                                  <input name="ajax_customer" id="ajax_customer" type="hidden"/>
-                                  <select name="customer" id="customer" style="width:160px">
-                                      <option value="" selected></option>
-                                      <?php
-                                      foreach ($customers as $customer){
-                                          echo '<option value="'.$customer->getId().'"';
-                                          echo '>'.$customer->getNameAsLine().'</option>';
-                                      }
-                                      ?>
-                                  </select>
-                              </td>
-                          </tr>
-                      </table>
+                                  <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+                              </div>
+                        </div>
+                      <label for="" class="col-sm-2 control-label">Kunde:</label>
+                      <div class="col-sm-3">
+                          <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                              <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+                              <?php
+                              foreach ($customers as $customer){
+                                  echo '<option value="'.$customer->getId().'"';
+                                  echo '>'.$customer->getNameAsLine().'</option>';
+                              }
+                              ?>
+                          </select>
+                      </div>
+
                   </div>
+
 
                   <br>
-                  <div class="table-responsive">
-                      <table  id="comb_colinv" class="table table-hover">
-                          <thead>
-                          <tr>
-                              <th width="10"><?=$_LANG->get('ID')?></th>
-                              <th width="100"><?=$_LANG->get('Nummer')?></th>
-                              <th><?=$_LANG->get('Kunde')?></th>
-                              <th><?=$_LANG->get('Titel')?></th>
-                              <th width="90"><?=$_LANG->get('Angelegt am')?></th>
-                              <th width="150"><?=$_LANG->get('Status')?></th>
-                          </tr>
-                          </thead>
-                      </table>
-                  </div>
+              <div class="table-responsive">
+                  <table id="colinv" class="table table-hover" >
+                      <thead>
+                      <tr>
+                          <th><?=$_LANG->get('ID')?></th>
+                          <th><?=$_LANG->get('Nummer')?></th>
+                          <th><?=$_LANG->get('Kunde')?></th>
+                          <th><?=$_LANG->get('Titel')?></th>
+                          <th><?=$_LANG->get('Angelegt am')?></th>
+                          <th><?=$_LANG->get('Status')?></th>
+
+                      </tr>
+                      </thead>
+                  </table>
               </div>
-              </form>
+
               <br>
  	  </div>
- </div>
-</div>
+  </div>
