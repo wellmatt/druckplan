@@ -93,6 +93,7 @@ class Machine
     private $timeStacker = 0;
     private $cutprice = 0;
     private $maxstacksize = 0;
+    private $inlineheften = 0;
 	
 	private $internaltext;
 	private $hersteller;
@@ -170,6 +171,7 @@ class Machine
                 $this->color = $r["color"];
                 $this->maxstacksize = $r["maxstacksize"];
                 $this->machurl = $r["machurl"];
+                $this->inlineheften = $r["inlineheften"];
                 
                 // Arbeiter
                 $tmp_qusrs = Array();
@@ -399,6 +401,7 @@ class Machine
                 breaks_time = {$this->breaks_time},
                 umschl_umst = {$this->umschlUmst},
                 maxstacksize = {$this->maxstacksize},
+                inlineheften = {$this->inlineheften},
                 machurl = '{$this->machurl}',
                 color = '{$this->color}', ";
         
@@ -1738,6 +1741,22 @@ class Machine
     public function setMachurl($machurl)
     {
         $this->machurl = $machurl;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInlineheften()
+    {
+        return $this->inlineheften;
+    }
+
+    /**
+     * @param int $inlineheften
+     */
+    public function setInlineheften($inlineheften)
+    {
+        $this->inlineheften = $inlineheften;
     }
 }
 ?>

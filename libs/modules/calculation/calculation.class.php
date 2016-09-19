@@ -445,7 +445,7 @@ class Calculation
         	$DB->no_result($sql);
 
         	if (count($this->articleamounts) > 0){
-	        	$sql = "INSERT INTO orders_articles (calc_id, article_id, amount, scale) VALUES";
+	        	$sql = "INSERT INTO orders_articles (calc_id, article_id, amount, scale) VALUES ";
 	        	foreach ($this->articleamounts as $key => $value){
 	        		$sql .= "( {$this->id}, {$key} , {$value} , {$this->articlescales[$key]}), ";
 	        	}

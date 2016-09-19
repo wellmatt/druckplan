@@ -1163,6 +1163,7 @@ if((int)$_REQUEST["step"] == 3){
          * TODO: Muss hier nicht eher nach dem Preistyp geschaut werden, nicht nach dem Maschinentyp
          * 		 "Preis variabel" mit Maschinentyp "Andere" wird immer mit 0 ueberschrieben
          * ODER: Es muss die Funktion getMachinePrice angepasst werden
+		 * DONE: für TYP Andere wird bei Preistyp variable nun die Eingabe übernommen
          */
 
 		// Preise kalkulieren

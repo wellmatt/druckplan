@@ -132,9 +132,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-//            showOn: "button",
-//			buttonImage: "images/icons/calendar-blue.svg",
-//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
             	$('#colinv').dataTable().fnDraw();
@@ -145,9 +142,6 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-//            showOn: "button",
-//			buttonImage: "images/icons/calendar-blue.svg",
-//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
             	$('#colinv').dataTable().fnDraw();

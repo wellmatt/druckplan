@@ -110,6 +110,8 @@ if($_REQUEST["subexec"] == "save")
     $machine->setColor($_REQUEST["machine_color"]);
 	$machine->setMaxstacksize($_REQUEST["machine_maxstacksize"]);
 
+	$machine->setInlineheften((int)$_REQUEST["inlineheften"]);
+
     $quser_list = Array();
     if ($_REQUEST["qusr"]){
         foreach ($_REQUEST["qusr"] as $qusr)
@@ -222,6 +224,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften').style.display = 'none';
 
 	    showHideClpr(0); <?/*gln*/?>
 
@@ -247,6 +250,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften').style.display = '';
 	    <?/*gln*/?>
 		if (document.getElementById('machine_pricebase').value == <?=Machine::PRICE_MINUTE?> )
 	    	showHideClpr(<?=Machine::PRICE_MINUTE?>);
@@ -274,6 +278,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_LAGENFALZ?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -297,6 +302,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_SAMMELHEFTER?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -320,6 +326,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = '';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_FOLDER?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -343,6 +350,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = '';
 	    document.getElementById('tr_machine_breaks_time').style.display = '';
+		document.getElementById('tr_machine_inlineheften').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -366,6 +374,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_time_stacker').style.display = 'none';
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	}
 }
@@ -1019,50 +1028,58 @@ echo $quickmove->generate();
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div id="tr_machine_chromaticity" class="form-group"
-								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
-								<div class="form-group" id="tr_machine_finish"
-									 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
-									<label for="" class="col-sm-3 control-label">Option Lack verf&uuml;gbar</label>
-									<div class="col-sm-2">
-										<input name="finish" class="form-control" value="1"
-											   type="checkbox" <? if ($machine->getFinish() == 1) echo "checked"; ?>>
+							<div id="tr_machine_inlineheften" class="form-group"
+								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
+								<label for="" class="col-sm-3 control-label">Inline Heften verfügbar</label>
+								<div class="col-sm-9">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" <?php if ($machine->getInlineheften()) echo ' checked ';?> name="inlineheften" id="inlineheften" value="1">
+										</label>
 									</div>
-									<label for="" class="col-sm-3 control-label">Preis Lackplatte</label>
-									<div class="col-sm-3">
-										<div class="input-group">
-											<input name="finish_plate_cost" class="form-control"
-												   value="<?= printPrice($machine->getFinishPlateCost()) ?>">
+								</div>
+							</div>
+							<div class="form-group" id="tr_machine_finish"
+								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
+								<label for="" class="col-sm-3 control-label">Option Lack verf&uuml;gbar</label>
+								<div class="col-sm-2">
+									<input name="finish" class="form-control" value="1"
+										   type="checkbox" <? if ($machine->getFinish() == 1) echo "checked"; ?>>
+								</div>
+								<label for="" class="col-sm-3 control-label">Preis Lackplatte</label>
+								<div class="col-sm-3">
+									<div class="input-group">
+										<input name="finish_plate_cost" class="form-control"
+											   value="<?= printPrice($machine->getFinishPlateCost()) ?>">
 											<span
 												class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
-										</div>
 									</div>
 								</div>
-								<? /* gln 13.05.2014, Umschlagen/Umstuelpen */ ?>
-								<div class="form-group" id="tr_machine_umschl_umst"
-									 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;" ?>">
-									<label for="" class="col-sm-3 control-label">Option
-										umschlagen/umst&uuml;lpen</label>
-									<div class="col-sm-2">
-										<input name="umschl_umst" value="1" class="form-control"
-											   type="checkbox" <? if ($machine->getUmschlUmst() == 1) echo "checked"; ?>>
-									</div>
+							</div>
+							<? /* gln 13.05.2014, Umschlagen/Umstuelpen */ ?>
+							<div class="form-group" id="tr_machine_umschl_umst"
+								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;" ?>">
+								<label for="" class="col-sm-3 control-label">Option
+									umschlagen/umst&uuml;lpen</label>
+								<div class="col-sm-2">
+									<input name="umschl_umst" value="1" class="form-control"
+										   type="checkbox" <? if ($machine->getUmschlUmst() == 1) echo "checked"; ?>>
 								</div>
-								<? /* ascherer 19.08.14, Schneidemaschine */ ?>
-								<div class="form-group" id="tr_machine_cut_price"
-									 style="display:<? if ($machine->getType() == Machine::TYPE_CUTTER) echo ""; else echo "none;" ?>">
-									<label for="" class="col-sm-3 control-label">Schnittpreis</label>
-									<div class="col-sm-9">
-										<input name="cut_price" class="form-control"
-											   value="<?= printPrice($machine->getCutPrice(), 4) ?>">
-									</div>
+							</div>
+							<? /* ascherer 19.08.14, Schneidemaschine */ ?>
+							<div class="form-group" id="tr_machine_cut_price"
+								 style="display:<? if ($machine->getType() == Machine::TYPE_CUTTER) echo ""; else echo "none;" ?>">
+								<label for="" class="col-sm-3 control-label">Schnittpreis</label>
+								<div class="col-sm-9">
+									<input name="cut_price" class="form-control"
+										   value="<?= printPrice($machine->getCutPrice(), 4) ?>">
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
+			<div class="panel panel-default" id="tr_machine_chromaticity" style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
 				  <div class="panel-heading">
 						<h3 class="panel-title">
 							Verfügbare Farbigkeit
@@ -1122,7 +1139,6 @@ echo $quickmove->generate();
 						  *CPC = Cost per Click(Clickpreis)
 					  </div>
 				  </div>
-			</div>
 			</div>
 			<div class="panel panel-default">
 				<div class="panel-heading">
