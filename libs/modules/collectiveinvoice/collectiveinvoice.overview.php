@@ -168,8 +168,8 @@ $(document).ready(function() {
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
 						<span class="glyphicons glyphicons-plus"></span>
-						<?=$_LANG->get('Vorgang hinzuf&uuml;gen') ?>
-					</button>
+						<?=$_LANG->get('Vorgang hinzuf&uuml;gen')?>
+					</button>&nbsp;&nbsp;
 				</span>
 			</h3>
 		</div>
@@ -177,12 +177,12 @@ $(document).ready(function() {
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						Filter
+						Filter Optionen
 					</h3>
 				</div>
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Datum Filter</label>
+						<label for="" class="col-sm-2 control-label">Datum Filter &nbsp;&nbsp;Von:</label>
 						<div class="col-sm-2">
 							<input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
 							<input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
@@ -210,7 +210,7 @@ $(document).ready(function() {
 			</div>
 		</div>
 		<div class="table-responsive">
-			<table id="colinv" class="table table-hover" style="width: 100%">
+			<table id="colinv" class="table table-hover" >
 				<thead>
 					<tr>
 						<th><?=$_LANG->get('ID')?></th>

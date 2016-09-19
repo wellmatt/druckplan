@@ -540,156 +540,196 @@ echo $quickmove->generate();
 					  </div>
 				  </div>
 			  </div>
-			  <div class="row">
-				  <div class="col-md-6">
-					  <div class="panel panel-default">
-						  <div class="panel-heading">
-							  <h3 class="panel-title">Preisstaffeln VK</h3>
-						  </div>
-						  <div class="panel-body">
-							  <input type="hidden" name="count_quantity" id="count_quantity" value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
-							  <b>VK-Preisstaffeln</b>
-							  <div class="table-responsive">
-							  	<table  id="table-prices" class="table table-hover">
-							  		<thead>
-										<tr>
-											<th><?=$_LANG->get('Nr.')?></th>
-											<th><?=$_LANG->get('Von')?></th>
-											<th><?=$_LANG->get('Bis')?></th>
-											<th><?=$_LANG->get('Preis')?>*</th>
-											<th></th>
-										</tr>
-							  		</thead>
-									<?
-									$x = count($allprices);
-									if ($x < 1){
-										//$allprices[] = new Array
-										$x++;
-									}
-									for ($y=0; $y < $x ; $y++){ ?>
-							  		<tbody>
-										<tr>
-											<td>
-												<div class="form-group">
-													<div class="col-sm-12">
-														<?=$y+1?>
-													</div>
-												</div>
-											</td>
-											<td>
-												<div class="col-sm-12">
-													<div class="input-group">
-														<input name="article_price_min_<?=$y?>" class="form-control" type="text" value="<?=$allprices[$y][sep_min]?>">
-														<span class="input-group-addon">Stk.</span>
-													</div>
-												</div>
-											</td>
-											<td>
-												<div class="col-sm-12">
-													<div class="input-group">
-														<input name="article_price_max_<?=$y?>" class="form-control" type="text" value="<?=$allprices[$y][sep_max]?>">
-														<span class="input-group-addon">Stk.</span>
-													</div>
-												</div>
-											</td>
-											<td>
-												<div class="col-sm-12">
-													<div class="input-group">
-														<input name="article_price_price_<?=$y?>" class="form-control" type="text" value="<?=printPrice($allprices[$y][sep_price])?>">
-														<span class="input-group-addon">€</span>
-													</div>
-												</div>
-											</td>
-											<td>
-												<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-													echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addPriceRow()"></span>';
-												}?>
-											</td>
-										</tr>
-							  		</tbody>
-							  	</table>
-								  <? } //Ende alle Preis-Staffeln?>
-							  </div>
-							  <br />* <?=$_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
-							  <br />* <?=$_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis')?>
-						  </div>
-					  </div>
+			  <div class="panel panel-default">
+				  <div class="panel-heading">
+					  <h3 class="panel-title">Preisstaffeln VK</h3>
 				  </div>
-				  <div class="col-md-6">
-					  <div class="panel panel-default">
-						  <div class="panel-heading">
-							  <h3 class="panel-title">Preisstaffeln EK</h3>
-						  </div>
-						  <input type="hidden" name="count_quantity_cost"	id="count_quantity_cost" value="<? if(count($allcostprices) > 0) echo count($allcostprices); else echo "1";?>">
-						  <table id="table_prices_cost" class="table table-condensed table-hover">
+				  <div class="panel-body">
+					  <input type="hidden" name="count_quantity" id="count_quantity"
+							 value="<? if (count($allprices) > 0) echo count($allprices); else echo "1"; ?>">
+					  <b>VK-Preisstaffeln</b>
+					  <div class="table-responsive">
+						  <table width="100%" id="table-prices" class="table table-hover">
 							  <thead>
 							  <tr>
-								  <th><?=$_LANG->get('Nr.')?></th>
-								  <th><?=$_LANG->get('Von')?></th>
-								  <th><?=$_LANG->get('Bis')?></th>
-								  <th><?=$_LANG->get('Lieferant')?></th>
-								  <th><?=$_LANG->get('Lief-Art.Nr.')?></th>
-								  <th><?=$_LANG->get('Preis')?>*</th>
+								  <th><?= $_LANG->get('Nr.') ?></th>
+								  <th><?= $_LANG->get('Von') ?></th>
+								  <th><?= $_LANG->get('Bis') ?></th>
+								  <th><?= $_LANG->get('Preis') ?>*</th>
+								  <th></th>
 							  </tr>
 							  </thead>
 							  <tbody>
 							  <?
-							  $x = count($allcostprices);
-							  if ($x < 1){
+							  $x = count($allprices);
+							  if ($x < 1) {
 								  //$allprices[] = new Array
 								  $x++;
 							  }
-							  for ($y=0; $y < $x ; $y++){ ?>
+							  for ($y = 0; $y < $x; $y++) { ?>
 								  <tr>
-									  <td><?=$y+1?></td>
-									  <td>
-										  <input name="article_costprice_min_<?=$y?>" class="text" type="text"
-												 value="<?=$allcostprices[$y][sep_min]?>" style="width: 50px">
-										  <?=$_LANG->get('Stk.')?>
+									  <td width="5%">
+										  <div class="form-group">
+											  <div class="col-sm-12">
+												  <?= $y + 1 ?>
+											  </div>
+										  </div>
 									  </td>
-									  <td>
-										  <input name="article_costprice_max_<?=$y?>" class="text" type="text"
-												 value="<?=$allcostprices[$y][sep_max]?>" style="width: 50px">
-										  <?=$_LANG->get('Stk.')?>
+									  <td width="30%">
+										  <div class="form-group">
+											  <div class="col-sm-12">
+												  <div class="input-group">
+													  <input name="article_price_min_<?= $y ?>" class="form-control"
+															 type="text" value="<?= $allprices[$y][sep_min] ?>">
+													  <span class="input-group-addon">Stk.</span>
+												  </div>
+											  </div>
+										  </div>
 									  </td>
-									  <td>
-										  <select name="article_costprice_supplier_<?=$y?>" style="width:160px">
-											  <option value="0">-> bitte wählen <-</option>
-											  <?php
-											  foreach ($allsupplier as $supplier){
-												  if ($article->getId()>0){
-													  if ($allcostprices[$y]['supplier'] == $supplier->getId()){
-														  echo '<option value="'.$supplier->getId().'" selected>'.$supplier->getNameAsLine().'</option>';
-													  } else {
-														  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
-													  }
-												  } else {
-													  echo '<option value="'.$supplier->getId().'">'.$supplier->getNameAsLine().'</option>';
-												  }
-											  }
-											  ?>
-										  </select>
+									  <td width="30%">
+										  <div class="form-group">
+											  <div class="col-sm-12">
+												  <div class="input-group">
+													  <input name="article_price_max_<?= $y ?>" class="form-control"
+															 type="text" value="<?= $allprices[$y][sep_max] ?>">
+													  <span class="input-group-addon">Stk.</span>
+												  </div>
+											  </div>
+										  </div>
 									  </td>
-									  <td>
-										  <input name="article_costprice_artnum_<?=$y?>" class="text" type="text" value="<?=$allcostprices[$y][supplier_artnum]?>" style="width: 100px">
+									  <td width="30%">
+										  <div class="form-group">
+											  <div class="col-sm-12">
+												  <div class="input-group">
+													  <input name="article_price_price_<?= $y ?>" class="form-control"
+															 type="text"
+															 value="<?= printPrice($allprices[$y][sep_price]) ?>">
+													  <span class="input-group-addon">€</span>
+												  </div>
+											  </div>
+										  </div>
 									  </td>
-									  <td><input name="article_costprice_price_<?=$y?>" class="text" type="text"
-												 value="<?=printPrice($allcostprices[$y][sep_price])?>"
-												 style="width: 50px">
-										  <?=$_USER->getClient()->getCurrency()?>
-										  &nbsp;&nbsp;&nbsp;
-										  <? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-											  echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addCostRow()"></span>';
-										  }?>
+									  <td width="5%">
+										  <? if ($y == $x - 1) { //Plus-Knopf nur beim letzten anzeigen
+											  echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addPriceRow()"></span>';
+										  } ?>
 									  </td>
 								  </tr>
 							  <? } //Ende alle Preis-Staffeln?>
 							  </tbody>
 						  </table>
-						  <br />* <?=$_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
 					  </div>
+					  <br/>* <?= $_LANG->get('VK-Staffelpreis wird gel&ouml;scht, falls Preis = 0') ?>
+					  <br/>* <?= $_LANG->get('Preis entspricht dem Einzelstückpreis / Bei Kalkulationsartikeln entspricht Preis dem Endpreis') ?>
 				  </div>
 			  </div>
+
+
+			  <div class="panel panel-default">
+				  <div class="panel-heading">
+					  <h3 class="panel-title">Preisstaffeln EK</h3>
+				  </div>
+				  <input type="hidden" name="count_quantity_cost" id="count_quantity_cost"
+						 value="<? if (count($allcostprices) > 0) echo count($allcostprices); else echo "1"; ?>">
+				  <table id="table_prices_cost" class="table table-condensed table-hover">
+					  <thead>
+					  <tr>
+						  <th><?= $_LANG->get('Nr.') ?></th>
+						  <th><?= $_LANG->get('Von') ?></th>
+						  <th><?= $_LANG->get('Bis') ?></th>
+						  <th><?= $_LANG->get('Lieferant') ?></th>
+						  <th><?= $_LANG->get('Lief-Art.Nr.') ?></th>
+						  <th><?= $_LANG->get('Preis') ?>*</th>
+						  <th></th>
+					  </tr>
+					  </thead>
+					  <tbody>
+					  <?
+					  $x = count($allcostprices);
+					  if ($x < 1) {
+						  //$allprices[] = new Array
+						  $x++;
+					  }
+					  for ($y = 0; $y < $x; $y++) { ?>
+						  <tr>
+							  <td><?= $y + 1 ?></td>
+							  <td>
+								  <div class="form-group">
+									  <div class="col-sm-12">
+										  <div class="input-group">
+											  <input name="article_costprice_min_<?= $y ?>" class="form-control" type="text" value="<?= $allcostprices[$y][sep_min] ?>">
+											  <span class="input-group-addon">Stk</span>
+										  </div>
+									  </div>
+								  </div>
+							  </td>
+							  <td>
+								  <div class="form-group">
+									  <div class="col-sm-12">
+										  <div class="input-group">
+											  <input name="article_costprice_max_<?= $y ?>" class="form-control" type="text" value="<?= $allcostprices[$y][sep_max] ?>">
+											  <span class="input-group-addon">Stk</span>
+										  </div>
+									  </div>
+								  </div>
+							  </td>
+							  <td>
+								  <div class="form-group">
+									  <div class="col-sm-12">
+										  <div class="input-group">
+											  <select name="article_costprice_supplier_<?= $y ?>" class="form-control">
+												  <option value="0">-> bitte wählen <-</option>
+												  <?php
+												  foreach ($allsupplier as $supplier) {
+													  if ($article->getId() > 0) {
+														  if ($allcostprices[$y]['supplier'] == $supplier->getId()) {
+															  echo '<option value="' . $supplier->getId() . '" selected>' . $supplier->getNameAsLine() . '</option>';
+														  } else {
+															  echo '<option value="' . $supplier->getId() . '">' . $supplier->getNameAsLine() . '</option>';
+														  }
+													  } else {
+														  echo '<option value="' . $supplier->getId() . '">' . $supplier->getNameAsLine() . '</option>';
+													  }
+												  }
+												  ?>
+											  </select>
+										  </div>
+									  </div>
+								  </div>
+							  </td>
+							  <td>
+								  <div class="form-group">
+									  <div class="col-sm-12">
+										  <div class="input-group">
+											  <input name="article_costprice_artnum_<?= $y ?>" class="form-control" type="text" value="<?= $allcostprices[$y][supplier_artnum] ?>" >
+										  </div>
+									  </div>
+								  </div>
+
+							  </td>
+							  <td>
+								  <div class="form-group">
+									  <div class="col-sm-12">
+										  <div class="input-group">
+											  <input name="article_costprice_price_<?= $y ?>" class="form-control" type="text" value="<?= printPrice($allcostprices[$y][sep_price]) ?>">
+											  <span class="input-group-addon">€</span>
+										  </div>
+									  </div>
+								  </div>
+							  </td>
+							  <td>
+								  <? if ($y == $x - 1) { //Plus-Knopf nur beim letzten anzeigen
+									  echo '<span class="glyphicons glyphicons-plus pointer icon-link" onclick="addCostRow()"></span>';
+								  } ?>
+							  </td>
+						  </tr>
+					  <? } //Ende alle Preis-Staffeln?>
+					  </tbody>
+				  </table>
+				  <br/>* <?= $_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0') ?>
+			  </div>
+
+
 			  <div class="row">
 				  <div class="col-md-6" id="qusers" style="<?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
 					  <div class="panel panel-default">
@@ -820,15 +860,13 @@ echo $quickmove->generate();
     {
         var obj = document.getElementById('table-prices');
         var count = parseInt(document.getElementById('count_quantity').value) + 1;
-        var insert = '<tr><td class="content_row_clear">'+count+'</td>';
+        var insert = '<tr><td>'+count+'</td>';
         insert += '<td>';
-        insert += '<div class="col-sm-12"><div class="input-group"><input name="article_price_min_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div>';
-        insert += '</td>';
-        insert += '<td>';
-		insert += '<div class="col-sm-12"><div class="input-group"><input name="article_price_max_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div>';
-        insert += '</td>';
-        insert += '<td>';
-		insert += '<div class="col-sm-12"><div class="input-group"><input name="article_price_price_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">€</span></div></div>';
+        insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_price_min_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div></div>';
+        insert += '</td><td>';
+		insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_price_max_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div></div>';
+        insert += '</td><td>';
+		insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_price_price_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">€</span></div></div></div>';
 		insert += '</td><td>';
 		insert += '</td></tr>';
         obj.insertAdjacentHTML("BeforeEnd", insert);
@@ -839,17 +877,15 @@ echo $quickmove->generate();
     {
         var obj = document.getElementById('table_prices_cost');
         var count = parseInt(document.getElementById('count_quantity_cost').value) + 1;
-        var insert = '<tr><td class="content_row_clear">'+count+'</td>';
+        var insert = '<tr><td>'+count+'</td>';
         insert += '<td>';
-        insert += '<input name="article_costprice_min_'+count+'" class="text" type="text"';
-        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_costprice_min_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div></div>';
         insert += '</td>';
         insert += '<td>';
-        insert += '<input name="article_costprice_max_'+count+'" class="text" type="text"';
-        insert += 'value ="" style="width: 50px"> <?=$_LANG->get('Stk.')?>';
+        insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_costprice_max_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">Stk.</span></div></div></div>';
         insert += '</td>';
         insert += '<td>';
-        insert += '<select name="article_costprice_supplier_'+count+'" style="width:160px">';
+        insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><select name="article_costprice_supplier_'+count+'" class="form-control">';
 		insert += '<option value="0">-> bitte wählen <-</option>';
         <?php foreach ($allsupplier as $supplier){?>
         insert += '<option value="<?=$supplier->getId()?>"><?=$supplier->getNameAsLine()?></option>';
@@ -857,12 +893,10 @@ echo $quickmove->generate();
         insert += '</select>';
         insert += '</td>';
 		insert += '<td>';
-		insert += '<input name="article_costprice_artnum_'+count+'" class="text" type="text"';
-		insert += 'value ="" style="width: 100px">';
+		insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_costprice_artnum_'+count+'" class="form-control" type="text" value ="">';
 		insert += '</td>';
         insert += '<td>';
-        insert += '<input name="article_costprice_price_'+count+'" class="text" type="text"';
-        insert += 'value ="" style="width: 50px"> <?=$_USER->getClient()->getCurrency()?>';
+        insert += '<div class="form-group"><div class="col-sm-12"><div class="input-group"><input name="article_costprice_price_'+count+'" class="form-control" type="text" value =""><span class="input-group-addon">€</span></div></div></div>';
         insert += '</td></tr>';
         obj.insertAdjacentHTML("BeforeEnd", insert);
         document.getElementById('count_quantity_cost').value = count;

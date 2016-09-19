@@ -1136,10 +1136,16 @@ echo $quickmove->generate();
 							  ?>
 						  </table>
 						  <br>
-						  *CPC = Cost per Click(Clickpreis)
+
+						  <? if ($machine->getPriceBase() == Machine::PRICE_MINUTE && $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo "*CPC = Cost per Click(Clickpreis)";?>
+
+
+
+
 					  </div>
 				  </div>
 			</div>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
@@ -1468,61 +1474,61 @@ echo $quickmove->generate();
 					</table>
 				</div>
 			</div>
+			<?php if ($machine->getId() > 0) { ?>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Sperrzeiten</h3>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<tr>
+								<td></td>
+								<td>
+									<div class="row">
+										<div class="col-md-3">
+											<label for="" class="control-label">Sperrzeit Start</label>
+										</div>
+										<div class="col-md-3">
+											<label for="" class="control-label">Sperrzeit Ende</label>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<?php
+							$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
+							foreach ($all_locks as $lock) {
+								if ($lock->getStart() >= time() || $lock->getStop() >= time()) {
+									?>
+									<tr>
+										<td><?php echo date("d.m.Y H:i", $lock->getStart()); ?> -</td>
+										<td><?php echo date("d.m.Y H:i", $lock->getStop()); ?>
+											<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $machine->getId() ?>&dellock=<?= $lock->getId() ?>"><img
+													src="images/icons/cross-script.png"/></a></td>
+									</tr>
+								<?php }
+							} ?>
+							<tr>
+								<td width="10%"><label for="" class="control-label">neue Sperrzeit:</label></td>
+								<td>
+									<div class="form-group">
+										<div class="col-sm-2">
+											<input type="text" id="lock_start" name="lock_start"
+												   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+												   onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+										</div>
+										<label for="" style="text-align: center;"  class="col-sm-1 control-label">bis</label>
+										<div class="col-sm-2">
+											<input type="text" id="lock_stop" name="lock_stop"
+												   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+												   onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			<?php } ?>
 		</div>
-
-		<?php if ($machine->getId() > 0) { ?>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Sperrzeiten</h3>
-				</div>
-				<div class="table-responsive">
-					<table class="table table-hover">
-						<tr>
-							<td></td>
-							<td>
-								 <div class="row">
-									 <div class="col-md-3">
-										 <label for="" class="control-label">Sperrzeit Start</label>
-									 </div>
-									 <div class="col-md-3">
-										 <label for="" class="control-label">Sperrzeit Ende</label>
-									 </div>
-								 </div>
-							</td>
-						</tr>
-						<?php
-						$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
-						foreach ($all_locks as $lock) {
-							if ($lock->getStart() >= time() || $lock->getStop() >= time()) {
-								?>
-								<tr>
-									<td><?php echo date("d.m.Y H:i", $lock->getStart()); ?> -</td>
-									<td><?php echo date("d.m.Y H:i", $lock->getStop()); ?>
-										<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $machine->getId() ?>&dellock=<?= $lock->getId() ?>"><img
-												src="images/icons/cross-script.png"/></a></td>
-								</tr>
-							<?php }
-						} ?>
-						<tr>
-							<td width="10%"><label for="" class="control-label">neue Sperrzeit:</label></td>
-							<td>
-								<div class="form-group">
-									<div class="col-sm-2">
-										<input type="text" id="lock_start" name="lock_start"
-											   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-									</div>
-									<label for="" style="text-align: center;"  class="col-sm-1 control-label">bis</label>
-									<div class="col-sm-2">
-										<input type="text" id="lock_stop" name="lock_stop"
-											   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		<?php } ?>
+	</div>
 </form>
