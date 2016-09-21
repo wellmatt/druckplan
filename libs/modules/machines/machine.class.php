@@ -94,7 +94,8 @@ class Machine
     private $cutprice = 0;
     private $maxstacksize = 0;
     private $inlineheften = 0;
-	
+    private $inlineheftenpercent = 0.0;
+
 	private $internaltext;
 	private $hersteller;
 	private $baujahr;
@@ -172,7 +173,8 @@ class Machine
                 $this->maxstacksize = $r["maxstacksize"];
                 $this->machurl = $r["machurl"];
                 $this->inlineheften = $r["inlineheften"];
-                
+                $this->inlineheftenpercent = $r["inlineheftenpercent"];
+
                 // Arbeiter
                 $tmp_qusrs = Array();
                 $sql = "SELECT * FROM machines_qualified_users WHERE machine = {$this->id}";
@@ -402,6 +404,7 @@ class Machine
                 umschl_umst = {$this->umschlUmst},
                 maxstacksize = {$this->maxstacksize},
                 inlineheften = {$this->inlineheften},
+                inlineheftenpercent = {$this->inlineheftenpercent},
                 machurl = '{$this->machurl}',
                 color = '{$this->color}', ";
         
@@ -793,21 +796,24 @@ class Machine
                     $diff = $this->getDifficultyByValue($time, $difficulty["id"]);
                     $time = $time * (1 + ($diff / 100));
                 }
-                
-                
-                
             }
             if ($debug){
                 echo 'Zeit nach Erschwernissen: ' . $time . '</br>';
             }
-
-            
         }
         // END Reine Laufzeit
         // -------------------------------------------------------------------------
         
         // -------------------------------------------------------------------------
-        // Maschinenspezifische Zuschl�ge
+        // Maschinenspezifische Zuschläge
+
+        if($machineEntry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL)
+        {
+            // Inline Heften
+            if ($machineEntry->getInlineheften()) {
+                $time += $time * (1 + ($machineEntry->getMachine()->getInlineheftenpercent() / 100));
+            }
+        }
         
         if($machineEntry->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
         {
@@ -1758,5 +1764,21 @@ class Machine
     {
         $this->inlineheften = $inlineheften;
     }
+
+    /**
+     * @return float
+     */
+    public function getInlineheftenpercent()
+    {
+        return $this->inlineheftenpercent;
+    }
+
+    /**
+     * @param float $inlineheftenpercent
+     */
+    public function setInlineheftenpercent($inlineheftenpercent)
+    {
+        $this->inlineheftenpercent = $inlineheftenpercent;
+    }
+
 }
-?>

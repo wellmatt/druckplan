@@ -354,7 +354,8 @@ class Article {
 						'min'=>$r["sep_min"],
 						'max'=>$r["sep_max"],
 						'price'=>$r["sep_price"],
-						'supplier'=>0
+						'supplier'=>0,
+						'artnum'=>''
 					];
 					$pricescale = new PriceScale(0,$create);
 					$pricescale->save();
@@ -370,7 +371,8 @@ class Article {
 						'min'=>$r["sep_min"],
 						'max'=>$r["sep_max"],
 						'price'=>$r["sep_price"],
-						'supplier'=>0
+						'supplier'=>0,
+						'artnum'=>''
 					];
 					$pricescale = new PriceScale(0,$create);
 					$pricescale->save();

@@ -73,9 +73,14 @@ $(document).ready(function() {
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var iMin = document.getElementById('ajax_date_min').value;
 			var iMax = document.getElementById('ajax_date_max').value;
+			var user = document.getElementById('ajax_user').value;
+			var customer = document.getElementById('ajax_customer').value;
 			aoData.push( { "name": "filter_attrib", "value": $('#filter_attrib').val() } );
+			aoData.push( { "name": "filter_status", "value": $('#filter_status').val() } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
+		    aoData.push( { "name": "user", "value": user, } );
+		    aoData.push( { "name": "customer", "value": customer, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -125,6 +130,9 @@ $(document).ready(function() {
 	$('#filter_attrib').on("change", function () {
 		$('#colinv').dataTable().fnDraw();
 	});
+	$('#filter_status').on("change", function () {
+		$('#colinv').dataTable().fnDraw();
+	});
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	$('#date_min').datepicker(
@@ -148,6 +156,32 @@ $(document).ready(function() {
             }
 	});
 	$('#colinv').width("100%");
+
+
+	$("#user").autocomplete({
+		delay: 0,
+		source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_user',
+		minLength: 2,
+		dataType: "json",
+		select: function (event, ui) {
+			$('#ajax_user').val(ui.item.value);
+			$('#user').val(ui.item.label);
+			$('#colinv').dataTable().fnDraw();
+			return false;
+		}
+	});
+	$("#customer").autocomplete({
+		delay: 0,
+		source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_customer',
+		minLength: 2,
+		dataType: "json",
+		select: function (event, ui) {
+			$('#ajax_customer').val(ui.item.value);
+			$('#customer').val(ui.item.label);
+			$('#colinv').dataTable().fnDraw();
+			return false;
+		}
+	});
 
 } );
 </script>
@@ -202,6 +236,35 @@ $(document).ready(function() {
 									foreach ($allitems AS $item){ ?>
 										<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
 									<? }
+								} ?>
+							</select>
+						</div>
+						<label for="" class="col-sm-2 control-label">Kunde:</label>
+						<div class="col-sm-4">
+							<input name="ajax_customer" id="ajax_customer" type="hidden"/>
+							<input name="customer" id="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+						<label for="" class="col-sm-2 control-label">Benutzer:</label>
+						<div class="col-sm-4">
+							<input name="ajax_user" id="ajax_user" type="hidden"/>
+							<input name="user" id="user" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</div>
+						<label for="" class="col-sm-2 control-label">Status:</label>
+						<div class="col-sm-2">
+							<select id="filter_status" name="filter_status" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+								<?
+								$colstates = [
+									1 => 'angelegt',
+									2 => 'gesendet',
+									3 => 'angenommen',
+									4 => 'In Produktion',
+									5 => 'Versandbereit',
+									6 => 'Ware versand',
+									7 => 'Erledigt',
+								];
+								foreach ($colstates AS $index => $value){
+									echo '<option value="'.$index.'">'.$value.'</option>';
 								} ?>
 							</select>
 						</div>

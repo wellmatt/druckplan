@@ -19,7 +19,7 @@ return array(
       | Relative path to access parsed swagger annotations.
       |--------------------------------------------------------------------------
     */
-    'doc-route' => '/api/public/docs',
+    'doc-route' => 'docs',
 
     /*
       |--------------------------------------------------------------------------

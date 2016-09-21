@@ -144,14 +144,26 @@
         $tmp_attrib_filter = explode("|",$_GET['filter_attrib']);
         $sWhere .= " AND collectiveinvoice_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND collectiveinvoice_attributes.item_id = ".$tmp_attrib_filter[1]." ";
     }
+
+    if ($_GET['customer'] != ""){
+        $sWhere .= " AND bcid = {$_GET['customer']} ";
+    }
+
+    if ($_GET['user'] != ""){
+        $sWhere .= " AND intuser = {$_GET['user']} ";
+    }
+
+    if ($_GET['filter_status'] > 0){
+        $sWhere .= " AND `status` = {$_GET['filter_status']} ";
+    }
     
     
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT DISTINCT id,number,cust_name,title,crtdate,`status`,bcid FROM
-               (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,
+    $sQuery = "SELECT DISTINCT id,number,cust_name,title,crtdate,`status`,bcid,intuser FROM
+               (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title, collectiveinvoice.intern_contactperson as intuser,
                collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid, collectiveinvoice_attributes.attribute_id as caid, collectiveinvoice_attributes.item_id as caiid
                FROM collectiveinvoice
                LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
@@ -161,7 +173,7 @@
                $sOrder
                $sLimit";
     
-    // var_dump($sQuery);
+//     var_dump($sQuery);
     
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      
@@ -172,7 +184,7 @@
     $sQuery = "
         SELECT DISTINCT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
+        (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name, collectiveinvoice.intern_contactperson as intuser,
         collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`,businesscontact.id as bcid, collectiveinvoice_attributes.attribute_id as caid, collectiveinvoice_attributes.item_id as caiid
         FROM collectiveinvoice
         LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
@@ -191,7 +203,8 @@
     $sQuery = "
         SELECT DISTINCT COUNT(".$sIndexColumn.")
         FROM   
-        (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
+        (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name, collectiveinvoice.intern_contactperson as intuser,
+        collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
         FROM collectiveinvoice
         LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
         INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id) a

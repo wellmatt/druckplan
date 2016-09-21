@@ -1136,6 +1136,9 @@ if((int)$_REQUEST["step"] == 3){
 					if (isset($_REQUEST["mach_dopnutz_{$id}"]))
 						$entry->setDoubleutilization($_REQUEST["mach_dopnutz_{$id}"]);
 
+					if (isset($_REQUEST["mach_inlineheften_{$id}"]))
+						$entry->setInlineheften((int)$_REQUEST["mach_inlineheften_{$id}"]);
+
 					$calc->save();
 					$entry->save();
 				}

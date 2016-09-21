@@ -40,6 +40,7 @@ class Machineentry {
     private $umschlUmst = 0 ;				    // gln, umschlagen/umstuelpen
     private $umschl = 0;
     private $umst = 0;
+    private $inlineheften = 0;
     
     private $cutter_cuts = 0;
     private $roll_dir = 0;
@@ -147,6 +148,7 @@ class Machineentry {
                     $this->digigrant = $r["digigrant"];
                     $this->dpgrant = $r["dpgrant"];
                     $this->percentgrant = $r["percentgrant"];
+                    $this->inlineheften = $r["inlineheften"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -283,6 +285,7 @@ class Machineentry {
         				digigrant = {$this->digigrant},
         				percentgrant = {$this->percentgrant},
         				dpgrant = {$this->dpgrant},
+        				inlineheften = {$this->inlineheften},
         				umschl = {$this->umschl},
         				doubleutilization = {$this->doubleutilization},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
@@ -1027,5 +1030,21 @@ class Machineentry {
     public function setPercentgrant($percentgrant)
     {
         $this->percentgrant = $percentgrant;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInlineheften()
+    {
+        return $this->inlineheften;
+    }
+
+    /**
+     * @param int $inlineheften
+     */
+    public function setInlineheften($inlineheften)
+    {
+        $this->inlineheften = $inlineheften;
     }
 }

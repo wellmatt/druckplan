@@ -111,6 +111,7 @@ if($_REQUEST["subexec"] == "save")
 	$machine->setMaxstacksize($_REQUEST["machine_maxstacksize"]);
 
 	$machine->setInlineheften((int)$_REQUEST["inlineheften"]);
+	$machine->setInlineheftenpercent((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["inlineheften_percent"]))));
 
     $quser_list = Array();
     if ($_REQUEST["qusr"]){
@@ -225,6 +226,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 		document.getElementById('tr_machine_inlineheften').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = 'none';
 
 	    showHideClpr(0); <?/*gln*/?>
 
@@ -251,6 +253,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 		document.getElementById('tr_machine_inlineheften').style.display = '';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = '';
 	    <?/*gln*/?>
 		if (document.getElementById('machine_pricebase').value == <?=Machine::PRICE_MINUTE?> )
 	    	showHideClpr(<?=Machine::PRICE_MINUTE?>);
@@ -279,6 +282,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 		document.getElementById('tr_machine_inlineheften').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_LAGENFALZ?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -303,6 +307,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 		document.getElementById('tr_machine_inlineheften').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_SAMMELHEFTER?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -327,6 +332,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 		document.getElementById('tr_machine_inlineheften').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else if (val == <?=Machine::TYPE_FOLDER?>) {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -351,6 +357,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = '';
 	    document.getElementById('tr_machine_breaks_time').style.display = '';
 		document.getElementById('tr_machine_inlineheften').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	} else {
 		document.getElementById('tr_machine_paper_size').style.display = '';
@@ -375,6 +382,7 @@ function showHide(val)
 	    document.getElementById('tr_machine_breaks').style.display = 'none';
 	    document.getElementById('tr_machine_breaks_time').style.display = 'none';
 		document.getElementById('tr_machine_inlineheften').style.display = 'none';
+		document.getElementById('tr_machine_inlineheften_percent').style.display = 'none';
 	    showHideClpr(0); <?/*gln*/?>
 	}
 }
@@ -797,21 +805,21 @@ echo $quickmove->generate();
 					<div class="row">
 						<div class="col-md-6">
 							<div id="tr_machine_colors_front" class="form-group">
-								<label for="" class="col-sm-3 control-label">Farben Vorderseite</label>
-								<div class="col-sm-2">
+								<label for="" class="col-sm-4 control-label">Farben Vorderseite</label>
+								<div class="col-sm-7">
 									<input name="colors_front" class="form-control"
 										   value="<?= $machine->getColors_front() ?>">
 								</div>
 							</div>
 							<div id="tr_machine_colors_back" class="form-group">
-								<label for="" class="col-sm-3 control-label">Farben R&uuml;ckseite</label>
-								<div class="col-sm-2">
+								<label for="" class="col-sm-4 control-label">Farben R&uuml;ckseite</label>
+								<div class="col-sm-7">
 									<input name="colors_back" value="<?= $machine->getColors_back() ?>"
 										   class="form-control">
 								</div>
 							</div>
 							<div id="tr_machine_paper_size" class="form-group">
-								<label for="" class="col-sm-3 control-label">Max. Papiergr&ouml;&szlig;e</label>
+								<label for="" class="col-sm-4 control-label">Max. Papiergr&ouml;&szlig;e</label>
 								<div class="col-sm-3">
 									<div class="input-group">
 										<input name="paper_size_width" class="form-control"
@@ -831,7 +839,7 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div id="tr_machine_paper_min_size" class="form-group">
-								<label for="" class="col-sm-3 control-label">Min. Papiergr&ouml;&szlig;e</label>
+								<label for="" class="col-sm-4 control-label">Min. Papiergr&ouml;&szlig;e</label>
 								<div class="col-sm-3">
 									<div class="input-group">
 										<input name="paper_size_min_width" class="form-control"
@@ -851,7 +859,7 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div id="tr_machine_border" class="form-group">
-								<label for="" class="col-sm-3 control-label">nicht bedruckbarer Bereich</label>
+								<label for="" class="col-sm-4 control-label">nicht bedruckbarer Bereich</label>
 								<div class="col-sm-7">
 									<table class="table table-hover">
 										<tr>
@@ -898,8 +906,8 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div id="tr_machine_timebase" class="form-group">
-								<label for="" class="col-sm-3 control-label">Grundzeit</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Grundzeit</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_base" class="form-control"
 											   value="<?= $machine->getTimeBase() ?>">
@@ -909,15 +917,15 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_breaks" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Max. Br&uuml;che</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Max. Br&uuml;che</label>
+								<div class="col-sm-7">
 									<input name="breaks" value="<?= $machine->getBreaks() ?>" class="form-control">
 								</div>
 							</div>
 							<div id="tr_machine_breaks_time" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_FOLDER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">R&uuml;sten pro Bruch</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">R&uuml;sten pro Bruch</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="breaks_time" value="<?= $machine->getBreaks_time() ?>"
 											   class="form-control">
@@ -927,8 +935,8 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_timeplatechange" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Zeit pro Plattenwechsel</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Zeit pro Plattenwechsel</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_platechange" class="form-control"
 											   value="<?= $machine->getTimePlatechange() ?>">
@@ -938,8 +946,8 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_timecolorchange" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Zeit pro Farbwechsel</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Zeit pro Farbwechsel</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_colorchange" class="form-control"
 											   value="<?= $machine->getTimeColorchange() ?>">
@@ -949,8 +957,8 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_setup_stations" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Zeit Einrichtung Station</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Zeit Einrichtung Station</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_setup_stations" class="form-control"
 											   value="<?= $machine->getTimeSetupStations() ?>">
@@ -960,32 +968,32 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_anz_stations" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Anzahl Stationen</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Anzahl Stationen</label>
+								<div class="col-sm-7">
 									<input name="anz_stations" class="form-control"
 										   value="<?= $machine->getAnzStations() ?>">
 								</div>
 							</div>
 							<div id="tr_machine_pages_per_station" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_LAGENFALZ) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Seiten pro Station</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Seiten pro Station</label>
+								<div class="col-sm-7">
 									<input name="pages_per_station" class="form-control"
 										   value="<?= $machine->getPagesPerStation() ?>">
 								</div>
 							</div>
 							<div id="tr_machine_anz_signatures" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Anzahl Signaturen</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">Anzahl Signaturen</label>
+								<div class="col-sm-7">
 									<input name="anz_signatures" class="form-control"
 										   value="<?= $machine->getAnzSignatures() ?>">
 								</div>
 							</div>
 							<div id="tr_machine_time_signatures" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">R&uuml;stzeit pro Signatur</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">R&uuml;stzeit pro Signatur</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_signatures" class="form-control"
 											   value="<?= $machine->getTimeSignatures() ?>">
@@ -995,8 +1003,8 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_time_envelope" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">R&uuml;stzeit Umschlaganleger</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">R&uuml;stzeit Umschlaganleger</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_envelope" class="form-control"
 											   value="<?= $machine->getTimeEnvelope() ?>">
@@ -1006,8 +1014,8 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_time_trimmer" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">R&uuml;stzeit Dreischneider</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">R&uuml;stzeit Dreischneider</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_trimmer" class="form-control"
 											   value="<?= $machine->getTimeTrimmer() ?>">
@@ -1017,8 +1025,8 @@ echo $quickmove->generate();
 							</div>
 							<div id="tr_machine_time_stacker" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_SAMMELHEFTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">R&uuml;stzeit Kreuzleger</label>
-								<div class="col-sm-3">
+								<label for="" class="col-sm-4 control-label">R&uuml;stzeit Kreuzleger</label>
+								<div class="col-sm-7">
 									<div class="input-group">
 										<input name="time_stacker" class="form-control"
 											   value="<?= $machine->getTimeStacker() ?>">
@@ -1030,8 +1038,8 @@ echo $quickmove->generate();
 						<div class="col-md-6">
 							<div id="tr_machine_inlineheften" class="form-group"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Inline Heften verfügbar</label>
-								<div class="col-sm-9">
+								<label for="" class="col-sm-4 control-label">Inline Heften verfügbar</label>
+								<div class="col-sm-7">
 									<div class="checkbox">
 										<label>
 											<input type="checkbox" <?php if ($machine->getInlineheften()) echo ' checked ';?> name="inlineheften" id="inlineheften" value="1">
@@ -1039,29 +1047,45 @@ echo $quickmove->generate();
 									</div>
 								</div>
 							</div>
-							<div class="form-group" id="tr_machine_finish"
-								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Option Lack verf&uuml;gbar</label>
-								<div class="col-sm-2">
-									<input name="finish" class="form-control" value="1"
-										   type="checkbox" <? if ($machine->getFinish() == 1) echo "checked"; ?>>
-								</div>
-								<label for="" class="col-sm-3 control-label">Preis Lackplatte</label>
-								<div class="col-sm-3">
+							<div class="form-group" id="tr_machine_inlineheften_percent" style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
+								<label for="" class="col-sm-4 control-label">Inline Heften Aufschlag</label>
+								<div class="col-sm-7">
 									<div class="input-group">
-										<input name="finish_plate_cost" class="form-control"
-											   value="<?= printPrice($machine->getFinishPlateCost()) ?>">
+										<input name="inlineheften_percent" id="inlineheften_percent" class="form-control" value="<?= printPrice($machine->getInlineheftenpercent()) ?>">
+											<span class="input-group-addon">%</span>
+									</div>
+								</div>
+							</div>
+							<div id="tr_machine_finish"
+								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || $machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) echo ""; else echo "none;" ?>">
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Option Lack verf&uuml;gbar</label>
+									<div class="col-sm-7">
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" <?php if ($machine->getFinish() == 1) echo ' checked ';?> name="finish" id="finish" value="1">
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Preis Lackplatte</label>
+									<div class="col-sm-7">
+										<div class="input-group">
+											<input name="finish_plate_cost" class="form-control"
+												   value="<?= printPrice($machine->getFinishPlateCost()) ?>">
 											<span
 												class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
+										</div>
 									</div>
 								</div>
 							</div>
 							<? /* gln 13.05.2014, Umschlagen/Umstuelpen */ ?>
 							<div class="form-group" id="tr_machine_umschl_umst"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Option
+								<label for="" class="col-sm-4 control-label">Option
 									umschlagen/umst&uuml;lpen</label>
-								<div class="col-sm-2">
+								<div class="col-sm-7">
 									<input name="umschl_umst" value="1" class="form-control"
 										   type="checkbox" <? if ($machine->getUmschlUmst() == 1) echo "checked"; ?>>
 								</div>
@@ -1069,8 +1093,8 @@ echo $quickmove->generate();
 							<? /* ascherer 19.08.14, Schneidemaschine */ ?>
 							<div class="form-group" id="tr_machine_cut_price"
 								 style="display:<? if ($machine->getType() == Machine::TYPE_CUTTER) echo ""; else echo "none;" ?>">
-								<label for="" class="col-sm-3 control-label">Schnittpreis</label>
-								<div class="col-sm-9">
+								<label for="" class="col-sm-4 control-label">Schnittpreis</label>
+								<div class="col-sm-7">
 									<input name="cut_price" class="form-control"
 										   value="<?= printPrice($machine->getCutPrice(), 4) ?>">
 								</div>

@@ -128,7 +128,7 @@ if($_REQUEST["subexec"] == "save")
     $paper->setPrice_100kg(trim(addslashes($_REQUEST["paper_100kg"])));
     $paper->setPrice_1qm(trim(addslashes($_REQUEST["paper_1qm"])));
     $paper->setVolume(trim(addslashes($_REQUEST["paper_volume"])));
-    $paper->setRolle(trim(addslashes($_REQUEST["paper_rolle"])));
+    $paper->setRolle((int)trim(addslashes($_REQUEST["paper_rolle"])));
 
     $paper->setWeights($weights);
     $paper->setSizes($sizes);

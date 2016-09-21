@@ -394,6 +394,19 @@ echo $quickmove->generate();
                                                     echo '<input type="text" name="mach_special_margin_text_'.$x.'" class="form-control" value="'.$mach->getSpecial_margin_text().'">';
                                                     echo '</div></div></div>';
 
+                                                    // Inline Heften
+                                                    if ($mach->getMachine()->getInlineheften()){
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label"><br/>Inline Heften</label><div class="input-group">';
+                                                        echo '<div class="checkbox"><label>';
+                                                        if ($mach->getInlineheften())
+                                                            echo '<input type="checkbox" name="mach_inlineheften_'.$x.'" checked id="mach_inlineheften_'.$x.'" value="1">';
+                                                        else
+                                                            echo '<input type="checkbox" name="mach_inlineheften_'.$x.'" id="mach_inlineheften_'.$x.'" value="1">';
+                                                        echo '</label></div>';
+                                                        echo '</div></div></div>';
+                                                    }
+
                                                     // Zuschuss
                                                     echo '<div class="col-md-4"><div class="form-group">';
                                                     echo '<label class="control-label"><br/>Zuschuss Bogen</label><div class="input-group">';

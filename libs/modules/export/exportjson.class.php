@@ -137,7 +137,9 @@ class ExportJson{
                             }
                         }
                         $project["products"][] = [
-                            "name" => $order->getProduct()->getName(),
+                            "productname" => $order->getProduct()->getName(),
+                            "articlename" => $position->getName(),
+                            "oderposition" => $position->getId(),
                             "parts" => $parts
                         ];
                     }

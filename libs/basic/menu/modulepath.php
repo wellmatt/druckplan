@@ -36,6 +36,7 @@ $modules[] = 'libs/basic/user/user.php';
 $modules[] = 'libs/basic/license/license.php';
 $modules[] = 'libs/basic/countries/country.php';
 $modules[] = 'libs/basic/memcache.admin.php';
+$modules[] = 'libs/basic/update/update.admin.php';
 
 $dh = opendir($dir);
 while($subdir = readdir($dh))
