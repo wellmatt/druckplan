@@ -811,7 +811,10 @@ class Machine
         {
             // Inline Heften
             if ($machineEntry->getInlineheften()) {
-                $time += $time * (1 + ($machineEntry->getMachine()->getInlineheftenpercent() / 100));
+                $time = $time * (1 + ($machineEntry->getMachine()->getInlineheftenpercent() / 100));
+            }
+            if ($debug){
+                echo 'Zeit nach Inlineheften: ' . $time . '</br>';
             }
         }
         
@@ -836,7 +839,7 @@ class Machine
                         + ceil($calc->getPagesEnvelope() / $this->pagesPerStation);
             }
             
-            // Laufzeit mal Anzahl Durchg�nge
+            // Laufzeit mal Anzahl Durchgänge
             $durchgaenge = ceil($anzUsedStations / $this->anzStations);
             $time *= $durchgaenge;
             

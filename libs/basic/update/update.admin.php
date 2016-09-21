@@ -15,7 +15,7 @@ if ($updatedata && $updatedata->success == 1 && isset($updatedata->data)){
     if (is_array($updatedata->data)){
         foreach (array_reverse($updatedata->data) as $item) {
             $changelog .= $break.$break.$item->created_at.$break.$item->changelog;
-            $sql .= $item->sql;
+            $sql .= $break.$item->sql;
         }
         $update = $updatedata->data[0];
     } else {
