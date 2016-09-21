@@ -6,14 +6,18 @@
 // or all of the contents in any form is strictly prohibited.
 // ---------------------------------------------------------------------------------
 $_BASEDIR = dirname(__FILE__) . "/";
-require_once($_BASEDIR."/libs/basic/config.php");
-// require_once 'libs/basic/cachehandler/cachehandler.class.php';
-// require_once 'thirdparty/phpfastcache/phpfastcache.php';
+
+class ConfigContainer {
+    function __construct() {
+    }
+}
 
 $_CONFIG = new ConfigContainer();
 
 // Lizenz
 $_CONFIG->licensePath = '';
+$_CONFIG->version = '729sd18';
+$_CONFIG->version_date = '2016-09-21 09:38:09';
 
 // Datenbank Webserver
 require_once 'config.setup.php';

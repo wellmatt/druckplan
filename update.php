@@ -7,31 +7,82 @@
  *
  */
 
-error_reporting(-1);
-ini_set('display_errors', 1);
-
 require_once("config.php");
 require_once("libs/basic/mysql.php");
-require_once("libs/basic/globalFunctions.php");
-require_once("libs/basic/user/user.class.php");
-require_once("libs/basic/groups/group.class.php");
-require_once("libs/basic/clients/client.class.php");
-require_once("libs/basic/translator/translator.class.php");
-require_once 'libs/basic/countries/country.class.php';
-require_once 'libs/modules/businesscontact/businesscontact.class.php';
-require_once 'libs/modules/foldtypes/foldtype.class.php';
-require_once 'libs/modules/paperformats/paperformat.class.php';
-require_once 'libs/modules/products/product.class.php';
-require_once 'libs/modules/machines/machine.class.php';
-require_once 'libs/modules/calculation/order.class.php';
-require_once 'libs/modules/chromaticity/chromaticity.class.php';
-require_once 'libs/modules/calculation/calculation.class.php';
-require_once 'libs/modules/finishings/finishing.class.php';
-require_once 'libs/modules/article/article.class.php';
-require_once 'libs/modules/api/api.class.php';
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 
+$break = '
+';
+$sql = '';
+$uptodate = false;
 $updatedata = json_decode(file_get_contents("http://ccp.mein-druckplan.de/public/api/updates"));
-prettyPrint($updatedata);
+
+
+if ($updatedata && $updatedata->success == 1 && isset($updatedata->data)){
+    if (is_array($updatedata->data) && count($updatedata->data) > 0){
+
+        $update = $updatedata->data[0];
+        $updatedate = strtotime($update->created_at);
+        if ($updatedate < $installationdate){
+            $uptodate = true;
+        } else {
+            if ($update->version != $_CONFIG->version) {
+                foreach (array_reverse($updatedata->data) as $item) {
+                    $tmp_updatedate = strtotime($item->created_at);
+                    if ($tmp_updatedate > $installationdate)
+                        $sql .= ' '.$item->sql;
+                }
+            } else {
+                $uptodate = true;
+            }
+        }
+
+    } else {
+
+        if (!$updatedata->data === []){
+
+            if ($updatedate < $installationdate){
+                $uptodate = true;
+            } else {
+                $update = $updatedata->data;
+                if ($update->version != $_CONFIG->version) {
+                    $sql = $update->sql;
+                } else {
+                    $uptodate = true;
+                }
+            }
+
+        } else {
+            $uptodate = true;
+        }
+
+    }
+} else {
+    $uptodate = true;
+}
+
+if ($uptodate === false){
+
+    if (file_exists("update.rar"))
+        unlink("update.rar");
+
+    file_put_contents("update.rar", fopen("http://ccp.mein-druckplan.de/public/uploads/".$update->file, 'r'));
+
+    $output = null;
+    $status = null;
+    exec('unrar x -o+ update.rar',$output,$status);
+    if (is_array($output))
+        $output = implode($break,$output);
+
+    $res = $DB->no_result_multi($sql);
+    $error = $DB->getLastError();
+
+    $print =    '<div class="alert alert-success">'.
+                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'.
+                '<strong>Info!</strong><pre>'.$output.$break.$break.$error.'</pre>'.
+                '</div>';
+
+    echo $print;
+}

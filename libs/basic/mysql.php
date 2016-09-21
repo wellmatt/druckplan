@@ -55,6 +55,15 @@ class DBMysql {
       } else
          return false;
    }
+
+   // falls keine Daten ausgelesen werden
+   function no_result_multi($sql) {
+      $res = mysqli_multi_query($this->conn,$sql);
+      if ($res)
+         return true;
+      else
+         return false;
+   }
    
    // falls keine Daten ausgelesen werden
    function no_result($sql) {
