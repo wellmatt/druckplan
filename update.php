@@ -73,6 +73,7 @@ if ($uptodate === false){
     $output = null;
     $status = null;
     exec('unrar x -o+ update.rar',$output,$status);
+    unlink("update.rar");
     if (is_array($output))
         $output = implode($break,$output);
 
