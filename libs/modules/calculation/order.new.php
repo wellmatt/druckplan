@@ -73,20 +73,22 @@ $(function() {
           <form action="index.php?page=<?=$_REQUEST['page']?>" class="form-horizontal" method="post" name="neworder_form" id="neworder_form" onSubmit="return validateForm()">
               <input type="hidden" name="exec" value="edit">
               <input type="hidden" name="createNew" value="1">
-              <div class="form-group">
-                  <label for="" class="col-sm-3 control-label">Titel</label>
-                  <div id="td-title" class="col-sm-9">
-                      <input name="order_title" id="" value="" class="form-control">
-                  </div>
-              </div>
               <input type="hidden" name="order_customer" id="order_customer" value="0">
               <input type="hidden" name="order_contactperson" id="order_contactperson" value="0">
+              <div class="form-group">
+                  <label for="" class="col-sm-1 control-label">Titel</label>
+                  <div id="td-title" class="col-sm-4">
+                      <input name="order_title" id="" value="" class="form-control">
+                  </div>
+                  <div class="col-sm-7">
+                       <span class="pull-right">
+                          <button class="btn btn-default btn-success" type="submit">
+                              <?= $_LANG->get('Anlegen') ?>
+                          </button>
+                       </span>
+                  </div>
+              </div>
               <br>
-              <span class="pull-right">
-                  <button class="btn btn-default btn-success" type="submit">
-                      <?= $_LANG->get('Anlegen') ?>
-                  </button>
-              </span>
           </form>
 	  </div>
 

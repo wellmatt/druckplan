@@ -85,85 +85,95 @@ $(function() {
 	 });
 });
 </script>
-<div class="panel panel-default">
-	  <div class="panel-heading">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" id="machine_form" class="form-horizontal"
+	  name="machine_form">
+	<input type="hidden" name="exec" value="edit">
+	<input type="hidden" name="subexec" value="save">
+	<input type="hidden" id="id" name="id" value="<?= $_REQUEST['id'] ?>">
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
+				<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
 				Sperrzeiten
 			</h3>
-	  </div>
-
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="machine_form" name="machine_form">
-<input type="hidden" name="exec" value="edit">
-<input type="hidden" name="subexec" value="save">
-<input type="hidden" id="id" name="id" value="<?=$_REQUEST['id']?>">
-
-	<div class="table-responsive">
-			<table class="table table-hover">
-		   <tr>
-			  <td width="200" class="content_header">Maschine suchen:</td>
-			  <td align="left">
-				<input type="text" style="width:160px" id="maschine" name="maschine" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-			  </td>
-		   </tr>
-		</table>
-	</div>
-</div>
-
-
-<?php 
-if ($_REQUEST['id'] && $_REQUEST['id'] > 0){
-    $machine = new Machine((int)$_REQUEST['id']);
-    if ($machine->getId() > 0){?>
-		<div class="panel panel-default">
-			  <div class="panel-heading">
-					<h3 class="panel-title">
-						<?=$machine->getName()?>
-					</h3>
-			  </div>
-			  <div class="panel-body">
-				 Neue Sperrzeit:  <input type="text" style="width:160px" id="lock_start" name="lock_start"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-						 onfocus="markfield(this,0)" onblur="markfield(this,1)"/> -> <input type="text" style="width:160px" id="lock_stop" name="lock_stop"	class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
-																							onfocus="markfield(this,0)" onblur="markfield(this,1)"/> </br>&nbsp;
-				  <div class="table-responsive">
-					  <table class="table table-hover">
-						  <tr>
-							  <td class="content_row_header" valign="top">Sperrzeit Start</td>
-							  <td class="content_row_header" valign="top">Sperrzeit Ende</td>
-							  <td class="content_row_header" valign="top">Option</td>
-						  </tr>
-						  <?php
-						  $all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
-						  foreach ($all_locks as $lock){
-							  if ($lock->getStart() >= time() || $lock->getStop() >= time()){
-								  ?>
-								  <tr>
-									  <td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStart());?> -</td>
-									  <td class="content_row_clear" valign="top"><?php echo date("d.m.Y H:i", $lock->getStop());?>
-										  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$machine->getId()?>&dellock=<?=$lock->getId()?>"><span class="glyphicons glyphicons-remove"></span></a></td>
-								  </tr>
-							  <?php }} ?>
-					  </table>
-				  </div>
-			  </div>
 		</div>
-    </br>
-    <?php 
-    } 
-}?>
-<table width="100%">
-    <colgroup>
-        <col width="180">
-        <col>
-    </colgroup>    
-    <tr>
-        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
-		</td>
-        <td class="content_row_clear" align="right">
-            <input type="submit" value="<?=$_LANG->get('Speichern')?>">
-        </td>
-    </tr>
-</table>
+		<div class="panel-body">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+							Filter
+						</h3>
+				  </div>
+				  <div class="panel-body">
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Maschine suchen:</label>
+						  <div class="col-sm-3">
+							  <input type="text" class="form-control" id="maschine" name="maschine" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+						  </div>
+					  </div>
+				  </div>
+			</div>
+		<?php
+		if ($_REQUEST['id'] && $_REQUEST['id'] > 0) {
+			$machine = new Machine((int)$_REQUEST['id']);
+			if ($machine->getId() > 0) {
+				?>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<?= $machine->getName() ?>
+						</h3>
+					</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Neue Sperrzeit:</label>
+							<div class="col-sm-2">
+								<input type="text" id="lock_start" name="lock_start" class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+							</div>
+							<label for="" class="col-sm-1 control-label">bis</label>
+							<div class="col-sm-2">
+								<input type="text" id="lock_stop" name="lock_stop" class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+							</div>
+						</div>
+						 </br>
+						<div class="table-responsive">
+							<table class="table table-hover">
+								<tr>
+									<td>Sperrzeit Start</td>
+									<td>Sperrzeit Ende</td>
+									<td>Option</td>
+								</tr>
+								<?php
+								$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
+								foreach ($all_locks as $lock) {
+									if ($lock->getStart() >= time() || $lock->getStop() >= time()) {
+										?>
+										<tr>
+											<td><?php echo date("d.m.Y H:i", $lock->getStart()); ?> -
+											</td>
+											<td><?php echo date("d.m.Y H:i", $lock->getStop()); ?>
+												<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $machine->getId() ?>&dellock=<?= $lock->getId() ?>"><span
+														class="glyphicons glyphicons-remove"></span></a></td>
+										</tr>
+									<?php }
+								} ?>
+							</table>
+						</div>
+					</div>
+				</div>
+				</br>
+				<?php
+			}
+		} ?>
+			<button class="btn btn-origin btn-default" type="button" onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>'">
+				<?= $_LANG->get('Zur&uuml;ck') ?>
+			</button>
+			<span class="pull-right">
+					<button class="btn btn-origin btn-default" type="submit">
+						<?= $_LANG->get('Speichern') ?>
+					</button>
+				</span>
+		</div>
+	</div>
 </form>

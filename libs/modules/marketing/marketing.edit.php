@@ -59,31 +59,31 @@ echo $quickmove->generate();
           <div class="panel-body">
 
               <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Titel</label>
-                  <div class="col-sm-4">
+                  <label for="" class="col-sm-1 control-label">Titel</label>
+                  <div class="col-sm-3">
                       <input type="text" name="title" class="form-control" value="<?php echo $marketingjob->getTitle();?>" >
                   </div>
               </div>
 
               <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Kunde</label>
-                  <div class="col-sm-4">
+                  <label for="" class="col-sm-1 control-label">Kunde</label>
+                  <div class="col-sm-3">
                       <input class="form-control" type="text" name="search" id="search" value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine();?>" >
                       <input class="form-control" type="hidden" name="businesscontact" id="businesscontact" value="<?php echo $marketingjob->getBusinesscontact()->getId();?>" >
                   </div>
               </div>
 
               <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">Datum</label>
-                  <div class="col-sm-4">
+                  <label for="" class="col-sm-1 control-label">Datum</label>
+                  <div class="col-sm-3">
                       <input class=form-control type="text" name="date" id="date" value="<?if($marketingjob->getCrtdate() != 0){ echo date('d.m.Y', $marketingjob->getCrtdate());} elseif ($marketingjob->getId()==0) { echo date('d.m.Y'); }?>">
                   </div>
               </div>
 
               <?php foreach ($columns as $column) {?>
               <div class="form-group">
-                  <label for="" class="col-sm-2 control-label"><?php echo $column->getTitle();?></label>
-                  <div class="col-sm-4">
+                  <label for="" class="col-sm-1 control-label"><?php echo $column->getTitle();?></label>
+                  <div class="col-sm-3">
                       <input class="form-control" type="text" name="column[<?php echo $column->getId();?>]" value="<?php echo $marketingjob->getColumnValue($column->getId());?>">
                   </div>
               </div>

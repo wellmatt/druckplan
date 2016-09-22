@@ -224,35 +224,39 @@ $(document).ready(function() {
                 </h3>
             </div>
             <div class="panel-body">
-                <table>
-                    <tr align="left">
-                        <div class="form-group">
-                            <label for="" class="col-sm-2 control-label">Produkt</label>
-                            <div class="col-sm-10">
-                                <select name="ajax_product" id="ajax_product" class="form-control" onchange="$('#orders').dataTable().fnDraw();">
-                                    <option value="0">-- Alle --</option>
-                                    <?php
-                                    foreach (Product::getAllProducts() as $item) {
-                                        echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                        <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                        <div class="form-group">
-                            <label for="" class="col-sm-2 control-label">Datum von</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" name="date_min" id="date_min" placeholder="">
-                            </div>
-                            <label for="" class="col-sm-2 control-label">bis</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" name="date_max" id="date_max" placeholder="">
-                            </div>
-                        </div>
-                    </tr>
-                </table>
+                <div class="form-horizontal">
+                    <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+                    <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+                     <div class="row">
+                         <div class="col-md-3">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">Produkt</label>
+                                 <div class="col-sm-9">
+                                     <select name="ajax_product" id="ajax_product" class="form-control" onchange="$('#orders').dataTable().fnDraw();">
+                                         <option value="0">-- Alle --</option>
+                                         <?php
+                                         foreach (Product::getAllProducts() as $item) {
+                                             echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+                                         }
+                                         ?>
+                                     </select>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-md-9">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-1 control-label">Datum</label>
+                                 <div class="col-sm-2">
+                                     <input type="text" class="form-control" name="date_min" id="date_min" placeholder="">
+                                 </div>
+                                 <label for="" class="col-sm-1 control-label">bis</label>
+                                 <div class="col-sm-2">
+                                     <input type="text" class="form-control" name="date_max" id="date_max" placeholder="">
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                </div>
             </div>
         </div>
     </div>

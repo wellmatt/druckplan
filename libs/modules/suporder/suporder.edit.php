@@ -83,96 +83,89 @@ echo $quickmove->generate();
                         <input type="hidden" id="exec" name="exec" value="edit" />
                         <input type="hidden" id="subexec" name="subexec" value="save" />
 
-                        <table border="0" cellpadding="3" cellspacing="1" width="100%">
-                            <colgroup>
-                                <col width="130">
-                                <col>
-                            </colgroup>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Titel')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="title" name="title" style="width:300px" value="<?=$suporder->getTitle()?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <?php if ($suporder->getId()>0){?>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Nummer')?>:</td>
-                                <td class="content_row_clear">
-                                    <?=$suporder->getNumber()?>
-                                </td>
-                            </tr>
-                            <?php } ?>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Zahlungsbedingung')?>: </td>
-                                <td class="content_row_clear">
-                                    <select id="paymentterm" name="paymentterm" style="width:300px">
-                                        <?php
-                                        foreach ($payterms as $payterm) {
-                                            if ($payterm->getId() == $suporder->getPaymentterm()->getId())
-                                                echo '<option selected value="'.$payterm->getId().'">'.$payterm->getName().'</option>';
-                                            else
-                                                echo '<option value="'.$payterm->getId().'">'.$payterm->getName().'</option>';
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Titel</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="title" name="title" value="<?=$suporder->getTitle()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                            </div>
+                        </div>
+                        <?php if ($suporder->getId()>0){?>
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Nummer</label>
+                                <div class="col-sm-4">
+                                    <input name="" id="" value="<?=$suporder->getNumber()?>" class="form-control">
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Zahlungsbedingung</label>
+                            <div class="col-sm-4">
+                                <select id="paymentterm" name="paymentterm" class="form-control">
+                                    <?php
+                                    foreach ($payterms as $payterm) {
+                                        if ($payterm->getId() == $suporder->getPaymentterm()->getId())
+                                            echo '<option selected value="'.$payterm->getId().'">'.$payterm->getName().'</option>';
+                                        else
+                                            echo '<option value="'.$payterm->getId().'">'.$payterm->getName().'</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Lieferant</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="supplier_name" class="form-control" name="supplier_name" value="<?php if ($suporder->getSupplier()->getId()>0) { echo $suporder->getSupplier()->getNameAsLine()." - ".$suporder->getCpexternal()->getNameAsLine2(); } ?>" required/>
+                                <input type="hidden" id="supplier" name="supplier" value="<?php echo $suporder->getSupplier()->getId();?>" required/>
+                                <input type="hidden" id="cpexternal" name="cpexternal" value="<?php echo $suporder->getSupplier()->getId();?>" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Lieferdatum</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="eta" name="eta" value="<?php if ($suporder->getEta()>0) echo date('d.m.y',$suporder->getEta()); else echo date('d.m.y');?>"
+                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Verant. MA</label>
+                            <div class="col-sm-4">
+                                <select name="cpinternal" id="cpinternal" class="form-control" required>
+                                    <?php
+                                    $all_user = User::getAllUser(User::ORDER_NAME);
+                                    foreach ($all_user as $so_user){
+                                        if ($suporder->getId() == 0 && $so_user->getId() == $_USER->getId()){
+                                            echo '<option value="'.$so_user->getId().'" selected>'.$so_user->getNameAsLine().'</option>';
+                                        } elseif ($suporder->getCpinternal()->getId() == $so_user->getId()){
+                                            echo '<option value="'.$so_user->getId().'" selected>'.$so_user->getNameAsLine().'</option>';
+                                        } else {
+                                            echo '<option value="'.$so_user->getId().'">'.$so_user->getNameAsLine().'</option>';
                                         }
-                                        ?>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Lieferant')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="supplier_name" name="supplier_name" value="<?php if ($suporder->getSupplier()->getId()>0) { echo $suporder->getSupplier()->getNameAsLine()." - ".$suporder->getCpexternal()->getNameAsLine2(); } ?>" style="width:300px" required/>
-                                    <input type="hidden" id="supplier" name="supplier" value="<?php echo $suporder->getSupplier()->getId();?>" required/>
-                                    <input type="hidden" id="cpexternal" name="cpexternal" value="<?php echo $suporder->getSupplier()->getId();?>" required/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Lieferdatum')?>: </td>
-                                <td class="content_row_clear">
-                                    <input type="text" id="eta" name="eta" style="width:300px" value="<?php if ($suporder->getEta()>0) echo date('d.m.y',$suporder->getEta()); else echo date('d.m.y');?>"
-                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Verant. MA')?>: </td>
-                                <td class="content_row_clear">
-                                    <select name="cpinternal" id="cpinternal" style="width:300px" required>
-                                        <?php
-                                        $all_user = User::getAllUser(User::ORDER_NAME);
-                                        foreach ($all_user as $so_user){
-                                            if ($suporder->getId() == 0 && $so_user->getId() == $_USER->getId()){
-                                                echo '<option value="'.$so_user->getId().'" selected>'.$so_user->getNameAsLine().'</option>';
-                                            } elseif ($suporder->getCpinternal()->getId() == $so_user->getId()){
-                                                echo '<option value="'.$so_user->getId().'" selected>'.$so_user->getNameAsLine().'</option>';
-                                            } else {
-                                                echo '<option value="'.$so_user->getId().'">'.$so_user->getNameAsLine().'</option>';
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content_header"><?=$_LANG->get('Status')?>: </td>
-                                <td class="content_row_clear">
-                                    <select id="status" name="status" style="width:300px">
-                                        <option value="1" <?php if ($suporder->getStatus() == 1) echo ' selected ';?>>Offen</option>
-                                        <option value="2" <?php if ($suporder->getStatus() == 2) echo ' selected ';?>>Bestellt</option>
-                                        <option value="3" <?php if ($suporder->getStatus() == 3) echo ' selected ';?>>Ware Eingegangen</option>
-                                        <option value="4" <?php if ($suporder->getStatus() == 4) echo ' selected ';?>>Bezahlt</option>
-                                        <option value="5" <?php if ($suporder->getStatus() == 5) echo ' selected ';?>>Erledigt</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <?php if ($suporder->getId()>0){ ?>
-                                <tr>
-                                    <td class="content_header"><?=$_LANG->get('Erstellt')?>: </td>
-                                    <td class="content_row_clear">
-                                        <?php echo date('d.m.Y H:i',$suporder->getCrtdate()).' von '.$suporder->getCrtuser()->getNameAsLine(); ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </table>
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Status</label>
+                            <div class="col-sm-4">
+                                <select id="status" name="status" class="form-control">
+                                    <option value="1" <?php if ($suporder->getStatus() == 1) echo ' selected ';?>>Offen</option>
+                                    <option value="2" <?php if ($suporder->getStatus() == 2) echo ' selected ';?>>Bestellt</option>
+                                    <option value="3" <?php if ($suporder->getStatus() == 3) echo ' selected ';?>>Ware Eingegangen</option>
+                                    <option value="4" <?php if ($suporder->getStatus() == 4) echo ' selected ';?>>Bezahlt</option>
+                                    <option value="5" <?php if ($suporder->getStatus() == 5) echo ' selected ';?>>Erledigt</option>
+                                </select>
+                            </div>
+                        </div>
+                        <?php if ($suporder->getId()>0){ ?>
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Erstellt</label>
+                                <div class="col-sm-9">
+                                    <?php echo date('d.m.Y H:i',$suporder->getCrtdate()).' von '.$suporder->getCrtuser()->getNameAsLine(); ?>
+                                </div>
+                            </div>
+                        <?php } ?>
     				</form>
     		  </div>
     	</div>

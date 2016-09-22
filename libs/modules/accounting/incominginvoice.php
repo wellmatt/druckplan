@@ -364,8 +364,6 @@ $(function() {
 		});
 	});
 </script>
-
-
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -376,17 +374,22 @@ $(function() {
 		</h3>
 	</div>
 	<div class="panel-body">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					Filteroptionen
-				</h3>
-			</div>
-			<div class="panel-body">
-				<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post"
-					  name="xform_invoicesearch">
-					<input type="hidden" name="subexec" value="search">
-					<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
+		<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post"
+			  name="xform_invoicesearch">
+			<input type="hidden" name="subexec" value="search">
+			<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Filteroptionen
+					 <span class="pull-right">
+							  <button class="btn btn-md btn-success" type="submit">
+								  <?= $_LANG->get('Suche starten') ?>
+							  </button>
+					  </span>
+					</h3>
+				</div>
+				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-5">
 							<div class="form-group">
@@ -419,14 +422,10 @@ $(function() {
 							</div>
 						</div>
 					</div>
-						  <span class="pull-right">
-							  <button class="btn btn-md btn-success" type="submit">
-								  <?= $_LANG->get('Suche starten') ?>
-							  </button>
-						  </span>
-				</form>
-			</div>
 
+				</div>
+			</div>
+		</form>
 
 			<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal"
 				  name="idx_invcform" id="idx_invcform">
@@ -544,28 +543,35 @@ $(function() {
 										<? if ((int)$invoice->getInvc_supplierid()) echo "checked='checked'" ?>>
 								</td>
 								<td>
-									<input type="text" class="form-control" name="invc_price_netto_<?= $x ?>"
-										   value="<?= printPrice($invoice->getInvc_price_netto()); ?>"
+									<div class="input-group">
+									<input type="text" class="form-control" name="invc_price_netto_<?= $x ?>" value="<?= printPrice($invoice->getInvc_price_netto()); ?>"
 										   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<?= $_USER->getClient()->getCurrency() ?>
+										<span class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
+									</div>
 								</td>
 								<td>
-									<input type="text" class="form-control" onfocus="markfield(this,0)"
-										   onblur="markfield(this,1)"
-										   name="invc_taxes_active_<?= $x ?>" id="invc_taxes_active_<?= $x ?>"
-										   value="<?= $invoice->getInvc_taxes_active(); ?>"/> %
+									<div class="input-group">
+										<input type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"
+											   name="invc_taxes_active_<?= $x ?>" id="invc_taxes_active_<?= $x ?>" value="<?= $invoice->getInvc_taxes_active(); ?>"/>
+										<span class="input-group-addon">%</span>
+									</div>
+
 								</td>
 								<td>
-									<? if ((int)$invoice->getId()) {
-										echo $invoice->getTaxPrice();
-										echo " " . $_USER->getClient()->getCurrency();
-									} else echo "- - - " ?>
+									<div class="form-text">
+										<? if ((int)$invoice->getId()) {
+											echo $invoice->getTaxPrice();
+											echo " " . $_USER->getClient()->getCurrency();
+										} else echo "- - - " ?>
+									</div>
 								</td>
 								<td>
-									<? if ((int)$invoice->getId()) {
-										echo $invoice->getBruttoPrice();
-										echo " " . $_USER->getClient()->getCurrency();
-									} else echo "- - - " ?>
+									<div class="form-text">
+										<? if ((int)$invoice->getId()) {
+											echo $invoice->getBruttoPrice();
+											echo " " . $_USER->getClient()->getCurrency();
+										} else echo "- - - " ?>
+									</div>
 								</td>
 								<td>
 									<input type="text" class="form-control" name="invc_number_<?= $x ?>"
@@ -590,15 +596,20 @@ $(function() {
 								<td>
 									<ul class="postnav_del_small_invoice">
 										<? if ($invoice->getId()) { ?>
-											<button class="btn btn-xs btn-danger" href="#" onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $invoice->getId() ?>&exec=del')">
-												<?= $_LANG->get('L&ouml;schen') ?>
-											</button>
-											<a
-											  </a>
+
+											<a href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&id=<?=$invoice->getId()?>&exec=del')">
+												<button type="button" class="btn btn-xs btn-danger">
+													<?=$_LANG->get('L&ouml;schen')?>
+												</button>
+											</a>
 
 											<!-- input type="button" class="buttonRed" value="<?= $_LANG->get('L&ouml;schen') ?>" onclick="askDel('index.php?pid=<?= $_REQUEST["pid"] ?>&id=<?= $invoice->getId() ?>&exec=del')"-->
 										<? } else { ?>
-											<a href="#"><?= $_LANG->get('L&ouml;schen') ?></a>
+											<a href="#" style="visibility: hidden">
+												<button type="button" class="btn btn-xs btn-danger">
+													<?=$_LANG->get('L&ouml;schen')?>
+												</button>
+											</a>
 										<? } ?>
 									</ul>
 								</td>
@@ -691,9 +702,11 @@ $(function() {
 									</td>
 									<td>
 										<ul class="postnav_del_small_invoice">
-											<button class="btn btn-xs btn-danger" onclick="document.location.href='#';">
-												<?= $_LANG->get('L&ouml;schen') ?>
-											</button>
+											<a href="#" style="visibility: hidden">
+												<button type="button" class="btn btn-xs btn-danger">
+													<?=$_LANG->get('L&ouml;schen')?>
+												</button>
+											</a>
 										</ul>
 									</td>
 								</tr>

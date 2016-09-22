@@ -35,7 +35,16 @@ function validateForm()
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("a#add_new_client").fancybox({
-		    'type'    : 'iframe'
+            'type'          :   'iframe',
+            'transitionIn'	:	'elastic',
+            'transitionOut'	:	'elastic',
+            'speedIn'		:	600,
+            'speedOut'		:	200,
+            'width'         :   1024,
+            'height'		:	768,
+            'scrolling'     :   'yes',
+            'overlayShow'	:	true,
+            'helpers'		:   { overlay:null, closeClick:true }
 		});
 	});
 </script>
@@ -61,10 +70,12 @@ $(function() {
                 Vorgang anlegen
                 <span class="pull-right">
                     <?=$savemsg?>
-                    <button class="btn btn-xs btn-success" type="button" id="add_new_client" onclick="document.location.href='libs/modules/businesscontact/businesscontact.add.fancy.php';">
-                        <span class="glyphicons glyphicons-user"></span>
-                        <?=$_LANG->get('Neuen Kunden anlegen')?>
-                    </button>
+                    <a href="libs/modules/businesscontact/businesscontact.add.fancy.php" id="add_new_client">
+                        <button class="btn btn-xs btn-success" type="button">
+                            <span class="glyphicons glyphicons-user"></span>
+                            <?=$_LANG->get('Neuen Kunden anlegen')?>
+                        </button>
+                    </a>
                 </span>
             </h3>
 	  </div>
@@ -75,19 +86,20 @@ $(function() {
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Kunden suchen</label>
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                       <input type="text" name="search" id="search" class="form-control" required>
                       <input type="hidden" name="order_customer" id="order_customer" required>
                       <input type="hidden" name="order_contactperson" id="order_contactperson" required>
                       <input type="hidden" name="order_startart" id="order_startart" value="<?php echo $_REQUEST["startart"];?>">
                   </div>
+                  <div class="col-sm-7">
+                     <span class="pull-right">
+                          <button class="btn btn-origin btn-sucess" type="submit">
+                              <?=$_LANG->get('Auswählen')?>
+                          </button>
+                     </span>
+                  </div>
               </div>
-              <br>
-              <span class="pull-right">
-                  <button class="btn btn-origin btn-sucess" type="submit">
-                      <?=$_LANG->get('Auswählen')?>
-                  </button>
-              </span>
           </form>
 	  </div>
 </div>

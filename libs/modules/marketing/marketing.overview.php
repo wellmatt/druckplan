@@ -46,60 +46,68 @@ $marketjobs = Marketing::getAllForList($curr_list);
                   </h3>
               </div>
               <div class="panel-body">
-                  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form">
-                      Vorlage auswählen: <select name="list">
-                          <?php
-                          foreach ($lists as $list) {
-                              if ($list->getId() == $curr_list)
-                                  echo '<option selected value="'.$list->getId().'">'.$list->getTitle().'</option>';
-                              else
-                                  echo '<option value="'.$list->getId().'">'.$list->getTitle().'</option>';
-                          }
-                          ?>
-                      </select>
-                      <button type="submit" class="btn btn-sm">Weiter</button>
+                  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" class="form-horizontal" id="marketing_column_form">
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Vorlage auswählen:</label>
+                          <div class="col-sm-1">
+                              <select class="form-control" name="list">
+                                  <?php
+                                  foreach ($lists as $list) {
+                                      if ($list->getId() == $curr_list)
+                                          echo '<option selected value="'.$list->getId().'">'.$list->getTitle().'</option>';
+                                      else
+                                          echo '<option value="'.$list->getId().'">'.$list->getTitle().'</option>';
+                                  }
+                                  ?>
+                              </select>
+                          </div>
+                          <div class="col-sm-2">
+                              <button type="submit" class="btn btn-sm">Weiter</button>
+                          </div>
+                      </div>
+
+
                   </form>
               </div>
           </div>
-	  </div>
-
-    <div class="table-responsive">
-        <table id="marketing_table" class="table table-hover">
-            <thead>
-            <tr>
-                <th><?= $_LANG->get('ID') ?></th>
-                <th><?= $_LANG->get('Datum') ?></th>
-                <th><?= $_LANG->get('Kunde') ?></th>
-                <th><?= $_LANG->get('Titel') ?></th>
-                <?php foreach ($columns as $column) { ?>
-                    <th><?php echo $column->getTitle() ?></th>
-                <?php } ?>
-            </tr>
-            </thead>
-            <?php foreach ($marketjobs as $marketjob) { ?>
-                <tr>
-                    <td><?php echo $marketjob->getId(); ?></td>
-                    <td><?php echo date('d.m.y', $marketjob->getCrtdate()); ?></td>
-                    <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
-                    <td><?php echo $marketjob->getTitle(); ?></td>
-                    <?php foreach ($columns as $column) { ?>
-                        <td><?php echo $marketjob->getColumnValue($column->getId()); ?></td>
-                    <?php } ?>
-                </tr>
-            <?php } ?>
-            <tfoot>
-            <tr>
-                <th><?= $_LANG->get('ID') ?></th>
-                <th><?= $_LANG->get('Datum') ?></th>
-                <th><?= $_LANG->get('Kunde') ?></th>
-                <th><?= $_LANG->get('Titel') ?></th>
-                <?php foreach ($columns as $column) { ?>
-                    <th><?php echo $column->getTitle() ?></th>
-                <?php } ?>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
+          <div class="table-responsive">
+              <table id="marketing_table" class="table table-hover">
+                  <thead>
+                  <tr>
+                      <th><?= $_LANG->get('ID') ?></th>
+                      <th><?= $_LANG->get('Datum') ?></th>
+                      <th><?= $_LANG->get('Kunde') ?></th>
+                      <th><?= $_LANG->get('Titel') ?></th>
+                      <?php foreach ($columns as $column) { ?>
+                          <th><?php echo $column->getTitle() ?></th>
+                      <?php } ?>
+                  </tr>
+                  </thead>
+                  <?php foreach ($marketjobs as $marketjob) { ?>
+                      <tr>
+                          <td><?php echo $marketjob->getId(); ?></td>
+                          <td><?php echo date('d.m.y', $marketjob->getCrtdate()); ?></td>
+                          <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
+                          <td><?php echo $marketjob->getTitle(); ?></td>
+                          <?php foreach ($columns as $column) { ?>
+                              <td><?php echo $marketjob->getColumnValue($column->getId()); ?></td>
+                          <?php } ?>
+                      </tr>
+                  <?php } ?>
+                  <tfoot>
+                  <tr>
+                      <th><?= $_LANG->get('ID') ?></th>
+                      <th><?= $_LANG->get('Datum') ?></th>
+                      <th><?= $_LANG->get('Kunde') ?></th>
+                      <th><?= $_LANG->get('Titel') ?></th>
+                      <?php foreach ($columns as $column) { ?>
+                          <th><?php echo $column->getTitle() ?></th>
+                      <?php } ?>
+                  </tr>
+                  </tfoot>
+              </table>
+          </div>
+      </div>
 </div>
 
 

@@ -99,22 +99,27 @@ if($_REQUEST["exec"] == "new"){
 		</h3>
 	</div>
 	<div class="panel-body">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					Filteroptionen
-				</h3>
-			</div>
-			<div class="panel-body">
-				<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal"
-					  name="xform_warninginvoice_search">
-					<input type="hidden" name="subexec" value="search">
-					<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
+		<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal"
+			  name="xform_warninginvoice_search">
+			<input type="hidden" name="subexec" value="search">
+			<input type="hidden" name="mid" value="<?= $_REQUEST["mid"] ?>">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Filteroptionen
+				   <span class="pull-right">
+					   <button class="btn btn-md btn-success" type="submit">
+						   <?= $_LANG->get('Suche starten') ?>
+					   </button>
+				   </span>
+					</h3>
+				</div>
+				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Kunde</label>
-								<div class="col-sm-9">
+								<label for="" class="col-sm-2 control-label">Kunde</label>
+								<div class="col-sm-4">
 									<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
 											onblur="markfield(this,1)" class="form-control">
 										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
@@ -124,28 +129,8 @@ if($_REQUEST["exec"] == "new"){
 										<? } ?>
 									</select>
 								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="col-md-2"><label for="control-label"><?= $_LANG->get('Zeitraum'); ?></label>
-							</div>
-							<div class="col-md-1"><label for="control-label">Von</label></div>
-							<div class="col-md-4">
-								<input type="text" name="filter_from" id="filter_from" class="form-control date"
-									   value="<?= date("d.m.Y", $filter_from) ?>"/>
-							</div>
-							<div class="col-md-1"><label for="control-label">Bis</label></div>
-							<div class="col-md-4">
-								<input type="text" name="filter_to" id="filter_to" class="form-control date"
-									   value="<?= date("d.m.Y", $filter_to) ?>"/>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Status</label>
-								<div class="col-sm-9">
+								<label for="" class="col-sm-2 control-label">Status</label>
+								<div class="col-sm-4">
 									<select type="text" id="payed_status" name="payed_status"
 											onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
@@ -157,140 +142,147 @@ if($_REQUEST["exec"] == "new"){
 								</div>
 							</div>
 						</div>
-						</br>
 						<div class="col-md-6">
-								   <span class="pull-right">
-									   <button class="btn btn-md btn-success" type="submit">
-										   <?= $_LANG->get('Suche starten') ?>
-									   </button>
-								   </span>
+							<div class="form-group">
+								<label for="" class="col-sm-2 control-label">Zeitraum</label>
+								<label for="" class="col-sm-1 control-label">Von</label>
+								<div class="col-sm-4">
+									<input type="text" name="filter_from" id="filter_from" class="form-control date"
+										   value="<?= date("d.m.Y", $filter_from) ?>"/>
+								</div>
+								<label for="" class="col-sm-1 control-label">Bis</label>
+								<div class="col-sm-4">
+									<input type="text" name="filter_to" id="filter_to" class="form-control date" value="<?= date("d.m.Y", $filter_to) ?>"/>
+								</div>
+							</div>
 						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post"
-			  name="idx_invcform">
-			<input type="hidden" name="exec" value="save"/>
-			<input type="hidden" name="payed_status" value="<?= $filters["payed_status"] ?>"/>
-			<input type="hidden" name="filter_from" value="<?= date("d.m.Y", $filter_from) ?>"/>
-			<input type="hidden" name="filter_to" value="<?= date("d.m.Y", $filter_to) ?>"/>
-			<input type="hidden" name="filter_cust" value="<?= $filters["cust_id"] ?>"/>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						Mahnungen
-					</h3>
-			</div>
-				<div class="table-responsive">
-					<div class="table-responsive">
-						<table class="table table-hover">
-							<thead>
-							<tr>
-								<th><?= $_LANG->get('MA-Nr.') ?></th>
-								<th><?= $_LANG->get('Re-Typ') ?></th>
-								<th><?= $_LANG->get('Auftragsnr.') ?></th>
-								<th><?= $_LANG->get('Kunde') ?></th>
-								<th><?= $_LANG->get('erstellt') ?></th>
-								<th><?= $_LANG->get('F&auml;llig') ?></th>
-								<th><?= $_LANG->get('Bezahlt') ?></th>
-								<th><?= $_LANG->get('Optionen') ?></th>
-							</tr>
-							</thead>
-							<? // CSV-Datei der offenen Posten vorbereiten
-							$csv_file = fopen('./docs/' . $_USER->getId() . '-Mahnungen.csv', "w");
-							//fwrite($csv_file, "Firma iPactor - �bersicht\n");
-
-							//Tabellenkopf der CSV-Datei (offene Posten) schreiben
-							$csv_string .= "MA-Nr.; Auftragstitel; ";
-							$csv_string .= "Betrag Netto ; MWST ; Brutto ;";
-							$csv_string .= "Kunde; Debitor-Nr. ; Erstellt; Zahlbar bis; Bezahlt am \n";
-
-							$x = 0;
-							foreach ($documents as $document) {
-
-								$order = null;
-								if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
-									$order = new Order($document->getRequestId());
-								} else if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
-									$order = new CollectiveInvoice($document->getRequestId());
-								}
-								$tmp_mwst = $document->getPriceBrutto() - $document->getPriceNetto();
-								$csv_string .= $document->getName() . ";" . $order->getTitle() . ";";
-								$csv_string .= printPrice($document->getPriceNetto()) . ";" . printPrice($tmp_mwst) . ";" . printPrice($document->getPriceBrutto()) . ";";
-								$csv_string .= $order->getCustomer()->getNameAsLine() . ";" . $order->getCustomer()->getDebitor() . ";";
-								$csv_string .= date("d.m.Y", $document->getCreateDate()) . ";" . date("d.m.Y", $document->getPayable()) . ";";
-								if ($document->getPayed() > 0) {
-									$csv_string .= date("d.m.Y", $document->getPayed());
-								}
-								$csv_string .= " \n";
-
-								$sum_netto += $document->getPriceNetto();
-								$sum_brutto += $document->getPriceBrutto();
-								?>
-								<tbody>
-								<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)"
-									onmouseout="mark(this, 1)">
-
-									<td><?= $document->getName() ?>
-										<input type="hidden" name="doc_existingid_<?= $x ?>"
-											   name="doc_existingid_<?= $x ?>"
-											   value="<?= (int)$document->getId() ?>"/>
-									</td>
-									<td>
-										<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
-										if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
-										?>
-									</td>
-									<td>
-										<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
-											?>
-											<a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?= $order->getId() ?>&step=4"><?= $order->getNumber() ?></a>
-										<?
-										}
-										if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
-											?>
-											<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?= $order->getId() ?>"><?= $order->getNumber() ?></a>
-										<? } ?>
-										&nbsp;
-									</td>
-									<td>
-										<?= $order->getCustomer()->getNameAsLine() ?>
-										&nbsp;
-									</td>
-									<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
-									<td
-										<?php if ($document->getPayed() == 0) {
-											if (strtotime(date("d.m.Y 23:59:59", $document->getPayable())) > time())
-												echo "style='color:green'";
-											else echo "style='color:red'";
-										} ?>>
-										<? echo date("d.m.Y", $document->getPayable()); ?>&nbsp;</td>
-
-									<td>
-										<input type="text" name="date_<?= $x ?>" id="date_<?= $x ?>"
-											   class="form-control date"
-											   value="<? if ($document->getPayed() > 0) echo date("d.m.Y", $document->getPayed()); ?>"/>
-									</td>
-									<td>
-										<ul class="postnav_save_small_outinvc">
-											<a href="#"
-											   onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
-												<?= $_LANG->get('Anzeigen') ?>
-											</a>
-										</ul>
-									</td>
-								</tr>
-								</tbody>
-								<? $x++;
-							} ?>
-						</table>
 					</div>
 				</div>
 			</div>
 		</form>
 	</div>
+	<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post"
+		  name="idx_invcform">
+		<input type="hidden" name="exec" value="save"/>
+		<input type="hidden" name="payed_status" value="<?= $filters["payed_status"] ?>"/>
+		<input type="hidden" name="filter_from" value="<?= date("d.m.Y", $filter_from) ?>"/>
+		<input type="hidden" name="filter_to" value="<?= date("d.m.Y", $filter_to) ?>"/>
+		<input type="hidden" name="filter_cust" value="<?= $filters["cust_id"] ?>"/>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Mahnungen
+				</h3>
+			</div>
+			<div class="table-responsive">
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th><?= $_LANG->get('MA-Nr.') ?></th>
+							<th><?= $_LANG->get('Re-Typ') ?></th>
+							<th><?= $_LANG->get('Auftragsnr.') ?></th>
+							<th><?= $_LANG->get('Kunde') ?></th>
+							<th><?= $_LANG->get('erstellt') ?></th>
+							<th><?= $_LANG->get('F&auml;llig') ?></th>
+							<th><?= $_LANG->get('Bezahlt') ?></th>
+							<th><?= $_LANG->get('Optionen') ?></th>
+						</tr>
+						</thead>
+						<? // CSV-Datei der offenen Posten vorbereiten
+						$csv_file = fopen('./docs/' . $_USER->getId() . '-Mahnungen.csv', "w");
+						//fwrite($csv_file, "Firma iPactor - �bersicht\n");
+
+						//Tabellenkopf der CSV-Datei (offene Posten) schreiben
+						$csv_string .= "MA-Nr.; Auftragstitel; ";
+						$csv_string .= "Betrag Netto ; MWST ; Brutto ;";
+						$csv_string .= "Kunde; Debitor-Nr. ; Erstellt; Zahlbar bis; Bezahlt am \n";
+
+						$x = 0;
+						foreach ($documents as $document) {
+
+							$order = null;
+							if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
+								$order = new Order($document->getRequestId());
+							} else if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
+								$order = new CollectiveInvoice($document->getRequestId());
+							}
+							$tmp_mwst = $document->getPriceBrutto() - $document->getPriceNetto();
+							$csv_string .= $document->getName() . ";" . $order->getTitle() . ";";
+							$csv_string .= printPrice($document->getPriceNetto()) . ";" . printPrice($tmp_mwst) . ";" . printPrice($document->getPriceBrutto()) . ";";
+							$csv_string .= $order->getCustomer()->getNameAsLine() . ";" . $order->getCustomer()->getDebitor() . ";";
+							$csv_string .= date("d.m.Y", $document->getCreateDate()) . ";" . date("d.m.Y", $document->getPayable()) . ";";
+							if ($document->getPayed() > 0) {
+								$csv_string .= date("d.m.Y", $document->getPayed());
+							}
+							$csv_string .= " \n";
+
+							$sum_netto += $document->getPriceNetto();
+							$sum_brutto += $document->getPriceBrutto();
+							?>
+							<tbody>
+							<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)"
+								onmouseout="mark(this, 1)">
+
+								<td><?= $document->getName() ?>
+									<input type="hidden" name="doc_existingid_<?= $x ?>"
+										   name="doc_existingid_<?= $x ?>"
+										   value="<?= (int)$document->getId() ?>"/>
+								</td>
+								<td>
+									<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
+									if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
+									?>
+								</td>
+								<td>
+									<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
+										?>
+										<a href="index.php?page=libs/modules/calculation/order.php&exec=edit&id=<?= $order->getId() ?>&step=4"><?= $order->getNumber() ?></a>
+										<?
+									}
+									if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) {
+										?>
+										<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?= $order->getId() ?>"><?= $order->getNumber() ?></a>
+									<? } ?>
+									&nbsp;
+								</td>
+								<td>
+									<?= $order->getCustomer()->getNameAsLine() ?>
+									&nbsp;
+								</td>
+								<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
+								<td
+									<?php if ($document->getPayed() == 0) {
+										if (strtotime(date("d.m.Y 23:59:59", $document->getPayable())) > time())
+											echo "style='color:green'";
+										else echo "style='color:red'";
+									} ?>>
+									<? echo date("d.m.Y", $document->getPayable()); ?>&nbsp;</td>
+
+								<td>
+									<input type="text" name="date_<?= $x ?>" id="date_<?= $x ?>"
+										   class="form-control date"
+										   value="<? if ($document->getPayed() > 0) echo date("d.m.Y", $document->getPayed()); ?>"/>
+								</td>
+								<td>
+									<ul class="postnav_save_small_outinvc">
+										<a href="#"
+										   onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
+											<?= $_LANG->get('Anzeigen') ?>
+										</a>
+									</ul>
+								</td>
+							</tr>
+							</tbody>
+							<? $x++;
+						} ?>
+					</table>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
+
 
 	
 	<script type="text/javascript"">

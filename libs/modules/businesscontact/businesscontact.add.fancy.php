@@ -116,10 +116,28 @@ function checkform(obj) {
 
 <html>
 <head>
+<!-- Glyphicons -->
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
+<!-- /Glyphicons -->
+
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/menu.css" />
 <script language="javascript" src="jscripts/basic.js"></script>
+
+
+
+<!-- MegaNavbar -->
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- /MegaNavbar -->
 
 <!-- jQuery -->
 <link type="text/css" href="../../../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
@@ -130,193 +148,183 @@ function checkform(obj) {
 </head>
 
 <body>
-<span class="glyphicons glyphicons-user">Gesch&auml;ftskontakt hinzuf&uuml;gen</span>
-&emsp; &emsp; &emsp;<? echo $savemsg.'<br/>';?>
-<table><tr><td width="500">
-<form action="businesscontact.add.fancy.php" method="post" name="newuser_form_fancy" class="form-horizontal" id="newuser_form_fancy"
-	  onsubmit="return checkform(new Array(this.name1))" >
-	<input type="hidden" name="test_exec" value="test_vancy" >
-	<table>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-			<td class="content_row_clear">
-				<input name="name1" id="name1" style="width: 300px" class="form-control" value="<?=$newContact->getName1()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-			<td class="content_row_clear"><input name="name2"
-				style="width: 300px" class="text" value="<?=$newContact->getName2()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Adressfeld 1');?>
-			</td>
-			<td class="content_row_clear"><input name="address1"
-				style="width: 300px" class="text" value="<?=$newContact->getAddress1()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Adressfeld 2');?>
-			</td>
-			<td class="content_row_clear"><input name="address2"
-				style="width: 300px" class="text" value="<?=$newContact->getAddress2()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Postleitzahl');?>
-			</td>
-			<td class="content_row_clear"><input name="zip"
-				style="width: 300px" class="text" value="<?=$newContact->getZip()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Stadt');?>
-			</td>
-			<td class="content_row_clear"><input name="city"
-				style="width: 300px" class="text" value="<?=$newContact->getCity()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-			<td class="content_row_clear"><select name="country" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<?
-					foreach($countries as $c)
-					{?>
-					<option value="<?=$c->getId()?>"
-					<?if ($newContact->getCountry()->getId() == $c->getId()) echo "selected";?>>
-						<?=$c->getName()?>
-					</option>
-					<?}
 
-					?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-			</td>
-			<td class="content_row_clear"><input name="phone"
-				style="width: 300px" class="text" value="<?=$newContact->getPhone()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Fax');?>
-			</td>
-			<td class="content_row_clear"><input name="fax"
-				style="width: 300px" class="text" value="<?=$newContact->getFax()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('E-Mail');?>
-			</td>
-			<td class="content_row_clear"><input name="email"
-				style="width: 300px" class="text" value="<?=$newContact->getEmail()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Internetseite');?>
-			</td>
-			<td class="content_row_clear"><input name="web"
-				style="width: 300px" class="text" value="<?=$newContact->getWeb()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kunde');?></td>
-			<td class="content_row_clear"><select name="customer" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<option value="1" selected>
-						<?=$_LANG->get('Bestandskunde')?>
-					</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Lieferant');?></td>
-			<td class="content_row_clear">
-				<input name="supplier" type="checkbox" value="1"
-					<? if ($newContact->isSupplier()) echo "checked";?>
-					onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
-			<td class="content_row_clear">
-				<select name="client"style="width: 300px" class="text"
-						onfocus="markfield(this,0)"	onblur="markfield(this,1)">
-					<option value="<?=$_USER->getClient()->getId()?>" selected>
-						<?if(!$_USER->getClient()->isActive()) echo '<span color="red">';?>
-						<?=$_USER->getClient()->getName()?>
-						<?if(!$_USER->getClient()->isActive()) echo '</span>';?>
-					</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
-			<td class="content_row_clear">
-				<select name="language" style="width: 300px"
-						class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<?
-					foreach($languages as $l)
-					{?>
-					<option value="<?=$l->getId()?>"
-					<?if ($newContact->getLanguage()->getId() == $l->getId()) echo "selected";?>>
-						<?=$l->getName()?>
-					</option>
-					<?}
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Gesch&auml;ftskontakt hinzuf&uuml;gen
+				<span class="pull-right">
+					<?=$savemsg?>
+				</span>
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <form action="businesscontact.add.fancy.php" method="post" name="newuser_form_fancy" class="form-horizontal" id="newuser_form_fancy" onsubmit="return checkform(new Array(this.name1))" >
+			  <input type="hidden" name="test_exec" value="test_vancy" >
+			   <div class="row">
+				   <div class="col-md-6">
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Firma</label>
+						   <div class="col-sm-5">
+							   <input name="name1" id="name1"  class="form-control" value="<?=$newContact->getName1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Firmenzusatz</label>
+						   <div class="col-sm-5">
+							   <input name="name2" class="form-control" value="<?=$newContact->getName2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Adressfeld 1</label>
+						   <div class="col-sm-5">
+							   <input name="address1" class="form-control" value="<?=$newContact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Adressfeld 2</label>
+						   <div class="col-sm-5">
+							   <input name="address2" class="form-control" value="<?=$newContact->getAddress2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Postleitzahl</label>
+						   <div class="col-sm-5">
+							   <input name="zip" class="form-control" value="<?=$newContact->getZip()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Stadt</label>
+						   <div class="col-sm-5">
+							   <input name="city" class="form-control" value="<?=$newContact->getCity()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Land</label>
+						   <div class="col-sm-5">
+							   <select name="country" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <?
+								   foreach($countries as $c)
+								   {?>
+									   <option value="<?=$c->getId()?>"
+										   <?if ($newContact->getCountry()->getId() == $c->getId()) echo "selected";?>>
+										   <?=$c->getName()?>
+									   </option>
+								   <?}
 
-					?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Zahlungsart')?></td>
-			<td class="content_row_clear">
-			    <select name="payment" style="width:300px" class="text">
-			        <?
-			        foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
-			        {
-			            echo '<option value="'.$pt->getId().'">'.$pt->getName1().'</option>';
-			        }
-			        ?>
-			    </select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Rabatt')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:60px" name="discount"
-			    value="<?=printPrice($newContact->getDiscount())?>"> %
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kommentar')?></td>
-			<td class="content_row_clear" colspan="2">
-				<textarea name="comment"style="width: 300px; height: 130px"><?=$newContact->getComment()?></textarea>
-			</td>
-		</tr>
+								   ?>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Telefon</label>
+						   <div class="col-sm-5">
+							   <input name="phone" class="form-control" value="<?=$newContact->getPhone()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Fax</label>
+						   <div class="col-sm-5">
+							   <input name="fax" class="form-control" value="<?=$newContact->getFax()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+				   </div>
+				   <div class="col-md-6">
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">E-Mail</label>
+						   <div class="col-sm-6">
+							   <input name="email" class="form-control" value="<?=$newContact->getEmail()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Internetseite</label>
+						   <div class="col-sm-6">
+							   <input name="web" class="form-control" value="<?=$newContact->getWeb()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Kunde</label>
+						   <div class="col-sm-6">
+							   <select name="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <option value="1" selected>
+									   <?=$_LANG->get('Bestandskunde')?>
+								   </option>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Lieferant</label>
+						   <div class="col-sm-6">
+							   <input name="supplier" type="checkbox" value="1"<? if ($newContact->isSupplier()) echo "checked";?> onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Mandant</label>
+						   <div class="col-sm-6">
+							   <select name="client" class="form-control" onfocus="markfield(this,0)"	onblur="markfield(this,1)">
+								   <option value="<?=$_USER->getClient()->getId()?>" selected>
+									   <?if(!$_USER->getClient()->isActive()) echo '<span color="red">';?>
+									   <?=$_USER->getClient()->getName()?>
+									   <?if(!$_USER->getClient()->isActive()) echo '</span>';?>
+								   </option>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Sprache</label>
+						   <div class="col-sm-6">
+							   <select name="language" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <?
+								   foreach($languages as $l)
+								   {?>
+									   <option value="<?=$l->getId()?>"
+										   <?if ($newContact->getLanguage()->getId() == $l->getId()) echo "selected";?>>
+										   <?=$l->getName()?>
+									   </option>
+								   <?}
 
-		<tr>
-			<td class="content_row_header">&nbsp;</td>
-			<td class="content_row_clear" align="right">
-				<input type="submit" value="Speichern">
-			</td>
-		</tr>
-	</table>
-</form>
-</td></tr></table>
-
+								   ?>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Zahlungsart</label>
+						   <div class="col-sm-6">
+							   <select name="payment" class="form-control">
+								   <?
+								   foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
+								   {
+									   echo '<option value="'.$pt->getId().'">'.$pt->getName1().'</option>';
+								   }
+								   ?>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Rabatt</label>
+						   <div class="col-sm-6">
+							   <div class="input-group">
+								   <input class="form-control" name="discount" value="<?=printPrice($newContact->getDiscount())?>">
+								   <span class="input-group-addon">%</span>
+							   </div>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Kommentar</label>
+						   <div class="col-sm-6">
+							   <textarea name="comment" class="form-control"><?=$newContact->getComment()?></textarea>
+						   </div>
+					   </div>
+				   </div>
+			   </div>
+			  <br>
+			  <span class="pull-right">
+				  <button class="btn btn-origin btn-default" type="submit" value="Speichern">
+					  <?= $_LANG->get('Speichern') ?>
+				  </button>
+			  </span>
+		  </form>
+	  </div>
+</div>
 </body>
 </html>

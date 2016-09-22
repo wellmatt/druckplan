@@ -41,7 +41,7 @@ if ($_REQUEST["exec"] == "delete"){
 		  		</span>
             </h3>
 	  </div>
-
+    <br>
     <div class="table-responsive">
         <table  id="storagetable" class="table table-hover">
             <thead>

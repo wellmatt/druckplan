@@ -48,7 +48,7 @@ echo $quickmove->generate();
 				<div class="col-md-6">
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">Titel</label>
-						<div class="col-sm-9">
+						<div class="col-sm-4">
 							<input name="warn_title" id="warn_title" value="<?= $warn->getTitle() ?>"
 								   class="form-control">
 						</div>
@@ -62,7 +62,7 @@ echo $quickmove->generate();
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">Mahnfrist(Tage)</label>
-						<div class="col-sm-5">
+						<div class="col-sm-4">
 							<input name="warn_deadline" id="warn_deadline" value="<?= $warn->getDeadline() ?>"
 								   class="form-control">
 						</div>
@@ -70,7 +70,7 @@ echo $quickmove->generate();
 					<? if ($warn->getCrt_user()->getId() > 0) { ?>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Erstellt von</label>
-							<div class="col-sm-5">
+							<div class="col-sm-4">
 								<div class="form-control">
 									<? if ($warn->getCrt_user()->getId() > 0) echo $warn->getCrt_user()->getNameAsLine() ?>
 								</div>
@@ -78,7 +78,7 @@ echo $quickmove->generate();
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Erstellt am</label>
-							<div class="col-sm-5">
+							<div class="col-sm-4">
 								<div class="form-control">
 									<? if ($warn->getCrt_date() > 0) echo date('d.m.Y - H:i:s', $warn->getCrt_date()) ?>
 								</div>

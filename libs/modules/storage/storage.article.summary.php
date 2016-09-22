@@ -36,7 +36,7 @@ $sarticles = Article::getAllArticlesNeedingStorage();
 		  		</span>
         </h3>
     </div>
-
+    <br>
     <div class="table-responsive">
         <table  id="storagearttable" class="table table-hover">
             <thead>
