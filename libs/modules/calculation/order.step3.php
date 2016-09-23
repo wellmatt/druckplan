@@ -367,16 +367,18 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
                                                         echo '</div></div></div>';
 
-                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        /* echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';
                                                         echo '<input name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
-                                                        echo '</div></div></div>';
+                                                        echo '</div></div></div>';*/
 
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Anz. Rollen:&nbsp;</label>';
                                                         //  (WURZEL(4*(Amount/Anzahl Nutzen)/10^3*(Höhe des Produktes)*(Paperthickness;PapierID)/PI()+(Kerndurchmesser manuelle EIngabe)^2);ELSE 0)
-                                                        prettyPrint("Debug Anz. Rollen: Wurzel( 4*({$calc->getAmount()}/{$calc->getProductsPerPaper($mach->getPart())})/10^3*{$mach->getMyPaperHeight()}*{$mach->getMyPaper()->getThickness()}/pi+76^2)");
-                                                        echo ( sqrt( 4*($calc->getAmount()/$calc->getProductsPerPaper($mach->getPart()))/10^3*$mach->getMyPaperHeight()*$mach->getMyPaper()->getThickness()/pi()+76^2 ));
+                                                        // prettyPrint("Debug Anz. Rollen: {$calc->getAmount()}/{$mach->getLabelcount()}");
+                                                        echo ( ($calc->getAmount()/$mach->getLabelcount()));
+                                                        //prettyPrint("Debug Anz. Rollen: ({$calc->getAmount()}/{$calc->getProductsPerPaper($mach->getPart())}");
+                                                        //echo ({$calc->getAmount()}/{$calc->getProductsPerPaper($mach->getPart())});
                                                         echo '</div></div>';
                                                     }
 
