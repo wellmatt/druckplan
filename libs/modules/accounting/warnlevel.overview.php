@@ -37,10 +37,11 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 	</div>
 	<div class="table-responsive">
 		<table class="table table-hover">
-			<td class="content_row_header"><?= $_LANG->get('ID') ?></td>
-			<td class="content_row_header"><?= $_LANG->get('Titel') ?></td>
-			<td class="content_row_header"><?= $_LANG->get('Text') ?></td>
-			<td class="content_row_header"><?= $_LANG->get('Optionen') ?></td>
+			<tr>
+				<td class="content_row_header"><?= $_LANG->get('ID') ?></td>
+				<td class="content_row_header"><?= $_LANG->get('Titel') ?></td>
+				<td class="content_row_header"><?= $_LANG->get('Text') ?></td>
+				<td class="content_row_header"><?= $_LANG->get('Optionen') ?></td>
 			</tr>
 			<? $x = 0;
 			foreach ($all_warnlevel as $warn) { ?>

@@ -910,8 +910,9 @@ function callBoxFancyAbo(my_href) {
 			'transitionIn'	:	'elastic',
 			'transitionOut'	:	'elastic',
 			'speedIn'		:	600, 
-			'speedOut'		:	200, 
-			'height'		:	350, 
+			'speedOut'		:	200,
+            'width'         :  1024,
+			'height'		:	768,
 			'overlayShow'	:	true,
 			'helpers'		:   { overlay:null, closeClick:true }
 		});

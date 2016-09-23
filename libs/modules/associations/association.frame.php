@@ -112,6 +112,13 @@ $objectid = $_REQUEST["objectid"];
 <link rel="stylesheet" type="text/css" href="../../../css/menu.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/main.print.css" media="print"/>
 
+<!-- MegaNavbar -->
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- /MegaNavbar -->
 
 <!-- jQuery -->
 <link type="text/css" href="../../../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
@@ -168,41 +175,41 @@ $(function() {
 	 });
 });
 </script>
-
-<form action="association.frame.php" method="post" name="association_form">
+<form action="association.frame.php"  method="post" name="association_form">
 <input type="hidden" name="exec" value="save">
 <input type="hidden" name="module" value="<?php echo $_REQUEST["module"];?>">
 <input type="hidden" name="objectid" value="<?php echo $_REQUEST["objectid"];?>">
-<table width="100%">
-    <tr>
-        <td width="300" class="content_header">
-            <h1><img src="../../../images/icons/node-select.png"> <?php echo 'Neue Verknüpfung';?></h1>
-        </td>
-    </tr>
-</table>
 
-<input type="submit" value="<?php echo $_LANG->get('Speichern');?>" class="text">
-
-<div class="box1"> 
-		<table id="association_table" width="500">
-    		<tr>
-    		    <td class="content_header" valign="top"><?php echo $_LANG->get('Suche');?></td>
-    			<td class="content_row_clear">
-    			     <input type="text" id="search" name="search" value="" style="width:160px"/>
-                     <input type="hidden" id="ticket_id" name="ticket_id" value=""/>
-                     <input type="hidden" id="order_id" name="order_id" value=""/>
-                     <input type="hidden" id="colinv_id" name="colinv_id" value=""/>
-                     <input type="hidden" id="event_id" name="event_id" value=""/>
-                     <input type="hidden" id="schedule_id" name="schedule_id" value=""/>
-                     <input type="hidden" id="maschine_id" name="maschine_id" value=""/></br>
-                     * Suche in Tickets, Kalkulationen, Vorgänge, Events, Planung, Maschinen</br>
-                     ** Suche kann bei vielen Resultaten einige Sekunden dauern!
-                </td>
-    		</tr>
-		</table>
-		<br>
-</div>
-<br>
+    <div class="panel panel-default">
+          <div class="panel-heading">
+                <h3 class="panel-title">
+                    Neue Verknüpfung
+                    <span class="pull-right">
+                        <button class="btn btn-xs btn-success" type="submit">
+                            <?= $_LANG->get('Speichern') ?>
+                        </button>
+                    </span>
+                </h3>
+          </div>
+         <br>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="" class="col-sm-1 control-label">Suche</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="search" name="search" value="" />
+                    <input type="hidden" id="ticket_id" name="ticket_id" value=""/>
+                    <input type="hidden" id="order_id" name="order_id" value=""/>
+                    <input type="hidden" id="colinv_id" name="colinv_id" value=""/>
+                    <input type="hidden" id="event_id" name="event_id" value=""/>
+                    <input type="hidden" id="schedule_id" name="schedule_id" value=""/>
+                    <input type="hidden" id="maschine_id" name="maschine_id" value=""/>
+                </div>
+            </div>
+        </div>
+        <br>
+        * Suche in Tickets, Kalkulationen, Vorgänge, Events, Planung, Maschinen</br>
+        ** Suche kann bei vielen Resultaten einige Sekunden dauern!
+    </div>
 </form>
 
 <?php } ?>

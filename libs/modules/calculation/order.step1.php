@@ -95,6 +95,7 @@ function checkCalc(product)
     <div class="panel-heading">
         <h3 class="panel-title">Produktauswahl</h3>
     </div>
+    <br>
     <div class="table-responsive">
     	<table id="table_products_nonindi" class="table table-hover">
     		<thead>

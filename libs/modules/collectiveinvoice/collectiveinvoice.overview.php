@@ -196,15 +196,12 @@ $(document).ready(function() {
 						<span class="glyphicons glyphicons-paired"></span>
 						<?=$_LANG->get('Vorgänge zusammenführen') ?>
 					</button>
+						<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
+							<span class="glyphicons glyphicons-plus"></span>
+							<?=$_LANG->get('Vorgang hinzuf&uuml;gen')?>
+						</button>&nbsp;&nbsp;
 				</span>
 				<?php }?>
-
-				<span class="pull-right">
-					<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
-						<span class="glyphicons glyphicons-plus"></span>
-						<?=$_LANG->get('Vorgang hinzuf&uuml;gen')?>
-					</button>&nbsp;&nbsp;
-				</span>
 			</h3>
 		</div>
 		<div class="panel-body">
@@ -216,7 +213,7 @@ $(document).ready(function() {
 				</div>
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Datum Filter &nbsp;&nbsp;Von:</label>
+						<label for="" class="col-sm-2 control-label">Datum &nbsp;&nbsp;Von:</label>
 						<div class="col-sm-2">
 							<input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
 							<input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
@@ -226,8 +223,10 @@ $(document).ready(function() {
 							<input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
 							<input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
 						</div>
+					</div>
+					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
-						<div class="col-sm-3">
+						<div class="col-sm-2">
 							<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								<?
@@ -239,16 +238,22 @@ $(document).ready(function() {
 								} ?>
 							</select>
 						</div>
+					</div>
+					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kunde:</label>
-						<div class="col-sm-4">
+						<div class="col-sm-2">
 							<input name="ajax_customer" id="ajax_customer" type="hidden"/>
 							<input name="customer" id="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</div>
+					</div>
+					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Benutzer:</label>
-						<div class="col-sm-4">
+						<div class="col-sm-2">
 							<input name="ajax_user" id="ajax_user" type="hidden"/>
 							<input name="user" id="user" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</div>
+					</div>
+					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Status:</label>
 						<div class="col-sm-2">
 							<select id="filter_status" name="filter_status" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
@@ -271,7 +276,6 @@ $(document).ready(function() {
 					</div>
 				</div>
 			</div>
-		</div>
 		<div class="table-responsive">
 			<table id="colinv" class="table table-hover" >
 				<thead>

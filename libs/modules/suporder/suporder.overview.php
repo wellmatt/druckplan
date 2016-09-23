@@ -32,14 +32,13 @@ if ($_REQUEST["exec"] == "delete"){
                         <span class="glyphicons glyphicons-plus-sign"></span>
                         Sammelbestellung erstellen
                     </button>
-                </span>
-                <span class="pull-right">
                     <button class="btn btn-xs btn-success"
                             onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.edit.php&exec=new';">
                         <span class="glyphicons glyphicons-plus-sign"></span>
                         Bestellung erstellen
                     </button>
                 </span>
+
         </h3>
     </div>
     <br>
