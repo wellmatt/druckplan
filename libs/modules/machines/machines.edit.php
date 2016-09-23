@@ -161,12 +161,9 @@ if($_REQUEST["subexec"] == "save")
         $mlock->setStop(strtotime($_REQUEST["lock_stop"]));
         $mlock->save();
     }
-
-    /***
-     ($machine->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET || 	// und eine Druckmaschine ist,
-    		$machine->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL) ){	// muss geschaut werden, ob verfuegbare Anzahl erreicht ist
-     */
 }
+
+$paperformats = Paperformat::getAllPaperFormats();
 ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -413,7 +410,6 @@ function checkMachineType(val)
 
 function updateDifficultyFields(val, unit, id)
 {
-	console.log("updateDifficultyFields");
 	if(val != '')
 	{
         $.post("libs/modules/machines/machines.ajax.php", {exec: "updateDifficultyFields", val: val, machId: <?=$machine->getId()?>, unit: unit, id: id},
@@ -430,14 +426,24 @@ function updateDifficultyFields(val, unit, id)
 
 function addDifficultyField(id)
 {
-	console.log("addDifficultyField");
 	var count = parseInt(document.getElementsByName('difficulty_counter_'+id)[0].value);
+	var unit = $('#machine_difficulty_'+id).val();
+	var text;
 
-	var text ='<label for="" class="col-sm-3 control-label">&nbsp;</label><div class="col-sm-3"><input class="form-control" name="machine_difficulty['+id+'][values][]"></div>';
-    text += '<div class="col-sm-3"><div class="input-group"><input class="form-control" name="machine_difficulty['+id+'][percents][]"><span class="input-group-addon">%</span></div></div>';
-	text += '<div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>';
+	if (unit == <?=Machine::DIFFICULTY_PRODUCT_FORMAT?>){
+		text = '<label for="" class="col-sm-3 control-label">&nbsp;</label><div class="col-sm-3">';
+		text += '<select name="machine_difficulty['+id+'][values][]" class="form-control">';
+		text += '<?php foreach ($paperformats as $item) { echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>'; } ?>';
+		text += '</select></div><div class="col-sm-3"><div class="input-group">';
+		text += '<input class="form-control" name="machine_difficulty['+id+'][percents][]" value=""><span class="input-group-addon">%</span>';
+		text += '</div></div><div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;"> &nbsp;</div>';
+	} else {
+		text = '<label for="" class="col-sm-3 control-label">&nbsp;</label><div class="col-sm-3"><input class="form-control" name="machine_difficulty['+id+'][values][]"></div>';
+		text += '<div class="col-sm-3"><div class="input-group"><input class="form-control" name="machine_difficulty['+id+'][percents][]"><span class="input-group-addon">%</span></div></div>';
+		text += '<div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>';
+	}
+
 	$('#tr_difficulty_fields_'+id).append(text);
-//    document.getElementById('tr_difficulty_fields_'+id).insertAdjacentHTML("beforeEnd", text);
     document.getElementsByName('difficulty_counter_'+id)[0].value = count+1;
 }
 
@@ -1270,92 +1276,111 @@ echo $quickmove->generate();
 								 $tmp_diff_array[$tmp_diff_count]["values"] = Array();
 								 $tmp_diff_array[$tmp_diff_count]["percents"] = Array();
 								 foreach ($tmp_diff_array as $difficulty){
-								 ?>
+									 ?>
 
-								 <div id="tr_machine_difficulty">
-									 <div class="form-group">
-										 <label for="" class="col-sm-3 control-label">Erschwerniszuschlag</label>
-										 <div class="col-sm-6">
-											 <select name="machine_difficulty[<?php echo $difficulty["id"]; ?>][unit]" id="machine_difficulty_<?php echo $difficulty["id"]; ?>" class="form-control"
-													 onchange="updateDifficultyFields(this.value, <?php echo $difficulty['unit']; ?>, <?php echo $difficulty['id']; ?>)">
-												 <option value="">&lt; <?php echo $_LANG->get('Bitte w&auml;hlen'); ?>
-													 &gt;</option>
-												 <option
-													 value="<?= Machine::DIFFICULTY_GAMMATUR ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_GAMMATUR) echo "selected" ?>><?= $_LANG->get('Grammatur') ?></option>
-												 <option
-													 value="<?= Machine::DIFFICULTY_PAGES ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_PAGES) echo "selected" ?>><?= $_LANG->get('Seiten') ?></option>
-												 <option
-													 value="<?= Machine::DIFFICULTY_STATIONS ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_STATIONS) echo "selected" ?>><?= $_LANG->get('Stationen') ?></option>
-												 <option
-													 value="<?= Machine::DIFFICULTY_BRUECHE ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_BRUECHE) echo "selected" ?>><?= $_LANG->get('Br&uuml;che') ?></option>
-												 <option
-													 value="<?= Machine::DIFFICULTY_UNITS_PER_HOUR ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_UNITS_PER_HOUR) echo "selected" ?>><?= $_LANG->get('Laufleistung') ?></option>
-											 </select>
+									 <div id="tr_machine_difficulty">
+										 <div class="form-group">
+											 <label for="" class="col-sm-3 control-label">Erschwerniszuschlag</label>
+											 <div class="col-sm-6">
+												 <select name="machine_difficulty[<?php echo $difficulty["id"]; ?>][unit]" id="machine_difficulty_<?php echo $difficulty["id"]; ?>" class="form-control"
+														 onchange="updateDifficultyFields(this.value, <?php echo $difficulty['unit']; ?>, <?php echo $difficulty['id']; ?>)">
+													 <option value="">&lt; <?php echo $_LANG->get('Bitte w&auml;hlen'); ?>
+														 &gt;</option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_GAMMATUR ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_GAMMATUR) echo "selected" ?>><?= $_LANG->get('Grammatur') ?></option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_PAGES ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_PAGES) echo "selected" ?>><?= $_LANG->get('Seiten') ?></option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_STATIONS ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_STATIONS) echo "selected" ?>><?= $_LANG->get('Stationen') ?></option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_BRUECHE ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_BRUECHE) echo "selected" ?>><?= $_LANG->get('Br&uuml;che') ?></option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_UNITS_PER_HOUR ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_UNITS_PER_HOUR) echo "selected" ?>><?= $_LANG->get('Laufleistung') ?></option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_PRODUCT_FORMAT ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_PRODUCT_FORMAT) echo "selected" ?>><?= $_LANG->get('Produktformat') ?></option>
+												 </select>
+											 </div>
+											 <div class="col-sm-2">
+												 <button type="button" class="btn btn-origin btn-success pointer icon-link" onclick="addDifficultyField(<?php echo $difficulty['id']; ?>)">
+													 <span class="glyphicons glyphicons-plus"></span>
+												 </button>
+											 </div>
 										 </div>
-										 <div class="col-sm-2">
-											 <button type="button" class="btn btn-origin btn-success pointer icon-link" onclick="addDifficultyField(<?php echo $difficulty['id']; ?>)">
-												 <span class="glyphicons glyphicons-plus"></span>
-											 </button>
-										 </div>
-									 </div>
-									 <br>
-									 <div id="div_difficulty_fields_<?php echo $difficulty["id"]; ?>">
-										 <? $x = 0;
-										 if (count($difficulty["values"]) > 0) {
-											 ?>
-											 <div class="form-group" id="tr_difficulty_fields_<?php echo $difficulty["id"]; ?>">
+										 <br>
+										 <div id="div_difficulty_fields_<?php echo $difficulty["id"]; ?>">
+											 <? $x = 0;
+											 if (count($difficulty["values"]) > 0) {
+												 ?>
+													<div class="form-group" id="tr_difficulty_fields_<?php echo $difficulty["id"]; ?>">
+														 <?php
+														 if ($difficulty["unit"] == Machine::DIFFICULTY_PRODUCT_FORMAT){
+															 foreach ($difficulty["values"] as $diff) {
+																 ?>
+																 <label for="" class="col-sm-3 control-label">&nbsp;</label>
+																 <div class="col-sm-3">
+																	 <select name="machine_difficulty[<?php echo $difficulty["id"]; ?>]" class="form-control">
+																		 <?php
+																		 foreach ($paperformats as $item) {
+																			 if ($item->getId() == $diff)
+																				 echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+																			 else
+																				 echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+																		 }
+																		 ?>
+																	 </select>
+																 </div>
+																 <div class="col-sm-3">
+																	 <div class="input-group">
+																		 <input class="form-control"
+																				name="machine_difficulty[<?php echo $difficulty["id"]; ?>][percents][]"
+																				value="<?php echo $difficulty["percents"][$x]; ?>">
+																		 <span class="input-group-addon">%</span>
+																	 </div>
+																 </div>
+																 <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;"> &nbsp;</div>
+																 <?php $x++;
+															 }
+														 } else {
+															 foreach ($difficulty["values"] as $diff) {
+																 ?>
+																 <label for="" class="col-sm-3 control-label">&nbsp;</label>
+																 <div class="col-sm-3">
+																	 <input class="form-control"
+																			name="machine_difficulty[<?php echo $difficulty["id"]; ?>][values][]"
+																			value="<?php echo $difficulty["values"][$x]; ?>">
+																 </div>
+																 <div class="col-sm-3">
+																	 <div class="input-group">
+																		 <input class="form-control"
+																				name="machine_difficulty[<?php echo $difficulty["id"]; ?>][percents][]"
+																				value="<?php echo $difficulty["percents"][$x]; ?>">
+																		 <span class="input-group-addon">%</span>
+																	 </div>
+																 </div>
+																 <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;"> &nbsp;</div>
+																 <?php $x++;
+															 }
+														 }
+														 ?>
+													</div>
 												 <?php
-												 foreach ($difficulty["values"] as $diff) {
-													 ?>
-													 <label for="" class="col-sm-3 control-label">&nbsp;</label>
-													 <div class="col-sm-3">
-														 <input class="form-control" name="machine_difficulty[<?php echo $difficulty["id"]; ?>][values][]" value="<?php echo $difficulty["values"][$x]; ?>">
-													 </div>
-													 <div class="col-sm-3">
-														 <div class="input-group">
-															 <input class="form-control" name="machine_difficulty[<?php echo $difficulty["id"]; ?>][percents][]" value="<?php echo $difficulty["percents"][$x]; ?>">
-															 <span class="input-group-addon">%</span>
-														 </div>
-													 </div>
-													 <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">
-														 &nbsp;</div>
-													 <?php $x++;
-												 } ?>
-											 </div>
-											 <?php
-										 } else {
+											 }
 											 ?>
-											 <div class="form-group" id="tr_difficulty_fields_<?php echo $difficulty["id"]; ?>">
-												 <label for="" class="col-sm-3 control-label">&nbsp;</label>
-												 <div class="col-sm-3">
-													 <input class="form-control" name="machine_difficulty[<?php echo $difficulty["id"]; ?>][values][]">
-												 </div>
-												 <div class="col-sm-3">
-													 <div class="input-group">
-														 <input class="form-control" name="machine_difficulty[<?php echo $difficulty["id"]; ?>][percents][]">
-														 <span class="input-group-addon">%</span>
-													 </div>
-												 </div>
-												 <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>
+										 </div>
+										 <div class="form-group">
+											 <label for="" class="col-sm-2 control-label">&nbsp;</label>
+											 <div class="col-sm-6">
+												 <input type="hidden" name="machine_difficulty[<?php echo $difficulty["id"]; ?>][id]" value="<?php echo $difficulty["id"]; ?>">
 											 </div>
-											 <?php $x++;
-										 }
-										 ?>
-									 </div>
-									 <div class="form-group">
-										 <label for="" class="col-sm-2 control-label">&nbsp;</label>
-										 <div class="col-sm-6">
-											 <input type="hidden" name="machine_difficulty[<?php echo $difficulty["id"]; ?>][id]" value="<?php echo $difficulty["id"]; ?>">
+										 </div>
+										 <div class="form-group">
+											 <div class="col-sm-12">
+												 <input name="difficulty_counter_<?php echo $difficulty["id"]; ?>"
+														id="difficulty_counter_<?php echo $difficulty["id"]; ?>"
+														value="<?php echo $x; ?>" type="hidden">
+											 </div>
 										 </div>
 									 </div>
-									 <div class="form-group">
-										 <div class="col-sm-12">
-											 <input name="difficulty_counter_<?php echo $difficulty["id"]; ?>"
-													id="difficulty_counter_<?php echo $difficulty["id"]; ?>"
-													value="<?php echo $x; ?>" type="hidden">
-										 </div>
-									 </div>
-								 </div>
 									 <?
 								 }
 								 ?>

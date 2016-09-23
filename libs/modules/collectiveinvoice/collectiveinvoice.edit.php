@@ -689,6 +689,7 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<?php }?>
+							<?php /*
 							<div class="form-group">
 								<label for="" class="col-sm-4 control-label">Status</label>
 								<div class="col-sm-8 form-text">
@@ -700,6 +701,66 @@ echo $quickmove->generate();
 									</div>
 								</div>
 							</div>
+ 							*/ ?>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Status</label>
+								<div class="col-sm-4">
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?= $collectinv->getId() ?>&exec=setState2&state=1">
+										<img class="select" title="<?php echo getOrderStatus(1);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 1)
+											echo 'red.svg';
+										else
+											echo 'black.svg'; ?>">
+									</a>
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=2">
+										<img class="select" title="<?php echo getOrderStatus(2);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 2)
+											echo 'orange.svg';
+										else
+											echo 'black.svg';?>">
+									</a>
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=3">
+										<img class="select" title="<?php echo getOrderStatus(3);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 3)
+											echo 'yellow.svg';
+										else
+											echo 'black.svg'; ?>">
+									</a>
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=4">
+										<img class="select" title="<?php echo getOrderStatus(4);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 4)
+											echo 'lila.svg';
+										else
+											echo 'black.svg';?>">
+									</a>
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=5">
+										<img class="select" title="<?php echo getOrderStatus(5);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 5)
+											echo 'blue.svg';
+										else
+											echo 'black.svg';?>">
+									</a>
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=6">
+										<img class="select" title="<?php echo getOrderStatus(6);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 6)
+											echo 'light_blue.svg';
+										else
+											echo 'black.svg';?>">
+									</a>
+									<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=setState2&state=7">
+										<img class="select" title="<?php echo getOrderStatus(7);?>" src="./images/status/<?
+										if($collectinv->getStatus() == 7)
+											echo 'green.svg';
+										else
+											echo 'black.svg';?>">
+									</a>
+								</div>
+								<div class="col-sm-4">
+									<?=getOrderStatus($collectinv->getStatus(), true)?>
+								</div>
+							</div>
+
 							<div class="form-group">
 								<label for="" class="col-sm-4 control-label">Zahlungsart</label>
 								<div class="col-sm-8">

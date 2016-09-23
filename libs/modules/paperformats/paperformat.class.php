@@ -93,7 +93,11 @@ class Paperformat
             }
         }
     }
-    
+
+    /**
+     * @param string $order
+     * @return Paperformat[]
+     */
     static function getAllPaperFormats($order = self::ORDER_ID)
     {
         global $DB;
