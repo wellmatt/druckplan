@@ -136,7 +136,7 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
 <script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 <!-- /MegaNavbar -->
 
-<form action="storage.position.frame.php" id="storagearea_form" name="storagearea_form" method="post">
+<form action="storage.position.frame.php" id="storagearea_form" name="storagearea_form" class="form-horizontal" method="post">
     <input type="hidden" id="id" name="id" value="<?=$position->getId()?>" />
     <input type="hidden" id="article" name="article" value="<?=$position->getArticle()->getId()?>" />
     <input type="hidden" id="area" name="area" value="<?=$position->getArea()->getId()?>" />
@@ -149,117 +149,122 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
                         <h3 class="panel-title"><?= $_LANG->get('Lagerposition') ?></h3>
                   </div>
                   <div class="panel-body">
-                      <table border="0" cellpadding="3" cellspacing="1" width="100%">
-                          <colgroup>
-                              <col width="130">
-                              <col>
-                          </colgroup>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Kunde') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="stp_businesscontact_name" name="stp_businesscontact_name"
-                                         style="width:200px"
-                                         value="<?php if ($position->getBusinesscontact()->getId() > 0) echo $position->getBusinesscontact()->getNameAsLine(); ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                  <input type="hidden" id="stp_businesscontact" name="stp_businesscontact"
-                                         value="<?= $position->getBusinesscontact()->getId() ?>">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Lagermenge') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="stp_amount" name="stp_amount" style="width:200px"
-                                         value="<?= $position->getAmount() ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Mindestmenge') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="stp_min_amount" name="stp_min_amount" style="width:200px"
-                                         value="<?= $position->getMinAmount() ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Verantwortlicher') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="stp_respuser_name" name="stp_respuser_name" style="width:200px"
-                                         value="<?php if ($position->getRespuser()->getId() > 0) echo $position->getRespuser()->getNameAsLine(); ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                  <input type="hidden" id="stp_respuser" name="stp_respuser"
-                                         value="<?= $position->getRespuser()->getId() ?>">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Beschreibung') ?>:</td>
-                              <td class="content_row_clear">
-                                  <textarea rows="8" cols="80" type="text" id="stp_description" name="stp_description"
-                                          class="text" onfocus="markfield(this,0)"
-                                          onblur="markfield(this,1)"><?= $position->getDescription() ?></textarea>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Bemerkung') ?>:</td>
-                              <td class="content_row_clear">
-                                  <textarea rows="8" cols="80" type="text" id="stp_note" name="stp_note"
-                                          class="text" onfocus="markfield(this,0)"
-                                          onblur="markfield(this,1)"><?= $position->getNote() ?></textarea>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Versandart') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="stp_dispatch" name="stp_dispatch" style="width:200px"
-                                         value="<?= $position->getDispatch() ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Verpackungsart') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="stp_packaging" name="stp_packaging" style="width:200px"
-                                         value="<?= $position->getPackaging() ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Belegung') ?>:</td>
-                              <td class="content_row_clear">
-                                  <div class="input-group">
-                                      <div class="input-group-btn">
-                                          <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
-                                          <ul class="dropdown-menu">
-                                              <li><a href="#" onclick="setAlloc(0);">0%</a></li>
-                                              <li><a href="#" onclick="setAlloc(25);">25%</a></li>
-                                              <li><a href="#" onclick="setAlloc(50);">50%</a></li>
-                                              <li><a href="#" onclick="setAlloc(75);">75%</a></li>
-                                              <li><a href="#" onclick="setAlloc(100);">100%</a></li>
-                                          </ul>
-                                      </div>
-                                      <input type="number" min="0" max="<?php echo $maxallocation;?>" name="stp_allocation" id="stp_allocation" class="numberBox">%
+
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Kunde</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="stp_businesscontact_name" name="stp_businesscontact_name"
+                                     class="form-control"
+                                     value="<?php if ($position->getBusinesscontact()->getId() > 0) echo $position->getBusinesscontact()->getNameAsLine(); ?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                              <input type="hidden" id="stp_businesscontact" name="stp_businesscontact"
+                                     value="<?= $position->getBusinesscontact()->getId() ?>">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Lagermenge</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="stp_amount" name="stp_amount" value="<?= $position->getAmount() ?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Mindestmenge</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="stp_min_amount" name="stp_min_amount"
+                                     value="<?= $position->getMinAmount() ?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Verantwortlicher</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="stp_respuser_name" name="stp_respuser_name"
+                                     value="<?php if ($position->getRespuser()->getId() > 0) echo $position->getRespuser()->getNameAsLine(); ?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                              <input type="hidden" id="stp_respuser" name="stp_respuser"
+                                     value="<?= $position->getRespuser()->getId() ?>">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Versandart</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="stp_dispatch" name="stp_dispatch"
+                                     value="<?= $position->getDispatch() ?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Verpackungsart</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="stp_packaging" name="stp_packaging"
+                                     value="<?= $position->getPackaging() ?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Belegung</label>
+                          <div class="col-sm-4">
+                              <div class="input-group">
+                                  <div class="input-group-btn">
+                                      <button type="button" class="btn btn-xs btn-default dropdown-toggle"
+                                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          &nbsp;<span class="caret"></span></button>
+                                      <ul class="dropdown-menu">
+                                          <li><a href="#" onclick="setAlloc(0);">0%</a></li>
+                                          <li><a href="#" onclick="setAlloc(25);">25%</a></li>
+                                          <li><a href="#" onclick="setAlloc(50);">50%</a></li>
+                                          <li><a href="#" onclick="setAlloc(75);">75%</a></li>
+                                          <li><a href="#" onclick="setAlloc(100);">100%</a></li>
+                                      </ul>
                                   </div>
-                              </td>
-                          </tr>
-                      </table>
+                                  <input type="number" min="0" max="<?php echo $maxallocation; ?>" name="stp_allocation"
+                                         id="stp_allocation" class="numberBox">%
+                              </div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Beschreibung</label>
+                          <div class="col-sm-9">
+                                       <textarea rows="8" cols="80" type="text" id="stp_description"
+                                                 name="stp_description" class="form-control" onfocus="markfield(this,0)"
+                                                 onblur="markfield(this,1)"><?= $position->getDescription() ?>
+                                       </textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Bemerkung</label>
+                          <div class="col-sm-9">
+                                       <textarea rows="8" cols="80" type="text" id="stp_note" name="stp_note"
+                                                 class="form-control" onfocus="markfield(this,0)"
+                                                 onblur="markfield(this,1)"><?= $position->getNote() ?>
+                                       </textarea>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                              <div class="form-group">
+                                  <div class="col-sm-offset-8 col-sm-2">
+                                      <?php if ($position->getId()>0){?>
+                                          <button type="button" class="btn btn-danger" onclick="$('#exec').val('delete');$('#storagearea_form').submit();">Löschen</button>
+                                      <?php } ?>
+                                  </div>
+                                  <div class="col-sm-2">
+                                      <button type="submit" class="btn btn-default">Speichern</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                   </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="form-group">
-                <div class="col-sm-offset-8 col-sm-2">
-                    <?php if ($position->getId()>0){?>
-                    <button type="button" class="btn btn-danger" onclick="$('#exec').val('delete');$('#storagearea_form').submit();">Löschen</button>
-                    <?php } ?>
-                </div>
-                <div class="col-sm-2">
-                    <button type="submit" class="btn btn-default">Speichern</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </form>
 
 <script>

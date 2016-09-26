@@ -33,9 +33,7 @@ if ($_REQUEST["exec"] == "delete"){
                             onclick="document.location. href='index.php?page=libs/modules/storage/storage.article.summary.php';">
                     <?= $_LANG->get('Lagerartikel') ?>
                     </button>
-                    <button class="btn btn-xs btn-success"
-                            onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
-                        <span class="glyphicons glyphicons-plus-sign"></span>
+                    <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
                     <?= $_LANG->get('Lagerplatz erstellen') ?>
                     </button>
 		  		</span>

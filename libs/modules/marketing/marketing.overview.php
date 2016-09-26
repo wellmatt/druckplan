@@ -47,7 +47,7 @@ $marketjobs = Marketing::getAllForList($curr_list);
                   <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" class="form-horizontal" id="marketing_column_form">
                       <div class="form-group">
                           <label for="" class="col-sm-2 control-label">Vorlage auswählen:</label>
-                          <div class="col-sm-1">
+                          <div class="col-sm-2">
                               <select class="form-control" name="list">
                                   <?php
                                   foreach ($lists as $list) {
