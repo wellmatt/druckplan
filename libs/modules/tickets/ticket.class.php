@@ -215,6 +215,26 @@ class Ticket {
             }
         }
     }
+
+    /**
+     * Loeschfunktion fuer Kommentare. // Endgültig
+     *
+     * @return boolean
+     */
+    public function deleteForced()
+    {
+        global $DB;
+        if ($this->id > 0) {
+            $sql = "DELETE FROM tickets WHERE id = {$this->id}";
+            if ($DB->no_result($sql)) {
+                Cachehandler::removeCache(Cachehandler::genKeyword($this));
+                unset($this);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
     
     public static function getUserSpareTime(User $user)
     {
@@ -282,7 +302,11 @@ class Ticket {
         }
         return $retval;
     }
-    
+
+    /**
+     * @param string $filter
+     * @return Ticket[]
+     */
     public static function getAllTickets($filter = '')
     {
         global $DB;

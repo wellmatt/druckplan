@@ -9,6 +9,7 @@
 
 require_once("config.php");
 require_once("libs/basic/mysql.php");
+require_once 'libs/modules/backup/backup.class.php';
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
@@ -64,6 +65,10 @@ if ($updatedata && $updatedata->success == 1 && isset($updatedata->data)){
 }
 
 if ($uptodate === false){
+
+    $backup = new Backup();
+    $backup->saveFiles();
+    $backup->saveDB();
 
     if (file_exists("update.rar"))
         unlink("update.rar");
