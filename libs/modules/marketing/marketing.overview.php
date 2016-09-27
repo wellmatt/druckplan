@@ -26,15 +26,13 @@ $marketjobs = Marketing::getAllForList($curr_list);
                 Marketingplan
                 <span class="pull-right">
 					  <button class="btn btn-xs btn-success" onclick="document.location.href='libs/modules/marketing/marketing.full.php';">
+                          <span class="glyphicons glyphicons-more-windows"></span>
                         <?= $_LANG->get('In neuem Fenster öffnen') ?>
                       </button>
-		  		</span>
-
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/marketing/marketing.edit.php&exec=new&list=<?=$curr_list?>';">
-                        <span class="glyphicons glyphicons-plus"></span>
-                        <?= $_LANG->get('Plan erstellen') ?>
-                    </button>
+                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/marketing/marketing.edit.php&exec=new&list=<?=$curr_list?>';">
+                         <span class="glyphicons glyphicons-plus"></span>
+                         <?= $_LANG->get('Plan erstellen') ?>
+                     </button>
 		  		</span>
             </h3>
 	  </div>
@@ -49,7 +47,7 @@ $marketjobs = Marketing::getAllForList($curr_list);
                   <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" class="form-horizontal" id="marketing_column_form">
                       <div class="form-group">
                           <label for="" class="col-sm-2 control-label">Vorlage auswählen:</label>
-                          <div class="col-sm-1">
+                          <div class="col-sm-2">
                               <select class="form-control" name="list">
                                   <?php
                                   foreach ($lists as $list) {
@@ -70,6 +68,7 @@ $marketjobs = Marketing::getAllForList($curr_list);
                   </form>
               </div>
           </div>
+          <br>
           <div class="table-responsive">
               <table id="marketing_table" class="table table-hover">
                   <thead>

@@ -26,7 +26,7 @@ $customers = Personalization::getAllCustomerWithPersos();
 
 <script type="text/javascript">
 $(document).ready(function() {
-    var art_table = $('#persos_table').DataTable( {
+    var persos_table = $('#persos_table').DataTable( {
         // "scrollY": "600px",
         "processing": true,
         "bServerSide": true,
@@ -34,8 +34,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-// 		"dom": 'flrtip',        
-		"dom": 'T<"clear">flrtip',        
+        "dom": 'T<"clear">lrtip',
 		"aaSorting": [[ 2, "asc" ]],
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
@@ -102,6 +101,9 @@ $(document).ready(function() {
         $.post("libs/modules/personalization/personalization.ajax.php", {"ajax_action": "setFilter_perso_ajax_customer", "perso_ajax_customer": $(this).val()});
 		$('#persos_table').dataTable().fnDraw();  
 	})
+    $('#search').keyup(function(){
+        persos_table.search( $(this).val() ).draw();
+    })
 } );
 function PersoOrderTableRefresh()
 {
@@ -131,8 +133,8 @@ function PersoOrderTableRefresh()
                       <div class="form-horizontal">
 
                           <div class="form-group">
-                              <label for="" class="col-sm-1 control-label">Kunde</label>
-                              <div class="col-sm-3">
+                              <label for="" class="col-sm-2 control-label">Kunde</label>
+                              <div class="col-sm-5">
                                   <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['perso_ajax_customer']) echo ' value="'.$_SESSION['perso_ajax_customer'].'" ';?>/>
                                   <select name="customer" id="customer" class="form-control">
                                       <option value="" <?php if (!$_SESSION['perso_ajax_customer']) echo ' selected ';?>></option>
@@ -147,6 +149,12 @@ function PersoOrderTableRefresh()
                                       }
                                       ?>
                                   </select>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="" class="col-sm-2 control-label">Suche</label>
+                              <div class="col-sm-5">
+                                  <input type="text" id="search" class="form-control" placeholder="">
                               </div>
                           </div>
                       </div>

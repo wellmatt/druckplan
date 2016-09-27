@@ -45,50 +45,62 @@ if ($marketingjob->getId()>0){
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_job_form" id="marketing_job_form" class="form-horizontal">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="marketing_job_form" id="marketing_job_form"
+      class="form-horizontal">
     <input type="hidden" name="exec" value="save"/>
-    <input type="hidden" name="list" value="<?php echo $_REQUEST["list"];?>"/>
-    <input type="hidden" id="entry_id" name="id" value="<?php echo $_REQUEST['id'];?>"/>
+    <input type="hidden" name="list" value="<?php echo $_REQUEST["list"]; ?>"/>
+    <input type="hidden" id="entry_id" name="id" value="<?php echo $_REQUEST['id']; ?>"/>
 
     <div class="panel panel-default">
-          <div class="panel-heading">
-                <h3 class="panel-title">
-                    Marketing Job
-                </h3>
-          </div>
-          <div class="panel-body">
-
-              <div class="form-group">
-                  <label for="" class="col-sm-1 control-label">Titel</label>
-                  <div class="col-sm-3">
-                      <input type="text" name="title" class="form-control" value="<?php echo $marketingjob->getTitle();?>" >
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-1 control-label">Kunde</label>
-                  <div class="col-sm-3">
-                      <input class="form-control" type="text" name="search" id="search" value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine();?>" >
-                      <input class="form-control" type="hidden" name="businesscontact" id="businesscontact" value="<?php echo $marketingjob->getBusinesscontact()->getId();?>" >
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="" class="col-sm-1 control-label">Datum</label>
-                  <div class="col-sm-3">
-                      <input class=form-control type="text" name="date" id="date" value="<?if($marketingjob->getCrtdate() != 0){ echo date('d.m.Y', $marketingjob->getCrtdate());} elseif ($marketingjob->getId()==0) { echo date('d.m.Y'); }?>">
-                  </div>
-              </div>
-
-              <?php foreach ($columns as $column) {?>
-              <div class="form-group">
-                  <label for="" class="col-sm-1 control-label"><?php echo $column->getTitle();?></label>
-                  <div class="col-sm-3">
-                      <input class="form-control" type="text" name="column[<?php echo $column->getId();?>]" value="<?php echo $marketingjob->getColumnValue($column->getId());?>">
-                  </div>
-              </div>
-              <?php } ?>
-          </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Marketing Job
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Titel</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="title" class="form-control"
+                                   value="<?php echo $marketingjob->getTitle(); ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Kunde</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" name="search" id="search"
+                                   value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine(); ?>">
+                            <input class="form-control" type="hidden" name="businesscontact" id="businesscontact"
+                                   value="<?php echo $marketingjob->getBusinesscontact()->getId(); ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Datum</label>
+                        <div class="col-sm-4">
+                            <input class=form-control type="text" name="date" id="date"
+                                   value="<? if ($marketingjob->getCrtdate() != 0) {
+                                       echo date('d.m.Y', $marketingjob->getCrtdate());
+                                   } elseif ($marketingjob->getId() == 0) {
+                                       echo date('d.m.Y');
+                                   } ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <?php foreach ($columns as $column) { ?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label"><?php echo $column->getTitle(); ?></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="column[<?php echo $column->getId(); ?>]"
+                                       value="<?php echo $marketingjob->getColumnValue($column->getId()); ?>">
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
 

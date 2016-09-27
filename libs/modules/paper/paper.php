@@ -44,8 +44,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
                 "paging": true,
                 "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
                 "pageLength": <?php echo $perf->getDt_show_default();?>,
-// 		"dom": 'flrtip',
-                "dom": 'T<"clear">flrtip',
+                "dom": 'T<"clear">lrtip',
                 "tableTools": {
                     "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                     "aButtons": [
@@ -99,6 +98,9 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
                 var aData = $('#paper_table').dataTable().fnGetData(aPos[0]);
                 document.location='index.php?page=libs/modules/paper/paper.php&exec=edit&id='+aData[0];
             });
+            $('#search').keyup(function(){
+                paper_table.search( $(this).val() ).draw();
+            })
         } );
     </script>
     <div class="panel panel-default">
@@ -113,18 +115,33 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
                     </span>
             </h3>
         </div>
-        <div class="table-responsive">
-            <table id="paper_table" class="table table-hover">
-                <thead>
-                <tr>
-                    <th width="20"><?=$_LANG->get('ID')?></th>
-                    <th><?=$_LANG->get('Name')?></th>
-                    <th><?=$_LANG->get('Gr&ouml;&szlig;en')?></th>
-                    <th><?=$_LANG->get('Grammaturen')?></th>
-                    <th width="100"><?=$_LANG->get('Optionen')?></th>
-                </tr>
-                </thead>
-            </table>
+        <div class="panel-body">
+            <div class="panel panel-default">
+            	  <div class="panel-heading">
+            			<h3 class="panel-title">Filter</h3>
+            	  </div>
+            	  <div class="panel-body">
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Suche</label>
+                          <div class="col-sm-10">
+                              <input type="text" id="search" class="form-control" placeholder="">
+                          </div>
+                      </div>
+            	  </div>
+            </div>
+            <div class="table-responsive">
+                <table id="paper_table" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th width="20"><?=$_LANG->get('ID')?></th>
+                        <th><?=$_LANG->get('Name')?></th>
+                        <th><?=$_LANG->get('Gr&ouml;&szlig;en')?></th>
+                        <th><?=$_LANG->get('Grammaturen')?></th>
+                        <th width="100"><?=$_LANG->get('Optionen')?></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 <?  } ?>

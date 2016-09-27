@@ -26,47 +26,59 @@ if ($_REQUEST["exec"] == "delete"){
     <div class="panel-heading">
         <h3 class="panel-title">
             Lief. Bestellungen
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success"
-                            onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.collective.php';">
-                        <span class="glyphicons glyphicons-plus-sign"></span>
-                        Sammelbestellung erstellen
-                    </button>
-                </span>
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success"
-                            onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.edit.php&exec=new';">
-                        <span class="glyphicons glyphicons-plus-sign"></span>
-                        Bestellung erstellen
-                    </button>
-                </span>
+            <span class="pull-right">
+                <button class="btn btn-xs btn-success"
+                        onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.collective.php';">
+                    <span class="glyphicons glyphicons-plus-sign"></span>
+                    Sammelbestellung erstellen
+                </button>
+                <button class="btn btn-xs btn-success"
+                        onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.edit.php&exec=new';">
+                    <span class="glyphicons glyphicons-plus-sign"></span>
+                    Bestellung erstellen
+                </button>
+            </span>
         </h3>
     </div>
-    <br>
-    <div class="table-responsive">
-        <table id="supordertable" width="100%" cellpadding="0" cellspacing="0"
-               class="stripe hover row-border order-column">
-            <thead>
-            <tr>
-                <th><?= $_LANG->get('ID') ?></th>
-                <th><?= $_LANG->get('Nummer') ?></th>
-                <th><?= $_LANG->get('Titel') ?></th>
-                <th><?= $_LANG->get('Lieferant') ?></th>
-                <th><?= $_LANG->get('Status') ?></th>
-                <th><?= $_LANG->get('Datum') ?></th>
-            </tr>
-            </thead>
-            <tfoot>
-            <tr>
-                <th><?= $_LANG->get('ID') ?></th>
-                <th><?= $_LANG->get('Nummer') ?></th>
-                <th><?= $_LANG->get('Titel') ?></th>
-                <th><?= $_LANG->get('Lieferant') ?></th>
-                <th><?= $_LANG->get('Status') ?></th>
-                <th><?= $_LANG->get('Datum') ?></th>
-            </tr>
-            </tfoot>
-        </table>
+    <div class="panel-body">
+        <div class="panel panel-default">
+              <div class="panel-heading">
+                    <h3 class="panel-title">Filter</h3>
+              </div>
+              <div class="panel-body">
+                  <div class="form-group">
+                      <label for="" class="col-sm-2 control-label">Suche</label>
+                      <div class="col-sm-10">
+                          <input type="text" id="search" class="form-control" placeholder="">
+                      </div>
+                  </div>
+              </div>
+        </div>
+        <div class="table-responsive">
+            <table id="supordertable" width="100%" cellpadding="0" cellspacing="0"
+                   class="stripe hover row-border order-column">
+                <thead>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Nummer') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Lieferant') ?></th>
+                    <th><?= $_LANG->get('Status') ?></th>
+                    <th><?= $_LANG->get('Datum') ?></th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Nummer') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Lieferant') ?></th>
+                    <th><?= $_LANG->get('Status') ?></th>
+                    <th><?= $_LANG->get('Datum') ?></th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -80,7 +92,7 @@ if ($_REQUEST["exec"] == "delete"){
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -135,5 +147,9 @@ if ($_REQUEST["exec"] == "delete"){
             var aData = $('#supordertable').dataTable().fnGetData(aPos[0]);
             document.location='index.php?page=libs/modules/suporder/suporder.edit.php&exec=edit&id='+aData[0];
         });
+
+        $('#search').keyup(function(){
+            supordertable.search( $(this).val() ).draw();
+        })
     } );
 </script>

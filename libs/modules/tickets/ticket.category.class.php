@@ -124,8 +124,10 @@ class TicketCategory {
             return false;
         }
     }
-    
 
+    /**
+     * @return TicketCategory[]
+     */
     public static function getAllCategories()
     {
         global $DB;
@@ -171,7 +173,7 @@ class TicketCategory {
     }
     
 	/**
-     * @return the $id
+     * @return int $id
      */
     public function getId()
     {

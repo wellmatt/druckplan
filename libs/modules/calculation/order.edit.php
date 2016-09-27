@@ -281,7 +281,7 @@ if((int)$_REQUEST["step"] == 2){
 								$color_possible = true;
 							}
 						}
-						if($color_possible){// Standart Maschine kann ausgewaehlte Farbe drucken
+						if($color_possible){ // Standart Maschine kann ausgewaehlte Farbe drucken
 							//$me = new Machineentry();
 							if (! Machineentry::entryExistsWithPart($calc->getId(), $m->getId(), 1)){
 								$me = new Machineentry();

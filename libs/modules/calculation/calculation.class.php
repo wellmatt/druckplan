@@ -80,7 +80,7 @@ class Calculation
 	private $cutAddContent2 = 3.0;				// Anschnitt fuer den zusl. Inhalt 2
 	private $cutAddContent3 = 3.0;				// Anschnitt fuer den zusl. Inhalt 3
     private $cutEnvelope = 3.0;					// Anschnitt fuer Umschlag 
-    private $colorControl = 1;					// Farbkontrollstreifen anzeigen 
+    private $colorControl = 0;					// Farbkontrollstreifen anzeigen
 	
     // Zus. Inhalt 2
     private $pagesAddContent2 = 0;

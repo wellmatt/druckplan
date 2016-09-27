@@ -741,7 +741,18 @@ function clickContentChromaticity(id)
             }   
 
 </script>
-
+<script language="JavaScript">
+    function SwapFormat(){
+        var order_product_width = $('#order_product_width').val();
+        var order_product_height = $('#order_product_height').val();
+        var order_product_width_open = $('#order_product_width_open').val();
+        var order_product_height_open = $('#order_product_height_open').val();
+        $('#order_product_width').val(order_product_height);
+        $('#order_product_height').val(order_product_width);
+        $('#order_product_width_open').val(order_product_height_open);
+        $('#order_product_height_open').val(order_product_width_open);
+    }
+</script>
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -827,11 +838,11 @@ echo $quickmove->generate();
                     <tr>
                         <td></td>
                         <td id="paper_free" <? //if($calc->getProductFormat() != 0) echo 'style="display:none"' ?>>
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                  <div class="row">
                                      <div class="form-group">
                                          <label for="" class="col-sm-2 control-label">Breite</label>
-                                         <div class="col-sm-4">
+                                         <div class="col-sm-3">
                                              <div class="input-group">
                                                  <input name="order_product_width" class="form-control" id="order_product_width" value="<?= $calc->getProductFormatWidth() ?>">
                                                  <span class="input-group-addon">mm</span>
@@ -840,7 +851,7 @@ echo $quickmove->generate();
                                      </div>
                                      <div class="form-group">
                                          <label for="" class="col-sm-2 control-label">Höhe</label>
-                                         <div class="col-sm-4">
+                                         <div class="col-sm-3">
                                              <div class="input-group">
                                                  <input name="order_product_height" class="form-control" id="order_product_height" value="<?= $calc->getProductFormatHeight() ?>">
                                                  <span class="input-group-addon">mm</span>
@@ -851,7 +862,7 @@ echo $quickmove->generate();
                                 <div class="row">
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Breite (offenes Format)</label>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="input-group">
                                                 <input name="order_product_width_open" class="form-control" id="order_product_width_open" value="<?= $calc->getProductFormatWidthOpen() ?>">
                                                 <span class="input-group-addon">mm</span>
@@ -860,11 +871,14 @@ echo $quickmove->generate();
                                     </div>
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Höhe (offenes Format)</label>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="input-group">
                                                 <input name="order_product_height_open" class="form-control" id="order_product_height_open" value="<?= $calc->getProductFormatHeightOpen() ?>">
                                                 <span class="input-group-addon">mm</span>
                                             </div>
+                                        </div>
+                                        <div class="col-sm-2 form-text" style="vertical-align: middle">
+                                            <span title="Werte tauschen" class="glyphicons glyphicons-embed pointer" onclick="SwapFormat();"></span>&nbsp;Werte tauschen
                                         </div>
                                     </div>
                                 </div>

@@ -79,6 +79,7 @@ $partslists = Partslist::getAll();
             Stücklisten
         </h3>
     </div>
+    <br>
     <div class="table-responsive">
         <table class="table table-hover" id="partslisttable">
             <thead>

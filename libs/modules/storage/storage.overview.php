@@ -33,34 +33,45 @@ if ($_REQUEST["exec"] == "delete"){
                             onclick="document.location. href='index.php?page=libs/modules/storage/storage.article.summary.php';">
                     <?= $_LANG->get('Lagerartikel') ?>
                     </button>
-                    <button class="btn btn-xs btn-success"
-                            onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
-                        <span class="glyphicons glyphicons-plus-sign"></span>
+                    <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
                     <?= $_LANG->get('Lagerplatz erstellen') ?>
                     </button>
 		  		</span>
             </h3>
 	  </div>
-    <br>
-    <div class="table-responsive">
-        <table  id="storagetable" class="table table-hover">
-            <thead>
-            <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('Name')?></th>
-                <th><?=$_LANG->get('Belegung')?></th>
-            </tr>
-            </thead>
-            <tfoot>
-            <tr>
-                <th><?=$_LANG->get('ID')?></th>
-                <th><?=$_LANG->get('Name')?></th>
-                <th><?=$_LANG->get('Belegung')?></th>
-            </tr>
-            </tfoot>
-        </table>
+    <div class="panel-body">
+        <div class="panel panel-default">
+        	  <div class="panel-heading">
+        			<h3 class="panel-title">Filter</h3>
+        	  </div>
+        	  <div class="panel-body">
+                  <div class="form-group">
+                      <label for="" class="col-sm-2 control-label">Suche</label>
+                      <div class="col-sm-10">
+                          <input type="text" id="search" class="form-control" placeholder="">
+                      </div>
+                  </div>
+        	  </div>
+        </div>
+        <div class="table-responsive">
+            <table  id="storagetable" class="table table-hover">
+                <thead>
+                <tr>
+                    <th><?=$_LANG->get('ID')?></th>
+                    <th><?=$_LANG->get('Name')?></th>
+                    <th><?=$_LANG->get('Belegung')?></th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th><?=$_LANG->get('ID')?></th>
+                    <th><?=$_LANG->get('Name')?></th>
+                    <th><?=$_LANG->get('Belegung')?></th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
-
 </div>
 
 
@@ -73,7 +84,7 @@ if ($_REQUEST["exec"] == "delete"){
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -125,5 +136,9 @@ if ($_REQUEST["exec"] == "delete"){
             var aData = $('#storagetable').dataTable().fnGetData(aPos[0]);
             document.location='index.php?page=libs/modules/storage/storage.edit.php&exec=edit&id='+aData[0];
         });
+
+        $('#search').keyup(function(){
+            storagetable.search( $(this).val() ).draw();
+        })
     } );
 </script>

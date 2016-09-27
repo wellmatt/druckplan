@@ -252,14 +252,14 @@ $(function() {
 						<div class="form-horizontal">
                             <div class="form-group">
                                 <label for="" class="col-sm-3 control-label">Tags</label>
-                                <div class="col-sm-8">
+                                <div class="col-sm-4">
                                     <input type="hidden" id="ajax_tags" name="ajax_tags"/>
                                     <input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="" class="col-sm-3 control-label">Warengruppe</label>
-                                <div class="col-sm-8">
+                                <div class="col-sm-4">
                                     <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
                                     <select name="tradegroup" id="tradegroup" class="form-control" onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();" onfocus="markfield(this,0)" onblur="markfield(this,1)">
                                         <option value="0">- Alle -</option>
@@ -277,7 +277,7 @@ $(function() {
                             </div>
                             <div class="form-group">
                                 <label for="" class="col-sm-3 control-label">Kunde/Ansprechpartner</label>
-                                <div class="col-sm-8">
+                                <div class="col-sm-4">
                                     <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
                                     <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
                                     <input name="bc_cp" id="bc_cp"  onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
