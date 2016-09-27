@@ -194,7 +194,7 @@ class Paper {
             $res = $DB->select($sql);
             $price = ($weight * $res[0]["price"]) / 100;
         } elseif ($this->rolle == 1) {
-            $sql = "SELECT price FROM papers_prices
+            $sql = "SELECT price, size_height FROM papers_prices
                     WHERE ((size_width = {$this->selectedSize["width"]})
                             OR (size_width = {$this->selectedSize["height"]}))
                         AND weight_from = {$this->selectedWeight}
@@ -203,7 +203,8 @@ class Paper {
                     ORDER BY quantity_from desc, price
                     LIMIT 1";
             $res = $DB->select($sql);
-            $price = $amount * $res[0]["price"] / 1000;
+//            prettyPrint($amount.' * ( '.$res[0]["price"].' / ( '.$res[0]["size_height"].' / 1000 ) ) ');
+            $price = $amount * ($res[0]["price"]/($res[0]["size_height"]/1000));
         } else
         {
             $sql = "SELECT price FROM papers_prices 
