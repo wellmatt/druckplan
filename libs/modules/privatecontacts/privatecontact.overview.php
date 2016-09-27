@@ -30,7 +30,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-        "dom": 'T<"clear">flrtip',
+        "dom": 'T<"clear">lrtip',
         "tableTools": {
         "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
         "aButtons": [
@@ -78,6 +78,10 @@ $(document).ready(function() {
     }
     } );
 
+    $('#search').keyup(function(){
+        cp_table.search( $(this).val() ).draw();
+    })
+
     $("#cp_table tbody td").live('click',function(){
         var aPos = $('#cp_table').dataTable().fnGetPosition(this);
         var aData = $('#cp_table').dataTable().fnGetData(aPos[0]);
@@ -90,23 +94,38 @@ $(document).ready(function() {
         <h3 class="panel-title">
             <span class="glyphicons glyphicons-user"></span>
             Private Kontakte
-                <span class = pull-right>
-                    <button class="btn btn-xs btn-success"onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
-                        <span class="glyphicons glyphicons-plus"></span>
-                        <?=$_LANG->get('Neuer Kontakt') ?>
-                </span>
+            <span class = pull-right>
+                <button class="btn btn-xs btn-success"onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
+                    <span class="glyphicons glyphicons-plus"></span>
+                    <?=$_LANG->get('Neuer Kontakt') ?>
+            </span>
         </h3>
     </div>
-    <div class="table-responsive">
-        <table id="cp_table" class="table table-hover">
-            <thead>
-            <tr>
-                <th width="10">ID</th>
-                <th>Name</th>
-                <th>Firma</th>
-                <th>Benutzer</th>
-            </tr>
-            </thead>
-        </table>
+    <div class="panel-body">
+        <div class="panel panel-default">
+        	  <div class="panel-heading">
+        			<h3 class="panel-title">Filter</h3>
+        	  </div>
+        	  <div class="panel-body">
+                  <div class="form-group">
+                      <label for="" class="col-sm-2 control-label">Suche</label>
+                      <div class="col-sm-10">
+                          <input type="text" id="search" class="form-control" placeholder="">
+                      </div>
+                  </div>
+        	  </div>
+        </div>
+        <div class="table-responsive">
+            <table id="cp_table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th width="10">ID</th>
+                    <th>Name</th>
+                    <th>Firma</th>
+                    <th>Benutzer</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>

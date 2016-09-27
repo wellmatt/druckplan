@@ -69,7 +69,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"dom": 'T<"clear">flrtip',
+		"dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -128,6 +128,10 @@ $(document).ready(function() {
     	$('#bcon_table').dataTable().fnDraw();
     });
 
+	$('#search').keyup(function(){
+		bcon_table.search( $(this).val() ).draw();
+	})
+
 
     $("#bcon_table tbody td").live('click',function(){
         var aPos = $('#bcon_table').dataTable().fnGetPosition(this);
@@ -143,13 +147,6 @@ $(document).ready(function() {
 	  <div class="panel-heading">
 			<h3 class="panel-title">
 				Geschäftskontakte Vertrieb - <?php echo $_USER->getNameAsLine();?>
-				<?php /*
-				<span class="pull-right">
-					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>//&exec=edit&tabshow=1';">
-						 <span class="glyphicons glyphicons-plus"></span><?=$_LANG->get('Gesch&auml;ftskontakte hinzuf&uuml;gen')?>
-					 </button>
-				</span>
- 				*/ ?>
 			</h3>
 	  </div>
 	<div class="panel-body">
@@ -159,10 +156,10 @@ $(document).ready(function() {
 					Filter
 				</h3>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body form-horizontal">
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
-					<div class="col-sm-4">
+					<div class="col-sm-5">
 						<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 							<?
@@ -173,6 +170,12 @@ $(document).ready(function() {
 								<? }
 							} ?>
 						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-sm-2 control-label">Suche</label>
+					<div class="col-sm-5">
+						<input type="text" id="search" class="form-control" placeholder="">
 					</div>
 				</div>
 			</div>

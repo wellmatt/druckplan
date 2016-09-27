@@ -310,7 +310,7 @@ echo $quickmove->generate();
                                       <?php
                                   } else {
                                       ?>
-                                      <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/100,2)?> <?=$_LANG->get('Laufmeter')?> (<?=printPrice((($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/100) * tofloat($calc->getPaperContent()->getSelectedSize()["width"])/100,2)?> <?=$_LANG->get('qm')?>)
+                                      <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2)?> <?=$_LANG->get('Laufmeter')?> (<?=printPrice((($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000) * tofloat($calc->getPaperContent()->getSelectedSize()["width"])/1000,2)?> <?=$_LANG->get('qm')?>)
                                       <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
                                       <?=$_USER->getClient()->getCurrency()?>
                                       <?php

@@ -69,7 +69,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"dom": 'T<"clear">flrtip',
+		"dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -127,6 +127,9 @@ $(document).ready(function() {
     $('#filter_attrib').on("change", function () {
     	$('#bcon_table').dataTable().fnDraw();
     });
+	$('#search').keyup(function(){
+		bcon_table.search( $(this).val() ).draw();
+	})
 
 
     $("#bcon_table tbody td").live('click',function(){
@@ -160,7 +163,7 @@ $(document).ready(function() {
 			<div class="panel-body">
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
-					<div class="col-sm-4">
+					<div class="col-sm-10">
 						<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 							<?
@@ -171,6 +174,12 @@ $(document).ready(function() {
 								<? }
 							} ?>
 						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-sm-2 control-label">Suche</label>
+					<div class="col-sm-10">
+						<input type="text" id="search" class="form-control" placeholder="">
 					</div>
 				</div>
 			</div>

@@ -160,7 +160,7 @@ echo $quickmove->generate();
                             <thead>
                                 <tr>
                                     <th width="15%">Maschine</th>
-                                    <th width="5%">Zeit (min)</th>
+                                    <th width="8%">Zeit (min)</th>
                                     <th width="10%">Inhalt</th>
                                     <th width="40%">Einstellungen</th>
                                     <th width="10%">Bogengröße</th>
@@ -192,7 +192,7 @@ echo $quickmove->generate();
                                         </td>
                                         <td>
                                             <div class="form-group">
-                                                <input type="text" class="form-control" name="mach_time_<? echo $x;?>" value="<?php echo $mach->getTime();?>" placeholder="Min.">
+                                                <input type="text" class="form-control" name="mach_time_<? echo $x;?>" value="<?php echo printPrice($mach->getTime(),2);?>" placeholder="Min.">
                                             </div>
                                         </td>
                                         <?php
@@ -373,14 +373,10 @@ echo $quickmove->generate();
                                                         echo '</div></div></div>';
 
                                                         echo '<div class="col-md-4"><div class="form-group">';
-                                                        echo '<label class="control-label">Anz. Rollen:&nbsp;</label>';
-                                                        //  (WURZEL(4*(Amount/Anzahl Nutzen)/10^3*(Höhe des Produktes)*(Paperthickness;PapierID)/PI()+(Kerndurchmesser manuelle EIngabe)^2);ELSE 0)
-                                                        prettyPrint("Debug Anz. Rollen: Wurzel( 4*({$calc->getAmount()}/{$calc->getProductsPerPaper($mach->getPart())})/10^3*{$mach->getMyPaperHeight()}*{$mach->getMyPaper()->getThickness()}/pi+76^2)");
-                                                        echo ( sqrt( 4*($calc->getAmount()/$calc->getProductsPerPaper($mach->getPart()))/10^3*$mach->getMyPaperHeight()*$mach->getMyPaper()->getThickness()/pi()+76^2 ));
-                                                        echo '</div></div>';
+                                                        echo '<label class="control-label">Anz. Rollen</label><div class="form-control">';
+                                                        echo ( ($calc->getAmount() / $mach->getLabelcount()));
+                                                        echo '</div></div></div>';
                                                     }
-
-
 
 
                                                     // Manueller Aufschlag
@@ -1204,7 +1200,7 @@ echo $quickmove->generate();
                     <div class="col-sm-offset-2 col-sm-10">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="color_control" value="1" <?if($calc->getColorControl() == 1) echo 'checked="checked"';?>> Farbkontrollstreifen aktiv
+                                <input type="checkbox" name="color_control" value="1" <?if($calc->getColorControl() == 1) echo 'checked="checked"';?>> Farbkontrollstreifen aktiv (<?php echo $_CONFIG->farbRandBreite;?>mm)
                             </label>
                         </div>
                     </div>

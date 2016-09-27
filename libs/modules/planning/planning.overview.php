@@ -44,7 +44,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"dom": 'T<"clear">flrtip',        
+		"dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -114,6 +114,9 @@ $(document).ready(function() {
 						}
 					}
     } );
+	$('#search').keyup(function(){
+		planning_table.search( $(this).val() ).draw();
+	})
     
     // Array to track the ids of the details displayed rows
     var detailRows = [];
@@ -203,36 +206,46 @@ function TableRefresh()
 			</h3>
 	  </div>
 	  <div class="panel-body">
+		  <div class="panel panel-default">
+		  	  <div class="panel-heading">
+		  			<h3 class="panel-title">Filter</h3>
+		  	  </div>
+		  	  <div class="panel-body">
+				  <div class="form-group">
+					  <label for="" class="col-sm-2 control-label">Suche</label>
+					  <div class="col-sm-10">
+						  <input type="text" id="search" class="form-control" placeholder="">
+					  </div>
+				  </div>
+		  	  </div>
+		  </div>
+		  <div class="table-responsive">
+			  <table id="planning_table"class="table table-hover">
+				  <thead>
+				  <tr>
+					  <th></th>
+					  <th><?=$_LANG->get('ID')?></th>
+					  <th><?=$_LANG->get('Auftrag')?></th>
+					  <th><?=$_LANG->get('Titel')?></th>
+					  <th><?=$_LANG->get('Kunde')?></th>
+					  <th><?=$_LANG->get('Fällig')?></th>
+					  <th><?=$_LANG->get('Bemerkung')?></th>
+					  <th><?=$_LANG->get('verpl. Jobs')?></th>
+				  </tr>
+				  </thead>
+				  <tfoot>
+				  <tr>
+					  <th></th>
+					  <th><?=$_LANG->get('ID')?></th>
+					  <th><?=$_LANG->get('Auftrag')?></th>
+					  <th><?=$_LANG->get('Titel')?></th>
+					  <th><?=$_LANG->get('Kunde')?></th>
+					  <th><?=$_LANG->get('Fällig')?></th>
+					  <th><?=$_LANG->get('Bemerkung')?></th>
+					  <th><?=$_LANG->get('verpl. Jobs')?></th>
+				  </tr>
+				  </tfoot>
+			  </table>
+		  </div>
 	  </div>
-
-</br>
-
-	<div class="table-responsive">
-		<table id="planning_table"class="table table-hover">
-			<thead>
-				<tr>
-					<th></th>
-					<th><?=$_LANG->get('ID')?></th>
-					<th><?=$_LANG->get('Auftrag')?></th>
-					<th><?=$_LANG->get('Titel')?></th>
-					<th><?=$_LANG->get('Kunde')?></th>
-					<th><?=$_LANG->get('Fällig')?></th>
-					<th><?=$_LANG->get('Bemerkung')?></th>
-					<th><?=$_LANG->get('verpl. Jobs')?></th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<th></th>
-					<th><?=$_LANG->get('ID')?></th>
-					<th><?=$_LANG->get('Auftrag')?></th>
-					<th><?=$_LANG->get('Titel')?></th>
-					<th><?=$_LANG->get('Kunde')?></th>
-					<th><?=$_LANG->get('Fällig')?></th>
-					<th><?=$_LANG->get('Bemerkung')?></th>
-					<th><?=$_LANG->get('verpl. Jobs')?></th>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
 </div>

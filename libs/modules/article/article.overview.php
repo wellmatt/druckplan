@@ -45,8 +45,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-// 		"dom": 'flrtip',        
-		"dom": 'T<"clear">flrtip',        
+        "dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -116,6 +115,10 @@ $(document).ready(function() {
         var aData = $('#art_table').dataTable().fnGetData(aPos[0]);
         document.location='index.php?page=libs/modules/article/article.php&exec=edit&aid='+aData[0];
     });
+
+    $('#search').keyup(function(){
+        art_table.search( $(this).val() ).draw();
+    })
 } );
 </script>
 
@@ -203,49 +206,64 @@ $(function() {
             </div>
             <div class="panel-body">
                 <div class="form-horizontal">
-                      <div class="form-group">
-                          <label for="" class="col-sm-2 control-label">Tags:</label>
-                          <div class="col-sm-3">
-                              <input type="hidden" id="ajax_tags" name="ajax_tags"/>
-                              <input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                          </div>
-                      </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Tags:</label>
+                        <div class="col-sm-3">
+                            <input type="hidden" id="ajax_tags" name="ajax_tags"/>
+                            <input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)"
+                                   onblur="markfield(this,1)">
+                        </div>
+                    </div>
 
-                      <div class="form-group">
-                          <label for="" class="col-sm-2 control-label">Warengruppe:</label>
-                          <div class="col-sm-3">
-                              <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
-                              <select name="tradegroup" id="tradegroup" class="form-control" onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                                  <option value="0">- Alle -</option>
-                                  <?php
-                                  $all_tradegroups = Tradegroup::getAllTradegroups();
-                                  foreach ($all_tradegroups as $tg)
-                                  {?>
-                                      <option value="<?=$tg->getId()?>">
-                                          <?=$tg->getTitle()?></option>
-                                      <? printSubTradegroupsForSelect($tg->getId(), 0);
-                                  }
-                                  ?>
-                              </select>
-                          </div>
-                      </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Warengruppe:</label>
+                        <div class="col-sm-3">
+                            <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
+                            <select name="tradegroup" id="tradegroup" class="form-control"
+                                    onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();"
+                                    onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                                <option value="0">- Alle -</option>
+                                <?php
+                                $all_tradegroups = Tradegroup::getAllTradegroups();
+                                foreach ($all_tradegroups as $tg) {
+                                    ?>
+                                    <option value="<?= $tg->getId() ?>">
+                                        <?= $tg->getTitle() ?></option>
+                                    <? printSubTradegroupsForSelect($tg->getId(), 0);
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
 
-                      <div class="form-group">
-                          <label for="" class="col-sm-2 control-label">Kunde/Ansprechpartner:</label>
-                          <div class="col-sm-3">
-                              <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
-                              <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
-                              <input name="bc_cp" id="bc_cp" class="form-control"  onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                          </div>
-                      </div>
-                      <div class="col-sm-12">
-                             <span class="pull-right">
-                                 <button class="btn btn-xs btn-success" onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();">
-                                     <span class="glyphicons glyphicons-remove pointer"></span>
-                                     <?=$_LANG->get('Reset')?>
-                                 </button>
-                             </span>
-                      </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Kunde/Ansprechpartner:</label>
+                        <div class="col-sm-3">
+                            <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
+                            <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
+                            <input name="bc_cp" id="bc_cp" class="form-control"
+                                   onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}"
+                                   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="search" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12">
+                         <span class="pull-right">
+                             <button class="btn btn-xs btn-success"
+                                     onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();">
+                                 <span class="glyphicons glyphicons-remove pointer"></span>
+                                 <?= $_LANG->get('Reset') ?>
+                             </button>
+                         </span>
+                    </div>
                 </div>
             </div>
         </div>

@@ -132,7 +132,7 @@ for ( $i=0 ; $i<count($aColumns) ; $i++ )
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT
+$sQuery = "SELECT * FROM (SELECT
             suporders.id,
             suporders.number,
             suporders.title,
@@ -141,7 +141,7 @@ $sQuery = "SELECT
             businesscontact.name1 as suppliername
             FROM
             suporders
-            INNER JOIN businesscontact ON suporders.supplier = businesscontact.id
+            INNER JOIN businesscontact ON suporders.supplier = businesscontact.id) t1
            $sWhere
            $sOrder
            $sLimit
@@ -152,8 +152,17 @@ $sQuery = "SELECT
 $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 
 /* Data set length after filtering */
-$sQuery = "SELECT COUNT(suporders.id)
-           FROM suporders
+$sQuery = "SELECT COUNT(id)
+           FROM (SELECT
+            suporders.id,
+            suporders.number,
+            suporders.title,
+            suporders.`status`,
+            suporders.crtdate,
+            businesscontact.name1 as suppliername
+            FROM
+            suporders
+            INNER JOIN businesscontact ON suporders.supplier = businesscontact.id) t1
            $sWhere";
 //     var_dump($sQuery);
 $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -163,7 +172,8 @@ $iFilteredTotal = $aResultFilterTotal[0];
 
 /* Total data set length */
 $sQuery = "SELECT COUNT(suporders.id)
-           FROM suporders";
+           FROM suporders
+           INNER JOIN businesscontact ON suporders.supplier = businesscontact.id";
 //     var_dump($sQuery);
 $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 $aResultTotal = mysql_fetch_array($rResultTotal);
@@ -182,6 +192,7 @@ $output = array(
 
 while ( $aRow = mysql_fetch_array( $rResult ) )
 {
+//    print_r($aRow);
     $row = array();
     for ( $i=0 ; $i<count($aColumns) ; $i++ )
     {

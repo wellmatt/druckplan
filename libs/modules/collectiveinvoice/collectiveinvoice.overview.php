@@ -53,7 +53,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"dom": 'T<"clear">flrtip',
+		"dom": 'T<"clear">lrtip',
 		"aaSorting": [[ 4, "desc" ]],
 		"order": [[ 4, "desc" ]],
 		"tableTools": {
@@ -121,6 +121,9 @@ $(document).ready(function() {
 						}
 					}
     } );
+	$('#search').keyup(function(){
+		colinv.search( $(this).val() ).draw();
+	})
 
     $("#colinv tbody td:not(:last-child)").live('click',function(){
         var aPos = $('#colinv').dataTable().fnGetPosition(this);
@@ -226,7 +229,7 @@ $(document).ready(function() {
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-5">
 							<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								<?
@@ -241,21 +244,21 @@ $(document).ready(function() {
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kunde:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-5">
 							<input name="ajax_customer" id="ajax_customer" type="hidden"/>
 							<input name="customer" id="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Benutzer:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-5">
 							<input name="ajax_user" id="ajax_user" type="hidden"/>
 							<input name="user" id="user" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Status:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-5">
 							<select id="filter_status" name="filter_status" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								<?
@@ -272,6 +275,12 @@ $(document).ready(function() {
 									echo '<option value="'.$index.'">'.$value.'</option>';
 								} ?>
 							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Suche</label>
+						<div class="col-sm-5">
+							<input type="text" id="search" class="form-control" placeholder="">
 						</div>
 					</div>
 				</div>

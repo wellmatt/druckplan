@@ -685,9 +685,11 @@ class Machine
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_M)
             {
-                $time = (($calc->getProductFormatHeightOpen()/1000) * $calc->getAmount())/$this->getUnitsPerHour(0)/60;
+                $time = ( ($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight()) / 1000 ) / ( $this->getUnitsPerHour(0) / 60 );
                 if ($debug){
-                    echo '$time = (('.$calc->getProductFormatHeightOpen().' /1000) * '.$calc->getAmount().')/'.$this->getUnitsPerHour(0).'/60 </br>';
+                    echo 'Laufmeterberechnung pro Stunde:</br>';
+                    echo 'Laufmeter: '.( ($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight()) / 1000 ).'</br>';
+                    echo '$time = ( '.$calc->getPaperCount(Calculation::PAPER_CONTENT).' * '.$calc->getPaperContentHeight().' ) / 1000 / ( '.$this->getUnitsPerHour(0).' / 60 ) </br>';
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_CUTS)
             {

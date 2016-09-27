@@ -195,8 +195,8 @@ class Paper {
             $price = ($weight * $res[0]["price"]) / 100;
         } elseif ($this->rolle == 1) {
             $sql = "SELECT price FROM papers_prices
-                    WHERE (size_width = {$this->selectedSize["width"]})
-                            OR (size_width = {$this->selectedSize["height"]})
+                    WHERE ((size_width = {$this->selectedSize["width"]})
+                            OR (size_width = {$this->selectedSize["height"]}))
                         AND weight_from = {$this->selectedWeight}
                         AND quantity_from <= {$amount}
                         AND paper_id = {$this->id}
@@ -222,7 +222,7 @@ class Paper {
         return $price;
     }
     
-    function getAvailablePaperSizesForMachine($machine, $minWidth = 0, $minHeight = 0, $rolle = 0, $productheight = 0)
+    function getAvailablePaperSizesForMachine(Machine $machine, $minWidth = 0, $minHeight = 0, $rolle = 0, $productheight = 0)
     {
         global $DB;
         $sqlsizes = Array();
@@ -241,6 +241,8 @@ class Paper {
             $sql .= "AND (( width >= {$minWidth} AND height >= {$minHeight}) OR (width >= {$minHeight} AND height >= {$minWidth}))";
     
 //         echo $sql;
+//        prettyPrint($sql);
+//        prettyPrint($machine->getId());
         if($DB->num_rows($sql))
             $sqlsizes = $DB->select($sql);
 
