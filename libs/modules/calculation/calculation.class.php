@@ -1154,7 +1154,6 @@ class Calculation
         if($machineEntry == null)
         {
             $machEntries = Machineentry::getAllMachineentries($this->getId());
-//            prettyPrint(count($machEntries));
 
             foreach ($machEntries as $me)
             {
@@ -1177,7 +1176,7 @@ class Calculation
                     $papers = 0;
                     if($me->getPart() == Calculation::PAPER_CONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
-                        $papers = $this->getPagesContent() / $this->getProductsPerPaper(Calculation::PAPER_CONTENT); 
+                        $papers = $this->getPagesContent() / $this->getProductsPerPaper(Calculation::PAPER_CONTENT);
                     } else if($me->getPart() == Calculation::PAPER_ADDCONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0)
                     {
                         $papers = $this->getPagesAddContent() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT); 

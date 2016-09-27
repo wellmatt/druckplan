@@ -1159,6 +1159,10 @@ if((int)$_REQUEST["step"] == 3){
 					$me->setCutter_cuts($me->calcCuts());
 					$me->save();
 				}
+				if ($me->getMachine()->getType() == Machine::TYPE_CTP){
+					$me->setPrice($me->getMachine()->getMachinePrice($me));
+					$me->save();
+				}
 			}
 
 

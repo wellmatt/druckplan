@@ -502,7 +502,7 @@ echo $quickmove->generate();
 										  <div class="form-group">
 											  <label for="" class="col-sm-3 control-label">Hinzufügen:</label>
 											  <div class="col-sm-9">
-												  <input type="text" id="shop_add_customer" value="" class="form-control" />
+												  <input type="text" name="shop_appr_bc[]" id="shop_add_customer" value="" class="form-control" />
 											  </div>
 										  </div>
 										  <table width="100%" cellpadding="0" cellspacing="0" border="0"
@@ -530,7 +530,7 @@ echo $quickmove->generate();
 										  <div class="form-group">
 											  <label for="" class="col-sm-3 control-label">Hinzufügen:</label>
 											  <div class="col-sm-9">
-												  <input type="text" class="form-control" id="shop_add_customer_cp" value=""/>
+												  <input type="text" class="form-control" name="shop_appr_cp[]" id="shop_add_customer_cp" value=""/>
 											  </div>
 										  </div>
 									  </td>
