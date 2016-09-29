@@ -231,8 +231,18 @@ $(document).ready(function() {
                     <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
                     <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Produkt</label>
-                        <div class="col-sm-10">
+                        <label for="" class="col-sm-2 control-label">Datum &nbsp; Von:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" name="date_min" id="date_min" placeholder="">
+                        </div>
+                        <label for="" class="col-sm-1 control-label">Bis:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" name="date_max" id="date_max" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Produkt:</label>
+                        <div class="col-sm-5">
                             <select name="ajax_product" id="ajax_product" class="form-control" onchange="$('#orders').dataTable().fnDraw();">
                                 <option value="0">-- Alle --</option>
                                 <?php
@@ -244,18 +254,8 @@ $(document).ready(function() {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Datum</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="date_min" id="date_min" placeholder="">
-                        </div>
-                        <label for="" class="col-sm-2 control-label">bis</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="date_max" id="date_max" placeholder="">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Suche</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-5">
                             <input type="text" id="search" class="form-control" placeholder="">
                         </div>
                     </div>

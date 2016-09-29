@@ -70,15 +70,8 @@ if($_REQUEST["test_exec"]=="test_vancy"){
 	
 	$savemsg = getSaveMessage($newContact->save());
 	$savemsg .= $DB->getLastError();
-	
-	$inputdata = '<option value="'.$newContact->getId().'"> '.$newContact->getNameAsLine().','.$newContact->getCity().'</option>';
-	//echo $inputdata;
-	
-	echo '<script language="javascript">';
-	$js = 'parent.document.getElementById("order_customer").innerHTML = \''.$inputdata.'\'';
-	echo $js;
-	echo '</script>';
-	
+
+	echo '<script language="JavaScript">parent.$.fancybox.close();</script>'; // parent.location.href=parent.location.href;
 }
 
 $_USER;

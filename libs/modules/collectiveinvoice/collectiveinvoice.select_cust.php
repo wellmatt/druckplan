@@ -70,12 +70,12 @@ $(function() {
                 Vorgang anlegen
                 <span class="pull-right">
                     <?=$savemsg?>
-                    <a href="libs/modules/businesscontact/businesscontact.add.fancy.php" id="add_new_client">
-                        <button class="btn btn-xs btn-success" type="button">
-                            <span class="glyphicons glyphicons-user"></span>
-                            <?=$_LANG->get('Neuen Kunden anlegen')?>
-                        </button>
-                    </a>
+<!--                    <a href="libs/modules/businesscontact/businesscontact.add.fancy.php" id="add_new_client">-->
+<!--                        <button class="btn btn-xs btn-success" type="button">-->
+<!--                            <span class="glyphicons glyphicons-user"></span>-->
+<!--                            --><?//=$_LANG->get('Neuen Kunden anlegen')?>
+<!--                        </button>-->
+<!--                    </a>-->
                 </span>
             </h3>
 	  </div>
@@ -91,13 +91,6 @@ $(function() {
                       <input type="hidden" name="order_customer" id="order_customer" required>
                       <input type="hidden" name="order_contactperson" id="order_contactperson" required>
                       <input type="hidden" name="order_startart" id="order_startart" value="<?php echo $_REQUEST["startart"];?>">
-                  </div>
-                  <div class="col-sm-7">
-                     <span class="pull-right">
-                          <button class="btn btn-origin btn-sucess" type="submit">
-                              <?=$_LANG->get('Auswählen')?>
-                          </button>
-                     </span>
                   </div>
               </div>
           </form>

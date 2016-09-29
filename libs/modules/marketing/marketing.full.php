@@ -56,6 +56,10 @@ $marketjobs = Marketing::getAll();
 <script type="text/javascript" src="../../../jscripts/moment/moment-with-locales.min.js"></script>
 <!-- /jQuery -->
 
+<link rel="stylesheet" type="text/css" href="../../../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/menu.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/main.print.css" media="print"/>
+
 <!-- MegaNavbar -->
 <link href="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 <link href="../../../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -75,47 +79,59 @@ $marketjobs = Marketing::getAll();
 <script type="text/javascript" charset="utf8" src="../../../jscripts/datatable/date-uk.js"></script>
 
 
-<table id="marketing_table" width="100%" cellpadding="0" cellspacing="0"
-       class="display stripe hover row-border order-column">
-    <thead>
-    <tr>
-        <th><?= $_LANG->get('ID') ?></th>
-        <th><?= $_LANG->get('Titel') ?></th>
-        <th><?= $_LANG->get('Kunde') ?></th>
-        <th><?= $_LANG->get('Datum') ?></th>
-        <?php foreach ($columns as $column) { ?>
-            <th><?php echo $column->getTitle() ?></th>
-        <?php } ?>
-    </tr>
-    </thead>
-    <?php foreach ($marketjobs as $marketjob) { ?>
-        <tr>
-            <td><?php echo $marketjob->getId(); ?></td>
-            <td><?php echo $marketjob->getTitle(); ?></td>
-            <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
-            <td><?php echo date('d.m.y H:i',$marketjob->getCrtdate()); ?></td>
-            <?php foreach ($columns as $column) { ?>
-                <td><?php echo $marketjob->getColumnValue($column->getId());?></td>
-            <?php } ?>
-        </tr>
-    <?php } ?>
-    <tfoot>
-    <tr>
-        <th><?= $_LANG->get('ID') ?></th>
-        <th><?= $_LANG->get('Titel') ?></th>
-        <th><?= $_LANG->get('Kunde') ?></th>
-        <th><?= $_LANG->get('Datum') ?></th>
-        <?php foreach ($columns as $column) { ?>
-            <th><?php echo $column->getTitle() ?></th>
-        <?php } ?>
-    </tr>
-    </tfoot>
-</table>
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Marketingplan
+            </h3>
+	  </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table id="marketing_table" class="table table-hover">
+                <thead>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Kunde') ?></th>
+                    <th><?= $_LANG->get('Datum') ?></th>
+                    <?php foreach ($columns as $column) { ?>
+                        <th><?php echo $column->getTitle() ?></th>
+                    <?php } ?>
+                </tr>
+                </thead>
+                <?php foreach ($marketjobs as $marketjob) { ?>
+                    <tr>
+                        <td><?php echo $marketjob->getId(); ?></td>
+                        <td><?php echo $marketjob->getTitle(); ?></td>
+                        <td><?php echo $marketjob->getBusinesscontact()->getNameAsLine(); ?></td>
+                        <td><?php echo date('d.m.y H:i',$marketjob->getCrtdate()); ?></td>
+                        <?php foreach ($columns as $column) { ?>
+                            <td><?php echo $marketjob->getColumnValue($column->getId());?></td>
+                        <?php } ?>
+                    </tr>
+                <?php } ?>
+                <tfoot>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Kunde') ?></th>
+                    <th><?= $_LANG->get('Datum') ?></th>
+                    <?php foreach ($columns as $column) { ?>
+                        <th><?php echo $column->getTitle() ?></th>
+                    <?php } ?>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
 
 
 <script language="JavaScript">
     $(document).ready(function () {
         var marketingtable = $('#marketing_table').DataTable({
+            
             "aaSorting": [[3, "desc"]],
             "dom": 'T<"clear">flrtip',
             "tableTools": {

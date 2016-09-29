@@ -160,8 +160,8 @@ echo $quickmove->generate();
                         </div>
                         <?php if ($suporder->getId()>0){ ?>
                             <div class="form-group">
-                                <label for="" class="col-sm-3 control-label">Erstellt</label>
-                                <div class="col-sm-9">
+                                <label for="" class="col-sm-2 control-label">Erstellt</label>
+                                <div class="col-sm-9 form-text">
                                     <?php echo date('d.m.Y H:i',$suporder->getCrtdate()).' von '.$suporder->getCrtuser()->getNameAsLine(); ?>
                                 </div>
                             </div>
@@ -176,7 +176,15 @@ echo $quickmove->generate();
     <div class="col-md-12">
         <div class="panel panel-default">
         	  <div class="panel-heading">
-        			<h3 class="panel-title">Positionen <span class="glyphicons glyphicons-plus pointer" title="neuer Artikel" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.article.frame.php?soid=<?php echo $suporder->getId();?>&supid=<?php echo $suporder->getSupplier()->getId();?>');"></span></h3>
+        			<h3 class="panel-title">
+                        Positionen
+                        <span class="pull-right">
+                            <button class="btn btn-xs btn-success" onclick="callBoxFancyArtFrame('libs/modules/suporder/suporder.article.frame.php?soid=<?php echo $suporder->getId();?>&supid=<?php echo $suporder->getSupplier()->getId();?>');">
+                                <span class="glyphicons glyphicons-plus pointer"></span>
+                                <?= $_LANG->get('neuer Artikel') ?>
+                            </button>
+                        </span>
+                    </h3>
         	  </div>
         	  <div class="panel-body" id="suporderpositionbox">
         	  </div>
@@ -247,7 +255,7 @@ echo $quickmove->generate();
             'speedOut'		:	200,
             'padding'		:	25,
             'margin'        :   25,
-            'scrolling'     :   'no',
+            'scrolling'     :   'yes',
             'width'		    :	1000,
             'height'        :   800,
             'onComplete'    :   function() {

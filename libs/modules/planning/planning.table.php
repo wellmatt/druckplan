@@ -194,11 +194,10 @@ function print(){
     </div>
 </div>
 
-
 <div id="save_values" style="display: hidden;"></div>
 <?php // Qickmove generation
 $quickmove = new QuickMove();
-$quickmove->addItem('Jetzt verschieben','#',"move_now();",'glyphicon-step-backward');
+$quickmove->addItem('Jetzt verschieben','#',"move_now();",'glyphicons glyphicons-random');
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
@@ -207,9 +206,9 @@ echo $quickmove->generate();
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			Planungstabelle
-					<span class="pull-right">
-						<?= $savemsg ?>
-					</span>
+			<span class="pull-right">
+				<?= $savemsg ?>
+			</span>
 		</h3>
 	</div>
 	<div class="panel-body">

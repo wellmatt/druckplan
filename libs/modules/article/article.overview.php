@@ -249,7 +249,7 @@ $(function() {
 
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Suche</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-3">
                             <input type="text" id="search" class="form-control" placeholder="">
                         </div>
                     </div>

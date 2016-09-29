@@ -119,7 +119,7 @@ $pricescales = PriceScale::getAllForArticleAndSupplier($article,$position->getSu
 <link rel="stylesheet" type="text/css" href="../../../css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="../../../jscripts/datatable/dataTables.tableTools.js"></script>
 
-<form action="suporder.position.frame.php" id="suporder_form" name="suporder_form" method="post">
+<form action="suporder.position.frame.php" id="suporder_form" name="suporder_form" class="form-horizontal" method="post">
     <input type="hidden" id="id" name="id" value="<?=$position->getId()?>" />
     <input type="hidden" id="article" name="article" value="<?=$position->getArticle()->getId()?>" />
     <input type="hidden" id="suporder" name="suporder" value="<?=$position->getSuporder()->getId()?>" />
@@ -129,33 +129,32 @@ $pricescales = PriceScale::getAllForArticleAndSupplier($article,$position->getSu
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="panel panel-default">
                   <div class="panel-heading">
-                        <h3 class="panel-title"><?= $_LANG->get('Bestellposition') ?></h3>
+                        <h3 class="panel-title">
+                            <?= $_LANG->get('Bestellposition') ?>
+                        </h3>
                   </div>
                   <div class="panel-body">
-                      <table border="0" cellpadding="3" cellspacing="1" width="100%">
-                          <colgroup>
-                              <col width="130">
-                              <col>
-                          </colgroup>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Menge') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="amount" name="amount" style="width:200px"
-                                         value="<?=$position->getAmount() ?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="content_header"><?= $_LANG->get('Vorgang **') ?>:</td>
-                              <td class="content_row_clear">
-                                  <input type="text" id="colinv_name" name="colinv_name" style="width:200px"
-                                         value="<?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getNumber().' - '.$position->getColinvoice()->getTitle();?>"
-                                         onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                  <input type="hidden" id="colinv" name="colinv" value="<?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getId(); else echo '0';?>">
-                              </td>
-                          </tr>
-                      </table>
-                      <p>** falls Ware einem Auftrag zugeordnet ist angeben</p>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Menge</label>
+                          <div class="col-sm-3">
+                              <input type="text" id="amount" name="amount" value="<?=$position->getAmount() ?>" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Vorgang **</label>
+                          <div class="col-sm-3">
+                              <input type="text" id="colinv_name" name="colinv_name"
+                                     value="<?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getNumber().' - '.$position->getColinvoice()->getTitle();?>"
+                                     onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                              <input type="hidden" id="colinv" name="colinv" value="<?php if ($position->getColinvoice()->getId()>0) echo $position->getColinvoice()->getId(); else echo '0';?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Hinweis</label>
+                          <div class="col-sm-10 form-text">
+                              ** falls Ware einem Auftrag zugeordnet ist angeben
+                          </div>
+                      </div>
                   </div>
             </div>
         </div>
@@ -166,15 +165,16 @@ $pricescales = PriceScale::getAllForArticleAndSupplier($article,$position->getSu
                 <div class="panel-heading">
                     <h3 class="panel-title">Preisstaffeln</h3>
                 </div>
-                <table id="pricescales">
+                <table id="pricescales" class="table table-hover">
                     <thead>
-                        <tr>
-                            <th class="content_row_header"><?= $_LANG->get('Nr.') ?></th>
-                            <th class="content_row_header"><?= $_LANG->get('Von') ?></th>
-                            <th class="content_row_header"><?= $_LANG->get('Bis') ?></th>
-                            <th class="content_row_header"><?= $_LANG->get('Preis') ?>*</th>
-                        </tr>
+                    <tr>
+                        <th class="content_row_header"><?= $_LANG->get('Nr.') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Von') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Bis') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Preis') ?>*</th>
+                    </tr>
                     </thead>
+                    <tbody>
                     <?php foreach ($pricescales as $pricescale){?>
                         <tr>
                             <td><?php echo $pricescale->getId();?></td>
@@ -183,6 +183,7 @@ $pricescales = PriceScale::getAllForArticleAndSupplier($article,$position->getSu
                             <td><?php echo $pricescale->getPrice();?></td>
                         </tr>
                     <?php }?>
+                    </tbody>
                 </table>
             </div>
         </div>

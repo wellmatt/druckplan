@@ -55,27 +55,26 @@ if ($_REQUEST["exec"] == "delete"){
               </div>
         </div>
         <div class="table-responsive">
-            <table id="supordertable" width="100%" cellpadding="0" cellspacing="0"
-                   class="stripe hover row-border order-column">
+        	<table id="supordertable" class="table table-hover">
                 <thead>
-                <tr>
-                    <th><?= $_LANG->get('ID') ?></th>
-                    <th><?= $_LANG->get('Nummer') ?></th>
-                    <th><?= $_LANG->get('Titel') ?></th>
-                    <th><?= $_LANG->get('Lieferant') ?></th>
-                    <th><?= $_LANG->get('Status') ?></th>
-                    <th><?= $_LANG->get('Datum') ?></th>
-                </tr>
+                    <tr>
+                        <th><?= $_LANG->get('ID') ?></th>
+                        <th><?= $_LANG->get('Nummer') ?></th>
+                        <th><?= $_LANG->get('Titel') ?></th>
+                        <th><?= $_LANG->get('Lieferant') ?></th>
+                        <th><?= $_LANG->get('Status') ?></th>
+                        <th><?= $_LANG->get('Datum') ?></th>
+                    </tr>
                 </thead>
                 <tfoot>
-                <tr>
-                    <th><?= $_LANG->get('ID') ?></th>
-                    <th><?= $_LANG->get('Nummer') ?></th>
-                    <th><?= $_LANG->get('Titel') ?></th>
-                    <th><?= $_LANG->get('Lieferant') ?></th>
-                    <th><?= $_LANG->get('Status') ?></th>
-                    <th><?= $_LANG->get('Datum') ?></th>
-                </tr>
+                    <tr>
+                        <th><?= $_LANG->get('ID') ?></th>
+                        <th><?= $_LANG->get('Nummer') ?></th>
+                        <th><?= $_LANG->get('Titel') ?></th>
+                        <th><?= $_LANG->get('Lieferant') ?></th>
+                        <th><?= $_LANG->get('Status') ?></th>
+                        <th><?= $_LANG->get('Datum') ?></th>
+                    </tr>
                 </tfoot>
             </table>
         </div>
@@ -87,6 +86,7 @@ if ($_REQUEST["exec"] == "delete"){
     $(document).ready(function() {
         var supordertable = $('#supordertable').DataTable( {
             "processing": true,
+            "autoWidth": false,
             "bServerSide": true,
             "sAjaxSource": "libs/modules/suporder/suporder.dt.ajax.php",
             "paging": true,

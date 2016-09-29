@@ -197,10 +197,13 @@ function createSelects(id,count,workload)
 	var x = 0;
 	var load = workload / count;
 	var html = "";
-	for (i = 0; i < count; i++) { 
-		html += '<input type="text" name="crt_job['+id+'][workers][load]['+i+']" value="'+format( "#.##0,##", load)+'" style="width: 40px;"/> ';
-    	html += '<select name="crt_job['+id+'][workers][assigned]['+i+']" style="width:160px" required>';
+	for (i = 0; i < count; i++) {
+        html += '<div class="form-group"><div class="col-sm-4">';
+		html += '<input type="text" name="crt_job['+id+'][workers][load]['+i+']" value="'+format( "#.##0,##", load)+'" class="form-control"/>';
+        html += '</div><div class="col-sm-8">';
+    	html += '<select name="crt_job['+id+'][workers][assigned]['+i+']" class="form-control" required>';
         html += '<option disabled>-- Users --</option>';
+        html += '</div></div>';
         <?php 
         foreach ($all_user as $tkt_user){
             ?>
@@ -324,7 +327,7 @@ function createSelects(id,count,workload)
                                 ?>
                                 <tbody>
                                 <tr>
-                                    <td><b><?php echo $opos_article->getTitle();?></b></td>
+                                    <td><?php echo $opos_article->getTitle();?></td>
                                     <td class="content_row" valign="top"><?php echo date('d.m.Y H:i',$opos_pjs[0]->getStart());?></td>
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
@@ -360,10 +363,10 @@ function createSelects(id,count,workload)
                                     $opos_article = new Article($opos->getObjectid());
                                     ?>
                                     <tr>
-                                        <td><b><?php echo $opos_article->getTitle();?></b></td>
+                                        <td><?php echo $opos_article->getTitle();?></td>
                                         <td>
-                                            <input type="form-control" id="<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>"
-                                                   class="cal text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
+                                            <input type="text" id="<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>"
+                                                   class="cal form-control text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency"
                                                    onfocus="markfield(this,0)" onblur="markfield(this,1)"
                                                    value="<?php echo date('d.m.Y H:i');?>" onchange="$('.artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?>').val($(this).val());"/>
                                         </td>
@@ -392,30 +395,36 @@ function createSelects(id,count,workload)
                                                         <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getOrderid();?>"/>
                                                         <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $me->getMachine()->getId();?>"/>
                                                         <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $me->getTime()/60;?>"/>
-                                                        <td class="content_row" valign="top"><?php echo $me->getMachine()->getName();?><?php if ($me->getPart()>0) echo ' - '.$me->getPartName();?></td>
-                                                        <td class="content_row" valign="top">
+                                                        <td><?php echo $me->getMachine()->getName();?><?php if ($me->getPart()>0) echo ' - '.$me->getPartName();?></td>
+                                                        <td>
                                                             <input type="text" name="crt_job[<?php echo $x;?>][start]"
-                                                                   class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
-                                                                   value="<?php echo date('d.m.Y H:i');?>" style="width:100px;"/>
+                                                                   class="form-control artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
+                                                                   value="<?php echo date('d.m.Y H:i');?>"/>
                                                         </td>
                                                         <td><?php echo printPrice($me->getTime()/60,2);?></td>
-                                                        <td><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
+                                                        <td><input class="form-control" type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
                                                         <td id="workerstd_<?php echo $x;?>">
-                                                            <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($me->getTime()/60,2);?>" style="width: 40px;"/>
-                                                            <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
-                                                                <option disabled>-- Users --</option>
-                                                                <?php
-                                                                foreach ($all_user as $tkt_user){
-                                                                    echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
-                                                                }
-                                                                ?>
-                                                                <option disabled>-- Groups --</option>
-                                                                <?php
-                                                                foreach ($all_groups as $tkt_groups){
-                                                                    echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
+                                                            <div class="form-group">
+                                                                <div class="col-sm-4">
+                                                                    <input  class="form-control" type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($me->getTime()/60,2);?>"/>
+                                                                </div>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-control" name="crt_job[<?php echo $x;?>][workers][assigned][0]" required>
+                                                                        <option disabled>-- Users --</option>
+                                                                        <?php
+                                                                        foreach ($all_user as $tkt_user){
+                                                                            echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                                                                        }
+                                                                        ?>
+                                                                        <option disabled>-- Groups --</option>
+                                                                        <?php
+                                                                        foreach ($all_groups as $tkt_groups){
+                                                                            echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
+                                                                        }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     <?php
@@ -439,27 +448,33 @@ function createSelects(id,count,workload)
                                             <td class="content_row" valign="top"><?php echo $opos_article->getTitle();?></td>
                                             <td class="content_row" valign="top">
                                                 <input type="text" name="crt_job[<?php echo $x;?>][start]"
-                                                       class="artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
-                                                       value="<?php echo date('d.m.Y H:i');?>" readonly style="width:100px; background-color:#EBEBE4;border:1px solid #ABADB3;padding:2px 1px;color:rgb(84, 84, 84);"/>
+                                                       class="form-control artcal_<?php echo $opos->getCollectiveinvoice()."_".$opos->getId();?> cal text format-d-m-y divider-dot"
+                                                       value="<?php echo date('d.m.Y H:i');?>" readonly/>
                                             </td>
                                             <td><?php echo printPrice($opos->getQuantity(),2);?></td>
-                                            <td><input type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
+                                            <td><input class="form-control" type="number" pattern="^[0-9]" min="1" step="1" value="<?php echo "1";?>" name="crt_job[<?php echo $x;?>][numworkers]" onchange="createSelects(<?php echo $x;?>,$(this).val(),$('#crt_job_workload_<?php echo $x;?>').val());" style="width: 60px;"/></td>
                                             <td id="workerstd_<?php echo $x;?>">
-                                                <input type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($opos->getQuantity(),2);?>" style="width: 40px;"/>
-                                                <select name="crt_job[<?php echo $x;?>][workers][assigned][0]" style="width:160px" required>
-                                                    <option disabled>-- Users --</option>
-                                                    <?php
-                                                    foreach ($all_user as $tkt_user){
-                                                        echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
-                                                    }
-                                                    ?>
-                                                    <option disabled>-- Groups --</option>
-                                                    <?php
-                                                    foreach ($all_groups as $tkt_groups){
-                                                        echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
-                                                    }
-                                                    ?>
-                                                </select>
+                                                <div class="form-group">
+                                                    <div class="col-sm-4">
+                                                        <input class="form-control" type="text" name="crt_job[<?php echo $x;?>][workers][load][0]" value="<?php echo printPrice($opos->getQuantity(),2);?>"/>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <select class="form-control" name="crt_job[<?php echo $x;?>][workers][assigned][0]" required>
+                                                            <option disabled>-- Users --</option>
+                                                            <?php
+                                                            foreach ($all_user as $tkt_user){
+                                                                echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
+                                                            }
+                                                            ?>
+                                                            <option disabled>-- Groups --</option>
+                                                            <?php
+                                                            foreach ($all_groups as $tkt_groups){
+                                                                echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php

@@ -108,7 +108,7 @@ $(function() {
 				  <div class="panel-body">
 					  <div class="form-group">
 						  <label for="" class="col-sm-2 control-label">Maschine suchen:</label>
-						  <div class="col-sm-3">
+						  <div class="col-sm-5">
 							  <input type="text" class="form-control" id="maschine" name="maschine" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
 						  </div>
 					  </div>
@@ -139,11 +139,13 @@ $(function() {
 						 </br>
 						<div class="table-responsive">
 							<table class="table table-hover">
-								<tr>
-									<td>Sperrzeit Start</td>
-									<td>Sperrzeit Ende</td>
-									<td>Option</td>
-								</tr>
+								<thead>
+									<tr>
+										<th>Sperrzeit Start</th>
+										<th>Sperrzeit Ende</th>
+										<th>Option</th>
+									</tr>
+								</thead>
 								<?php
 								$all_locks = MachineLock::getAllMachineLocksForMachine($machine->getId());
 								foreach ($all_locks as $lock) {
@@ -155,6 +157,7 @@ $(function() {
 											<td><?php echo date("d.m.Y H:i", $lock->getStop()); ?>
 												<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $machine->getId() ?>&dellock=<?= $lock->getId() ?>"><span
 														class="glyphicons glyphicons-remove"></span></a></td>
+											<td></td>
 										</tr>
 									<?php }
 								} ?>

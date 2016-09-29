@@ -53,6 +53,7 @@ if ($_REQUEST["exec"] == "delete"){
                   </div>
         	  </div>
         </div>
+        <br>
         <div class="table-responsive">
             <table  id="storagetable" class="table table-hover">
                 <thead>

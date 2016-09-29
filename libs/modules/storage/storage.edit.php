@@ -61,98 +61,103 @@ echo $quickmove->generate();
     		  <div class="panel-heading">
     				<h3 class="panel-title"><?=$header_title?></h3>
     		  </div>
-    		  <div class="panel-body">
-    				<form action="index.php?page=<?=$_REQUEST['page']?>" id="storagearea_form" name="storagearea_form" method="post" role="form" class="form-horizontal">
-                        <input type="hidden" id="id" name="id" value="<?=$storagearea->getId()?>" />
-                        <input type="hidden" id="exec" name="exec" value="edit" />
-                        <input type="hidden" id="subexec" name="subexec" value="save" />
+            <div class="panel-body">
+                <form action="index.php?page=<?= $_REQUEST['page'] ?>" id="storagearea_form" name="storagearea_form"
+                      method="post" role="form" class="form-horizontal">
+                    <input type="hidden" id="id" name="id" value="<?= $storagearea->getId() ?>"/>
+                    <input type="hidden" id="exec" name="exec" value="edit"/>
+                    <input type="hidden" id="subexec" name="subexec" value="save"/>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Lagerplatzname</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="st_name" name="st_name" class="form-control"
+                                           value="<?= $storagearea->getName() ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Ort</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="st_location" name="st_location" class="form-control"
+                                           value="<?= $storagearea->getLocation() ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Gang</label>
+                                <div class="col-sm-4">
+                                    <input type="text" id="st_corridor" name="st_corridor" class="form-control"
+                                           value="<?= $storagearea->getCorridor() ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Regal</label>
+                                <div class="col-sm-4">
+                                    <input type="text" id="st_shelf" name="st_shelf" class="form-control"
+                                           value="<?= $storagearea->getShelf() ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Reihe</label>
+                                <div class="col-sm-4">
+                                    <input type="text" id="st_line" name="st_line" class="form-control"
+                                           value="<?= $storagearea->getLine() ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Ebene</label>
+                                <div class="col-sm-4">
+                                    <input type="text" id="st_layer" name="st_layer" class="form-control"
+                                           value="<?= $storagearea->getLayer() ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Priorität</label>
+                                <div class="col-sm-4">
+                                    <select id="st_prio" name="st_prio" class="form-control">
+                                        <option value="0" <?php if ($storagearea->getPrio() == 0) echo ' selected '; ?>>
+                                            Niedrig
+                                        </option>
+                                        <option value="1" <?php if ($storagearea->getPrio() == 1) echo ' selected '; ?>>
+                                            Mittel
+                                        </option>
+                                        <option value="2" <?php if ($storagearea->getPrio() == 2) echo ' selected '; ?>>
+                                            Hoch
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <?php if ($storagearea->getId() > 0) { ?>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-2 control-label">Belegung</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-text">
+                                            &nbsp; <?php echo StoragePosition::getAllocationForArea($storagearea); ?>%
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
                          <div class="row">
-                             <div class="col-md-4">
+                             <div class="col-md-12">
                                  <div class="form-group">
-                                     <label for="" class="col-sm-4 control-label">Lagerplatzname</label>
-                                     <div class="col-sm-6">
-                                         <input type="text" id="st_name" name="st_name" class="form-control" value="<?=$storagearea->getName()?>"
-                                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                     </div>
-                                 </div>
-
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-4 control-label">Ort</label>
-                                     <div class="col-sm-6">
-                                         <input type="text" id="st_location" name="st_location" class="form-control" value="<?=$storagearea->getLocation()?>"
-                                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                     </div>
-                                 </div>
-                                 <br>
-                                 <br>
-
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-4 control-label">Beschreibung</label>
-                                     <div class="col-sm-6">
+                                     <label for="" class="col-sm-2 control-label">Beschreibung</label>
+                                     <div class="col-sm-7">
                                           <textarea rows="8" cols="80" type="text" id="st_description" name="st_description"
-                                          class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$storagearea->getDescription()?></textarea>
+                                                    class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$storagearea->getDescription()?></textarea>
                                      </div>
                                  </div>
-
-                             </div>
-                             <div class="col-md-4">
-
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-2 control-label">Gang</label>
-                                     <div class="col-sm-4">
-                                         <input type="text" id="st_corridor" name="st_corridor"class="form-control" value="<?=$storagearea->getCorridor()?>"
-                                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                     </div>
-                                 </div>
-
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-2 control-label">Regal</label>
-                                     <div class="col-sm-4">
-                                         <input type="text" id="st_shelf" name="st_shelf" class="form-control" value="<?=$storagearea->getShelf()?>"
-                                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                     </div>
-                                 </div>
-
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-2 control-label">Reihe</label>
-                                     <div class="col-sm-4">
-                                         <input type="text" id="st_line" name="st_line" class="form-control" value="<?=$storagearea->getLine()?>"
-                                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                     </div>
-                                 </div>
-
-                             </div>
-                             <div class="col-md-4">
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-2 control-label">Ebene</label>
-                                     <div class="col-sm-4">
-                                         <input type="text" id="st_layer" name="st_layer" class="form-control" value="<?=$storagearea->getLayer()?>"
-                                                onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                                     </div>
-                                 </div>
-
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-2 control-label">Priorität</label>
-                                     <div class="col-sm-4">
-                                         <select id="st_prio" name="st_prio" class="form-control">
-                                             <option value="0" <?php if ($storagearea->getPrio() == 0) echo ' selected ';?>>Niedrig</option>
-                                             <option value="1" <?php if ($storagearea->getPrio() == 1) echo ' selected ';?>>Mittel</option>
-                                             <option value="2" <?php if ($storagearea->getPrio() == 2) echo ' selected ';?>>Hoch</option>
-                                         </select>
-                                     </div>
-                                 </div>
-
-                                 <?php if ($storagearea->getId()>0){ ?>
-                                     <div class="form-group">
-                                         <label for="" class="col-sm-2 control-label">Belegung</label>
-                                         <div class="col-sm-4">
-                                             <div class="form-text">
-                                                 <?php echo StoragePosition::getAllocationForArea($storagearea);?>%
-                                             </div>
-                                         </div>
-                                     </div>
-                                 <?php } ?>
                              </div>
                          </div>
     				</form>
