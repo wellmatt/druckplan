@@ -757,9 +757,9 @@ class CollectiveInvoice{
 	}
 	
 	/**
-	 * Liefert alle OrderPositionen f�r die aufrufende manuelle Rechnung 
+	 * Liefert alle OrderPositionen für die aufrufende manuelle Rechnung
 	 *  
-	 * @return multitype:OrderPosition
+	 * @return OrderPosition[]
 	 */
 	public function getPositions($softdeleted = false,$relevant = false){
         return Orderposition::getAllOrderposition($this->id, $softdeleted,$relevant);

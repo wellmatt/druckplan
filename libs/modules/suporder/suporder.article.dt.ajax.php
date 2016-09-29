@@ -126,14 +126,14 @@ require_once '../../../config.php';
             $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
         }
     }
-    
+
     if ( $sWhere == "" )
     {
-        $sWhere = " WHERE status = 1 ";
+        $sWhere = " WHERE 1 = 1 ";
     }
     else
     {
-        $sWhere .= " AND status = 1 ";
+        $sWhere .= " AND 1 = 1 ";
     }
     
     if ($_REQUEST["search_tags"])
@@ -189,7 +189,7 @@ require_once '../../../config.php';
         if (count($bccp_articles)>0)
         {
             $bccp_articles = implode(",", $bccp_articles);
-            $sWhere .= " AND article.id IN ({$bccp_articles}) ";
+            $sWhere .= " AND id IN ({$bccp_articles}) ";
         }
     }
     
@@ -197,9 +197,9 @@ require_once '../../../config.php';
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title 
+    $sQuery = "SELECT * FROM (SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title
                FROM article 
-               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
+               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup WHERE article.usesstorage = 1 AND article.status = 1) t1
                $sWhere
                $sOrder
                $sLimit
@@ -211,9 +211,10 @@ require_once '../../../config.php';
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT COUNT(article.id)
-               FROM article 
-               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
+        SELECT COUNT(id)
+               FROM (SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title
+               FROM article
+               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup WHERE article.usesstorage = 1 AND article.status = 1) t1
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -224,10 +225,10 @@ require_once '../../../config.php';
      
     /* Total data set length */
     $sQuery = "
-        SELECT COUNT(article.id) 
-        FROM article 
-        LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-        WHERE status = 1
+        SELECT COUNT(id)
+        FROM (SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title
+               FROM article
+               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup WHERE article.usesstorage = 1 AND article.status = 1) t1
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

@@ -7,8 +7,6 @@
 // ---------------------------------------------------------------------------------
 chdir("../../../");
 require_once("config.php");
-// error_reporting(-1);
-// ini_set('display_errors', 1);
 require_once("libs/basic/mysql.php");
 require_once("libs/basic/globalFunctions.php");
 require_once("libs/basic/user/user.class.php");

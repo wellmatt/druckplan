@@ -181,19 +181,39 @@ $(document).ready(function() {
 			'type'    : 'iframe',
 			'transitionIn'	:	'elastic',
 			'transitionOut'	:	'elastic',
-			'speedIn'		:	600, 
-			'speedOut'		:	200, 
-			'padding'		:	25, 
+			'speedIn'		:	600,
+			'speedOut'		:	200,
+			'padding'		:	25,
 			'margin'        :   25,
 			'scrolling'     :   'auto',
 			'width'		    :	1000,
 			'height'        :   900,
 			'onComplete'    :   function() {
-	                			  $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+				$('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
 // 	                		      $('#fancybox-content').height($(this).contents().find('body').height()+300);
-	                		      $('#fancybox-wrap').css('top','25px');
-	                		    });
-	                			},
+					$('#fancybox-wrap').css('top','25px');
+				});
+			},
+			'overlayShow'	:	true,
+			'helpers'		:   { overlay:null, closeClick:true }
+		});
+		$("a#hiddenclicker_pdfframe").fancybox({
+			'type'    : 'iframe',
+			'transitionIn'	:	'elastic',
+			'transitionOut'	:	'elastic',
+			'speedIn'		:	600,
+			'speedOut'		:	200,
+			'padding'		:	25,
+			'margin'        :   25,
+			'scrolling'     :   'auto',
+			'width'		    :	1000,
+			'height'        :   900,
+			'onComplete'    :   function() {
+				$('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+// 	                		      $('#fancybox-content').height($(this).contents().find('body').height()+300);
+					$('#fancybox-wrap').css('top','25px');
+				});
+			},
 			'overlayShow'	:	true,
 			'helpers'		:   { overlay:null, closeClick:true }
 		});
@@ -203,8 +223,14 @@ $(document).ready(function() {
 		j1.href = my_href;
 		$('#hiddenclicker_artframe').trigger('click');
 	}
+	function callBoxFancyContentPdf(my_href) {
+		var j1 = document.getElementById("hiddenclicker_pdfframe");
+		j1.href = my_href;
+		$('#hiddenclicker_pdfframe').trigger('click');
+	}
 </script>
 <div id="hidden_clicker95" style="display:none"><a id="hiddenclicker_artframe" href="http://www.google.com" >Hidden Clicker</a></div>
+<div id="hidden_clicker95" style="display:none"><a id="hiddenclicker_pdfframe" href="http://www.google.com" >Hidden Clicker</a></div>
 
 <script type="text/javascript">
 $(function() {
@@ -1142,6 +1168,26 @@ echo $quickmove->generate();
 												<span class="glyphicons glyphicons-arrow-up"></span>
 											</button>
 											<?php
+										}
+										if($position->getType() == 1) {
+											$tmp_art = new Article($position->getObjectid());
+											if ($tmp_art->getOrderid() > 0){
+												?>
+												<button type="button" class="btn btn-default btn-sm" onclick="callBoxFancyContentPdf('libs/modules/collectiveinvoice/contentpdf.upload.frame.php?opid=<?php echo $position->getId();?>');">
+													<span class="glyphicons glyphicons-file-import pointer" title="PDF Inhalte"></span>
+													PDF
+												</button>
+												<?php
+												$contentpdfs = ContentPdf::getAllForOrderposition($position);
+												if (count($contentpdfs)>0){
+													?>
+													<button type="button" class="btn btn-default btn-sm" onclick="window.location.href='libs/basic/files/downloadzip.php?opid=<?php echo $position->getId();?>';">
+														<span class="filetypes filetypes-zip pointer" title="Download Zip"></span>
+														Zip
+													</button>
+													<?php
+												}
+											}
 										}
 										if ($position->getFile_attach()>0){
 											$tmp_attach = new Attachment($position->getFile_attach());

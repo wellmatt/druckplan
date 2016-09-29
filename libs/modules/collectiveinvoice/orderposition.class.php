@@ -6,6 +6,8 @@
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
 
+require_once 'libs/modules/collectiveinvoice/contentpdf.class.php';
+
 /**
  * Klasse fuer Auftrags Positionen in Sammelrechnungen
  */
@@ -28,7 +30,7 @@ class Orderposition{
 	private $revrel = 0;				// Gutschein-Relevanz
 	private $file_attach = 0;           // Artikle File
 	private $perso_order = 0;           // Falls Perso Order Bestellung
-	
+
 	/**
 	 * Konstruktor fuer Eintraege (Auftragspositionen) in Sammelrechungen
 	 * @param int $id

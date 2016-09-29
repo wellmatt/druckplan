@@ -35,6 +35,7 @@ require_once 'libs/modules/api/api.class.php';
 require_once 'libs/basic/quickmove.class.php';
 require_once 'libs/modules/dashboard/dashboard.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
+require_once 'libs/basic/files/file.class.php';
 
 require_once __DIR__.'/vendor/Horde/Autoloader.php';
 require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';

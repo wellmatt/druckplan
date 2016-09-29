@@ -62,7 +62,7 @@ class Model {
         $set = [];
         $vars = get_object_vars($this);
         foreach ($vars as $index => $var) {
-            if (!in_array($index,Array('id','_exists','_table')))
+            if (!in_array($index,Array('id','_exists','_table')) && substr($index,0,1) != '_')
                 if (is_object($var))
                     $set[] = " `{$index}` = '{$var->getId()}' ";
                 else
@@ -76,8 +76,8 @@ class Model {
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO {$this->_table} SET {$set}";
-            $res = $DB->no_result($sql);
 //            prettyPrint($sql);
+            $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM {$this->_table}";
                 $thisid = $DB->select($sql);
