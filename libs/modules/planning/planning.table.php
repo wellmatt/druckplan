@@ -265,6 +265,9 @@ echo $quickmove->generate();
 						</div>
 						<br>
 							  <span class="pull-right">
+								  <a onclick="print();">
+									  <button type="button" class="btn btn-sm btn-default">Drucken</button>
+								  </a>
 								  <button type="button" class="btn btn-sm btn-default" id="show">anzeigen</button>
 							  </span>
 					</div>

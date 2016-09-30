@@ -198,12 +198,11 @@ function createSelects(id,count,workload)
 	var load = workload / count;
 	var html = "";
 	for (i = 0; i < count; i++) {
-        html += '<div class="form-group"><div class="col-sm-4">';
+        html += '<div class="row"><div class="col-md-12"><div class="form-group"><div class="col-sm-4">';
 		html += '<input type="text" name="crt_job['+id+'][workers][load]['+i+']" value="'+format( "#.##0,##", load)+'" class="form-control"/>';
         html += '</div><div class="col-sm-8">';
     	html += '<select name="crt_job['+id+'][workers][assigned]['+i+']" class="form-control" required>';
         html += '<option disabled>-- Users --</option>';
-        html += '</div></div>';
         <?php 
         foreach ($all_user as $tkt_user){
             ?>
@@ -219,7 +218,9 @@ function createSelects(id,count,workload)
             <?php 
         }
         ?>
-        html += '</select></br>';
+        html += '</select>';
+        html += '</div></div>';
+        html += '</br></div></div>';
 	}
     $('#workerstd_'+id).html(html);
 }

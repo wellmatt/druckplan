@@ -95,12 +95,12 @@ foreach ($dates as $date)
     {
         foreach ($jobs as $pj)
         {
-            $subhtml .= '<div class="box2" style="border-radius: 0px;margin-bottom:1px;">';
-            $subhtml .= '<table width="100%">';
+            $subhtml .= '<div class="table-responsive">';
+            $subhtml .= '<table class="table table-hover">';
             $subhtml .= '<thead>';
             $subhtml .= '<tr>';
             $subhtml .= '<td width="20">ID</td>';
-            $subhtml .= '<td width="200">Objekt</td>';
+            $subhtml .= '<td width="400">Objekt</td>';
             $subhtml .= '<td width="150">MA</td>';
             $subhtml .= '<td width="50">Vorgang</td>';
             $subhtml .= '<td width="50">Ticket</td>';
@@ -168,7 +168,7 @@ foreach ($dates as $date)
             $statshtml .= '</table></div>';
         }
     } else {
-        $subhtml .= '<div class="box2" style="border-radius: 0px;margin-bottom:1px;">keine Jobs</div>';
+        $subhtml .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">keine Jobs</h3></div></div>';
     }
     
     $html .= '<div class="row" style="margin-left:0px;margin-right:0px;"><h3>'.$date.'</h3>';
@@ -204,12 +204,12 @@ echo $html;
         {
             foreach ($jobs as $pj)
             {
-                $subhtml .= '<div class="box2" style="border-radius: 0px;margin-bottom:1px;">';
-                $subhtml .= '<table width="100%">';
+                $subhtml .= '<div class="table-responsive">';
+                $subhtml .= '<table class="table table-hover" id="art_table">';
                 $subhtml .= '<thead>';
                 $subhtml .= '<tr>';
                 $subhtml .= '<td width="20">ID</td>';
-                $subhtml .= '<td width="200">Objekt</td>';
+                $subhtml .= '<td width="400">Objekt</td>';
                 $subhtml .= '<td width="150">MA</td>';
                 $subhtml .= '<td width="50">Vorgang</td>';
                 $subhtml .= '<td width="50">Ticket</td>';
@@ -218,7 +218,6 @@ echo $html;
                 $subhtml .= '<td width="50">S-Zeit</td>';
                 $subhtml .= '<td width="50">I-Zeit</td>';
                 $subhtml .= '<td width="80">Status</td>';
-                $subhtml .= '<td width="80">&nbsp</td>';
                 $subhtml .= '</tr>';
                 $subhtml .= '</thead>';
                 $subhtml .= '<tr>';
@@ -252,6 +251,8 @@ echo $html;
                 $subhtml .= '</tr>';
                 $subhtml .= '</table>';
                 $subhtml .= '</div>';
+
+
     
                 if ($pj->getType() == PlanningJob::TYPE_K && $statsenabled == 1)
                 {
@@ -286,7 +287,7 @@ echo $html;
                 $statshtml .= '</table></div>';
             }
         } else {
-            $subhtml .= '<div class="box2" style="border-radius: 0px;margin-bottom:1px;">keine Jobs</div>';
+            $subhtml .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">keine Jobs</h3></div></div>';
         }
     
         $html .= '<div class="row" style="margin-left:0px;margin-right:0px;"><h3>'.$date.'</h3>';

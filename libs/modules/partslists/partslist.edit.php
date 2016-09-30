@@ -67,7 +67,7 @@ echo $quickmove->generate();
                     <input type="hidden" name="id" id="id" value="<?php echo (int)$_REQUEST['id'];?>">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Titel</label>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <input type="text" class="form-control" name="title" id="title" value="<?php echo $partslist->getTitle();?>" placeholder="Titel der Stückliste">
                         </div>
                     </div>

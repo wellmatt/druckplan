@@ -27,11 +27,11 @@ if ($_REQUEST["exec"] == "delete"){
         <h3 class="panel-title">
             Lief. Bestellungen
             <span class="pull-right">
-                <button class="btn btn-xs btn-success"
-                        onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.collective.php';">
-                    <span class="glyphicons glyphicons-plus-sign"></span>
-                    Sammelbestellung erstellen
-                </button>
+<!--                <button class="btn btn-xs btn-success"-->
+<!--                        onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.collective.php';">-->
+<!--                    <span class="glyphicons glyphicons-plus-sign"></span>-->
+<!--                    Sammelbestellung erstellen-->
+<!--                </button>-->
                 <button class="btn btn-xs btn-success"
                         onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.edit.php&exec=new';">
                     <span class="glyphicons glyphicons-plus-sign"></span>
@@ -47,8 +47,8 @@ if ($_REQUEST["exec"] == "delete"){
               </div>
               <div class="panel-body">
                   <div class="form-group">
-                      <label for="" class="col-sm-2 control-label">Suche</label>
-                      <div class="col-sm-10">
+                      <label for="" class="col-sm-1 control-label">Suche</label>
+                      <div class="col-sm-3">
                           <input type="text" id="search" class="form-control" placeholder="">
                       </div>
                   </div>

@@ -31,7 +31,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
 						<?= $_LANG->get('Lack hinzuf&uuml;gen') ?>
 					</button>
 				</span>
-			</h3>S
+			</h3>
 		</div>
 		<div class="table-responsive">
 			<table class="table table-hover">

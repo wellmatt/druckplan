@@ -336,7 +336,7 @@ echo $quickmove->generate();
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Zeit-Artikel</label>
 								<div class="col-sm-1">
-									<input id="article_isworkhourart" name="article_isworkhourart" class="form-control" type="checkbox" value="1" <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>>
+									<input style="margin: 0 " id="article_isworkhourart" name="article_isworkhourart" class="form-control" type="checkbox" value="1" <?if ($article->getIsWorkHourArt() == 1) echo "checked"; ?>>
 								</div>
 							</div>
 							<div class="form-group">
@@ -369,7 +369,7 @@ echo $quickmove->generate();
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Umsatzsteuer</label>
+								<label for="" class="col-sm-5 control-label">Umsatzsteuer</label>
 								<div class="col-sm-3">
 									<div class="input-group">
 										<input id="article_tax" name="article_tax" type="text" class="form-control" value="<?=printPrice($article->getTax())?>">
@@ -778,18 +778,24 @@ echo $quickmove->generate();
 									?>
 									<tr>
 										<td class="content_row_header">
-											Neue Zuordnung:
-											<select name="api_new" id="api_new">
-												<option value="0">Api wählen</option>
-												<?php
-												foreach ($all_apis as $api)
-												{
-													?>
-													<option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
-													<?php
-												}
-												?>
-											</select>
+											<div class="form-group">
+												<label for="" class="col-sm-3 control-label">Neue Zuordnung:</label>
+												<div class="col-sm-4">
+													<select class="form-control" name="api_new" id="api_new">
+														<option value="0">Api wählen</option>
+														<?php
+														foreach ($all_apis as $api)
+														{
+															?>
+															<option value="<?php echo $api->getId()?>"><?php echo $api->getTitle(). " (" . $api->getId() . ")";?></option>
+															<?php
+														}
+														?>
+													</select>
+												</div>
+											</div>
+
+
 										</td>
 									</tr>
 								<?php }?>
