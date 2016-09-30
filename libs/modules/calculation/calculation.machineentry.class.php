@@ -57,6 +57,7 @@ class Machineentry {
     private $foldtype;
 
     private $labelcount = 0;
+    private $labelradius = 0.0;
     private $rollcount = 0;
     private $doubleutilization = 0;             // Doppelter Nutzen
 
@@ -143,6 +144,7 @@ class Machineentry {
                     $this->special_margin_text = $r["special_margin_text"];
                     $this->foldtype = new Foldtype((int)$r["foldtype"]);
                     $this->labelcount = $r["labelcount"];
+                    $this->labelradius = $r["labelradius"];
                     $this->rollcount = $r["rollcount"];
                     $this->doubleutilization = $r["doubleutilization"];
                     $this->digigrant = $r["digigrant"];
@@ -281,6 +283,7 @@ class Machineentry {
         				foldtype = {$this->foldtype->getId()},
         				rollcount = {$this->rollcount},
         				labelcount = {$this->labelcount},
+        				labelradius = {$this->labelradius},
         				umschl_umst = {$this->umschlUmst},
         				digigrant = {$this->digigrant},
         				percentgrant = {$this->percentgrant},
@@ -333,7 +336,12 @@ class Machineentry {
             return false;
         }
     }
-    
+
+    /**
+     * @param $ptype
+     * @param $calcId
+     * @return Machineentry[]
+     */
     static function getMachineForPapertype($ptype, $calcId)
     {
         global $DB;
@@ -1046,5 +1054,21 @@ class Machineentry {
     public function setInlineheften($inlineheften)
     {
         $this->inlineheften = $inlineheften;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLabelradius()
+    {
+        return $this->labelradius;
+    }
+
+    /**
+     * @param float $labelradius
+     */
+    public function setLabelradius($labelradius)
+    {
+        $this->labelradius = $labelradius;
     }
 }

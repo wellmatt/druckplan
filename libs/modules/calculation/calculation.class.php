@@ -632,6 +632,7 @@ class Calculation
             $data['papername'] = $this->getPaperContent()->getName();
             $data['name'] = 'Inhalt 1';
             $data['material'] = $this->getPaperContent()->getName();
+            $data['materialbreite'] = $this->getPaperContentWidth();
             $data['gewicht'] = $this->getPaperContentWeight();
             $data['umfang'] = $this->getPagesContent();
             $data['farbigkeit'] = $this->getChromaticitiesContent()->getName();
@@ -644,6 +645,7 @@ class Calculation
             $data['papername'] = $this->getPaperAddContent()->getName();
             $data['name'] = 'Inhalt 2';
             $data['material'] = $this->getPaperAddContent()->getName();
+            $data['materialbreite'] = $this->getPaperAddContentWidth();
             $data['gewicht'] = $this->getPaperAddContentWeight();
             $data['umfang'] = $this->getPagesAddContent();
             $data['farbigkeit'] = $this->getChromaticitiesAddContent()->getName();
@@ -656,6 +658,7 @@ class Calculation
             $data['papername'] = $this->getPaperAddContent2()->getName();
             $data['name'] = 'Inhalt 3';
             $data['material'] = $this->getPaperAddContent2()->getName();
+            $data['materialbreite'] = $this->getPaperAddContent2Width();
             $data['gewicht'] = $this->getPaperAddContent2Weight();
             $data['umfang'] = $this->getPagesAddContent2();
             $data['farbigkeit'] = $this->getChromaticitiesAddContent2()->getName();
@@ -668,6 +671,7 @@ class Calculation
             $data['papername'] = $this->getPaperAddContent3()->getName();
             $data['name'] = 'Inhalt 4';
             $data['material'] = $this->getPaperAddContent3()->getName();
+            $data['materialbreite'] = $this->getPaperAddContent3Width();
             $data['gewicht'] = $this->getPaperAddContent3Weight();
             $data['umfang'] = $this->getPagesAddContent3();
             $data['farbigkeit'] = $this->getChromaticitiesAddContent3()->getName();
@@ -680,6 +684,7 @@ class Calculation
             $data['papername'] = $this->getPaperEnvelope()->getName();
             $data['name'] = 'Umschlag';
             $data['material'] = $this->getPaperEnvelope()->getName();
+            $data['materialbreite'] = $this->getPaperEnvelopeWidth();
             $data['gewicht'] = $this->getPaperEnvelopeWeight();
             $data['umfang'] = $this->getPagesEnvelope();
             $data['farbigkeit'] = $this->getChromaticitiesEnvelope()->getName();

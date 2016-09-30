@@ -366,6 +366,10 @@ echo $quickmove->generate();
                                                         echo '<label class="control-label">Etiketten pro Rolle</label><div class="input-group">';
                                                         echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
                                                         echo '</div></div></div>';
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Etiketten Radius</label><div class="input-group">';
+                                                        echo '<input name="mach_labelradius_'.$x.'" class="form-control" type="text" value="'.printPrice($mach->getLabelradius()).'">';
+                                                        echo '</div></div></div>';
 
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';

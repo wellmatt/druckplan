@@ -91,7 +91,6 @@ if($_REQUEST["subexec"] == "save")
 
 
     }
-    prettyPrint($paper_chromas);
 
     $product->setName(trim(addslashes($_REQUEST["product_name"])));
     $product->setDescription(trim(addslashes($_REQUEST["product_description"])));

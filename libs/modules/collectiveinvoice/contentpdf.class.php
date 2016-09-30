@@ -18,6 +18,7 @@ class ContentPdf extends Model{
     public $pagenum = 0;
     public $file = 0;
     public $pagina = 0;
+    public $sort = 1;
 
 
     protected function bootClasses()
@@ -30,10 +31,37 @@ class ContentPdf extends Model{
     /**
      * @param Orderposition $orderposition
      * @param $part
+     * @param $sort
+     * @return ContentPdf[]
+     */
+    public static function getAllForOpPartSort(Orderposition $orderposition, $part, $sort)
+    {
+        $retval = self::fetch([
+            [
+                'column'=>'orderposition',
+                'value'=>$orderposition->getId()
+            ],
+            [
+                'column'=>'part',
+                'value'=>$part
+            ],
+            [
+                'column'=>'sort',
+                'value'=>$sort
+            ]
+        ]);
+        return $retval;
+    }
+
+
+    /**
+     * @param Orderposition $orderposition
+     * @param $part
      * @param $pagenum
+     * @param $sort
      * @return ContentPdf
      */
-    public static function getForOpPartPagenum(Orderposition $orderposition, $part, $pagenum)
+    public static function getForOpPartPagenumSort(Orderposition $orderposition, $part, $pagenum, $sort)
     {
         $retval = self::fetchSingle([
             [
@@ -47,6 +75,10 @@ class ContentPdf extends Model{
             [
                 'column'=>'pagenum',
                 'value'=>$pagenum
+            ],
+            [
+                'column'=>'sort',
+                'value'=>$sort
             ]
         ]);
         return $retval;

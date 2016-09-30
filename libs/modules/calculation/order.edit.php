@@ -1129,6 +1129,9 @@ if((int)$_REQUEST["step"] == 3){
 						if (isset($_REQUEST["mach_labelcount_{$id}"]))
 							$entry->setLabelcount($_REQUEST["mach_labelcount_{$id}"]);
 
+						if (isset($_REQUEST["mach_labelradius_{$id}"]))
+							$entry->setLabelradius(tofloat($_REQUEST["mach_labelradius_{$id}"]));
+
 						if (isset($_REQUEST["mach_rollcount_{$id}"]))
 							$entry->setRollcount($_REQUEST["mach_rollcount_{$id}"]);
 					}

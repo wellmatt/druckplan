@@ -32,48 +32,6 @@ class ExportJson{
      */
     public function aepos_export(CollectiveInvoice $colinv = null)
     {
-        /*
-         * https://gist.github.com/tobmatth/f2ffb8e182366f1afd2ef8b2e4719239
-        {
-           "project":{
-              "name":"AU16-12345",
-              "account_manager":"Hans Wurst",
-              "description":"Sample Description",
-              "customer":{
-                 "name":"Lewald und Partner",
-                 "number":12332,
-                 "street":"Steinriede 13",
-                 "zipcode":"30827",
-                 "city":"Garbsen"
-              },
-              "products":[
-                 {
-                    "name":"Katalog 2017",
-                    "parts":[
-                       {
-                          "name":"Mantel 4 Seiten",
-                          "pages":4,
-                          "paper_class":{
-                             "name":"Matt gestrichen Bilderdruck",
-                             "fogra_name":"FOGRA39"
-                          },
-                          "data":"http://example.org/mantel.pdf"
-                       },
-                       {
-                          "name":"Inhalt 12 Seiten",
-                          "pages":12,
-                          "paper_class":{
-                             "name":"LWC",
-                             "fogra_name":"FOGRA46"
-                          },
-                          "data":"http://example.org/inhalt.pdf"
-                       }
-                    ]
-                 }
-              ]
-           }
-        }
-         */
         $res = [];
 
         if ($colinv == null){
@@ -114,32 +72,55 @@ class ExportJson{
                         $calcs = Calculation::getAllCalculations($order);
                         foreach ($calcs as $calc) {
                             if ($calc->getState() == 1 && $calc->getAmount() == $position->getAmount()) {
+
                                 $details = $calc->getDetails();
 
-                                $tmp_attach = new Attachment($position->getFile_attach());
-                                if ($position->getFile_attach()>0 && !(strstr($tmp_attach->getOrig_filename(),'.pdf') === false)) {
-                                    $url = 'http://contilas2.mein-druckplan.de/docs/attachments/'.$tmp_attach->getFilename();
-                                    $filename = $tmp_attach->getOrig_filename();
-                                } else {
-                                    $url = '';
-                                    $filename = '';
-                                }
                                 foreach ($details as $detail) {
-                                    $parts[] = [
-                                        "name" => $detail['name'],
-                                        "pages" => (int)$detail['umfang'],
-                                        "paper_class" => [
-                                            "name" => $detail['papername'],
-                                        ],
-                                        "data" => ["url" => $url, "filename" => $filename]
-                                    ];
+
+                                    $labelsperroll = $calc->getAmount();
+                                    $labelsradius = 0;
+                                    $maschines = Machineentry::getMachineForPapertype($detail['paper'],$calc->getId());
+                                    if ($maschines){
+                                        foreach ($maschines as $maschine) {
+                                            if ($maschine->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL){
+                                                if ($maschine->getLabelcount()>0) {
+                                                    $labelsperroll = $maschine->getLabelcount();
+                                                    $labelsradius = $maschine->getLabelradius();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    for ($i=1;$i<=$calc->getSorts();$i++){
+                                        $data = [];
+                                        $contentpdfs = ContentPdf::getAllForOpPartSort($position,$detail['paper'],$i);
+                                        foreach ($contentpdfs as $contentpdf) {
+                                            $data[] = ["position"=>$contentpdf->getPagina(),"name"=>$contentpdf->getFile()->getFilename(),"url"=>$contentpdf->getFile()->getFileUrl()];
+                                        }
+
+                                        $parts[] = [
+                                            "name" => $detail['name']." Sorte ".$i,
+                                            "pages" => (int)$detail['umfang'],
+                                            "paper_class" => [
+                                                "name" => $detail['papername'],
+                                            ],
+                                            "production_type" => (int)3,
+                                            "run" => (int)$calc->getAmount(),
+                                            "roll_width" => tofloat($detail['materialbreite']),
+                                            "rapport" => tofloat(0),
+                                            "margin" => tofloat($calc->getAnschnitt($detail['paper'])),
+                                            "labels_per_roll" => (int)$labelsperroll,
+                                            "corner_radius" => tofloat($labelsradius),
+                                            "data" => $data,
+                                        ];
+                                    }
                                 }
                             }
                         }
                         $project["products"][] = [
                             "productname" => $order->getProduct()->getName(),
                             "articlename" => $position->getName(),
-                            "oderposition" => $position->getId(),
+                            "oderposition" => (int)$position->getId(),
                             "parts" => $parts
                         ];
                     }

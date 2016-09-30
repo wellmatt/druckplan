@@ -226,7 +226,7 @@ class Attachment {
     }
 
 	/**
-     * @return the $filename
+     * @return string $filename
      */
     public function getFilename()
     {
@@ -242,7 +242,7 @@ class Attachment {
     }
 
 	/**
-     * @param field_type $title
+     * @param string $title
      */
     public function setTitle($title)
     {

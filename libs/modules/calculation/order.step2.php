@@ -1,9 +1,12 @@
 <?php
-/*
- * ds / 09.05.2014
- * GET param 'cloneProduct' is called by paper.add.php to notify this order to
- * clone the assigned order with the previous created paper. 
- */ 
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
+
 if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
 	
 	$paperId = (int) $_GET['paperId'];

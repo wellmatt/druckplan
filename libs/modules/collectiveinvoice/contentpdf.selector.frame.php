@@ -43,17 +43,20 @@ if ($_REQUEST["exec"] == "save" && $_REQUEST["opid"]){
     foreach ($todelete as $item) {
         $item->delete();
     }
-    foreach ($_REQUEST["content"] as $part => $values) {
-        foreach ($values as $index => $value) {
-            $array = [
-                'orderposition' => $_REQUEST["opid"],
-                'part' => $part,
-                'pagenum' => $index,
-                'file' => $value['file'],
-                'pagina' => $value['pagina'],
-            ];
-            $contentpdf = new ContentPdf(0,$array);
-            $contentpdf->save();
+    foreach ($_REQUEST["content"] as $sort => $data) {
+        foreach ($data as $part => $values) {
+            foreach ($values as $index => $value) {
+                $array = [
+                    'orderposition' => $_REQUEST["opid"],
+                    'part' => $part,
+                    'pagenum' => $index,
+                    'file' => $value['file'],
+                    'pagina' => $value['pagina'],
+                    'sort' => $sort,
+                ];
+                $contentpdf = new ContentPdf(0,$array);
+                $contentpdf->save();
+            }
         }
     }
 }
@@ -145,34 +148,47 @@ if ($_REQUEST["opid"]){
                             <h3 class="panel-title"><?php echo $detail['name'];?></h3>
                         </div>
                         <div class="panel-body">
-                            <ul class="gallery ui-helper-reset ui-helper-clearfix">
-                                <?php
-                                for ($i=0; $i<$detail['umfang'];$i++){
-                                    $tmpcontentpdf = ContentPdf::getForOpPartPagenum($orderposition,$detail['paper'],$i+1);
-                                    if ($tmpcontentpdf->getId()>0) {
-                                        $filename = $tmpcontentpdf->getFile()->getPreview(150, 150);
-                                        $heading = 'Seite '.($i+1).'<br>'.$tmpcontentpdf->getFile()->getFilename();
-                                        $pagina = $tmpcontentpdf->getPagina();
-                                        $fileid = $tmpcontentpdf->getFile()->getId();
-                                    } else {
-                                        $filename = '';
-                                        $heading = 'Seite '.($i+1);
-                                        $pagina = $i+1;
-                                        $fileid = '';
-                                    }
-                                    ?>
-                                        <li class="drophere ui-widget-content ui-corner-tr">
-                                            <h5 class="ui-widget-header"><?php echo $heading;?></h5>
-                                            <img src="../../../<?php echo $filename;?>" alt="" width="150" height="150">
-                                            <input type="hidden" name="content[<?php echo $detail['paper'];?>][<?php echo $i+1;?>][file]" value="<?php echo $fileid;?>">
-                                            <input type="number" name="content[<?php echo $detail['paper'];?>][<?php echo $i+1;?>][pagina]"
-                                                   data-part="<?php echo $detail['paper'];?>" data-pagenum="<?php echo $i+1;?>"
-                                                   onchange="updatePagina(this);" value="<?php echo $pagina;?>" style="width: 135px;">
-                                        </li>
-                                    <?php
-                                }
+                            <?php
+                            for ($s=1;$s<=$calc->getSorts();$s++){
                                 ?>
-                            </ul>
+                                <div class="panel panel-default">
+                                	  <div class="panel-heading">
+                                			<h3 class="panel-title">Sorte <?php echo $s;?></h3>
+                                	  </div>
+                                	  <div class="panel-body">
+                                          <ul class="gallery ui-helper-reset ui-helper-clearfix">
+                                              <?php
+                                              for ($i=0; $i<$detail['umfang'];$i++){
+                                                  $tmpcontentpdf = ContentPdf::getForOpPartPagenumSort($orderposition,$detail['paper'],$i+1,$s);
+                                                  if ($tmpcontentpdf->getId()>0) {
+                                                      $filename = $tmpcontentpdf->getFile()->getPreview(150, 150);
+                                                      $heading = 'Seite '.($i+1).'<br>'.$tmpcontentpdf->getFile()->getFilename();
+                                                      $pagina = $tmpcontentpdf->getPagina();
+                                                      $fileid = $tmpcontentpdf->getFile()->getId();
+                                                  } else {
+                                                      $filename = '';
+                                                      $heading = 'Seite '.($i+1);
+                                                      $pagina = $i+1;
+                                                      $fileid = '';
+                                                  }
+                                                  ?>
+                                                  <li class="drophere ui-widget-content ui-corner-tr">
+                                                      <h5 class="ui-widget-header"><?php echo $heading;?></h5>
+                                                      <img src="../../../<?php echo $filename;?>" alt="" width="150" height="150">
+                                                      <input type="hidden" name="content[<?php echo $s;?>][<?php echo $detail['paper'];?>][<?php echo $i+1;?>][file]" value="<?php echo $fileid;?>">
+                                                      <input type="number" name="content[<?php echo $s;?>][<?php echo $detail['paper'];?>][<?php echo $i+1;?>][pagina]"
+                                                             data-part="<?php echo $detail['paper'];?>" data-pagenum="<?php echo $i+1;?>"
+                                                             onchange="updatePagina(this);" value="<?php echo $pagina;?>" style="width: 135px;">
+                                                  </li>
+                                                  <?php
+                                              }
+                                              ?>
+                                          </ul>
+                                	  </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <?php
