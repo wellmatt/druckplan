@@ -100,6 +100,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                 </span>
             </h3>
 	  </div>
+        <br>
       <div class="table-responsive">
           <table id="chromatable" class="table table-hover">
               <thead>

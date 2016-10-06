@@ -131,34 +131,18 @@ if ($_REQUEST["aid"] && $_REQUEST["list"]) {
                     <h3 class="panel-title"><?= $_LANG->get('Stücklisten-Position') ?><?php echo ' - '.$partslistitem->getArticle()->getTitle();?></h3>
                 </div>
                 <div class="panel-body">
-                    <table border="0" cellpadding="3" cellspacing="1" width="100%">
-                        <colgroup>
-                            <col width="130">
-                            <col>
-                        </colgroup>
-                        <tr>
-                            <td class="content_header"><?= $_LANG->get('Menge') ?>:</td>
-                            <td class="content_row_clear">
-                                <input type="text" id="amount" name="amount" style="width:200px"
-                                       value="<?=printPrice($partslistitem->getAmount(),2)?>"
-                                       onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="form-group">
-                <div class="col-sm-offset-8 col-sm-2">
-                    <?php if ($partslistitem->getId()>0){?>
-                        <button type="button" class="btn btn-danger" onclick="$('#exec').val('delete');$('#partslistitem_form').submit();">Löschen</button>
-                    <?php } ?>
-                </div>
-                <div class="col-sm-2">
-                    <button type="submit" class="btn btn-default">Speichern</button>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Menge</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="amount" name="amount"  value="<?=printPrice($partslistitem->getAmount(),2)?>" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                        </div>
+                    </div>
+                    <span class="pull-right">
+                          <?php if ($partslistitem->getId()>0){?>
+                              <button type="button" class="btn btn-danger" onclick="$('#exec').val('delete');$('#partslistitem_form').submit();">Löschen</button>
+                          <?php } ?>
+                        <button type="submit" class="btn btn-default">Speichern</button>
+                    </span>
                 </div>
             </div>
         </div>

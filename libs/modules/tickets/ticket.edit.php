@@ -1298,7 +1298,7 @@ echo $quickmove->generate();
                                         echo '<div class="col-sm-5"><div class="form-control">' . date("d.m.Y H:i", $ticket->getCrtdate()) . '</div></div>';
                                     } else {
                                         if ($ticket->getId() > 0)
-                                            echo '<div class="col-sm-5"><div class="form-control">' . $ticket->getCrtuser()->getNameAsLine() . '</div><div class="col-sm-5"><div class="form-control">' . date("d.m.Y H:i", $ticket->getCrtdate()) . '</div>';
+                                            echo '<div class="col-sm-5"><div class="form-control">' . $ticket->getCrtuser()->getNameAsLine() . '</div></div><div class="col-sm-5"><div class="form-control">' . date("d.m.Y H:i", $ticket->getCrtdate()) . '</div></div>';
                                         else if ($ticket->getId() == 0)
                                             echo '<input type="hidden" name="tkt_crtusr" id="tkt_crtusr" value="' . $_USER->getId() . '"/>';
                                     }

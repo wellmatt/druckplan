@@ -44,7 +44,6 @@ echo $quickmove->generate();
 	<div class="panel panel-default">
 		  <div class="panel-heading">
 				<h3 class="panel-title">
-					<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 						<?if($_REQUEST["id"]){
 							echo $_LANG->get('Lieferbedingung bearbeiten');
 						} else {
@@ -57,21 +56,21 @@ echo $quickmove->generate();
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Name</label>
-					<div class="col-sm-10">
+					<div class="col-sm-4">
 						<input id="deliv_name" name="dt_name" type="text" class="form-control" value="<?=$delterm->getName1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Beschreibung</label>
-					<div class="col-sm-10">
+					<div class="col-sm-4">
 						<input id="deliv_comment" name="dt_comment" type="text" class="form-control" value="<?=$delterm->getComment()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Kosten</label>
-					<div class="col-sm-10">
+					<div class="col-sm-4">
 						<div class="input-group">
 							<input name="dt_charges"  type="text" class="form-control" value="<?=printPrice($delterm->getCharges())?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							<span class="input-group-addon">€</span>
@@ -81,7 +80,7 @@ echo $quickmove->generate();
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Mwst</label>
-					<div class="col-sm-10">
+					<div class="col-sm-4">
 						<div class="input-group">
 							<input name="dt_tax"  type="text" class="form-control" value="<?=printPrice($delterm->getTax())?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							<span class="input-group-addon">%</span>

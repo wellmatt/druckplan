@@ -67,13 +67,13 @@ echo $quickmove->generate();
                     <input type="hidden" name="id" id="id" value="<?php echo (int)$_REQUEST['id'];?>">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Titel</label>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <input type="text" class="form-control" name="title" id="title" value="<?php echo $partslist->getTitle();?>" placeholder="Titel der Stückliste">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Preis</label>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="price" id="price" value="<?php echo printPrice($partslist->getPrice(),2);?>" placeholder="Preis der Stückliste">
                                 <div class="input-group-addon"><span>€</span></div>
@@ -106,9 +106,12 @@ echo $quickmove->generate();
                                     <div class="panel-heading">
                                         <h3 class="panel-title">
                                             Artikel
-                                            <small>
-                                                <span class="glyphicons glyphicons-plus pointer" title="neuer Artikel" onclick="callBoxFancyArtFrame('libs/modules/partslists/partslist.article.frame.php?list=<?php echo $partslist->getId();?>');"></span>
-                                            </small>
+                                            <span class="pull-right">
+                                                <button class="btn btn-xs btn-success" type="button"  onclick="callBoxFancyArtFrame('libs/modules/partslists/partslist.article.frame.php?list=<?php echo $partslist->getId();?>');">
+                                                    <span class="glyphicons glyphicons-plus pointer"></span>
+                                                    <?= $_LANG->get('neuer Artikel') ?>
+                                                </button>
+                                            </span>
                                         </h3>
                                     </div>
                                     <div class="panel-body" id="partslistarticles"></div>

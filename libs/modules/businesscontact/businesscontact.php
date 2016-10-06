@@ -161,27 +161,31 @@ $(document).ready(function() {
 				</h3>
 			</div>
 			<div class="panel-body">
-				<div class="form-group">
-					<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
-					<div class="col-sm-10">
-						<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
-							<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-							<?
-							foreach ($all_attributes AS $attribute){
-								$allitems = $attribute->getItems();
-								foreach ($allitems AS $item){ ?>
-									<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
-								<? }
-							} ?>
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="" class="col-sm-2 control-label">Suche</label>
-					<div class="col-sm-10">
-						<input type="text" id="search" class="form-control" placeholder="">
-					</div>
-				</div>
+				 <div class="row">
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
+						 <div class="col-sm-3">
+							 <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+								 <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+								 <?
+								 foreach ($all_attributes AS $attribute){
+									 $allitems = $attribute->getItems();
+									 foreach ($allitems AS $item){ ?>
+										 <option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
+									 <? }
+								 } ?>
+							 </select>
+						 </div>
+					 </div>
+				 </div>
+				 <div class="row">
+					 <div class="form-group">
+						 <label for="" class="col-sm-2 control-label">Suche:</label>
+						 <div class="col-sm-3">
+							 <input type="text" id="search" class="form-control" placeholder="">
+						 </div>
+					 </div>
+				 </div>
 			</div>
 		</div>
 	</div>

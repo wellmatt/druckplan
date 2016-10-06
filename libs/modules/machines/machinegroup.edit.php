@@ -50,7 +50,7 @@ echo $quickmove->generate();
 		  <div class="panel-body">
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Name</label>
-					<div class="col-sm-10">
+					<div class="col-sm-4">
 						<input name="machinegroup_name" class="form-control" type="text" value="<?=$machinegroup->getName()?>">
 						<? if($machinegroup->getLectorId() != 0) { ?>
 							<div class="input-group">
@@ -67,7 +67,7 @@ echo $quickmove->generate();
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Position</label>
-					<div class="col-sm-10">
+					<div class="col-sm-4">
 						<input name="machinegroup_position" class="form-control" type="text" value="<?=$machinegroup->getPosition()?>">
 					</div>
 				</div>
@@ -76,11 +76,13 @@ echo $quickmove->generate();
 					<label for="" class="col-sm-2 control-label">Typ</label>
 					<div class="col-sm-10">
 						<? if ($machinegroup->getType() == 0){ ?>
-							<input name="machinegroup_typ"  type="radio" value="0" checked><?=$_LANG->get('inhouse')?>
-							<input name="machinegroup_typ"  type="radio" value="1"><?=$_LANG->get('Fremdleistung')?>
+							<input name="machinegroup_typ"  type="radio" value="0" checked>&nbsp;<?=$_LANG->get('inhouse')?>
+							&nbsp;
+							<input name="machinegroup_typ"  type="radio" value="1">&nbsp;<?=$_LANG->get('Fremdleistung')?>
 						<?} else { ?>
-							<input name="machinegroup_typ" type="radio" value="0"><?=$_LANG->get('inhouse')?>
-							<input name="machinegroup_typ" type="radio" value="1" checked><?=$_LANG->get('Fremdleistung')?>
+							<input name="machinegroup_typ" type="radio" value="0">&nbsp;<?=$_LANG->get('inhouse')?>
+							&nbsp;
+							<input name="machinegroup_typ" type="radio" value="1" checked>&nbsp;<?=$_LANG->get('Fremdleistung')?>
 						<? } ?>
 					</div>
 				</div>

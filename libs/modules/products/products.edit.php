@@ -263,6 +263,11 @@ echo $quickmove->generate();
                       <div class="form-group">
                           <label for="" class="col-sm-3 control-label">Produkt besteht aus</label>
                           <div class="col-sm-9">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label"></label>
+                          <div class="col-sm-9">
                               <input type="checkbox" value="1" name="product_hascontent"<?if($product->getHasContent()) echo " checked ";?>> <?=$_LANG->get('Inhalt')?>
                           </div>
                       </div>
@@ -398,6 +403,8 @@ echo $quickmove->generate();
                                 echo '<input type="checkbox" name="paper_weight_content_'.$x.'_'.$paperId["id"].'_'.$w.'" value="1" ';
                                 if($paperId[$w] == 1) echo "checked";
                                 echo '>'.$w." ";
+                                ?>&nbsp;<?
+
                             }
                             echo '</td><td><span class="glyphicons glyphicons-remove pointer" onclick="deletePaper('.$x.', \'content\')"></span>';
                             if($x == count($product->getSelectedPapersIds(Calculation::PAPER_CONTENT)) -1)

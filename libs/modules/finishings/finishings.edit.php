@@ -52,21 +52,21 @@ echo $quickmove->generate();
 
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Name</label>
-				  <div class="col-sm-10">
+				  <div class="col-sm-4">
 					  <input type="text" class="form-control" id="finishing_name" name="finishing_name" value="<?=$finishing->getName()?>" placeholder="Bitte Lacknamen eintragen...">
 				  </div>
 			  </div>
 
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Beschreibung</label>
-				  <div class="col-sm-10">
+				  <div class="col-sm-4">
 					  <input type="text" class="form-control" id="finishing_beschreibung" name="finishing_beschreibung" value="<?=$finishing->getBeschreibung()?>" placeholder="Beschreibung">
 				  </div>
 			  </div>
 
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Kosten</label>
-				  <div class="col-sm-10">
+				  <div class="col-sm-4">
 					  <div class="input-group">
 						  <input type="text" class="form-control" id="finishing_kosten" name="finishing_kosten" value="<?=printPrice($finishing->getKosten())?>" placeholder="bitte Lacknamen eintragen...">
 						  <span class="input-group-addon">€</span>

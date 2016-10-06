@@ -11,7 +11,6 @@ $delivterms = DeliveryTerms::getAllDeliveryConditions();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Lieferbedingungen
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
@@ -60,7 +59,7 @@ $delivterms = DeliveryTerms::getAllDeliveryConditions();
 					  <td class="content_row">
 						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&did=<?=$dt->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$dt->getId()?>')"><span class="glyphicons glyphicons-pencil"></span></a>
+						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$dt->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 				  <?$x++;

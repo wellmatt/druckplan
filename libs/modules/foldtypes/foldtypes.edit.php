@@ -68,13 +68,13 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Bezeichnung</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<input name="foldtype_name" class="form-control" type="text" value="<?=$ft->getName()?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Beispielbild</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<a href="libs/modules/foldtypes/picture.iframe.php" id="picture_select" class="products">
 						<button type="button" class="btn btn-success btn-sm">
 							Ändern
@@ -90,7 +90,7 @@ echo $quickmove->generate();
 			</div>
 			 <div class="row">
 				 <div class="col-md-2"></div>
-				<div class="col-md-10" id="picture_show">
+				<div class="col-md-4" id="picture_show">
 					<img src="images/foldtypes/<?=$ft->getPicture()?>">
 				</div>
 			</div>
@@ -98,25 +98,25 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Beschreibung</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<textarea name="foldtype_description" type="text" class="form-control"><?=$ft->getDescription()?></textarea>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Falzen vertikal</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<input name="foldtype_vertical" class="form-control" type="text" value="<?=$ft->getVertical()?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Falzen horizontal</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<input name="foldtype_horizontal" class="form-control" type="text" value="<?=$ft->getHorizontal()?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Anz. Brüche</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<input name="foldtype_breaks" class="form-control" type="text" value="<?=$ft->getBreaks();?>">
 				</div>
 			</div>

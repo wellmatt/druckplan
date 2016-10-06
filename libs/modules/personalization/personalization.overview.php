@@ -134,7 +134,7 @@ function PersoOrderTableRefresh()
 
                           <div class="form-group">
                               <label for="" class="col-sm-2 control-label">Kunde</label>
-                              <div class="col-sm-5">
+                              <div class="col-sm-4">
                                   <input name="ajax_customer" id="ajax_customer" type="hidden" <?php if ($_SESSION['perso_ajax_customer']) echo ' value="'.$_SESSION['perso_ajax_customer'].'" ';?>/>
                                   <select name="customer" id="customer" class="form-control">
                                       <option value="" <?php if (!$_SESSION['perso_ajax_customer']) echo ' selected ';?>></option>
@@ -153,7 +153,7 @@ function PersoOrderTableRefresh()
                           </div>
                           <div class="form-group">
                               <label for="" class="col-sm-2 control-label">Suche</label>
-                              <div class="col-sm-5">
+                              <div class="col-sm-4">
                                   <input type="text" id="search" class="form-control" placeholder="">
                               </div>
                           </div>
@@ -163,12 +163,10 @@ function PersoOrderTableRefresh()
                               <span class="glyphicons glyphicons-refresh"></span>
                               <?=$_LANG->get('Refresh')?>
                           </button>
-                      </span>
-                      <span class="pull-right">
-                          <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/personalization/personalization.php&exec=reset';">
-                              <span class="glyphicons glyphicons-ban-circle"></span>
-                              <?=$_LANG->get('Reset')?>
-                          </button>
+                           <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/personalization/personalization.php&exec=reset';">
+                               <span class="glyphicons glyphicons-ban-circle"></span>
+                               <?=$_LANG->get('Reset')?>
+                           </button>
                       </span>
 				  </div>
 			</div>

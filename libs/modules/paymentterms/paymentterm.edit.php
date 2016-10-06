@@ -23,7 +23,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				<? if($_REQUEST["id"]){
 					echo $_LANG->get('Zahlungsbedingung bearbeiten');
 				} else{
@@ -40,21 +39,21 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Name</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<input name="pt_name" id="pt_name" type="text" class="form-control" value="<?=$payment->getName()?> " onfocus="markfield(this,0)" onblur="markfield(this,1)">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Beschreibung</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<input id="pt_comment" name="pt_comment" type="text" class="form-control" value="<?=$payment->getComment()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Skonto Frist 1</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<div class="input-group">
 						<input	name="pt_skonto_days1" type="text" class="form-control" value="<?=$payment->getSkontodays1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<span class="input-group-addon">Tage</span>
@@ -64,7 +63,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Skonto 1</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<div class="input-group">
 						<input name="pt_skonto1" type="text" class="form-control" value="<?=$payment->getSkonto1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<span class="input-group-addon">%</span>
@@ -74,7 +73,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Skonto Frist 2</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<div class="input-group">
 						<input name="pt_skonto_days2" type="text" class="form-control" value="<?=$payment->getSkontodays2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<span class="input-group-addon">Tage</span>
@@ -84,7 +83,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Skonto 2</label>
-				<div class="col-sm-10">
+				<div class="col-sm-4">
 					<div class="input-group">
 						<input name="pt_skonto2" type="text" class="form-control" value="<?=$payment->getSkonto2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						<span class="input-group-addon">%</span>
@@ -93,8 +92,8 @@ echo $quickmove->generate();
 			</div>
 
 			<div class="form-group">
-				<label for="" class="col-sm-2 control-label">'Nettotage</label>
-				<div class="col-sm-10">
+				<label for="" class="col-sm-2 control-label">Nettotage</label>
+				<div class="col-sm-4">
 					<input id="pt_nettodays" name="pt_nettodays" type="text" class="form-control" value="<?=$payment->getNettodays()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 				</div>
 			</div>

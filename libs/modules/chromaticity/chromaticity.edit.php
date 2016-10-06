@@ -39,7 +39,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Farbigkeit kopieren')?>
 				<? if ($_REQUEST["exec"] == "edit" && $chr->getId() == 0) echo $_LANG->get('Farbigkeit anlegen')?>
 				<? if ($_REQUEST["exec"] == "edit" && $chr->getId() != 0) echo $_LANG->get('Farbigkeit bearbeiten')?>
@@ -56,24 +55,22 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Bezeichnung</label>
-				<div class="col-sm-10">
+				<div class="col-sm-3">
 					<input id="chr_name" name="chr_name" type="text" class="form-control" value="<?=$chr->getName()?>">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Farben Vorderseite</label>
-				<div class="col-sm-10">
+				<div class="col-sm-3">
 					<input name="chr_color_front" type="text" class="form-control" value="<?=$chr->getColorsFront()?>">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Farben Rückseite</label>
-				<div class="col-sm-10">
-					<div class="input-group">
-						<input name="chr_color_back"  type="text" class="form-control" value="<?=$chr->getColorsBack()?>">
-					</div>
+				<div class="col-sm-3">
+					<input name="chr_color_back"  type="text" class="form-control" value="<?=$chr->getColorsBack()?>">
 				</div>
 			</div>
 
@@ -88,7 +85,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Aufschlag auf Maschinenpreis</label>
-				<div class="col-sm-10">
+				<div class="col-sm-3">
 					<div class="input-group">
 						<input name="chr_markup"type="text" class="form-control" value="<?=printPrice($chr->getMarkup())?>">
 						<span class="input-group-addon">%</span>
@@ -98,7 +95,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Preis/kg'</label>
-				<div class="col-sm-10">
+				<div class="col-sm-3">
 					<div class="input-group">
 						<input name="pricekg" type="text" class="form-control" value="<?=printPrice($chr->getPricekg())?>">
 						<span class="input-group-addon">€</span>

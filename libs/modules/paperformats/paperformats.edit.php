@@ -45,20 +45,20 @@ echo $quickmove->generate();
 	  </div>
 	  <div class="panel-body">
           <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="paper_form" name="paper_form"
-                class="form-horizontal" role="form"onSubmit="return checkform(new Array(this.format_name))">
+                class="form-horizontal" role="form" onSubmit="return checkform(new Array(this.format_name))">
               <input name="exec" value="edit" type="hidden">
               <input type="hidden" name="subexec" value="save">
               <input name="id" value="<?=$format->getId()?>" type="hidden">
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Name</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input id="format_name" name="format_name" type="text" class="form-control" value="<?=$format->getName()?>">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Breite</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <div class="input-group">
                           <input type="text" class="form-control" id="format_width" name="format_width" value="<?=$format->getWidth()?>">
                           <span class="input-group-addon">mm</span>
@@ -68,7 +68,7 @@ echo $quickmove->generate();
 
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Höhe</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <div class="input-group">
                           <input type="text" class="form-control" id="format_height" name="format_height" value="<?=$format->getHeight()?>">
                           <span class="input-group-addon">mm</span>
