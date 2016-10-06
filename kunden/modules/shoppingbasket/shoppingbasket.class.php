@@ -203,6 +203,7 @@ class Shoppingbasket{
 	        $col_inv->setPaymentterm($busicon->getPaymentTerms());
 	        $col_inv->setInvoiceAddress($tmp_inv_ad);
 	        $col_inv->setClient(new Client(1));
+			$col_inv->setType(2);
 	        
 	        if ($_SESSION["login_type"]	== "contactperson"){
 	            $col_inv->setCustContactperson(new ContactPerson((int)$_SESSION["contactperson_id"]));

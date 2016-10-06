@@ -483,19 +483,21 @@ echo $quickmove->generate();
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Geschäftskontakt</label>
 							</div>
-							<?php
-							$shop_appr = $article->getShop_approval();
-							if (count($shop_appr["BCs"]) > 0) {
-								foreach ($shop_appr["BCs"] as $shop_appr_bc) {
-									$tmp_bc = new BusinessContact($shop_appr_bc) ?>
-									<div class="form-group">
-										<div class="col-sm-9">
-											<?php echo $tmp_bc->getNameAsLine(); ?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span>
-											<input type="hidden" name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId() ?>"/>
+							<div id="shop_appr_bcs">
+								<?php
+								$shop_appr = $article->getShop_approval();
+								if (count($shop_appr["BCs"]) > 0) {
+									foreach ($shop_appr["BCs"] as $shop_appr_bc) {
+										$tmp_bc = new BusinessContact($shop_appr_bc) ?>
+										<div class="form-group">
+											<div class="col-sm-9">
+												<?php echo $tmp_bc->getNameAsLine(); ?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span>
+												<input type="hidden" name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId() ?>"/>
+											</div>
 										</div>
-									</div>
+									<?php } ?>
 								<?php } ?>
-							<?php } ?>
+							</div>
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Hinzufügen:</label>
 								<div class="col-sm-5">
@@ -505,19 +507,21 @@ echo $quickmove->generate();
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Ansprechpartner</label>
 							</div>
-							<?php
-							$shop_appr = $article->getShop_approval();
-							if (count($shop_appr["CPs"]) > 0) {
-								foreach ($shop_appr["CPs"] as $shop_appr_cp) {
-									$tmp_cp = new ContactPerson($shop_appr_cp) ?>
-									<div class="form-group">
-										<div class="col-sm-9">
-											<?php echo $tmp_cp->getNameAsLine(); ?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span>
-											<input type="hidden" name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId() ?>"/>
+							<div id="shop_appr_cps">
+								<?php
+								$shop_appr = $article->getShop_approval();
+								if (count($shop_appr["CPs"]) > 0) {
+									foreach ($shop_appr["CPs"] as $shop_appr_cp) {
+										$tmp_cp = new ContactPerson($shop_appr_cp) ?>
+										<div class="form-group">
+											<div class="col-sm-9">
+												<?php echo $tmp_cp->getNameAsLine(); ?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span>
+												<input type="hidden" name="shop_appr_cp[]" value="<?php echo $tmp_cp->getId() ?>"/>
+											</div>
 										</div>
-									</div>
+									<?php } ?>
 								<?php } ?>
-							<?php } ?>
+							</div>
 
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Hinzufügen:</label>
@@ -945,9 +949,9 @@ echo $quickmove->generate();
 				return false;
 			},
 			select: function( event, ui ) {
-				var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;"></span>';
-				newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></td></tr>';
-				$("#shop_appr_bcs tr:last").after(newRow);
+				var newRow = '<div class="form-group"><div class="col-sm-9">'+ui.item.label+' <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;"></span>';
+				newRow += '<input type="hidden" name="shop_appr_bc[]" value="'+ui.item.value+'"/></div></div>';
+				$("#shop_appr_bcs").append(newRow);
 				return false;
 			}
 		});
@@ -959,9 +963,9 @@ echo $quickmove->generate();
 				return false;
 			},
 			select: function( event, ui ) {
-				var newRow = '<tr><td class="content_row_clear">'+ui.item.label+' <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;"></span>';
-				newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></td></tr>';
-				$("#shop_appr_cps tr:last").after(newRow);
+				var newRow = '<div class="form-group"><div class="col-sm-9">'+ui.item.label+' <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();;"></span>';
+				newRow += '<input type="hidden" name="shop_appr_cp[]" value="'+ui.item.value+'"/></div></div>';
+				$("#shop_appr_cps").append(newRow);
 				return false;
 			}
 		});

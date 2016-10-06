@@ -272,7 +272,10 @@ $(document).ready(function() {
 									7 => 'Erledigt',
 								];
 								foreach ($colstates AS $index => $value){
-									echo '<option value="'.$index.'">'.$value.'</option>';
+									if ($_REQUEST['filter_status'] == $index)
+										echo '<option value="'.$index.'" selected>'.$value.'</option>';
+									else
+										echo '<option value="'.$index.'">'.$value.'</option>';
 								} ?>
 							</select>
 						</div>

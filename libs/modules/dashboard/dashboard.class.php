@@ -6,7 +6,7 @@
  *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
  *
  */
-
+require_once 'libs/modules/dashboard/widget.class.php';
 
 class DashBoard{
 
@@ -167,7 +167,7 @@ class DashBoard{
      * @param User $user
      * @param int $row
      * @param int $column
-     * @return DashBoard|null
+     * @return DashBoard
      */
     public static function getForUserAndPosition(User $user, $row, $column)
     {
@@ -204,9 +204,15 @@ class DashBoard{
      */
     public static function getWidgets()
     {
+        $files = [];
         $path = "./libs/modules/dashboard/widgets/";
-        $files = array_diff(scandir($path), array('.', '..'));
-        array_unshift($files,'Keins');
+        $widgets = array_diff(scandir($path), array('.', '..'));
+        array_unshift($widgets,'Keins');
+
+        foreach ($widgets as $widget) {
+            $files[] = str_replace('.php','',$widget);
+        }
+
         return $files;
     }
 

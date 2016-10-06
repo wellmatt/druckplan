@@ -582,7 +582,7 @@ function TicketTableRefresh()
 								$all_groups = Group::getAllGroups(Group::ORDER_NAME);
 								foreach ($all_user as $tkt_user) {
 									echo '<option value="u_' . $tkt_user->getId() . '"';
-									if ($_SESSION['tkt_ajax_assigned'] == 'u_' . $tkt_user->getId()) {
+									if ($_SESSION['tkt_ajax_assigned'] == 'u_' . $tkt_user->getId() || $_REQUEST['filter_assigned'] == 'u_' . $tkt_user->getId()) {
 										echo ' selected ';
 									}
 									echo '>' . $tkt_user->getNameAsLine() . '</option>';

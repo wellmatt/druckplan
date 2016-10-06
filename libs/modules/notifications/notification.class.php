@@ -123,7 +123,29 @@ class Notification {
             return false;
         }
     }
-    
+
+    /**
+     * @param int $limit
+     * @return Notification[]
+     */
+    public static function getAllMyNotifications($limit = 10){
+        global $DB;
+        global $_USER;
+        $retval = Array();
+
+        $sql = "SELECT id FROM notifications WHERE user = {$_USER->getId()} ORDER BY crtdate DESC LIMIT {$limit}";
+        if($DB->num_rows($sql)){
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Notification($r["id"]);
+            }
+        }
+        return $retval;
+    }
+
+    /**
+     * @param int $limit
+     * @return Notification[]
+     */
     public static function getMyNotifications($limit = 10){
         global $DB;
         global $_USER;

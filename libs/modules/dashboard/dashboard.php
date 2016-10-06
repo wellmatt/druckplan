@@ -19,13 +19,15 @@ for ($i = 1; $i <= $rows; $i++) {
     echo '<div class="row">';
     if ($wid2->getModule() == "Keins" && $wid3->getModule() == "Keins"){
         echo '<div class="col-md-12">';
-        include './libs/modules/dashboard/widgets/'.$wid1->getModule();
+        if (file_exists('./libs/modules/dashboard/widgets/'.$wid1->getModule().'.php'))
+            include './libs/modules/dashboard/widgets/'.$wid1->getModule().'.php';
         echo '</div>';
     } else {
         foreach (Array($wid1,$wid2,$wid3) as $widget) {
             if ($widget->getModule() != "Keins") {
                 echo '<div class="col-md-4">';
-                include './libs/modules/dashboard/widgets/' . $widget->getModule();
+                if (file_exists('./libs/modules/dashboard/widgets/'.$widget->getModule().'.php'))
+                    include './libs/modules/dashboard/widgets/' . $widget->getModule().'.php';
                 echo '</div>';
             }
         }

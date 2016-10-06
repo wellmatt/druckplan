@@ -67,7 +67,10 @@ if ($_REQUEST["delete"])
 {
     $savemsg = getSaveMessage($event->delete());
     $_REQUEST["exec"] = "";
-    echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
+	if ($_REQUEST['returnhome'] == true)
+		echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php";</script>';
+	else
+		echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
 }
 
 if($_REQUEST["subexec"] == "save")
@@ -141,8 +144,12 @@ if($_REQUEST["subexec"] == "save")
 	    if ($tmp_user->getId() != $_USER->getId())
             Notification::generateNotification($tmp_user, "Event", "NewEvent", $_USER->getNameAsLine2(), $event->getId());
     }
-    
-    echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
+
+	if ($_REQUEST['returnhome'] == true)
+		echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php";</script>';
+	else
+		echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
+//    echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/organizer/calendar.php";</script>';
 }
 
 ?>
@@ -202,6 +209,7 @@ if($_REQUEST["subexec"] == "save")
 		<input type="hidden" name="exec" value="<?=$_REQUEST["exec"]?>">
 		<input type="hidden" name="subexec" value="save">
 		<input type="hidden" name="eventid" value="<?=$_REQUEST["eventid"]?>">
+		<input type="hidden" name="returnhome" value="<?php if ($_REQUEST['returnhome'] == true) echo 'true'; else echo 'false';?>">
 
 		<div class="panel panel-default">
 			<div class="panel-heading">

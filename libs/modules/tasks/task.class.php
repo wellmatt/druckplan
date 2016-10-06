@@ -52,14 +52,12 @@ class Task{
                         prio = {$this->prio}
                     WHERE id = {$this->id}";
             return $DB->no_result($sql);
-//             echo $sql . "</br>";
         } else {
             $sql = "INSERT INTO tasks
                         (title, content, due_date, crt_date, prio, crt_usr)
                     VALUES
                         ('{$this->title}', '{$this->content}', {$this->due_date}, UNIX_TIMESTAMP(), {$this->prio}, {$_USER->getId()} )";
             $res = $DB->no_result($sql);
-//             echo $sql . "</br>";
             if($res) {
                 $sql = "SELECT max(id) id FROM tasks WHERE title = '{$this->title}'";
                 $thisid = $DB->select($sql);
@@ -82,12 +80,20 @@ class Task{
         }
         return false;
 	}
-	
-	static function getAllTasks(){
+
+    /**
+     * @param int $limit
+     * @param string $orderby
+     * @return Task[]
+     */
+	static function getAllTasks($limit = 0, $orderby = 'prio'){
 		$retval = Array();
 		global $DB;
-		
-		$sql = "SELECT id FROM tasks ORDER BY prio DESC";
+
+        if ($limit > 0)
+            $sql = "SELECT id FROM tasks ORDER BY {$orderby} DESC LIMIT {$limit}";
+        else
+            $sql = "SELECT id FROM tasks ORDER BY {$orderby} DESC";
 		
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){

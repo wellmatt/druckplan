@@ -94,12 +94,12 @@ class PriceScale extends Model{
             ],
             [
                 'column'=>'min',
-                'operator'=>'>=',
+                'operator'=>'<=',
                 'value'=>$amount
             ],
             [
                 'column'=>'max',
-                'operator'=>'<=',
+                'operator'=>'>=',
                 'value'=>$amount
             ],
             [

@@ -264,6 +264,39 @@ class Event {
         else
             return false;
     }
+
+    /**
+     * @param int $limit
+     * @return Event[]
+     */
+    public static function getMyUpcomingEvents($limit = 10)
+    {
+        global $DB;
+        global $_USER;
+
+        $retval = [];
+
+        $sql = "SELECT
+                `events`.id
+                FROM
+                `events`
+                INNER JOIN events_participants ON `events`.id = events_participants.`event`
+                WHERE
+                events_participants.participant = {$_USER->getId()} AND
+                events_participants.type = 1
+                ORDER BY `begin` DESC
+                LIMIT {$limit}";
+
+        if ($DB->num_rows($sql))
+        {
+            foreach ($DB->select($sql) as $r)
+            {
+                $retval[] = new Event($r["id"]);
+            }
+        }
+
+        return $retval;
+    }
     
     static function getAllEventsForHome($order = self::ORDER_BEGIN, $searchstring){
     	global $DB;

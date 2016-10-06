@@ -17,6 +17,9 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 	if ($_REQUEST["exec"] == "delete") {
 		$del_task = new Task($_REQUEST["delid"]);
 		$del_task->delete();
+		if ($_REQUEST['returnhome'] == true){
+			echo '<script>document.location.href="index.php";</script>';
+		}
 	}
 	
 	$all_tasks = Task::getAllTasks();

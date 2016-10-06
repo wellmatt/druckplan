@@ -21,6 +21,8 @@ class Orderposition{
 	private $status = 0;				// Status z.B.: 0 = geloescht, 1 = aktiv, 2 = soft gelöscht
 	private $quantity = 0;				// Menge/Stueckzahl
 	private $price = 0;					// Einzelpreis
+	private $cost = 0.0;				// Einkaufspreis
+	private $profit = 0.0;				// Marge (Profit)
 	private $tax = 19; 					// MWST
 	private $comment = ""; 				// Beschreibung
 	private $collectiveinvoice = 0;		// ID der Sammelrechnung
@@ -83,6 +85,8 @@ class Orderposition{
 					$this->status = $r["status"];
 					$this->quantity = $r["quantity"];
 					$this->price = $r["price"];
+					$this->cost = $r["cost"];
+					$this->profit = $r["profit"];
 					$this->tax = $r["tax"];
 					$this->comment = $r["comment"];
 					$this->collectiveinvoice = $r["collectiveinvoice"];
@@ -139,11 +143,11 @@ class Orderposition{
 			if ($opos->id == 0){
 				//Neuer Eintrag in DB
 				$sql = "INSERT INTO collectiveinvoice_orderposition
-						(quantity, comment, price, 
+						(quantity, comment, price, cost, profit,
 						tax, status, collectiveinvoice, type, 
 						object_id, inv_rel, rev_rel, file_attach, perso_order )
 						VALUES
-						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, 
+						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, {$opos->getCost()}, {$opos->getProfit()},
 						{$opos->getTax()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
 						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()}, {$opos->getFile_attach()}, {$opos->getPerso_order()} )";
 				$res = $DB->no_result($sql);
@@ -163,6 +167,8 @@ class Orderposition{
 						quantity = {$opos->getQuantity()},
 						comment = '{$opos->getComment()}',
 						price = {$opos->getPrice()},
+						cost = {$opos->getCost()},
+						profit = {$opos->getProfit()},
 						tax = {$opos->getTax()},
 						type = {$opos->getType()},
 						object_id = {$opos->getObjectid()},
@@ -440,4 +446,36 @@ class Orderposition{
     {
         $this->perso_order = $perso_order;
     }
+
+	/**
+	 * @return float
+	 */
+	public function getCost()
+	{
+		return $this->cost;
+	}
+
+	/**
+	 * @param float $cost
+	 */
+	public function setCost($cost)
+	{
+		$this->cost = $cost;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getProfit()
+	{
+		return $this->profit;
+	}
+
+	/**
+	 * @param float $profit
+	 */
+	public function setProfit($profit)
+	{
+		$this->profit = $profit;
+	}
 }

@@ -332,6 +332,26 @@ class ContactPerson {
     	
     	return $contactPersons;
 	}
+
+	/**
+	 * @param null $businessContact
+	 * @param string $order
+	 * @param string $filter
+	 * @param int $loader
+	 * @return int
+	 */
+	public static function getAllContactPersonsCount($businessContact = NULL, $order = self::ORDER_ID, $filter = "", $loader = ContactPerson::LOADER_FULL)
+	{
+		global $DB;
+		$contactPersons = 0;
+		$sql = " SELECT count(id) as counted FROM contactperson WHERE active > 0 " . (($businessContact == NULL) ? "" : " AND businesscontact = " . $businessContact->getID()) . " ".$filter." ORDER BY {$order}";
+		if($DB->num_rows($sql)){
+			$result = $DB->select($sql);
+			$result = $result[0];
+			$contactPersons = $result['counted'];
+		}
+		return $contactPersons;
+	}
 	
 	public static function getAllContactPersonsBDay($start,$end)
 	{

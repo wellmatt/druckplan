@@ -26,6 +26,7 @@ class CollectiveInvoice{
 
 	private $id = 0;
 	private $status	= 1;
+	private $type = 1;					// Vorgangstyp 1: Manuell 2: Bestellung aus Kundenportal
 	private $title = "";
 	private $number = "- - -";
 	private $crtdate;
@@ -55,6 +56,7 @@ class CollectiveInvoice{
 	private $thirdpartycomment = "";	// Hinweis zur Fremdleistung
 
 	private $ticket = 0;				// TicketID falls durch ticket erstellt
+	private $savedcost = 0;				// Einkaufspreise und Profit gesetzt
     
     // Doc texts
 
@@ -137,6 +139,7 @@ class CollectiveInvoice{
 					$r = $rows[0];
 					$this->id = (int)$r["id"];
 					$this->status = $r["status"];
+					$this->type = $r["type"];
 					$this->title = $r["title"];
 					$this->number = $r["number"];
 					$this->comment = $r["comment"];
@@ -163,6 +166,7 @@ class CollectiveInvoice{
 					$this->thirdparty = $r["thirdparty"];
 					$this->thirdpartycomment = $r["thirdpartycomment"];
 					$this->ticket = $r["ticket"];
+					$this->savedcost = $r["savedcost"];
 
 					// doc texts
 					$this->offer_header = $r["offer_header"];
@@ -196,6 +200,7 @@ class CollectiveInvoice{
 		if($this->id > 0){	//number, crtdate, crtuser und id d�rfen/sollen nicht ver�ndert werden // number = '{$this->number}',
 			$sql = "UPDATE collectiveinvoice SET
 					status = {$this->status},
+					type = {$this->type},
 					title = '{$this->title}',
 					comment = '{$this->comment}',
 					ext_comment = '{$this->ext_comment}',
@@ -230,7 +235,8 @@ class CollectiveInvoice{
                     revert_header = '{$this->revert_header}',  
                     revert_footer = '{$this->revert_footer}',
                     ticket = {$this->ticket},
-                    
+                    savedcost = {$this->savedcost},
+
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
@@ -240,16 +246,16 @@ class CollectiveInvoice{
 			$this->crtdate = $now;
 			$this->crtuser = $_USER;
 			$sql = "INSERT INTO collectiveinvoice
-				(status, title, number, crtdate, crtuser, 
+				(status, type, title, number, crtdate, crtuser,
 				 deliverycosts, comment, businesscontact, client,
 				 deliveryterm, paymentterm, deliveryaddress, invoiceaddress,
 				 intern_contactperson, cust_message, cust_sign, custContactperson,
 				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
-				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket)
+				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost)
 			VALUES
-				({$this->status}, '{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
+				({$this->status}, {$this->type},'{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
 				 {$this->deliveryterm->getId()}, {$this->paymentterm->getId()}, {$this->deliveryaddress->getId()}, {$this->invoiceAddress->getId()},
 				 {$this->internContact->getId()}, '{$this->custMessage}', '{$this->custSign}', {$this->custContactperson->getId()},
@@ -257,7 +263,7 @@ class CollectiveInvoice{
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
 				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}',
-				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket})";
+				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0)";
 			$res = $DB->no_result($sql);
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
@@ -268,6 +274,9 @@ class CollectiveInvoice{
 		if ($res)
 		{
 			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+			if ($this->status == 5 || $this->status == 7){
+				$this->saveArticleBuyPrices();
+			}
 			return true;
 		}
 		else
@@ -294,6 +303,47 @@ class CollectiveInvoice{
 			}
 		}
 	}
+
+	/**
+	 * Saves article cost and profit margin to database
+	 */
+	private function saveArticleBuyPrices(){
+		if ($this->savedcost == 0) {
+			$orderpositions = Orderposition::getAllOrderposition($this->getId());
+			foreach ($orderpositions as $orderposition) {
+				if ($orderposition->getType() == 1 || $orderposition->getType() == 2) {
+					$article = new Article((int)$orderposition->getObjectid());
+					$cost = $orderposition->getAmount() * PriceScale::getPriceForAmount($article, $orderposition->getAmount(), PriceScale::TYPE_BUY);
+					$profit = ($orderposition->getAmount() * $orderposition->getPrice()) - $cost;
+					$orderposition->setCost($cost);
+					$orderposition->setProfit($profit);
+				}
+			}
+			Orderposition::saveMultipleOrderpositions($orderpositions);
+			$this->savedcost = 1;
+			$this->save();
+		}
+	}
+
+
+	/**
+	 * Returns total profit margin for this colinv
+	 * @return float|int
+	 */
+	public function getMyProfit()
+	{
+		if ($this->savedcost == 1) {
+			$profit = 0.0;
+			$orderpositions = Orderposition::getAllOrderposition($this->getId());
+			foreach ($orderpositions as $orderposition) {
+				$profit += $orderposition->getProfit();
+			}
+			return $profit;
+		} else {
+			return 0.0;
+		}
+	}
+
 	
 	static function getAllCustomerWithColInvs(){
 	    global $DB;
@@ -445,6 +495,41 @@ class CollectiveInvoice{
 			}
 		}
 		return $collectiveInvoices;
+	}
+
+	/**
+	 * Liefert alle Sammelrechnungen mit Status = 1
+	 *
+	 * @return CollectiveInvoice[]
+	 */
+	public static function getAllNew(){
+		global $DB;
+		$sql = "SELECT * FROM collectiveinvoice WHERE status = 1";
+		$collectiveInvoices = Array();
+		if($DB->no_result($sql)){
+			$result = $DB->select($sql);
+			foreach($result as $r){
+				$collectiveInvoices[] = new CollectiveInvoice($r["id"]);
+			}
+		}
+		return $collectiveInvoices;
+	}
+
+	/**
+	 * Liefert Summe aller Sammelrechnungen mit Status = 1
+	 *
+	 * @return int
+	 */
+	public static function getAllNewCount(){
+		global $DB;
+		$ret = 0;
+		$sql = "SELECT count(id) as counted FROM collectiveinvoice WHERE status = 1";
+		if($DB->no_result($sql)){
+			$result = $DB->select($sql);
+			$result = $result[0];
+			$ret = $result['counted'];
+		}
+		return $ret;
 	}
 	
 	/**
@@ -1353,5 +1438,37 @@ class CollectiveInvoice{
 	public function setTicket($ticket)
 	{
 		$this->ticket = $ticket;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
+	 * @param int $type
+	 */
+	public function setType($type)
+	{
+		$this->type = $type;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getSavedcost()
+	{
+		return $this->savedcost;
+	}
+
+	/**
+	 * @param int $savedcost
+	 */
+	public function setSavedcost($savedcost)
+	{
+		$this->savedcost = $savedcost;
 	}
 }

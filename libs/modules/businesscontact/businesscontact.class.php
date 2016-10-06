@@ -268,6 +268,27 @@ class BusinessContact {
     
     	return $businessContacts;
     }
+
+	/**
+	 * Liefert alle BusinessContacts des Systems
+	 * @param string $order
+	 * @param string $filter
+	 * @param int $loader
+	 * @return int
+	 */
+	public static function getAllBusinessContactsCount($order = self::ORDER_ID, $filter = self::FILTER_ALL, $loader = self::LOADER_FULL){
+		global $_USER;
+		global $DB;
+		$businessContacts = 0;
+		$sql = "SELECT count(id) as counted FROM businesscontact WHERE active > 0 AND {$filter} AND client = {$_USER->getClient()->getID()} ORDER BY {$order}";
+		if ($DB->num_rows($sql)){
+			$result = $DB->select($sql);
+			$result = $result[0];
+			$businessContacts = $result['counted'];
+		}
+
+		return $businessContacts;
+	}
     
     /**
      * Liefert alle BusinessContacts des Systems auf eine andere Art und Weise wie getAllBusinessContacts

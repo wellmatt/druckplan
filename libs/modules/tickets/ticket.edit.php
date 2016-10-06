@@ -1744,7 +1744,7 @@ echo $quickmove->generate();
                                                  style="height: 30px !important; width: 30px !important; float: left;">
                                             <div style="color: #555; margin-left: 40px;">
                                               <span style="color: #444; display: block; font-weight: 600;">
-                                                  <?php echo $crtby; ?>
+                                                  <?php echo $crtby; ?> - #<?php echo $comment->getId(); ?>
                                                   <?php if ($comment->getTitle() != '') echo ' - ' . $comment->getTitle(); ?>
                                                   <span class="pull-right" style="font-size: 12px; font-weight: 400;">
                                                       <?php if ($_USER->isAdmin()){
@@ -1900,7 +1900,7 @@ echo $quickmove->generate();
                                                             <div style="color: #555; margin-left: 40px;">
                                                                 <span
                                                                     style="color: #444; display: block; font-weight: 600;">
-                                                                    <?php echo $crtby; ?>
+                                                                    <?php echo $crtby; ?> - #<?php echo $subcom->getId(); ?>
                                                                     <?php if ($subcom->getTitle() != '') echo ' - ' . $subcom->getTitle(); ?>
                                                                     <span class="pull-right" style="font-size: 12px; font-weight: 400;">
                                                                         <?php if ($_USER->isAdmin()){

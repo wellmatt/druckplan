@@ -95,7 +95,7 @@ class ExportJson{
                                         $data = [];
                                         $contentpdfs = ContentPdf::getAllForOpPartSort($position,$detail['paper'],$i);
                                         foreach ($contentpdfs as $contentpdf) {
-                                            $data[] = ["position"=>$contentpdf->getPagina(),"name"=>$contentpdf->getFile()->getFilename(),"url"=>$contentpdf->getFile()->getFileUrl()];
+                                            $data[] = ["position"=>(int)$contentpdf->getPagina(),"name"=>$contentpdf->getFile()->getFilename(),"url"=>$contentpdf->getFile()->getFileUrl()];
                                         }
 
                                         $parts[] = [
@@ -118,9 +118,7 @@ class ExportJson{
                             }
                         }
                         $project["products"][] = [
-                            "productname" => $order->getProduct()->getName(),
-                            "articlename" => $position->getName(),
-                            "oderposition" => (int)$position->getId(),
+                            "name" => $position->getId().' - '.$position->getName(),
                             "parts" => $parts
                         ];
                     }
