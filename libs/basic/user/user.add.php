@@ -347,7 +347,6 @@ echo $quickmove->generate();
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
 				<? if ($user->getId()) echo $_LANG->get('Benutzer &auml;ndern'); else echo $_LANG->get('Benutzer hinzuf&uuml;gen'); ?>
 				<span class="pull-right"><?= $savemsg ?></span>
 			</h3>
@@ -905,7 +904,7 @@ echo $quickmove->generate();
 											<td class="content_row">
 												<a onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=deletemail&mailid=<?= $emailaddress->getId() ?>&id=<?= $user->getId() ?>')"
 												   class="icon-link"
-												   href="#"><span class="glyphicons glyphicons-remove pointer"
+												   href="#"><span style="color: red;" class="glyphicons glyphicons-remove pointer"
 													title="<?= $_LANG->get('E-Mail-Adresse l&ouml;schen') ?>">
 													</span>
 

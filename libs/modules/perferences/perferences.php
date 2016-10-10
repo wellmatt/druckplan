@@ -120,16 +120,19 @@ function addFormatRawRow()
 	var obj = document.getElementById('table-formatsraw');
 	var count = parseInt(document.getElementById('count_formatsraw').value) + 1;
 
-	var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="formatsraw_width_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px">&nbsp;x&nbsp;';
+	var insert = '<tr><td>'+count+'</td>';
+	insert += '<td>';
+	insert += '<input name="formatsraw_width_'+count+'" class="form-control" type="text"';
+	insert += 'value ="">';
 	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="formatsraw_height_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 50px"> &nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-remove pointer" onclick="deleteFormatRawRow(this)"></span>';
+	insert += '<td style="text-align:center">x</td>';
+	insert += '<td>';
+	insert += '<input name="formatsraw_height_'+count+'" class="form-control" type="text"';
+	insert += 'value ="">';
+	insert += '</td><td>';
+	insert += '<span class="glyphicons glyphicons-remove pointer" onclick="deleteFormatRawRow(this)"></span>';
 	insert += '</td></tr>';
-	
+
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('count_formatsraw').value = count;
 }
@@ -144,16 +147,16 @@ function addHolidayRow()
     insert += '<input type="hidden" name="holiday[id][]" value="0"/>';
     insert += '</td>';
 	insert += '<td class="content_row_clear" valign="top">';
-	insert += '<input type="text" name="holiday[title][]" value=""/>';
+	insert += '<input type="text" class="form-control" name="holiday[title][]" value=""/>';
     insert += '</td>';
 	insert += '<td class="content_row_clear" valign="top">';
-	insert += '<input type="text" class="cal" name="holiday[start][]" value=""/>';
+	insert += '<input type="text" class="cal form-control" name="holiday[start][]" value=""/>';
     insert += '</td>';
 	insert += '<td class="content_row_clear" valign="top">';
-	insert += '<input type="text" class="cal" name="holiday[end][]" value=""/>';
+	insert += '<input type="text" class="cal form-control" name="holiday[end][]" value=""/>';
     insert += '</td>';
 	insert += '<td class="content_row_clear" valign="top">';
-	insert += '<input type="text" name="holiday[color][]" value=""/>';
+	insert += '<input type="text" class="form-control" name="holiday[color][]" value=""/>';
     insert += '</td></tr>';
 	
 	obj.insertAdjacentHTML("BeforeEnd", insert);
@@ -183,13 +186,6 @@ function deleteFormatRawRow(obj)
 }
 </script>
 
-<table width="100%">
-   <tr>
-      <td width="200" class="content_header"><span class="glyphicons glyphicons-cogwheel"></span> <?=$_LANG->get('Einstellungen')?></td>
-	  <td align="right"><?=$savemsg?></td>
-   </tr>
-</table>
-
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
@@ -199,169 +195,198 @@ $quickmove->addItem('Speichern','#',"$('#perf_form').submit();",'glyphicon-flopp
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" enctype="multipart/form-data" name="perf_form" id="perf_form">
-<input type="hidden" name="exec" value="save">
-<div class="box1">
-	<div id="tabs">
-		<ul>
-			<li><a href="#tabs-0"><? echo $_LANG->get('Allgemein');?></a></li>
-			<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation');?></a></li>
-			<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate');?></a></li>
-			<li><a href="#tabs-4"><? echo $_LANG->get('Datatables');?></a></li>
-			<li><a href="#tabs-5"><? echo $_LANG->get('Kalender');?></a></li>
-			<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen');?></a></li>
-		</ul>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Einstellungen
+				<span class="pull-right">
+					<?= $savemsg ?>
+				</span>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal" enctype="multipart/form-data"
+			  name="perf_form" id="perf_form">
+			<input type="hidden" name="exec" value="save">
 
-		<div id="tabs-0">
-                
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-               <colgroup>
-                  <col width="180">
-                  <col>
-               </colgroup>
-               <tr>
-                  <td class="content_row_header" valign="top">Briefbogen:</td>
-                  <td class="content_row_clear">
-                     <input type="file" name="pdf_back" onChange="load_image(this.id,this.value)" id="pdf_back" /></br>
-            		 vorhandenen in neuem Fenster <a target="_blank" href="docs/templates/briefbogen.jpg"><b>öffnen</b></a></br></br>
-            		 Möglichst hohe Auflösung bei geringer Dateigröße </br>
-            		 (300dpi / 100-300KB) ist empfolen!
-                  </td>
-               </tr>
-            </table>
-       </div>
-       <div id="tabs-1">
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-               <colgroup>
-                  <col width="180">
-                  <col>
-               </colgroup>
-               <tr>
-                  <td class="content_row_header" valign="top">Zuschuss pro DP:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="zuschussprodp" id="zuschussprodp" value="<?=str_replace(".",",",$perf->getZuschussProDP());?>" />
-                  </td>
-               </tr>
-				<tr>
-					<td class="content_row_header" valign="top">Fortdruckzuschuss & Weiterverarbeitung:</td>
-					<td class="content_row_clear">
-						<input type="text" name="zuschusspercent" id="zuschusspercent" value="<?=str_replace(".",",",$perf->getZuschussPercent());?>" /> %
-					</td>
-				</tr>
-               <tr>
-                  <td class="content_row_header" valign="top">Detailierte Druckbogenvorschau:</td>
-                  <td class="content_row_clear">
-                     <input type="checkbox" name="calc_detailed_printpreview" id="calc_detailed_printpreview" value="1" <? if ($perf->getCalc_detailed_printpreview()) echo "checked"; ?>/>
-                  </td>
-               </tr>
-            </table>
-       </div>
-       <div id="tabs-3">
-            <?php 
-            $formats_raw = $perf->getFormats_raw();
-            ?>
-   			<input 	type="hidden" name="count_formatsraw" id="count_formatsraw" 
-				value="<? if(count($formats_raw) > 0) echo count($formats_raw); else echo "1";?>">
-            <table border="0" cellpadding="0" cellspacing="0" id="table-formatsraw">
-				<colgroup>
-		        	<col width="40">
-		        	<col width="100">
-		        	<col width="120">
-		    	</colgroup>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Nr')?></td>
-					<td class="content_row_header"><?=$_LANG->get('Breite')?></td>
-					<td class="content_row_header"><?=$_LANG->get('Höhe')?></td>
-				</tr>
-				<?
-				$x = count($formats_raw);
-				if ($x < 1){
-					$x++;
-				}
-				for ($y=0; $y < $x ; $y++){ ?>
-					<tr>
-						<td class="content_row_clear">
-						<?=$y+1?>
-						</td>
-						<td class="content_row_clear">
-							<input 	name="formatsraw_width_<?=$y?>" class="text" type="text"
-									value ="<?=printPrice($formats_raw[$y]["width"]);?>" style="width: 50px">&nbsp;x&nbsp;
-						</td>
-						<td class="content_row_clear">
-							<input 	name="formatsraw_height_<?=$y?>" class="text" type="text"
-									value ="<?=printPrice($formats_raw[$y]["height"]);?>" style="width: 50px">
-							&nbsp;&nbsp;&nbsp;<span class="glyphicons glyphicons-remove pointer"onclick="deleteFormatRawRow(this)"></span>&nbsp;
-							<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-								echo '<span class="glyphicons glyphicons-plus pointer" onclick="addFormatRawRow()"></span>';
-							}?> 
-						</td>
-					</tr>
-				<? } ?>
-			</table>
-       </div>
-       <div id="tabs-4">
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-               <colgroup>
-                  <col width="180">
-                  <col>
-               </colgroup>
-               <tr>
-                  <td class="content_row_header" valign="top">Def. Anzahl Elemente:</td>
-                  <td class="content_row_clear">
-                     <input type="text" name="datatables_showelements" id="datatables_showelements" value="<?php echo $perf->getDt_show_default();?>"/></br>
-                  </td>
-               </tr>
-               <tr>
-                  <td class="content_row_header" valign="top">Speichere Status</td>
-                  <td class="content_row_clear">
-                     <input type="checkbox" name="datatables_statesave" id="datatables_statesave" <?php if($perf->getDt_state_save()) echo " checked ";?> /></br>
-                  </td>
-               </tr>
-            </table>
-       </div>
-       <div id="tabs-5">
-            Feiertage: <span class="glyphicons glyphicons-plus pointer" onclick="addHolidayRow()"></span>
-            <table width="100%" border="0" cellpadding="0" cellspacing="0" id="holidays">
-               <colgroup>
-                  <col>
-                  <col>
-                  <col>
-                  <col>
-                  <col>
-               </colgroup>
-               <tr>
-                <td class="content_row_clear" valign="top">ID</td>
-                <td class="content_row_clear" valign="top">Titel</td>
-                <td class="content_row_clear" valign="top">Startdatum</td>
-                <td class="content_row_clear" valign="top">Enddatum</td>
-                <td class="content_row_clear" valign="top">Hex-Farbe</td>
-               </tr>
-               <?php if (count($holidays)>0){
-               foreach ($holidays as $holiday){?>
-               <tr>
-                  <td class="content_row_clear" valign="top">
-                     #<?php echo $holiday->getId();?>
-                     <input type="hidden" name="holiday[id][]" value="<?php echo $holiday->getId();?>"/>
-                  </td>
-                  <td class="content_row_clear" valign="top">
-                     <input type="text" name="holiday[title][]" value="<?php echo $holiday->getTitle();?>"/>
-                  </td>
-                  <td class="content_row_clear" valign="top">
-                     <input type="text" class="cal" name="holiday[start][]" value="<?php echo date("d.m.Y H:i",$holiday->getBegin());?>"/>
-                  </td>
-                  <td class="content_row_clear" valign="top">
-                     <input type="text" class="cal" name="holiday[end][]" value="<?php echo date("d.m.Y H:i",$holiday->getEnd());?>"/>
-                  </td>
-                  <td class="content_row_clear" valign="top">
-                     <input type="text" name="holiday[color][]" value="<?php echo $holiday->getColor();?>"/><span class="glyphicons glyphicons-remove pointer"onclick="$(this).parent().parent().remove();"></span>
-                  </td>
-               </tr>
-               <?php }}?>
-            </table>
-       </div>
-		<div id="tabs-6">
-			Spezielle Update Funktionen:<br>
-			<button class="btn-danger" onclick="location.href='index.php?page=libs/modules/perferences/perferences.php&exec=mergeArticles';">Artikel Preisstaffeln zusammenführen</button>
-		</div>
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-0"><? echo $_LANG->get('Allgemein'); ?></a></li>
+					<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation'); ?></a></li>
+					<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate'); ?></a></li>
+					<li><a href="#tabs-4"><? echo $_LANG->get('Datatables'); ?></a></li>
+					<li><a href="#tabs-5"><? echo $_LANG->get('Kalender'); ?></a></li>
+					<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen'); ?></a></li>
+				</ul>
 
-</form>
+				<div id="tabs-0">
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Briefbogen</label>
+						<div class="col-sm-10">
+							<input type="file" name="pdf_back" onChange="load_image(this.id,this.value)"
+								   id="pdf_back"/>
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							vorhandenen in neuem Fenster <a target="_blank"
+															href="docs/templates/briefbogen.jpg"><b>öffnen</b></a></br></br>
+							Möglichst hohe Auflösung bei geringer Dateigröße </br>
+							(300dpi / 100-300KB) ist empfolen!
+						</div>
+					</div>
+				</div>
+				<div id="tabs-1">
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Zuschuss pro DP:</label>
+						<div class="col-sm-2">
+							<input type="text" name="zuschussprodp" id="zuschussprodp" class="form-control" value="<?= str_replace(".", ",", $perf->getZuschussProDP()); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Fortdruckzuschuss & Weiterverarbeitung:</label>
+						<div class="col-sm-2">
+							<div class="input-group">
+								<input type="text" name="zuschusspercent" class="form-control" id="zuschusspercent" value="<?= str_replace(".", ",", $perf->getZuschussPercent()); ?>"/>
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Detailierte Druckbogenvorschau:</label>
+						<div class="col-sm-1">
+							<input type="checkbox" name="calc_detailed_printpreview" class="form-control" id="calc_detailed_printpreview"
+								   value="1" <? if ($perf->getCalc_detailed_printpreview()) echo "checked"; ?>/>
+						</div>
+					</div>
+				</div>
+				<div id="tabs-3">
+					<?php
+					$formats_raw = $perf->getFormats_raw();
+					?>
+					<input type="hidden" name="count_formatsraw" id="count_formatsraw"
+						   value="<? if (count($formats_raw) > 0) echo count($formats_raw); else echo "1"; ?>">
+					<div class="table-responsive">
+						<table id="table-formatsraw" class="table table-hover">
+							<thead>
+								<tr>
+									<th  width="10%"><?= $_LANG->get('Nr') ?></th>
+									<th  style="text-align: center" width="20%"><?= $_LANG->get('Breite') ?></th>
+									<th width="10%">&nbsp;</th>
+									<th  style="text-align: center" width="20%"><?= $_LANG->get('Höhe') ?></th>
+									<th width="200%"></th>
+								</tr>
+							</thead>
+							<?
+							$x = count($formats_raw);
+							if ($x < 1) {
+								$x++;
+							}
+							for ($y = 0; $y < $x; $y++) { ?>
+							<tbody>
+							<tr>
+								<td>
+									<?= $y + 1 ?>
+								</td>
+								<td>
+										<input name="formatsraw_width_<?= $y ?>" class="form-control" type="text" value="<?= printPrice($formats_raw[$y]["width"]); ?>">
+								</td>
+								<td style="text-align: center" >x</td>
+								<td>
+									<input name="formatsraw_height_<?= $y ?>" class="form-control" type="text"
+										   value="<?= printPrice($formats_raw[$y]["height"]); ?>">
+								</td>
+								<td>
+									<span class="glyphicons glyphicons-remove pointer"
+										  onclick="deleteFormatRawRow(this)"></span>&nbsp;
+									<? if ($y == $x - 1) { //Plus-Knopf nur beim letzten anzeigen
+										echo '<span class="glyphicons glyphicons-plus pointer" onclick="addFormatRawRow()"></span>';
+									} ?>
+								</td>
+							</tr>
+							</tbody>
+							<? } ?>
+						</table>
+					</div>
+				</div>
+				<div id="tabs-4">
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Def. Anzahl Elemente:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" name="datatables_showelements" id="datatables_showelements"
+								   value="<?php echo $perf->getDt_show_default(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Speichere Status</label>
+						<div class="col-sm-1">
+							<input type="checkbox" name="datatables_statesave" class="form-control" id="datatables_statesave" <?php if ($perf->getDt_state_save()) echo " checked "; ?> />
+						</div>
+					</div>
+				</div>
+				<div id="tabs-5">
+					<div class="form-group">
+						<label for="" class="col-sm-1 control-label">Feiertage:</label>
+						<span class="pull-right">
+								<button class="btn btn-xs btn-success" type="button" onclick="addHolidayRow()">
+									<span class="glyphicons glyphicons-plus pointer"></span>
+									<?= $_LANG->get('Feiertag hinzuf&uuml;gen') ?>
+								</button>
+						</span>
+					</div>
+
+					<div class="table-responsive">
+						<table id="holidays" class="table table-hover">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Titel</th>
+									<th>Startdatum</th>
+									<th>Enddatum</th>
+									<th>Hex-Farbe</th>
+									<th></th>
+								</tr>
+							</thead>
+							<?php if (count($holidays) > 0) {
+							foreach ($holidays as $holiday) {
+							?>
+							<tbody>
+								<tr>
+									<td>
+										#<?php echo $holiday->getId(); ?>
+										<input type="hidden" name="holiday[id][]" value="<?php echo $holiday->getId(); ?>"/>
+									</td>
+									<td>
+										<input type="text" class="form-control" name="holiday[title][]" value="<?php echo $holiday->getTitle(); ?>"/>
+									</td>
+									<td>
+										<input type="text" class="cal form-control" name="holiday[start][]" value="<?php echo date("d.m.Y H:i", $holiday->getBegin()); ?>"/>
+									</td>
+									<td>
+										<input type="text" class="cal form-control" name="holiday[end][]" value="<?php echo date("d.m.Y H:i", $holiday->getEnd()); ?>"/>
+									</td>
+									<td>
+										<input type="text"  class="form-control" name="holiday[color][]" value="<?php echo $holiday->getColor(); ?>"/>
+									</td>
+									<td><span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().parent().remove();"></span></td>
+								</tr>
+							</tbody>
+							<?php }
+							} ?>
+						</table>
+					</div>
+				</div>
+				<div id="tabs-6">
+					Spezielle Update Funktionen:<br>
+					<button class="btn-danger"
+							onclick="location.href='index.php?page=libs/modules/perferences/perferences.php&exec=mergeArticles';">
+						Artikel Preisstaffeln zusammenführen
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+

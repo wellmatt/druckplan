@@ -347,7 +347,7 @@ echo $quickmove->generate();
 										foreach ($article->getOrderamounts() as $orderamount)
 										{
 											echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
-                                        <span class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span> &nbsp;';
+                                        <span  style="color: red;" class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span> &nbsp;';
 										}
 										?>
 									</div>
@@ -425,7 +425,7 @@ echo $quickmove->generate();
 											echo '<td>';
 											echo '<img src="images/products/' . $picture["url"] . '" width="130px" height="82px">' .
 												'<a onclick="askDel(\'index.php?page=' . $_REQUEST['page'] . '&exec=edit&subexec=deletepic&aid=' . $article->getId() . '&picid=' . $picture["id"] . '\')"' .
-												'class="icon-link" href="#"><span class="glyphicons glyphicons-remove" title = "Bild löschen"></span>';
+												'class="icon-link" href="#"><span  style="color: red;" class="glyphicons glyphicons-remove" title = "Bild löschen"></span>';
 
 											echo '</td>';
 										}
@@ -491,7 +491,7 @@ echo $quickmove->generate();
 										$tmp_bc = new BusinessContact($shop_appr_bc) ?>
 										<div class="form-group">
 											<div class="col-sm-9">
-												<?php echo $tmp_bc->getNameAsLine(); ?> <span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span>
+												<?php echo $tmp_bc->getNameAsLine(); ?> <span  style="color: red;" class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span>
 												<input type="hidden" name="shop_appr_bc[]" value="<?php echo $tmp_bc->getId() ?>"/>
 											</div>
 										</div>

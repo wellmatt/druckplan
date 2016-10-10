@@ -65,9 +65,8 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 								title="<?= $_LANG->get('Bearbeiten') ?>"></span> </a>
 						&ensp;
 						<a class="icon-link" href="#"
-						   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&delid=<?= $warn->getId() ?>')"><span
-								class="glyphicons glyphicons-remove pointer "
-								title="<?= $_LANG->get('L&ouml;schen') ?>"></span> </a>
+						   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&delid=<?= $warn->getId() ?>')">
+							<span style="color: red;" class="glyphicons glyphicons-remove pointer " title="<?= $_LANG->get('L&ouml;schen') ?>"></span> </a>
 					</td>
 				</tr>
 				<? $x++;

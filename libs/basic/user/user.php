@@ -24,7 +24,6 @@ if ($_REQUEST["exec"] == "edit")
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Benutzer
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
@@ -74,7 +73,7 @@ if ($_REQUEST["exec"] == "edit")
 							  </td>
 							  <td class="content_row">
 								  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$u->getId()?>"><span class="glyphicons glyphicons-pencil pointer"></span></a>
-								  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$u->getId()?>')"><span class="glyphicons glyphicons-remove pointer"></span></a>
+								  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$u->getId()?>')"><span  style="color: red;" class="glyphicons glyphicons-remove pointer"></span></a>
 							  </td>
 						  </tr>
 						  <?

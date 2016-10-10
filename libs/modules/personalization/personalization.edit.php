@@ -288,18 +288,6 @@ function addPriceRow()
 	});
 </script>
 
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> 
-			<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Personalisierung hinzuf&uuml;gen')?>
-			<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Personalisierung bearbeiten')?>
-			<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
-		</td>
-		<td align="right"><?=$savemsg?></td>
-	</tr>
-</table>
-
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
@@ -311,217 +299,271 @@ if ($perso->getId()>0){
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
-<form 	action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="perso_edit" id="perso_edit"   
-		onSubmit="return checkform(new Array(this.perso_title))" enctype="multipart/form-data">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" class="form-horizontal" name="perso_edit"
+	  id="perso_edit"
+	  onSubmit="return checkform(new Array(this.perso_title))" enctype="multipart/form-data">
 	<? // -------------------- Pesonalisierungdetails ------------------------------------------ ?>
-	<div class="box1">
-		<input type="hidden" name="exec" value="edit"> 
-		<input type="hidden" name="subexec" value="save"> 
-		<input type="hidden" name="id" value="<?=$perso->getId()?>">
-		<input type="hidden" name="perso_picture1" id="perso_picture1" value="<?=$perso->getPicture()?>">
-		<input type="hidden" name="perso_picture2" id="perso_picture2" value="<?=$perso->getPicture2()?>">
-		
-		<table width="100%">
-			<colgroup>
-				<col width="180">
-				<col>
-			</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Titel')?> *</td>
-				<td class="content_row_clear">
-				<input id="perso_title" name="perso_title" type="text" class="text" 
-					value="<?=$perso->getTitle()?>" style="width: 370px">
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Kommentar (intern)')?></td>
-				<td class="content_row_clear">
-					<textarea id="perso_comment" name="perso_comment" rows="4" cols="50" 
-							  class="text"><?=stripslashes($perso->getComment())?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Artikel')?></td>
-				<td class="content_row_clear">
-					<select id="perso_article" name="perso_article" style="width: 220px">
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<? 	foreach ($all_article as $art){?>
-							<option value="<?=$art->getId()?>"
-								<?if ($perso->getArticle()->getId() == $art->getId()) echo "selected" ?>><?= $art->getTitle()?></option>
-					<?	}?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Kunde')?></td>
-				<td class="content_row_clear">
-					<select id="perso_customer" name="perso_customer" style="width: 220px">
-						<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-					<? 	foreach ($all_customer as $cust){?>
-							<option <?if ($perso->getCustomer()->getId() == $cust->getId()) echo "selected" ?>
-								value="<?=$cust->getId()?>"><?= $cust->getNameAsLine()?></option>
-					<?	}//Ende else?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Typ')?></td>
-				<td class="content_row_clear">
-					<select id="perso_type" name="perso_type" style="width: 220px">
-						<option value="0" <?if($perso->getType() == 0) echo 'selected="selected"';?>><?=$_LANG->get('Vorderseite')?></option>
-						<option value="1" <?if($perso->getType() == 1) echo 'selected="selected"';?>><?=$_LANG->get('Vorder- und R&uuml;ckseite')?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Breite')?> &amp; <?=$_LANG->get('H&ouml;he')?> <?=$_LANG->get('(Endformat)')?></td>
-				<td class="content_row_clear">
-					<input id="perso_format_width" name="perso_format_width" type="text" class="text" 
-							value="<?=printPrice($perso->getFormatwidth())?>" style="width: 50px"> 
-					&ensp; <b> X </b>&ensp; 
-					<input id="perso_format_height" name="perso_format_height" type="text" class="text" 
-							value="<?=printPrice($perso->getFormatheight())?>" style="width: 50px"> mm
-					&emsp;
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Anschnitt')?></td>
-				<td class="content_row_clear">
-					<input id="perso_format_anschnitt" name="perso_format_anschnitt" type="text" class="text"
-						   value="<?=printPrice($perso->getAnschnitt())?>" style="width: 50px"> mm
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Zeile f&uuml;r Zeile')?></td>
-				<td class="content_row_clear">
-					<select name="perso_linebyline" id="perso_linebyline">
-						<option value="0" <? if($perso->getLineByLine() == 0) echo 'selected="selected"';?>>Alle Fix</option>
-					  	<option value="1" <? if($perso->getLineByLine() == 1) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von oben)</option>
-					  	<option value="2" <? if($perso->getLineByLine() == 2) echo 'selected="selected"';?>>Zeile f&uuml;r Zeile (von unten)</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Im Shop versteckt?')?></td>
-				<td class="content_row_clear">
-					<input type="checkbox" name="perso_hidden" value="1" <?php if ($perso->getHidden() == "1"){echo " checked ";}?> />
-				</td>
-			</tr>
-			<?if ($perso->getId() != 0 && $perso->getCrtuser() != 0){// Ersteller nur beim Bearbeiten ausgeben?>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Angelegt von')?></td>
-					<td class="content_row_clear">
-						<?=$perso->getCrtuser()->getNameAsLine()?>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Angelegt am')?></td>
-					<td class="content_row_clear">
-						<?=date('d.m.Y - H:i', $perso->getCrtdate())?> <?=$_LANG->get('Uhr')?>
-					</td>
-				</tr>
-				<?if ($perso->getUptuser() != 0 && $perso->getUptdate() != 0){
-						// Geaendert von/am nur bei bearbeiteten Artikeln ausgeben?>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert von')?></td>
-					<td class="content_row_clear">
-						<?=$perso->getUptuser()->getNameAsLine()?>
-					</td>
-				</tr>
-				<tr>
-					<td class="content_row_header"><?=$_LANG->get('Ge&auml;ndert am')?></td>
-					<td class="content_row_clear">
-						<?=date('d.m.Y - H:i', $perso->getUptdate())?> <?=$_LANG->get('Uhr')?>
-					</td>
-				</tr>
-				<?} // Ende if(geaendert gesetzt) ?>
-			<?} // Ende if(neuer Artikel) ?>
-		</table>
-		<table>
-			<tr>
-				<td class="content_row_header" >
-					<?=$_LANG->get('Hintergrund (Vorderseite)')?></br>
-					<a  href="libs/modules/personalization/personalization.iframe.php?picture=1" id="picture_select" class="products"
-					><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a>
-				</td>
-				<td id="td_picture1" class="content_row_clear">
-					<?if ($perso->getPicture()!= NULL && $perso->getPicture() !=""){?>
-						<iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$perso->getPicture()?>" style="overflow:hidden;"></iframe>
-					<?} else {?>
-						&nbsp; ...
-					<? } ?>
-				</td>
-				<td class="content_row_header" >
-					<?=$_LANG->get('Hintergrund (R&uuml;ckseite)')?></br>
-					<a  href="libs/modules/personalization/personalization.iframe.php?picture=2" id="picture_select2" class="products"
-					><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a>
-				</td>
-				<td id="td_picture2" class="content_row_clear">
-					<?if ($perso->getPicture2()!= NULL && $perso->getPicture2() !=""){?>
-						<iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$perso->getPicture2()?>" style="overflow:hidden;"></iframe>
-					<?} else {?>
-						&nbsp; ...
-					<? } ?>
-				</td>
-			</tr>
-			<tr>
-				<td class="content_row_header" >
-					<?=$_LANG->get('Vorschaubild')?></br>
-					<input type="file" id="preview" name="preview" width="80px"></a>
-				</td>
-				<td id="td_preview" class="content_row_clear">
+	<input type="hidden" name="exec" value="edit">
+	<input type="hidden" name="subexec" value="save">
+	<input type="hidden" name="id" value="<?= $perso->getId() ?>">
+	<input type="hidden" name="perso_picture1" id="perso_picture1" value="<?= $perso->getPicture() ?>">
+	<input type="hidden" name="perso_picture2" id="perso_picture2" value="<?= $perso->getPicture2() ?>">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<? if ($_REQUEST["exec"] == "new") echo $_LANG->get('Personalisierung hinzuf&uuml;gen') ?>
+				<? if ($_REQUEST["exec"] == "edit") echo $_LANG->get('Personalisierung bearbeiten') ?>
+				<? //if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
+				<span class="pull-right">
+					<?= $savemsg ?>
+				</span>
+			</h3>
+		</div>
+		<div class="panel-body">
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Titel</label>
+						<div class="col-sm-9">
+							<input id="perso_title" name="perso_title" type="text" class="form-control"
+								   value="<?= $perso->getTitle() ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Kommentar (intern)</label>
+						<div class="col-sm-9">
+							<textarea id="perso_comment" name="perso_comment" rows="4" cols="50"
+									  class="form-control"><?= stripslashes($perso->getComment()) ?></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Artikel</label>
+						<div class="col-sm-9">
+							<select id="perso_article" name="perso_article" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+								<? foreach ($all_article as $art) { ?>
+									<option value="<?= $art->getId() ?>"
+										<? if ($perso->getArticle()->getId() == $art->getId()) echo "selected" ?>><?= $art->getTitle() ?></option>
+								<? } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Kunde</label>
+						<div class="col-sm-9">
+							<select id="perso_customer" name="perso_customer" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+								<? foreach ($all_customer as $cust) { ?>
+									<option <? if ($perso->getCustomer()->getId() == $cust->getId()) echo "selected" ?>
+										value="<?= $cust->getId() ?>"><?= $cust->getNameAsLine() ?></option>
+								<? }//Ende else?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Typ</label>
+						<div class="col-sm-9">
+							<select id="perso_type" name="perso_type" class="form-control">
+								<option
+									value="0" <? if ($perso->getType() == 0) echo 'selected="selected"'; ?>><?= $_LANG->get('Vorderseite') ?></option>
+								<option
+									value="1" <? if ($perso->getType() == 1) echo 'selected="selected"'; ?>><?= $_LANG->get('Vorder- und R&uuml;ckseite') ?></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label"><?= $_LANG->get('Breite') ?>
+							&amp; <?= $_LANG->get('H&ouml;he') ?> <?= $_LANG->get('(Endformat)') ?></label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input id="perso_format_width" name="perso_format_width" type="text"
+									   class="form-control" value="<?= printPrice($perso->getFormatwidth()) ?>">
+								<span class="input-group-addon">mm</span>
+							</div>
+						</div>
+						<label for="" class="col-sm-1 control-label">X</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input id="perso_format_height" name="perso_format_height" type="text"
+									   class="form-control" value="<?= printPrice($perso->getFormatheight()) ?>">
+								<span class="input-group-addon">mm</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Anschnitt</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input id="perso_format_anschnitt" name="perso_format_anschnitt" type="text"
+									   class="form-control" value="<?= printPrice($perso->getAnschnitt()) ?>">
+								<span class="input-group-addon">mm</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Zeile f&uuml;r Zeile</label>
+						<div class="col-sm-9">
+							<select class="form-control" name="perso_linebyline" id="perso_linebyline">
+								<option value="0" <? if ($perso->getLineByLine() == 0) echo 'selected="selected"'; ?>>
+									Alle Fix
+								</option>
+								<option value="1" <? if ($perso->getLineByLine() == 1) echo 'selected="selected"'; ?>>
+									Zeile f&uuml;r Zeile (von oben)
+								</option>
+								<option value="2" <? if ($perso->getLineByLine() == 2) echo 'selected="selected"'; ?>>
+									Zeile f&uuml;r Zeile (von unten)
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Im Shop versteckt?</label>
+						<div class="col-sm-1">
+							<input class="form-control" type="checkbox" name="perso_hidden"
+								   value="1" <?php if ($perso->getHidden() == "1") {
+								echo " checked ";
+							} ?> />
+						</div>
+					</div>
+					<? if ($perso->getId() != 0 && $perso->getCrtuser() != 0) {// Ersteller nur beim Bearbeiten ausgeben?>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Angelegt von</label>
+							<div class="col-sm-9 form-text">
+								<?= $perso->getCrtuser()->getNameAsLine() ?>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Angelegt am</label>
+							<div class="col-sm-9 form-text">
+								<?= date('d.m.Y - H:i', $perso->getCrtdate()) ?> <?= $_LANG->get('Uhr') ?>
+							</div>
+						</div>
+
+						<? if ($perso->getUptuser() != 0 && $perso->getUptdate() != 0) {
+							// Geaendert von/am nur bei bearbeiteten Artikeln ausgeben?>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Ge&auml;ndert von</label>
+								<div class="col-sm-9 form-text">
+									<?= $perso->getUptuser()->getNameAsLine() ?>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Ge&auml;ndert am</label>
+								<div class="col-sm-9 form-text">
+									<?= date('d.m.Y - H:i', $perso->getUptdate()) ?> <?= $_LANG->get('Uhr') ?>
+								</div>
+							</div>
+
+						<? } // Ende if(geaendert gesetzt) ?>
+					<? } // Ende if(neuer Artikel) ?>
+				</div>
+			</div>
+			<br>
+			 <div class="row">
+				 <div class="col-md-6">
+					 <div class="form-group">
+						 <label for="" class="col-sm-4 control-label">Hintergrund (Vorderseite)</br>
+							 <a  href="libs/modules/personalization/personalization.iframe.php?picture=1" id="picture_select" class="products">
+								 <input type="button" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a></label>
+						 <div id="td_picture1" class="col-sm-8">
+							 <?if ($perso->getPicture()!= NULL && $perso->getPicture() !=""){?>
+								 <iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$perso->getPicture()?>" style="overflow:hidden;"></iframe>
+							 <?} else {?>
+								 &nbsp; ...
+							 <? } ?>
+						 </div>
+					 </div>
+				 </div>
+				 <div class="col-md-6">
+					 <div class="form-group">
+						 <label for="" class="col-sm-4 control-label">Hintergrund (R&uuml;ckseite)</br>
+							 <a  href="libs/modules/personalization/personalization.iframe.php?picture=2" id="picture_select2" class="products"
+							 ><input type="button"  width="80px" class="button" value="<?=$_LANG->get('Ausw&auml;hlen')?>"></a></label>
+						 <div id="td_picture2" class="col-sm-8">
+							 <?if ($perso->getPicture2()!= NULL && $perso->getPicture2() !=""){?>
+								 <iframe width="400" height="300" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$perso->getPicture2()?>" style="overflow:hidden;"></iframe>
+							 <?} else {?>
+								 &nbsp; ...
+							 <? } ?>
+						 </div>
+					 </div>
+				 </div>
+			 </div>
+			<br>
+			<div class="form-group">
+				<label for="" class="col-sm-1 control-label">Vorschaubild</label>
+				<div class="col-sm-3">
+					<input type="file" id="preview" name="preview"></a>
+				</div>
+				<div id="td_preview" class="col-sm-6">
 					<?if ($perso->getPreview()!= NULL && $perso->getPreview() !=""){?>
 						<img width="400" height="300" src="docs/personalization/<?=$perso->getPreview()?>"></img>
 					<?} else {?>
 						&nbsp;
 					<? } ?>
-				</td>
-			</tr>
-		</table>
-	</div>
+				</div>
+			</div>
+			<?if ($_REQUEST["exec"] != "new"){
+			// PDF Anzeigen lassen, damit nicht alles in HTML doppelt gemacht werden muss
 
-<?if ($_REQUEST["exec"] != "new"){ 
-	// PDF Anzeigen lassen, damit nicht alles in HTML doppelt gemacht werden muss 
-	
-	// dokumente holen
-	$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION,
-										"requestId" => $perso->getId(),
-										"module" => Document::REQ_MODULE_PERSONALIZATION));?>
+			// dokumente holen
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_PERSONALIZATION,
+				"requestId" => $perso->getId(),
+				"module" => Document::REQ_MODULE_PERSONALIZATION));?>
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">
+							Vorschau
+						</h3>
+				  </div>
+				  <div class="panel-body">
+					  <table>
+						  <tr>
+							  <td align="center">
+								  <?
+								  // PDF ausgeben
+								  if (count($docs) && $docs != false){
+									  $tmp_id =$_USER->getClient()->getId();
+									  $hash = $docs[0]->getHash();
+
+									  $obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
+									  $obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
+									  ?>
+									  <iframe width="<?=$obj_width?>" height="<?=$obj_height?>" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$tmp_id?>.per_<?=$hash?>_e.pdf" style="overflow:hidden;"></iframe>
+								  <? } ?>
+							  </td>
+						  </tr>
+					  </table>
+				  </div>
+			</div>
+		</div>
+	</div>
 	<br>
-	<h1><?=$_LANG->get('Vorschau');?></h1>
-	<div class="box2" align="center">
-		<table>
-		<tr>
-			<td align="center">
-				<?
-				// PDF ausgeben
-				if (count($docs) && $docs != false){
-					$tmp_id =$_USER->getClient()->getId();
-					$hash = $docs[0]->getHash();
-					
-					$obj_height = ($perso->getFormatheight() / 10 * 300 / 2.54 + 20) / 2;
-					$obj_width = ($perso->getFormatwidth() / 10 * 300 / 2.54 + 20) / 2;
-					?>
-					<iframe width="<?=$obj_width?>" height="<?=$obj_height?>" scrolling="no" src="libs/modules/personalization/personalization.preview.php?pdffile=<?=$tmp_id?>.per_<?=$hash?>_e.pdf" style="overflow:hidden;"></iframe>
-				<? } ?>
-			</td>
-		</tr>
-		</table>
-	</div>
-	
 
-	
 	<? // --------------- Eingabefelder -------------------------------------------------------- ?>
 	<br/>
 	<input	type="hidden" name="count_quantity" id="count_quantity"
 			value="<? if(count($all_items) > 0) echo count($all_items); else echo "1";?>">
-	
-	<h1>
-		<?=$_LANG->get('Eingabefelder')?> 
-		&emsp; &emsp;
-		<span class="glyphicons glyphicons-plus pointer" onclick="addItemRow()"
-						 title="Feld hinzuf&uuml;gen"></span>
-	</h1>
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					Eingabefelder
+					<span class="pull-right">
+						<button class="btn btn-xs btn-success" onclick="addItemRow()"
+							<span class="glyphicons glyphicons-plus"></span>
+							<?= $_LANG->get('Feld hinzuf&uuml;gen') ?>
+						</button>
+					</span>
+				</h3>
+		  </div>
+		  <div class="panel-body">
+				Panel body
+		  </div>
+	</div>
+
 	<div class="box1">
 		<table id="table-items">
 			<colgroup>

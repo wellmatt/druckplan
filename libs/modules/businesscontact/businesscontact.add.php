@@ -48,7 +48,7 @@ if ($_REQUEST["subexec"] == "save")
 	
     $businessContact->setActive(1);
     $businessContact->setCommissionpartner(trim(addslashes($_REQUEST["commissionpartner"])));
-    $businessContact->setcustomer(trim(addslashes($_REQUEST["customer"])));
+    $businessContact->setcustomer(trim(addslashes($_REQUEST["customertype"])));
     $businessContact->setSupplier(trim(addslashes($_REQUEST["supplier"])));
     $businessContact->setName1(trim(addslashes($_REQUEST["name1"])));
     $businessContact->setName2(trim(addslashes($_REQUEST["name2"])));
@@ -848,8 +848,8 @@ echo $quickmove->generate();
 								 <div class="form-group">
 									 <label for="" class="col-sm-4 control-label">Kunde</label>
 									 <div class="col-sm-8">
-										 <select name="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											 <option value="0" <? if(! ($businessContact->isExistingCustomer() && $businessContact->isPotentialCustomer())) echo "selected";?>></option>
+										 <select name="customertype" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+											 <option value="0" <? if(! ($businessContact->isExistingCustomer() && $businessContact->isPotentialCustomer())) echo "selected";?>>N/A</option>
 											 <option value="1" <? if($businessContact->isExistingCustomer()) echo "selected";?>>
 												 <?=$_LANG->get('Bestandskunde')?>
 											 </option>

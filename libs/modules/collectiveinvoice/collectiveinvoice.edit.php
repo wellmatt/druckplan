@@ -1083,7 +1083,7 @@ echo $quickmove->generate();
 							}
 							?>
     					    </span>
-    						<textarea name="orderpos[<?=$i?>][comment]" class="text poscomment form-control" id="orderpos_comment_<?=$i?>" style="width: 220px"><?=$position->getComment()?></textarea>
+    						<textarea rows="10" name="orderpos[<?=$i?>][comment]" class="poscomment form-control" id="orderpos_comment_<?=$i?>"><?=$position->getComment()?></textarea>
 									</td>
 									<td valign="top">
 										<div class="input-group" style="width: 160px">
@@ -1242,7 +1242,7 @@ echo $quickmove->generate();
 
 
 <input type="hidden" id="poscount" value="<?php echo $i;?>"/>
-</form>
+
 
 
 <script language="JavaScript">

@@ -185,7 +185,7 @@ function get_child ( d,row,idx,tr,control ) {
 		data: { "exec": "ajax_getJobDataForOverview", "id": d[1] },
 		success: function(data) 
 		    {
-			    row.child( '<div class="box1">'+data+'</div>' ).show();
+				row.child( '<div class="table-responsive">'+data+'</div>' ).show();
                 $( ".details-control-loading" ).removeClass( 'details-control-loading' );
                 if ( idx === -1 ) {
                     detailRows.push( tr.attr('id') );

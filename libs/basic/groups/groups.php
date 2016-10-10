@@ -15,7 +15,6 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-               <img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
                Gruppen
                <span class="pull-right">
                   <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
@@ -28,11 +27,11 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
          <div class="table-responsive">
             <table class="table table-hover">
                <tr>
-                  <td class="content_row_header"><?=$_LANG->get('ID')?></td>
-                  <td class="content_row_header"><?=$_LANG->get('Gruppenname')?></td>
-                  <td class="content_row_header"><?=$_LANG->get('Beschreibung')?></td>
-                  <td class="content_row_header"><?=$_LANG->get('Mitglieder')?></td>
-                  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+                  <td><?=$_LANG->get('ID')?></td>
+                  <td><?=$_LANG->get('Gruppenname')?></td>
+                  <td><?=$_LANG->get('Beschreibung')?></td>
+                  <td><?=$_LANG->get('Mitglieder')?></td>
+                  <td><?=$_LANG->get('Optionen')?></td>
                </tr>
 
                <?
@@ -40,10 +39,10 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                foreach($groups as $group)
                {?>
                   <tr class="<?=getRowColor($x)?>">
-                     <td class="content_row"><?=$group->getId()?></td>
-                     <td class="content_row"><?=$group->getName()?></td>
-                     <td class="content_row"><?=$group->getDescription()?></td>
-                     <td class="content_row">
+                     <td><?=$group->getId()?></td>
+                     <td><?=$group->getName()?></td>
+                     <td><?=$group->getDescription()?></td>
+                     <td>
                         <? $str = "";
                         foreach ($group->getMembers() as $m)
                         {

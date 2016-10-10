@@ -38,14 +38,15 @@ function addAttibuteItem()
 {
 	var obj = document.getElementById('table_items');
 	var count = parseInt(document.getElementById('count_quantity').value) + 1;
-	var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-	insert += '<td class="content_row_clear">';
+	var insert = '<tr><td>'+count+'</td>';
+	insert += '<td></td>';
+	insert += '<td>';
 	insert += '<input name="item_id_'+count+'" type="hidden" value="0"/>';
-	insert += '<input 	name="item_title_'+count+'" class="text" type="text"';
-	insert += ' value="" style="width: 140px">';
+	insert += '<input 	name="item_title_'+count+'" class="form-control" type="text"';
+	insert += ' value="">';
 	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="item_input_'+count+'" type="checkbox" value="1" style="width: 40px">';
+	insert += '<td>';
+	insert += '<input name="item_input_'+count+'" type="checkbox" value="1">';
 	insert += '</td>';
 	insert += '</tr>';
 	obj.insertAdjacentHTML("BeforeEnd", insert);
@@ -68,7 +69,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
 			<? if ($_REQUEST["exec"] == "new") echo $_LANG->get('Merkmal hinzufügen') ?>
 			<? if ($_REQUEST["exec"] == "edit") echo $_LANG->get('Merkmal bearbeiten') ?>
 			<span class="pull-right"><?= $savemsg ?></span>
@@ -84,21 +84,21 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Titel</label>
-				<div class="col-sm-6">
+				<div class="col-sm-3">
 					<input id="attribute_title" name="attribute_title" type="text" class="form-control" value="<?= $attribute->getTitle() ?>">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">ID</label>
-				<div class="col-sm-6">
+				<div class="col-sm-3">
 					<input type="text" class="form-control" value="<?= $attribute->getId()?>">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Sichtbar beim Kunden</label>
-				<div class="col-sm-10">
+				<div class="col-sm-1">
 					<input name="enable_cust" type="checkbox" class="form-control" value="1" onfocus="markfield(this,0)"
 						   onblur="markfield(this,1)"
 						<? if ($attribute->getEnable_customer()) echo "checked"; ?> >
@@ -107,7 +107,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Sichtbar beim Ansprechpartner</label>
-				<div class="col-sm-10">
+				<div class="col-sm-1">
 					<input name="enable_contact" type="checkbox" class="form-control" value="1"
 						   onfocus="markfield(this,0)" onblur="markfield(this,1)"
 						<? if ($attribute->getEnable_contact()) echo "checked"; ?> >
@@ -116,7 +116,7 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Sichtbar beim Vorgang</label>
-				<div class="col-sm-10">
+				<div class="col-sm-1">
 					<input name="enable_colinv" type="checkbox" class="form-control" value="1"
 						   onfocus="markfield(this,0)" onblur="markfield(this,1)"
 						<? if ($attribute->getEnable_colinv()) echo "checked"; ?>>
@@ -136,10 +136,10 @@ echo $quickmove->generate();
 						<table id="table_items" class="table table-hover">
 							<thead>
 							<tr>
-								<th><?= $_LANG->get('Nr.') ?></th>
-								<th><?= $_LANG->get('ID') ?></th>
-								<th><?= $_LANG->get('Titel') ?>*</th>
-								<th><?= $_LANG->get('Input') ?>**</th>
+								<th width="10%"><?= $_LANG->get('Nr.') ?></th>
+								<th width="10%"><?= $_LANG->get('ID') ?></th>
+								<th width="20%"><?= $_LANG->get('Titel') ?>*</th>
+								<th width="5%"><?= $_LANG->get('Input') ?>**</th>
 								<th>
 									<span class="glyphicons glyphicons-plus pointer" onclick="addAttibuteItem()"></span>
 								</th>
