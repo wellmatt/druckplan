@@ -153,7 +153,7 @@
             $sWhere .= " AND 1=2 ";
     }
     
-    if ($_REQUEST["tradegroup"])
+    if ($_REQUEST["tradegroup"] > 0)
     {
         $selected_tgs = Array();
         $selected_tgs[] = $_REQUEST["tradegroup"];
@@ -170,9 +170,9 @@
     
     if ($_REQUEST["bc"] || $_REQUEST["cp"])
     {
-        if ($_REQUEST["bc"])
+        if ($_REQUEST["bc"] > 0)
             $bccp_sql = "SELECT article FROM `article_shop_approval` WHERE bc = {$_REQUEST["bc"]}";
-        if ($_REQUEST["cp"])
+        if ($_REQUEST["cp"] > 0)
             $bccp_sql = "SELECT article FROM `article_shop_approval` WHERE bc = {$_REQUEST["bc"]}";
         
         $bccp_articles = Array();

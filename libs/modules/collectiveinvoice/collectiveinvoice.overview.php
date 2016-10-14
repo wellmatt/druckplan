@@ -9,6 +9,7 @@
 
 require_once ('libs/modules/businesscontact/attribute.class.php');
 $all_attributes = Attribute::getAllAttributesForCollectiveinvoice();
+$all_attributes_bc = Attribute::getAllAttributesForCustomer();
 
 ?>
 <!-- DataTables -->
@@ -76,6 +77,7 @@ $(document).ready(function() {
 			var user = document.getElementById('ajax_user').value;
 			var customer = document.getElementById('ajax_customer').value;
 			aoData.push( { "name": "filter_attrib", "value": $('#filter_attrib').val() } );
+			aoData.push( { "name": "filter_attrib_busicon", "value": $('#filter_attrib_busicon').val() } );
 			aoData.push( { "name": "filter_status", "value": $('#filter_status').val() } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
@@ -131,6 +133,9 @@ $(document).ready(function() {
     	document.location='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='+aData[0];
     });
 	$('#filter_attrib').on("change", function () {
+		$('#colinv').dataTable().fnDraw();
+	});
+	$('#filter_attrib_busicon').on("change", function () {
 		$('#colinv').dataTable().fnDraw();
 	});
 	$('#filter_status').on("change", function () {
@@ -193,18 +198,20 @@ $(document).ready(function() {
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				Vorgänge
-				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)){?>
+				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)) { ?>
 					<span class="pull-right">
-					<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">
+					<button class="btn btn-xs btn-success" type="button"
+							onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">
 						<span class="glyphicons glyphicons-paired"></span>
-						<?=$_LANG->get('Vorgänge zusammenführen') ?>
+						<?= $_LANG->get('Vorgänge zusammenführen') ?>
 					</button>
-						<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
+						<button class="btn btn-xs btn-success" type="button"
+								onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=select_user';">
 							<span class="glyphicons glyphicons-plus"></span>
-							<?=$_LANG->get('Vorgang hinzuf&uuml;gen')?>
+							<?= $_LANG->get('Vorgang hinzuf&uuml;gen') ?>
 						</button>&nbsp;&nbsp;
 				</span>
-				<?php }?>
+				<?php } ?>
 			</h3>
 		</div>
 		<div class="panel-body">
@@ -219,21 +226,40 @@ $(document).ready(function() {
 						<label for="" class="col-sm-2 control-label">Datum &nbsp;&nbsp;Von:</label>
 						<div class="col-sm-2">
 							<input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-							<input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
+							<input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)"
+								   onblur="markfield(this,1)" title="<?= $_LANG->get('von'); ?>">
 						</div>
 						<label for="" class="col-sm-1 control-label">Bis:</label>
 						<div class="col-sm-2">
 							<input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-							<input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
+							<input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)"
+								   onblur="markfield(this,1)" title="<?= $_LANG->get('bis'); ?>">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
+						<label for="" class="col-sm-2 control-label">Merkmal Vorgang:</label>
 						<div class="col-sm-5">
-							<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+							<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+								<?
+								foreach ($all_attributes AS $attribute) {
+									$allitems = $attribute->getItems();
+									foreach ($allitems AS $item) { ?>
+										<option
+											value="<?= $attribute->getId() ?>|<?= $item["id"] ?>"><?= $item["title"] ?></option>
+									<? }
+								} ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Merkmal Kunde:</label>
+						<div class="col-sm-5">
+							<select id="filter_attrib_busicon" name="filter_attrib_busicon" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								<?
-								foreach ($all_attributes AS $attribute){
+								foreach ($all_attributes_bc AS $attribute){
 									$allitems = $attribute->getItems();
 									foreach ($allitems AS $item){ ?>
 										<option value="<?=$attribute->getId()?>|<?=$item["id"]?>"><?=$item["title"]?></option>
@@ -246,21 +272,24 @@ $(document).ready(function() {
 						<label for="" class="col-sm-2 control-label">Kunde:</label>
 						<div class="col-sm-5">
 							<input name="ajax_customer" id="ajax_customer" type="hidden"/>
-							<input name="customer" id="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							<input name="customer" id="customer" class="form-control" onfocus="markfield(this,0)"
+								   onblur="markfield(this,1)">
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Benutzer:</label>
 						<div class="col-sm-5">
 							<input name="ajax_user" id="ajax_user" type="hidden"/>
-							<input name="user" id="user" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							<input name="user" id="user" class="form-control" onfocus="markfield(this,0)"
+								   onblur="markfield(this,1)">
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Status:</label>
 						<div class="col-sm-5">
-							<select id="filter_status" name="filter_status" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
-								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+							<select id="filter_status" name="filter_status" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
 								<?
 								$colstates = [
 									1 => 'angelegt',
@@ -271,11 +300,11 @@ $(document).ready(function() {
 									6 => 'Ware versand',
 									7 => 'Erledigt',
 								];
-								foreach ($colstates AS $index => $value){
+								foreach ($colstates AS $index => $value) {
 									if ($_REQUEST['filter_status'] == $index)
-										echo '<option value="'.$index.'" selected>'.$value.'</option>';
+										echo '<option value="' . $index . '" selected>' . $value . '</option>';
 									else
-										echo '<option value="'.$index.'">'.$value.'</option>';
+										echo '<option value="' . $index . '">' . $value . '</option>';
 								} ?>
 							</select>
 						</div>
@@ -288,20 +317,21 @@ $(document).ready(function() {
 					</div>
 				</div>
 			</div>
-		<div class="table-responsive">
-			<table id="colinv" class="table table-hover" >
-				<thead>
+			<div class="table-responsive">
+				<table id="colinv" class="table table-hover">
+					<thead>
 					<tr>
-						<th><?=$_LANG->get('ID')?></th>
-						<th><?=$_LANG->get('Nummer')?></th>
-						<th><?=$_LANG->get('Kunde')?></th>
-						<th><?=$_LANG->get('Titel')?></th>
-						<th><?=$_LANG->get('Angelegt am')?></th>
-						<th><?=$_LANG->get('Status')?></th>
-						<th><?=$_LANG->get('Optionen')?></th>
+						<th><?= $_LANG->get('ID') ?></th>
+						<th><?= $_LANG->get('Nummer') ?></th>
+						<th><?= $_LANG->get('Kunde') ?></th>
+						<th><?= $_LANG->get('Titel') ?></th>
+						<th><?= $_LANG->get('Angelegt am') ?></th>
+						<th><?= $_LANG->get('Status') ?></th>
+						<th><?= $_LANG->get('Optionen') ?></th>
 					</tr>
-				</thead>
-			</table>
+					</thead>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

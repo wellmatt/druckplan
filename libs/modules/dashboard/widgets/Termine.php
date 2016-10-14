@@ -24,7 +24,7 @@ $events = Event::getMyUpcomingEvents(10);
                       <div class="pointer product-info" style="margin-left: 5px;" onclick="callBoxFancyHomeEvent('libs/modules/organizer/calendar.newevent.php?eventid=<?php echo $event->getId();?>&returnhome=true');">
                           <div class="product-title">
                               <?php echo $event->getTitle(); ?>
-                              <span class="label label-info pull-right"><?php echo date('d.m.y H:i', $event->getBegin()); ?> - <?php echo date('d.m.y H:i', $event->getEnd()); ?></span>
+                              <span class="label label-info pull-right" style="font-size: 10px; line-height: 1.42857;"><?php echo date('d.m.y H:i', $event->getBegin()); ?> - <?php echo date('d.m.y H:i', $event->getEnd()); ?></span>
                           </div>
                           <?php if (count($event->getParticipantsExt()>0)){?>
                           <div class="product-title">
