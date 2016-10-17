@@ -169,17 +169,19 @@ if($_REQUEST["subexec"] == "save")
 
 						 <div class="form-group">
 							 <label for="" class="col-sm-2 control-label">Mandant aktiv</label>
-							 <div class="col-sm-6">
+							 <div class="col-sm-2">
 								 <input name="client_active" type="checkbox" class="form-control"
 										value="1"
 									 <? if ($client->isActive() || $_REQUEST["id"] == "") echo "checked";?>
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
+						 <br>
 
 						 <div class="form-group">
 							 <label for="" class="col-sm-4 control-label">Zusätzliche Daten</label>
 						 </div>
+						 <br>
 
 						 <div class="form-group">
 							 <label for="" class="col-sm-2 control-label">Webseite</label>
@@ -298,11 +300,11 @@ if($_REQUEST["subexec"] == "save")
 								 </div>
 							 </div>
 						 </div>
-
+						 <br>
 						 <div class="form-group">
 							 <label for="" class="col-sm-3 control-label">Bank 2 </label>
 						 </div>
-
+						 <br>
 						 <div class="form-group">
 							 <label for="" class="col-sm-3 control-label">Name</label>
 							 <div class="col-sm-6">

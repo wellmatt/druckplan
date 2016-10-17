@@ -178,7 +178,7 @@ if (isset($_REQUEST["export"])){
           </div>
           <hr>
           <div class="form-group">
-              <label for="" class="col-sm-5 control-label">Auftr. Daten Aepos</label>
+              <label for="" class="col-sm-2 control-label">Auftr. Daten Aepos</label>
               <label for="" class="col-sm-1 control-label">Von</label>
               <div class="col-sm-2">
                   <input type="text" id="aepos_from" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
@@ -188,8 +188,10 @@ if (isset($_REQUEST["export"])){
                   <input type="text" id="aepos_to" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
               </div>
 
-              <div class="col-sm-1">
-                  <button class="btn btn-success" onclick="generateAepos();">Generieren</button>
+              <div class="col-sm-4">
+                  <span class="pull-right">
+                       <button class="btn btn-success" onclick="generateAepos();">Generieren</button>
+                  </span>
               </div>
           </div>
       </div>

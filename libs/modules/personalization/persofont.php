@@ -26,7 +26,6 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				Schriftarten
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
@@ -39,9 +38,9 @@ $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 		  <div class="table-responsive">
 			  <table class="table table-hover">
 				  <tr>
-					  <td class="content_row_header" align="center"><?=$_LANG->get('ID')?></td>
-					  <td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-					  <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
+					  <td><?=$_LANG->get('ID')?></td>
+					  <td><?=$_LANG->get('Titel')?></td>
+					  <td"><?=$_LANG->get('Optionen')?></td>
 				  </tr>
 				  <?	$x = 0;
 				  foreach($all_fonts as $font){?>

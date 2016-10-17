@@ -48,7 +48,7 @@ $lists = MarketingList::getAllLists();
                                     <input class="form-control" id="newlist" name="newlist" type="text">
                                 </div>
                                 <div class="col-sm-6">
-                                    <button type="submit" class="btn btn-sm">Liste Hinzufügen</button>
+                                    <button type="submit" class="btn btn-sm ">Liste Hinzufügen</button>
                                 </div>
                             </div>
 

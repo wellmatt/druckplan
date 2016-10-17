@@ -48,10 +48,9 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
-				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Artikel hinzufügen')?>
-				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Artikel bearbeiten')?>
-				<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
+				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Schriftart hinzufügen')?>
+				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Schriftart bearbeiten')?>
+				<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Schriftart kopieren')?>
 			</h3>
 	  </div>
 	  <div class="panel-body">
@@ -63,7 +62,7 @@ echo $quickmove->generate();
 
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Titel</label>
-				  <div class="col-sm-10">
+				  <div class="col-sm-3">
 					  <input id="font_title" name="font_title" type="text" class="form-control"
 							 value="<?=$persofont->getTitle()?>" >
 				  </div>

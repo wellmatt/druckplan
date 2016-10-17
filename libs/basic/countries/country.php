@@ -35,7 +35,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 			Länderverwaltung
 		</h3>
 	</div>
@@ -45,11 +44,11 @@ echo $quickmove->generate();
 			<div class="table-responsive">
 				<table class="table table-hover">
 					<tr>
-						<td class="content_row_header"><?=$_LANG->get('Name')?></td>
-						<td class="content_row_header"><?=$_LANG->get('L&auml;nderk&uuml;rzel')?></td>
-						<td class="content_row_header">&ensp;</td>
-						<td class="content_row_header"><?=$_LANG->get('Aktivierung')?></td>
-						<td class="content_row_header">&ensp;</td>
+						<td width="20%"><?=$_LANG->get('Name')?></td>
+						<td width="20%"><?=$_LANG->get('L&auml;nderk&uuml;rzel')?></td>
+						<td>&ensp;</td>
+						<td><?=$_LANG->get('Aktivierung')?></td>
+						<td>&ensp;</td>
 					</tr>
 					<? $x = 0;
 					foreach($all_country as $country){
@@ -58,11 +57,11 @@ echo $quickmove->generate();
 							<td class="content_row pointer">
 								<?=$country->getName()?>&ensp;
 							</td>
-							<td class="content_row pointer" align="center">
+							<td class="content_row pointer">
 								<?=$country->getCode()?>&ensp;
 							</td>
 							<td class="content_row pointer" >&ensp;</td>
-							<td class="content_row pointer" align="center">
+							<td class="content_row pointer">
 								<input 	id="county_active_<?=$country->getId()?>" name="county_active_<?=$country->getId()?>"
 										  class="text" type="checkbox"
 										  value="1" <?if ($country->getActive() == 1) echo "checked"; ?>>

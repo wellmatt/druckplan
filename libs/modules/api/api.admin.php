@@ -25,23 +25,21 @@ echo $quickmove->generate();
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="glyphicons glyphicons-cogwheel"></span>
             API-Einstellungen
         </h3>
     </div>
     <div class="panel-body">
-        <form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" enctype="multipart/form-data"
-              name="api_form" id="api_form">
+        <form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" enctype="multipart/form-data" name="api_form" id="api_form">
             <input type="hidden" name="exec" value="save">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <td class="content_row_header">API-ID:</td>
-                        <td class="content_row_header">API-Titel:</td>
-                        <td class="content_row_header">API-Typ:</td>
-                        <td class="content_row_header">API-Post:</td>
-                        <td class="content_row_header">API-Token:</td>
+                        <th>API-ID:</th>
+                        <th>API-Titel:</th>
+                        <th>API-Typ:</th>
+                        <th>API-Post:</th>
+                        <th>API-Token:</th>
                     </tr>
                     </thead>
                     <?php
@@ -49,24 +47,30 @@ echo $quickmove->generate();
                         foreach ($apis as $api) {
                             ?>
                             <tr>
-                                <td class="content_row_clear"><?php echo $api->getId(); ?></td>
-                                <td class="content_row_clear"><?php echo $api->getTitle(); ?></td>
-                                <td class="content_row_clear"><?php echo API::returnType($api->getType()); ?></td>
-                                <td class="content_row_clear"><?php echo $api->getPosturl(); ?></td>
-                                <td class="content_row_clear"><?php echo $api->getToken(); ?></td>
+                                <td><?php echo $api->getId(); ?></td>
+                                <td"><?php echo $api->getTitle(); ?></td>
+                                <td><?php echo API::returnType($api->getType()); ?></td>
+                                <td><?php echo $api->getPosturl(); ?></td>
+                                <td><?php echo $api->getToken(); ?></td>
                             </tr>
                         <?php }
                     } ?>
                     <tr>
-                        <td class="content_row_clear">&nbsp;</td>
-                        <td class="content_row_clear"><input name="new_title"/></td>
-                        <td class="content_row_clear">
-                            <select name="new_type">
+                        <td>&nbsp;</td>
+                        <td><input class="form-control" name="new_title"/></td>
+                        <td>
+                            <select class="form-control" name="new_type">
                                 <option value="<?php echo API::TYPE_ARTICLE; ?>">Artikel</option>
                             </select>
                         </td>
-                        <td class="content_row_clear"><input name="new_posturl"/></td>
-                        <td class="content_row_clear"><a href="#" onclick="$('#api_form').submit();"><span class="glyphicons glyphicons-plus pointer"></span>  generieren</a></td>
+                        <td><input class="form-control" name="new_posturl"/></td>
+                        <td><a href="#" onclick="$('#api_form').submit();">
+                                <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit';">
+                                    <span class="glyphicons glyphicons-plus pointer"></span>
+                                    <?= $_LANG->get('generieren') ?>
+                                </button>
+                            </a>
+                        </td>
                     </tr>
                 </table>
             </div>
