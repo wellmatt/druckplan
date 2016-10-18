@@ -40,7 +40,11 @@ class Chromaticity {
             }
         }
     }
-    
+
+    /**
+     * @param string $order
+     * @return Chromaticity[]
+     */
     static function getAllChromaticities($order = self::ORDER_NAME)
     {
         global $DB;

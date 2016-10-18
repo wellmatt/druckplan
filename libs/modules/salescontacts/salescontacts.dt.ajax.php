@@ -156,7 +156,7 @@
     }
     else
     {
-        $sWhere .= " AND active = 1  ND salesperson = {$_USER->getId()} ";
+        $sWhere .= " AND active = 1  AND salesperson = {$_USER->getId()} ";
     }
     
     if ( isset($_GET['filter_attrib']) && $_GET['filter_attrib'] != "0" ){
@@ -177,7 +177,7 @@
         $sLimit
     ";
     
-    // var_dump($sQuery);
+//     var_dump($sQuery);
     
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      

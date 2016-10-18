@@ -43,6 +43,10 @@ class Foldtype
         }
     }
 
+    /**
+     * @param string $order
+     * @return Foldtype[]
+     */
     static function getAllFoldTypes($order = self::ORDER_ID)
     {
         global $DB;

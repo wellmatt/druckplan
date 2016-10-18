@@ -182,7 +182,7 @@
                FROM collectiveinvoice
                LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
                INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-               INNER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
+               LEFT OUTER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
                $fWhere
                ) a
                $sWhere
@@ -207,7 +207,7 @@
         FROM collectiveinvoice
         LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
         INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-        INNER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
+        LEFT OUTER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
         $fWhere
         ) a
         $sWhere
@@ -228,7 +228,7 @@
         FROM collectiveinvoice
         LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
         INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-        INNER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
+        LEFT OUTER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
         ) a
         WHERE status > 0
     ";

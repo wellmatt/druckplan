@@ -6,6 +6,13 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
+
+
+if ($_USER->getLogin() != "ascherer") {
+    ob_clean();
+    die('Kalkulationen sind im Wartungsmodus (18.10.2016 by A.Scherer)');
+}
+
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'order.class.php';
 $_REQUEST["id"] = (int)$_REQUEST["id"];

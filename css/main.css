@@ -75,13 +75,13 @@ div.content {
 }
 
 /* Links */
-a:link {
-	color: #0000EE;
-}
+/*a:link {*/
+	/*color: #0000EE;*/
+/*}*/
 
-a:visited {
-	color: #0000EE;
-}
+/*a:visited {*/
+	/*color: #0000EE;*/
+/*}*/
 
 a.products {
 	text-decoration: none;
@@ -780,4 +780,30 @@ span .glyphicons {
 }
 .product-list-in-box > .item:last-of-type {
 	border-bottom-width: 0;
+}
+
+.btn-file {
+	position: relative;
+	overflow: hidden;
+}
+.btn-file input[type=file] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-size: 100px;
+	text-align: right;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	outline: none;
+	background: white;
+	cursor: inherit;
+	display: block;
+}
+
+.btn-file {
+	color: #fff;
+	background-color: #428bca;
+	border-color: #357ebd;
 }

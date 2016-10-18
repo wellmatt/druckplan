@@ -174,6 +174,7 @@ if ($_USER == false)
 <link rel="stylesheet" type="text/css" href="thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
 <link rel="stylesheet" type="text/css" href="thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
 <script src="thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="jscripts/jquery.bootstrap.wizard.min.js"></script>
 <!-- /MegaNavbar -->
 
 <!-- PACE -->
