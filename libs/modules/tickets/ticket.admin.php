@@ -436,6 +436,7 @@ echo $quickmove->generate();
 					  				<th><?=$_LANG->get('Nr')?></th>
 									<th><?=$_LANG->get('Titel')?></th>
 									<th></th>
+									<th></th>
 					  			</tr>
 					  		</thead>
 							<?
@@ -449,6 +450,8 @@ echo $quickmove->generate();
 								<td width="20%">
 									<input type="hidden" name="sources_id_<?=$y?>" id="sources_id_<?=$y?>" value="<?php echo $ticket_sources[$y]->getId();?>">
 									<input 	name="sources_title_<?=$y?>" class="form-control" type="text" value ="<?=$ticket_sources[$y]->getTitle();?>">
+								</td>
+								<td  width="10%">
 									<?php if ($ticket_sources[$y]->getDefault() == 1) echo '<span class="glyphicons glyphicons-star"></span>';?>
 								</td>
 								<td width="10%">

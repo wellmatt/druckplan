@@ -30,6 +30,17 @@ $ticket = new Ticket($_REQUEST["tktid"]);
 <script language="javascript" src="jscripts/basic.js"></script>
 </head>
 <body>
+
+
+
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">Panel title</h3>
+	  </div>
+	  <div class="panel-body">
+			Panel body
+	  </div>
+</div>
 <h1>Ticket-Summary</h1>
 <div class="outer">
 <table cellpadding="0" cellspacing="0" border="0" width="100%">

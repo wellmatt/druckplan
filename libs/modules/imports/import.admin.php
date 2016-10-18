@@ -62,8 +62,19 @@ if ($_REQUEST["import"] && $_FILES['csv']){
                         <br>
                         <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="import" value="pricescale">
-                            <input type="file" name="csv">
-                            <button class="btn-warning" type="submit">Import starten</button>
+                            <div class="form-group">
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                               Durchsuchen <input style="display:none;"  multiple="" type="file" class="form-cntrol" name="csv" required>
+                                            </span>
+                                        </label>
+                                        <input class="form-control" readonly="" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-warning" type="submit">Import starten</button>
                         </form>
                     </div>
                 </div>
@@ -71,3 +82,26 @@ if ($_REQUEST["import"] && $_FILES['csv']){
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $(document).on('change', ':file', function () {
+            var input = $(this), numFiles = input.get(0).files ? input.get(0).files.length : 1, label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [
+                numFiles,
+                label
+            ]);
+        });
+        $(document).ready(function () {
+            $(':file').on('fileselect', function (event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log)
+                        alert(log);
+                }
+            });
+        });
+    });
+</script>
