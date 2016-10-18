@@ -86,6 +86,7 @@
      * word by word on any field. It's possible to do here, but concerned about efficiency
      * on very large tables, and MySQL's regex functionality is very limited
      */
+    $fWhere = "";
     $sWhere = "";
     if ( isset($_GET['sSearch']) && $_GET['sSearch'] != "" )
     {
@@ -142,12 +143,18 @@
 
     if ( isset($_GET['filter_attrib']) && $_GET['filter_attrib'] != "0" ){
         $tmp_attrib_filter = explode("|",$_GET['filter_attrib']);
-        $sWhere .= " AND collectiveinvoice_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND collectiveinvoice_attributes.item_id = ".$tmp_attrib_filter[1]." ";
+        if ( $fWhere == "" )
+            $fWhere .= " WHERE collectiveinvoice_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND collectiveinvoice_attributes.item_id = ".$tmp_attrib_filter[1]." ";
+        else
+            $fWhere .= " AND collectiveinvoice_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND collectiveinvoice_attributes.item_id = ".$tmp_attrib_filter[1]." ";
     }
 
     if ( isset($_GET['filter_attrib_busicon']) && $_GET['filter_attrib_busicon'] != "0" ){
         $tmp_attrib_filter = explode("|",$_GET['filter_attrib_busicon']);
-        $sWhere .= " AND businesscontact_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND businesscontact_attributes.item_id = ".$tmp_attrib_filter[1]." ";
+        if ( $fWhere == "" )
+            $fWhere .= " WHERE businesscontact_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND businesscontact_attributes.item_id = ".$tmp_attrib_filter[1]." ";
+        else
+            $fWhere .= " AND businesscontact_attributes.attribute_id = ".$tmp_attrib_filter[0]." AND businesscontact_attributes.item_id = ".$tmp_attrib_filter[1]." ";
     }
 
     if ($_GET['customer'] != ""){
@@ -176,8 +183,9 @@
                LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
                INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
                INNER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
-               $sWhere
+               $fWhere
                ) a
+               $sWhere
                $sOrder
                $sLimit";
     
@@ -200,8 +208,9 @@
         LEFT JOIN collectiveinvoice_attributes ON collectiveinvoice.id = collectiveinvoice_attributes.collectiveinvoice_id
         INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
         INNER JOIN businesscontact_attributes ON businesscontact.id = businesscontact_attributes.businesscontact_id
-        $sWhere
+        $fWhere
         ) a
+        $sWhere
     ";
     // var_dump($sQuery);
 
