@@ -7,87 +7,169 @@
  *
  */
 $foldtypes = Foldtype::getAllFoldTypes();
+
+//if ($_REQUEST){
+//    prettyPrint($_REQUEST);
+//}
 ?>
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" class="form-horizontal" method="post" name="neworder_form" id="neworder_form">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Konfigurator</h3>
-        </div>
-        <div class="panel-body">
-            <div id="rootwizard">
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid">
-                        <ul class="nav nav-pills">
-                            <li><a href="#tab1" data-toggle="tab" style="line-height: 1.82857;">Produkt</a></li>
-                            <li id="tab_part1" style="display: none"><a href="#tab2" data-toggle="tab" style="line-height: 1.82857;">Inhalt 1</a></li>
-                            <li id="tab_part2" style="display: none"><a href="#tab3" data-toggle="tab" style="line-height: 1.82857;">Inhalt 2</a></li>
-                            <li id="tab_part3" style="display: none"><a href="#tab4" data-toggle="tab" style="line-height: 1.82857;">Inhalt 3</a></li>
-                            <li id="tab_part4" style="display: none"><a href="#tab5" data-toggle="tab" style="line-height: 1.82857;">Inhalt 4</a></li>
-                            <li id="tab_part5" style="display: none"><a href="#tab6" data-toggle="tab" style="line-height: 1.82857;">Umschlag</a></li>
-                            <li><a href="#tab7" data-toggle="tab" style="line-height: 1.82857;">Optionen</a></li>
-                        </ul>
-                    </div>
-                </nav>
-                <div id="bar" class="progress">
-                    <div class="progress-bar progress-bar-success progress-bar-striped"></div>
-                </div>
-                <div class="tab-content">
-                    <ul class="pager wizard">
-                        <li class="previous"><a href="#" style="float: none;">Zurück</a></li>
-                        <li class="next"><a href="#" style="float: none;">Weiter</a></li>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Konfigurator</h3>
+    </div>
+    <div class="panel-body">
+        <div id="rootwizard">
+            <nav class="navbar navbar-default" style="margin-bottom: 0px;">
+                <div class="container-fluid">
+                    <ul class="nav nav-pills">
+                        <li><a href="#tab1" data-toggle="tab" style="line-height: 1.82857;">Produkt</a></li>
+                        <li id="tab_part1" style="display: none"><a href="#tab2" data-toggle="tab" style="line-height: 1.82857;">Inhalt 1</a></li>
+                        <li id="tab_part2" style="display: none"><a href="#tab3" data-toggle="tab" style="line-height: 1.82857;">Inhalt 2</a></li>
+                        <li id="tab_part3" style="display: none"><a href="#tab4" data-toggle="tab" style="line-height: 1.82857;">Inhalt 3</a></li>
+                        <li id="tab_part4" style="display: none"><a href="#tab5" data-toggle="tab" style="line-height: 1.82857;">Inhalt 4</a></li>
+                        <li id="tab_part5" style="display: none"><a href="#tab6" data-toggle="tab" style="line-height: 1.82857;">Umschlag</a></li>
+                        <li><a href="#tab7" data-toggle="tab" style="line-height: 1.82857;">Optionen</a></li>
                     </ul>
-                    <div class="tab-pane" id="tab1">
+                    <div id="bar" class="progress" style="margin-bottom: 0px;">
+                        <div class="progress-bar progress-bar-success progress-bar-striped"></div>
+                    </div>
+                </div>
+            </nav>
+            <div class="tab-content">
+                <ul class="pager wizard">
+                    <li class="previous"><a href="#" style="float: none;">Zurück</a></li>
+                    <li class="next"><a href="#" style="float: none;">Weiter</a></li>
+                    <li class="next finish" style="display:none;" onclick="doSubmit();"><a href="javascript:;" style="float: none;">Erstellen</a></li>
+                </ul>
+                <div class="tab-pane" id="tab1">
+                    <form class="form-horizontal" name="tab1_form" id="tab1_form">
                         <?php include 'wizard/tab1.php'; ?>
                         <input type="hidden" name="product" id="product">
-                    </div>
-                    <div class="tab-pane" id="tab2">
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab2">
+                    <form class="form-horizontal" name="tab2_form" id="tab2_form">
                         <?php
                         $content_part = 1;
                         include 'wizard/parts.php';
                         ?>
-                    </div>
-                    <div class="tab-pane" id="tab3">
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab3">
+                    <form class="form-horizontal" name="tab3_form" id="tab3_form">
                         <?php
                         $content_part = 2;
                         include 'wizard/parts.php';
                         ?>
-                    </div>
-                    <div class="tab-pane" id="tab4">
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab4">
+                    <form class="form-horizontal" name="tab4_form" id="tab4_form">
                         <?php
                         $content_part = 3;
                         include 'wizard/parts.php';
                         ?>
-                    </div>
-                    <div class="tab-pane" id="tab5">
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab5">
+                    <form class="form-horizontal" name="tab5_form" id="tab5_form">
                         <?php
                         $content_part = 4;
                         include 'wizard/parts.php';
                         ?>
-                    </div>
-                    <div class="tab-pane" id="tab6">
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab6">
+                    <form class="form-horizontal" name="tab6_form" id="tab6_form">
                         <?php
                         $content_part = 5;
                         include 'wizard/parts.php';
                         ?>
-                    </div>
-                    <div class="tab-pane" id="tab7">
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab7">
+                    <form class="form-horizontal" name="tab7_form" id="tab7_form">
                         <div class="form-group">
                             <label for="order_title" class="col-sm-2 control-label">Titel</label>
                             <div class="col-sm-10">
                                 <input name="order_title" id="order_title" value="" class="form-control">
                             </div>
                         </div>
-                    </div>
-                    <ul class="pager wizard">
-                        <li class="previous"><a href="#" style="float: none;">Zurück</a></li>
-                        <li class="next"><a href="#" style="float: none;">Weiter</a></li>
-                    </ul>
+                        <hr>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Rapport</label>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="" id="" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="" id="" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="" id="" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="" id="" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="" class="col-sm-4 control-label">Auflage <span class="glyphicons glyphicons-plus pointer" onclick="addAmount()"></span></label>
+                                    <div id="div_order_amount" class="col-sm-8">
+                                        <input name="addorder_amount[]" class="form-control" value="" style="margin-bottom: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="" class="col-sm-4 control-label">Sorten</label>
+                                    <div id="div_order_sorts" class="col-sm-8">
+                                        <input name="addorder_sorts[]" class="form-control" value="" style="margin-bottom: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+                <ul class="pager wizard">
+                    <li class="previous"><a href="#" style="float: none;">Zurück</a></li>
+                    <li class="next"><a href="#" style="float: none;">Weiter</a></li>
+                    <li class="next finish" style="display:none;" onclick="doSubmit();"><a href="javascript:;" style="float: none;">Erstellen</a></li>
+                </ul>
             </div>
         </div>
     </div>
-</form>
+</div>
 
 
 <script type="text/javascript">
@@ -106,10 +188,11 @@ $foldtypes = Foldtype::getAllFoldTypes();
             {
                 var parts = $.parseJSON(data);
                 for(let i=1;i<6;i++){
-                    console.log(parts[i]);
-                    if (parts[i] == 1){
+                    if (parts[i-1] == 1){
                         $('#tab_part'+i).show();
                         $('#part_'+i+'_formats').load('libs/modules/calculation/order.create.ajax.php?exec=getAvailablePaperFormats&product='+id+'&part='+i);
+                    } else {
+                        $('#tab_part'+i).hide();
                     }
                 }
             }
@@ -130,7 +213,7 @@ $foldtypes = Foldtype::getAllFoldTypes();
         $('#part_'+datapart+'_product_format').val(dataformat);
 
         // Wert in Formular übernehmen
-        $('part_'+datapart+'_product_format').val(dataformat);
+        $('#part_'+datapart+'_product_format').val(dataformat);
 
         // Class auf Buttons setzen
         $('#part_'+datapart+'_formats input').each(function() { $( this ).removeClass('btn-success'); $( this ).addClass('btn-info'); });
@@ -140,6 +223,8 @@ $foldtypes = Foldtype::getAllFoldTypes();
         // Papierformate ziehen
         var product = $('#product').val();
         $('#part_'+datapart+'_papers').load('libs/modules/calculation/order.create.ajax.php?exec=getSelectedPapersIds&product='+product+'&part='+datapart);
+
+        $('html, body').animate({ scrollTop: $('#part_'+datapart+'_papers').offset().top }, 500);
     }
 
     // Paper Selection
@@ -149,7 +234,7 @@ $foldtypes = Foldtype::getAllFoldTypes();
         var datapaper = $(ele).data('paper');
 
         // Wert in Formular übernehmen
-        $('part_'+datapart+'_product_paper').val(datapaper);
+        $('#part_'+datapart+'_product_paper').val(datapaper);
 
         // Class auf Buttons setzen
         $('#part_'+datapart+'_papers input').each(function() { $( this ).removeClass('btn-success'); $( this ).addClass('btn-info'); });
@@ -159,6 +244,8 @@ $foldtypes = Foldtype::getAllFoldTypes();
         // Gewichte ziehen
         var product = $('#product').val();
         $('#part_'+datapart+'_weights').load('libs/modules/calculation/order.create.ajax.php?exec=getAvailablePaperWeights&product='+product+'&part='+datapart+'&paper='+datapaper);
+
+        $('html, body').animate({ scrollTop: $('#part_'+datapart+'_weights').offset().top }, 500);
     }
 
     // Weight Selection
@@ -168,7 +255,7 @@ $foldtypes = Foldtype::getAllFoldTypes();
         var dataweight = $(ele).data('weight');
 
         // Wert in Formular übernehmen
-        $('part_'+datapart+'_product_paperweight').val(dataweight);
+        $('#part_'+datapart+'_product_paperweight').val(dataweight);
 
         // Class auf Buttons setzen
         $('#part_'+datapart+'_weights input').each(function() { $( this ).removeClass('btn-success'); $( this ).addClass('btn-info'); });
@@ -178,6 +265,8 @@ $foldtypes = Foldtype::getAllFoldTypes();
         // Seiten/Umfang ziehen
         var product = $('#product').val();
         $('#part_'+datapart+'_pages').load('libs/modules/calculation/order.create.ajax.php?exec=getAvailablePages&product='+product+'&part='+datapart);
+
+        $('html, body').animate({ scrollTop: $('#part_'+datapart+'_pages').offset().top }, 500);
     }
 
     // Pages Selection
@@ -187,7 +276,7 @@ $foldtypes = Foldtype::getAllFoldTypes();
         var datapages = $(ele).data('pages');
 
         // Wert in Formular übernehmen
-        $('part_'+datapart+'_product_pages').val(datapages);
+        $('#part_'+datapart+'_product_pages').val(datapages);
 
         // Class auf Buttons setzen
         $('#part_'+datapart+'_pages input').each(function() { $( this ).removeClass('btn-success'); $( this ).addClass('btn-info'); });
@@ -215,16 +304,18 @@ $foldtypes = Foldtype::getAllFoldTypes();
         // Farbigkeit ziehen
         var product = $('#product').val();
         $('#part_'+datapart+'_chromas').load('libs/modules/calculation/order.create.ajax.php?exec=getAvailablePaperChromas&product='+product+'&part='+datapart+'&pages='+datapages);
+
+        $('html, body').animate({ scrollTop: $('#part_'+datapart+'_chromas').offset().top }, 500);
     }
 
     // Chroma Selection
     function select_chroma(ele){
         // Format Inputs füllen
         var datapart = $(ele).data('part');
-        var datachroma = $(ele).data('chromapages');
+        var datachroma = $(ele).data('chroma');
 
         // Wert in Formular übernehmen
-        $('part_'+datapart+'_product_chromaticity').val(datachroma);
+        $('#part_'+datapart+'_product_chromaticity').val(datachroma);
 
         // Class auf Buttons setzen
         $('#part_'+datapart+'_chromas input').each(function() { $( this ).removeClass('btn-success'); $( this ).addClass('btn-info'); });
@@ -261,96 +352,76 @@ $foldtypes = Foldtype::getAllFoldTypes();
         $('#part_'+datapart+'_product_height').val(order_product_width);
         $('#part_'+datapart+'_product_height_open').val(order_product_width_open);
     }
+
+
+    // Add Amount
+    function addAmount()
+    {
+        var amount = '<input name="addorder_amount[]" class="form-control" value="" style="margin-bottom: 4px;">';
+        $('#div_order_amount').append(amount);
+        var sort = '<input name="addorder_sorts[]" class="form-control" value="1" style="margin-bottom: 4px;">';
+        $('#div_order_sorts').append(sort);
+    }
+
+    // Toggle Part
+    function togglePart(ele, datapart){
+        $('#part_'+datapart+'_content').toggle();
+        $(ele).toggleClass('btn-info');
+        $(ele).toggleClass('btn-success');
+        $('#tab'+(datapart+1)+'_form').find(':input').each(function(){
+            if (!$(this).hasClass('btn')){
+                if ($(this).attr('disabled')) {
+                    $(this).removeAttr('disabled');
+                } else {
+                    $(this).attr('disabled', true);
+                }
+            }
+        });
+    }
+
+    // Form Submit
+    function doSubmit(){
+        var data = $('#tab1_form, #tab2_form, #tab3_form, #tab4_form, #tab5_form, #tab6_form, #tab7_form').serialize();
+        window.location.href = 'index.php?page=<?= $_REQUEST['page'] ?>&'+data;
+    }
 </script>
 <script>
     $(document).ready(function() {
-        var $validator = $("#neworder_form").validate({
-//            ignore: ":hidden:not(#product)",
+
+        // Validation
+        var t1_validator = $("#tab1_form").validate({
+            errorPlacement: function(error,element) {
+                return true;
+            },
+            ignore: [],
             rules: {
-                order_title: {
-                    required: true,
-                    minlength: 3
-                },
                 product: {
-                    required: true,
-                },
-                part_1_product_format: {
-                    required: true,
-                },
-                part_1_product_paper: {
-                    required: true,
-                },
-                part_1_product_paperweight: {
-                    required: true,
-                },
-                part_1_product_pages: {
-                    required: true,
-                },
-                part_1_product_chromaticity: {
-                    required: true,
-                },
-                part_2_product_format: {
-                    required: true,
-                },
-                part_2_product_paper: {
-                    required: true,
-                },
-                part_2_product_paperweight: {
-                    required: true,
-                },
-                part_2_product_pages: {
-                    required: true,
-                },
-                part_2_product_chromaticity: {
-                    required: true,
-                },
-                part_3_product_format: {
-                    required: true,
-                },
-                part_3_product_paper: {
-                    required: true,
-                },
-                part_3_product_paperweight: {
-                    required: true,
-                },
-                part_3_product_pages: {
-                    required: true,
-                },
-                part_3_product_chromaticity: {
-                    required: true,
-                },
-                part_4_product_format: {
-                    required: true,
-                },
-                part_4_product_paper: {
-                    required: true,
-                },
-                part_4_product_paperweight: {
-                    required: true,
-                },
-                part_4_product_pages: {
-                    required: true,
-                },
-                part_4_product_chromaticity: {
-                    required: true,
-                },
-                part_5_product_format: {
-                    required: true,
-                },
-                part_5_product_paper: {
-                    required: true,
-                },
-                part_5_product_paperweight: {
-                    required: true,
-                },
-                part_5_product_pages: {
-                    required: true,
-                },
-                part_5_product_chromaticity: {
-                    required: true,
-                },
+                    required: true
+                }
             }
         });
+        for (let i=1;i<6;i++){
+            let rules = {};
+            rules['part_'+i+'_product_format'] = { required: true };
+            rules['part_'+i+'_product_paper'] = { required: true };
+            rules['part_'+i+'_product_paperweight'] = { required: true };
+            rules['part_'+i+'_product_pages'] = { required: true };
+            rules['part_'+i+'_product_chromaticity'] = { required: true };
+            rules['part_'+i+'_product_foldtype'] = { required: true };
+            rules['part_'+i+'_product_width'] = { required: true };
+            rules['part_'+i+'_product_width_open'] = { required: true };
+            rules['part_'+i+'_product_height'] = { required: true };
+            rules['part_'+i+'_product_height_open'] = { required: true };
+
+            $("#tab"+(i+1)+"_form").validate({
+                errorPlacement: function(error,element) {
+                    return true;
+                },
+                ignore: ":disabled",
+                rules: rules
+            });
+        }
+
 
         $('#rootwizard').bootstrapWizard({
             'tabClass': 'nav nav-pills',
@@ -360,16 +431,33 @@ $foldtypes = Foldtype::getAllFoldTypes();
                 var $current = index+1;
                 var $percent = ($current/$total) * 100;
                 $('#rootwizard').find('.progress-bar').css({width:$percent+'%'});
+
+                // If it's the last tab then hide the last button and show the finish instead
+                if($current >= $total) {
+                    $('#rootwizard').find('.pager .next').hide();
+                    $('#rootwizard').find('.pager .finish').css('display','inline');
+                    $('#rootwizard').find('.pager .finish').removeClass('disabled');
+                } else {
+                    $('#rootwizard').find('.pager .next').show();
+                    $('#rootwizard').find('.pager .finish').hide();
+                }
             },
             'onNext': function(tab, navigation, index) {
-                var $valid = $("#neworder_form").valid();
-                if(!$valid) {
-                    $validator.focusInvalid();
-                    return false;
-                }
+                return validateStep(index);
+            },
+            'onTabClick': function(tab, navigation, index) {
+                return false;
             }
         });
     });
+
+    function validateStep(index){
+        var $valid = $("#tab"+index+"_form").valid();
+        if(!$valid) {
+            return false;
+        }
+        $('html, body').animate({ scrollTop: 0 }, 500);
+    }
 </script>
 
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>

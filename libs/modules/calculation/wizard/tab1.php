@@ -31,7 +31,7 @@ $individualProducts = Product::getAllProductsByIndividuality(true);
                 ?>
                 <tr class="pointer" onclick="selectProduct(this,<?php echo $p->getId();?>);">
                     <td><?= $p->getId() ?></td>
-                    <td><img src="images/products/<?= $p->getPicture() ?>"></td>
+                    <td><img src="images/products/<?= $p->getPicture() ?>" style="max-width:100px; height:auto;"></td>
                     <td><?= $p->getName() ?></td>
                 </tr>
                 <?
@@ -63,7 +63,7 @@ $individualProducts = Product::getAllProductsByIndividuality(true);
                     ?>
                     <tr class="pointer" onclick="selectProduct(this,<?php echo $p->getId();?>">
                         <td><?=$p->getId()?></td>
-                        <td><img src="images/products/<?=$p->getPicture()?>"></td>
+                        <td><img src="images/products/<?=$p->getPicture()?>" style="max-width:100px; height:auto;"></td>
                         <td><?=$p->getName()?></td>
                     </tr>
                     <?

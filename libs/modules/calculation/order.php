@@ -8,10 +8,10 @@
 //----------------------------------------------------------------------------------
 
 
-if ($_USER->getLogin() != "ascherer") {
-    ob_clean();
-    die('Kalkulationen sind im Wartungsmodus (18.10.2016 by A.Scherer)');
-}
+//if ($_USER->getLogin() != "ascherer") {
+//    ob_clean();
+//    die('Kalkulationen sind im Wartungsmodus (18.10.2016 by A.Scherer)');
+//}
 
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'order.class.php';
@@ -219,7 +219,7 @@ $(document).ready(function() {
         <h3 class="panel-title">
             Kalkulationen
 				<span class="pull-right">
-					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page'] ?>&exec=new';">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/calculation/order.create.php';">
                         <span class="glyphicons glyphicons-plus"></span>
                         <?=$_LANG->get('Kalkulation hinzuf&uuml;gen') ?>
                     </button>
