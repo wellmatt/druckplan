@@ -82,9 +82,9 @@ $(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//			showOn: "button",
+//			buttonImage: "images/icons/calendar-blue.png",
+//			buttonImageOnly: true,
             onSelect: function(selectedDate) {
             checkDate(selectedDate);
             }
@@ -123,7 +123,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<span class="glyphicons glyphicons-user"></span>
 				<? if ($privatecontact->getId()) echo $_LANG->get('Kontakt &auml;ndern'); else echo $_LANG->get('Kontakt hinzuf&uuml;gen');?>
 			</h3>
 	  </div>

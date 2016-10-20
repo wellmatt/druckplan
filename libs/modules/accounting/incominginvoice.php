@@ -383,7 +383,7 @@ $(function() {
 					<h3 class="panel-title">
 						Filteroptionen
 					 <span class="pull-right">
-							  <button class="btn btn-md btn-success" type="submit">
+							  <button class="btn btn-xs btn-success" type="submit">
 								  <?= $_LANG->get('Suche starten') ?>
 							  </button>
 					  </span>

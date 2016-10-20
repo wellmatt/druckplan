@@ -106,6 +106,13 @@ if($_REQUEST["subexec"] == "save")
 <link rel="stylesheet" type="text/css" href="../../../css/menu.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/main.print.css" media="print"/>
 
+<!-- MegaNavbar -->
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- /MegaNavbar -->
 
 <!-- jQuery -->
 <link type="text/css" href="../../../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
@@ -160,43 +167,56 @@ $(document).ready(function() {
     } );
 });
 </script>
-
-<form action="abonnement.add.frame.php" method="post" name="abo_form">
-<input type="hidden" name="exec" value="<?=$_REQUEST["exec"]?>">
-<input type="hidden" name="subexec" value="save">
-<input type="hidden" name="module" value="<?=$_REQUEST["module"]?>">
-<input type="hidden" name="objectid" value="<?=$_REQUEST["objectid"]?>">
-<table width="100%">
-    <tr>
-        <td width="300" class="content_header">
-            <h1><span class="glyphicons glyphicons-alarm"></span> <?=$_LANG->get('Abonnements bearbeiten');?></h1>
-        </td>
-        <td class="content_header"><?=$savemsg?></td>
-    </tr>
-</table>
-
-<input type="submit" value="<?=$_LANG->get('Speichern')?>" class="text">
-
-<div class="box1">
-<h1>Benutzer</h1>
-<table id="table_users" width="500">
-    <thead>
-        <tr>
-            <th width="180"><?=$_LANG->get('Login')?></th>
-			<th><?=$_LANG->get('Name')?></th>
-		</tr>
-	</thead>
-	<?foreach($users as $u) { ?>
-	<tr>
-		<td class="content_row_clear">
-			<input type="checkbox" name="abo_users[]" id="chkb_<?=$u->getId()?>" <? if(Abonnement::hasAbo($object,$u)) echo " checked ";?> value="<?=$u->getId()?>">
-            <span class="glyphicons glyphicons-user"></span>
-			<?=$u->getLogin()?>
-		</td>
-		<td class="content_row_clear" id="user_name_<?=$u->getId()?>"><?=$u->getNameAsLine()?></td>
-	</tr>
-	<? } ?>
-	</table>
-	<br>
-</div>
-</form>
+    <form action="abonnement.add.frame.php" method="post" name="abo_form">
+        <input type="hidden" name="exec" value="<?= $_REQUEST["exec"] ?>">
+        <input type="hidden" name="subexec" value="save">
+        <input type="hidden" name="module" value="<?= $_REQUEST["module"] ?>">
+        <input type="hidden" name="objectid" value="<?= $_REQUEST["objectid"] ?>">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Abonnements bearbeiten
+                    <span class="pull-right">
+                        <button class="btn btn-xs btn-success" type="submit" class="text">
+                            <?= $_LANG->get('Speichern') ?>
+                        </button>
+                        <?= $savemsg ?>
+                    </span>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Benutzer
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table id="table_users" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><?= $_LANG->get('Login') ?></th>
+                                        <th><?= $_LANG->get('Name') ?></th>
+                                    </tr>
+                                </thead>
+                                <? foreach ($users as $u) { ?>
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="abo_users[]"
+                                                   id="chkb_<?= $u->getId() ?>" <? if (Abonnement::hasAbo($object, $u)) echo " checked "; ?>
+                                                   value="<?= $u->getId() ?>">
+                                            <span class="glyphicons glyphicons-user"></span>
+                                            <?= $u->getLogin() ?>
+                                        </td>
+                                        <td class="content_row_clear"
+                                            id="user_name_<?= $u->getId() ?>"><?= $u->getNameAsLine() ?></td>
+                                    </tr>
+                                <? } ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>

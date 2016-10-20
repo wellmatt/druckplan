@@ -1295,7 +1295,12 @@ echo $quickmove->generate();
 					  <div class="panel-heading">
 							<h3 class="panel-title">
 								Personalisierung (Positions Titel)
-								<span class="glyphicons glyphicons-plus pointer" onclick="addTitlePosition()"></span>
+								<span class="pull-right">
+									<button class="btn btn-xs btn-success"  onclick="addTitlePosition()">
+                                        <span class="glyphicons glyphicons-plus pointer"></span>
+                                        <?= $_LANG->get('Titel hinzuf&uuml;gen') ?>
+                                    </button>
+                                </span>
 							</h3>
 					  </div>
 					<div class="table-responsive">
