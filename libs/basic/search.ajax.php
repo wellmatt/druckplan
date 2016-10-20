@@ -18,13 +18,11 @@
 </script>
 <?php
 require_once ('libs/modules/calculation/order.class.php');
-require_once ('libs/modules/schedule/schedule.class.php');
 
 
 if ($_REQUEST["search"]) {
 	$res_order = Order::searchOrderByTitleCustomer($_REQUEST["search"]);
-	$res_schedules = Schedule::searchScheduleByTitleCustomer($_REQUEST["search"]);
-	if (!empty($res_order) || !empty($res_schedules)) {
+	if (!empty($res_order)) {
 		
 		if(!empty($res_order)){
 			$search_result='
@@ -45,13 +43,6 @@ if ($_REQUEST["search"]) {
     ';
 			$x = 0;
 			foreach ($res_order as $order){
-				if(!empty($res_schedules)){
-					foreach($res_schedules as $schedule){
-						if($order->getNumber() == $schedule->getNumber()){
-							$duplicate_record[$schedule->getId()] = $schedule->getNumber();
-						}
-					}
-				}
 				$search_result.='
                 <tr class="' . getRowColor($x) . '">
                   <td class="content_row">' . $order->getNumber() . '</td>

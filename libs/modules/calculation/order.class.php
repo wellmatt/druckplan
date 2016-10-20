@@ -1,10 +1,12 @@
-<? //-------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       16.03.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-// ---------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
+
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/products/product.class.php';
 require_once 'libs/modules/foldtypes/foldtype.class.php';
@@ -27,55 +29,21 @@ class Order {
     
     private $id = 0;
     private $number;
-    private $customer;
-    private $custContactperson;			// Anspr. des Kunden
     private $status = 1;
     private $title;
     private $product;
     private $notes;
-    private $deliveryAddress;
-    private $deliveryTerms;
-    private $invoiceAddress;
-    private $paymentTerms;
-    private $deliveryDate = 0;
-    private $deliveryCost = 0;
-    private $textOffer;
-    private $textOfferconfirm;
-    private $textInvoice;
     private $crtdat = 0;
     private $crtusr;
     private $upddat = 0;
     private $collectiveinvoiceId = 0;
     private $internContact;				// Benutzer von KDM, der auf den Dokumenten auftauchen soll
-    private $custMessage;				// Auf den Dokumenten "Ihre Nachricht"
-    private $custSign;					// Auf den Dokumenten "Ihr Zeichen"
-    private $invoiceAmount = 0;			// Tatsaechlich produzierte Menge (auf der Rechnung)
-    private $invoicePriceUpdate	= 0;	// Betrag auf der Rechnung an tatsl. Menge anpassen
-    private $deliveryAmount = 0;		// Tatsaechliche Liefermenge (auf dem Lieferschein)
-    private $labelPalletAmount = 0;		// Menge auf Palette
-    private $labelBoxAmount = 0;		// Menge in der Kiste
-    private $labelTitle;				// Zur Erweiterung/Bearbeitung des Titels
-    private $labelLogoActive = 0;		// Logo anzeigen oder nicht
-    private $showProduct = 1;			// Produktdetails auf den Dokumenten ausgeben
     private $productName;				// Produktname in den Dokumenten ueberschreiben
-    private $showPricePer1000 = 0;		// Preis pro 1000 Stk auf den Dokumenten anzeigen
-
-    private $paper_order_boegen = "";	// Bogenanzahl für Papierbestellung
-    private $paper_order_price = "";	// Preis für Papierbestellung
-    private $paper_order_supplier = 0;	// Lieferant für Papierbestellung
-    private $paper_order_calc = 0;		// Calculation für Papierbestellung
-    
-    private $beilagen;                  // Text Feld für Beilagen
+    private $beilagen = "";                  // Text Feld für Beilagen
     private $articleid = 0;             // Verknuepfter Artikel
     
     function __construct($id)
     {
-        $this->deliveryAddress = new Address();
-        $this->invoiceAddress = new Address();
-        $this->deliveryTerms = new DeliveryTerms();
-        $this->paymentTerms = new PaymentTerms();
-        $this->custContactperson = new ContactPerson();
-        $this->customer = new BusinessContact();
         $this->internContact = new User();
         $this->crtusr = new User;
         
@@ -125,45 +93,15 @@ class Order {
 
                     $this->id = $res["id"];
                     $this->number = $res["number"];
-                    $this->customer = new BusinessContact($res["businesscontact_id"], BusinessContact::LOADER_FULL);
                     $this->status = $res["status"];
                     $this->title = $res["title"];
                     $this->product = new Product($res["product_id"]);
                     $this->notes = $res["notes"];
-                    $this->deliveryDate = $res["delivery_date"];
-                    $this->deliveryCost = $res["delivery_cost"];
-                    if ($res["delivery_address_id"] > 0)
-                        $this->deliveryAddress = new Address($res["delivery_address_id"]);
-                    if ($res["delivery_terms_id"])
-                        $this->deliveryTerms = new DeliveryTerms($res["delivery_terms_id"]);
-                    if ($res["invoice_address_id"] > 0)
-                        $this->invoiceAddress = new Address($res["invoice_address_id"]);
-                    if ($res["payment_terms_id"] > 0)
-                        $this->paymentTerms = new PaymentTerms($res["payment_terms_id"]);
-                    if ($res["cust_contactperson"] > 0)
-                        $this->custContactperson = new ContactPerson($res["cust_contactperson"]);
-                    $this->textOffer = $res["text_offer"];
-                    $this->textOfferconfirm = $res["text_offerconfirm"];
-                    $this->textInvoice = $res["text_invoice"];
                     $this->crtdat = $res["crtdat"];
                     $this->upddat = $res["upddat"];
                     $this->collectiveinvoiceId = $res["collectiveinvoice_id"];
                     $this->internContact = new User($res["intern_contactperson"]);
-                    $this->custMessage = $res["cust_message"];
-                    $this->custSign = $res["cust_sign"];
-                    $this->invoicePriceUpdate = $res["inv_price_update"];
-                    $this->invoiceAmount = $res["inv_amount"];
-                    $this->deliveryAmount = $res["deliv_amount"];
-                    $this->labelLogoActive = $res["label_logo_active"];
-                    $this->labelBoxAmount = $res["label_box_amount"];
-                    $this->labelTitle = $res["label_title"];
-                    $this->showProduct = $res["show_product"];
                     $this->productName = $res["productname"];
-                    $this->showPricePer1000 = $res["show_price_per_thousand"];
-                    $this->paper_order_boegen = $res["paper_order_boegen"];
-                    $this->paper_order_price = $res["paper_order_price"];
-                    $this->paper_order_supplier = $res["paper_order_supplier"];
-                    $this->paper_order_calc = $res["paper_order_calc"];
                     $this->crtusr = new User($res["crtusr"]);
                     $this->beilagen = $res["beilagen"];
                     $this->articleid = $res["articleid"];
@@ -181,39 +119,15 @@ class Order {
         if($this->id > 0){
             $sql = "UPDATE orders SET
                         number = '{$this->number}',
-                        businesscontact_id = {$this->customer->getId()},
                         status = {$this->status},
                         title = '{$this->title}',
                         product_id = '{$this->product->getId()}',
                         notes = '{$this->notes}',
-                        delivery_address_id = '{$this->deliveryAddress->getId()}',
-                        invoice_address_id = '{$this->invoiceAddress->getId()}',
-                        delivery_terms_id = '{$this->deliveryTerms->getId()}',
-                        payment_terms_id = '{$this->paymentTerms->getId()}',
-                        cust_contactperson = '{$this->custContactperson->getId()}',
-                        delivery_date = {$this->deliveryDate},
-                        delivery_cost = {$this->deliveryCost},
-                        text_offer = '{$this->textOffer}',
-                        text_offerconfirm = '{$this->textOfferconfirm}',
-                        text_invoice = '{$this->textInvoice}',
                         upddat = UNIX_TIMESTAMP(),
                         updusr = {$_USER->getId()},
                         collectiveinvoice_id = {$this->collectiveinvoiceId},
                         intern_contactperson = {$this->internContact->getId()},
-                        cust_message = '{$this->custMessage}',
-                        cust_sign = '{$this->custSign}',
-                        inv_amount = {$this->invoiceAmount},
-                        inv_price_update = {$this->invoicePriceUpdate},
-                        deliv_amount = {$this->deliveryAmount},
-                        label_logo_active = {$this->labelLogoActive},
-                        label_box_amount = {$this->labelBoxAmount},
-                        label_title = '{$this->labelTitle}',
-                        show_product = {$this->showProduct},
                 		productname = '{$this->productName}',
-                		paper_order_boegen = '{$this->paper_order_boegen}',
-                		paper_order_price = '{$this->paper_order_price}',
-                		paper_order_supplier = {$this->paper_order_supplier},
-                		paper_order_calc = {$this->paper_order_calc},
                 		beilagen = '{$this->beilagen}',
                 		show_price_per_thousand = {$this->showPricePer1000},
                 		articleid = {$this->articleid}
@@ -223,31 +137,16 @@ class Order {
         {
             if($this->number == "")
                 $this->number = $_USER->getClient()->createOrderNumber(Client::NUMBER_ORDER);
-            if($this->product != NULL){
-                $tmp_product = $this->product->getId();
-            } else {
-                $tmp_product = 0;
-            }
+
             $sql = "INSERT INTO orders
-                        (number, status, businesscontact_id, product_id, title, notes,
-                         delivery_address_id, invoice_address_id, delivery_terms_id,
-                         payment_terms_id, crtdat, crtusr,
-                         collectiveinvoice_id, intern_contactperson, cust_message,
-                         cust_sign, cust_contactperson, inv_amount,
-                         inv_price_update, deliv_amount, label_logo_active,
-                         label_box_amount, label_title, show_product, productname,
-                         show_price_per_thousand, paper_order_boegen, paper_order_price,
-                         paper_order_supplier, paper_order_calc, beilagen, articleid )
+                        (number, status, product_id, title, notes, crtdat, crtusr,
+                         collectiveinvoice_id, intern_contactperson, productname,
+                         beilagen, articleid )
                     VALUES
-                        ('{$this->number}', 1, '{$this->customer->getId()}', $tmp_product,
-                         '{$this->title}', '{$this->notes}', '0', '0', '0',
-                         '{$this->paymentTerms->getId()}', UNIX_TIMESTAMP(), {$_USER->getId()},
-            			 {$this->collectiveinvoiceId}, {$this->internContact->getId()}, '{$this->custMessage}',
-            			 '{$this->custSign}', {$this->custContactperson->getId()}, {$this->invoiceAmount},
-            			 {$this->invoicePriceUpdate}, {$this->deliveryAmount}, {$this->labelLogoActive},
-            			 {$this->labelLogoActive}, '{$this->labelTitle}', {$this->showProduct}, '{$this->productName}',
-            			 {$this->showPricePer1000}, '{$this->paper_order_boegen}', '{$this->paper_order_price}',
-						 {$this->paper_order_supplier}, {$this->paper_order_calc}, '{$this->beilagen}', {$this->articleid} )";
+                        ('{$this->number}', 1, {$this->product->getId()},
+                         '{$this->title}', '{$this->notes}', UNIX_TIMESTAMP(), {$_USER->getId()},
+            			 {$this->collectiveinvoiceId}, {$this->internContact->getId()}, '{$this->productName}',
+            			 '{$this->beilagen}', {$this->articleid} )";
             $res = $DB->no_result($sql);
             if($res)
             {
@@ -314,7 +213,6 @@ class Order {
                     WHERE status > 0
                     HAVING deliveryDate = '{$time}'
                     ORDER BY delivery_date ASC";
-#var_dump($sql);exit;
         if($DB->num_rows($sql))
         {
             foreach($DB->select($sql) as $r)
@@ -386,7 +284,6 @@ class Order {
     		$sql .= " AND businesscontact_id  = {$customerId} ";
     	}
     	$sql .= " ORDER BY {$order}";
-    	// error_log("SQL: ".$sql);
     	if($DB->num_rows($sql))
     	{
     		foreach($DB->select($sql) as $r)
@@ -442,7 +339,6 @@ class Order {
                     AND orders.status > 0 
         			GROUP BY orders.id 
                     ORDER BY {$order} ";
-        // echo $sql;
         if($DB->num_rows($sql)){
             foreach($DB->select($sql) as $r){
                 $retval[] = new Order($r["id"]);
@@ -1200,7 +1096,7 @@ class Order {
 
    
     
-static function getCountOrdersPerCust()
+    static function getCountOrdersPerCust()
     {
         $retval = Array();
         global $DB;
@@ -1217,7 +1113,7 @@ static function getCountOrdersPerCust()
     }
     
     
-static function getCountOrdersPerCustMonth($year)
+    static function getCountOrdersPerCustMonth($year)
     {
         $retval = Array();
         global $DB;
@@ -1321,16 +1217,6 @@ static function getCountOrdersPerCustMonth($year)
         $this->number = $number;
     }
 
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer($customer)
-    {
-        $this->customer = $customer;
-    }
-
     public function getStatus()
     {
         return $this->status;
@@ -1371,111 +1257,6 @@ static function getCountOrdersPerCustMonth($year)
         $this->notes = $notes;
     }
 
-    public function getDeliveryAddress()
-    {
-        return $this->deliveryAddress;
-    }
-
-    public function setDeliveryAddress($deliveryAddress)
-    {
-        $this->deliveryAddress = $deliveryAddress;
-    }
-
-    public function getInvoiceAddress()
-    {
-        return $this->invoiceAddress;
-    }
-
-    public function setInvoiceAddress($invoiceAddress)
-    {
-        $this->invoiceAddress = $invoiceAddress;
-    }
-
-    public function getDeliveryTerms()
-    {
-        return $this->deliveryTerms;
-    }
-
-    public function setDeliveryTerms($deliveryTerms)
-    {
-        $this->deliveryTerms = $deliveryTerms;
-    }
-
-    public function getPaymentTerms()
-    {
-        return $this->paymentTerms;
-    }
-
-    public function getPaymentterm()
-    {
-        return $this->paymentTerms;
-    }
-
-    public function setPaymentTerms($paymentTerms)
-    {
-        $this->paymentTerms = $paymentTerms;
-    }
-
-    public function getDeliveryDate()
-    {
-        return $this->deliveryDate;
-    }
-
-    public function setDeliveryDate($deliveryDate)
-    {
-        $this->deliveryDate = $deliveryDate;
-    }
-
-    public function getDeliveryCost()
-    {
-        return $this->deliveryCost;
-    }
-
-    public function setDeliveryCost($deliveryCost)
-    {
-        $this->deliveryCost = $deliveryCost;
-    }
-
-    public function getTextOffer()
-    {
-        return $this->textOffer;
-    }
-
-    public function setTextOffer($textOffer)
-    {
-        $this->textOffer = $textOffer;
-    }
-
-    public function getTextOfferconfirm()
-    {
-        return $this->textOfferconfirm;
-    }
-
-    public function setTextOfferconfirm($textOfferconfirm)
-    {
-        $this->textOfferconfirm = $textOfferconfirm;
-    }
-
-    public function getTextInvoice()
-    {
-        return $this->textInvoice;
-    }
-
-    public function setTextInvoice($textInvoice)
-    {
-        $this->textInvoice = $textInvoice;
-    }
-
-    public function getCustContactperson()
-    {
-        return $this->custContactperson;
-    }
-
-    public function setCustContactperson($custContactperson)
-    {
-        $this->custContactperson = $custContactperson;
-    }
-
     public function getCrtdat()
     {
         return $this->crtdat;
@@ -1506,106 +1287,6 @@ static function getCountOrdersPerCustMonth($year)
         $this->internContact = $internContact;
     }
 
-    public function getCustMessage()
-    {
-        return $this->custMessage;
-    }
-
-    public function setCustMessage($custMessage)
-    {
-        $this->custMessage = $custMessage;
-    }
-
-    public function getCustSign()
-    {
-        return $this->custSign;
-    }
-
-    public function setCustSign($custSign)
-    {
-        $this->custSign = $custSign;
-    }
-
-    public function getInvoiceAmount()
-    {
-        return $this->invoiceAmount;
-    }
-
-    public function setInvoiceAmount($invoiceAmount)
-    {
-        $this->invoiceAmount = $invoiceAmount;
-    }
-
-    public function getInvoicePriceUpdate()
-    {
-        return $this->invoicePriceUpdate;
-    }
-
-    public function setInvoicePriceUpdate($invoicePriceUpdate)
-    {
-        $this->invoicePriceUpdate = $invoicePriceUpdate;
-    }
-
-    public function getDeliveryAmount()
-    {
-        return $this->deliveryAmount;
-    }
-
-    public function setDeliveryAmount($deliveryAmount)
-    {
-        $this->deliveryAmount = $deliveryAmount;
-    }
-
-    public function getLabelBoxAmount()
-    {
-        return $this->labelBoxAmount;
-    }
-
-    public function setLabelBoxAmount($labelBoxAmount)
-    {
-        $this->labelBoxAmount = $labelBoxAmount;
-    }
-
-    public function getLabelTitle()
-    {
-        return $this->labelTitle;
-    }
-
-    public function setLabelTitle($labelTitle)
-    {
-        $this->labelTitle = $labelTitle;
-    }
-
-    public function getLabelLogoActive()
-    {
-        return $this->labelLogoActive;
-    }
-
-    public function setLabelLogoActive($labelLogoActive)
-    {
-        $this->labelLogoActive = $labelLogoActive;
-    }
-
-    public function getLabelPalletAmount()
-    {
-        return $this->labelPalletAmount;
-    }
-
-    public function setLabelPalletAmount($labelPalletAmount)
-    {
-        $this->labelPalletAmount = $labelPalletAmount;
-    }
-
-	public function getShowProduct()
-	{
-	    return $this->showProduct;
-	}
-
-	public function setShowProduct($showProduct)
-	{
-	    $this->showProduct = $showProduct;
-	}
-
 	public function getProductName()
 	{
 	    return $this->productName;
@@ -1614,56 +1295,6 @@ static function getCountOrdersPerCustMonth($year)
 	public function setProductName($productName)
 	{
 	    $this->productName = $productName;
-	}
-
-    public function getShowPricePer1000()
-    {
-        return $this->showPricePer1000;
-    }
-
-    public function setShowPricePer1000($showPricePer1000)
-    {
-        $this->showPricePer1000 = $showPricePer1000;
-    }
-
-	public function getPaperOrderBoegen()
-	{
-	    return $this->paper_order_boegen;
-	}
-
-	public function setPaperOrderBoegen($paper_order_boegen)
-	{
-	    $this->paper_order_boegen = $paper_order_boegen;
-	}
-
-	public function getPaperOrderPrice()
-	{
-	    return $this->paper_order_price;
-	}
-
-	public function setPaperOrderPrice($paper_order_price)
-	{
-	    $this->paper_order_price = $paper_order_price;
-	}
-
-	public function getPaperOrderSupplier()
-	{
-	    return $this->paper_order_supplier;
-	}
-
-	public function setPaperOrderSupplier($paper_order_supplier)
-	{
-	    $this->paper_order_supplier = $paper_order_supplier;
-	}
-
-	public function getPaperOrderCalc()
-	{
-	    return $this->paper_order_calc;
-	}
-
-	public function setPaperOrderCalc($paper_order_calc)
-	{
-	    $this->paper_order_calc = $paper_order_calc;
 	}
 	
 	/**
@@ -1705,7 +1336,4 @@ static function getCountOrdersPerCustMonth($year)
     {
         $this->articleid = $articleid;
     }
-	
 }
-         
-?>

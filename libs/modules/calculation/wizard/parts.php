@@ -20,7 +20,11 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
+            <?php if ($content_part == 5){?>
+            Umschlag
+            <?php } else {?>
             Inhalt <?php echo $content_part;?>
+            <?php }?>
         </h3>
     </div>
     <div class="panel-body">
@@ -102,7 +106,7 @@
                         <h3 class="panel-title">Material</h3>
                   </div>
                   <div class="panel-body">
-                      <div id="part_<?php echo $content_part;?>_papers" class="papers"></div>
+                      <div id="part_<?php echo $content_part;?>_papers" class="papers contentdiv"></div>
                   </div>
             </div>
 
@@ -111,7 +115,7 @@
                     <h3 class="panel-title">Gewicht</h3>
                 </div>
                 <div class="panel-body">
-                    <div id="part_<?php echo $content_part;?>_weights" class="weights"></div>
+                    <div id="part_<?php echo $content_part;?>_weights" class="weights contentdiv"></div>
                 </div>
             </div>
 
@@ -120,7 +124,7 @@
                         <h3 class="panel-title">Seiten</h3>
                   </div>
                   <div class="panel-body">
-                      <div id="part_<?php echo $content_part;?>_pages" class="pages"></div>
+                      <div id="part_<?php echo $content_part;?>_pages" class="pages contentdiv"></div>
                       <hr>
                       <div class="row" id="folddiv_<?php echo $content_part;?>" style="display: none">
                           <div class="col-md-6">
@@ -147,7 +151,7 @@
                     <h3 class="panel-title">Farbigkeit</h3>
                 </div>
                 <div class="panel-body">
-                    <div id="part_<?php echo $content_part;?>_chromas" class="chromas"></div>
+                    <div id="part_<?php echo $content_part;?>_chromas" class="chromas contentdiv"></div>
                 </div>
             </div>
         </div>

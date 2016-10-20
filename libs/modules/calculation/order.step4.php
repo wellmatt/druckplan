@@ -65,12 +65,6 @@ foreach ($calculations as $c){
         newwindow = focus();
     }
 
-    function showGoogleMaps()
-    {
-        newwindow = window.open('libs/modules/businesscontact/businesscontact.maps.php?bcid=<?=$order->getCustomer()->getId()?>', "_blank", "width=1000,height=800,left=0,top=0,scrollbars=yes");
-        newwindow = focus();
-    }
-
     function EndpriceCheck(num1, num2){
         return (num1 > num2)? num1-num2 : num2-num1;
     }

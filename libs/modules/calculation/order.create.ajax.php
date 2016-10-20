@@ -104,8 +104,28 @@ if ($_REQUEST["exec"] == 'getAvailablePages' && $_REQUEST["product"] && $_REQUES
     $part = (int)$_REQUEST["part"];
     $product = new Product((int)$_REQUEST["product"]);
 
-    if($product->getType() == Product::TYPE_NORMAL){
-        foreach ($product->getAvailablePageCounts() as $pc) {
+    if ($part < 5){
+        if($product->getType() == Product::TYPE_NORMAL){
+            foreach ($product->getAvailablePageCounts() as $pc) {
+                ?>
+                <input type="button" class="btn btn-small btn-info" onclick="select_pages(this);"
+                       value="<?php echo $pc;?> Seiten" style="margin-left: 3px;"
+                       data-part="<?php echo $part;?>"
+                       data-pages="<?php echo $pc;?>"
+                >
+                <?php
+            }
+        } else {
+            echo '<div class="form-group">
+                  <label for="" class="col-sm-4 control-label">Seitenzahl</label>
+                  <div class="col-sm-6">
+                      <input name="part_'.$part.'_numberpages" class="form-control" id="part_'.$part.'_numberpages" value="">
+                  </div>
+              </div>';
+        }
+    } else {
+        $pages = array("2", "4", "6", "8");
+        foreach ($pages as $pc) {
             ?>
             <input type="button" class="btn btn-small btn-info" onclick="select_pages(this);"
                    value="<?php echo $pc;?> Seiten" style="margin-left: 3px;"
@@ -114,13 +134,6 @@ if ($_REQUEST["exec"] == 'getAvailablePages' && $_REQUEST["product"] && $_REQUES
             >
             <?php
         }
-    } else {
-        echo '<div class="form-group">
-                  <label for="" class="col-sm-4 control-label">Seitenzahl</label>
-                  <div class="col-sm-6">
-                      <input name="part_'.$part.'_numberpages" class="form-control" id="part_'.$part.'_numberpages" value="">
-                  </div>
-              </div>';
     }
 }
 

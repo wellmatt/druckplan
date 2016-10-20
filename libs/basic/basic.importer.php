@@ -24,7 +24,6 @@ require_once 'libs/modules/organizer/contact.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/chat/chat.class.php';
 require_once 'libs/modules/calculation/order.class.php';
-require_once 'libs/modules/schedule/schedule.class.php';
 
 session_start();
 

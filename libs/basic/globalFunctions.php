@@ -424,4 +424,14 @@ function generateRandomString($length = 10) {
 	return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!$%&/()=?', ceil($length/strlen($x)) )),1,$length);
 }
 
-?>
+/**
+ * Returns $value or 0 if it's not set OR null
+ * @param null $value
+ * @return int
+ */
+function setOrZero($value = null){
+	if ($value == null || !isset($value)){
+		return 0;
+	}
+	return $value;
+}
