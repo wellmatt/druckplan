@@ -151,208 +151,245 @@ echo $quickmove->generate();
 		
 
 <div id="tabs-1"><p>
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					<? if ($commissionContact->getId()) echo $_LANG->get('Provisionskontakt &auml;ndern'); else echo $_LANG->get('Provisionskontakt hinzuf&uuml;gen');?>
+					<span class="pull-right">
+						<?=$savemsg?>
+					</span>
+				</h3>
+		  </div>
+		  <div class="panel-body">
+			   <div class="row">
+				   <div class="col-md-6">
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Firma</label>
+						   <div class="col-sm-9">
+							   <input name="name1" class="form-control" value="<?=$commissionContact->getName1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Firmenzusatz</label>
+						   <div class="col-sm-9">
+							   <input name="name2" class="form-control" value="<?=$commissionContact->getName2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Stra&szlig;e</label>
+						   <div class="col-sm-9">
+							   <input name="address1" class="form-control" value="<?=$commissionContact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Adresszusatz</label>
+						   <div class="col-sm-9">
+							   <input name="address2" class="form-control" value="<?=$commissionContact->getAddress2()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Postleitzahl</label>
+						   <div class="col-sm-9">
+							   <input name="zip" class="form-control" value="<?=$commissionContact->getZip()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Stadt</label>
+						   <div class="col-sm-9">
+							   <input name="city" class="form-control" value="<?=$commissionContact->getCity()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Land</label>
+						   <div class="col-sm-9">
+							   <select name="country" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <?
+								   foreach($countries as $c)
+								   {?>
+									   <option value="<?=$c->getId()?>"
+										   <?if ($commissionContact->getCountry()->getId() == $c->getId()) echo "selected";?>>
+										   <?=$c->getName()?>
+									   </option>
+								   <?}
 
-<table width="100%">
-	<tr>
-		<td width="200" class="content_header"><img
-			src="<?=$_MENU->getIcon($_REQUEST['page'])?>"> <? if ($commissionContact->getId()) echo $_LANG->get('Provisionskontakt &auml;ndern'); else echo $_LANG->get('Provisionskontakt hinzuf&uuml;gen');?>
-		</td>
-		<td></td>
-		<td width="200" class="content_header" align="right"><?=$savemsg?></td>
-	</tr>
-</table>
+								   ?>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Telefon</label>
+						   <div class="col-sm-9">
+							   <input name="phone" class="form-control" value="<?=$commissionContact->getPhone()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Fax</label>
+						   <div class="col-sm-9">
+							   <input name="fax" class="form-control" value="<?=$commissionContact->getFax()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">E-Mai</label>
+						   <div class="col-sm-9">
+							   <input name="email" class="form-control" value="<?=$commissionContact->getEmail()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Internetseite</label>
+						   <div class="col-sm-9">
+							   <input name="web" class="form-control" value="<?=$commissionContact->getWeb()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Kunde</label>
+						   <div class="col-sm-9">
+							   <select name="customer" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <option value="0" <? if(! ($commissionContact->isExistingCustomer() && $commissionContact->isPotentialCustomer())) echo "selected";?>>
 
-<table><tr><td width="500">
-	<table width="100%">
-		<colgroup>
-			<col width="180">
-			<col>
-		</colgroup>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Firma');?> *</td>
-			<td class="content_row_clear"><input name="name1" style="width: 300px"
-				class="text" value="<?=$commissionContact->getName1()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Firmenzusatz');?></td>
-			<td class="content_row_clear"><input name="name2"
-				style="width: 300px" class="text" value="<?=$commissionContact->getName2()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Stra&szlig;e');?>
-			</td>
-			<td class="content_row_clear"><input name="address1"
-				style="width: 300px" class="text" value="<?=$commissionContact->getAddress1()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Adresszusatz');?>
-			</td>
-			<td class="content_row_clear"><input name="address2"
-				style="width: 300px" class="text" value="<?=$commissionContact->getAddress2()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Postleitzahl');?>
-			</td>
-			<td class="content_row_clear"><input name="zip"
-				style="width: 300px" class="text" value="<?=$commissionContact->getZip()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Stadt');?>
-			</td>
-			<td class="content_row_clear"><input name="city"
-				style="width: 300px" class="text" value="<?=$commissionContact->getCity()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Land')?></td>
-			<td class="content_row_clear"><select name="country" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<?
-					foreach($countries as $c)
-					{?>
-					<option value="<?=$c->getId()?>"
-					<?if ($commissionContact->getCountry()->getId() == $c->getId()) echo "selected";?>>
-						<?=$c->getName()?>
-					</option>
-					<?}
+								   </option>
+								   <option value="1" <? if($commissionContact->isExistingCustomer()) echo "selected";?>>
+									   <?=$_LANG->get('Bestandskunde')?>
+								   </option>
+								   <option value="2" <? if($commissionContact->isPotentialCustomer()) echo "selected";?>>
+									   <?=$_LANG->get('Sollkunde')?>
+								   </option>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Lieferant</label>
+						   <div class="col-sm-9">
+							   <span class="pull-left">
+								   <input name="supplier" style="margin: 0" class="form-control" type="checkbox" value="1"<? if ($commissionContact->isSupplier()) echo "checked";?> onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							   </span>
+						   </div>
 
-					?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Telefon');?>
-			</td>
-			<td class="content_row_clear"><input name="phone"
-				style="width: 300px" class="text" value="<?=$commissionContact->getPhone()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Fax');?>
-			</td>
-			<td class="content_row_clear"><input name="fax"
-				style="width: 300px" class="text" value="<?=$commissionContact->getFax()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('E-Mail');?>
-			</td>
-			<td class="content_row_clear"><input name="email"
-				style="width: 300px" class="text" value="<?=$commissionContact->getEmail()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Internetseite');?>
-			</td>
-			<td class="content_row_clear"><input name="web"
-				style="width: 300px" class="text" value="<?=$commissionContact->getWeb()?>"
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kunde');?></td>
-			<td class="content_row_clear"><select name="customer" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<option value="0" <? if(! ($commissionContact->isExistingCustomer() && $commissionContact->isPotentialCustomer())) echo "selected";?>>
-						
-					</option>
-					<option value="1" <? if($commissionContact->isExistingCustomer()) echo "selected";?>>
-						<?=$_LANG->get('Bestandskunde')?>
-					</option>
-					<option value="2" <? if($commissionContact->isPotentialCustomer()) echo "selected";?>>
-						<?=$_LANG->get('Sollkunde')?>
-					</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Lieferant');?></td>
-			<td class="content_row_clear"><input name="supplier"
-				type="checkbox" value="1"
-				<? if ($commissionContact->isSupplier()) echo "checked";?>
-				onfocus="markfield(this,0)" onblur="markfield(this,1)">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Mandant')?></td>
-			<td class="content_row_clear"><select name="client"
-				style="width: 300px" class="text" onfocus="markfield(this,0)"
-				onblur="markfield(this,1)">
-					<option value="<?=$_USER->getClient()->getId()?>" selected>
-						<?if(!$_USER->getClient()->isActive()) echo '<span color="red">';?>
-						<?=$_USER->getClient()->getName()?>
-						<?if(!$_USER->getClient()->isActive()) echo '</span>';?>
-					</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Sprache')?></td>
-			<td class="content_row_clear"><select name="language" style="width: 300px"
-				class="text" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-					<?
-					foreach($languages as $l)
-					{?>
-					<option value="<?=$l->getId()?>"
-					<?if ($commissionContact->getLanguage()->getId() == $l->getId()) echo "selected";?>>
-						<?=$l->getName()?>
-					</option>
-					<?}
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Mandant</label>
+						   <div class="col-sm-9">
+							   <select name="client" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <option value="<?=$_USER->getClient()->getId()?>" selected>
+									   <?if(!$_USER->getClient()->isActive()) echo '<span color="red">';?>
+									   <?=$_USER->getClient()->getName()?>
+									   <?if(!$_USER->getClient()->isActive()) echo '</span>';?>
+								   </option>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Sprache</label>
+						   <div class="col-sm-9">
+							   <select name="language" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								   <?
+								   foreach($languages as $l)
+								   {?>
+									   <option value="<?=$l->getId()?>"
+										   <?if ($commissionContact->getLanguage()->getId() == $l->getId()) echo "selected";?>>
+										   <?=$l->getName()?>
+									   </option>
+								   <?}
 
-					?>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kommentar')?></td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
-		<tr>
-			<td class="content_row_clear" colspan="2"><textarea name="comment"
-					style="width: 482px; height: 150px">
-					<?=$commissionContact->getComment()?>
-				</textarea>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">&nbsp;</td>
-			<td class="content_row_clear">&nbsp;</td>
-		</tr>
-	</table>
-	</td><td valign="top">
-		<table width="100%">
-		<colgroup>
-			<col width="180">
-			<col>
-		</colgroup>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Kreditor-Nr.')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:100px" name="kreditor" 
-			    		value="<?=$commissionContact->getKreditor()?>"> 
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Debitor-Nr.')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:100px" name="debitor" 
-			    		value="<?=$commissionContact->getDebitor()?>"> 
-			</td>
-		</tr>
+								   ?>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Kommentar</label>
+						   <div class="col-sm-9">
+						 		 <textarea rows="7" name="comment" class="form-control">
+									  <?=$commissionContact->getComment()?>
+							 	 </textarea>
+						   </div>
+					   </div>
+				   </div>
+				   <div class="col-md-6">
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Kreditor-Nr.</label>
+						   <div class="col-sm-9">
+							   <input class="form-control" name="kreditor" value="<?=$commissionContact->getKreditor()?>">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Debitor-Nr.</label>
+						   <div class="col-sm-9">
+							   <input class="form-control" name="debitor" value="<?=$commissionContact->getDebitor()?>">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">USt.-ID</label>
+						   <div class="col-sm-9">
+							   <input class="form-control" name="ust" value="<?=$commissionContact->getUst()?>">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Steuernummer</label>
+						   <div class="col-sm-9">
+							   <input class="form-control" name="taxnumber" value="<?=$commissionContact->getTaxnumber()?>">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Zahlungsart</label>
+						   <div class="col-sm-9">
+							   <select name="payment" class="form-control">
+								   <option value="0" <? if ($commissionContact->getPaymentTerms()->getId() == 0)
+									   echo "selected"?> >
+								   </option>
+								   <?
+								   foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
+								   {
+									   echo '<option value="'.$pt->getId().'"';
+									   if ($pt->getId() == $commissionContact->getPaymentTerms()->getId()){
+										   echo "selected";
+									   }
+									   echo'>'.$pt->getName().'</option>';
+								   }
+								   ?>
+							   </select>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">IBAN</label>
+						   <div class="col-sm-9">
+							   <input class="form-control" name="iban" value="<?=$commissionContact->getIban()?>">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">BIC</label>
+						   <div class="col-sm-9">
+							   <input class="form-control" name="bic" value="<?=$commissionContact->getBic()?>">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Rabatt</label>
+						   <div class="col-sm-9">
+							   <div class="input-group">
+								   <input class="form-control" name="discount" value="<?=printPrice($commissionContact->getDiscount())?>">
+								   <span class="input-group-addon">%</span>
+							   </div>
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Provision (%)</label>
+						   <div class="col-sm-9">
+							   <div class="input-group">
+								   <input class="form-control" name="provision" value="<?=$commissionContact->getProvision()?>">
+								   <span class="input-group-addon">%</span>
+							   </div>
+						   </div>
+					   </div>
+					   <? if($commissionContact->getLectorId() > 0) { ?>
+						   <div class="form-group">
+							   <label for="" class="col-sm-3 control-label"><span class="error"><?=$_LANG->get('Lector-Import')?>: </span></label>
+							   <div class="col-sm-9">
+								   ID: <?=$commissionContact->getId()?>
+							   </div>
+						   </div>
+					   <?  } ?>
+				   </div>
+			   </div>
+		  </div>
+	</div>
 		<!-- tr>
 			<td class="content_row_header"><?=$_LANG->get('Branche')?></td>
 			<td class="content_row_clear">
@@ -360,10 +397,6 @@ echo $quickmove->generate();
 			    		value="<?=$commissionContact->getBranche()?>"> 
 			</td>
 		</tr-->
-		<tr>
-			<td class="content_row_header">&ensp;</td>
-			<td class="content_row_clear">&ensp;</td>
-		</tr>
 		<!-- tr>
 			<td class="content_row_header"><?=$_LANG->get('KD-Nr. beim Lieferanten')?></td>
 			<td class="content_row_clear">
@@ -371,72 +404,6 @@ echo $quickmove->generate();
 			    		value="<?=$commissionContact->getNum_at_customer()?>"> 
 			</td>
 		</tr-->
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('USt.-ID')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:100px" name="ust" 
-			    		value="<?=$commissionContact->getUst()?>"> 
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Steuernummer')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:100px" name="taxnumber" 
-			    		value="<?=$commissionContact->getTaxnumber()?>"> 
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header">&ensp;</td>
-			<td class="content_row_clear">&ensp;</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Zahlungsart')?></td>
-			<td class="content_row_clear">
-			    <select name="payment" style="width:300px" class="text">
-			    	<option value="0" <? if ($commissionContact->getPaymentTerms()->getId() == 0) 
-			    							echo "selected"?> >
-			    	</option>
-			        <? 
-			        foreach(PaymentTerms::getAllPaymentConditions(PaymentTerms::ORDER_NAME) as $pt)
-			        {
-			            echo '<option value="'.$pt->getId().'"';
-			            if ($pt->getId() == $commissionContact->getPaymentTerms()->getId()){
-							echo "selected";
-						}
-			            echo'>'.$pt->getName().'</option>';
-			        }
-			        ?>
-			    </select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('IBAN')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:300px" name="iban" 
-			    		value="<?=$commissionContact->getIban()?>"> 
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('BIC')?></td>
-			<td class="content_row_clear">
-			    <input class="text" style="width:150px" name="bic" 
-			    		value="<?=$commissionContact->getBic()?>"> 
-			</td>
-		</tr>
-		<tr>
-                <td class="content_row_header"><?=$_LANG->get('Rabatt')?></td>
-                <td class="content_row_clear">
-                    <input class="text" style="width:80px" name="discount"
-                           value="<?=printPrice($commissionContact->getDiscount())?>"> %
-                </td>
-            </tr>
-			<tr>
-                <td class="content_row_header"><?=$_LANG->get('Provision (%)')?></td>
-                <td class="content_row_clear">
-                    <input class="text" style="width:80px" name="provision"
-                           value="<?=$commissionContact->getProvision()?>"> %
-                </td>
-            </tr>
             <!-- Provision -->
             <!--<tr>
                 <td class="content_row_header"><?/*=$_LANG->get('Provisionspartner')*/?></td>
@@ -446,20 +413,7 @@ echo $quickmove->generate();
                         onfocus="markfield(this,0)" onblur="markfield(this,1)">
                 </td>
             </tr>-->
-		<tr>
-			<td class="content_row_header">&ensp;</td>
-			<td class="content_row_clear">&ensp;</td>
-		</tr>
-		<? if($commissionContact->getLectorId() > 0) { ?>
-		<tr>
-			<td class="content_row_header"><span class="error"><?=$_LANG->get('Lector-Import')?>: </span></td>
-			<td class="content_row_clear">ID: <?=$commissionContact->getId()?></td>
-		</tr>
-		<?  } ?>
-		</table>
-	</td></tr></table>
-</p></div>
-	
+
 	<? /**************************************** Adressen **************************************************/ ?>
 	<!--<div id="tabs-2"><p>
 	

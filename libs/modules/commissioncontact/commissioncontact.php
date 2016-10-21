@@ -138,13 +138,15 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 						class="glyphicons glyphicons-file-lock" title="Aktuelle Liste exportieren"></span> </a>
 					</span>
 					<span class="pull-right">
-						<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit">
-							<button class="btn btn-xs btn-success">
-							<span class="glyphicons glyphicons-user">
+						<a
+							<button class="btn btn-xs btn-success" href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit">
+							<span class="glyphicons glyphicons-user"></span>
 							<?= $_LANG->get('Provisionskontakt hinzuf&uuml;gen') ?>
 							</button>
 						</a>
 					</span>
+
+
 		</h3>
 	</div>
 	<div class="panel-body">

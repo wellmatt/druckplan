@@ -91,7 +91,6 @@ if($_REQUEST["exec"] == "new"){
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
 			Mahnungs&uuml;bersicht
 				<span class="pull-right">
 					<?= $savemsg ?>

@@ -186,7 +186,6 @@ $(function() {
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
             Artikel
                  <span class="pull-right">
                     <button class="btn btn-xs btn-success"

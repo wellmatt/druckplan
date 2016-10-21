@@ -10,7 +10,7 @@ $delivterms = DeliveryTerms::getAllDeliveryConditions();
 ?>
 <div class="panel panel-default">
 	  <div class="panel-heading">
-			<h3 class="panel-title">%
+			<h3 class="panel-title">
 				Lieferbedingungen
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">

@@ -326,7 +326,6 @@ $(function() {
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
 			Eingangs-&Uuml;bersicht
 				<span class="pull-right">
 					<?= $savemsg ?>

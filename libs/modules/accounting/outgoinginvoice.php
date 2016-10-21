@@ -192,6 +192,14 @@ $(function() {
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					Rechnungen
+					<span class="pull-right">
+							<a
+								<button class="btn btn-xs btn-success" type="submit" href="./docs/<?= $_USER->getId() ?>-Rechnungsausgang.csv" class="icon-link" title="Rechnugen als CSV-Datei exportieren">
+									<span class="glyphicons glyphicons-calculator"></span>
+									<?=$_LANG->get('Export')?>
+								</button>
+							</a>
+					</span>
 				</h3>
 			</div>
 			<div class="panel-body">
@@ -387,9 +395,7 @@ $(function() {
 									<?= printPrice($sum_netto); ?> <?= $_USER->getClient()->getCurrency() ?>
 								</td>
 								<td>
-									<a href="./docs/<?= $_USER->getId() ?>-Rechnungsausgang.csv" class="icon-link"
-									   title="Rechnugen als CSV-Datei exportieren"><span
-											class="glyphicons glyphicons-calculator">Export</span></a>
+
 								</td>
 								<td>&ensp;</td>
 							</tr>
