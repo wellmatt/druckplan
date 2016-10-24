@@ -30,9 +30,6 @@ if($_REQUEST["exec"] == "export")
     $order = new Order((int)$_REQUEST["id"]);
     $csv_file = fopen('./docs/calc/order-'.$order->getId().'.csv', "w");
     $csv_string .= " ;\n";
-    $csv_string .= " Kunde;\n";
-    $csv_string .= " ".$order->getCustomer()->getNameAsLine().";\n";
-    $csv_string .= " ;\n";
     $csv_string .= " Produkt;\n";
     $csv_string .= " ".$order->getProduct()->getName().";\n";
     $csv_string .= " ;\n";

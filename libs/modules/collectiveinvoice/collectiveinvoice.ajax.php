@@ -41,36 +41,6 @@ $_LANG = $_USER->getLang();
 
 $_REQUEST["exec"] = trim(addslashes($_REQUEST["exec"]));
 
-// Such nach Artikel oder Kalkulationen
-if ($_REQUEST["exec"] == "searchPositions") {
-	$str = trim(addslashes($_REQUEST["str"]));
-	$type = (int)$_REQUEST["type"];
-	$customerId = (int)$_REQUEST['cust_id'];
-
-	if($type == 1){
-		$all_orders = Order::searchOrderByTitleNumber($str, $customerId);
-		echo '<option value=""> &lt; '.$_LANG->get('Auftrag w�hlen...').'&gt;</option>';							
-		foreach ($all_orders as $order) {
-			echo '<option value="'. $order->getId() .'">'. $order->getNumber() ." - ". $order->getTitle() .'</option>';
-		}
-	}
-	if($type == 2){
-		$all_article = Article::searchArticleByTitleNumber($str);
-		echo '<option value=""> &lt; '.$_LANG->get('Artikel w�hlen...').'&gt;</option>';
-		foreach ($all_article as $article) {
-			echo '<option value="'. $article->getId() .'">'. $article->getNumber()." - ".$article->getTitle() .'</option>';
-		}
-	}
-	if($type == Orderposition::TYPE_PERSONALIZATION){
-		$all_persos = Personalizationorder::getAllPersonalizationorders($customerId, Personalizationorder::ORDER_CRTDATE, true);
-
-		echo '<option value=""> &lt; '.$_LANG->get('Bitte  w&auml;hlen...').'&gt;</option>';
-		foreach ($all_persos AS $perso){
-			echo '<option value="'.$perso->getId().'">'.$perso->getTitle().'</option>';
-		}
-	}
-}
-
 // Details eines Auftrags holen
 if ($_REQUEST['exec'] == 'getOrderDetails'){
 	$orderid = (int)$_REQUEST['orderid'];
@@ -114,10 +84,7 @@ if ($_REQUEST['exec'] == 'getOrderDetails'){
 		}
 	}
 	$detailtext = substr( $detailtext, 0, -12);
-	if($order->getTextInvoice()){
-		$detailtext .= "\n------------------------- \n".$order->getTextInvoice();
-	}
-	
+
 	echo $order->getId()."-+-+-";
 	echo $sum_price."-+-+-";
 	echo $order->getProduct()->getTaxes()."-+-+-";

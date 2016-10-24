@@ -200,102 +200,6 @@ class Order {
         return $retval;
     }
 
-    /**
-     * @param $time
-     *
-     * @return Order[]
-     */
-    public static function getOrdersWithDeliveryDate($time) {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT id, FROM_UNIXTIME(delivery_date - 36000, '%Y-%m-%d') AS deliveryDate
-                    FROM orders
-                    WHERE status > 0
-                    HAVING deliveryDate = '{$time}'
-                    ORDER BY delivery_date ASC";
-        if($DB->num_rows($sql))
-        {
-            foreach($DB->select($sql) as $r)
-            {
-                $retval[] = new Order($r["id"]);
-            }
-        }
-
-        return $retval;
-    }
-
-    /**
-     * @param $start, $end
-     *
-     * @return Order[]
-     */
-    public static function getOrdersWithinTimeFrame($start, $end) {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT id, delivery_date
-                    FROM orders
-                    WHERE status > 0
-                    HAVING delivery_date >= {$start} AND delivery_date <= {$end}
-                    ORDER BY delivery_date ASC";
-        if($DB->num_rows($sql))
-        {
-            foreach($DB->select($sql) as $r)
-            {
-                $retval[] = new Order($r["id"]);
-            }
-        }
-
-        return $retval;
-    }
-
-    static function getAllOrdersByNumber($searchString, $order = self::ORDER_NUMBER, $filter = self::FILTER_ALL)
-    {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT id FROM orders
-                WHERE
-                  status > 0 {$filter} AND
-                  number LIKE '%{$searchString}%'
-                ORDER BY {$order}";
-        if($DB->num_rows($sql))
-        {
-            foreach($DB->select($sql) as $r)
-            {
-                $retval[] = new Order($r["id"]);
-            }
-        }
-
-        return $retval;
-    }
-    
-    /**
-     * Liefert alle Orders eines Geschaeftskontakts
-     * 
-     * @param String $order
-     * @param int $customerId
-     * @return multitype:Order
-     */
-    static function getAllOrdersByCustomer($order = self::ORDER_TITLE, $customerId = 0, $filter = null){
-    	$retval = Array();
-    	global $DB;
-    	$sql = "SELECT id FROM orders
-    			WHERE status > 0 {$filter} ";
-    	if($customerId > 0){
-    		$sql .= " AND businesscontact_id  = {$customerId} ";
-    	}
-    	$sql .= " ORDER BY {$order}";
-    	if($DB->num_rows($sql))
-    	{
-    		foreach($DB->select($sql) as $r)
-    		{
-    			$retval[] = new Order($r["id"]);
-    		}
-    	}
-
-    	return $retval;
-    }
-    
-    
     static function searchByNumber($number, $order = self::ORDER_NUMBER)
     {
         $retval = Array();
@@ -315,118 +219,6 @@ class Order {
     }
 
     /**
-     * Suchfunktion fuer Auftraege. Gesucht wird im Titel, Auftragsnummer, Geschaeftskontakten und Ansprechpartnern
-     * 
-     * @param String $search	: Suchstring
-     * @param String $order		: Sortierung der Ausgabe
-     * @return Array:Order
-     */
-	static function searchOrderByTitleCustomer($search, $order = self::ORDER_NUMBER){
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT orders.id, orders.number, orders.status, orders.title, businesscontact.name1 
-                FROM orders 
-                INNER JOIN businesscontact ON orders.businesscontact_id = businesscontact.id
-                LEFT OUTER JOIN contactperson contact ON contact.businesscontact = businesscontact.id
-                LEFT JOIN documents d ON d.doc_req_id = orders.id
-                WHERE (orders.title like '%{$search}%'
-                		OR orders.number like '%{$search}%'
-                        OR businesscontact.name1 like '%{$search}%'
-                        OR businesscontact.name2 like '%{$search}%'
-                        OR (d.doc_name like '%{$search}%' AND d.doc_req_module = ".Document::REQ_MODULE_ORDER." )
-                        OR contact.name1 like '%{$search}%'
-                        OR contact.name2 like '%{$search}%')
-                    AND orders.status > 0 
-        			GROUP BY orders.id 
-                    ORDER BY {$order} ";
-        if($DB->num_rows($sql)){
-            foreach($DB->select($sql) as $r){
-                $retval[] = new Order($r["id"]);
-            }
-        }
-        return $retval;
-    }
-    
-    /**
-     * Suchfunktion fuer Auftraege. Sucht in Titel und Auftragsnummer.
-     * Falls eine ID eines Geschaeftskontakts angegeben wird, wird danach gefiltert
-     * 
-     * @param String $search
-     * @param String $order
-     * @return Array : Order
-     */
-    static function searchOrderByTitleNumber($search, $custId = 0, $order = self::ORDER_TITLE){
-		global $DB;
-		$retval = Array();
-		$sql = "SELECT id, number, status, title FROM orders
-				WHERE status > 0 AND 
-				(number like '%{$search}%'
-				OR title like '%{$search}%')";
-		if($custId != 0){
-			$sql .=  "AND businesscontact_id = {$custId} ";
-		}
-		
-		$sql .=	"ORDER BY {$order}";
-		
-		if($DB->num_rows($sql)){
-			foreach($DB->select($sql) as $r){
-				$retval[] = new Order($r["id"]);
-			}
-		}
-		return $retval;
-	}
-
-				  
-/**
-     * Suchfunktion mit diversen Abfrage-Variablen
-     * 
-     * @param int $customerId	: Id des Geschaeftskontakts
-     * @param String $number	: Auftragsnummer
-     * @param String $title		: SuchString fuer den Titel
-     * @param String $inv_name	: ScuhString der Rechnungsnummer
-     * @param String $order 	: Sortierung der Ergebnisse
-     * @return multitype:Order
-     */
-    static function searchOrderByCustomeridNumberTitle($customerId, $number, $title, $inv_name, $order = self::ORDER_NUMBER)
-    {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT o.id 
-        			FROM orders o";
-        if($inv_name != ""){
-        	$sql .= " LEFT JOIN documents d ON d.doc_req_id = o.id
-                    WHERE 
-                    (d.doc_name LIKE 'RE%{$inv_name}%' ) AND ";
-        } else {
-        	$sql .= " WHERE ";
-        } 
-		if ($number != ""){
-			$sql .=" o.number like '%{$number}%' AND ";
-		}
-        if ($customerId > 0){
-        	$sql .= " o.businesscontact_id  = {$customerId} AND ";
-        }
-        if ($title != ""){
-        	$sql .= " o.title like '%{$title}%' AND ";   
-        }
-		$sql .= " o.status > 0
-				ORDER BY {$order}";  
-		      
-        /*SELECT id, number, status, title FROM orders
-        WHERE businesscontact_id like '%{$customerId}%'
-        		AND number like '%{$number}%'
-        				AND title like '%{$title}%'*/  
-		            
-        if($DB->num_rows($sql)){
-            foreach($DB->select($sql) as $r){
-                $retval[] = new Order($r["id"]);
-            }
-        }
-        return $retval;
-    }
-
-
-    /**
      * @param $order
      * @param $colinv
      * @return string
@@ -440,18 +232,18 @@ class Order {
         $html .= '<div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
         $html .= '<colgroup><col width="10%"><col width="23%"><col width="10%"><col width="23%"><col width="10%"><col></colgroup>';
         $html .= '<tr><td><b>Kundennummer:</b></td>';
-        $html .= '<td>'.$order->getCustomer()->getCustomernumber().'</td>';
+        $html .= '<td>'.$colinv->getCustomer()->getCustomernumber().'</td>';
         $html .= '<td><b>Vorgang:</b></td>';
-        $html .= '<td>'.$order->getNumber().'</td>';
+        $html .= '<td>'.$colinv->getNumber().'</td>';
         $html .= '<td><b>Telefon:</b></td>';
-        $html .= '<td>'.$order->getCustomer()->getPhone().'</td>';
+        $html .= '<td>'.$colinv->getCustomer()->getPhone().'</td>';
         $html .= '</tr><tr>';
         $html .= '<td valign="top"><b>Name:</b></td>';
-        $html .= '<td valign="top">'.nl2br($order->getCustomer()->getNameAsLine()).'</td>';
+        $html .= '<td valign="top">'.nl2br($colinv->getCustomer()->getNameAsLine()).'</td>';
         $html .= '<td valign="top"><b>Adresse:</b></td>';
-        $html .= '<td valign="top">'.nl2br($order->getCustomer()->getAddressAsLine()).'</td>';
+        $html .= '<td valign="top">'.nl2br($colinv->getCustomer()->getAddressAsLine()).'</td>';
         $html .= '<td valign="top"><b>E-Mail:</b></td>';
-        $html .= '<td valign="top">'.$order->getCustomer()->getEmail().'</td>';
+        $html .= '<td valign="top">'.$colinv->getCustomer()->getEmail().'</td>';
         $html .= '</tr></table></div><br><div class="outer"><table cellpadding="0" cellspacing="0" border="0" width="100%">';
         $html .= '<colgroup><col width="10%"><col width="23%"><col width="10%"><col width="23%"><col width="10%"><col></colgroup>';
         $html .= '<tr>';
@@ -463,19 +255,19 @@ class Order {
         $html .= '<td valign="top">'.nl2br($order->getNotes()).'</td>';
         $html .= '</tr><tr>';
         $html .= '<td><b>Lieferadresse:</b></td>';
-        $html .= '<td>'.nl2br($order->getDeliveryAddress()->getAddressAsLine()).'</td>';
+        $html .= '<td>'.nl2br($colinv->getDeliveryAddress()->getAddressAsLine()).'</td>';
         $html .= '<td><b>Lieferbedingungen:</b></td>';
-        $html .= '<td>'.$order->getDeliveryTerms()->getComment().'</td>';
+        $html .= '<td>'.$colinv->getDeliveryterm()->getComment().'</td>';
         $html .= '<td><b>Lieferdatum:</b></td>';
         $html .= '<td>';
-        if($order->getDeliveryDate() > 0) 
-            $html .= date('d.m.Y', $order->getDeliveryDate());
+        if($colinv->getDeliveryDate() > 0)
+            $html .= date('d.m.Y', $colinv->getDeliveryDate());
         $html .= '</td>';
         $html .= '</tr><tr>';
         $html .= '<td><b>Zahlungsadresse:</b></td>';
-        $html .= '<td>'.nl2br($order->getInvoiceAddress()->getAddressAsLine()).'</td>';
+        $html .= '<td>'.nl2br($colinv->getInvoiceAddress()->getAddressAsLine()).'</td>';
         $html .= '<td><b>Zahlungsbedingungen:</b></td>';
-        $html .= '<td>'.$order->getPaymentTerms()->getComment().'</td>';
+        $html .= '<td>'.$colinv->getPaymentTerm()->getComment().'</td>';
         $html .= '<td><b>&nbsp;</b></td><td>&nbsp;</td></tr></table></div><br>';
         
         $i = 1; 
@@ -953,248 +745,6 @@ class Order {
         }
         
         return $html;
-    }
-/******************************************** Statistik **********************************/
-    
-    static function getStatistic1monthTab($mincrtdat)
-    {
-        $retval = Array();
-        global $DB;
-       $sql = " select * from (
-       (select DATE(FROM_UNIXTIME(crtdat)) as order_day, status, count(*) 'cc'
-         from orders
-         where
-         status > 0 and
-         crtdat >= {$mincrtdat} 
-         group by 1,2)";
-		
-		$sql .= "UNION
-		(select DATE(FROM_UNIXTIME(crtdate)) as order_day, status as 'status', count(*) 'cc'
-		from collectiveinvoice
-		where
-		status > 0 and
-		crtdate >= {$mincrtdat}
-		group by 1,2)
-		)as combined_table 
-		group by 1,2";
-        if($DB->num_rows($sql))
-        {
-           $retval = $DB->select($sql);
-        }
-    
-        return $retval;
-    }
-    
-    
-    static function getStatistic1month($mincrtdat)
-    {
-        $retval = Array();
-        global $DB;
-       $sql = " select * from (
-       (select crtdat, status, count(*) 'cc'
-         from orders
-         where
-         status IN (1,2,3,4,5) and
-         crtdat >= {$mincrtdat} 
-         group by 1,2)";
-		
-		$sql .= "UNION
-		(select crtdate as 'crtdat', status as 'status', count(*) 'cc'
-		from collectiveinvoice
-		where
-		status IN (1,2,3,4,5) and
-		crtdate >= {$mincrtdat}
-		group by 1,2)
-		)as combined_table 
-		group by 1,2";
-        if($DB->num_rows($sql))
-        {
-           $retval[] = $DB->select($sql);
-        }
-    
-        return $retval;
-    } 
-    
-    static function getCountAllOrders12months($mincrtdat)
-    {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT count(id) as 'count' FROM orders 
-                WHERE status > 2 and
-                crtdat >= {$mincrtdat}
-                UNION
-                SELECT count(id) as 'count' FROM collectiveinvoice 
-                WHERE status > 2 and
-                crtdate >= {$mincrtdat} ";
-        if($DB->num_rows($sql))
-        {  
-                $retval = $DB->select($sql);
-        }
-        
-        return $retval;
-    }
-    
-    
-    static function getStatistic12monthsTab($mincrtdat)
-    {
-        $retval = Array();
-        global $DB;
-       $sql = " select * from (
-       (select FROM_UNIXTIME(crtdat, '%m.%Y') as 'order_month', count(*) 'cc'
-         from orders
-         where
-         status > 2 and
-         crtdat >= {$mincrtdat} 
-         group by 1)";
-		
-		$sql .= "UNION
-		(select FROM_UNIXTIME(crtdate, '%m.%Y') as 'order_month', count(*) 'cc'
-		from collectiveinvoice
-		where
-        status > 2 and
-		crtdate >= {$mincrtdat}
-		group by 1)
-		)as combined_table 
-		";
-        if($DB->num_rows($sql))
-        {
-           $retval = $DB->select($sql);
-        }
-    
-        return $retval;
-    } 
-    
-      
-    static function getStatistic12months($mincrtdat)
-    {
-        $retval = Array();
-        global $DB;
-       $sql = " select * from (
-       			(select crtdat, count(*) 'cc'
-         		FROM orders
-         		WHERE
-         		status > 2 and
-         		crtdat >= {$mincrtdat} 
-         		group by 1)";
-		
-		$sql .= "UNION
-				(select crtdate as 'crtdat', count(*) 'cc'
-				FROM collectiveinvoice
-				WHERE
-        		status > 2 and
-				crtdate >= {$mincrtdat}
-				group by 1)
-				)as combined_table 
-				group by 1";
-        if($DB->num_rows($sql))
-        {
-           $retval[] = $DB->select($sql);
-        }
-    
-        return $retval;
-    } 
-
-   
-    
-    static function getCountOrdersPerCust()
-    {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT count(id) as 'count', businesscontact_id as 'cust', YEAR(FROM_UNIXTIME(crtdat)) as 'year'  
-                FROM orders 
-                WHERE status > 2
-                GROUP BY businesscontact_id, year";
-        if($DB->num_rows($sql))
-        {
-           $retval = $DB->select($sql);
-        }
-    
-        return $retval;
-    }
-    
-    
-    static function getCountOrdersPerCustMonth($year)
-    {
-        $retval = Array();
-        global $DB;
-        $sql = "SELECT count(id) as 'count', businesscontact_id as 'cust', MONTH(FROM_UNIXTIME('crtdat')) as month
-                FROM orders 
-                WHERE status > 2
-                AND YEAR(FROM_UNIXTIME(crtdat)) = {$year}
-                GROUP BY businesscontact_id, month";
-        if($DB->num_rows($sql))
-        {
-           $retval = $DB->select($sql);
-        }
-    
-        return $retval;
-    }
-
- /******************************* Ende Statistik *********************************************/
-
-    
-    /**
-     * Liefert das Bild mit Pfad fuer den aktuellen Status
-     * @return string
-     */
-    function getStatusImage(){
-    	$img_path = "images/status/black.gif";
-    	switch ($this->getStatus()){
-    		case 0 : $img_path = "images/status/black.gif"; break;
-    		case 1 : $img_path = "images/status/red.gif"; break;
-    		case 2 : $img_path = "images/status/orange.gif"; break;
-    		case 3 : $img_path = "images/status/yellow.gif"; break;
-    		case 4 : $img_path = "images/status/lila.gif"; break;
-    		case 5 : $img_path = "images/status/green.gif"; break;
-    		default: $img_path = "images/status/black.gif"; break;
-    	}
-    	return $img_path;
-    }
-    
-    /**
-     * Liefert die Fremdleistungen (Maschinen-Einträge)
-     * @return multitype:Machineentry
-     */
-    function getFL(){
-    	$calculations = Calculation::getAllCalculations($this, Calculation::ORDER_AMOUNT);
-    	
-    	// Aktive Kalkulationen holen
-    	$active_calcs = Array();
-    	foreach ($calculations AS $calc){
-    		if ($calc->getState() == 1){
-    			$active_calcs[] = $calc;
-    		}
-    	}
-    	
-    	// Fremdleistungen aus den Maschinen-Eintraegen holen
-    	$fl_maEntrys = Array();
-    	foreach ($active_calcs AS $aCalc){
-    		$mach_entries = Machineentry::getAllMachineentries($aCalc->getId());
-    		foreach ($mach_entries AS $maEntry){
-    			if ($maEntry->getSupplierStatus() > 0){
-    				$fl_maEntrys[] = $maEntry;
-    			}
-    		}
-    	}
-    	return $fl_maEntrys;
-    }
-
-    /**
-     * @return Order[]
-     */
-    public static function getOrderWithTickets() {
-        global $DB;
-        $q = 'SELECT t.tkt_order_id
-                FROM tickets t
-                WHERE t.tkt_order_id > 0
-                GROUP BY t.tkt_order_id
-                ORDER BY t.tkt_title ASC';
-        $res = $DB->select($q);
-        $orders = array();
-        foreach($res as $r) {
-            $orders[] = new Order($r['tkt_order_id']);
-        }
-        return $orders;
     }
     
     public function clearId()
