@@ -90,13 +90,13 @@ echo $quickmove->generate();
           <div class="panel-body">
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Name</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="name" id="name" value="<?php echo $letterhead->getName();?>" placeholder="Name" required>
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Typ</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <select name="type" id="type" class="form-control" required>
                           <?php
                           foreach (Document::getTypes() as $index => $value) {
@@ -111,7 +111,7 @@ echo $quickmove->generate();
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Dokument Format Seite 1</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <select name="docformat1" id="docformat1" class="form-control" required>
                           <?php
                           foreach (DocumentFormat::fetch() as $item) {
@@ -126,7 +126,7 @@ echo $quickmove->generate();
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Dokument Format Seite 2</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <select name="docformat2" id="docformat2" class="form-control" required>
                           <?php
                           foreach (DocumentFormat::fetch() as $item) {
@@ -141,18 +141,55 @@ echo $quickmove->generate();
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">1. Seite</label>
-                  <div class="col-sm-10">
-                      <input type="file" class="form-control" name="letterhead1" id="letterhead1" required>
+                  <div class="col-sm-4">
+                      <div class="input-group">
+                          <label class="input-group-btn">
+                    <span class="btn btn-file">
+                        Durchsuchen <input style="display: none;"  multiple="" type="file" class="form-control" name="letterhead1" id="letterhead1" required>
+                    </span>
+                          </label>
+                          <input class="form-control" readonly="" type="text">
+                      </div>
                       * <b>NUR</b> *.pdf Dateien verwenden!
                   </div>
               </div>
+
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">ab 2. Seite</label>
-                  <div class="col-sm-10">
-                      <input type="file" class="form-control" name="letterhead2" id="letterhead2" required>
+                  <div class="col-sm-4">
+                      <div class="input-group">
+                          <label class="input-group-btn">
+                    <span class="btn btn-file">
+                        Durchsuchen <input style="display:none;"  multiple="" type="file" class="form-cntrol" name="letterhead2" id="letterhead2" required>
+                    </span>
+                          </label>
+                          <input class="form-control" readonly="" type="text">
+                      </div>
                       * <b>NUR</b> *.pdf Dateien verwenden!
                   </div>
               </div>
           </div>
     </div>
 </form>
+<script>
+    $(function () {
+        $(document).on('change', ':file', function () {
+            var input = $(this), numFiles = input.get(0).files ? input.get(0).files.length : 1, label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [
+                numFiles,
+                label
+            ]);
+        });
+        $(document).ready(function () {
+            $(':file').on('fileselect', function (event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log)
+                        alert(log);
+                }
+            });
+        });
+    });
+</script>

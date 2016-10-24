@@ -176,9 +176,6 @@ class Association {
             case "Event":
                 return 'libs/modules/organizer/calendar.php&exec=showevent&id=';
                 break;
-            case "Schedule":
-                return 'libs/modules/schedule/schedule.php&exec=parts&id=';
-                break;
             case "Machine":
                 return 'libs/modules/machines/machines.php&exec=edit&id=';
                 break;

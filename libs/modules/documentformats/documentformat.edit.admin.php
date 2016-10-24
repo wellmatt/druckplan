@@ -94,13 +94,13 @@ echo $quickmove->generate();
           <div class="panel-body">
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Name</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="name" id="name" value="<?php echo $docformat->getName();?>" placeholder="Name" required>
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Typ</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <select name="doctype" id="doctype" class="form-control" required>
                           <?php
                           foreach (Document::getTypes() as $index => $value) {
@@ -115,7 +115,7 @@ echo $quickmove->generate();
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Ausrichtung</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <select name="orientation" id="orientation" class="form-control">
                           <option value="<?php echo DocumentFormat::ORI_PORTRAIT;?>" <?php if ($docformat->getOrientation() == DocumentFormat::ORI_PORTRAIT) echo ' selected ';?>>Portrait</option>
                           <option value="<?php echo DocumentFormat::ORI_LANDSCAPE;?>" <?php if ($docformat->getOrientation() == DocumentFormat::ORI_LANDSCAPE) echo ' selected ';?>>Landscape</option>
@@ -124,37 +124,37 @@ echo $quickmove->generate();
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Breite (mm)</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="width" id="width" value="<?php echo $docformat->getWidth();?>" placeholder="">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Höhe (mm)</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="height" id="height" value="<?php echo $docformat->getHeight();?>" placeholder="">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Margin Oben (mm)</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="margin_top" id="margin_top" value="<?php echo $docformat->getMarginTop();?>" placeholder="">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Margin Unten (mm)</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="margin_bottom" id="margin_bottom" value="<?php echo $docformat->getMarginBottom();?>" placeholder="">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Margin Links (mm)</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="margin_left" id="margin_left" value="<?php echo $docformat->getMarginLeft();?>" placeholder="">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Margin Rechts (mm)</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="margin_right" id="margin_right" value="<?php echo $docformat->getMarginRight();?>" placeholder="">
                   </div>
               </div>

@@ -160,21 +160,19 @@ if (isset($_REQUEST["export"])){
       </div>
       <div class="panel-body">
           <div class="form-group">
-              <label for="" class="col-sm-10 control-label">Kontaktadressen</label>
-              <div class="col-sm-1">
-                  <button class="btn btn-success" onclick="window.location.href='index.php?page=<?php echo $_REQUEST["page"];?>&export=asp';">Generieren</button>
-              </div>
-              <?php
-              if (file_exists("docs/export_asp.csv")) {
-                  ?>
-                  <div class="col-sm-1">
-                      <a href="docs/export_asp.csv" download="<?php echo date('Y.m.d');?>_Export_ASP.csv">
-                        <button class="btn btn-success">Download</button>
-                      </a>
-                  </div>
-                  <?php
-              }
-              ?>
+              <label for="" class="col-sm-3 control-label">Kontaktadressen</label>
+              <span class="pull-right">
+                   <?php
+                   if (file_exists("docs/export_asp.csv")) {
+                       ?>
+                       <a href="docs/export_asp.csv" download="<?php echo date('Y.m.d');?>_Export_ASP.csv">
+                           <button class="btn btn-success">Download</button>
+                       </a>
+                       <?php
+                   }
+                   ?>
+                   <button class="btn btn-success" onclick="window.location.href='index.php?page=<?php echo $_REQUEST["page"];?>&export=asp';">Generieren</button>
+              </span>
           </div>
           <hr>
           <div class="form-group">
@@ -187,12 +185,9 @@ if (isset($_REQUEST["export"])){
               <div class="col-sm-2">
                   <input type="text" id="aepos_to" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
               </div>
-
-              <div class="col-sm-4">
-                  <span class="pull-right">
-                       <button class="btn btn-success" onclick="generateAepos();">Generieren</button>
-                  </span>
-              </div>
+              <span class="pull-right">
+                   <button class="btn btn-success" onclick="generateAepos();">Generieren</button>
+              </span>
           </div>
       </div>
 </div>

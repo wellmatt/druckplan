@@ -101,7 +101,7 @@ if ((int)$_REQUEST["cid"] > 0){
             if ($save_ok && $_REQUEST["tktc_article_id"] != "" && $_REQUEST["tktc_article_amount"] != ""){
                 $tc_article = new CommentArticle();
                 $tc_article->setArticle(new Article($_REQUEST["tktc_article_id"]));
-                $tc_article->setAmount((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["tktc_article_amount"]))));
+                $tc_article->setAmount(tofloat($_REQUEST["tktc_article_amount"]));
                 $tc_article->setState(1);
                 $tc_article->setComment_id($comment->getId());
                 $save_ok = $tc_article->save();
@@ -407,15 +407,15 @@ $(function () {
             <?php 
                 foreach ($comment->getArticles() as $c_article){
                     if ($c_article->getState() == 1){
-                        echo '<span id="art_'.$c_article->getId().'"><span id="artamount_'.$c_article->getId().'">'.$c_article->getAmount().'</span>x 
+                        echo '<span id="art_'.$c_article->getId().'"><span id="artamount_'.$c_article->getId().'">'.printPrice($c_article->getAmount()).'</span>x
                               <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a>';
                         if ($_USER->isAdmin()){
                               echo '<span class="glyphicons glyphicons-remove pointer" onclick="removeArt('.$c_article->getId().')"></span>
-                                    <span class="glyphicons glyphicons-pencil pointer" onclick="editArt('.$c_article->getId().','.$c_article->getAmount().')"></span>';
+                                    <span class="glyphicons glyphicons-pencil pointer" onclick="editArt('.$c_article->getId().','.printPrice($c_article->getAmount()).')"></span>';
                         }
                         echo '</span></br>';
                     } elseif ($c_article->getState() == 0 && $_USER->isAdmin()){
-                        echo '<span id="art_'.$c_article->getId().'"><del>'.$c_article->getAmount().'x 
+                        echo '<span id="art_'.$c_article->getId().'"><del>'.printPrice($c_article->getAmount()).'x
                               <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$c_article->getArticle()->getId().'">'.$c_article->getArticle()->getTitle().'</a>
                               </del></span></br>';
                     }

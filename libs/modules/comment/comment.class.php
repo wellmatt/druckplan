@@ -64,6 +64,16 @@ class Comment {
                             $valid_cache = false;
                         }
                     }
+
+
+                    $sql = "SELECT id FROM comments_article WHERE comment_id = {$id}";
+                    if($DB->num_rows($sql)){
+                        $artretval = Array();
+                        foreach($DB->select($sql) as $r){
+                            $artretval[] = new CommentArticle($r["id"]);
+                        }
+                        $this->articles = $artretval;
+                    }
                 } else {
                     $valid_cache = false;
                 }

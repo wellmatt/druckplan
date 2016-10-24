@@ -5,7 +5,6 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 // ----------------------------------------------------------------------------------
-require_once './libs/modules/schedule/schedule.class.php';
 ?>
 
 <? // echo $DB->getLastError();?>

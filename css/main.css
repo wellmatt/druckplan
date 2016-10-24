@@ -75,13 +75,13 @@ div.content {
 }
 
 /* Links */
-a:link {
-	color: #0000EE;
-}
+/*a:link {*/
+	/*color: #0000EE;*/
+/*}*/
 
-a:visited {
-	color: #0000EE;
-}
+/*a:visited {*/
+	/*color: #0000EE;*/
+/*}*/
 
 a.products {
 	text-decoration: none;
@@ -781,3 +781,36 @@ span .glyphicons {
 .product-list-in-box > .item:last-of-type {
 	border-bottom-width: 0;
 }
+
+.btn-file {
+	position: relative;
+	overflow: hidden;
+}
+.btn-file input[type=file] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-size: 100px;
+	text-align: right;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	outline: none;
+	background: white;
+	cursor: inherit;
+	display: block;
+}
+
+.btn-file {
+	color: #fff;
+	background-color: #428bca;
+	border-color: #357ebd;
+}
+
+/*.ui-tabs-vertical { width: 55em; }*/
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 0; float: right; width: 100%; }

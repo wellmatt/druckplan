@@ -42,7 +42,7 @@ if ($_REQUEST["exec"] == "ticket_db_cleanup" && $_REQUEST["ticket_db_cleanup_cat
                               <input type="hidden" name="exec" value="ticket_db_cleanup">
                               <div class="form-group">
                                   <label for="" class="col-sm-2 control-label">Kategorie</label>
-                                  <div class="col-sm-10">
+                                  <div class="col-sm-3">
                                       <select name="ticket_db_cleanup_category" id="ticket_db_cleanup_category" class="form-control">
                                           <?php
                                           $tkt_categories = TicketCategory::getAllCategories();

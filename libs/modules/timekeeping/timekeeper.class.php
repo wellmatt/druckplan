@@ -8,7 +8,6 @@
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/calculation/order.class.php';
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
-require_once 'libs/modules/schedule/schedule.class.php';
 require_once 'libs/modules/article/article.class.php';
 
 /**
@@ -257,10 +256,6 @@ class Timekeeper {
 			case self::MODULE_COLLECTIVE: 
 				$obj = new CollectiveInvoice($this->objectID);
 				$ret = $obj->getTitle();
-				break;
-			case self::MODULE_PLANNING: 
-				$obj = new Schedule($this->objectID); 
-				$ret = $obj->getNumber()." ".$obj->getObject();
 				break;
 		}
 		return $ret;

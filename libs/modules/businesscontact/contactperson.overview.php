@@ -95,8 +95,8 @@ $(document).ready(function() {
         	  </div>
         	  <div class="panel-body">
                   <div class="form-group">
-                      <label for="" class="col-sm-2 control-label">Suche</label>
-                      <div class="col-sm-10">
+                      <label for="" class="col-sm-1 control-label">Suche</label>
+                      <div class="col-sm-3">
                           <input type="text" id="search" class="form-control" placeholder="">
                       </div>
                   </div>

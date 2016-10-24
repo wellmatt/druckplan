@@ -29,4 +29,3 @@ if ($_REQUEST["ajax_action"] == "editArt" && $_REQUEST["artid"] && $_REQUEST["ar
     $c_article->setAmount($artamount);
     $c_article->save();
 }
-?>

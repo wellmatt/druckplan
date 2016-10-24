@@ -287,6 +287,28 @@ function addPriceRow()
 		})
 	});
 </script>
+<script>
+	$(function () {
+		$(document).on('change', ':file', function () {
+			var input = $(this), numFiles = input.get(0).files ? input.get(0).files.length : 1, label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+			input.trigger('fileselect', [
+				numFiles,
+				label
+			]);
+		});
+		$(document).ready(function () {
+			$(':file').on('fileselect', function (event, numFiles, label) {
+				var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;
+				if (input.length) {
+					input.val(log);
+				} else {
+					if (log)
+						alert(log);
+				}
+			});
+		});
+	});
+</script>
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -494,9 +516,16 @@ echo $quickmove->generate();
 			 </div>
 			<br>
 			<div class="form-group">
-				<label for="" class="col-sm-1 control-label">Vorschaubild</label>
+				<label for="" class="col-sm-2 control-label">Vorschaubild</label>
 				<div class="col-sm-3">
-					<input type="file" id="preview" name="preview"></a>
+					<div class="input-group">
+						<label class="input-group-btn">
+                    <span class="btn btn-file">
+                        Durchsuchen <input style="display:none;"  multiple="" type="file" class="form-cntrol"name="preview" id="preview" required>
+                    </span>
+						</label>
+						<input class="form-control" readonly="" type="text">
+					</div>
 				</div>
 				<div id="td_preview" class="col-sm-6">
 					<?if ($perso->getPreview()!= NULL && $perso->getPreview() !=""){?>
