@@ -42,14 +42,18 @@ function defaultimg(){
 
 if ($_REQUEST['uid'] && $_REQUEST['uid'] > 0){
     $user = new User((int)$_REQUEST['uid']);
-    if ($user->getAvatar() != null && $user->getAvatar() != ''){
-        $data = $user->getAvatar();
-
-        $im = imagecreatefromstring($data);
-        if ($im !== false) {
-            header('Content-Type: image/png');
-            imagepng($im);
-            imagedestroy($im);
+    $avatar = 'docs/avatars/'.$user->getId().'.png';
+    if ($user->getId() > 0){
+        if (file_exists($avatar)){
+            $data = file_get_contents($avatar);
+            $im = imagecreatefromstring($data);
+            if ($im !== false) {
+                header('Content-Type: image/png');
+                imagepng($im);
+                imagedestroy($im);
+            } else {
+                defaultimg();
+            }
         } else {
             defaultimg();
         }
