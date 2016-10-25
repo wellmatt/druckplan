@@ -1,10 +1,12 @@
-<?//--------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       22.08.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
+
 require_once 'libs/modules/tradegroup/tradegroup.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
 
@@ -120,7 +122,7 @@ if($_REQUEST["subexec"] == "save"){
 	for ($i=0 ; $i <= $allprice_seperations ; $i++){
 		$min = (int)$_REQUEST["article_price_min_".$i];
 		$max = (int)$_REQUEST["article_price_max_".$i];
-		$price = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["article_price_price_".$i])));
+		$price = tofloat($_REQUEST["article_price_price_".$i]);
 		if ($price > 0){
 			$article->savePrice($min, $max, $price);
 		}
@@ -594,7 +596,7 @@ echo $quickmove->generate();
 												<div class="input-group">
 													<input name="article_price_price_<?= $y ?>" class="form-control"
 														   type="text"
-														   value="<?= printPrice($allprices[$y][sep_price]) ?>">
+														   value="<?= printPrice($allprices[$y][sep_price],3) ?>">
 													<span class="input-group-addon">€</span>
 												</div>
 											</div>
@@ -702,7 +704,7 @@ echo $quickmove->generate();
 								<div class="form-group">
 									<div class="col-sm-12">
 										<div class="input-group">
-											<input name="article_costprice_price_<?= $y ?>" class="form-control" type="text" value="<?= printPrice($allcostprices[$y][sep_price]) ?>">
+											<input name="article_costprice_price_<?= $y ?>" class="form-control" type="text" value="<?= printPrice($allcostprices[$y][sep_price],3) ?>">
 											<span class="input-group-addon">€</span>
 										</div>
 									</div>

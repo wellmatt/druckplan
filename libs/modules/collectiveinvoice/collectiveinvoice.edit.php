@@ -1,12 +1,13 @@
-<?//--------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       18.09.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
-require_once 'libs/modules/attachment/attachment.class.php';
+<?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
 
+require_once 'libs/modules/attachment/attachment.class.php';
 
 
 $all_user = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
@@ -82,8 +83,6 @@ if (!empty($_REQUEST['subexec']) && $_REQUEST['subexec']){
         
         Orderposition::saveMultipleOrderpositions($all_positions);
         
-//         echo $all_positions[$tmp_index]->getId() . " wird zu " . $all_positions[$tmp_index+1]->getId() . "</br>";
-//         echo $all_positions[$tmp_index+1]->getId() . " wird zu " . $all_positions[$tmp_index]->getId() . "</br>";
     } else if ($_REQUEST['subexec'] == "moveup"){
         $i = 0;
         foreach($collectinv->getPositions() as $position){
@@ -267,14 +266,12 @@ $(function() {
 	 });
 });
 
-
-function printPriceJs(zahl){
-    //var ret = (Math.round(zahl * 100) / 100).toString(); //100 = 2 Nachkommastellen
-    ret = zahl.toFixed(2);
+function printPriceJs(zahl,nks = 2){
+//    var ret = (Math.round(zahl * 100) / 1000).toString(); //100 = 2 Nachkommastellen
+    var ret = zahl.toFixed(3);
     ret = ret.replace(".",",");
     return ret;
 }
-
 
 function updatePos(id_i){
 	var tmp_type= document.getElementById('orderpos_type_'+id_i).value;
@@ -1118,7 +1115,7 @@ echo $quickmove->generate();
 									<td valign="top">
 										<div class="input-group" style="width: 100px">
 											<input 	name="orderpos[<?=$i?>][price]" id="orderpos_price_<?=$i?>" class="form-control"
-													  value="<?= printPrice($position->getPrice())?>" style="width: 100px"
+													  value="<?= printPrice($position->getPrice(),3)?>" style="width: 100px"
 													  onfocus="markfield(this,0)" onblur="markfield(this,1)">
 											<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
 										</div>
@@ -1131,7 +1128,7 @@ echo $quickmove->generate();
 										</div>
 									</td>
 									<td valign="top">
-										<span id="span_totalprice_<?=$i?>"><?= printPrice($position->getNetto())." ". $_USER->getClient()->getCurrency()?></span>
+										<span id="span_totalprice_<?=$i?>"><?= printPrice($position->getNetto(),2)." ". $_USER->getClient()->getCurrency()?></span>
 									</td>
 									<td valign="top">
 										<input type="checkbox" value="1" name="orderpos[<?=$i?>][inv_rel]"
