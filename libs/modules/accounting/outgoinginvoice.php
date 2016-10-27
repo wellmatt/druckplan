@@ -132,7 +132,7 @@ $(function() {
 						Filteroptionen
 						<span class="pull-right">
 							<button class="btn btn-xs btn-success" type="submit">
-								<?= $_LANG->get('Suche starten') ?>
+								<?= $_LANG->get('Refresh') ?>
 							</button>
 						</span>
 					</h3>
@@ -193,12 +193,7 @@ $(function() {
 				<h3 class="panel-title">
 					Rechnungen
 					<span class="pull-right">
-							<a
-								<button class="btn btn-xs btn-success" type="submit" href="./docs/<?= $_USER->getId() ?>-Rechnungsausgang.csv" class="icon-link" title="Rechnugen als CSV-Datei exportieren">
-									<span class="glyphicons glyphicons-calculator"></span>
-									<?=$_LANG->get('Export')?>
-								</button>
-							</a>
+
 					</span>
 				</h3>
 			</div>
@@ -213,25 +208,6 @@ $(function() {
 
 					<div class="table-responsive">
 						<table class="table table-hover">
-							<thead>
-							<tr>
-								<th class="content_row_header"><?= $_LANG->get('Re-Nr.') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Re-Typ') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Auftragsnr.') ?></th>
-								<th class="content_row_header" align="right"><?= $_LANG->get('Brutto') ?></th>
-								<th class="content_row_header" align="right"><?= $_LANG->get('Netto') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Kunde') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Provisionspartner') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Provision') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Titel') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('erstellt') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('F&auml;llig') ?></th>
-								<th class="content_row_header"><?= $_LANG->get('Bezahlt') ?></th>
-								<th class="content_row_header" align="center"><?= $_LANG->get('Optionen') ?></th>
-							</tr>
-							</thead>
-							<tbody>
-
 							<? // CSV-Datei der Rechnungen vorbereiten
 							$csv_file = fopen('./docs/' . $_USER->getId() . '-Rechnungsausgang.csv', "w");
 							//fwrite($csv_file, "Firma iPactor - �bersicht\n");
@@ -269,9 +245,20 @@ $(function() {
 									$sum_brutto += $document->getPriceBrutto();
 								}
 								?>
-								<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)"
-									onmouseout="mark(this, 1)">
+								<thead>
+									<tr style="background-color: grey">
+										<th class="content_row_header"><?= $_LANG->get('Re-Nr.') ?></th>
+<!--										<th class="content_row_header">--><?//= $_LANG->get('Re-Typ') ?><!--</th>-->
+										<th class="content_row_header"><?= $_LANG->get('Auftragsnr.') ?></th>
+										<th class="content_row_header" align="right"><?= $_LANG->get('Titel') ?></th>
+										<th class="content_row_header"><?= $_LANG->get('Kunde') ?></th>
+										<th class="content_row_header" align="right"><?= $_LANG->get('Netto') ?></th>
+										<th class="content_row_header" align="right"><?= $_LANG->get('Brutto') ?></th>
 
+									</tr>
+								</thead>
+								<tbody>
+								<tr class="<?= getRowColor($x) ?>" onmouseover="mark(this, 0)" onmouseout="mark(this, 1)">
 									<td>
 										<a href="#"
 										   onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
@@ -288,11 +275,11 @@ $(function() {
 
 										<? } ?>
 									</td>
-									<td class="content_row">
-										<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
-										if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
-										?>
-									</td>
+<!--									<td class="content_row">-->
+<!--										--><?// if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) echo $_LANG->get('Kalkulation');
+//										if ($document->getRequestModule() == Document::REQ_MODULE_COLLECTIVEORDER) echo $_LANG->get('Sammel');
+//										?>
+<!--									</td>-->
 									<td>
 										<? if ($document->getRequestModule() == Document::REQ_MODULE_ORDER) {
 											?>
@@ -304,56 +291,76 @@ $(function() {
 											<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?= $order->getId() ?>"><?= $order->getNumber() ?></a>
 										<? } ?>
 									</td>
-									<td><?= printPrice($document->getPriceBrutto()) ?> <?= $_USER->getClient()->getCurrency() ?></td>
-									<td><?= printPrice($document->getPriceNetto()) ?> <?= $_USER->getClient()->getCurrency() ?></td>
+									<td>
+										<?= $order->getTitle()?>
+										&nbsp;
+									</td>
+
+
 									<td>
 										<?= $order->getCustomer()->getNameAsLine() ?>
 										&nbsp;
 									</td>
 									<td>
-										<?
-										if ($order->getCustomer()->getCommissionpartner() > 0) {
-											$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
-											echo $tmp_bcontact->getName1();
-										} else {
-											echo 'kein';
-										}
-										?>
-										&nbsp;
+										<?= printPrice($document->getPriceNetto()) ?><?= $_USER->getClient()->getCurrency() ?>
 									</td>
 									<td>
-										<?
-										if ($order->getCustomer()->getCommissionpartner() > 0) {
-											$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
-											echo printPrice(($document->getPriceBrutto() / 100 * $tmp_bcontact->getProvision())) ?> <?= $_USER->getClient()->getCurrency();
-										} else {
-											echo '';
-										}
-										?>
-										&nbsp;
+										<?= printPrice($document->getPriceBrutto()) ?><?= $_USER->getClient()->getCurrency() ?>
 									</td>
-									<td>
-										<?= $order->getTitle() ?>
-										&nbsp;
-									</td>
-									<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
-									<td
-										<?php
-										$payable = $document->getPayable();
-										$paynet = $order->getPaymentterm()->getNettodays();
-										if ($paynet > 0) {
-											$payable = $payable + (60 * 60 * 24 * $paynet);
-										}
+								</tr>
+							</tbody>
+								<thead>
+									<th class="content_row_header"><?= $_LANG->get('Provisionspartner') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Provision') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('erstellt') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('F&auml;llig') ?></th>
+									<th class="content_row_header"><?= $_LANG->get('Bezahlt') ?></th>
+									<th class="content_row_header" align="center"><?= $_LANG->get('Optionen') ?></th>
+								</thead>
+							<tbody>
+							<tr>
 
-										if ($document->getPayed() == 0) {
-											if (strtotime(date("d.m.Y 23:59:59", $payable)) > time())
-												echo "style='color:green'";
-											else echo "style='color:red'";
-										} ?>>
-										<?
-										echo date("d.m.Y", $payable);
-										?>&nbsp;
-									</td>
+
+								<td>
+									<?
+									if ($order->getCustomer()->getCommissionpartner() > 0) {
+										$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
+										echo $tmp_bcontact->getName1();
+									} else {
+										echo 'kein';
+									}
+									?>
+									&nbsp;
+								</td>
+								<td>
+									<?
+									if ($order->getCustomer()->getCommissionpartner() > 0) {
+										$tmp_bcontact = new CommissionContact($order->getCustomer()->getCommissionpartner());
+										echo printPrice(($document->getPriceBrutto() / 100 * $tmp_bcontact->getProvision())) ?> <?= $_USER->getClient()->getCurrency();
+									} else {
+										echo '';
+									}
+									?>
+									&nbsp;
+								</td>
+								<td><?= date("d.m.Y", $document->getCreateDate()) ?></td>
+								<td
+									<?php
+									$payable = $document->getPayable();
+									$paynet = $order->getPaymentterm()->getNettodays();
+									if ($paynet > 0) {
+										$payable = $payable + (60 * 60 * 24 * $paynet);
+									}
+
+									if ($document->getPayed() == 0) {
+										if (strtotime(date("d.m.Y 23:59:59", $payable)) > time())
+											echo "style='color:green'";
+										else echo "style='color:red'";
+									} ?>>
+									<?
+									echo date("d.m.Y", $payable);
+									?>&nbsp;
+								</td>
 
 									<td>
 										<input type="text" name="date_<?= $x ?>" id="date_<?= $x ?>"
@@ -396,7 +403,12 @@ $(function() {
 									<?= printPrice($sum_netto); ?> <?= $_USER->getClient()->getCurrency() ?>
 								</td>
 								<td>
-
+									<a
+									<button class="btn btn-xs btn-success" type="submit" href="./docs/<?= $_USER->getId() ?>-Rechnungsausgang.csv" class="icon-link" title="Rechnugen als CSV-Datei exportieren">
+										<span class="glyphicons glyphicons-calculator"></span>
+										<?=$_LANG->get('Export')?>
+									</button>
+									</a>
 								</td>
 								<td>&ensp;</td>
 							</tr>

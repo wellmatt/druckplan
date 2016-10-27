@@ -32,6 +32,8 @@ $quickmove->addItem('Speichern','#',"$('#countries_form').submit();",'glyphicon-
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
+
+
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -39,7 +41,6 @@ echo $quickmove->generate();
 		</h3>
 	</div>
 		<form action="index.php?page=<?=$_REQUEST['page']?>" id="countries_form" method="post">
-
 			<input type="hidden" name="exec" value="save">
 			<div class="table-responsive">
 				<table class="table table-hover">

@@ -14,6 +14,7 @@ require_once('libs/modules/businesscontact/businesscontact.class.php');
 require_once('libs/modules/businesscontact/address.class.php');
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/associations/association.class.php';
+require_once 'libs/modules/accounting/invoiceout.class.php';
 
 global $_USER;
 

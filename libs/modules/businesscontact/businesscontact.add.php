@@ -1298,7 +1298,7 @@ echo $quickmove->generate();
 								<span class="pull-right">
 									<button class="btn btn-xs btn-success"  onclick="addTitlePosition()">
                                         <span class="glyphicons glyphicons-plus pointer"></span>
-                                        <?= $_LANG->get('Titel hinzuf&uuml;gen') ?>
+                                        <?= $_LANG->get('Personalisierung hinzuf&uuml;gen') ?>
                                     </button>
                                 </span>
 							</h3>
@@ -1378,7 +1378,7 @@ echo $quickmove->generate();
 				 <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
 								<span
 									<button class="btn btn-xs btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">
-										<span class="glyphicons glyphicons-plus pointer" style="float:right;" </span>
+										<span class="glyphicons glyphicons-plus pointer"></span>
 											<?= $_LANG->get(' Neu') ?>
 									</button>
 							</span>

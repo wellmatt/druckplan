@@ -29,7 +29,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
 						<span class="glyphicons glyphicons-plus"></span>
-							<?=$_LANG->get('Format hinzuf&uuml;gen')?>
+							<?=$_LANG->get('Produktformat hinzuf&uuml;gen')?>
 					</button>
 				</span>
 			</h3>

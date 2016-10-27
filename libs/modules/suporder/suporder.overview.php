@@ -34,7 +34,7 @@ if ($_REQUEST["exec"] == "delete"){
 <!--                </button>-->
                 <button class="btn btn-xs btn-success"
                         onclick="window.location.href='index.php?page=libs/modules/suporder/suporder.edit.php&exec=new';">
-                    <span class="glyphicons glyphicons-plus-sign"></span>
+                    <span class="glyphicons glyphicons-plus"></span>
                     Bestellung erstellen
                 </button>
             </span>

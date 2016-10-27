@@ -223,7 +223,7 @@ function PersoOrderTableRefresh()
 						  <span class="glyphicons glyphicons-refresh"></span>
 						  <?= $_LANG->get('Refresh') ?>
 					  </button>
-					  <button class="btn btn-xs btn-danger" onclick="document.location.href='index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset';">
+					  <button class="btn btn-xs btn-warning" onclick="document.location.href='index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=reset';">
 						  <span class="glyphicons glyphicons-ban-circle"></span>
 						  <?= $_LANG->get(' Reset') ?>
 					  </button>

@@ -168,11 +168,11 @@ $(function() {
 				<?php
 			}
 		} ?>
-			<button class="btn btn-origin btn-default" type="button" onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>'">
+			<button class="btn btn-origin btn-success" type="button" onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>'">
 				<?= $_LANG->get('Zur&uuml;ck') ?>
 			</button>
 			<span class="pull-right">
-					<button class="btn btn-origin btn-default" type="submit">
+					<button class="btn btn-origin btn-success" type="submit">
 						<?= $_LANG->get('Speichern') ?>
 					</button>
 				</span>

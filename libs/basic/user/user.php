@@ -27,7 +27,7 @@ if ($_REQUEST["exec"] == "edit")
 				Benutzer
 				<span class="pull-right">
 					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
-						<span class="glyphicons glyphicons-user"></span>
+						<span class="glyphicons glyphicons-plus"></span>
 						<?=$_LANG->get('Benutzer hinzuf&uuml;gen')?>
 					</button>
 				</span>

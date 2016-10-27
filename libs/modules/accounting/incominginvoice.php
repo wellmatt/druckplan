@@ -382,11 +382,6 @@ $(function() {
 				<div class="panel-heading">
 					<h3 class="panel-title">
 						Filteroptionen
-					 <span class="pull-right">
-							  <button class="btn btn-xs btn-success" type="submit">
-								  <?= $_LANG->get('Suche starten') ?>
-							  </button>
-					  </span>
 					</h3>
 				</div>
 				<div class="panel-body">
@@ -422,6 +417,12 @@ $(function() {
 							</div>
 						</div>
 					</div>
+					<br>
+					<span class="pull-right">
+							  <button class="btn btn-xs btn-success" type="submit">
+								  <?= $_LANG->get('Refresh') ?>
+							  </button>
+					  </span>
 				</div>
 			</div>
 		</form>
@@ -442,22 +443,7 @@ $(function() {
 				</div>
 				<div class="table-responsive">
 					<table class="table table-hover">
-						<thead>
-						<tr>
-							<th><?= $_LANG->get('RE-Datum') ?></th>
-							<th><?= $_LANG->get('Lieferant / Grund der Ausgabe') ?></th>
-							<th><?= $_LANG->get('Vernk. Auftr.') ?></th>
-							<th><?= $_LANG->get('Lief') ?></th>
-							<th><?= $_LANG->get('Netto') ?></th>
-							<th><?= $_LANG->get('MwSt-Satz') ?></th>
-							<th><?= $_LANG->get('MwSt') ?></th>
-							<th><?= $_LANG->get('Brutto') ?></th>
-							<th><?= $_LANG->get('Re-Nummer') ?></th>
-							<th><?= $_LANG->get('F&auml;llig') ?></th>
-							<th><?= $_LANG->get('Bezahlt') ?></th>
-							<th><?= $_LANG->get('SF-rel') ?></th>
-							<th>&nbsp;</th>
-						</tr>
+
 						<? // CSV-Datei der offenen Posten vorbereiten
 						$csv_file_open = fopen($filename1, "w");
 						//fwrite($csv_file, "Firma iPactor - �bersicht\n");
@@ -468,163 +454,200 @@ $(function() {
 
 						$xi = 0;
 						$x = 0;
-						foreach ($invoices as $invoice)
-						{
-						$tmp_supp = new BusinessContact($invoice->getInvc_supplierid());
-						// Datei mit den offenen Eingangsrechnungen fuellen
-						$csv_string_open .= date('d.m.Y', $invoice->getInvc_crtdat()) . ";" . printPrice($invoice->getInvc_price_netto()) . ";";
-						$csv_string_open .= $invoice->getTaxPrice() . ";" . $invoice->getBruttoPrice() . ";" . $invoice->getTaxRate() . ";";
-						$csv_string_open .= iconv("UTF-8", "cp1252", $tmp_supp->getNameAsLine()) . ";" . $tmp_supp->getKreditor() . ";";
-						$csv_string_open .= $invoice->getInvc_number() . ";" . $tmp_supp->getNumberatcustomer() . ";";
-						/* if ($invoice->getInvc_payable_dat() > 0){
-                            $csv_string_open .= date('d.m.Y', $invoice->getInvc_payable_dat());
-                        } */
-						$csv_string_open .= " \n";
+						foreach ($invoices as $invoice) {
+							$tmp_supp = new BusinessContact($invoice->getInvc_supplierid());
+							// Datei mit den offenen Eingangsrechnungen fuellen
+							$csv_string_open .= date('d.m.Y', $invoice->getInvc_crtdat()) . ";" . printPrice($invoice->getInvc_price_netto()) . ";";
+							$csv_string_open .= $invoice->getTaxPrice() . ";" . $invoice->getBruttoPrice() . ";" . $invoice->getTaxRate() . ";";
+							$csv_string_open .= iconv("UTF-8", "cp1252", $tmp_supp->getNameAsLine()) . ";" . $tmp_supp->getKreditor() . ";";
+							$csv_string_open .= $invoice->getInvc_number() . ";" . $tmp_supp->getNumberatcustomer() . ";";
+							/* if ($invoice->getInvc_payable_dat() > 0){
+                                $csv_string_open .= date('d.m.Y', $invoice->getInvc_payable_dat());
+                            } */
+							$csv_string_open .= " \n";
 
-						// if ($invoices[$x]->getInvc_payable_dat() > 0 && $invoices[$x]->getInvc_payable_dat() + 86400 < time())
-						if ($_REQUEST["invc_payable_dat"] > 0 && $_REQUEST["invc_payable_dat"] + 86400 < time())
-							$color = "#F5D5D5";
-						else
-							$color = getRowColor($x);
-						?>
-						</thead>
-						<tbody>
-						<tr class="<?= $color ?>" onmouseover="mark(this, 0)"
-							onmouseout="mark(this, 1)">
-							<td>
-								<input type="text" name="invc_crtdat_<?= $x ?>" id="invc_crtdat_<?= $x ?>"
-									   value="<? if ($invoice->getInvc_crtdat() > 0) echo date('d.m.Y', $invoice->getInvc_crtdat()) ?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-									   class="form-control invc_crtdat"/>
-							</td>
-							<td>
-								<input type="hidden" name="invc_existingid_<?= $x ?>"
-									   name="invc_existingid_<?= $x ?>"
-									   value="<?= (int)$invoice->getId() ?>"/>
-								<select class="form-control" name="invc_supplierid_<?= $x ?>"
-										id="invc_supplierid_<?= $x ?>"
-										onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<option value="">&lt;<?= $_LANG->get('Lieferant ausw&auml;hlen') ?>&gt;</option>
-									<? foreach ($suppliers AS $supplier) { ?>
-										<option value="<?= $supplier->getId() ?>"
-											<? if ($supplier->getId() == $invoice->getInvc_supplierid()) echo 'selected="selected"' ?>><?= $supplier->getNameAsLine() ?></option>
-									<? } ?>
-								</select>
-								<input type="text" class="form-control" name="invc_title_<?= $x ?>"
-									   value="<?= $invoice->getInvc_title() ?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							</td>
-							<td>
-								<?
-								$xorder = 0;
-								if ($invoice->getInvc_orders()) {
-									foreach ($invoice->getInvc_orders() as $tmp_invc_order) {
-										$tmp_colinv = new CollectiveInvoice($tmp_invc_order['id']);
-										echo '<input type="text" class="form-control" value="' . $tmp_invc_order['amount'] . '" name="invc_order[' . $x . '][' . $xorder . '][amount]"><a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=' . $tmp_colinv->getId() . '"> ' . $tmp_colinv->getNumber() . '</a></br>';
-										echo '<input type="hidden" value="' . $tmp_colinv->getId() . '" name="invc_order[' . $x . '][' . $xorder . '][id]">';
-										$xi++;
-										$xorder++;
+							// if ($invoices[$x]->getInvc_payable_dat() > 0 && $invoices[$x]->getInvc_payable_dat() + 86400 < time())
+							if ($_REQUEST["invc_payable_dat"] > 0 && $_REQUEST["invc_payable_dat"] + 86400 < time())
+								$color = "#F5D5D5";
+							else
+								$color = getRowColor($x);
+							?>
+							<thead>
+							<tr>
+								<th width="10%"><?= $_LANG->get('RE-Datum') ?></th>
+								<th width="20%"><?= $_LANG->get('Lieferant') ?></th>
+								<th width="20%"><?= $_LANG->get('Grund der Ausgabe') ?></th>
+								<th width="15%"><?= $_LANG->get('Netto') ?></th>
+								<th width="15%"><?= $_LANG->get('Brutto') ?></th>
+								<th width="15%"><?= $_LANG->get('SF-rel') ?></th>
+								<th width="5%">&nbsp;</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr class="<?= $color ?>" onmouseover="mark(this, 0)" onmouseout="mark(this, 1)">
+								<td>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<input type="text" name="invc_crtdat_<?= $x ?>" id="invc_crtdat_<?= $x ?>"
+												   value="<? if ($invoice->getInvc_crtdat() > 0) echo date('d.m.Y', $invoice->getInvc_crtdat()) ?>"
+												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+												   class="form-control invc_crtdat"/>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<input type="hidden" name="invc_existingid_<?= $x ?>"
+												   name="invc_existingid_<?= $x ?>"
+												   value="<?= (int)$invoice->getId() ?>"/>
+											<select class="form-control" name="invc_supplierid_<?= $x ?>"
+													id="invc_supplierid_<?= $x ?>"
+													onfocus="markfield(this,0)" onblur="markfield(this,1)">
+												<option value="">&lt;<?= $_LANG->get('Lieferant ausw&auml;hlen') ?>
+													&gt;</option>
+												<? foreach ($suppliers AS $supplier) { ?>
+													<option value="<?= $supplier->getId() ?>"
+														<? if ($supplier->getId() == $invoice->getInvc_supplierid()) echo 'selected="selected"' ?>><?= $supplier->getNameAsLine() ?></option>
+												<? } ?>
+											</select>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<input type="text" class="form-control" name="invc_title_<?= $x ?>"
+												   value="<?= $invoice->getInvc_title() ?>" onfocus="markfield(this,0)"
+												   onblur="markfield(this,1)">
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="input-group">
+										<input type="text" class="form-control" name="invc_price_netto_<?= $x ?>"
+											   value="<?= printPrice($invoice->getInvc_price_netto()); ?>"
+											   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+										<span class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
+									</div>
+								</td>
+								<td>
+									<div class="input-group">
+										<input type="text" class="form-control" id="finishing_kosten"
+											   name="finishing_kosten" value="<? if ((int)$invoice->getId()) {
+											echo $invoice->getBruttoPrice();
+										} else echo "- - - " ?>">
+										<span class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
+									</div>
+								</td>
+								<td>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<input type="checkbox" class="form-control"
+												   name="invc_sepa_activation_<?= $x ?>"
+												   value="1"
+												<? if (in_array($invoice, $sepa_inv)) echo 'checked="checked"'; ?>>
+										</div>
+									</div>
+								<td>
+									<ul class="postnav_del_small_invoice">
+										<? if ($invoice->getId()) { ?>
+
+											<a href="#"
+											   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $invoice->getId() ?>&exec=del')">
+												<button type="button" class="btn btn-xs btn-danger">
+													<?= $_LANG->get('L&ouml;schen') ?>
+												</button>
+											</a>
+
+											<!-- input type="button" class="buttonRed" value="<?= $_LANG->get('L&ouml;schen') ?>" onclick="askDel('index.php?pid=<?= $_REQUEST["pid"] ?>&id=<?= $invoice->getId() ?>&exec=del')"-->
+										<? } else { ?>
+											<a href="#" style="visibility: hidden">
+												<button type="button" class="btn btn-xs btn-danger">
+													<?= $_LANG->get('L&ouml;schen') ?>
+												</button>
+											</a>
+										<? } ?>
+									</ul>
+								</td>
+							</tr>
+							</tbody>
+							<thead>
+							<th><?= $_LANG->get('Vernk. Auftr.') ?></th>
+							<th><?= $_LANG->get('Re-Nummer') ?></th>
+							<th><?= $_LANG->get('F&auml;llig') ?></th>
+							<th><?= $_LANG->get('Bezahlt') ?></th>
+							<th><?= $_LANG->get('MwSt-Satz') ?></th>
+							<th><?= $_LANG->get('MwSt') ?></th>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<?
+									$xorder = 0;
+									if ($invoice->getInvc_orders()) {
+										foreach ($invoice->getInvc_orders() as $tmp_invc_order) {
+											$tmp_colinv = new CollectiveInvoice($tmp_invc_order['id']);
+											echo '<input type="text" class="form-control" value="' . $tmp_invc_order['amount'] . '" name="invc_order[' . $x . '][' . $xorder . '][amount]"><a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=' . $tmp_colinv->getId() . '"> ' . $tmp_colinv->getNumber() . '</a></br>';
+											echo '<input type="hidden" value="' . $tmp_colinv->getId() . '" name="invc_order[' . $x . '][' . $xorder . '][id]">';
+											$xi++;
+											$xorder++;
+										}
+										echo '</br>';
 									}
-									echo '</br>';
-								}
-								?>
-								Summe: <input type="text" class="form-control" value="0"
-											  name="invc_order[<?= $x ?>][<?= $xorder ?>][amount]"></br>
-								Auftrag: <input type="text" class="form-control searchcolinv"
-												name="invc_order_<?= $x ?>" value=""
-												data-inputname="invc_order[<?= $x ?>][<?= $xorder ?>][id]"
-												placeholder="Auftrag suchen...">
-								<input type="hidden" name="invc_order[<?= $x ?>][<?= $xorder ?>][id]"
-									   id="invc_order[<?= $x ?>][<?= $xorder ?>][id]">
-							</td>
-							<td>
-								<input type="checkbox" class="form-control" name="invc_uses_supplier_<?= $x ?>"
-									   value="1" <? if ($invoice->getInvc_supplierid() > 0) echo 'checked="checked"' ?>
-									   onclick="if(this.checked)
-										   document.getElementById('invc_supplierid_<?= $x ?>').style.display='';
-										   else
-										   document.getElementById('invc_supplierid_<?= $x ?>').style.display='none';"
-									<? if ((int)$invoice->getInvc_supplierid()) echo "checked='checked'" ?>>
-							</td>
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control" name="invc_price_netto_<?= $x ?>"
-										   value="<?= printPrice($invoice->getInvc_price_netto()); ?>"
-										   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-									<span class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
-								</div>
-							</td>
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control" onfocus="markfield(this,0)"
-										   onblur="markfield(this,1)"
-										   name="invc_taxes_active_<?= $x ?>" id="invc_taxes_active_<?= $x ?>"
-										   value="<?= $invoice->getInvc_taxes_active(); ?>"/>
-									<span class="input-group-addon">%</span>
-								</div>
+									?>
+									<input type="text" class="form-control" value="0"
+										   name="invc_order[<?= $x ?>][<?= $xorder ?>][amount]">
+									Summe:
+									</br>
+									<input type="text" class="form-control searchcolinv" name="invc_order_<?= $x ?>" value=""
+										   data-inputname="invc_order[<?= $x ?>][<?= $xorder ?>][id]"
+										   placeholder="Auftrag suchen...">
+									Auftrag:
+									<input type="hidden" name="invc_order[<?= $x ?>][<?= $xorder ?>][id]"
+										   id="invc_order[<?= $x ?>][<?= $xorder ?>][id]">
+								</td>
 
-							</td>
-							<td>
-								<div class="form-text">
-									<? if ((int)$invoice->getId()) {
-										echo $invoice->getTaxPrice();
-										echo " " . $_USER->getClient()->getCurrency();
-									} else echo "- - - " ?>
-								</div>
-							</td>
-							<td>
-								<div class="form-text">
-									<? if ((int)$invoice->getId()) {
-										echo $invoice->getBruttoPrice();
-										echo " " . $_USER->getClient()->getCurrency();
-									} else echo "- - - " ?>
-								</div>
-							</td>
-							<td>
-								<input type="text" class="form-control" name="invc_number_<?= $x ?>"
-									   value="<?= $invoice->getInvc_number() ?>">
-							</td>
-							<td>
-								<input type="text" name="invc_payable_dat_<?= $x ?>" id="invc_payable_dat_<?= $x ?>"
-									   value="<? if ($invoice->getInvc_payable_dat() > 0) echo date('d.m.Y', $invoice->getInvc_payable_dat()) ?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-									   class="form-control invc_payable_dat"/>
-							</td>
-							<td>
-								<input type="text" name="invc_payed_dat_<?= $x ?>" id="invc_payed_dat_<?= $x ?>"
-									   value="<? if ($invoice->getInvc_payed_dat() > 0) echo date('d.m.Y', $invoice->getInvc_payed_dat()) ?>"
-									   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-									   class="form-control invc_payed_dat"/>
-							</td>
-							<td>
-								<input type="checkbox" class="form-control" name="invc_sepa_activation_<?= $x ?>"
-									   value="1"
-									<? if (in_array($invoice, $sepa_inv)) echo 'checked="checked"'; ?>>
-							<td>
-								<ul class="postnav_del_small_invoice">
-									<? if ($invoice->getId()) { ?>
+								<td>
+									<input type="text" class="form-control" name="invc_number_<?= $x ?>"
+										   value="<?= $invoice->getInvc_number() ?>">
+								</td>
+								<td>
+									<input type="text" name="invc_payable_dat_<?= $x ?>" id="invc_payable_dat_<?= $x ?>"
+										   value="<? if ($invoice->getInvc_payable_dat() > 0) echo date('d.m.Y', $invoice->getInvc_payable_dat()) ?>"
+										   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+										   class="form-control invc_payable_dat"/>
+								</td>
+								<td>
+									<input type="text" name="invc_payed_dat_<?= $x ?>" id="invc_payed_dat_<?= $x ?>"
+										   value="<? if ($invoice->getInvc_payed_dat() > 0) echo date('d.m.Y', $invoice->getInvc_payed_dat()) ?>"
+										   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+										   class="form-control invc_payed_dat"/>
+								</td>
+								<td>
+									<div class="input-group">
+										<input type="text" class="form-control" onfocus="markfield(this,0)"
+											   onblur="markfield(this,1)"
+											   name="invc_taxes_active_<?= $x ?>" id="invc_taxes_active_<?= $x ?>"
+											   value="<?= $invoice->getInvc_taxes_active(); ?>"/>
+										<span class="input-group-addon">%</span>
+									</div>
 
-										<a href="#"
-										   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&id=<?= $invoice->getId() ?>&exec=del')">
-											<button type="button" class="btn btn-xs btn-danger">
-												<?= $_LANG->get('L&ouml;schen') ?>
-											</button>
-										</a>
+								</td>
+								<td>
+									<div class="input-group">
+										<input type="text" class="form-control" id="finishing_kosten"
+											   name="finishing_kosten" value="<? if ((int)$invoice->getId()) {
+											echo $invoice->getTaxPrice();
+										} else echo "- - - " ?>">
+										<span class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
+									</div>
+								</td>
 
-										<!-- input type="button" class="buttonRed" value="<?= $_LANG->get('L&ouml;schen') ?>" onclick="askDel('index.php?pid=<?= $_REQUEST["pid"] ?>&id=<?= $invoice->getId() ?>&exec=del')"-->
-									<? } else { ?>
-										<a href="#" style="visibility: hidden">
-											<button type="button" class="btn btn-xs btn-danger">
-												<?= $_LANG->get('L&ouml;schen') ?>
-											</button>
-										</a>
-									<? } ?>
-								</ul>
-							</td>
-
-						</tr>
-						<?
-						$x++;
+							</tr>
+							</tbody>
+							<?
+							$x++;
 
 						}
 
@@ -639,94 +662,105 @@ $(function() {
 
 						// leeere Felder einfuegen
 
-						for ($y = $x; $y < $x + 5; $y++) { ?>
-							<tr class="<?= getRowColor($y) ?>" onmouseover="mark(this, 0)"
-								onmouseout="mark(this, 1)">
-								<td class="content_row">
-									<input type="text" name="invc_crtdat_<?= $y ?>" id="invc_crtdat_<?= $y ?>"
-										   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-										   class="form-control invc_crtdat"/>
-								</td>
-								<td>
-									<input type="hidden" name="invc_existingid_<?= $y ?>"
-										   name="invc_existingid_<?= $y ?>" value=0/>
-									<select class="form-control" name="invc_supplierid_<?= $y ?>"
-											id="invc_supplierid_<?= $y ?>"
-											onfocus="markfield(this,0)" onblur="markfield(this,1)">
-										<option value="">&lt; <?= $_LANG->get('Lieferant ausw&auml;hlen') ?>
-											&gt;</option>
-										<? foreach ($suppliers AS $supplier) { ?>
-											<option
-												value="<?= $supplier->getId() ?>"><?= $supplier->getNameAsLine() ?></option>
-										<? } ?>
-									</select>
-									<input type="text" class="form-control" name="invc_title_<?= $y ?>" value=""
+						for ($y = $x;
+						$y < $x + 5;
+						$y++) { ?>
+
+						<thead>
+						<th><?= $_LANG->get('RE-Datum') ?></th>
+						<th><?= $_LANG->get('Lieferant') ?></th>
+						<th><?= $_LANG->get('Grund der Ausgabe') ?></th>
+						<th><?= $_LANG->get('Netto') ?></th>
+						<th><?= $_LANG->get('MwSt-Satz') ?></th>
+						<th><?= $_LANG->get('RE-Nummer') ?></th>
+						<th><?= $_LANG->get('fällig') ?></th>
+						<th><?= $_LANG->get('bezahlt') ?></th>
+						</thead>
+						<tbody>
+						<tr class="<?= getRowColor($y) ?>" onmouseover="mark(this, 0)"
+							onmouseout="mark(this, 1)">
+							<td class="content_row">
+								<input type="text" name="invc_crtdat_<?= $y ?>" id="invc_crtdat_<?= $y ?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+									   class="form-control invc_crtdat"/>
+							</td>
+							<td>
+								<input type="hidden" name="invc_existingid_<?= $y ?>"
+									   name="invc_existingid_<?= $y ?>" value=0/>
+								<select class="form-control" name="invc_supplierid_<?= $y ?>"
+										id="invc_supplierid_<?= $y ?>"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									<option value="">&lt; <?= $_LANG->get('Lieferant ausw&auml;hlen') ?>
+										&gt;</option>
+									<? foreach ($suppliers AS $supplier) { ?>
+										<option
+											value="<?= $supplier->getId() ?>"><?= $supplier->getNameAsLine() ?></option>
+									<? } ?>
+								</select>
+							</td>
+							<td>
+								<input type="text" class="form-control" name="invc_title_<?= $y ?>" value=""
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</td>
+							<td>
+								<div class="input-group">
+									<input type="text" class="form-control" name="invc_price_netto_<?= $y ?>"
+										   value=""
 										   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-								</td>
-								<td></td>
-								<td>
-									<input type="checkbox" class="form-control" name="invc_uses_supplier_<?= $y ?>"
-										   value="1" checked="checked"
-										   onclick="if(this.checked)
-											   document.getElementById('invc_supplierid_<?= $y ?>').style.display='';
-											   else
-											   document.getElementById('invc_supplierid_<?= $y ?>').style.display='none';">
-								</td>
-								<td>
-									<div class="input-group">
-										<input type="text" class="form-control" name="invc_price_netto_<?= $y ?>"
-											   value=""
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 											<span
 												class="input-group-addon"><?= $_USER->getClient()->getCurrency() ?></span>
-									</div>
+								</div>
+							</td>
+							<td>
+								<div class="input-group">
+									<input class="form-control" name="invc_taxes_active_<?= $y ?>"
+										   id="invc_taxes_active_<?= $y ?>"
+										   value="<?= $_USER->getClient()->getTaxes() ?>"
+										   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+										   onclick="this.value=''"/>
+									<span class="input-group-addon">%</span>
+								</div>
 
-								</td>
-								<td>
-									<div class="input-group">
-										<input class="form-control" name="invc_taxes_active_<?= $y ?>"
-											   id="invc_taxes_active_<?= $y ?>"
-											   value="<?= $_USER->getClient()->getTaxes() ?>"
-											   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-											   onclick="this.value=''"/>
-										<span class="input-group-addon">%</span>
-									</div>
-
-								</td>
-								<td><? echo "- - - " ?></td>
-								<td><? echo "- - - " ?></td>
-								<td>
-									<input type="text" class="form-control" name="invc_number_<?= $y ?>">
-								</td>
-								<td>
-									<input type="text" name="invc_payable_dat_<?= $y ?>"
-										   id="invc_payable_dat_<?= $y ?>" onfocus="markfield(this,0)"
-										   onblur="markfield(this,1)" class="form-control invc_payable_dat">
-								</td>
-								<td>
-									<input type="text" name="invc_payed_dat_<?= $y ?>" id="invc_payed_dat_<?= $y ?>"
-										   onfocus="markfield(this,0)"
-										   onblur="markfield(this,1)" class="form-control invc_payed_dat">
-								</td>
-								<td>
-									<ul class="postnav_del_small_invoice">
-										<a href="#" style="visibility: hidden">
-											<button type="button" class="btn btn-xs btn-danger">
-												<?= $_LANG->get('L&ouml;schen') ?>
-											</button>
-										</a>
-									</ul>
-								</td>
-							</tr>
+							</td>
+							<td>
+								<input type="text" class="form-control" name="invc_number_<?= $y ?>">
+							</td>
+							<td>
+								<input type="text" name="invc_payable_dat_<?= $y ?>"
+									   id="invc_payable_dat_<?= $y ?>" onfocus="markfield(this,0)"
+									   onblur="markfield(this,1)" class="form-control invc_payable_dat">
+							</td>
+							<td>
+								<input type="text" name="invc_payed_dat_<?= $y ?>" id="invc_payed_dat_<?= $y ?>"
+									   onfocus="markfield(this,0)"
+									   onblur="markfield(this,1)" class="form-control invc_payed_dat">
+							</td>
+							<td>
+								<ul class="postnav_del_small_invoice">
+									<a href="#" style="visibility: hidden">
+										<button type="button" class="btn btn-xs btn-danger">
+											<?= $_LANG->get('L&ouml;schen') ?>
+										</button>
+									</a>
+								</ul>
+							</td>
+						</tr>
 						<? } ?>
 						</tbody>
 					</table>
 				</div>
 			</div>
+			<br>
+			<span class="pull-right">
+						<button type="submit" class="btn btn-xs btn-success">
+							<?= $_LANG->get('Speichern') ?>
+						</button>
+			</span>
+			<br>
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						Export
+						Exportoptionen
 					</h3>
 				</div>
 				<div class="table-responsive">
@@ -739,13 +773,10 @@ $(function() {
 						<tbody>
 						<tr>
 							<td>
-								<button class="btn btn-xs btn-success"
-										onclick="document.location.href='<?= $filename1 ?>'"
-										title="<?= $_LANG->get('Offene Posten als CSV-Datei exportieren') ?>">
-										<span
-											class="glyphicons glyphicons-calculator"></span><?= $_LANG->get('Export') ?>
+								<button class="btn btn-xs btn-success" onclick="document.location.href='<?= $filename1 ?>'" title="<?= $_LANG->get('Offene Posten als CSV-Datei exportieren') ?>">
+										<span class="glyphicons glyphicons-calculator"></span>
+										<?= $_LANG->get('Export') ?>
 								</button>
-
 								<? /**
 								 * Seit 11.02.2014 soll alles in eine Liste geschrieben werden
 								 *
@@ -755,7 +786,6 @@ $(function() {
 								 * title="<?=$_LANG->get('Bezahlte Posten als CSV-Datei exportieren')?>"
 								 * ><span class="glyphicons glyphicons-calculator"></span><?=$_LANG->get('Bezahlte Posten')?></a>
 								 * <?***/ ?>
-
 							</td>
 							<td>
 								<? if ($_REQUEST["exec"] == "SEPA_gen") {    // Wenn SEPA-Datei erzeugen, dann Datei zum Download bereitstellen ...
@@ -765,7 +795,8 @@ $(function() {
 										<button class="btn btn-xs btn-success"
 												onclick="document.location.href='<?= $sepa_filename ?>'"
 												title="<?= $_LANG->get('XML-Datei f&uuml;r SFirm &ouml;ffnen') ?>">
-											<span class="glyphicons glyphicons-package">SFrim-Export</span>
+											<span class="glyphicons glyphicons-package"></span>
+											SFrim-Export
 										</button>
 										<br/><br/>
 									<? }
@@ -776,7 +807,7 @@ $(function() {
 								<td>
 									<button class="btn btn-xs btn-success"
 											onclick="document.getElementById('bankname').value='1';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();">
-										(<?= substr($_USER->getClient()->getBankName(), 0, 10); ?>) erzeugen"
+										(<?= substr($_USER->getClient()->getBankName(), 0, 10); ?>) erzeugen
 									</button>
 								</td>
 							<? } ?>
@@ -784,7 +815,7 @@ $(function() {
 								<td>
 									<button class="btn btn-xs btn-success"
 											onclick="document.getElementById('bankname').value='2';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();">
-										(<?= substr($_USER->getClient()->getBankName2(), 0, 10); ?>) erzeugen"
+										(<?= substr($_USER->getClient()->getBankName2(), 0, 10); ?>) erzeugen
 									</button>
 								</td>
 							<? } ?>
@@ -792,14 +823,12 @@ $(function() {
 								<td>
 									<button class="btn btn-xs btn-success"
 											onclick="document.getElementById('bankname').value='3';document.getElementById('exec').value='SEPA_gen';document.getElementById('idx_invcform').submit();">
-										(<?= substr($_USER->getClient()->getBankName3(), 0, 10); ?>) erzeugen"
+										(<?= substr($_USER->getClient()->getBankName3(), 0, 10); ?>) erzeugen
 									</button>
 								</td>
 							<? } ?>
 							<td>
-								<button type="submit" class="btn btn-xs btn-success">
-									<?= $_LANG->get('Speichern') ?>
-								</button>
+
 							</td>
 						</tr>
 						</tbody>

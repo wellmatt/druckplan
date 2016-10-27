@@ -132,13 +132,13 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
             <div class="table-responsive">
                 <table id="paper_table" class="table table-hover">
                     <thead>
-                    <tr>
-                        <th width="20"><?=$_LANG->get('ID')?></th>
-                        <th><?=$_LANG->get('Name')?></th>
-                        <th><?=$_LANG->get('Gr&ouml;&szlig;en')?></th>
-                        <th><?=$_LANG->get('Grammaturen')?></th>
-                        <th width="100"><?=$_LANG->get('Optionen')?></th>
-                    </tr>
+                        <tr>
+                            <th width="20"><?=$_LANG->get('ID')?></th>
+                            <th><?=$_LANG->get('Name')?></th>
+                            <th><?=$_LANG->get('Gr&ouml;&szlig;en')?></th>
+                            <th><?=$_LANG->get('Grammaturen')?></th>
+                            <th width="100"><?=$_LANG->get('Optionen')?></th>
+                        </tr>
                     </thead>
                 </table>
             </div>

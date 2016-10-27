@@ -276,7 +276,7 @@ if ($from_busicon){
                     <?= $savemsg ?>
                     <button class="btn btn-xs btn-success" type="button"
                             onclick="document.location.href='<?php echo $link; ?>';">
-                        <span class="glyphicons glyphicons-ticket"></span>
+                        <span class="glyphicons glyphicons-plus"></span>
                         <?= $_LANG->get('Ticket erstellen') ?>
                     </button>
                 </span>

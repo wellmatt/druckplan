@@ -286,7 +286,7 @@ else
                                    class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
                         </div>
                         <div class="col-sm-2">
-                            <span class="glyphicons glyphicons-remove pointer"
+                            <span style="color: orange" class="glyphicons glyphicons-remove pointer"
                                   onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();"
                                   title="Reset"></span>
                         </div>

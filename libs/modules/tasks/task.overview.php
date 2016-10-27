@@ -95,11 +95,12 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-		Aufgaben
+			Aufgaben
 			<span class = pull-right>
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=new';">
-					<span class="glyphicons glyphicons-plus-sign"></span>
+					<span class="glyphicons glyphicons-plus"></span>
 					 <?=$_LANG->get('Aufgabe erstellen') ?>
+				</button>
 			</span>
 		</h3>
 	</div>

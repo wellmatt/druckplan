@@ -75,7 +75,7 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			Provisionsskontakte
+			Provisionskontakte
 			&emsp; &emsp;
 			<span class="center">
 						<a href="index.php?page=<?= $_REQUEST['page'] ?>&order=<?= $order ?>"><span
@@ -138,10 +138,10 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 						class="glyphicons glyphicons-file-lock" title="Aktuelle Liste exportieren"></span> </a>
 					</span>
 					<span class="pull-right">
-						<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit">
-							<button class="btn btn-xs btn-success">
-							<span class="glyphicons glyphicons-user">
-							<?= $_LANG->get('Provisionskontakt hinzuf&uuml;gen') ?>
+						<a
+							<button class="btn btn-xs btn-success" href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit">
+								<span class="glyphicons glyphicons-plus pointer"></span>
+									<?= $_LANG->get('Provisionskontakt hinzuf&uuml;gen') ?>
 							</button>
 						</a>
 					</span>

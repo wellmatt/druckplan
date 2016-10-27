@@ -58,16 +58,14 @@ function askDel(myurl)
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			Kundenuploads
-			<span class= "pull-center">
-				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&doupload=1)?>';" >
-					<span class="glyphicons glyphicons-collapse"></span>
-					<?=$_LANG->get('Upload');?>
-				</button>
-			</span>
 			<span class= "pull-right">
 				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&filter=<?=$filter2?>';" >
 					<span class="glyphicons glyphicons-filter"></span>
 					<?=$filter_msg?>
+				</button>
+				<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&doupload=1)?>';" >
+					<span class="glyphicons glyphicons-collapse"></span>
+					<?=$_LANG->get('Upload');?>
 				</button>
 			</span>
 		</h3>
@@ -84,7 +82,7 @@ function askDel(myurl)
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">
-					<b><?=$cust->getNameAsLine()?></b>
+					<?=$cust->getNameAsLine()?>
 				</h3>
 			</div>
 				<div class="table-responsive">

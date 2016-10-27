@@ -48,7 +48,10 @@ $lists = MarketingList::getAllLists();
                             <input class="form-control" id="newlist" name="newlist" type="text">
                         </div>
                         <div class="col-sm-6">
-                            <button type="submit" class="btn form-control btn-sm btn-success ">Liste Hinzufügen</button>
+                            <button type="submit" class="btn form-control btn-sm btn-success ">
+                                <span class="glyphicons glyphicons-plus"></span>
+                                Marketingliste Hinzufügen
+                            </button>
                         </div>
                     </div>
                  </span>
@@ -71,10 +74,10 @@ $lists = MarketingList::getAllLists();
                             <td>
                                 <?php
                                 if ($list->getDefault() == 0) {
-                                    echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=star&id=' . $list->getId() . '"><img src="images/icons/star-empty.png"/></a>&nbsp;';
-                                    echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=delete&id=' . $list->getId() . '"><img src="images/icons/cross.png"/></a>';
+                                    echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=star&id=' . $list->getId() . '"><span class="glyphicons glyphicons-star-empty"></span></a>&nbsp;';
+                                    echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=delete&id=' . $list->getId() . '"><span class="glyphicons glyphicons-remove"></span></a>';
                                 } else {
-                                    echo '<img src="images/icons/star.png"/>';
+                                    echo '<span class="glyphicons glyphicons-star"></span>';
                                 }
                                 ?>
                             </td>

@@ -16,7 +16,7 @@ require_once 'libs/modules/oauth/oauthclient.class.php';
             oAuth Clients
             <span class="pull-right">
                 <button class="btn btn-xs btn-success" onclick="window.location.href='index.php?page=libs/modules/oauth/oauthclient.edit.php';">
-                    <span class="glyphicons glyphicons-plus-sign"></span>
+                    <span class="glyphicons glyphicons-plus"></span>
                     Client erstellen
                 </button>
             </span>

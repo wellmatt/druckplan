@@ -247,25 +247,28 @@ function addPriceRow()
 {
 	var obj = document.getElementById('table-prices');
 	var count = parseInt(document.getElementById('count_sep_quantity').value) + 1;
-	var insert = '<tr><td class="content_row_clear">'+count+'</td>';
-	insert += '<td class="content_row_clear">';
+	var insert = '<tr><td>'+count+'</td>';
+	insert += '<td>';
 	insert += '&ensp;';
 	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="perso_price_max_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 60px"> <?=$_LANG->get('Stk.')?>';
+	insert += '<td>';
+	insert += '<div class="input-group">';
+	insert += '<input name="perso_price_max_'+count+'" class="form-control" type="text" value ="">';
+	insert += '<span class="input-group-addon">Stk</span></div>';
 	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input name="perso_price_price_'+count+'" class="text" type="text"';
-	insert += 'value ="" style="width: 70px"> <?=$_USER->getClient()->getCurrency()?>';
+	insert += '<td>';
+	insert += '<div class="input-group">';
+	insert += '<input name="perso_price_price_'+count+'" class="form-control" type="text" value ="">';
+	insert += '<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span></div>';
 	insert += '</td>';
-	insert += '<td class="content_row_clear">';
-	insert += '<input type="checkbox" name="perso_price_show_'+count+'" class="text" value="1">';
+	insert += '<td>';
+	insert += '<input type="checkbox" name="perso_price_show_'+count+'" class="form-control" value="1">';
 	insert += '</td></tr>';
 	obj.insertAdjacentHTML("BeforeEnd", insert);
 	document.getElementById('count_sep_quantity').value = count;
 }
 </script>
+
 
 <!-- FancyBox -->
 <script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
@@ -773,56 +776,63 @@ echo $quickmove->generate();
 	<? // ---------------------------------------- Preisstaffeln ----------------------------------------------------------------------- ?>
 	<input 	type="hidden" name="count_sep_quantity" id="count_sep_quantity" 
 			value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
-	<h1><?=$_LANG->get('Preisstaffeln')?></h1>
-	<div class="box2">
-		<table id="table-prices">
-			<colgroup>
-	        	<col width="40">
-	        	<col width="20">
-	        	<col width="120">
-	        	<col width="120">
-	        	<col width="120">
-	    	</colgroup>
-			<tr>
-				<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
-				<td class="content_row_header">&ensp;</td>
-				<td class="content_row_header"><?=$_LANG->get('Menge')?></td>
-				<td class="content_row_header"><?=$_LANG->get('Preis')?>*</td>
-				<td class="content_row_header"><?=$_LANG->get('Preis anzeigen')?></td>
-				<td class="content_row_header"><span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow()"></span></td>
-			</tr>
-			<?
-			$x = count($allprices);
-			if ($x < 1){
-				//$allprices[] = new Array
-				$x++;
-			}
-			for ($y=0; $y < $x ; $y++){ ?>
-				<tr>
-					<td class="content_row_clear">
-					<?=$y+1?>
-					</td>
-					<td class="content_row_clear">
-						&ensp;
-					</td>
-					<td class="content_row_clear">
-						<input 	name="perso_price_max_<?=$y?>" class="text" type="text"
-								value ="<?=$allprices[$y][sep_max]?>" style="width: 60px">
-						<?=$_LANG->get('Stk.')?>
-					</td>
-					<td class="content_row_clear">
-						<input 	name="perso_price_price_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($allprices[$y][sep_price])?>" style="width: 70px">
-						<?=$_USER->getClient()->getCurrency()?>
-					</td>
-					<td class="content_row_clear">
-						<input type="checkbox" name="perso_price_show_<?=$y?>" class="text" value="1"
-								<?if ($allprices[$y]["sep_show"] == 1 ) echo "checked";?>> 
-					</td>
-				</tr>
-			<? } //Ende alle Preis-Staffeln?>
-		</table>
-		<br/>* <?=$_LANG->get('Staffelpreis wird gel&ouml;scht, falls Preis = 0')?> 
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					Preisstaffeln
+				</h3>
+		  </div>
+		  <div class="panel-body">
+				<div class="table-responsive">
+					<table id="table-prices" class="table table-hover">
+						<thead>
+							<tr>
+								<th width="1%"><?=$_LANG->get('Nr.')?></th>
+								<th width="10%">&ensp;</th>
+								<th width="20%"><?=$_LANG->get('Menge')?></th>
+								<th width="20%"><?=$_LANG->get('Preis')?>*</th>
+								<th width="20%"><?=$_LANG->get('Preis anzeigen')?></th>
+								<th width="30%"><span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow()"></span></th>
+							</tr>
+						</thead>
+						<?
+						$x = count($allprices);
+						if ($x < 1){
+							//$allprices[] = new Array
+							$x++;
+						}
+						for ($y=0; $y < $x ; $y++){ ?>
+						<tbody>
+						<tr>
+							<td>
+								<?=$y+1?>
+							</td>
+							<td>
+								&ensp;
+							</td>
+							<td>
+								<div class="input-group">
+									<input 	name="perso_price_max_<?=$y?>" class="form-control" type="text" value ="<?=$allprices[$y][sep_max]?>" >
+									<span class="input-group-addon">Stk</span>
+								</div>
+							</td>
+							<td>
+								<div class="input-group">
+									<input 	name="perso_price_price_<?=$y?>" class="form-control" type="text" value ="<?=printPrice($allprices[$y][sep_price])?>">
+									<span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+								</div>
+							</td>
+							<td>
+								<input type="checkbox" name="perso_price_show_<?=$y?>" class="form-control" value="1"
+									<?if ($allprices[$y]["sep_show"] == 1 ) echo "checked";?>>
+							</td>
+						</tr>
+						</tbody>
+						<? } //Ende alle Preis-Staffeln?>
+					</table>
+					<br/>* <?=$_LANG->get('Staffelpreis wird gel&ouml;scht, falls Preis = 0')?>
+				</div>
+		  </div>
 	</div>
 	<br/>
 <? } ?>

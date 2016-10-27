@@ -32,6 +32,7 @@ $marketjobs = Marketing::getAllForList($curr_list);
                     </a>
                     <a href="index.php?page=libs/modules/marketing/marketing.edit.php&exec=new&list=<?=$curr_list?>" class="icon-link">
                         <button class="btn btn-xs btn-success">
+                            <span class="glyphicons glyphicons-plus"></span>
                             <?= $_LANG->get('Plan erstellen') ?>
                         </button>
                     </a>

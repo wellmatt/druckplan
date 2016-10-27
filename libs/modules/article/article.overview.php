@@ -256,9 +256,9 @@ $(function() {
 
                     <div class="col-sm-12">
                          <span class="pull-right">
-                             <button class="btn btn-xs btn-success"
+                             <button class="btn btn-xs btn-warning"
                                      onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();">
-                                 <span class="glyphicons glyphicons-remove pointer"></span>
+                                 <span class="glyphicons glyphicons-ban-circle pointer"></span>
                                  <?= $_LANG->get('Reset') ?>
                              </button>
                          </span>

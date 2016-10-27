@@ -64,6 +64,9 @@ if($_REQUEST["createDoc"]){
     } else {
         $hash = $doc->createDoc(Document::VERSION_EMAIL);
         $doc->createDoc(Document::VERSION_PRINT, $hash);
+		if ($_REQUEST["createDoc"] == "invoice"){
+			InvoiceOut::generate($doc->getName(),$collectinv,$collectinv->getPaymentterm());
+		}
     }
     $doc->save();
 }

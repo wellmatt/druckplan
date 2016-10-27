@@ -1,14 +1,31 @@
 <?php
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Christian Schroeer <cschroeer@ipactor.de>, 2016
+ *
+ */
+    chdir('../../../');
+    require_once("config.php");
+    require_once("libs/basic/mysql.php");
+    require_once("libs/basic/globalFunctions.php");
+    require_once("libs/basic/user/user.class.php");
+    require_once("libs/basic/groups/group.class.php");
+    require_once("libs/basic/clients/client.class.php");
+    require_once("libs/basic/translator/translator.class.php");
+    require_once 'libs/basic/countries/country.class.php';
+    require_once 'libs/basic/cachehandler/cachehandler.class.php';
+    require_once 'thirdparty/phpfastcache/phpfastcache.php';
+    session_start();
 
-    require_once '../../../config.php';
-
-    $aColumns = array( 'id', 'name', 'sizes', 'weight' );
+    $aColumns = array( 'id', 'renr', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'crtdate', 'duedate', 'payeddate', 'status' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
      
     /* DB table to use */
-    $sTable = "papers";
+    $sTable = "invoiceouts";
      
     /* Database connection information */
     $gaSql['user']       = $_CONFIG->db->user;
@@ -16,6 +33,12 @@
     $gaSql['db']         = $_CONFIG->db->name;
     $gaSql['server']     = $_CONFIG->db->host;
      
+    $DB = new DBMysql();
+    $DB->connect($_CONFIG->db);
+    
+    Global $_USER;
+    $_USER = new User();
+    $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
      
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * If you just want to use the basic configuration for DataTables with PHP server-side, there is
@@ -30,6 +53,9 @@
         header( $_SERVER['SERVER_PROTOCOL'] .' 500 Internal Server Error' );
         die( $sErrorMessage );
     }
+
+    $newline = '
+';
  
      
     /*
@@ -94,7 +120,7 @@
         $sWhere = "WHERE (";
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "sizes" && $aColumns[$i] != "weight" )
+            if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" )
             {
                 $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
             }
@@ -122,23 +148,56 @@
     
     if ( $sWhere == "" )
     {
-        $sWhere = " WHERE status = 1 ";
+        $sWhere = " WHERE `status` > 0 ";
     }
     else
     {
-        $sWhere .= " AND status = 1 ";
+        $sWhere .= " AND `status` > 0 ";
+    }
+
+    if ($_GET['start'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE crtdate >= {$_GET['start']} ";
+        } else {
+            $sWhere .= " AND crtdate >= {$_GET['start']} ";
+        }
+    }
+    if ($_GET['end'] != ""){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE crtdate <= {$_GET['end']} ";
+        } else {
+            $sWhere .= " AND crtdate <= {$_GET['end']} ";
+        }
     }
     
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT * 
-               FROM papers 
-               $sWhere
-               $sOrder
-               $sLimit
-               ";
+    $sQuery = "
+        SELECT * FROM
+        (
+        SELECT
+        invoiceouts.id,
+        invoiceouts.number as renr,
+        collectiveinvoice.number as vonr,
+        collectiveinvoice.title,
+        CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
+        invoiceouts.netvalue,
+        invoiceouts.grossvalue,
+        invoiceouts.crtdate,
+        invoiceouts.duedate,
+        invoiceouts.payeddate,
+        invoiceouts.`status`
+        FROM
+        invoiceouts
+        INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
+        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+        ) t1
+        $sWhere
+        $sOrder
+        $sLimit
+    ";
     
 //     var_dump($sQuery);
     
@@ -146,9 +205,7 @@
      
     /* Data set length after filtering */
     $sQuery = "
-               SELECT COUNT(id)
-               FROM papers 
-               $sWhere
+        SELECT FOUND_ROWS()
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -158,9 +215,8 @@
      
     /* Total data set length */
     $sQuery = "
-                SELECT COUNT(id) 
-                FROM papers 
-                WHERE status = 1
+        SELECT COUNT(".$sIndexColumn.")
+        FROM   $sTable WHERE `status` > 0
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -177,58 +233,67 @@
         "iTotalDisplayRecords" => $iFilteredTotal,
         "aaData" => array()
     );
-     
+
+//$aColumns = array( 'id', 'rene', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'duedate', 'payeddate', 'status' );
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
         $row = array();
         for ( $i=0 ; $i<count($aColumns) ; $i++ )
         {
-            if ( $aColumns[$i] == 'sizes' )
+            if ( $aColumns[$i] == 'status' )
             {
-                $tmp_row = '';
-                $sQuerySizes = 'SELECT * FROM papers_sizes 
-                                WHERE paper_id = '.$aRow[ $aColumns[0] ].'
-                                ORDER BY width';
-                $rAttributes = mysql_query( $sQuerySizes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-                while ($data = mysql_fetch_row($rAttributes)){
-                    $tmp_row .= $data[1] . "x" . $data[2] . "\n";
+                switch ($aRow[ $aColumns[$i] ]) {
+                    case 0:
+                        $row[] = 'gelöscht';
+                        break;
+                    case 1:
+                        $row[] = 'offen';
+                        break;
+                    case 2:
+                        $row[] = 'bezahlt';
+                        break;
+                    case 3:
+                        $row[] = 'storniert';
+                        break;
                 }
-                $row[] = nl2br(htmlentities(utf8_encode($tmp_row)));
             }
-            else if ( $aColumns[$i] == 'weight' )
+            else if ( $aColumns[$i] == 'netvalue' )
             {
-                $tmp_row = '';
-                $sQuerySizes = 'SELECT * FROM papers_weights 
-                                WHERE paper_id = '.$aRow[ $aColumns[0] ].' 
-                                ORDER BY weight';
-                $rAttributes = mysql_query( $sQuerySizes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-                while ($data = mysql_fetch_row($rAttributes)){
-                    $tmp_row .= $data[1] . "g \n";
-                }
-                $row[] = nl2br(htmlentities(utf8_encode($tmp_row)));
+                $row[] = printPrice($aRow[ $aColumns[$i] ],2).'€';
+            }
+            else if ( $aColumns[$i] == 'grossvalue' )
+            {
+                $row[] = printPrice($aRow[ $aColumns[$i] ],2).'€';
+            }
+            else if ( $aColumns[$i] == 'crtdate' )
+            {
+                $row[] = date('d.m.y',$aRow[ $aColumns[$i] ]);
+            }
+            else if ( $aColumns[$i] == 'duedate' )
+            {
+                $row[] = date('d.m.y',$aRow[ $aColumns[$i] ]);
+            }
+            else if ( $aColumns[$i] == 'payeddate' )
+            {
+                if ($aRow[ $aColumns[$i] ] > 0)
+                    $row[] = date('d.m.y',$aRow[ $aColumns[$i] ]);
+                else
+                    $row[] = '';
+            }
+            else if ( $aColumns[$i] == 'bname' )
+            {
+                $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
             else if ( $aColumns[$i] == 'id' )
             {
-                /* do not print the id */
                 $row[] = $aRow[ $aColumns[$i] ];
             }
             else
             {
-                /* General output */
                 $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
-        $row[] = '<a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-pencil"></span></a>
-        		  <a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=copy&aid='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-file"></span></a>
-        		  <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/article/article.php&exec=delete&did='.$aRow[ $aColumns[0] ].'\')">
-        		 <span class="glyphicons glyphicons-remove"></span></a>';
-// 		var_dump($row); echo "</br>";
         $output['aaData'][] = $row;
     }
-
-//     var_dump($output); echo "</br>";
-     
     echo json_encode( $output );
-    
-//     echo  json_last_error();
 ?>

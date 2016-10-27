@@ -258,7 +258,7 @@ $(document).ready(function() {
     		data: { "tktid": d[1], "inline": "true" },
     		success: function(data) 
     		    {
-    			    row.child( '<div class="box2">'+data+'</div>' ).show();
+    			    row.child( '<div>'+data+'</div>' ).show();
                     $( ".details-control-loading" ).removeClass( 'details-control-loading' );
                     tr.removeClass('highlight');
                     if ( idx === -1 ) {
@@ -675,7 +675,7 @@ function TicketTableRefresh()
 						  <?=$_LANG->get('Refresh')?>
 					  </button>
 
-					  <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=reset';">
+					  <button class="btn btn-xs btn-warning" onclick="document.location.href='index.php?page=libs/modules/tickets/ticket.php&exec=reset';">
 						  <span class="glyphicons glyphicons-ban-circle"></span>
 						  <?=$_LANG->get('Reset')?>
 					  </button>

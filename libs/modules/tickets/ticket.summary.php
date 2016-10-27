@@ -73,7 +73,6 @@ $ticket = new Ticket($_REQUEST["tktid"]);
                 </h3>
             </div>
             <div class="panel-body">
-
                 <div class="outer">
                     <div class="table-responsive">
                         <table class="table table-hover">

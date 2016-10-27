@@ -27,6 +27,7 @@ $sql_backups = Backup::getSqlBackups();
             Backups
             <span class="pull-right">
                 <button type="button" class="btn btn-xs btn-success" onclick="askDel('index.php?page=<?php echo $_REQUEST["page"];?>&exec=new');">
+                    <span class="glyphicons glyphicons-plus"></span>
                     Neues Backup
                 </button>
             </span>

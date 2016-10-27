@@ -159,35 +159,39 @@ if (isset($_REQUEST["export"])){
             </h3>
       </div>
       <div class="panel-body">
-          <div class="form-group">
-              <label for="" class="col-sm-3 control-label">Kontaktadressen</label>
+           <div class="row">
+               <div class="form-group">
+                   <label for="" class="col-sm-3 control-label">Kontaktadressen</label>
               <span class="pull-right">
                    <?php
                    if (file_exists("docs/export_asp.csv")) {
                        ?>
                        <a href="docs/export_asp.csv" download="<?php echo date('Y.m.d');?>_Export_ASP.csv">
-                           <button class="btn btn-success">Download</button>
+                           <button class="btn  btn-xs btn-success">Download</button>
                        </a>
                        <?php
                    }
                    ?>
-                   <button class="btn btn-success" onclick="window.location.href='index.php?page=<?php echo $_REQUEST["page"];?>&export=asp';">Generieren</button>
+                  <button class="btn btn-xs btn-success" onclick="window.location.href='index.php?page=<?php echo $_REQUEST["page"];?>&export=asp';">Generieren</button>
               </span>
-          </div>
-          <hr>
-          <div class="form-group">
-              <label for="" class="col-sm-2 control-label">Auftr. Daten Aepos</label>
-              <label for="" class="col-sm-1 control-label">Von</label>
-              <div class="col-sm-2">
-                  <input type="text" id="aepos_from" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-              </div>
-              <label for="" class="col-sm-1 control-label">Bis</label>
-              <div class="col-sm-2">
-                  <input type="text" id="aepos_to" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
-              </div>
+               </div>
+           </div>
+          <br>
+           <div class="row">
+               <div class="form-group">
+                   <label for="" class="col-sm-2 control-label">Auftr. Daten Aepos</label>
+                   <label for="" class="col-sm-1 control-label">Von</label>
+                   <div class="col-sm-2">
+                       <input type="text" id="aepos_from" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+                   </div>
+                   <label for="" class="col-sm-1 control-label">Bis</label>
+                   <div class="col-sm-2">
+                       <input type="text" id="aepos_to" class="text form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
+                   </div>
               <span class="pull-right">
-                   <button class="btn btn-success" onclick="generateAepos();">Generieren</button>
+                   <button class="btn  btn-xs btn-success" onclick="generateAepos();">Generieren</button>
               </span>
-          </div>
+               </div>
+           </div>
       </div>
 </div>

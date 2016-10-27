@@ -289,7 +289,7 @@
             $tmp_row .= '<a class="icon-link" onclick="dialNumber(\''.$_USER->getTelefonIP().'/command.htm?number='.$phonefordial.'\')" href="Javascript:"><span class="glyphicons glyphicons-iphone" title="'.$aRow[ "mobil" ].' anrufen"></span>&ensp;</a>';
         }
 		
-        $tmp_row .= '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ "bcid" ].'"><span class="glyphicons glyphicons-user" title="zum Geschäftskontakt"></span>&ensp;</a>';
+        $tmp_row .= '<a class="icon-link" href="index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id='.$aRow[ "bcid" ].'"><span class="glyphicons glyphicons-group" title="zum Geschäftskontakt"></span>&ensp;</a>';
         
 		$row[] = $tmp_row;
         $output['aaData'][] = $row;
