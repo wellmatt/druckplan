@@ -52,10 +52,8 @@ if ($_REQUEST["subexec"] == "save")
 		$tmpName = $_FILES['avatar']['tmp_name'];
 		$fileSize = $_FILES['avatar']['size'];
 		$fileType = $_FILES['avatar']['type'];
-
-        $content = file_get_contents($tmpName);
-
-        $user->setAvatar($content);
+		$topath = 'docs/avatars/' . $user->getId() . '.png';
+		move_uploaded_file($tmpName, $topath);
 	}
 
     if ($_REQUEST["user_type"] == "admin")

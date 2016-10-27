@@ -68,8 +68,6 @@ class User {
 
 	private $workinghours = Array();
 
-    private $avatar = null;
-
     // Dashboard & Starting Page
     private $homepage = 'libs/basic/home.php';
 	
@@ -158,8 +156,6 @@ class User {
                     $this->w_su = $res[0]["w_su"];
                     $this->w_month = $res[0]["w_month"];
 
-                    $this->avatar = $res[0]["avatar"];
-
                     $this->homepage = $res[0]["homepage"];
 
                     // Arbeiter
@@ -191,7 +187,6 @@ class User {
     function save() {
         global $DB;
         $tmp_signature = addslashes($this->signature);
-        $avatar = mysqli_real_escape_string($this->avatar,'\\');
         if ($this->id > 0)
         {
             $sql = " UPDATE user SET
@@ -219,7 +214,6 @@ class User {
             w_sa = '{$this->w_sa}',
             w_su = '{$this->w_su}',
             w_month = '{$this->w_month}',
-            avatar = '{$avatar}',
             homepage = '{$this->homepage}',
             telefon_ip = '{$this->telefonIP}'
             WHERE id = {$this->id}";
@@ -243,14 +237,14 @@ class User {
             (user_firstname, user_lastname, user_email, user_phone, user_signature,
             user_active, user_level, login, password, client, user_forwardmail, user_lang,
             telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa,
-            w_su, w_month, avatar, homepage, BCshowOnlyOverview )
+            w_su, w_month, homepage, BCshowOnlyOverview )
             VALUES
             ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
             '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
             '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()},
             '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
             '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}',
-            '{$this->w_su}', '{$this->w_month}', '{$avatar}', '{$this->homepage}', {$this->BCshowOnlyOverview} )";
+            '{$this->w_su}', '{$this->w_month}', '{$this->homepage}', {$this->BCshowOnlyOverview} )";
             $res = $DB->no_result($sql);
 
             if ($res)
@@ -989,22 +983,6 @@ class User {
     public function getCalendarbirthdays()
     {
         return $this->calendar_birthdays;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
-
-    /**
-     * @param string $avatar
-     */
-    public function setAvatar($avatar)
-    {
-        $this->avatar = $avatar;
     }
 
     /**

@@ -1866,9 +1866,9 @@ echo $quickmove->generate();
                                                             <?php
                                                             foreach ($comment->getArticles() as $c_article) {
                                                                 if ($c_article->getState() == 1)
-                                                                    echo '<span>' . $c_article->getAmount() . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></span></br>';
+                                                                    echo '<span>' . printPrice($c_article->getAmount()) . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></span></br>';
                                                                 elseif ($c_article->getState() == 0 && $_USER->isAdmin())
-                                                                    echo '<span><del>' . $c_article->getAmount() . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></del></span></br>';
+                                                                    echo '<span><del>' . printPrice($c_article->getAmount()) . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></del></span></br>';
                                                             }
                                                             ?>
                                                         </div>
@@ -2012,9 +2012,9 @@ echo $quickmove->generate();
                                                                             <?php
                                                                             foreach ($subcom->getArticles() as $c_article) {
                                                                                 if ($c_article->getState() == 1)
-                                                                                    echo '<span>' . $c_article->getAmount() . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></span></br>';
+                                                                                    echo '<span>' . printPrice($c_article->getAmount()) . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></span></br>';
                                                                                 elseif ($c_article->getState() == 0 && $_USER->isAdmin())
-                                                                                    echo '<span><del>' . $c_article->getAmount() . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></del></span></br>';
+                                                                                    echo '<span><del>' . printPrice($c_article->getAmount()) . 'x <a target="_blank" href="index.php?page=libs/modules/article/article.php&exec=edit&aid=' . $c_article->getArticle()->getId() . '">' . $c_article->getArticle()->getTitle() . '</a></del></span></br>';
                                                                             }
                                                                             ?>
                                                                         </div>

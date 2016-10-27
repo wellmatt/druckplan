@@ -115,7 +115,7 @@ if($_REQUEST["subexec"] == "save")
 <!-- /MegaNavbar -->
 
 <!-- jQuery -->
-<link type="text/css" href="../../../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+<link type="text/css" href="../../../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />	
 <script type="text/javascript" src="../../../jscripts/jquery/js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="../../../jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script language="JavaScript" src="../../../jscripts/jquery/local/jquery.ui.datepicker-<?=$_LANG->getCode()?>.js"></script>
@@ -192,7 +192,6 @@ $(document).ready(function() {
                         </h3>
                     </div>
                     <div class="panel-body">
-                        <br
                         <div class="table-responsive">
                             <table id="table_users" class="table table-hover">
                                 <thead>
