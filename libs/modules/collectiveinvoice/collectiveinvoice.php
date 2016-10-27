@@ -159,7 +159,7 @@ case 'save':
 				$old_amount = $newpos->getQuantity();
 			}
 			//Daten passend konvertieren
-			$tmp_oprice = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["orderpos"][$xi]["price"])));
+			$tmp_oprice = tofloat($_REQUEST["orderpos"][$xi]["price"]);
 			
 			$newpos->setPrice($tmp_oprice);
 			$newpos->setComment(trim(addslashes($_REQUEST["orderpos"][$xi]["comment"])));
@@ -174,14 +174,7 @@ case 'save':
 			$tmp_art = new Article($newpos->getObjectid());
 			if ($tmp_art->getIsWorkHourArt() || $tmp_art->getOrderid()>0)
 			    $needs_planning = true;
-			
-			//AUftragsnummer anpassen (mit Suffix versehen)
-//			if ($newpos->getType() == 1 && $tmp_art->getOrderid() > 0){
-//				$tmp_order = new Order($tmp_art->getOrderid());
-//				$tmp_order->setCollectiveinvoiceId($collectinv->getId());
-//				$tmp_order->save();
-//				$au_suffix++;
-//			}
+
 			$orderpositions[] = $newpos;
 			$xi++;
 		}

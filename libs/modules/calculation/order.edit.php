@@ -1457,11 +1457,6 @@ if((int)$_REQUEST["step"] == 4)
 					$calc->setMargin((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["margin_{$m["id"]}"]))));
 				$calc->setDiscount((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["discount_{$m["id"]}"]))));
 				$calc->setState((int)$_REQUEST["state_{$m["id"]}"]);
-				$calc->setPaperContentGrant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_content_{$m["id"]}"]))));
-				$calc->setPaperAddContentGrant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent_{$m["id"]}"]))));
-				$calc->setPaperEnvelopeGrant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_envelope_{$m["id"]}"]))));
-				$calc->setPaperAddContent2Grant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent2_{$m["id"]}"]))));
-				$calc->setPaperAddContent3Grant((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grant_addcontent3_{$m["id"]}"]))));
 				$calc->setTitle($_REQUEST["calc_title_{$m["id"]}"]);
 				$calc->setPricesub(tofloat($calc->getSubTotal()));
 				$calc->setPricetotal(tofloat($calc->getSummaryPrice()));

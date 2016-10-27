@@ -595,7 +595,7 @@ if(count($docs) > 0){
 	<td class="content_row_clear">
 		<ul class="postnav_text_save">
 			<?php
-			$letterheads = Letterhead::getAllForType(Document::TYPE_FACTORY);
+			$letterheads = Letterhead::getAllForType(Document::TYPE_DELIVERY);
 			?>
 			<select name="letterhead_delivery" id="letterhead_delivery" class="form-control" style="margin-bottom: 5px;">
 				<?php

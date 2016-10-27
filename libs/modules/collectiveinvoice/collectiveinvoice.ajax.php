@@ -163,7 +163,7 @@ if ($_REQUEST['exec'] == 'getArticlePrice'){
 	$article = new Article($articleid);
 	$amount = (float) $_REQUEST['amount'];
 	$price = 0;
-	$price = (float)sprintf("%.2f",$article->getPrice($amount));
+	$price = tofloat($article->getPrice($amount));
 	echo $price;
 }
 

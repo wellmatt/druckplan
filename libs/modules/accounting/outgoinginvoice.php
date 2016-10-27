@@ -361,10 +361,6 @@ $(function() {
 											   value="<? if ($document->getPayed() > 0) echo date("d.m.Y", $document->getPayed()); ?>"/>
 									</td>
 									<td>
-										<!-- ul class="postnav_save_small_outinvc"><a href="#"
-			onclick="document.getElementById('idx_iframe_doc').src='libs/modules/documents/document.get.iframe.php?getDoc=<?= $document->getId() ?>&version=print'">
-			<?= $_LANG->get('Anzeigen') ?></a>
-			</ul-->
 										<ul class="postnav_save_small_outinvc">
 											<button class="btn btn-xs btn-success" type="button"
 													onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?= $document->getId() ?>';">
@@ -386,6 +382,11 @@ $(function() {
 								</tr>
 								<? $x++;
 							} ?>
+							<? // Datei mit den offenen Rechnungen schliessen
+							$csv_string .= ";" . $_LANG->get('Summe') . ":;" . printPrice($sum_netto) . ";" . printPrice($sum_brutto) . "; ; ;";
+							$csv_string = mb_convert_encoding($csv_string, 'ISO-8859-1', 'UTF-8');
+							fwrite($csv_file, $csv_string);
+							fclose($csv_file); ?>
 							<tr>
 								<td><?= $_LANG->get('Gesamtsumme') ?></td>
 								<td>
@@ -405,11 +406,6 @@ $(function() {
 			</div>
 		</div>
 		<br/>
-		<? // Datei mit den offenen Rechnungen schliessen
-		$csv_string .= ";" . $_LANG->get('Summe') . ":;" . printPrice($sum_netto) . ";" . printPrice($sum_brutto) . "; ; ;";
-		$csv_string = iconv('UTF-8', 'ISO-8859-1', $csv_string);
-		fwrite($csv_file, $csv_string);
-		fclose($csv_file); ?>
 		<span class="pull-right">
 				<button class="btn btn-primary btn-success" type="submit">
 					<?= $_LANG->get('Speichern') ?>
