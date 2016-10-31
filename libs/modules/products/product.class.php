@@ -621,7 +621,7 @@ class Product {
     {
         if($part == 0)
             return $this->selectedPapersIds;
-        else if($part == Calculation::PAPER_CONTENT || $part == Calculation::PAPER_ADDCONTENT || $part == Calculation::PAPER_ADDCONTENT2 || $part == Calculation::PAPER_ADDCONTENT3)
+        else if($part == Calculation::PAPER_CONTENT || $part == Calculation::PAPER_ADDCONTENT)
             return $this->selectedPapersIds["content"];
         else if ($part == Calculation::PAPER_ENVELOPE)
             return $this->selectedPapersIds["envelope"];
