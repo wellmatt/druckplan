@@ -523,8 +523,22 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                   Grammatur
                                               </li>
                                               <li class="list-group-item">
-                                      <span class="badge"><?php echo printPrice($calc->$content['id']()->getSumPrice(
-                                              ceil($calc->$content['pages']() / $calc->getProductsPerPaper($content['const']) * $calc->getAmount())));?>€</span>
+                                      <span class="badge">
+                                          <?php
+                                          if ($calc->getPaperContent()->getRolle() != 1){
+                                              ?>
+
+                                              <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
+                                              <?=$_USER->getClient()->getCurrency()?>
+                                              <?php
+                                          } else {
+                                              ?>
+
+                                              <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000))?>
+                                              <?=$_USER->getClient()->getCurrency()?>
+                                              <?php
+                                          }
+                                          ?></span>
                                                   Preis
                                               </li>
                                               <li class="list-group-item">
@@ -542,8 +556,8 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                               <li class="list-group-item">
                                       <span class="badge">
                                           <?
-                                          if ($calc->$content['id']()->getPriceBase() == Paper::PRICE_PER_100KG)
-                                              echo $_LANG->get('Preis pro 100 kg');
+                                          if ($calc->$content['id']()->getPriceBase() != Paper::PRICE_PER_THOUSAND)
+                                              echo $_LANG->get('Preis pro Rolle');
                                           else
                                               echo $_LANG->get('Preis pro 1000 Bogen');
                                           ?>
