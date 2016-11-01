@@ -308,7 +308,7 @@ echo $quickmove->generate();
                                 } else {
                                     ?>
                                     <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2)?> <?=$_LANG->get('Laufmeter')?> (<?=printPrice((($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000) * tofloat($calc->getPaperContent()->getSelectedSize()["width"])/1000,2)?> <?=$_LANG->get('qm')?>)
-                                    <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000))?>
+                                    <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2))?>
                                     <?=$_USER->getClient()->getCurrency()?>
                                     <?php
                                 }
