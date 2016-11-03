@@ -42,6 +42,18 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setCalc_detailed_printpreview($_REQUEST["calc_detailed_printpreview"]);
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
+
+	$perf->setSmtpAddress($_REQUEST["smtp_address"]);
+	$perf->setSmtpHost($_REQUEST["smtp_host"]);
+	$perf->setSmtpPort($_REQUEST["smtp_port"]);
+	$perf->setSmtpUser($_REQUEST["smtp_user"]);
+	$perf->setSmtpPassword($_REQUEST["smtp_password"]);
+	$perf->setImapAddress($_REQUEST["imap_address"]);
+	$perf->setImapHost($_REQUEST["imap_host"]);
+	$perf->setImapPort($_REQUEST["imap_port"]);
+	$perf->setImapUser($_REQUEST["imap_user"]);
+	$perf->setImapPassword($_REQUEST["imap_password"]);
+
 	$savemsg = getSaveMessage($perf->save());
 	
 	HolidayEvent::removeAll();
@@ -213,6 +225,7 @@ echo $quickmove->generate();
 				<ul>
 					<li><a href="#tabs-0"><? echo $_LANG->get('Allgemein'); ?></a></li>
 					<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation'); ?></a></li>
+					<li><a href="#tabs-2"><? echo $_LANG->get('Mail'); ?></a></li>
 					<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate'); ?></a></li>
 					<li><a href="#tabs-4"><? echo $_LANG->get('Datatables'); ?></a></li>
 					<li><a href="#tabs-5"><? echo $_LANG->get('Kalender'); ?></a></li>
@@ -259,6 +272,69 @@ echo $quickmove->generate();
 						<div class="col-sm-1">
 							<input type="checkbox" name="calc_detailed_printpreview" class="form-control" id="calc_detailed_printpreview"
 								   value="1" <? if ($perf->getCalc_detailed_printpreview()) echo "checked"; ?>/>
+						</div>
+					</div>
+				</div>
+				<div id="tabs-2">
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SMTP Adresse:</label>
+						<div class="col-sm-2">
+							<input type="text" name="smtp_address" id="smtp_address" class="form-control" value="<?=$perf->getSmtpAddress(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SMTP Server:</label>
+						<div class="col-sm-2">
+							<input type="text" name="smtp_host" id="smtp_host" class="form-control" value="<?=$perf->getSmtpHost(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SMTP Port:</label>
+						<div class="col-sm-2">
+							<input type="text" name="smtp_port" id="smtp_port" class="form-control" value="<?=$perf->getSmtpPort(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SMTP User:</label>
+						<div class="col-sm-2">
+							<input type="text" name="smtp_user" id="smtp_user" class="form-control" value="<?=$perf->getSmtpUser(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SMTP Passwort:</label>
+						<div class="col-sm-2">
+							<input type="password" name="smtp_password" id="smtp_password" class="form-control" value="<?=$perf->getSmtpPassword(); ?>"/>
+						</div>
+					</div>
+					<hr>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">IMAP Adresse:</label>
+						<div class="col-sm-2">
+							<input type="text" name="imap_address" id="imap_address" class="form-control" value="<?=$perf->getImapAddress(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">IMAP Server:</label>
+						<div class="col-sm-2">
+							<input type="text" name="imap_host" id="imap_host" class="form-control" value="<?=$perf->getImapHost(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">IMAP Port:</label>
+						<div class="col-sm-2">
+							<input type="text" name="imap_port" id="imap_port" class="form-control" value="<?=$perf->getImapPort(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">IMAP User:</label>
+						<div class="col-sm-2">
+							<input type="text" name="imap_user" id="imap_user" class="form-control" value="<?=$perf->getImapUser(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">IMAP Passwort:</label>
+						<div class="col-sm-2">
+							<input type="password" name="imap_password" id="imap_password" class="form-control" value="<?=$perf->getImapPassword(); ?>"/>
 						</div>
 					</div>
 				</div>

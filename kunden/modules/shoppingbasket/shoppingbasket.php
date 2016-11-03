@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------------
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/attachment/attachment.class.php';
+require_once 'libs/modules/mail/mailmassage.class.php';
 
 function reArrayFiles(&$file_post) {
 
@@ -121,7 +122,9 @@ if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 		$shopping_basket->clear();
 		$_SESSION["shopping_basket"] = new Shoppingbasket();
 
-		$to = Array();
+
+		$to = [];
+		$cc = [];
 		$x=1;
 		// Bestaetigungs-Mails senden
 		$text = 'Sehr geehrter Kunde, <br> ihr Auftrag ist bei uns eingegangen und wird bearbeitet. <br> ';
@@ -142,22 +145,17 @@ if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 		}
 
 		if ($_SESSION["login_type"] == "businesscontact"){
-			$to[] = $_BUSINESSCONTACT;
+			$to[] = $_BUSINESSCONTACT->getEmail();
 		}
 		if($_SESSION["login_type"] == "contactperson"){
-			$to[] = $_CONTACTPERSON;
+			$to[] = $_CONTACTPERSON->getEmail();
 		}
-
 		foreach ($_CONTACTPERSON->getNotifymailadr() as $tmp_mail_adr){
-			$to[] = $tmp_mail_adr;
+			$cc[] = $tmp_mail_adr;
 		}
 
-		$nachricht = new Nachricht();
-		$nachricht->setFrom($_USER);
-		$nachricht->setTo($to);
-		$nachricht->setSubject("Bestellbestätigung");
-		$nachricht->setText($text);
-		$ret = $nachricht->send();
+		$message = new MailMessage(null,$mail_to,"Bestellbestätigung",$text,$cc);
+		$message->send();
 
 		$shopping_basket_entrys = Array ();
 	}
@@ -167,7 +165,6 @@ if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 }
 
 $overall_price = 0;
-//gln $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_NAME, Address::FILTER_DELIV);
 $all_deliveryAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_DELIV_SHOP);
 $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Address::FILTER_INVC);
 ?>

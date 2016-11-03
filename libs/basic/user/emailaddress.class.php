@@ -16,18 +16,18 @@ class Emailaddress {
 	const ORDER_TYPE 		= " type ";
 	 
 	private $id = 0;
-	private $userID;				// ID des zugehoerigen Benutzers
 	private $status = 1;			// 0 = geloescht, 1 = aktiv
 	private $address;				// E-Mail-Adresse
 	private $login;					// Login Name
-	private $type = 0;				// 0 = lesen, 1 = schreiben, 2 = beides
 	private $password;				// Passwort zur E-Mail-Adresse
 	private $host;					// Serveradresse 
 	private $port;					// Portnummer
-	private $signature;				// Signatur zu der E-Mail-Adresse	
-	private $useSSL;				// Wird SSL genutzt?
-	private $useIMAP;				// Wird IMAP genutzt?
-	 
+	private $signature;				// Signatur zu der E-Mail-Adresse
+	private $smtp_host;
+	private $smtp_port;
+	private $smtp_user;
+	private $smtp_password;
+
 	/**
 	 * Konstruktor
 	 * 
@@ -38,21 +38,21 @@ class Emailaddress {
 		global $_USER;
 		
 		if ($id > 0){
-			$sql = " SELECT * FROM user_emailaddress WHERE id = {$id}";
+			$sql = " SELECT * FROM emailaddress WHERE id = {$id}";
 			if($DB->num_rows($sql) > 0){
 				$res = $DB->select($sql);
 				$this->id = $res[0]["id"];
 				$this->status = $res[0]["status"];
-				$this->userID = $res[0]["user_id"];
 				$this->address = $res[0]["address"];
 				$this->login = $res[0]["login"];
 				$this->password = $res[0]["password"];
-				$this->type = $res[0]["type"];
 				$this->host = $res[0]["host"];
 				$this->port = $res[0]["port"];
 				$this->signature = $res[0]["signature"];
-				$this->useIMAP = $res[0]["use_imap"];
-				$this->useSSL = $res[0]["use_ssl"];
+				$this->smtp_host = $res[0]["smtp_host"];
+				$this->smtp_port = $res[0]["smtp_port"];
+				$this->smtp_user = $res[0]["smtp_user"];
+				$this->smtp_password = $res[0]["smtp_password"];
 			}
 		}
 	}
@@ -67,31 +67,33 @@ class Emailaddress {
 		global $_USER;
 		
 		if($this->id > 0){
-			$sql = "UPDATE user_emailaddress SET 
-					status = {$this->status}, 
-					user_id = {$this->userID}, 
+			$sql = "UPDATE emailaddress SET
+					`status` = {$this->status},
 					address	= '{$this->address}',
 					login	= '{$this->login}',
-					password = '{$this->password}', 
-					host = '{$this->host}', 
-					type = {$this->type}, 
-					port= {$this->port}, 
+					`password` = '{$this->password}',
+					`host` = '{$this->host}',
+					`port`= {$this->port},
 					signature = '{$this->signature}',
-					use_imap = {$this->useIMAP},
-					use_ssl = {$this->useSSL} 
+					smtp_host = '{$this->smtp_host}',
+					smtp_port = '{$this->smtp_port}',
+					smtp_user = '{$this->smtp_user}',
+					smtp_password = '{$this->smtp_password}'
 					WHERE id = {$this->id}";
 			return $DB->no_result($sql);
 		} else {
-			$sql = "INSERT INTO user_emailaddress
-					(status, user_id, address, login, password,
-					 host, type, port, signature, use_imap, use_ssl)
+			$sql = "INSERT INTO emailaddress
+					(`status`, address, login, `password`,
+					 `host`, `port`, signature,
+					 smtp_host, smtp_port, smtp_user, smtp_password)
 					VALUES
-					({$this->status}, {$this->userID}, '{$this->address}', '{$this->login}', '{$this->password}',
-					'{$this->host}', {$this->type}, {$this->port}, '{$this->signature}', {$this->useIMAP}, {$this->useSSL} )";
+					({$this->status}, '{$this->address}', '{$this->login}', '{$this->password}',
+					'{$this->host}', {$this->port}, '{$this->signature}',
+					'{$this->smtp_host}', '{$this->smtp_port}', '{$this->smtp_user}', '{$this->smtp_password}' )";
 			$res = $DB->no_result($sql);
 			
 			if($res){
-				$sql = "SELECT max(id) id FROM user_emailaddress WHERE address = '{$this->address}' AND login = '{$this->login}'";
+				$sql = "SELECT max(id) id FROM emailaddress WHERE address = '{$this->address}' AND login = '{$this->login}'";
 				$thisid = $DB->select($sql);
 				$this->id = $thisid[0]["id"];
 				return true;
@@ -105,22 +107,131 @@ class Emailaddress {
 	 * Abruf aller E-Mail-Adressen
 	 * 
 	 * @param String $order
-	 * @param Int $user_id
-	 * @return Array
+	 * @return Emailaddress[]
 	 */
-	static function getAllEmailaddress($order = Emailaddress::ORDER_ADDRESS, $user_id=0){
+	static function getAllEmailaddress($order = Emailaddress::ORDER_ADDRESS){
 		global $DB;
 		$addresses = Array();
 	
-		$sql = " SELECT id FROM user_emailaddress WHERE status > 0 ";
-		if ($user_id > 0)
-			$sql .= " AND user_id = {$user_id}";
+		$sql = " SELECT id FROM emailaddress WHERE `status` > 0 ";
 		$sql .= " ORDER BY {$order}";
 		$res = $DB->select($sql);
 		foreach ($res as $r){
 			$addresses[] = new Emailaddress($r["id"]);
 		}
 		return $addresses;
+	}
+
+	/**
+	 * Gets one Emailaddress by address
+	 * @param $address
+	 * @return Emailaddress
+	 */
+	public static function getByAddress($address)
+	{
+		global $DB;
+		$sql = "SELECT id FROM emailaddress WHERE `status` > 0 AND address LIKE '%{$address}%' ORDER BY id LIMIT 1";
+		if ($DB->num_rows($sql)){
+			$res = $DB->select($sql);
+			return new Emailaddress($res[0]["id"]);
+		}
+		return false;
+	}
+
+	/**
+	 * @param User $user
+	 * @return Emailaddress[]
+	 */
+	public static function getAllEmailaddressForUser($user)
+	{
+		global $DB;
+		$addresses = Array();
+
+		$sql = "SELECT * FROM emailaddress
+ 				INNER JOIN user_emailaddress ON emailaddress.id = user_emailaddress.emailaddress
+				WHERE user_emailaddress.`user` = {$user->getId()} AND emailaddress.status > 0 ";
+		$res = $DB->select($sql);
+		foreach ($res as $r){
+			$addresses[] = new Emailaddress($r["id"]);
+		}
+		return $addresses;
+	}
+
+	/**
+	 * @param Emailaddress $emailaddress
+	 * @param User $user
+	 * @return boolean
+	 */
+	public static function isDefault($emailaddress, $user)
+	{
+		global $DB;
+		$sql = "SELECT default_address FROM user_emailaddress WHERE `user` = {$user->getId()} AND emailaddress = {$emailaddress->getId()}";
+		if ($DB->num_rows($sql) > 0){
+			$res = $DB->select($sql);
+			$r = $res[0];
+			if ($r["default_address"] == 1)
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param Emailaddress $emailaddress
+	 * @param User $user
+	 */
+	public static function assignToUser($emailaddress, $user)
+	{
+		global $DB;
+		$sql = "INSERT INTO user_emailaddress VALUES ({$user->getId()}, {$emailaddress->getId()}, 0)";
+		$DB->no_result($sql);
+	}
+
+	/**
+	 * @param Emailaddress $emailaddress
+	 * @param User $user
+	 */
+	public static function unassignFromUser($emailaddress, $user)
+	{
+		global $DB;
+		$sql = "DELETE FROM user_emailaddress WHERE `user` = {$user->getId()} AND emailaddress = {$emailaddress->getId()}";
+		prettyPrint($sql);
+		$DB->no_result($sql);
+	}
+
+	/**
+	 * @param Emailaddress $emailaddress
+	 * @param User $user
+	 */
+	public static function setDefaultForUser($emailaddress, $user)
+	{
+		global $DB;
+		$unsetsql = "UPDATE user_emailaddress SET default_address = 0 WHERE `user` = {$user->getId()}";
+		$DB->no_result($unsetsql);
+		$setstar = "UPDATE user_emailaddress SET default_address = 1 WHERE `user` = {$user->getId()} AND emailaddress = {$emailaddress->getId()}";
+		$DB->no_result($setstar);
+	}
+
+	/**
+	 * @param User $user
+	 * @return Emailaddress
+	 */
+	public static function getDefaultOrFirstForUser($user)
+	{
+		global $DB;
+		$sql = "SELECT emailaddress FROM user_emailaddress
+ 				INNER JOIN emailaddress ON user_emailaddress.emailaddress = emailaddress.id
+				WHERE `user` = {$user->getId()} AND default_address = 1 AND `status` > 0";
+
+		if ($DB->num_rows($sql)){
+			$res = $DB->select($sql);
+			return new Emailaddress((int)$res[0]["emailaddress"]);
+		} else {
+			$addresses = self::getAllEmailaddressForUser($user);
+			if (count($addresses) > 0){
+				return $addresses[0];
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -129,46 +240,19 @@ class Emailaddress {
 	 */
 	function delete(){
 		global $DB;
-		$sql = "DELETE FROM user_emailaddress
+		$sql = "DELETE FROM emailaddress
 				WHERE id = {$this->id}";
 		return $DB->no_result($sql);
 	}
-	
-	/**
-	 * Abfrage, ob Benutzer die E-Mails dieser Adresse lesen darf
-	 * @return boolean
-	 */
-	public function readable(){
-		if ($this->getType() == 0 || $this->getType() == 2){
-			return true;
-		}	
-		return false;
-	}
-	
-	/**
-	 * Abfrage, ob ein Benutzer E-Mail von dieser Adresse senden darf
-	 * @return boolean
-	 */
-	public function writeable(){
-		if ($this->getType() == 1 || $this->getType() == 2){
-			return true;
-		}
-		return false;
+
+	function clearID()
+	{
+		$this->id = 0;
 	}
 
 	public function getId()
 	{
 	    return $this->id;
-	}
-
-	public function getUserID()
-	{
-	    return $this->userID;
-	}
-
-	public function setUserID($userID)
-	{
-	    $this->userID = $userID;
 	}
 
 	public function getStatus()
@@ -189,16 +273,6 @@ class Emailaddress {
 	public function setAddress($address)
 	{
 	    $this->address = $address;
-	}
-
-	public function getType()
-	{
-	    return $this->type;
-	}
-
-	public function setType($type)
-	{
-	    $this->type = $type;
 	}
 
 	public function getPassword()
@@ -231,22 +305,6 @@ class Emailaddress {
 	    $this->port = $port;
 	}
 
-	public function getUseSSL() {
-		return $this->useSSL;
-	}
-	
-	public function setUseSSL($useSSL) {
-		$this->useSSL = $useSSL;
-	}
-	
-	public function getUseIMAP() {
-		return $this->useIMAP;
-	}
-	
-	public function setUseIMAP($useIMAP) {
-		$this->useIMAP = $useIMAP;
-	}
-
 	/**
 	 * @return string
 	 */
@@ -262,5 +320,68 @@ class Emailaddress {
 	{
 		$this->login = $login;
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getSmtpHost()
+	{
+		return $this->smtp_host;
+	}
+
+	/**
+	 * @param mixed $smtp_host
+	 */
+	public function setSmtpHost($smtp_host)
+	{
+		$this->smtp_host = $smtp_host;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getSmtpPort()
+	{
+		return $this->smtp_port;
+	}
+
+	/**
+	 * @param mixed $smtp_port
+	 */
+	public function setSmtpPort($smtp_port)
+	{
+		$this->smtp_port = $smtp_port;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getSmtpUser()
+	{
+		return $this->smtp_user;
+	}
+
+	/**
+	 * @param mixed $smtp_user
+	 */
+	public function setSmtpUser($smtp_user)
+	{
+		$this->smtp_user = $smtp_user;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getSmtpPassword()
+	{
+		return $this->smtp_password;
+	}
+
+	/**
+	 * @param mixed $smtp_password
+	 */
+	public function setSmtpPassword($smtp_password)
+	{
+		$this->smtp_password = $smtp_password;
+	}
 }
-?>
