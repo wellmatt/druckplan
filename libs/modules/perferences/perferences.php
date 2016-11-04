@@ -225,7 +225,7 @@ echo $quickmove->generate();
 				<ul>
 					<li><a href="#tabs-0"><? echo $_LANG->get('Allgemein'); ?></a></li>
 					<li><a href="#tabs-1"><? echo $_LANG->get('Kalkulation'); ?></a></li>
-					<li><a href="#tabs-2"><? echo $_LANG->get('Mail'); ?></a></li>
+					<li><a href="#tabs-2"><? echo $_LANG->get('System Mail'); ?></a></li>
 					<li><a href="#tabs-3"><? echo $_LANG->get('Roh-Formate'); ?></a></li>
 					<li><a href="#tabs-4"><? echo $_LANG->get('Datatables'); ?></a></li>
 					<li><a href="#tabs-5"><? echo $_LANG->get('Kalender'); ?></a></li>
@@ -277,7 +277,7 @@ echo $quickmove->generate();
 				</div>
 				<div id="tabs-2">
 					<div class="form-group">
-						<label for="" class="col-sm-3 control-label">SMTP Adresse:</label>
+						<label for="" class="col-sm-3 control-label">SMTP eMail-Adresse:</label>
 						<div class="col-sm-2">
 							<input type="text" name="smtp_address" id="smtp_address" class="form-control" value="<?=$perf->getSmtpAddress(); ?>"/>
 						</div>
@@ -308,7 +308,7 @@ echo $quickmove->generate();
 					</div>
 					<hr>
 					<div class="form-group">
-						<label for="" class="col-sm-3 control-label">IMAP Adresse:</label>
+						<label for="" class="col-sm-3 control-label">IMAP eMail-Adresse:</label>
 						<div class="col-sm-2">
 							<input type="text" name="imap_address" id="imap_address" class="form-control" value="<?=$perf->getImapAddress(); ?>"/>
 						</div>
