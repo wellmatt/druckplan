@@ -337,6 +337,7 @@ echo $quickmove->generate();
 							<input type="password" name="imap_password" id="imap_password" class="form-control" value="<?=$perf->getImapPassword(); ?>"/>
 						</div>
 					</div>
+					<p>* Hinweis: Aktuell werden nur SSL Verbindungen unterstützt</p>
 				</div>
 				<div id="tabs-3">
 					<?php

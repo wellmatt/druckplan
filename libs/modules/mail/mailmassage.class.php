@@ -39,7 +39,7 @@ class MailMessage{
 
     /**
      * MailMessage constructor.
-     * @param Emailaddress $from
+     * @param Emailaddress $from can be Emailaddress to send from specific user or anything else to send system message
      * @param array $tos
      * @param string $subject
      * @param string $text

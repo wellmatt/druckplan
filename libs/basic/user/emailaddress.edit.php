@@ -56,6 +56,7 @@ echo $quickmove->generate();
 			  <input type="hidden" name="subexec" value="save">
 			  <input name="id" value="<?=$mailaddress->getId()?>" type="hidden">
 
+			  <p>* Hinweis: Aktuell werden nur SSL Verbindungen unterstützt</p>
 			  <div class="panel panel-default">
 			  	  <div class="panel-heading">
 			  			<h3 class="panel-title">IMAP Konto</h3>

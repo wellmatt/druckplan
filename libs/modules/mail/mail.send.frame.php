@@ -78,7 +78,7 @@ if ($_REQUEST["exec"] == "send")
     $mail_text = $_REQUEST["mail_text"];
     $attachments = [];
     $mail_to = explode(",", $_REQUEST["mail_to"]);
-    $mail_ccs = explode(",", $_REQUEST["mail_ccs"]);
+    $mail_ccs = explode(",", $_REQUEST["mail_cc"]);
     $mail_bcc = explode(",", $_REQUEST["mail_bcc"]);
 
     // Add the file as an attachment, set the file name and what kind of file it is.
@@ -122,7 +122,7 @@ if ($_REQUEST["exec"] == "save")
     $mail_text = $_REQUEST["mail_text"];
     $attachments = [];
     $mail_to = explode(",", $_REQUEST["mail_to"]);
-    $mail_ccs = explode(",", $_REQUEST["mail_ccs"]);
+    $mail_ccs = explode(",", $_REQUEST["mail_cc"]);
     $mail_bcc = explode(",", $_REQUEST["mail_bcc"]);
 
     // Add the file as an attachment, set the file name and what kind of file it is.
@@ -423,6 +423,8 @@ if ($_REQUEST["preset"] == "FW" || $_REQUEST["preset"] == "RE" || $_REQUEST["pre
 <link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
 <link rel="stylesheet" type="text/css" href="../../../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../../../jscripts/tagit/jquery.tagit.css" media="screen" />
+<script type="text/javascript" charset="utf8" src="../../../jscripts/tagit/tag-it.min.js"></script>
 
 <!-- // file upload -->
 
@@ -513,110 +515,77 @@ $(function () {
 	        },
 	        ignore: []
 	    });
-	    $( "#mail_to" ).bind( "keydown", function( event ) {
-    		 if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
-        		 event.preventDefault();
-    		 }
-		 }).autocomplete({
-    		 source: function( request, response ) {
-        		 $.getJSON( "mail.ajax.php?exec=searchrcpt", {
-            		 term: extractLast( request.term )
-        		 }, response );
-    		 },
-    		 search: function() {
-        		 // custom minLength
-        		 var term = extractLast( this.value );
-        		 if ( term.length < 2 ) {
-            		 return false;
-        		 }
-    		 },
-    		 focus: function() {
-        		 // prevent value inserted on focus
-        		 return false;
-    		 },
-    		 select: function( event, ui ) {
-        		 var terms = split( this.value );
-        		 // remove the current input
-        		 terms.pop();
-        		 // add the selected item
-        		 terms.push( ui.item.value );
-        		 // add placeholder to get the comma-and-space at the end
-        		 terms.push( "" );
-        		 this.value = terms.join( ", " );
-        		 return false;
-    		 }
-		 });
-	    $( "#mail_cc" ).bind( "keydown", function( event ) {
-	   		 if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
-	       		 event.preventDefault();
-	   		 }
-			 }).autocomplete({
-	   		 source: function( request, response ) {
-	       		 $.getJSON( "mail.ajax.php?exec=searchrcpt", {
-	           		 term: extractLast( request.term )
-	       		 }, response );
-	   		 },
-	   		 search: function() {
-	       		 // custom minLength
-	       		 var term = extractLast( this.value );
-	       		 if ( term.length < 2 ) {
-	           		 return false;
-	       		 }
-	   		 },
-	   		 focus: function() {
-	       		 // prevent value inserted on focus
-	       		 return false;
-	   		 },
-	   		 select: function( event, ui ) {
-	       		 var terms = split( this.value );
-	       		 // remove the current input
-	       		 terms.pop();
-	       		 // add the selected item
-	       		 terms.push( ui.item.value );
-	       		 // add placeholder to get the comma-and-space at the end
-	       		 terms.push( "" );
-	       		 this.value = terms.join( ", " );
-	       		 return false;
-	   		 }
-		 });
-	    $( "#mail_bcc" ).bind( "keydown", function( event ) {
-	   		 if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
-	       		 event.preventDefault();
-	   		 }
-			 }).autocomplete({
-	   		 source: function( request, response ) {
-	       		 $.getJSON( "mail.ajax.php?exec=searchrcpt", {
-	           		 term: extractLast( request.term )
-	       		 }, response );
-	   		 },
-	   		 search: function() {
-	       		 // custom minLength
-	       		 var term = extractLast( this.value );
-	       		 if ( term.length < 2 ) {
-	           		 return false;
-	       		 }
-	   		 },
-	   		 focus: function() {
-	       		 // prevent value inserted on focus
-	       		 return false;
-	   		 },
-	   		 select: function( event, ui ) {
-	       		 var terms = split( this.value );
-	       		 // remove the current input
-	       		 terms.pop();
-	       		 // add the selected item
-	       		 terms.push( ui.item.value );
-	       		 // add placeholder to get the comma-and-space at the end
-	       		 terms.push( "" );
-	       		 this.value = terms.join( ", " );
-	       		 return false;
-	   		 }
-		 });
+        jQuery("#mail_to").tagit({
+            singleField: true,
+            singleFieldNode: $('#mail_to'),
+            singleFieldDelimiter: ",",
+            allowSpaces: false,
+            minLength: 2,
+            removeConfirmation: true,
+            tagSource: function( request, response ) {
+                $.ajax({
+                    url: "mail.ajax.php?exec=searchrcpt",
+                    data: { term:request.term },
+                    dataType: "json",
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label: item.label,
+                                value: item.value
+                            }
+                        }));
+                    }
+                });
+            }
+        });
+        jQuery("#mail_cc").tagit({
+            singleField: true,
+            singleFieldNode: $('#mail_cc'),
+            singleFieldDelimiter: ",",
+            allowSpaces: false,
+            minLength: 2,
+            removeConfirmation: true,
+            tagSource: function( request, response ) {
+                $.ajax({
+                    url: "mail.ajax.php?exec=searchrcpt",
+                    data: { term:request.term },
+                    dataType: "json",
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label: item.label,
+                                value: item.value
+                            }
+                        }));
+                    }
+                });
+            }
+        });
+        jQuery("#mail_bcc").tagit({
+            singleField: true,
+            singleFieldNode: $('#mail_bcc'),
+            singleFieldDelimiter: ",",
+            allowSpaces: false,
+            minLength: 2,
+            removeConfirmation: true,
+            tagSource: function( request, response ) {
+                $.ajax({
+                    url: "mail.ajax.php?exec=searchrcpt",
+                    data: { term:request.term },
+                    dataType: "json",
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label: item.label,
+                                value: item.value
+                            }
+                        }));
+                    }
+                });
+            }
+        });
 		 function split( val ) {
 			 return val.split( /,\s*/ );
-		 }
-		 function extractLast( term ) {
-			 return split( term ).pop();
 		 }
 	} );
 </script>
@@ -628,142 +597,113 @@ $(function () {
 
 <div style="width: 100%; overflow: hidden;">
     <div class="row col-xs-12">
-        <div class="col-xs-4"<span class="glyphicons glyphicons-message-plus"></span><span style="font-size: 13px"><?=$_LANG->get('eMail')?></span></div>
-        <div class="col-xs-4" style="text-align: right;"><?=$savemsg?></div>
-        <div class="col-xs-2" style="text-align: right;"><span onclick="$('#exec').val('save');$('#mail_form').submit();" class="btn btn-success">Speichern</span></div>
-        <div class="col-xs-2" style="text-align: right;"><span onclick="$('#mail_form').submit();" class="btn btn-info">Senden</span></div>
+        <div class="col-xs-4"
+        <span class="glyphicons glyphicons-message-plus"></span><span
+            style="font-size: 13px"><?= $_LANG->get('eMail') ?></span></div>
+    <div class="col-xs-4" style="text-align: right;"><?= $savemsg ?></div>
+    <div class="col-xs-2" style="text-align: right;"><span onclick="$('#exec').val('save');$('#mail_form').submit();"
+                                                           class="btn btn-success">Speichern</span></div>
+    <div class="col-xs-2" style="text-align: right;"><span onclick="$('#mail_form').submit();" class="btn btn-info">Senden</span>
     </div>
-    </br>
-    </br>
+</div>
+</br>
+</br>
 
-    <form action="mail.send.frame.php" method="post" id="mail_form" name="mail_form" enctype="multipart/form-data">
-        <input type="hidden" id="exec" name="exec" value="send">
-        <input type="hidden" id="mailid" name="mailid" value="<?php echo $_REQUEST["mailid"];?>">
-        <div class="row">
-          <div class="form-group col-xs-12">
+<form action="mail.send.frame.php" method="post" id="mail_form" name="mail_form" enctype="multipart/form-data">
+    <input type="hidden" id="exec" name="exec" value="send">
+    <input type="hidden" id="mailid" name="mailid" value="<?php echo $_REQUEST["mailid"]; ?>">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_from">Von</label>
             </div>
             <div class=" col-xs-11">
-              <div class="input-group">
-                  <span class="input-group-addon"></span>
-                  <select id="mail_from" name="mail_from" class="form-control">
-                      <?php 
-                      $first = true;
-                      foreach ($mail_servers as $mail_server)
-                      {
-                          if ($first)
-                          {
-                              echo '<option selected value="'.$mail_server["mailid"].'">'.$mail_server["mail"].'</option>';
-                              $first = false;
-                          }
-                          else
-                              echo '<option value="'.$mail_server["mailid"].'">'.$mail_server["mail"].'</option>';
-                      }
-                      ?>
-                  </select>
-              </div>
+                <select id="mail_from" name="mail_from" class="form-control" style="margin-bottom: 10px;">
+                    <?php
+                    $first = true;
+                    foreach ($mail_servers as $mail_server) {
+                        if ($first) {
+                            echo '<option selected value="' . $mail_server["mailid"] . '">' . $mail_server["mail"] . '</option>';
+                            $first = false;
+                        } else
+                            echo '<option value="' . $mail_server["mailid"] . '">' . $mail_server["mail"] . '</option>';
+                    }
+                    ?>
+                </select>
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-xs-12">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_to">An</label>
             </div>
             <div class=" col-xs-11">
-                <div class="input-group">
-                    <span class="input-group-addon">@</span>
-                    <input type="text" id="mail_to" name="mail_to"
-                           value="<?php if ($_REQUEST["preset"]=="RE") echo $orig_mail_from; else if ($_REQUEST["preset"]=="REALL") echo $orig_mail_fromall;?>"
-                           class="form-control">
-                </div>
+                <input type="text" id="mail_to" name="mail_to"
+                       value="<?php if ($_REQUEST["preset"] == "RE") echo $orig_mail_from; else if ($_REQUEST["preset"] == "REALL") echo $orig_mail_fromall; ?>">
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-xs-12">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_cc">CC</label>
             </div>
             <div class=" col-xs-11">
-                <div class="input-group">
-                    <span class="input-group-addon">@</span>
-                    <input type="text" id="mail_cc" name="mail_cc" class="form-control">
-                </div>
+                <input type="text" id="mail_cc" name="mail_cc">
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-xs-12">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_bcc">BCC</label>
             </div>
             <div class=" col-xs-11">
-                <div class="input-group">
-                    <span class="input-group-addon">@</span>
-                    <input type="text" id="mail_bcc" name="mail_bcc" class="form-control">
-                </div>
+                <input type="text" id="mail_bcc" name="mail_bcc">
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-xs-12">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_subject">Betreff</label>
             </div>
             <div class=" col-xs-11">
-                <div class="input-group">
-                    <span class="input-group-addon"></span>
-                    <input type="text" id="mail_subject" name="mail_subject" value="<?php echo $new_subject;?>" class="form-control">
-                </div>
+                <input type="text" id="mail_subject" name="mail_subject" value="<?php echo $new_subject; ?>"
+                       class="form-control" style="margin-bottom: 10px;">
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-xs-12">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_text">Nachricht</label>
             </div>
             <div class=" col-xs-11">
                 <div class="input-group">
-                    <textarea id="mail_text" name="mail_text" rows="10" class="form-control" cols="80"></textarea>
+                        <textarea id="mail_text" name="mail_text" rows="10" class="form-control"
+                                  cols="80"></textarea>
                 </div>
             </div>
-          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-xs-12">
+        <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_attachments">Anhänge</label>
             </div>
             <div class=" col-xs-11">
                 <div class="input-group">
-                      <span class="input-group-addon">
-                      <span class="btn btn-success btn-xs fileinput-button">
-                          <span>Hinzufügen...</span>
-                          <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%" />
-                      </span>
-                      <div id="files" class="files">
-                          <?php
-                          if ($_REQUEST["preset"] == "FW" && count($attachments))
-                          {
-                              foreach ($attachments as $attachment) {
-                                  echo '<p>'.$attachment['name'].'<input type="hidden" name="old_attach[]" value="'.$attachment["filename"].'"><span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span></p>';
-                              }
+                  <span class="input-group-addon">
+                  <span class="btn btn-success btn-xs fileinput-button">
+                      <span>Hinzufügen...</span>
+                      <input type="file" multiple="multiple" id="fileupload" name="files[]" width="100%"/>
+                  </span>
+                  <div id="files" class="files">
+                      <?php
+                      if ($_REQUEST["preset"] == "FW" && count($attachments)) {
+                          foreach ($attachments as $attachment) {
+                              echo '<p>' . $attachment['name'] . '<input type="hidden" name="old_attach[]" value="' . $attachment["filename"] . '"><span class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();"></span></p>';
                           }
-                          ?>
-                      </div>
-                      <div id="progress" class="progress">
-                          <div class="progress-bar progress-bar-success"></div>
-                      </div>
-                      </span>
+                      }
+                      ?>
+                  </div>
+                  <div id="progress" class="progress">
+                      <div class="progress-bar progress-bar-success"></div>
+                  </div>
+                  </span>
                 </div>
             </div>
-          </div>
         </div>
-    </form>
-</div>
+</form>
 </br>
 </body>
 </html>
