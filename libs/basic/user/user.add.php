@@ -117,39 +117,25 @@ if ($_REQUEST["subexec"] == "save")
     $saver = $user->save();
     
     if($saver){
-    	for($i=0; $i < $_REQUEST["email_quantity"]; $i++){
-    		//echo " ---- Hallo ";
-    		$tmp_mail = new Emailaddress((int)$_REQUEST["mail_id_{$i}"]);
-			$tmp_mail->setLogin(trim(addslashes($_REQUEST["mail_login_{$i}"])));
-    		$tmp_mail->setAddress(trim(addslashes($_REQUEST["mail_address_{$i}"])));
-    		$tmp_mail->setPassword(trim(addslashes($_REQUEST["mail_password_{$i}"])));
-    		$tmp_mail->setHost(trim(addslashes($_REQUEST["mail_host_{$i}"])));
-    		$tmp_mail->setPort((int)$_REQUEST["mail_port_{$i}"]);
-    	    if((int)$_REQUEST["use_imap_{$i}"] == 1) {
-    			$tmp_mail->setUseIMAP(1);
-    		} else {
-    			$tmp_mail->setUseIMAP(0);
-    		}
-    	    if((int)$_REQUEST["use_ssl_{$i}"] == 1) {
-    			$tmp_mail->setUseSSL(1);
-    		} else {
-    			$tmp_mail->setUseSSL(0);
-    		}
-    		$tmp_mail->setUserID($user->getId());
-    		if ((int)$_REQUEST["mail_read_{$i}"] == 1 && (int)$_REQUEST["mail_write_{$i}"] == 1){
-    			$tmp_mail->setType(2);
-    		} else {
-    			if ((int)$_REQUEST["mail_write_{$i}"] == 1){
-    				$tmp_mail->setType(1);
-    			} else {
-    				$tmp_mail->setType(0);
-    			}
-    		}
-    		if($tmp_mail->getAddress() != NULL && $tmp_mail->getAddress() != ""){
-    			$tmp_mail->save();
-    			echo $DB->getLastError();
-    		}
-    	}	
+		if ($_REQUEST["mailaddress"]){
+			$usermailaddresses = Emailaddress::getAllEmailaddressForUser($user);
+			$e = 0;
+			foreach ($_REQUEST["mailaddress"] as $mailaddres) {
+				$hasaddress = false;
+				$tmp_mailaddress = new Emailaddress($mailaddres);
+				foreach ($usermailaddresses as $usermailaddress) {
+					if ($tmp_mailaddress->getId() == $usermailaddress->getId()){
+						$hasaddress = true;
+					}
+				}
+				if (!$hasaddress)
+					Emailaddress::assignToUser($tmp_mailaddress, $user);
+				if ($e == 0 && count($usermailaddresses) == 0){
+					Emailaddress::setDefaultForUser(new Emailaddress($mailaddres), $user);
+				}
+				$e++;
+			}
+		}
     }
 
 	if ($_REQUEST["dash"]){
@@ -183,7 +169,6 @@ $user = new User($_REQUEST["id"]);
 $groups = Group::getAllGroups(Group::ORDER_NAME);
 $clients = Client::getAllClients(Client::ORDER_NAME);
 $languages = Translator::getAllLangs(Translator::ORDER_NAME);
-$all_emails = Emailaddress::getAllEmailaddress(Emailaddress::ORDER_ADDRESS, $user->getId());
 ?>
 
 <script	type="text/javascript" src="jscripts/timepicker/jquery-ui-timepicker-addon.js"></script>
@@ -269,45 +254,40 @@ function addDashRow(){
 }
 
 function addEMailRow(){
-	var obj = document.getElementById('table_emails');
-	var count = parseInt(document.getElementById('email_quantity').value);
-	var insert ='<tr><td class="content_row">';
-	insert += '<input type="hidden" name="mail_id_'+count+'" value="0" >';
-	insert += '<input type="text" class="text" name="mail_address_'+count+'" style="width: 220px">';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input type="text" class="text" name="mail_login_'+count+'" style="width: 220px">';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input type="text" class="text" name="mail_password_'+count+'" style="width: 120px">';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input type="text" class="text" name="mail_host_'+count+'" style="width: 220px">';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input type="text" class="text" name="mail_port_'+count+'" style="width: 50px">';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input name="use_imap_'+count+'" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-	insert += ' <?=$_LANG->get('IMAP');?>';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input name="use_ssl_'+count+'" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-	insert += ' <?=$_LANG->get('SSL');?>';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input name="mail_read_'+count+'" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-	insert += ' <?=$_LANG->get('Lesen');?>';
-	insert += '</td>';
-	insert += '<td class="content_row">';
-	insert += '<input name="mail_write_'+count+'" type="checkbox" value="1" onfocus="markfield(this,0)" onblur="markfield(this,1)">';
-	insert += ' <?=$_LANG->get('Schreiben');?>';
-	insert += '</td>';
-	insert += '</tr>';
-
-	count += 1;
-	obj.insertAdjacentHTML("BeforeEnd", insert);
-	document.getElementById('email_quantity').value = count;
+	var address = $("#mail_select option:selected").text();
+	var addressid = $("#mail_select option:selected").val();
+	var insert = '<p>'+address;
+	insert += '<input type="hidden" name="mailaddress[]" value="'+addressid+'">';
+	insert += '<span style="color: red;" class="glyphicons glyphicons-remove pointer" onclick="$(this).parent().remove();" title="E-Mail-Adresse l&ouml;schen"></span>';
+	insert += '</p>';
+	$('#mailaddresses').append(insert);
+}
+function starEmail(ele,mail,user){
+	$.ajax({
+		type: "POST",
+		url: "libs/basic/user/user.ajax.php",
+		data: { ajax_action: "star_email", user: user, mailaddress: mail },
+		success: function(data)
+		{
+			$('.glyphicons .glyphicons-star').each(function(){
+				$(this).removeClass('glyphicons-star');
+				$(this).addClass('glyphicons-star-empty');
+			});
+			$(ele).removeClass('glyphicons-star-empty');
+			$(ele).addClass('glyphicons-star');
+		}
+	});
+}
+function removeEmail(ele,mail,user){
+	$.ajax({
+		type: "POST",
+		url: "libs/basic/user/user.ajax.php",
+		data: { ajax_action: "remove_email", user: user, mailaddress: mail },
+		success: function(data)
+		{
+			$(ele).parent().remove();
+		}
+	});
 }
 </script>
 <script language="JavaScript">
@@ -817,150 +797,49 @@ echo $quickmove->generate();
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">
-							IMAP Konten
+							Zugeordnete eMail-Adressen
 						</h3>
 					</div>
 					<div class="panel-body">
-						<input type="hidden" name="email_quantity" id="email_quantity"
-							   value="<? if (count($all_emails) > 0) echo count($all_emails); else echo "1"; ?>">
-						<div class="table-responsive">
-							<table class="table table-hover" id="table_emails">
-								<tr>
-									<td class="content_row_header"><?= $_LANG->get('eMail') ?></td>
-									<td class="content_row_header"><?= $_LANG->get('Login') ?></td>
-									<td class="content_row_header"><?= $_LANG->get('Passwort') ?></td>
-									<td class="content_row_header"><?= $_LANG->get('Host/Server') ?></td>
-									<td class="content_row_header"><?= $_LANG->get('Port') ?></td>
-									<td class="content_row_header">&ensp;</td>
-									<td class="content_row_header">&ensp;</td>
-									<td class="content_row_header"><?= $_LANG->get('Rechte') ?></td>
-									<td class="content_row_header">&ensp;</td>
-									<td class="content_row_header"><span class="glyphicons glyphicons-plus pointer" onclick="addEMailRow()"></span>
-
-									</td>
-								</tr>
-								<? $x = 0;
-								if (count($all_emails) > 0) {
-									foreach ($all_emails as $emailaddress) { ?>
-										<tr>
-											<td class="content_row">
-												<input type="hidden" class="text" name="mail_id_<?= $x ?>"
-													   value="<?= $emailaddress->getId() ?>">
-												<input type="text" class="text" name="mail_address_<?= $x ?>"
-													   value="<?= $emailaddress->getAddress() ?>"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													   style="width: 220px">
-											</td>
-											<td class="content_row">
-												<input type="text" class="text" name="mail_login_<?= $x ?>"
-													   value="<?= $emailaddress->getLogin() ?>"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													   style="width: 220px">
-											</td>
-											<td class="content_row">
-												<input type="password" class="text" name="mail_password_<?= $x ?>"
-													   value="<?= $emailaddress->getPassword() ?>"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													   style="width: 120px">
-											</td>
-											<td class="content_row">
-												<input type="text" class="text" name="mail_host_<?= $x ?>"
-													   value="<?= $emailaddress->getHost() ?>"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													   style="width: 220px">
-											</td>
-											<td class="content_row">
-												<input type="text" class="text" name="mail_port_<?= $x ?>"
-													   value="<?= $emailaddress->getPort() ?>"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													   style="width: 50px">
-											</td>
-											<td class="content_row">
-												<input name="use_imap_<?= $x ?>" type="checkbox" value="1"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													<? if ($emailaddress->getUseIMAP()) echo 'checked="checked"'; ?> >
-												<?= $_LANG->get('IMAP'); ?>
-											</td>
-											<td class="content_row">
-												<input name="use_ssl_<?= $x ?>" type="checkbox" value="1"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													<? if ($emailaddress->getUseSSL()) echo 'checked="checked"'; ?> >
-												<?= $_LANG->get('SSL'); ?>
-											</td>
-											<td class="content_row">
-												<input name="mail_read_<?= $x ?>" type="checkbox" value="1"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													<? if ($emailaddress->readable()) echo 'checked="checked"'; ?> >
-												<?= $_LANG->get('Lesen'); ?>
-											</td>
-											<td class="content_row">
-												<input name="mail_write_<?= $x ?>" type="checkbox" value="1"
-													   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-													<? if ($emailaddress->writeable()) echo 'checked="checked"'; ?> >
-												<?= $_LANG->get('Schreiben'); ?>
-											</td>
-											<td class="content_row">
-												<a onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=deletemail&mailid=<?= $emailaddress->getId() ?>&id=<?= $user->getId() ?>')"
-												   class="icon-link"
-												   href="#"><span style="color: red;" class="glyphicons glyphicons-remove pointer"
-													title="<?= $_LANG->get('E-Mail-Adresse l&ouml;schen') ?>">
-													</span>
-
-											</td>
-										</tr>
-										<? $x++;
+						<div class="form-group">
+							<div class="col-sm-2"></div>
+							<div class="col-sm-10">
+								<div id="mailaddresses">
+									<?php
+									$usermailaddresses = Emailaddress::getAllEmailaddressForUser($user);
+									foreach ($usermailaddresses as $usermailaddress) {
+										echo '<p>'.$usermailaddress->getAddress();
+										echo '<input type="hidden" name="mailaddress[]" value="'.$usermailaddress->getId().'">';
+										echo '<span style="color: red;" class="glyphicons glyphicons-remove pointer" onclick="removeEmail(this,'.$usermailaddress->getId().','.$user->getId().');" title="E-Mail-Adresse l&ouml;schen"></span>';
+										if (Emailaddress::isDefault($usermailaddress, $user)){
+											echo '<span class="glyphicons glyphicons-star"></span>';
+										} else {
+											echo '<span class="glyphicons glyphicons-star-empty pointer" title="als Standard setzen" onclick="starEmail(this,'.$usermailaddress->getId().','.$user->getId().');"></span>';
+										}
+										echo '</p>';
 									}
-								} else { ?>
-									<tr>
-										<td class="content_row">
-											<input type="hidden" name="mail_ip_0" value="0">
-											<input type="text" class="text" name="mail_address_0"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												   style="width: 220px">
-										</td>
-										<td class="content_row">
-											<input type="text" class="text" name="mail_login_0"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												   style="width: 220px">
-										</td>
-										<td class="content_row">
-											<input type="text" class="text" name="mail_password_0"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												   style="width: 120px">
-										</td>
-										<td class="content_row">
-											<input type="text" class="text" name="mail_host_0"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												   style="width: 220px">
-										</td>
-										<td class="content_row">
-											<input type="text" class="text" name="mail_port_0"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-												   style="width: 50px">
-										</td>
-										<td class="content_row">
-											<input name="use_imap" type="checkbox" value="1" checked
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											<?= $_LANG->get('IMAP'); ?>
-										</td>
-										<td class="content_row">
-											<input name="use_ssl" type="checkbox" value="1" checked
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											<?= $_LANG->get('SSL'); ?>
-										</td>
-										<td class="content_row">
-											<input name="mail_read_<?= $x ?>" type="checkbox" checked value="1"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											<?= $_LANG->get('Lesen'); ?>
-										</td>
-										<td class="content_row">
-											<input name="mail_write_<?= $x ?>" type="checkbox" checked value="1"
-												   onfocus="markfield(this,0)" onblur="markfield(this,1)">
-											<?= $_LANG->get('Schreiben'); ?>
-										</td>
-									</tr>
-								<? } ?>
-							</table>
+									?>
+								</div>
+							</div>
+						</div>
+
+						<?php
+						$mailaddresses = Emailaddress::getAllEmailaddress();
+						?>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Hinzufügen</label>
+							<div class="col-sm-9">
+								<select name="mail_select" id="mail_select" class="form-control">
+									<?php
+									foreach ($mailaddresses as $item) {
+										echo '<option value="' . $item->getId() . '">' . $item->getAddress() . '</option>';
+									}
+									?>
+								</select>
+							</div>
+							<div class="col-sm-1">
+								<span class="glyphicons glyphicons-plus pointer" onclick="addEMailRow()"></span>
+							</div>
 						</div>
 					</div>
 				</div>

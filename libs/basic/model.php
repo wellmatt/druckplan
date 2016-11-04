@@ -72,11 +72,9 @@ class Model {
 
         if ($this->id > 0) {
             $sql = "UPDATE {$this->_table} SET {$set} WHERE id = {$this->id}";
-//            prettyPrint($sql);
             return $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO {$this->_table} SET {$set}";
-//            prettyPrint($sql);
             $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM {$this->_table}";

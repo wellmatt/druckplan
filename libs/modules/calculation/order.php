@@ -219,7 +219,7 @@ $(document).ready(function() {
         <h3 class="panel-title">
             Kalkulationen
 				<span class="pull-right">
-					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=libs/modules/calculation/order.create.php';">
+					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page'] ?>&exec=new';">
                         <span class="glyphicons glyphicons-plus"></span>
                         <?=$_LANG->get('Kalkulation hinzuf&uuml;gen') ?>
                     </button>

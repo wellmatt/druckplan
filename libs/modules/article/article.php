@@ -66,7 +66,8 @@ switch ($_REQUEST["exec"]) {
 
 					$tags = $article->getTags();
 
-    	            $artdesc = 'Inhalt 1<br>';
+
+					$artdesc = 'Inhalt1<br>';
     	            $artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight()."mm)<br>";
 					$tags[] = $firstcalc->getProductFormat()->getName() . ' (' . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight().'mm)';
     	            $artdesc .= 'Material Inhalt: '. $firstcalc->getPaperContent()->getName() . ' ' . $firstcalc->getPaperContentWeight() . 'g <br>';

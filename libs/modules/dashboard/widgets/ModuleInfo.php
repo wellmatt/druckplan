@@ -37,7 +37,7 @@
             <div class="icon">
                 <i class="glyphicons glyphicons-group"></i>
             </div>
-            <a href="index.php?page=libs/modules/businesscontact/businesscontact.php" class="small-box-footer">Kundendatenbank <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="index.php?page=libs/modules/businesscontact/businesscontact.php" class="small-box-footer">Zu den Geschäftskontakten <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->

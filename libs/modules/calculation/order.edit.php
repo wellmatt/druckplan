@@ -107,39 +107,6 @@ if((int)$_REQUEST["selProduct"] != 0){
 // save Step2
 if((int)$_REQUEST["step"] == 2){
 	$calc = new Calculation((int)$_REQUEST["calc_id"]);
-	
-	if ($order->getProduct()->getLoadDymmyData() == 1){
-		// Kalkulation mit Dummy-Daten fuellen
-		
-		$calc->setPagesContent(1);
-		
-		$tmp_formats = $order->getProduct()->getAvailablePaperFormats();
-		$calc->setProductFormat($tmp_formats[0]);
-		$calc->setProductFormatHeight($tmp_formats[0]->getHeight());
-		$calc->setProductFormatWidth($tmp_formats[0]->getWidth());
-		$calc->setProductFormatHeightOpen($tmp_formats[0]->getHeight());
-		$calc->setProductFormatWidthOpen($tmp_formats[0]->getWidth());
-		
-		$tmp_papers = $order->getProduct()->getSelectedPapersIds(Calculation::PAPER_CONTENT);
-		$tmp_paper = array_shift(array_slice($tmp_papers, 0, 1)) ;
-		$tmp_paper = new Paper($tmp_paper["id"]);
-		$calc->setPaperContent($tmp_paper);
-		$tmp_weights = $tmp_paper->getWeights();
-		$calc->setPaperContentWeight($tmp_weights[0]);
-		
-		$tmp_chromas = Chromaticity::getAllChromaticities();
-		$calc->setChromaticitiesContent($tmp_chromas[0]);
-		
-		$calc->setAmount(1);
-		$calc->setOrderId($order->getId());
-		$calc->setState(1);
-		
-		$calc->save();
-		
-		$order->setShowProduct(0);
-		$order->save();
-		
-	}
 
 	if($_REQUEST["subexec"] == "copy"){
 		$calc->clearId();

@@ -76,13 +76,14 @@ class ExportJson{
                                 $details = $calc->getDetails();
 
                                 foreach ($details as $detail) {
-
+                                    $machinename = '';
                                     $labelsperroll = $calc->getAmount();
                                     $labelsradius = 0;
                                     $maschines = Machineentry::getMachineForPapertype($detail['paper'],$calc->getId());
                                     if ($maschines){
                                         foreach ($maschines as $maschine) {
                                             if ($maschine->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL){
+                                                $machinename = $maschine->getMachine()->getName();
                                                 if ($maschine->getLabelcount()>0) {
                                                     $labelsperroll = $maschine->getLabelcount();
                                                     $labelsradius = $maschine->getLabelradius();
@@ -105,6 +106,11 @@ class ExportJson{
                                                 "name" => $detail['papername'],
                                             ],
                                             "production_type" => (int)3,
+                                            "width" => (int)$calc->getProductFormatWidth(),
+                                            "height" => (int)$calc->getProductFormatHeight(),
+                                            "printing_press" => [
+                                                "name" => $machinename
+                                            ],
                                             "run" => (int)$calc->getAmount(),
                                             "roll_width" => tofloat($detail['materialbreite']),
                                             "rapport" => tofloat(0),

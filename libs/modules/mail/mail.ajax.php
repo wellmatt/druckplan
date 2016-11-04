@@ -21,6 +21,7 @@ require_once 'libs/modules/article/article.class.php';
 require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/modules/privatecontacts/privatecontact.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
+require_once 'libs/modules/mail/mailmassage.class.php';
 
 
 require_once __DIR__.'/../../../vendor/Horde/Autoloader.php';
@@ -875,6 +876,25 @@ if ($_REQUEST["ajax_action"] == "search_ticket"){
 	header("Content-Type: application/json");
 	echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "quick_send"){
+    $mailadress_send = Emailaddress::getDefaultOrFirstForUser($_USER);
+    $mail_subject = $_REQUEST["mail_subject"];
+    $mail_text = $_REQUEST["mail_text"];
+    $attachments = [];
+    $mail_to = explode(",", $_REQUEST["mail_to"]);
+    $mail_ccs = explode(",", $_REQUEST["mail_cc"]);
 
-?>
 
+    // Add the file as an attachment, set the file name and what kind of file it is.
+    if ($_FILES['mail_attachments']) {
+        $x = 0;
+        foreach ($_FILES['mail_attachments']['name'] as $name) {
+            $attachments[$name] = $_FILES['mail_attachments']['tmp_name'][$x];
+            $x++;
+        }
+    }
+
+    $message = new MailMessage($mailadress_send,$mail_to,$mail_subject,$mail_text,$mail_ccs,[],$attachments);
+    $message->send();
+
+}

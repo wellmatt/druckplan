@@ -22,6 +22,15 @@ for ($i = 1; $i <= $rows; $i++) {
         if (file_exists('./libs/modules/dashboard/widgets/'.$wid1->getModule().'.php'))
             include './libs/modules/dashboard/widgets/'.$wid1->getModule().'.php';
         echo '</div>';
+    } elseif ($wid2->getModule() == "Keins") {
+        foreach (Array($wid1,$wid3) as $widget) {
+            if ($widget->getModule() != "Keins") {
+                echo '<div class="col-md-6">';
+                if (file_exists('./libs/modules/dashboard/widgets/'.$widget->getModule().'.php'))
+                    include './libs/modules/dashboard/widgets/' . $widget->getModule().'.php';
+                echo '</div>';
+            }
+        }
     } else {
         foreach (Array($wid1,$wid2,$wid3) as $widget) {
             if ($widget->getModule() != "Keins") {

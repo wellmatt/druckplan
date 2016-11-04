@@ -1,12 +1,11 @@
-<?php
-/**
- *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
- *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
- *  * Proprietary and confidential
- *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
- *
- */
-
+<?
+//----------------------------------------------------------------------------------
+// Author:        iPactor GmbH
+// Updated:       20.03.2012
+// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
+// Any unauthorized redistribution, reselling, modifying or reproduction of part
+// or all of the contents in any form is strictly prohibited.
+//----------------------------------------------------------------------------------
 require_once 'libs/modules/paperformats/paperformat.class.php';
 require_once 'libs/modules/paper/paper.class.php';
 require_once 'libs/modules/foldtypes/foldtype.class.php';
@@ -22,9 +21,9 @@ class Calculation
     
     const PAPER_CONTENT 	= 1;
     const PAPER_ADDCONTENT 	= 2;
-    const PAPER_ADDCONTENT2 = 3;
-    const PAPER_ADDCONTENT3 = 4;
-    const PAPER_ENVELOPE 	= 5;
+    const PAPER_ENVELOPE 	= 3;
+    const PAPER_ADDCONTENT2 = 4;
+    const PAPER_ADDCONTENT3 = 5;
 
     const PRODUCT_ROWS = 1;
     const PRODUCT_COLS = 2;
@@ -32,110 +31,97 @@ class Calculation
     private $id;
     private $orderId = 0;
     private $state = 1;
+    private $productFormat = null;
+    private $productFormatWidth = 0;
+    private $productFormatHeight = 0;
+    private $productFormatWidthOpen = 0;
+    private $productFormatHeightOpen = 0;
+    private $pagesContent = 0;
+    private $pagesAddContent = 0;
+    private $pagesEnvelope = 0;
     private $amount = 0;
     private $sorts = 1;
-    private $title; // Kalkulation's Titel
-
+    private $paperContent = null;
+    private $paperContentWidth = 0;
+    private $paperContentHeight = 0;
+    private $paperContentWeight = 0;
+    private $paperAddContent = null;
+    private $paperAddContentWidth = 0;
+    private $paperAddContentHeight = 0;
+    private $paperAddContentWeight = 0;
+    private $paperEnvelope = null;
+    private $paperEnvelopeWidth = 0;
+    private $paperEnvelopeHeight = 0;
+    private $paperEnvelopeWeight = 0;
+    private $envelopeHeightOpen = 0;
+    private $envelopeWidthOpen = 0;
+    private $folding;
     private $addCharge = 0;
     private $margin = 0;
     private $discount = 0;
     private $calcAutoValues = 1;
     private $calcDebug = 0;
-    private $colorControl = 0;					// Farbkontrollstreifen anzeigen
-    private $textProcessing;                    // Verarbeitungs Text
-
-    // Prices
-    private $pricesub = 0.0;
-    private $pricetotal = 0.0;
-
-    // Schneidemachine (added by ascherer 22.07.14)
-    private $format_in_content;
-    private $format_in_addcontent;
-    private $format_in_addcontent2;
-    private $format_in_addcontent3;
-    private $format_in_envelope;
-
-    // Inhalt | Content
-    private $formatContent = 0;
-    private $pagesContent = 0;
-    private $paperContent = null;
-    private $paperContentWidth = 0;
-    private $paperContentHeight = 0;
-    private $paperContentWeight = 0;
-    private $paperContentGrant = 0;
-    private $cutContent = 3.0;
     private $chromaticitiesContent = null;
-    private $foldingContent = 0;
-
-    // Inahlt 2 | AddContent
-    private $formatAddContent = 0;
-    private $pagesAddContent = 0;
-    private $paperAddContent = null;
-    private $paperAddContentWidth = 0;
-    private $paperAddContentHeight = 0;
-    private $paperAddContentWeight = 0;
-    private $paperAddContentGrant = 0;
-    private $cutAddContent = 3.0;
     private $chromaticitiesAddContent = null;
-    private $foldingAddContent = 0;
+    private $chromaticitiesEnvelope = null;
+    private $paperContentGrant = 0;
+    private $paperAddContentGrant = 0;
+    private $paperEnvelopeGrant = 0;
+    private $textProcessing;
+    private $foldschemeContent;
+    private $foldschemeAddContent;
+    private $foldschemeEnvelope;
+    private $articles= NULL;
+    private $articleamounts= NULL;
+    private $articlescales= NULL;
 
-    // Inhalt 3 | AddContent2
-    private $formatAddContent2 = 0;
+    private $cutContent = 3.0;					// Anschnitt fuer den Inhalt
+    private $cutAddContent = 3.0;				// Anschnitt fuer den zusl. Inhalt
+	private $cutAddContent2 = 3.0;				// Anschnitt fuer den zusl. Inhalt 2
+	private $cutAddContent3 = 3.0;				// Anschnitt fuer den zusl. Inhalt 3
+    private $cutEnvelope = 3.0;					// Anschnitt fuer Umschlag
+    private $colorControl = 0;					// Farbkontrollstreifen anzeigen
+
+    // Zus. Inhalt 2
     private $pagesAddContent2 = 0;
     private $paperAddContent2 = null;
     private $paperAddContent2Width = 0;
     private $paperAddContent2Height = 0;
     private $paperAddContent2Weight = 0;
     private $paperAddContent2Grant = 0;
-    private $cutAddContent2 = 3.0;
     private $chromaticitiesAddContent2 = null;
-    private $foldingAddContent2 = 0;
+    private $foldschemeAddContent2;
 
-    // Inhalt 4 | AddContent3
-    private $formatAddContent3 = 0;
+    // Zus. Inhalt 3
     private $pagesAddContent3 = 0;
     private $paperAddContent3 = null;
     private $paperAddContent3Width = 0;
     private $paperAddContent3Height = 0;
     private $paperAddContent3Weight = 0;
     private $paperAddContent3Grant = 0;
-    private $cutAddContent3 = 3.0;
     private $chromaticitiesAddContent3 = null;
-    private $foldingAddContent3 = 0;
-
-    // Umschlag | Envelope
-    private $formatEnvelope = 0;
-    private $pagesEnvelope = 0;
-    private $paperEnvelope = null;
-    private $paperEnvelopeWidth = 0;
-    private $paperEnvelopeHeight = 0;
-    private $paperEnvelopeWeight = 0;
-    private $paperEnvelopeGrant = 0;
-    private $cutEnvelope = 3.0;
-    private $chromaticitiesEnvelope = null;
-    private $foldingEnvelope = 0;
-
-
-    // TO REMOVE
-    private $foldschemeAddContent2;
     private $foldschemeAddContent3;
-    private $articles= NULL;
-    private $articleamounts= NULL;
-    private $articlescales= NULL;
-    private $foldschemeContent;
-    private $foldschemeAddContent;
-    private $foldschemeEnvelope;
-    private $productFormat = null;
-    private $productFormatWidth = 0;
-    private $productFormatHeight = 0;
-    private $productFormatWidthOpen = 0;
-    private $productFormatHeightOpen = 0;
-    private $envelopeHeightOpen = 0;
-    private $envelopeWidthOpen = 0;
-    private $folding;
-    private $cutter_weight = 0;
-    private $cutter_height = 0;
-    private $roll_dir = 0;
+
+	// Schneidemachine (added by ascherer 22.07.14)
+
+	private $cutter_weight = 0;
+	private $cutter_height = 0;
+	private $roll_dir = 0;
+
+	private $format_in_content;
+	private $format_in_addcontent;
+	private $format_in_addcontent2;
+	private $format_in_addcontent3;
+	private $format_in_envelope;
+
+    // Prices
+
+    private $pricesub = 0.0;
+    private $pricetotal = 0.0;
+
+	// other
+
+	private $title; // Kalkulation's Titel
     
     function __construct($id = 0) 
     {
