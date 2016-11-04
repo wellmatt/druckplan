@@ -474,11 +474,11 @@ if ($_REQUEST["exec"] == "numberPages") {
 
 if ($_REQUEST["exec"] == "printChrom") {
 
-    $order = new Order((int)$_REQUEST[orderId]);
+    $product = new Product((int)$_REQUEST["product"]);
     $pages = (int)$_REQUEST["id"];
 
-    if (count($order->getProduct()->getAvailableChromaticities())>0){
-        $chromas = $order->getProduct()->getAvailableChromaticities();
+    if (count($product->getAvailableChromaticities())>0){
+        $chromas = $product->getAvailableChromaticities();
     } else {
         $chromas = Chromaticity::getAllChromaticities();
     }

@@ -32,6 +32,17 @@ class Perferences
     // Mail
 
     private $mail_domain = '';
+    private $smtp_address = '';
+    private $smtp_host = '';
+    private $smtp_port = '';
+    private $smtp_user = '';
+    private $smtp_password = '';
+
+    private $imap_address = '';
+    private $imap_host = '';
+    private $imap_port = '';
+    private $imap_user = '';
+    private $imap_password = '';
 
     function __construct()
     {
@@ -50,6 +61,16 @@ class Perferences
             $this->dt_state_save = (bool)$r["dt_state_save"];
             $this->mail_domain = $r["mail_domain"];
             $this->commentArtDesc = $r["commentArtDesc"];
+            $this->smtp_address = $r["smtp_address"];
+            $this->smtp_host = $r["smtp_host"];
+            $this->smtp_port = $r["smtp_port"];
+            $this->smtp_user = $r["smtp_user"];
+            $this->smtp_password = $r["smtp_password"];
+            $this->imap_address = $r["imap_address"];
+            $this->imap_host = $r["imap_host"];
+            $this->imap_port = $r["imap_port"];
+            $this->imap_user = $r["imap_user"];
+            $this->imap_password = $r["imap_password"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -92,7 +113,17 @@ class Perferences
                commentArtDesc 	= {$this->commentArtDesc},
                dt_show_default 	= {$this->dt_show_default},
                dt_state_save 	= {$tmp_dt_state_save},
-               mail_domain 	= '{$this->mail_domain}'
+               mail_domain 	= '{$this->mail_domain}',
+               smtp_address 	= '{$this->smtp_address}',
+               smtp_host 	= '{$this->smtp_host}',
+               smtp_port 	= '{$this->smtp_port}',
+               smtp_user 	= '{$this->smtp_user}',
+               smtp_password 	= '{$this->smtp_password}',
+               imap_address 	= '{$this->imap_address}',
+               imap_host 	= '{$this->imap_host}',
+               imap_port 	= '{$this->imap_port}',
+               imap_user 	= '{$this->imap_user}',
+               imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
     }
@@ -239,5 +270,165 @@ class Perferences
     public function setCommentArtDesc($commentArtDesc)
     {
         $this->commentArtDesc = $commentArtDesc;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSmtpAddress()
+    {
+        return $this->smtp_address;
+    }
+
+    /**
+     * @param string $smtp_address
+     */
+    public function setSmtpAddress($smtp_address)
+    {
+        $this->smtp_address = $smtp_address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSmtpHost()
+    {
+        return $this->smtp_host;
+    }
+
+    /**
+     * @param string $smtp_host
+     */
+    public function setSmtpHost($smtp_host)
+    {
+        $this->smtp_host = $smtp_host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSmtpPort()
+    {
+        return $this->smtp_port;
+    }
+
+    /**
+     * @param string $smtp_port
+     */
+    public function setSmtpPort($smtp_port)
+    {
+        $this->smtp_port = $smtp_port;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSmtpUser()
+    {
+        return $this->smtp_user;
+    }
+
+    /**
+     * @param string $smtp_user
+     */
+    public function setSmtpUser($smtp_user)
+    {
+        $this->smtp_user = $smtp_user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSmtpPassword()
+    {
+        return $this->smtp_password;
+    }
+
+    /**
+     * @param string $smtp_password
+     */
+    public function setSmtpPassword($smtp_password)
+    {
+        $this->smtp_password = $smtp_password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImapAddress()
+    {
+        return $this->imap_address;
+    }
+
+    /**
+     * @param string $imap_address
+     */
+    public function setImapAddress($imap_address)
+    {
+        $this->imap_address = $imap_address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImapHost()
+    {
+        return $this->imap_host;
+    }
+
+    /**
+     * @param string $imap_host
+     */
+    public function setImapHost($imap_host)
+    {
+        $this->imap_host = $imap_host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImapPort()
+    {
+        return $this->imap_port;
+    }
+
+    /**
+     * @param string $imap_port
+     */
+    public function setImapPort($imap_port)
+    {
+        $this->imap_port = $imap_port;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImapUser()
+    {
+        return $this->imap_user;
+    }
+
+    /**
+     * @param string $imap_user
+     */
+    public function setImapUser($imap_user)
+    {
+        $this->imap_user = $imap_user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImapPassword()
+    {
+        return $this->imap_password;
+    }
+
+    /**
+     * @param string $imap_password
+     */
+    public function setImapPassword($imap_password)
+    {
+        $this->imap_password = $imap_password;
     }
 }

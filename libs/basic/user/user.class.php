@@ -33,7 +33,7 @@ class User {
     private $groups = Array();
     private $lang;
     private $telefonIP;
-    private $emailAdresses = null; 
+    private $emailAdresses = null;
      
     private $loggedIn = false;
      
@@ -638,12 +638,12 @@ class User {
 		// Check wether or not to perform a select.
 		if(is_null($this->emailAdresses)) {
 			$this->emailAdresses = array();
-			$sql = " SELECT id FROM user_emailaddress WHERE user_id = {$this->id}";
+			$sql = " SELECT emailaddress FROM user_emailaddress WHERE user = {$this->id}";
 
 			if($DB->num_rows($sql) > 0) {
 				$results = $DB->select($sql);
 				foreach ($results as $result) {
-					array_push($this->emailAdresses, new Emailaddress($result["id"]));
+					array_push($this->emailAdresses, new Emailaddress($result["emailaddress"]));
 				}
 			}
 		}

@@ -26,6 +26,17 @@ require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/eventqueue/eventclass.interface.php';
+require_once 'libs/modules/mail/mailmassage.class.php';
+
+require_once 'vendor/PEAR/Net/SMTP.php';
+require_once 'vendor/PEAR/Net/Socket.php';
+require_once 'vendor/Horde/Autoloader.php';
+require_once 'vendor/Horde/Autoloader/ClassPathMapper.php';
+require_once 'vendor/Horde/Autoloader/ClassPathMapper/Default.php';
+$autoloader = new Horde_Autoloader();
+$autoloader->addClassPathMapper(new Horde_Autoloader_ClassPathMapper_Default('vendor'));
+$autoloader->registerAutoloader();
+
 session_start();
 
 $DB = new DBMysql();
@@ -34,23 +45,7 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$_REQUEST["ciid"] = "68";
-$_REQUEST["type"] = "1";
 
-if ($_REQUEST["type"])
-    $type = (int)$_REQUEST["type"];
-else
-    $type = Document::TYPE_OFFER;
-$collectinv = new CollectiveInvoice((int)$_REQUEST["ciid"]);
-$doc = new Document();
-$doc->setRequestId($collectinv->getId());
-$doc->setRequestModule(Document::REQ_MODULE_COLLECTIVEORDER);
-$doc->setType($type);
-$doc->setPreview(1);
-if ($type == 5 || $type == 15) {
-    $hash = $doc->createDoc(Document::VERSION_PRINT, false, false);
-    $file = $doc->getFilename(Document::VERSION_PRINT);
-} else {
-    $hash = $doc->createDoc(Document::VERSION_EMAIL);
-    $file = $doc->getFilename(Document::VERSION_EMAIL);
-}
+$message = new MailMessage(Emailaddress::getDefaultOrFirstForUser($_USER),['ascherer@ipactor.de'],'Test eMail','Dies ist ein Test!');
+//$message->send();
+$message->storeDraft();

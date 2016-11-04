@@ -37,14 +37,17 @@ require_once 'libs/modules/dashboard/dashboard.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/files/file.class.php';
 
-require_once __DIR__.'/vendor/Horde/Autoloader.php';
-require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper.php';
-require_once __DIR__.'/vendor/Horde/Autoloader/ClassPathMapper/Default.php';
-
+// Mail Stuff
+require_once 'libs/modules/mail/mailmassage.class.php';
+require_once 'vendor/PEAR/Net/SMTP.php';
+require_once 'vendor/PEAR/Net/Socket.php';
+require_once 'vendor/Horde/Autoloader.php';
+require_once 'vendor/Horde/Autoloader/ClassPathMapper.php';
+require_once 'vendor/Horde/Autoloader/ClassPathMapper/Default.php';
 $autoloader = new Horde_Autoloader();
-$autoloader->addClassPathMapper(new Horde_Autoloader_ClassPathMapper_Default(__DIR__.'/vendor'));
+$autoloader->addClassPathMapper(new Horde_Autoloader_ClassPathMapper_Default('vendor'));
 $autoloader->registerAutoloader();
-
+// End Mail Stuff
 
 $DB = new DBMysql();
 $dbok = $DB->connect($_CONFIG->db);
