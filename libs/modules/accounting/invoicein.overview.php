@@ -56,12 +56,11 @@
             <table class="table table-hover" id="invintable">
                 <thead>
                 <tr>
-                    <th>RE-Datum</th>
+                    <th>Re-Datum</th>
                     <th>Re.-Nr.</th>
                     <th>Lieferant</th>
                     <th>Grund der Ausgabe</th>
                     <th>Netto</th>
-                    <th>Brutto</th>
                     <th>Erstellt</th>
                     <th>Fällig</th>
                     <th>Bezahlt</th>
