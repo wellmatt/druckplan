@@ -16,8 +16,8 @@ class invoicein extends model
     public $supplier = 0;
     public $status = 1;
     public $netvalue = 0.0;
-    public $MwSt = 0;
-    public $crtdate = 0;
+    public $tax = 0;
+    public $redate = 0;
     public $duedate = 0;
     public $payeddate = 0;
     /**
@@ -32,7 +32,7 @@ class invoicein extends model
 
     protected function bootclasses()
     {
-        $this->supplier = new businesscontact($this->supplier);
+        $this->supplier = new BusinessContact($this->supplier);
     }
 
     /**
@@ -54,16 +54,17 @@ class invoicein extends model
     /**
      * @return int
      */
-    public function getCrtdate()
+    public function getRedate()
     {
-        return $this->crtdate;
+        return $this->redate;
     }
+
     /**
-     * @param int $crtdate
+     * @param int $redate
      */
-    public function setCrtdate($crtdate)
+    public function setRedate($redate)
     {
-        $this->crtdate = $crtdate;
+        $this->redate = $redate;
     }
 
     /**
@@ -80,22 +81,6 @@ class invoicein extends model
     public function setDuedate($duedate)
     {
         $this->duedate = $duedate;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMwSt()
-    {
-        return $this->MwSt;
-    }
-
-    /**
-     * @param int $MwSt
-     */
-    public function setMwSt($MwSt)
-    {
-        $this->MwSt = $MwSt;
     }
 
     /**
@@ -177,6 +162,22 @@ class invoicein extends model
     public function setsupplier($supplier)
     {
         $this->supplier = $supplier;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTax()
+    {
+        return $this->tax;
+    }
+
+    /**
+     * @param int $tax
+     */
+    public function setTax($tax)
+    {
+        $this->tax = $tax;
     }
 }
 

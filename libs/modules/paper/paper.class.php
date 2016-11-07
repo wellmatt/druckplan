@@ -203,6 +203,7 @@ class Paper {
                     ORDER BY quantity_from desc, price
                     LIMIT 1";
             $res = $DB->select($sql);
+//            prettyPrint($sql);
 //            prettyPrint($amount.' * ( '.$res[0]["price"].' / ( '.$res[0]["size_height"].' / 1000 ) ) ');
             $price = $amount * ($res[0]["price"]/($res[0]["size_height"]/1000));
         } else

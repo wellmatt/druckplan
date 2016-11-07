@@ -19,11 +19,14 @@ if ($_REQUEST["subexec"] == "save"){
         'status' => $status,
         'description' => $_REQUEST["description"],
         'netvalue' => $_REQUEST["netvalue"],
-        'MwSt' => $_REQUEST["MwSt"],
-        'crtdate' => $_REQUEST["crtdate"],
+        'tax' => $_REQUEST["tax"],
+        'redate' => strtotime($_REQUEST["redate"]),
+        'payeddate' => strtotime($_REQUEST["payeddate"]),
+        'duedate' => strtotime($_REQUEST["duedate"]),
     ];
     $invoicein = new InvoiceIn((int)$_REQUEST["id"], $array);
     $invoicein->save();
+    $_REQUEST["id"] = $invoicein->getId();
 }
 $invoicein = new InvoiceIn((int)$_REQUEST["id"]);
 
@@ -71,7 +74,7 @@ echo $quickmove->generate();
                         <div class="col-sm-9">
                             <input type="text" id="search_supplier" name="search_supplier"
                                    value="<?php if ($invoicein->getSupplier()->getId() > 0) {
-                                       echo $invoicein->getSupplier()->getNameAsLine() . " - " . $invoicein->getSupplier()->getNameAsLine2();
+                                       echo $invoicein->getSupplier()->getNameAsLine();
                                    } ?>" class="form-control"/>
                             <input type="hidden" id="supplier" name="supplier"
                                    value="<?php echo $invoicein->getSupplier()->getId(); ?>"/>
@@ -92,21 +95,21 @@ echo $quickmove->generate();
                     <div class="form-group">
                         <label for="" class="col-sm-3 control-label">MwSt-Satz</label>
                         <div class="col-sm-9">
-                            <input name="MwSt" id="MwSt" value="<?php echo $invoicein->getMwSt();?>" class="form-control">
+                            <input name="tax" id="tax" value="<?php echo $invoicein->getTax();?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-3 control-label">RE-Datum</label>
                         <div class="col-sm-9">
-                            <input name="crtdate" id="crtdate"
-                                   value="<?php echo date('d.m.y',$invoicein->getCrtdate());?>" class="form-control">
+                            <input name="redate" id="redate"
+                                   value="<?php echo date('d.m.y',$invoicein->getRedate());?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-3 control-label">Fällig</label>
                         <div class="col-sm-9">
                             <input name="duedate" id="duedate"
-                                   value=" <?php echo date('d.m.y',$invoicein->getDuedate());?>" class="form-control">
+                                   value="<?php echo date('d.m.y',$invoicein->getDuedate());?>" class="form-control">
                         </div>
                     </div>
                     <?php if ($invoicein->getPayeddate()>0){?>
@@ -114,7 +117,7 @@ echo $quickmove->generate();
                             <label for="" class="col-sm-3 control-label">Bezahlt</label>
                             <div class="col-sm-9">
                                 <input name="payeddate" id="payeddate"
-                                       value=" <?php echo date('d.m.y',$invoicein->getPayeddate());?>" class="form-control">
+                                       value="<?php echo date('d.m.y',$invoicein->getPayeddate());?>" class="form-control">
                             </div>
                         </div>
                     <?php } else { ?>
@@ -184,7 +187,7 @@ echo $quickmove->generate();
             timepicker: false,
             format: 'd.m.Y'
         });
-        $('#crtdate').datetimepicker({
+        $('#redate').datetimepicker({
             lang: 'de',
             i18n: {
                 de: {
