@@ -176,6 +176,8 @@ class MailMessage{
     public function send()
     {
         // Send the message
+//        prettyPrint($this->mailer);
+//        prettyPrint($this->mail);
         $this->mail->send($this->mailer);
         $this->storeSent();
     }

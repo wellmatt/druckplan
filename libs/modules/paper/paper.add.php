@@ -86,7 +86,7 @@ if($_REQUEST["subexec"] == "save")
             $t["size_height"] = (int)$match["height"];
             $t["weight_from"] = (int)$match["weight"];
             $t["weight_to"] = (int)$match["weight"];
-            $t["quantity_from"] = (int)$_REQUEST["quantity_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"];
+            $t["quantity_from"] = $_REQUEST["quantity_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"];
             $t["weight"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["kgperthousand_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"])));
             $t["price"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST[$key])));
             if($_REQUEST['paper_100kg']){
@@ -632,8 +632,6 @@ echo $quickmove->generate();
                                           else
                                               echo '&nbsp;';
 
-                                          if ($price["quantity_from"]<=0)
-                                              $price["quantity_from"] = 1;
                                           if ($price["price"]<=0)
                                               $price["price"] = 1;
 

@@ -144,17 +144,13 @@ if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 			$text .= "Dateiname: " . $tmp_attachment->getOrig_filename() . "<br>";
 		}
 
-		if ($_SESSION["login_type"] == "businesscontact"){
-			$to[] = $_BUSINESSCONTACT->getEmail();
-		}
-		if($_SESSION["login_type"] == "contactperson"){
-			$to[] = $_CONTACTPERSON->getEmail();
-		}
+		$to[] = $_CONTACTPERSON->getEmail();
+
 		foreach ($_CONTACTPERSON->getNotifymailadr() as $tmp_mail_adr){
 			$cc[] = $tmp_mail_adr;
 		}
 
-		$message = new MailMessage(null,$mail_to,"Bestellbestätigung",$text,$cc);
+		$message = new MailMessage(null,$to,"Bestellbestätigung",$text,$cc);
 		$message->send();
 
 		$shopping_basket_entrys = Array ();

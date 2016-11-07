@@ -190,7 +190,7 @@ define('MC_SERVER','localhost');  // Set name of your memcache  server
 define('MC_PORT','11211');      // Set port of your memcache  server
 define('MC_USERNAME','');           // Set username of memcachier  server
 define('MC_PASSWORD','');           // Set password your memcachier  server
-define('MC_NAME','memcache');      // Set name of caching method if 0 : '', 1 : memcache, 2 : files, 3 : memcachier, 4 : apc, 5 : wincache, 6 : sqlite & 7 : memcached
+define('MC_NAME','memcached');      // Set name of caching method if 0 : '', 1 : memcache, 2 : files, 3 : memcachier, 4 : apc, 5 : wincache, 6 : sqlite & 7 : memcached
 
 /* MEMCACHE END */
 
