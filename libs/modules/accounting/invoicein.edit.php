@@ -64,6 +64,7 @@ echo $quickmove->generate();
                     <input type="hidden" id="subexec" name="subexec" value="save" />
                      <div class="row">
                          <div class="col-md-12">
+
                              <div class="form-group">
                                  <label for="" class="col-sm-1 control-label">Grund der Ausgabe</label>
                                  <div class="col-sm-7">
@@ -92,15 +93,6 @@ echo $quickmove->generate();
                                      <input name="number" id="number" value="<?php echo $invoicein->getNumber();?>" class="form-control">
                                  </div>
                              </div>
-                             <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">MwSt-Satz</label>
-                                 <div class="col-sm-9">
-                                     <div class="input-group">
-                                         <input name="tax" id="tax" value="<?php echo $invoicein->getTax();?>" class="form-control">
-                                         <span class="input-group-addon">%</span>
-                                     </div>
-                                 </div>
-                             </div>
                          </div>
                          <div class="col-md-4">
                              <?php if ($invoicein->getRedate()>0){?>
@@ -120,6 +112,48 @@ echo $quickmove->generate();
                                      </div>
                                  </div>
                              <?php } ?>
+                         </div>
+                         <div class="col-md-4">
+
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">Netto</label>
+                                 <div class="col-sm-9">
+                                     <div class="input-group">
+                                         <input name="netvalue" id="netvalue" value="<?php echo $invoicein->getNetvalue();?>" class="form-control">
+                                         <span class="input-group-addon">€</span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">Brutto</label>
+                                 <div class="col-sm-9">
+                                     <div class="input-group">
+                                         <input name="grossvalue" id="grossvalue" value="<?php echo $invoicein->getGrossvalue();?>" class="form-control">
+                                         <span class="input-group-addon">€</span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">MwSt-Satz</label>
+                                 <div class="col-sm-9">
+                                     <div class="input-group">
+                                         <input name="tax" id="tax" value="<?php echo $invoicein->getTax();?>" class="form-control">
+                                         <span class="input-group-addon">%</span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                    <div class="row">
+                         <div class="col-md-4">
                              <?php if ($invoicein->getPayeddate()>0){?>
                                  <div class="form-group">
                                      <label for="" class="col-sm-3 control-label">Bezahlt</label>
@@ -139,15 +173,6 @@ echo $quickmove->generate();
                              <?php } ?>
                          </div>
                          <div class="col-md-4">
-                             <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Netto</label>
-                                 <div class="col-sm-9">
-                                     <div class="input-group">
-                                         <input name="netvalue" id="netvalue" value="<?php echo $invoicein->getNetvalue();?>" class="form-control">
-                                         <span class="input-group-addon">€</span>
-                                     </div>
-                                 </div>
-                             </div>
                              <?php if ($invoicein->getDuedate()>0){?>
                                  <div class="form-group">
                                      <label for="" class="col-sm-3 control-label">Fällig</label>
@@ -165,6 +190,9 @@ echo $quickmove->generate();
                                      </div>
                                  </div>
                              <?php } ?>
+                         </div>
+                         <div class="col-md-4">
+
                          </div>
                      </div>
                 </form>

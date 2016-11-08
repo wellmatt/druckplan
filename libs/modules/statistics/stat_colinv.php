@@ -186,7 +186,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                                               foreach ($days as $day) {
                                                   $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                                   if (count($retval) > 0) {
-                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+//                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
                                                           echo "<td>{$item->getId()}</td>";
@@ -229,7 +229,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                   if (count($retval) > 0) {
                                                       $nettotal = 0;
                                                       $grosstotal = 0;
-                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+//                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
                                                           echo "<td>{$item->getId()}</td>";
@@ -274,7 +274,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                   if (count($retval) > 0) {
                                                       $nettotal = 0;
                                                       $grosstotal = 0;
-                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+//                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
                                                           echo "<td>{$item->getId()}</td>";

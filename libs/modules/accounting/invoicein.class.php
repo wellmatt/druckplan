@@ -16,7 +16,7 @@ class InvoiceIn extends model
     public $supplier = 0;
     public $status = 1;
     public $netvalue = 0.0;
-    public $tax = 0;
+    public $tax = 19.00;
     public $redate = 0;
     public $duedate = 0;
     public $payeddate = 0;
