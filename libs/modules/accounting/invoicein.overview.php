@@ -22,7 +22,7 @@
                      <span class="glyphicons glyphicons-plus"></span>
                      <?=$_LANG->get('Rechnung hinzuf&uuml;gen')?>
                  </button>
-                <button class="btn btn-xs btn-success" type="button" onclick="invoutexport();">Export</button>
+                <button class="btn btn-xs btn-success" type="button" onclick="invinexport();">Export</button>
             </span>
         </h3>
     </div>
@@ -32,38 +32,44 @@
                 <h3 class="panel-title">Filter</h3>
             </div>
             <div class="panel-body">
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
-                    <div class="col-sm-4">
-                        <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                        <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    </div>
-                    <label for="" class="col-sm-2 control-label">Bis:</label>
-                    <div class="col-sm-4">
-                        <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                        <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="" class="col-sm-3 control-label">Suche:</label>
-                    <div class="col-sm-9">
-                        <input type="text" id="search" class="form-control" placeholder="">
-                    </div>
-                </div>
+                 <div class="row">
+                     <div class="form-group">
+                         <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
+                         <label for="" class="col-sm-1 control-label">Von:</label>
+                         <div class="col-sm-4">
+                             <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+                             <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                         </div>
+                         <label for="" class="col-sm-1 control-label">Bis:</label>
+                         <div class="col-sm-4">
+                             <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+                             <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                         </div>
+                     </div>
+                     <div class="form-group">
+                         <label for="" class="col-sm-3 control-label">Suche:</label>
+                         <div class="col-sm-4">
+                             <input type="text" id="search" class="form-control" placeholder="">
+                         </div>
+                     </div>
+                 </div>
             </div>
         </div>
         <div class="table-responsive">
             <table class="table table-hover" id="invintable">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Re-Datum</th>
                     <th>Re.-Nr.</th>
                     <th>Lieferant</th>
                     <th>Grund der Ausgabe</th>
+                    <th>MwSt</th>
                     <th>Netto</th>
-                    <th>Erstellt</th>
+                    <th>Brutto</th>
                     <th>Fällig</th>
                     <th>Bezahlt</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
             </table>
@@ -77,7 +83,7 @@
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript">
-    function invoutexport(){
+    function invinexport(){
         var datemin = parseInt($('#ajax_date_min').val());
         var datemax = parseInt($('#ajax_date_max').val());
         window.open('libs/modules/accounting/invoicein.export.php?datemax='+datemax+'&datemin='+datemin);
@@ -105,12 +111,12 @@
                 dateFormat: 'dd.mm.yy',
                 onSelect: function(selectedDate) {
                     $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
-                    $('#invinstable').dataTable().fnDraw();
+                    $('#invintable').dataTable().fnDraw();
                 }
             }
         );
 
-        var invouttable = $('#invinstable').DataTable( {
+        var invintable = $('#invintable').DataTable( {
             "processing": true,
             "bServerSide": true,
             "sAjaxSource": "libs/modules/accounting/invoicein.dt.ajax.php",
@@ -143,6 +149,8 @@
                 null,
                 null,
                 null,
+                null,
+                null
             ],
             "language":
             {
@@ -177,12 +185,12 @@
         });
 
         $('#search').keyup(function(){
-            invouttable.search( $(this).val() ).draw();
+            invintable.search( $(this).val() ).draw();
         });
 
-        $("#invinstable tbody td").live('click',function(){
-            var aPos = $('#invinstable').dataTable().fnGetPosition(this);
-            var aData = $('#invinstable').dataTable().fnGetData(aPos[0]);
+        $("#invintable tbody td").live('click',function(){
+            var aPos = $('#invintable').dataTable().fnGetPosition(this);
+            var aData = $('#invintable').dataTable().fnGetData(aPos[0]);
             document.location='index.php?page=libs/modules/accounting/invoicein.edit.php&exec=edit&id='+aData[0];
         });
 

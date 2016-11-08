@@ -10,7 +10,7 @@ require_once 'libs/modules/accounting/invoicein.class.php';
 
 if ($_REQUEST["subexec"] == "save"){
     $status = 1;
-    if (isset($_REQUEST['payeddate'])){
+    if ($_REQUEST['payeddate'] < 0){
         $status = 2;
     }
     $array = [
@@ -23,6 +23,7 @@ if ($_REQUEST["subexec"] == "save"){
         'redate' => strtotime($_REQUEST["redate"]),
         'payeddate' => strtotime($_REQUEST["payeddate"]),
         'duedate' => strtotime($_REQUEST["duedate"]),
+        'grossvalue' =>$_REQUEST["netvalue"] * (1 +  $_REQUEST["tax"]/100),
     ];
     $invoicein = new InvoiceIn((int)$_REQUEST["id"], $array);
     $invoicein->save();
@@ -61,74 +62,111 @@ echo $quickmove->generate();
                     <input type="hidden" id="id" name="id" value="<?=$invoicein->getId()?>" />
                     <input type="hidden" id="exec" name="exec" value="edit" />
                     <input type="hidden" id="subexec" name="subexec" value="save" />
-
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Re.-Nr.</label>
-                        <div class="col-sm-9">
-                            <input name="number" id="number" value="<?php echo $invoicein->getNumber();?>" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Lieferant</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="search_supplier" name="search_supplier"
-                                   value="<?php if ($invoicein->getSupplier()->getId() > 0) {
-                                       echo $invoicein->getSupplier()->getNameAsLine();
-                                   } ?>" class="form-control"/>
-                            <input type="hidden" id="supplier" name="supplier"
-                                   value="<?php echo $invoicein->getSupplier()->getId(); ?>"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Grund der Ausgabe</label>
-                        <div class="col-sm-9">
-                            <input name="description" id="description" value="<?php echo $invoicein->getDescription();?>" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Netto</label>
-                        <div class="col-sm-9">
-                            <input name="netvalue" id="netvalue" value="<?php echo $invoicein->getNetvalue();?>" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">MwSt-Satz</label>
-                        <div class="col-sm-9">
-                            <input name="tax" id="tax" value="<?php echo $invoicein->getTax();?>" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">RE-Datum</label>
-                        <div class="col-sm-9">
-                            <input name="redate" id="redate"
-                                   value="<?php echo date('d.m.y',$invoicein->getRedate());?>" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Fällig</label>
-                        <div class="col-sm-9">
-                            <input name="duedate" id="duedate"
-                                   value="<?php echo date('d.m.y',$invoicein->getDuedate());?>" class="form-control">
-                        </div>
-                    </div>
-                    <?php if ($invoicein->getPayeddate()>0){?>
-                        <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Bezahlt</label>
-                            <div class="col-sm-9">
-                                <input name="payeddate" id="payeddate"
-                                       value="<?php echo date('d.m.y',$invoicein->getPayeddate());?>" class="form-control">
-                            </div>
-                        </div>
-                    <?php } else { ?>
-                        <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Bezahlt</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" name="payeddate" id="payeddate"
-                                       value="<?php if ($invoicein->getPayeddate() > 0) echo date('d.m.y',$invoicein->getPayeddate());?>">
-                            </div>
-                        </div>
-                    <?php } ?>
+                     <div class="row">
+                         <div class="col-md-12">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-1 control-label">Grund der Ausgabe</label>
+                                 <div class="col-sm-7">
+                                     <input name="description" id="description" value="<?php echo $invoicein->getDescription();?>" class="form-control">
+                                 </div>
+                             </div>
+                             <div class="form-group">
+                                 <label for="" class="col-sm-1 control-label">Lieferant</label>
+                                 <div class="col-sm-7">
+                                     <input type="text" id="search_supplier" name="search_supplier"
+                                            value="<?php if ($invoicein->getSupplier()->getId() > 0) {
+                                                echo $invoicein->getSupplier()->getNameAsLine();
+                                            } ?>" class="form-control"/>
+                                     <input type="hidden" id="supplier" name="supplier"
+                                            value="<?php echo $invoicein->getSupplier()->getId(); ?>"/>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                    <br>
+                     <div class="row">
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">Re.-Nr.</label>
+                                 <div class="col-sm-9">
+                                     <input name="number" id="number" value="<?php echo $invoicein->getNumber();?>" class="form-control">
+                                 </div>
+                             </div>
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">MwSt-Satz</label>
+                                 <div class="col-sm-9">
+                                     <div class="input-group">
+                                         <input name="tax" id="tax" value="<?php echo $invoicein->getTax();?>" class="form-control">
+                                         <span class="input-group-addon">%</span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <?php if ($invoicein->getRedate()>0){?>
+                                 <div class="form-group">
+                                     <label for="" class="col-sm-3 control-label">Re.-Datum</label>
+                                     <div class="col-sm-9">
+                                         <input name="redate" id="redate"
+                                                value="<?php echo date('d.m.y',$invoicein->getRedate());?>" class="form-control">
+                                     </div>
+                                 </div>
+                             <?php } else { ?>
+                                 <div class="form-group">
+                                     <label for="" class="col-sm-3 control-label">Re.-Datum</label>
+                                     <div class="col-sm-9">
+                                         <input type="text" class="form-control" name="redate" id="redate"
+                                                value="<?php if ($invoicein->getRedate() > 0) echo date('d.m.y',$invoicein->getRedate());?>">
+                                     </div>
+                                 </div>
+                             <?php } ?>
+                             <?php if ($invoicein->getPayeddate()>0){?>
+                                 <div class="form-group">
+                                     <label for="" class="col-sm-3 control-label">Bezahlt</label>
+                                     <div class="col-sm-9">
+                                         <input name="payeddate" id="payeddate"
+                                                value="<?php echo date('d.m.y',$invoicein->getPayeddate());?>" class="form-control">
+                                     </div>
+                                 </div>
+                             <?php } else { ?>
+                                 <div class="form-group">
+                                     <label for="" class="col-sm-3 control-label">Bezahlt</label>
+                                     <div class="col-sm-9">
+                                         <input type="text" class="form-control" name="payeddate" id="payeddate"
+                                                value="<?php if ($invoicein->getPayeddate() > 0) echo date('d.m.y',$invoicein->getPayeddate());?>">
+                                     </div>
+                                 </div>
+                             <?php } ?>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">Netto</label>
+                                 <div class="col-sm-9">
+                                     <div class="input-group">
+                                         <input name="netvalue" id="netvalue" value="<?php echo $invoicein->getNetvalue();?>" class="form-control">
+                                         <span class="input-group-addon">€</span>
+                                     </div>
+                                 </div>
+                             </div>
+                             <?php if ($invoicein->getDuedate()>0){?>
+                                 <div class="form-group">
+                                     <label for="" class="col-sm-3 control-label">Fällig</label>
+                                     <div class="col-sm-9">
+                                         <input name="duedate" id="duedate"
+                                                value="<?php echo date('d.m.y',$invoicein->getDuedate());?>" class="form-control">
+                                     </div>
+                                 </div>
+                             <?php } else { ?>
+                                 <div class="form-group">
+                                     <label for="" class="col-sm-3 control-label">Fällig</label>
+                                     <div class="col-sm-9">
+                                         <input type="text" class="form-control" name="duedate" id="duedate"
+                                                value="<?php if ($invoicein->getDuedate() > 0) echo date('d.m.y',$invoicein->getDuedate());?>">
+                                     </div>
+                                 </div>
+                             <?php } ?>
+                         </div>
+                     </div>
                 </form>
             </div>
         </div>
