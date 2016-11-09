@@ -19,7 +19,7 @@ require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'thirdparty/phpfastcache/phpfastcache.php';
 session_start();
 
-$aColumns = array( 'id', 'renr', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'crtdate', 'duedate', 'payeddate', 'status' );
+$aColumns = array( 'id', 'redate', 'renr', 'supplier','description', 'tax', 'netvalue', 'grossvalue', 'duedate', 'payeddate', 'status' );
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = "id";
@@ -157,16 +157,16 @@ else
 
 if ($_GET['start'] != ""){
     if ($sWhere == ""){
-        $sWhere .= " WHERE crtdate >= {$_GET['start']} ";
+        $sWhere .= " WHERE redate >= {$_GET['start']} ";
     } else {
-        $sWhere .= " AND crtdate >= {$_GET['start']} ";
+        $sWhere .= " AND redate >= {$_GET['start']} ";
     }
 }
 if ($_GET['end'] != ""){
     if ($sWhere == ""){
-        $sWhere .= " WHERE crtdate <= {$_GET['end']} ";
+        $sWhere .= " WHERE redate <= {$_GET['end']} ";
     } else {
-        $sWhere .= " AND crtdate <= {$_GET['end']} ";
+        $sWhere .= " AND redate <= {$_GET['end']} ";
     }
 }
 
@@ -178,21 +178,20 @@ $sQuery = "
         SELECT * FROM
         (
         SELECT
-        invoiceouts.id,
-        invoiceouts.number as renr,
-        collectiveinvoice.number as vonr,
-        collectiveinvoice.title,
-        CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
-        invoiceouts.netvalue,
-        invoiceouts.grossvalue,
-        invoiceouts.crtdate,
-        invoiceouts.duedate,
-        invoiceouts.payeddate,
-        invoiceouts.`status`
+        invoiceins.id,
+        invoiceins.number AS renr,
+        invoiceins.netvalue,
+        invoiceins.tax,
+        invoiceins.description,
+        invoiceins.redate,
+        invoiceins.duedate,
+        invoiceins.payeddate,
+        invoiceins.grossvalue,
+        invoiceins.`status`,
+        CONCAT(businesscontact.name1,' ',businesscontact.name2) as supplier
         FROM
         invoiceins
-        INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
-        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+        INNER JOIN businesscontact ON invoiceins.supplier = businesscontact.id
         ) t1
         $sWhere
         $sOrder
@@ -234,7 +233,7 @@ $output = array(
     "aaData" => array()
 );
 
-//$aColumns = array( 'id', 'rene', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'duedate', 'payeddate', 'status' );
+//$aColumns = array( 'id', 'renr', 'netvalue', 'supplier', 'tax', 'description', 'grossvalue', 'redate', 'duedate', 'payeddate', 'status' );
 while ( $aRow = mysql_fetch_array( $rResult ) )
 {
     $row = array();
@@ -265,7 +264,11 @@ while ( $aRow = mysql_fetch_array( $rResult ) )
         {
             $row[] = printPrice($aRow[ $aColumns[$i] ],2).'€';
         }
-        else if ( $aColumns[$i] == 'crtdate' )
+        else if ( $aColumns[$i] == 'tax' )
+        {
+            $row[] = printPrice($aRow[ $aColumns[$i] ],2).'%';
+        }
+        else if ( $aColumns[$i] == 'redate' )
         {
             $row[] = date('d.m.y',$aRow[ $aColumns[$i] ]);
         }
@@ -280,7 +283,7 @@ while ( $aRow = mysql_fetch_array( $rResult ) )
             else
                 $row[] = '';
         }
-        else if ( $aColumns[$i] == 'bname' )
+        else if ( $aColumns[$i] == 'supplier' )
         {
             $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
         }

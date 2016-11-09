@@ -8,7 +8,7 @@
  */
 require_once 'libs/basic/model.php';
 
-class invoicein extends model
+class InvoiceIn extends model
 {
     public $_table = 'invoiceins';
 
@@ -16,10 +16,12 @@ class invoicein extends model
     public $supplier = 0;
     public $status = 1;
     public $netvalue = 0.0;
-    public $tax = 0;
+    public $tax = 19.00;
     public $redate = 0;
     public $duedate = 0;
     public $payeddate = 0;
+    public $grossvalue = 0.0;
+
     /**
      * @var string
      */
@@ -36,19 +38,83 @@ class invoicein extends model
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getPayeddate()
+    public function getNumber()
     {
-        return $this->payeddate;
+        return $this->number;
     }
 
     /**
-     * @param int $payeddate
+     * @param string $number
      */
-    public function setPayeddate($payeddate)
+    public function setNumber($number)
     {
-        $this->payeddate = $payeddate;
+        $this->number = $number;
+    }
+
+    /**
+     * @return BusinessContact
+     */
+    public function getSupplier()
+    {
+        return $this->supplier;
+    }
+
+    /**
+     * @param BusinessContact $supplier
+     */
+    public function setSupplier($supplier)
+    {
+        $this->supplier = $supplier;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return float
+     */
+    public function getNetvalue()
+    {
+        return $this->netvalue;
+    }
+
+    /**
+     * @param float $netvalue
+     */
+    public function setNetvalue($netvalue)
+    {
+        $this->netvalue = $netvalue;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTax()
+    {
+        return $this->tax;
+    }
+
+    /**
+     * @param int $tax
+     */
+    public function setTax($tax)
+    {
+        $this->tax = $tax;
     }
 
     /**
@@ -84,27 +150,35 @@ class invoicein extends model
     }
 
     /**
+     * @return int
+     */
+    public function getPayeddate()
+    {
+        return $this->payeddate;
+    }
+
+    /**
+     * @param int $payeddate
+     */
+    public function setPayeddate($payeddate)
+    {
+        $this->payeddate = $payeddate;
+    }
+
+    /**
      * @return float
      */
-    public function getNetvalue()
+    public function getGrossvalue()
     {
-        return $this->netvalue;
+        return $this->grossvalue;
     }
 
     /**
-     * @param float $netvalue
+     * @param float $grossvalue
      */
-    public function setNetvalue($netvalue)
+    public function setGrossvalue($grossvalue)
     {
-        $this->netvalue = $netvalue;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getnumber()
-    {
-        return $this->number;
+        $this->grossvalue = $grossvalue;
     }
 
     /**
@@ -123,61 +197,5 @@ class invoicein extends model
         $this->description = $description;
     }
 
-
-    /**
-     * @param mixed $number
-     */
-    public function setnumber($number)
-    {
-        $this->number = $number;
-    }
-
-    /**
-     * @return int
-     */
-    public function getstatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int $status
-     */
-    public function setstatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return businesscontact
-     */
-    public function getsupplier()
-    {
-        return $this->supplier;
-    }
-
-    /**
-     * @param businesscontact $supplier
-     */
-    public function setsupplier($supplier)
-    {
-        $this->supplier = $supplier;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTax()
-    {
-        return $this->tax;
-    }
-
-    /**
-     * @param int $tax
-     */
-    public function setTax($tax)
-    {
-        $this->tax = $tax;
-    }
 }
 
