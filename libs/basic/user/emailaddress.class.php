@@ -22,11 +22,15 @@ class Emailaddress {
 	private $password;				// Passwort zur E-Mail-Adresse
 	private $host;					// Serveradresse 
 	private $port;					// Portnummer
+	private $ssl = 0;
+	private $tls = 0;
 	private $signature;				// Signatur zu der E-Mail-Adresse
 	private $smtp_host;
 	private $smtp_port;
 	private $smtp_user;
 	private $smtp_password;
+	private $smtp_ssl = 0;
+	private $smtp_tls = 0;
 
 	/**
 	 * Konstruktor
@@ -48,11 +52,15 @@ class Emailaddress {
 				$this->password = $res[0]["password"];
 				$this->host = $res[0]["host"];
 				$this->port = $res[0]["port"];
+				$this->ssl = $res[0]["ssl"];
+				$this->tls = $res[0]["tls"];
 				$this->signature = $res[0]["signature"];
 				$this->smtp_host = $res[0]["smtp_host"];
 				$this->smtp_port = $res[0]["smtp_port"];
 				$this->smtp_user = $res[0]["smtp_user"];
 				$this->smtp_password = $res[0]["smtp_password"];
+				$this->smtp_ssl = $res[0]["smtp_ssl"];
+				$this->smtp_tls = $res[0]["smtp_tls"];
 			}
 		}
 	}
@@ -74,22 +82,26 @@ class Emailaddress {
 					`password` = '{$this->password}',
 					`host` = '{$this->host}',
 					`port`= {$this->port},
+					`ssl`= {$this->ssl},
+					`tls`= {$this->tls},
 					signature = '{$this->signature}',
 					smtp_host = '{$this->smtp_host}',
 					smtp_port = '{$this->smtp_port}',
 					smtp_user = '{$this->smtp_user}',
+					smtp_ssl = '{$this->smtp_ssl}',
+					smtp_tls = '{$this->smtp_tls}',
 					smtp_password = '{$this->smtp_password}'
 					WHERE id = {$this->id}";
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO emailaddress
 					(`status`, address, login, `password`,
-					 `host`, `port`, signature,
-					 smtp_host, smtp_port, smtp_user, smtp_password)
+					 `host`, `port`, `ssl`, `tls`, signature,
+					 smtp_host, smtp_port, smtp_user, smtp_password, smtp_ssl, smtp_tls)
 					VALUES
 					({$this->status}, '{$this->address}', '{$this->login}', '{$this->password}',
-					'{$this->host}', {$this->port}, '{$this->signature}',
-					'{$this->smtp_host}', '{$this->smtp_port}', '{$this->smtp_user}', '{$this->smtp_password}' )";
+					'{$this->host}', {$this->port}, {$this->ssl}, {$this->tls}, '{$this->signature}',
+					'{$this->smtp_host}', '{$this->smtp_port}', '{$this->smtp_user}', '{$this->smtp_password}', {$this->smtp_ssl}, {$this->smtp_tls} )";
 			$res = $DB->no_result($sql);
 			
 			if($res){
@@ -384,4 +396,69 @@ class Emailaddress {
 	{
 		$this->smtp_password = $smtp_password;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getSsl()
+	{
+		return $this->ssl;
+	}
+
+	/**
+	 * @param int $ssl
+	 */
+	public function setSsl($ssl)
+	{
+		$this->ssl = $ssl;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTls()
+	{
+		return $this->tls;
+	}
+
+	/**
+	 * @param int $tls
+	 */
+	public function setTls($tls)
+	{
+		$this->tls = $tls;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getSmtpSsl()
+	{
+		return $this->smtp_ssl;
+	}
+
+	/**
+	 * @param int $smtp_ssl
+	 */
+	public function setSmtpSsl($smtp_ssl)
+	{
+		$this->smtp_ssl = $smtp_ssl;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getSmtpTls()
+	{
+		return $this->smtp_tls;
+	}
+
+	/**
+	 * @param int $smtp_tls
+	 */
+	public function setSmtpTls($smtp_tls)
+	{
+		$this->smtp_tls = $smtp_tls;
+	}
+
 }

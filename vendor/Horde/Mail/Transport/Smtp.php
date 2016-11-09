@@ -143,6 +143,7 @@ class Horde_Mail_Transport_Smtp extends Horde_Mail_Transport
             'pipelining' => false,
             'port' => 25,
             'timeout' => null,
+            'tls' => true,
             'username' => ''
         ), $params);
 
@@ -290,7 +291,7 @@ class Horde_Mail_Transport_Smtp extends Horde_Mail_Transport
                 ? $this->_params['auth']
                 : '';
 
-            $res = $this->_smtp->auth($this->_params['username'], $this->_params['password'], $method);
+            $res = $this->_smtp->auth($this->_params['username'], $this->_params['password'], $method, $this->_params['tls']);
             if ($res instanceof PEAR_Error) {
                 $this->_error("$method authentication failure", $res, self::ERROR_AUTH);
             }

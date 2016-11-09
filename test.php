@@ -27,6 +27,7 @@ require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/eventqueue/eventclass.interface.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
+require_once 'libs/modules/mail/caldav.service.class.php';
 
 require_once 'vendor/PEAR/Net/SMTP.php';
 require_once 'vendor/PEAR/Net/Socket.php';
@@ -37,6 +38,8 @@ $autoloader = new Horde_Autoloader();
 $autoloader->addClassPathMapper(new Horde_Autoloader_ClassPathMapper_Default('vendor'));
 $autoloader->registerAutoloader();
 
+require_once('vendor/simpleCalDAV/SimpleCalDAVClient.php');
+
 session_start();
 
 $DB = new DBMysql();
@@ -46,6 +49,28 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 
-$message = new MailMessage(Emailaddress::getDefaultOrFirstForUser($_USER),['ascherer@ipactor.de'],'Test eMail','Dies ist ein Test!');
-//$message->send();
-$message->storeDraft();
+$client = new SimpleCalDAVClient();
+
+try {
+    /*
+     * To establish a connection and to choose a calendar on the server, use
+     * connect()
+     * findCalendars()
+     * setCalendar()
+     */
+
+    $client->connect("http://contilas2.mein-druckplan.de/sabre/server.php/calendars/{$_USER->getLogin()}/default", $_USER->getLogin(), $_SESSION["password"]);
+
+
+    $arrayOfCalendars = $client->findCalendars(); // Returns an array of all accessible calendars on the server.
+    prettyPrint($arrayOfCalendars);
+
+    $client->setCalendar($arrayOfCalendars["default"]);
+    /*
+     * You can getEvents with getEvents()
+     */
+    prettyPrint($client->getEvents());
+}
+catch (Exception $e) {
+    echo $e->__toString();
+}
