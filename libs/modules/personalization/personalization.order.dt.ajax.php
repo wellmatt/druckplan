@@ -376,7 +376,7 @@
         	                 <a href="./docs/personalization/'.$clientid.'.per_'.$aRow["hash2"].'_p.pdf" class="icon-link" target="_blank">
                             <span class="glyphicons glyphicons-download-alt" title="Download R&uuml;ckseite ohne Hintergrund"></span></a>';
         }
-        $tmp_options .= '&ensp;<a class="icon-link" href="#" onclick="askDel(\'index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=delete&delid='.$aRow[ $aColumns[0] ].'\')"><span class="glyphicons glyphicons-remove"></span></a>';
+        $tmp_options .= '&ensp;<a class="icon-link" href="#" onclick="askDel(\'index.php?page=libs/modules/personalization/personalization.order.overview.php&exec=delete&delid='.$aRow[ $aColumns[0] ].'\')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>';
         $row[] = $tmp_options;
         $output['aaData'][] = $row;
     }

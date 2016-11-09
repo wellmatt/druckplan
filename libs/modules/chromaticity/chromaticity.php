@@ -131,7 +131,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                       <td class="content_row"><?=printPrice($chr->getMarkup())?> %</td>
                       <td class="content_row">
                           <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$chr->getId()?>"><span class="glyphicons glyphicons-copy"></span></a>
-                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$chr->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$chr->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
                       </td>
                   </tr>
                   <?

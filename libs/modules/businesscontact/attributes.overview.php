@@ -66,7 +66,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 						<td>
 							<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 							&ensp;
-							<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+							<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&aid=<?=$attribute->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
 						</td>
 					</tr>
 					<?		$x++;

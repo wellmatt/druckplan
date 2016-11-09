@@ -58,7 +58,7 @@
 					  <td class="content_row">
 						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-wrench"></span></a>
 						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$m->getId()?>"><span class="glyphicons glyphicons-copy"></span></a>
-						  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$m->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+						  <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$m->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 

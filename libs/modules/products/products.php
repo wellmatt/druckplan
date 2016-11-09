@@ -92,8 +92,7 @@ $products = Product::getAllProducts();
                                href="index.php?page=<?= $_REQUEST['page'] ?>&exec=copy&id=<?= $p->getId() ?>"><span
                                     class="glyphicons glyphicons-file"></span></a>
                             <a class="icon-link" href="#"
-                               onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&id=<?= $p->getId() ?>')"><span
-                                    class="glyphicons glyphicons-remove"></span></a>
+                               onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&id=<?= $p->getId() ?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
                         </td>
                     </tr>
                     <? $x++;

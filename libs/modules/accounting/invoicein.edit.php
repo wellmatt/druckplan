@@ -10,7 +10,7 @@ require_once 'libs/modules/accounting/invoicein.class.php';
 
 if ($_REQUEST["subexec"] == "save"){
     $status = 1;
-    if ($_REQUEST['payeddate'] < 0){
+    if ($_REQUEST['payeddate'] > 0){
         $status = 2;
     }
     $array = [
@@ -131,17 +131,6 @@ echo $quickmove->generate();
                          </div>
                          <div class="col-md-4">
                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Brutto</label>
-                                 <div class="col-sm-9">
-                                     <div class="input-group">
-                                         <input name="grossvalue" id="grossvalue" value="<?php echo $invoicein->getGrossvalue();?>" class="form-control">
-                                         <span class="input-group-addon">€</span>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="col-md-4">
-                             <div class="form-group">
                                  <label for="" class="col-sm-3 control-label">MwSt-Satz</label>
                                  <div class="col-sm-9">
                                      <div class="input-group">
@@ -151,8 +140,19 @@ echo $quickmove->generate();
                                  </div>
                              </div>
                          </div>
+                         <div class="col-md-4">
+                         </div>
                      </div>
                     <div class="row">
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label for="" class="col-sm-3 control-label">Fällig</label>
+                                 <div class="col-sm-9">
+                                     <input name="duedate" id="duedate"
+                                            value="<?php echo date('d.m.y',$invoicein->getDuedate());?>" class="form-control">
+                                 </div>
+                             </div>
+                         </div>
                          <div class="col-md-4">
                              <?php if ($invoicein->getPayeddate()>0){?>
                                  <div class="form-group">
@@ -173,26 +173,6 @@ echo $quickmove->generate();
                              <?php } ?>
                          </div>
                          <div class="col-md-4">
-                             <?php if ($invoicein->getDuedate()>0){?>
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-3 control-label">Fällig</label>
-                                     <div class="col-sm-9">
-                                         <input name="duedate" id="duedate"
-                                                value="<?php echo date('d.m.y',$invoicein->getDuedate());?>" class="form-control">
-                                     </div>
-                                 </div>
-                             <?php } else { ?>
-                                 <div class="form-group">
-                                     <label for="" class="col-sm-3 control-label">Fällig</label>
-                                     <div class="col-sm-9">
-                                         <input type="text" class="form-control" name="duedate" id="duedate"
-                                                value="<?php if ($invoicein->getDuedate() > 0) echo date('d.m.y',$invoicein->getDuedate());?>">
-                                     </div>
-                                 </div>
-                             <?php } ?>
-                         </div>
-                         <div class="col-md-4">
-
                          </div>
                      </div>
                 </form>

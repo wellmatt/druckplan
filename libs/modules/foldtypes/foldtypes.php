@@ -57,7 +57,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                       <td class="content_row">
                           <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$f->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
                           <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$f->getId()?>"><span class="glyphicons glyphicons-file"></span></a>
-                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST["page"]?>&exec=delete&id=<?=$f->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+                          <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST["page"]?>&exec=delete&id=<?=$f->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
                       </td>
                   </tr>
 
