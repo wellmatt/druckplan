@@ -221,7 +221,7 @@
         $row[] = '<a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=edit&aid='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-pencil"></span></a>
         		  <a class="icon-link" href="index.php?page=libs/modules/article/article.php&exec=copy&aid='.$aRow[ $aColumns[0] ].'"><span class="glyphicons glyphicons-file"></span></a>
         		  <a class="icon-link" href="#"	onclick="askDel(\'index.php?page=libs/modules/article/article.php&exec=delete&did='.$aRow[ $aColumns[0] ].'\')">
-        		 <span class="glyphicons glyphicons-remove"></span></a>';
+        		 <span style="color:red" class="glyphicons glyphicons-remove"></span></a>';
 // 		var_dump($row); echo "</br>";
         $output['aaData'][] = $row;
     }

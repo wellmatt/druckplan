@@ -277,7 +277,7 @@ $(document).ready(function() {
             <td class="content_row">
                 <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$o->getId()?>&step=4"><span class="glyphicons glyphicons-pencil"></span></a>
                 <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=copy&id=<?=$o->getId()?>"><span class="glyphicons glyphicons-file"></span></a>
-                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$o->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+                <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$o->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
             </td>
         </tr>
     <? $x++;       
@@ -363,7 +363,7 @@ $(document).ready(function() {
             </td>
             <td class="content_row">
                 <a class="icon-link" href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?=$ci->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
-                <a class="icon-link" href="#"	onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=<?=$ci->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+                <a class="icon-link" href="#"	onclick="askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=<?=$ci->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
             </td>
         </tr>
     <? $x++;       

@@ -38,7 +38,7 @@ function printSubTradegroups($parentId, $depth){
 				<td class="content_row">
                 <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$subgroup->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 				&ensp;
-                <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$subgroup->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+                <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$subgroup->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
             </td>
 			</tr>
 		<? printSubTradegroups($subgroup->getId(), $depth+1);
@@ -94,7 +94,7 @@ function printSubTradegroups($parentId, $depth){
 					  <td class="content_row">
 						  <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$tradegroup->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+						  <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$tradegroup->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 				  <?	printSubTradegroups($tradegroup->getID(), 0);

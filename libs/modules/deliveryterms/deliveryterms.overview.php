@@ -59,7 +59,7 @@ $delivterms = DeliveryTerms::getAllDeliveryConditions();
 					  <td class="content_row">
 						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&did=<?=$dt->getId()?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$dt->getId()?>')"><span class="glyphicons glyphicons-remove"></span></a>
+						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&id=<?=$dt->getId()?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 				  <?$x++;

@@ -191,7 +191,7 @@ $sQuery = "
         CONCAT(businesscontact.name1,' ',businesscontact.name2) as supplier
         FROM
         invoiceins
-        INNER JOIN businesscontact ON invoiceins.supplier = businesscontact.id
+        LEFT JOIN businesscontact ON invoiceins.supplier = businesscontact.id
         ) t1
         $sWhere
         $sOrder
@@ -203,8 +203,25 @@ $sQuery = "
 $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
 
 /* Data set length after filtering */
-$sQuery = "
-        SELECT FOUND_ROWS()
+$sQuery = "SELECT COUNT(id) FROM
+        (
+        SELECT
+        invoiceins.id,
+        invoiceins.number AS renr,
+        invoiceins.netvalue,
+        invoiceins.tax,
+        invoiceins.description,
+        invoiceins.redate,
+        invoiceins.duedate,
+        invoiceins.payeddate,
+        invoiceins.grossvalue,
+        invoiceins.`status`,
+        CONCAT(businesscontact.name1,' ',businesscontact.name2) as supplier
+        FROM
+        invoiceins
+        LEFT JOIN businesscontact ON invoiceins.supplier = businesscontact.id
+        ) t1
+        $sWhere
     ";
 //     var_dump($sQuery);
 $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -213,9 +230,25 @@ $iFilteredTotal = $aResultFilterTotal[0];
 
 
 /* Total data set length */
-$sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE `status` > 0
+$sQuery = "SELECT COUNT(id) FROM
+        (
+        SELECT
+        invoiceins.id,
+        invoiceins.number AS renr,
+        invoiceins.netvalue,
+        invoiceins.tax,
+        invoiceins.description,
+        invoiceins.redate,
+        invoiceins.duedate,
+        invoiceins.payeddate,
+        invoiceins.grossvalue,
+        invoiceins.`status`,
+        CONCAT(businesscontact.name1,' ',businesscontact.name2) as supplier
+        FROM
+        invoiceins
+        LEFT JOIN businesscontact ON invoiceins.supplier = businesscontact.id
+        ) t1
+        WHERE `status` > 0
     ";
 //     var_dump($sQuery);
 $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

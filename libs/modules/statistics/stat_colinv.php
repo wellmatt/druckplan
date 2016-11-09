@@ -60,7 +60,9 @@ if ($_REQUEST["stat_status"]) {
 if ($_REQUEST["stat_tradegroup"]) {
     $stat_tradegroup = $_REQUEST["stat_tradegroup"];
 }
-
+if ($_REQUEST["stat_article"]) {
+    $stat_article = $_REQUEST["stat_article"];
+}
 
 ?>
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -76,7 +78,7 @@ if ($_REQUEST["stat_tradegroup"]) {
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv" id="stat_colinv" enctype="multipart/form-data">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv" id="stat_colinv" class="form-horizontal" enctype="multipart/form-data">
     <div class="panel panel-default">
           <div class="panel-heading">
                 <h3 class="panel-title">Auftragsstatistik</h3>
@@ -86,12 +88,12 @@ if ($_REQUEST["stat_tradegroup"]) {
                       <div class="panel-heading">
                             <h3 class="panel-title">Filter
                                   <span class="pull-right">
-                                                <button class="btn btn-xs btn-success" onclick="$('#stat_colinv').submit();">
-                                                    Refresh
-                                                </button>
-                                                 <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
-                                                     Drucken
-                                                 </button>
+                                        <button class="btn btn-xs btn-success" onclick="$('#stat_colinv').submit();">
+                                            Filter anwenden
+                                        </button>
+                                         <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
+                                             Drucken
+                                         </button>
                                   </span>
                             </h3>
                       </div>
@@ -149,7 +151,7 @@ if ($_REQUEST["stat_tradegroup"]) {
                                   <label for="" class="col-sm-1 control-label">Artikel</label>
                                   <div class="col-sm-3">
                                       <input type="text" class="form-control" value="<?php echo $_REQUEST["search_article"];?>"  name="search_article" id="search_article">
-                                      <input type="hidden" name="stat_article"  value="<?php echo $_REQUEST["search_article"];?>" id="stat_article">
+                                      <input type="hidden" value="<?php echo $_REQUEST["stat_article"];?>" name="stat_article" id="stat_article">
                                   </div>
                               </div>
                           </div>
@@ -200,9 +202,19 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                       }
                                                   }
                                               }
-                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                                               ?>
                                           </table>
+                                          <div class="form-group">
+                                              <label for="" class="col-sm-3 control-label">Gesamt Summe</label>
+                                              <label for="" class="col-sm-1 control-label">Netto</label>
+                                              <div class="col-sm-3 form-text">
+                                                  <?php echo printPrice($nettotal,2); ?> €
+                                              </div>
+                                              <label for="" class="col-sm-1 control-label">Brutto</label>
+                                              <div class="col-sm-3 form-text">
+                                                  <?php echo printPrice($grosstotal,2);?> €
+                                              </div>
+                                          </div>
                                       </div>
                                   </div>
                               </div>
@@ -224,11 +236,12 @@ if ($_REQUEST["stat_tradegroup"]) {
 
                                               <?php
                                               $months = GetMonths(date('Y-m-d', $start), date('Y-m-d', $end));
+                                              $nettotal = 0;
+                                              $grosstotal = 0;
                                               foreach ($months as $month) {
                                                   $retval = Statistics::ColinvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                                   if (count($retval) > 0) {
-                                                      $nettotal = 0;
-                                                      $grosstotal = 0;
+
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
@@ -243,9 +256,19 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                       }
                                                   }
                                               }
-                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
                                               ?>
                                           </table>
+                                          <div class="form-group">
+                                              <label for="" class="col-sm-3 control-label">Gesamt Summe</label>
+                                              <label for="" class="col-sm-1 control-label">Netto</label>
+                                              <div class="col-sm-3 form-text">
+                                                  <?php echo printPrice($nettotal,2); ?> €
+                                              </div>
+                                              <label for="" class="col-sm-1 control-label">Brutto</label>
+                                              <div class="col-sm-3 form-text">
+                                                  <?php echo printPrice($grosstotal,2); ?> €
+                                              </div>
+                                          </div>
                                       </div>
                                   </div>
                               </div>
@@ -269,11 +292,11 @@ if ($_REQUEST["stat_tradegroup"]) {
 
                                               <?php
                                               $years = GetYears(date('Y-m-d', $start), date('Y-m-d', $end));
+                                              $nettotal = 0;
+                                              $grosstotal = 0;
                                               foreach ($years as $year) {
                                                   $retval = Statistics::ColinvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                                   if (count($retval) > 0) {
-                                                      $nettotal = 0;
-                                                      $grosstotal = 0;
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
@@ -291,13 +314,19 @@ if ($_REQUEST["stat_tradegroup"]) {
                                                   }
 
                                               }
-                                              echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td>' .printPrice($grosstotal,2). '</td></tr>';
-
-
-
-
                                               ?>
                                           </table>
+                                          <div class="form-group">
+                                              <label for="" class="col-sm-3 control-label">Gesamt Summe</label>
+                                              <label for="" class="col-sm-1 control-label">Netto</label>
+                                              <div class="col-sm-3 form-text">
+                                                  <?php echo printPrice($nettotal,2); ?> €
+                                              </div>
+                                              <label for="" class="col-sm-1 control-label">Brutto</label>
+                                              <div class="col-sm-3 form-text">
+                                                  <?php echo printPrice($grosstotal,2); ?> €
+                                              </div>
+                                          </div>
                                       </div>
                                   </div>
                               </div>

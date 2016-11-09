@@ -121,7 +121,7 @@ function askDel(myurl)
 									<a class="icon-link" href="get.php?type=2&hash=<?=$file["ftp_hash"]?>"><span class="glyphicons glyphicons-expand" title="Download"></span></a>
 									<!-- a href="#" onclick="askDel('index.php?mid=<?=$_REQUEST["mid"]?>&delete=<?=$file["ftp_hash"]?>')">L&ouml;schen</a-->
 									&ensp;
-									<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delete=<?=$file["ftp_hash"]?>')"><span class="glyphicons glyphicons-remove"></span></a>
+									<a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delete=<?=$file["ftp_hash"]?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
 								</td>
 							</tr>
 							<? $y++; } ?>
