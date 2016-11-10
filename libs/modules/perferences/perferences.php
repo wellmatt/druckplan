@@ -53,6 +53,26 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setImapPort($_REQUEST["imap_port"]);
 	$perf->setImapUser($_REQUEST["imap_user"]);
 	$perf->setImapPassword($_REQUEST["imap_password"]);
+	if ($_REQUEST["imap_ssl"] == 1){
+		$perf->setImapSsl(1);
+	} else {
+		$perf->setImapSsl(0);
+	}
+	if ($_REQUEST["imap_tls"] == 1){
+		$perf->setImapTls(1);
+	} else {
+		$perf->setImapTls(0);
+	}
+	if ($_REQUEST["smtp_ssl"] == 1){
+		$perf->setSmtpSsl(1);
+	} else {
+		$perf->setSmtpSsl(0);
+	}
+	if ($_REQUEST["smtp_tls"] == 1){
+		$perf->setSmtpTls(1);
+	} else {
+		$perf->setSmtpTls(0);
+	}
 
 	$savemsg = getSaveMessage($perf->save());
 	
@@ -306,6 +326,26 @@ echo $quickmove->generate();
 							<input type="password" name="smtp_password" id="smtp_password" class="form-control" value="<?=$perf->getSmtpPassword(); ?>"/>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SSL</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="smtp_ssl" id="smtp_ssl" value="1" <?php if ($perf->getSmtpSsl()) echo ' checked ';?>>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">TLS</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="smtp_tls" id="smtp_tls" value="1" <?php if ($perf->getSmtpTls()) echo ' checked ';?>>
+								</label>
+							</div>
+						</div>
+					</div>
 					<hr>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">IMAP eMail-Adresse:</label>
@@ -335,6 +375,26 @@ echo $quickmove->generate();
 						<label for="" class="col-sm-3 control-label">IMAP Passwort:</label>
 						<div class="col-sm-2">
 							<input type="password" name="imap_password" id="imap_password" class="form-control" value="<?=$perf->getImapPassword(); ?>"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">SSL</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="imap_ssl" id="imap_ssl" value="1" <?php if ($perf->getImapSsl()) echo ' checked ';?>>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">TLS</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="imap_tls" id="imap_tls" value="1" <?php if ($perf->getImapTls()) echo ' checked ';?>>
+								</label>
+							</div>
 						</div>
 					</div>
 					<p>* Hinweis: Aktuell werden nur SSL Verbindungen unterstützt</p>

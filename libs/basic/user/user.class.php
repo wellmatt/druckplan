@@ -180,6 +180,7 @@ class User {
                 }
             }
         }
+        $this->emailAdresses = null;
     }
 
     // Alle Daten abspeichern. Falls Benutzer noch nicht existiert ($id leer)
@@ -391,20 +392,17 @@ class User {
      * @param int $client
      * @return User|boolean
      */
-    static function login($user, $password, $client = 1)
+    static function login($user, $password, $client = null)
     {
         global $DB;
         if (trim($user) != "" || trim($password) != "")
         {
-            $sql = " SELECT t1.id FROM user t1, clients t2
-            WHERE t1.login = '{$user}'
-            AND t1.password = md5('{$password}')
-            AND t1.user_active > 0
-            AND t1.user_level > 0
-            AND t1.client = {$client}
-            AND t1.client = t2.id
-            AND t2.active = 1";
- 
+            $sql = " SELECT id FROM user
+            WHERE login = '{$user}'
+            AND password = md5('{$password}')
+            AND user_active > 0
+            AND user_level > 0";
+
             // sql returns only one record -> user is valid
             if($DB->num_rows($sql) == 1)
             {

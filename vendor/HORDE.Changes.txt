@@ -1,0 +1,4 @@
+Horde/Mail/Transport/Smtp.php
+
+Line 146: 'tls' => true,
+Line 294: $res = $this->_smtp->auth($this->_params['username'], $this->_params['password'], $method, $this->_params['tls']);

@@ -37,12 +37,16 @@ class Perferences
     private $smtp_port = '';
     private $smtp_user = '';
     private $smtp_password = '';
+    private $smtp_ssl = 0;
+    private $smtp_tls = 0;
 
     private $imap_address = '';
     private $imap_host = '';
     private $imap_port = '';
     private $imap_user = '';
     private $imap_password = '';
+    private $imap_ssl = 0;
+    private $imap_tls = 0;
 
     function __construct()
     {
@@ -71,6 +75,10 @@ class Perferences
             $this->imap_port = $r["imap_port"];
             $this->imap_user = $r["imap_user"];
             $this->imap_password = $r["imap_password"];
+            $this->smtp_ssl = $r["smtp_ssl"];
+            $this->smtp_tls = $r["smtp_tls"];
+            $this->imap_ssl = $r["imap_ssl"];
+            $this->imap_tls = $r["imap_tls"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -123,6 +131,10 @@ class Perferences
                imap_host 	= '{$this->imap_host}',
                imap_port 	= '{$this->imap_port}',
                imap_user 	= '{$this->imap_user}',
+               smtp_ssl 	= '{$this->smtp_ssl}',
+               smtp_tls 	= '{$this->smtp_tls}',
+               imap_ssl 	= '{$this->imap_ssl}',
+               imap_tls 	= '{$this->imap_tls}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -430,5 +442,69 @@ class Perferences
     public function setImapPassword($imap_password)
     {
         $this->imap_password = $imap_password;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSmtpSsl()
+    {
+        return $this->smtp_ssl;
+    }
+
+    /**
+     * @param int $smtp_ssl
+     */
+    public function setSmtpSsl($smtp_ssl)
+    {
+        $this->smtp_ssl = $smtp_ssl;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSmtpTls()
+    {
+        return $this->smtp_tls;
+    }
+
+    /**
+     * @param int $smtp_tls
+     */
+    public function setSmtpTls($smtp_tls)
+    {
+        $this->smtp_tls = $smtp_tls;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImapSsl()
+    {
+        return $this->imap_ssl;
+    }
+
+    /**
+     * @param int $imap_ssl
+     */
+    public function setImapSsl($imap_ssl)
+    {
+        $this->imap_ssl = $imap_ssl;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImapTls()
+    {
+        return $this->imap_tls;
+    }
+
+    /**
+     * @param int $imap_tls
+     */
+    public function setImapTls($imap_tls)
+    {
+        $this->imap_tls = $imap_tls;
     }
 }

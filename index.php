@@ -269,7 +269,7 @@ function sleep(millis, callback) {
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php"><img src="images/page/page-logo.png" alt="Contilas" width="100%" height="100%"></a>
+          <a class="navbar-brand" href="index.php"><img src="images/page/page-logo.png" alt="Contilas" height="50"></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-collapse-1">

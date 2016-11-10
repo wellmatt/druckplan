@@ -46,7 +46,7 @@ if (count($mailadresses)>0)
             $mail_servers[] = Array("mail"=>$mailadress->getAddress(), "mailid"=>$mailadress->getId(), "imap"=> $client);
             $mailsettings = true;
         } catch (Horde_Imap_Client_Exception $e) {
-//             var_dump($e);
+             var_dump($e);
         }
     }
 } else 

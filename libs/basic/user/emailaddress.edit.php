@@ -24,6 +24,26 @@ if($_REQUEST["subexec"] == "save")
 	$mailaddress->setSmtpPort($_REQUEST["smtp_port"]);
 	$mailaddress->setSmtpUser($_REQUEST["smtp_user"]);
 	$mailaddress->setSmtpPassword($_REQUEST["smtp_password"]);
+	if ($_REQUEST["ssl"] == 1){
+		$mailaddress->setSsl(1);
+	} else {
+		$mailaddress->setSsl(0);
+	}
+	if ($_REQUEST["tls"] == 1){
+		$mailaddress->setTls(1);
+	} else {
+		$mailaddress->setTls(0);
+	}
+	if ($_REQUEST["smtp_ssl"] == 1){
+		$mailaddress->setSmtpSsl(1);
+	} else {
+		$mailaddress->setSmtpSsl(0);
+	}
+	if ($_REQUEST["smtp_tls"] == 1){
+		$mailaddress->setSmtpTls(1);
+	} else {
+		$mailaddress->setSmtpTls(0);
+	}
 	$savemsg = getSaveMessage($mailaddress->save()).$DB->getLastError();
 }
 ?>
@@ -97,6 +117,28 @@ echo $quickmove->generate();
 							  <input type="text" class="form-control" id="port" name="port" value="<?=$mailaddress->getPort()?>">
 						  </div>
 					  </div>
+
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">SSL</label>
+						  <div class="col-sm-10">
+							  <div class="checkbox">
+								  <label>
+									  <input type="checkbox" name="ssl" id="ssl" value="1" <?php if ($mailaddress->getSsl()) echo ' checked ';?>>
+								  </label>
+							  </div>
+						  </div>
+					  </div>
+
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">TLS</label>
+						  <div class="col-sm-10">
+							  <div class="checkbox">
+								  <label>
+									  <input type="checkbox" name="tls" id="tls" value="1" <?php if ($mailaddress->getTls()) echo ' checked ';?>>
+								  </label>
+							  </div>
+						  </div>
+					  </div>
 			  	  </div>
 			  </div>
 			  <div class="panel panel-default">
@@ -130,6 +172,28 @@ echo $quickmove->generate();
 						  <label for="" class="col-sm-2 control-label">Port</label>
 						  <div class="col-sm-4">
 							  <input type="text" class="form-control" id="smtp_port" name="smtp_port" value="<?=$mailaddress->getSmtpPort()?>">
+						  </div>
+					  </div>
+
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">SSL</label>
+						  <div class="col-sm-10">
+							  <div class="checkbox">
+								  <label>
+									  <input type="checkbox" name="smtp_ssl" id="smtp_ssl" value="1" <?php if ($mailaddress->getSmtpSsl()) echo ' checked ';?>>
+								  </label>
+							  </div>
+						  </div>
+					  </div>
+
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">TLS</label>
+						  <div class="col-sm-10">
+							  <div class="checkbox">
+								  <label>
+									  <input type="checkbox" name="smtp_tls" id="smtp_tls" value="1" <?php if ($mailaddress->getSmtpTls()) echo ' checked ';?>>
+								  </label>
+							  </div>
 						  </div>
 					  </div>
 			  	  </div>

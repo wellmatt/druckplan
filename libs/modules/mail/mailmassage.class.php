@@ -50,12 +50,18 @@ class MailMessage{
     public function __construct($from, $tos = [], $subject, $text, $ccs = [], $bccs = [], $attachments = [])
     {
         if (is_a($from,'Emailaddress')){
+            if ($from->getSmtpSsl() == 1){
+                $ssl = 'ssl://';
+            } else {
+                $ssl = '';
+            }
             $this->mail_from = $from->getAddress();
             $smtp_params = array(
-                'host' => 'ssl://'.$from->getSmtpHost(),
+                'host' => $ssl.$from->getSmtpHost(),
                 'port' => $from->getSmtpPort(),
                 'username' => $from->getSmtpUser(),
                 'password' => $from->getSmtpPassword(),
+                'tls' => $from->getSmtpTls(),
                 'debug' => false,
                 'auth' => true,
                 'timeout' => 300
@@ -68,11 +74,17 @@ class MailMessage{
         } else {
             $perf = new Perferences();
             $perf->getSmtpAddress();
+            if ($perf->getSmtpSsl() == 1){
+                $ssl = 'ssl://';
+            } else {
+                $ssl = '';
+            }
             $smtp_params = array(
-                'host' => 'ssl://'.$perf->getSmtpHost(),
+                'host' => $ssl.$perf->getSmtpHost(),
                 'port' => $perf->getSmtpPort(),
                 'username' => $perf->getSmtpUser(),
                 'password' => $perf->getSmtpPassword(),
+                'tls' => $perf->getSmtpTls(),
                 'debug' => false,
                 'auth' => true,
                 'timeout' => 300

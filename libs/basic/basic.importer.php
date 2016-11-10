@@ -26,14 +26,16 @@ require_once 'libs/modules/chat/chat.class.php';
 require_once 'libs/modules/calculation/order.class.php';
 
 session_start();
+global $_LANG;
+global $_CONFIG;
 
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
-global $_LANG;
 
 // Login
 $_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+
 
 
 if ($_USER == false){

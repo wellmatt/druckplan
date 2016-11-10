@@ -75,7 +75,7 @@ $lists = MarketingList::getAllLists();
                                 <?php
                                 if ($list->getDefault() == 0) {
                                     echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=star&id=' . $list->getId() . '"><span class="glyphicons glyphicons-star-empty"></span></a>&nbsp;';
-                                    echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=delete&id=' . $list->getId() . '"><span class="glyphicons glyphicons-remove"></span></a>';
+                                    echo '<a href="index.php?page=' . $_REQUEST['page'] . '&exec=delete&id=' . $list->getId() . '"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>';
                                 } else {
                                     echo '<span class="glyphicons glyphicons-star"></span>';
                                 }

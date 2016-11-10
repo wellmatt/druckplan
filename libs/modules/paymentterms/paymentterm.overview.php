@@ -52,7 +52,7 @@
 					  <td class="content_row">
 						  <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&pay_id=<?=$pt->getId();?>"><span class="glyphicons glyphicons-pencil"></span></a>
 						  &ensp;
-						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&pay_id=<?=$pt->getId();?>')"><span class="glyphicons glyphicons-remove"></span></a>
+						  <a class="icon-link" href="#" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&pay_id=<?=$pt->getId();?>')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
 					  </td>
 				  </tr>
 				  <? $x++;
