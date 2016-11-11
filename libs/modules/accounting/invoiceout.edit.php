@@ -132,20 +132,23 @@ echo $quickmove->generate();
                         </div>
                     <?php } ?>
 
+                    <?php if ($invoiceout->getStatus() < 3){?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Storno</label>
                         <div class="col-sm-4">
-                            <button class="btn btn-xs btn-success" type="submit"
-                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php&exec=storno';">
+                            <button class="btn btn-xs btn-success" type="button"
+                                    onclick="doStorno(<?php echo $invoiceout->getId();?>);">
                                      <?= $_LANG->get('Storno'); ?>
                             </button>
                         </div>
                     </div>
+                    <?php }?>
+
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Mahnung</label>
                         <div class="col-sm-4">
                             <button class="btn btn-xs btn-success" type="button"
-                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?= $invoiceout->getId() ?>';">
+                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?php echo $invoiceout->getId(); ?>';">
                                 <?= $_LANG->get('Mahnung') ?>
                             </button>
                         </div>
@@ -158,6 +161,16 @@ echo $quickmove->generate();
 
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <script>
+    function doStorno(id){
+        $.ajax({
+                type: "POST",
+                url: "libs/modules/accounting/accounting.ajax.php",
+                data: { exec: "doStorno", id: id }
+            })
+            .done(function( msg ) {
+                document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php';
+            });
+    }
     $(function () {
         $('#payeddate').datetimepicker({
             lang: 'de',

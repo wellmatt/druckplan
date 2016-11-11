@@ -50,7 +50,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				<? if ($_REQUEST["exec"] == "copy") echo $_LANG->get('Falzart kopieren')?>
 				<? if ($_REQUEST["exec"] == "edit" && $ft->getId() == 0) echo $_LANG->get('Falzart anlegen')?>
 				<? if ($_REQUEST["exec"] == "edit" && $ft->getId() != 0) echo $_LANG->get('Falzart bearbeiten')?>

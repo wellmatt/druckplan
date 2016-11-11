@@ -269,7 +269,10 @@ echo $quickmove->generate();
 													<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 											<?php }?>
 											<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-												echo '<span class="glyphicons glyphicons-plus pointer" onclick="addCategoryRow()"></span>';
+												echo '<button class="btn btn-xs btn-success"  onclick="addCategoryRow()" type="button">
+												<span class="glyphicons glyphicons-plus pointer"></span>
+												Kategorie hinzufügen
+												</button>';
 											}?>
 										</td>
 									</tr>
@@ -317,7 +320,10 @@ echo $quickmove->generate();
 											<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 									<?php }?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPrioRow()"></span>';
+										echo '<button class="btn btn-xs btn-success" onclick="addPrioRow()" type="button">
+												<span class="glyphicons glyphicons-plus pointer"></span>
+												Priorität hinzufügen
+												</button>';
 									}?>
 								</td>
 							</tr>
@@ -367,7 +373,10 @@ echo $quickmove->generate();
 											<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 									<?php }?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										echo '<span class="glyphicons glyphicons-plus pointer" onclick="addStateRow()"></span>';
+										echo '<button class="btn btn-xs btn-success"  onclick="addStateRow()" type="button">
+												<span class="glyphicons glyphicons-plus pointer"></span>
+												Stati hinzufügen
+												</button>';
 									}?>
 								</td>
 							</tr>
@@ -464,7 +473,10 @@ echo $quickmove->generate();
 											<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
 									<?php } ?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
-										echo '<span class="glyphicons glyphicons-plus pointer" onclick="addSourceRow()"></span>';
+										echo '<button class="btn btn-xs btn-success" onclick="addSourceRow()" type=button>
+													<span class="glyphicons glyphicons-plus pointer" ></span>
+													Herkunft hinzufügen
+											  </button>';
 									}?>
 								</td>
 							</tr>

@@ -7,11 +7,6 @@
  *
  */
 
-if($_REQUEST["storno"] == "status = 3")
-{
-
-
-}
 
 ?>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">

@@ -71,7 +71,7 @@ echo $quickmove->generate();
 
 <div class="panel panel-default">
 	  <div class="panel-heading">
-			<h3 class="panel-title">Artikel Freifeld</h3>
+			<h3 class="panel-title">Artikel Zusatzinformationen</h3>
 	  </div>
 	  <div class="panel-body">
           <form action="index.php?page=<?php echo $_REQUEST['page']; ?>" name="custom_field" id="custom_field" method="post"
@@ -80,13 +80,13 @@ echo $quickmove->generate();
               <input type="hidden" name="id" value="<?php echo $customfield->getId();?>">
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Feldname</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <input type="text" class="form-control" name="name" id="name" value="<?php echo $customfield->getName();?>">
                   </div>
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Typ</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-4">
                       <select name="type" id="type" class="form-control">
                           <option value="1" <?php if ($customfield->getType() == CustomField::TYPE_INPUT) echo ' selected ';?>>Input</option>
                           <option value="2" <?php if ($customfield->getType() == CustomField::TYPE_SELECT) echo ' selected ';?>>Select</option>
@@ -96,7 +96,7 @@ echo $quickmove->generate();
               </div>
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">Warengruppe:</label>
-                  <div class="col-sm-3">
+                  <div class="col-sm-4">
                       <select name="filter" id="filter" class="form-control">
                           <option value="0">- Alle -</option>
                           <?php

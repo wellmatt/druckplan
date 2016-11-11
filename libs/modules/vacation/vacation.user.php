@@ -70,6 +70,21 @@ echo $quickmove->generate();
                     </h3>
                 </div>
                 <div class="panel-body">
+                    <div class="panel panel-default">
+                    	  <div class="panel-heading">
+                    			<h3 class="panel-title">
+                                   Filter
+                                </h3>
+                    	  </div>
+                    	  <div class="panel-body">
+                              <div class="form-group">
+                                  <label for="" class="col-sm-1 control-label">Suche</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" id="search" class="form-control" placeholder="">
+                                  </div>
+                              </div>
+                    	  </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover" id="vac">
                             <thead>
@@ -204,6 +219,81 @@ echo $quickmove->generate();
 
 <script type="text/javascript">
     $(document).ready(function() {
+        var vac_table = $('#vac').DataTable( {
+            // "scrollY": "600px",
+            "processing": true,
+            "bServerSide": true,
+            "sAjaxSource": "libs/modules/vacation/vacation.ajax.php",
+            "paging": true,
+            "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+            "pageLength": <?php echo $perf->getDt_show_default();?>,
+            "dom": 'T<"clear">lrtip',
+            "tableTools": {
+                "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                    "copy",
+                    "csv",
+                    "xls",
+                    {
+                        "sExtends": "pdf",
+                        "sPdfOrientation": "landscape",
+                        "sPdfMessage": "Contilas - Ansprechpartner"
+                    },
+                    "print"
+                ]
+            },
+            "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+            "columns": [
+                null,
+                null,
+                null,
+                { "sortable": false }
+            ],
+            "language":
+            {
+                "emptyTable":     "Keine Daten vorhanden",
+                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": 	  "Keine Seiten vorhanden",
+                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix":    "",
+                "thousands":      ".",
+                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing":     "Verarbeite...",
+                "search":         "Suche:",
+                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+                "paginate": {
+                    "first":      "Erste",
+                    "last":       "Letzte",
+                    "next":       "N&auml;chste",
+                    "previous":   "Vorherige"
+                },
+                "aria": {
+                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        } );
+
+        $('#search').keyup(function(){
+            vac_table.search( $(this).val() ).draw();
+        })
+
+        $("#vac tbody td").live('click',function(){
+            var aPos = $('#vac').dataTable().fnGetPosition(this);
+            var aData = $('#vac').dataTable().fnGetData(aPos[0]);
+            document.location='index.php?page=/libs/modules/vacation/vacation.ajax.php'+aData[0];
+        });
+    } );
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
         var vac = $('#vac').DataTable( {
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
@@ -320,6 +410,7 @@ echo $quickmove->generate();
         });
 
     });
+
 
     function callBoxFancy(my_href) {
         var j1 = document.getElementById("hiddenclicker");
