@@ -8,6 +8,7 @@
  */
 
 
+
 ?>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
@@ -22,7 +23,7 @@
                      <span class="glyphicons glyphicons-plus"></span>
                      <?=$_LANG->get('Rechnung hinzuf&uuml;gen')?>
                  </button>
-                <button class="btn btn-xs btn-success" type="button" onclick="invinexport();">Export</button>
+<!--                <button class="btn btn-xs btn-success" type="button" onclick="invinexport();">Export</button>-->
             </span>
         </h3>
     </div>
