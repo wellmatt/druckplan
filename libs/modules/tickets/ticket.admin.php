@@ -325,6 +325,7 @@ echo $quickmove->generate();
 												Priorität hinzufügen
 												</button>';
 									}?>
+										<span class="glyphicons glyphicons-remove pointer" onclick="askDel"></span>
 								</td>
 							</tr>
 					  		</tbody>
@@ -470,7 +471,7 @@ echo $quickmove->generate();
 								<td>
 									<?php if ($ticket_sources[$y]->getId() != 1 && $ticket_sources[$y]->getId() != 2 && $ticket_sources[$y]->getId() != 3 && $ticket_sources[$y]->getId() != 4){?>
 										<a href="index.php?page=<?=$_REQUEST['page']?>&delete_source=<?=$ticket_sources[$y]->getId()?>">
-											<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
+											<span class="glyphicons glyphicons-remove icon-link pointer"></span></a>&nbsp;
 									<?php } ?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
 										echo '<button class="btn btn-xs btn-success" onclick="addSourceRow()" type=button>
@@ -478,7 +479,9 @@ echo $quickmove->generate();
 													Herkunft hinzufügen
 											  </button>';
 									}?>
+										<span class="glyphicons glyphicons-remove pointer" title="löschen" onclick="askDel"></span>
 								</td>
+
 							</tr>
 					  		</tbody>
 							<? } ?>

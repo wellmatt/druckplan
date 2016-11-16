@@ -347,17 +347,21 @@ echo $quickmove->generate();
 							</div>
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Mögl. Bestellmengen (Shop)</label>
-								<div class="col-sm-9">
+								<div class="col-sm-8">
 									<div id="orderamounts">
 										<?php
 										foreach ($article->getOrderamounts() as $orderamount)
 										{
 											echo '<span><input name="article_orderamounts[]" type="hidden" value="'.$orderamount.'">'.$orderamount.'
-                                        <span  style="color: red;" class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span> &nbsp;';
+                                        <span  style="color: red;" class="glyphicons glyphicons-remove pointer" title="entfernen" onclick="$(this).parent().remove();"></span>&nbsp;';
 										}
 										?>
 									</div>
 								</div>
+								<div class="col-sm-1">
+									<span  class="glyphicons glyphicons-plus pointer icon-link" title="Bestellmenge hinzufügen" onclick="addOrderAmount();"></span>
+								</div>
+
 							</div>
 							<div class="form-group">
 								<label for="" class="col-sm-5 control-label">Verpackungseinheit/-gewicht</label>
@@ -981,7 +985,7 @@ echo $quickmove->generate();
 		var amount = prompt("Bitte Bestellmenge angeben", "");
 
 		if (amount != null) {
-			$("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<span class="glyphicons glyphicons-remove pointer icon-link" title="entfernen" onclick="$(this).parent().remove();"></span></br></span>');
+			$("#orderamounts").append('<span><input name="article_orderamounts[]" type="hidden" value="'+amount+'">'+amount+'<span class="glyphicons glyphicons-remove pointer icon-link" style="color: red" title="entfernen" onclick="$(this).parent().remove();"></span></br></span>');
 		}
 	}
 </script>
@@ -1018,7 +1022,6 @@ echo $quickmove->generate();
 		});
 	});
 </script>
-
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery("#article_tags").tagit({

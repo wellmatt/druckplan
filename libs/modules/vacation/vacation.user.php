@@ -89,16 +89,16 @@ echo $quickmove->generate();
                         <table class="table table-hover" id="vac">
                             <thead>
                             <tr>
-                                <td class="content_row_header"><?=$_LANG->get('ID')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Name')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Tage/Jahr')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Tage übernommen')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Gasamt verf.')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Urlaub')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Überstunden')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Krankheit')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('Sonstiges')?></td>
-                                <td class="content_row_header"><?=$_LANG->get('verbleibend')?></td>
+                                <td><?=$_LANG->get('ID')?></td>
+                                <td><?=$_LANG->get('Name')?></td>
+                                <td><?=$_LANG->get('Tage/Jahr')?></td>
+                                <td><?=$_LANG->get('Tage übernommen')?></td>
+                                <td><?=$_LANG->get('Gasamt verf.')?></td>
+                                <td><?=$_LANG->get('Urlaub')?></td>
+                                <td><?=$_LANG->get('Überstunden')?></td>
+                                <td><?=$_LANG->get('Krankheit')?></td>
+                                <td><?=$_LANG->get('Sonstiges')?></td>
+                                <td><?=$_LANG->get('verbleibend')?></td>
                             </tr>
                             </thead>
                             <tbody>
