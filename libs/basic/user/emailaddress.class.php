@@ -252,8 +252,9 @@ class Emailaddress {
 	 */
 	function delete(){
 		global $DB;
-		$sql = "DELETE FROM emailaddress
-				WHERE id = {$this->id}";
+		$sql2 = "DELETE FROM user_emailaddress WHERE emailaddress = {$this->id}";
+		$DB->no_result($sql2);
+		$sql = "DELETE FROM emailaddress WHERE id = {$this->id}";
 		return $DB->no_result($sql);
 	}
 

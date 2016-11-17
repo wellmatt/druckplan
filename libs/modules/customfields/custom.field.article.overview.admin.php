@@ -8,6 +8,12 @@
  */
 require_once 'libs/modules/customfields/custom.field.class.php';
 
+if ($_REQUEST["exec"] == "delete"){
+	$del_id = (int)$_REQUEST["did"];
+	$del_cf = new CustomField($del_id);
+	$del_cf->delete();
+}
+
 $article_fields = CustomField::fetch([
 	[
 		'column'=>'class',

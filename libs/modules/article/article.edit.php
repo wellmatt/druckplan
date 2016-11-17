@@ -539,6 +539,49 @@ echo $quickmove->generate();
 					</div>
 				</div>
 			</div>
+
+			<?php
+			$article_fields = array_merge(
+				CustomField::fetch([
+					[
+						'column'=>'class',
+						'value'=>'Article'
+					],
+					[
+						'column'=>'filter',
+						'value'=>$article->getTradegroup()->getId()
+					]
+				]),
+				CustomField::fetch([
+					[
+						'column'=>'class',
+						'value'=>'Article'
+					],
+					[
+						'column'=>'filter',
+						'value'=>'0'
+					]
+				])
+			);
+			if ($article->getId()>0 && count($article_fields) > 0){?>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Freifelder</h3>
+							</div>
+							<div class="panel-body">
+								<?php
+								foreach ($article_fields as $article_field) {
+									echo $article_field->generateHTML($article);
+								}
+								?>
+							</div>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Preisstaffeln VK</h3>
@@ -725,48 +768,6 @@ echo $quickmove->generate();
 				</table>
 				<br/>* <?= $_LANG->get('EK-Staffelpreis wird gel&ouml;scht, falls Preis = 0') ?>
 			</div>
-
-			<?php
-			$article_fields = array_merge(
-				CustomField::fetch([
-					[
-						'column'=>'class',
-						'value'=>'Article'
-					],
-					[
-						'column'=>'filter',
-						'value'=>$article->getTradegroup()->getId()
-					]
-				]),
-				CustomField::fetch([
-					[
-						'column'=>'class',
-						'value'=>'Article'
-					],
-					[
-						'column'=>'filter',
-						'value'=>'0'
-					]
-				])
-			);
-			if ($article->getId()>0 && count($article_fields) > 0){?>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						  <div class="panel-heading">
-								<h3 class="panel-title">Freifelder</h3>
-						  </div>
-						  <div class="panel-body">
-							  <?php
-							  foreach ($article_fields as $article_field) {
-								  echo $article_field->generateHTML($article);
-							  }
-							  ?>
-						  </div>
-					</div>
-				</div>
-			</div>
-			<?php } ?>
 
 			<div class="row">
 				<div class="col-md-6" id="qusers" style="<?php if($article->getId()>0&&$article->getIsWorkHourArt()) echo ' display: block; '; else echo ' display: none; ';?>">
