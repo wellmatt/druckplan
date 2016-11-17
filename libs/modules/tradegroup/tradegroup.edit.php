@@ -68,7 +68,6 @@ echo $quickmove->generate();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Warengruppe hinzuf&uuml;gen')?>
 				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Warengruppe bearbeiten')?>
 				<?//if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Warengruppe kopieren')?>

@@ -252,21 +252,17 @@ $(function() {
 	<div class="panel panel-default">
 		  <div class="panel-heading">
 				<h3 class="panel-title">
-					<span class="glyphicons glyphicons-collapse"></span>
 					Neue Datei für Kunden veröffentlichen
 				</h3>
 		  </div>
 		  <div class="panel-body">
-
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Datei</label>
 				  <div class="col-sm-10">
 					  <input name="datei" type="file" style="background-color: none; border: none;"">
 				  </div>
 			  </div>
-
 			  <? $customers = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME); ?>
-
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Kunde</label>
 				  <div class="col-sm-10">
@@ -274,7 +270,6 @@ $(function() {
 					  <input name="customer" id="customer" type="hidden"/>
 				  </div>
 			  </div>
-
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Empfänger</label>
 				  <div class="col-sm-10">
@@ -284,21 +279,18 @@ $(function() {
 					  </a>
 				  </div>
 			  </div>
-
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Betreff</label>
 				  <div class="col-sm-10">
 					  <input type="text" name="mail_subject" class="form-control">
 				  </div>
 			  </div>
-
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Nachricht</label>
 				  <div class="col-sm-10">
 					  <textarea rows="5" name="mail_body" id="mail_body" class="form-control"></textarea>
 				  </div>
 			  </div>
-
 			  <? /*** ?>
 			  <tr>
 			  <td class="content_row" valign="top">Vertraulichkeit:</td>
@@ -313,9 +305,7 @@ $(function() {
 			  </td>
 			  </tr>
 			  <? ***/ ?>
-
 			  <br>
-
 			  <table border="0" class="content_table" cellpadding="3" cellspacing="0" width="100%">
 				  <tr>
 					  <td class="content_row_clear">
@@ -327,7 +317,6 @@ $(function() {
 					  </td>
 				  </tr>
 			  </table>
-
 				<div style="top:0px; left:0px;z-index:100;background-color:#bbbbbb; height:100%; width:100%; position:absolute;opacity:0.8;display:none;" id="loading_message">
 					<div style="position:absolute;top:300px;left:400px;height:150px;width:200px;z-index:101;background-color:#ffffff;border:1px solid #000000;opacity:1.0">
 						<img src="images/content/loading2.gif"><br><br>
@@ -335,9 +324,6 @@ $(function() {
 						Bitte warten ....
 					</div>
 				</div>
-
-
-
 		  </div>
 	</div>
 </form>

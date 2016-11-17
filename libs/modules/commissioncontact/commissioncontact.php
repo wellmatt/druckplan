@@ -140,7 +140,7 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 					<span class="pull-right">
 						<a
 							<button class="btn btn-xs btn-success" href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit">
-								<span class="glyphicons glyphicons-plus pointer"></span>
+								<span style="color: white;" class="glyphicons glyphicons-plus pointer"></span>
 									<?= $_LANG->get('Provisionskontakt hinzuf&uuml;gen') ?>
 							</button>
 						</a>

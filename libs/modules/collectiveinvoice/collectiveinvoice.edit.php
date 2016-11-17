@@ -248,6 +248,7 @@ $(function() {
 		   ]
 		  }
 		 },
+		 scrollInput:false,
 		 timepicker:false,
 		 format:'d.m.Y'
 	});

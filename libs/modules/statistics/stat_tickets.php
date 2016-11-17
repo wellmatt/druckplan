@@ -70,14 +70,14 @@ else
         <div class="col-md-2">
             Bis: <input type="text" style="width:160px" id="stat_to" name="stat_to" class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" value="<?echo date('d.m.Y', $end);?>"/>
         </div>
-        <div class="col-md-1"><button type="submit">Refresh</button></div>
+        <div class="col-md-1"><button class="btn btn-xs btn-success" type="submit">Refresh</button></div>
         <div class="col-md-3"></div>
     </div>
     </br>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Workload</div>
+                <div class="panel-heading">Arbeitszeiten</div>
                 <div class="panel-body">
                     <?php if ($_USER->isAdmin()){ ?>
                         User wählen: <select name="wrkl_user" id="wrkl_user" onchange="$('#stat_ticket').submit();" style="width:160px" required>
@@ -126,7 +126,7 @@ else
         </div>
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading">Workload Summary</div>
+                <div class="panel-heading">Arbeitszeiten aller Mitarbeiter</div>
                 <div class="panel-body">
                     <table id="table_workload_summary" class="stripe hover row-border order-column">
                         <thead>

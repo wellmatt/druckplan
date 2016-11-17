@@ -178,7 +178,6 @@ $(document).ready(function() {
  <div class="panel panel-default">
  	  <div class="panel-heading">
  			<h3 class="panel-title">
-                <span class="glyphicons glyphicons-share-alt"></span>
                 <?=$_LANG->get('Vorg&auml;nge zusammenf&uuml;gen')?>
             </h3>
  	  </div>
