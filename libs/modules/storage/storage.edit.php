@@ -17,6 +17,9 @@ if ($_REQUEST["subexec"] == "save"){
         'shelf' => $_REQUEST["st_shelf"],
         'line' => $_REQUEST["st_line"],
         'layer' => $_REQUEST["st_layer"],
+        'number' => $_REQUEST["st_number"],
+        'type' => $_REQUEST["st_type"],
+        'intext' => $_REQUEST["st_intext"],
         'prio' => $_REQUEST['st_prio'],
     ];
     $storagearea = new StorageArea((int)$_REQUEST["id"], $array);
@@ -70,11 +73,27 @@ echo $quickmove->generate();
 
                     <div class="row">
                         <div class="col-md-6">
+                            <?php if ($storagearea->getId() > 0){?>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Lagerplatz ID</label>
+                                <div class="col-sm-6 form-text">
+                                    <?php echo $storagearea->getId();?>
+                                </div>
+                            </div>
+                            <?php } ?>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Lagerplatz Nr.</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="st_number" name="st_number" class="form-control"
+                                           value="<?= $storagearea->getNumber(); ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="" class="col-sm-4 control-label">Lagerplatzname</label>
                                 <div class="col-sm-6">
                                     <input type="text" id="st_name" name="st_name" class="form-control"
-                                           value="<?= $storagearea->getName() ?>"
+                                           value="<?= $storagearea->getName(); ?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                                 </div>
                             </div>
@@ -82,8 +101,25 @@ echo $quickmove->generate();
                                 <label for="" class="col-sm-4 control-label">Ort</label>
                                 <div class="col-sm-6">
                                     <input type="text" id="st_location" name="st_location" class="form-control"
-                                           value="<?= $storagearea->getLocation() ?>"
+                                           value="<?= $storagearea->getLocation(); ?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Typ</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="st_type" name="st_type" class="form-control"
+                                           value="<?= $storagearea->getType(); ?>"
+                                           onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Intern / Extern</label>
+                                <div class="col-sm-6">
+                                    <select name="st_intext" id="st_intext" class="form-control">
+                                        <option value="1" <?php if ($storagearea->getIntext() == 1) echo ' selected ';?>>Intern</option>
+                                        <option value="2" <?php if ($storagearea->getIntext() == 2) echo ' selected ';?>>Extern</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +128,7 @@ echo $quickmove->generate();
                                 <label for="" class="col-sm-2 control-label">Gang</label>
                                 <div class="col-sm-4">
                                     <input type="text" id="st_corridor" name="st_corridor" class="form-control"
-                                           value="<?= $storagearea->getCorridor() ?>"
+                                           value="<?= $storagearea->getCorridor(); ?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                                 </div>
                             </div>
@@ -100,7 +136,7 @@ echo $quickmove->generate();
                                 <label for="" class="col-sm-2 control-label">Regal</label>
                                 <div class="col-sm-4">
                                     <input type="text" id="st_shelf" name="st_shelf" class="form-control"
-                                           value="<?= $storagearea->getShelf() ?>"
+                                           value="<?= $storagearea->getShelf(); ?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                                 </div>
                             </div>
@@ -108,7 +144,7 @@ echo $quickmove->generate();
                                 <label for="" class="col-sm-2 control-label">Reihe</label>
                                 <div class="col-sm-4">
                                     <input type="text" id="st_line" name="st_line" class="form-control"
-                                           value="<?= $storagearea->getLine() ?>"
+                                           value="<?= $storagearea->getLine(); ?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                                 </div>
                             </div>
@@ -117,7 +153,7 @@ echo $quickmove->generate();
                                 <label for="" class="col-sm-2 control-label">Ebene</label>
                                 <div class="col-sm-4">
                                     <input type="text" id="st_layer" name="st_layer" class="form-control"
-                                           value="<?= $storagearea->getLayer() ?>"
+                                           value="<?= $storagearea->getLayer(); ?>"
                                            onfocus="markfield(this,0)" onblur="markfield(this,1)" class="text">
                                 </div>
                             </div>

@@ -20,6 +20,9 @@ class StorageArea extends Model {
     public $line = '';
     public $layer = '';
     public $prio = 1;
+    public $number = '';
+    public $intext = 1;
+    public $type = '';
 
     const PRIO_LOW = 0;
     const PRIO_MED = 1;
@@ -255,5 +258,53 @@ class StorageArea extends Model {
     public function setPrio($prio)
     {
         $this->prio = $prio;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * @param string $number
+     */
+    public function setNumber($number)
+    {
+        $this->number = $number;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntext()
+    {
+        return $this->intext;
+    }
+
+    /**
+     * @param int $intext
+     */
+    public function setIntext($intext)
+    {
+        $this->intext = $intext;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

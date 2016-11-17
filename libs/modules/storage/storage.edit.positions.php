@@ -72,7 +72,7 @@ if ($_REQUEST['area']){
         <?php
         foreach ($positions as $position) {
             ?>
-            <tr class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.position.frame.php?id=<?php echo $position->getId();?>');">
+            <tr class="pointer" onclick="callBoxFancyArtFrame('libs/modules/storage/storage.position.frame.php?id=<?php echo $position->getId();?>&stid=<?php echo $storagearea->getId();?>');">
                 <td><?php echo $position->getId()?></td>
                 <td><?php echo $position->getBusinesscontact()->getNameAsLine()?></td>
                 <td><?php echo $position->getArticle()->getTitle()?></td>

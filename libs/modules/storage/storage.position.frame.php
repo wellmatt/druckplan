@@ -94,6 +94,8 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
     $maxallocation = 100 - StoragePosition::getAllocationForArea($storagearea);
 } elseif ($_REQUEST["id"]) {
     $position = new StoragePosition($_REQUEST["id"]);
+    $storagearea = $position->getArea();
+    $maxallocation = 100 - StoragePosition::getAllocationForArea($storagearea);
 } else {
     die("Kein Artikel ausgewählt!");
 }
