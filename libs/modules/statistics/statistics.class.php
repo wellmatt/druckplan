@@ -257,6 +257,7 @@ class Statistics {
         if ($tradegroup != 0){
             $where .= " AND tradegroup.id = {$tradegroup} ";
         }
+
         if ($article != 0){
             $where .= " AND article.id = {$article} ";
         }

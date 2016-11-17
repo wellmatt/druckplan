@@ -266,7 +266,7 @@ echo $quickmove->generate();
 										<td>
 											<?php if ($ticket_categories[$y]->getProtected() == 0){?>
 												<a href="index.php?page=<?=$_REQUEST['page']?>&delete_category=<?=$ticket_categories[$y]->getId()?>">
-													<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
+													<span class="glyphicons glyphicons-remove pointer" style="color: red;"></span></a>&nbsp;
 											<?php }?>
 											<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
 												echo '<button class="btn btn-xs btn-success"  onclick="addCategoryRow()" type="button">
@@ -317,15 +317,14 @@ echo $quickmove->generate();
 								<td>
 									<?php if ($ticket_prios[$y]->getProtected() == 0){?>
 										<a href="index.php?page=<?=$_REQUEST['page']?>&delete_prio=<?=$ticket_prios[$y]->getId()?>">
-											<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
+											<span class="glyphicons glyphicons-remove pointer" style="color: red;"></span></a>&nbsp;
 									<?php }?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
 										echo '<button class="btn btn-xs btn-success" onclick="addPrioRow()" type="button">
 												<span class="glyphicons glyphicons-plus pointer"></span>
 												Priorität hinzufügen
-												</button>';
+											  </button>';
 									}?>
-										<span class="glyphicons glyphicons-remove pointer" onclick="askDel"></span>
 								</td>
 							</tr>
 					  		</tbody>
@@ -371,7 +370,7 @@ echo $quickmove->generate();
 								<td>
 									<?php if ($ticket_states[$y]->getProtected() == 0){?>
 										<a href="index.php?page=<?=$_REQUEST['page']?>&delete_state=<?=$ticket_states[$y]->getId()?>">
-											<span class="glyphicons glyphicons-remove pointer"></span></a>&nbsp;
+											<span class="glyphicons glyphicons-remove pointer" style="color: red;"></span></a>&nbsp;
 									<?php }?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
 										echo '<button class="btn btn-xs btn-success"  onclick="addStateRow()" type="button">
@@ -471,7 +470,7 @@ echo $quickmove->generate();
 								<td>
 									<?php if ($ticket_sources[$y]->getId() != 1 && $ticket_sources[$y]->getId() != 2 && $ticket_sources[$y]->getId() != 3 && $ticket_sources[$y]->getId() != 4){?>
 										<a href="index.php?page=<?=$_REQUEST['page']?>&delete_source=<?=$ticket_sources[$y]->getId()?>">
-											<span class="glyphicons glyphicons-remove icon-link pointer"></span></a>&nbsp;
+											<span class="glyphicons glyphicons-remove icon-link pointer" style="color: red;"></span></a>&nbsp;
 									<?php } ?>
 									<? if ($y == $x-1){ //Plus-Knopf nur beim letzten anzeigen
 										echo '<button class="btn btn-xs btn-success" onclick="addSourceRow()" type=button>
@@ -479,7 +478,6 @@ echo $quickmove->generate();
 													Herkunft hinzufügen
 											  </button>';
 									}?>
-										<span class="glyphicons glyphicons-remove pointer" title="löschen" onclick="askDel"></span>
 								</td>
 
 							</tr>

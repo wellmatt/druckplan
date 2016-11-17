@@ -163,27 +163,28 @@ if ($_REQUEST["stat_article"]) {
                                       <input type="hidden" name="stat_user" value="<?php echo $_REQUEST["search_user"];?>" id="stat_user">
                                   </div>
                               </div>
+
                           </div>
                           <br>
 
                           <div class="row">
-                              <div class="col-md-6">
+                              <div class="col-md-12">
                                   <div class="panel panel-default">
                                       <div class="panel-heading"><div align="center">Pro Tag</div></div>
                                       <div class="panel-body">
                                           <table id="table_colinv_day" class="stripe hover row-border order-column" style="width: auto" width="100%">
                                               <thead>
                                               <tr>
-                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>
+<!--                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>-->
+                                                  <td style="width: 10px;"><u><h5>Datum</h5></u></td>
                                                   <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
                                                   <td style="width: 60px;"><u><h5>Kunde</h5></u></td>
                                                   <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
-
+<!--                                                  date("d.m.Y", $item->getCreateDate())-->
                                               </tr>
                                               </thead>
-
                                               <?php
                                               $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
                                               foreach ($days as $day) {
@@ -192,9 +193,10 @@ if ($_REQUEST["stat_article"]) {
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
-                                                          echo "<td>{$item->getId()}</td>";
+//                                                          echo "<td>{$item->getId()}</td>";
+                                                          ?><td><?=date('d.m.Y',$item->getCrtdate())?></td><?
                                                           echo "<td>{$item->getNumber()}</td>";
-                                                          echo "<td>{$item->getBusinesscontact()}</td>";
+                                                          echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                                           echo "<td>{$item->getTitle()}</td>";
                                                           echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                                           echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
@@ -221,15 +223,17 @@ if ($_REQUEST["stat_article"]) {
                                   </div>
                               </div>
 
-                              <div class="col-md-6">
+                              <div class="col-md-12">
                                   <div class="panel panel-default">
                                       <div class="panel-heading"><div align="center">Monat</div></div>
                                       <div class="panel-body">
                                           <table id="table_colinv_month" class="stripe hover row-border order-column" style="width: auto" width="100%">
                                               <thead>
                                               <tr>
-                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>
+<!--                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>-->
+                                                  <td style="width: 10px;"><u><h5>Datum</h5></u></td>
                                                   <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                                                  <td style="width: 60px;"><u><h5>Kunde</h5></u></td>
                                                   <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
@@ -248,8 +252,10 @@ if ($_REQUEST["stat_article"]) {
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
-                                                          echo "<td>{$item->getId()}</td>";
+//                                                          echo "<td>{$item->getId()}</td>";
+                                                          ?><td><?=date('d.m.Y',$item->getCrtdate())?></td><?
                                                           echo "<td>{$item->getNumber()}</td>";
+                                                          echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                                           echo "<td>{$item->getTitle()}</td>";
                                                           echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                                           echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
@@ -284,8 +290,10 @@ if ($_REQUEST["stat_article"]) {
                                           <table id="table_colinv_year" class="stripe hover row-border order-column" style="width: auto" width="100%">
                                               <thead>
                                               <tr>
-                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>
+<!--                                                  <td style="width: 10px;"><u><h5>ID</h5></u></td>-->
+                                                  <td style="width: 10px;"><u><h5>Datum</h5></u></td>
                                                   <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                                                  <td style="width: 60px;"><u><h5>Kunde</h5></u></td>
                                                   <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
@@ -303,8 +311,10 @@ if ($_REQUEST["stat_article"]) {
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                       foreach ($retval as $item) {
                                                           echo '<tr>';
-                                                          echo "<td>{$item->getId()}</td>";
+//                                                          echo "<td>{$item->getId()}</td>";
+                                                          ?><td><?=date('d.m.Y',$item->getCrtdate())?></td><?
                                                           echo "<td>{$item->getNumber()}</td>";
+                                                          echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                                           echo "<td>{$item->getTitle()}</td>";
                                                           echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                                           echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
