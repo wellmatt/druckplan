@@ -87,12 +87,6 @@ function askDel(myurl)
 			</div>
 				<div class="table-responsive">
 					<table class="table table-hover">
-						<colgroup>
-							<col>
-							<col width="120">
-							<col width="120">
-							<col width="80">
-						</colgroup>
 						<tr>
 							<td class="content_row_header">Dateiname</td>
 							<td class="content_row_header">Dateigr&ouml;&szlig;e</td>

@@ -148,7 +148,7 @@ foreach ($dates as $date)
         }
         if (count($stats)>0 && $statsenabled == 1)
         { 
-            $statshtml .= '<div class="box2" style="border-radius: 0px;margin-bottom:1px;"><b style="font-size: 12px;"><u>Statistik (soll / ist / verfügbar)</b></u>:</br>';
+            $statshtml .= '<div class=table-responsive" style="border-radius: 0px;margin-bottom:1px;"><b style="font-size: 12px;"><u>Statistik (soll / ist / verfügbar)</b></u>:</br>';
             $statshtml .= '<table width="100%">';
             foreach ($stats as $stat)
             {

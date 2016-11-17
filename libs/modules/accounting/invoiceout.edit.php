@@ -54,21 +54,18 @@ echo $quickmove->generate();
                     <input type="hidden" id="id" name="id" value="<?=$invoiceout->getId()?>" />
                     <input type="hidden" id="exec" name="exec" value="edit" />
                     <input type="hidden" id="subexec" name="subexec" value="save" />
-
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Titel</label>
                         <div class="col-sm-4 form-text">
                             <?php echo $invoiceout->getColinv()->getTitle();?>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">VO-Nummer</label>
                         <div class="col-sm-4 form-text">
                             <?php echo $invoiceout->getColinv()->getNumber();?>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Status</label>
                         <div class="col-sm-4 form-text">
@@ -90,7 +87,6 @@ echo $quickmove->generate();
                             ;?>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Netto Betrag</label>
                         <div class="col-sm-4 form-text">
@@ -135,6 +131,28 @@ echo $quickmove->generate();
                             </div>
                         </div>
                     <?php } ?>
+
+                    <?php if ($invoiceout->getStatus() < 3){?>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Storno</label>
+                        <div class="col-sm-4">
+                            <button class="btn btn-xs btn-success" type="button"
+                                    onclick="doStorno(<?php echo $invoiceout->getId();?>);">
+                                     <?= $_LANG->get('Storno'); ?>
+                            </button>
+                        </div>
+                    </div>
+                    <?php }?>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Mahnung</label>
+                        <div class="col-sm-4">
+                            <button class="btn btn-xs btn-success" type="button"
+                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?php echo $invoiceout->getId(); ?>';">
+                                <?= $_LANG->get('Mahnung') ?>
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -143,6 +161,16 @@ echo $quickmove->generate();
 
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <script>
+    function doStorno(id){
+        $.ajax({
+                type: "POST",
+                url: "libs/modules/accounting/accounting.ajax.php",
+                data: { exec: "doStorno", id: id }
+            })
+            .done(function( msg ) {
+                document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php';
+            });
+    }
     $(function () {
         $('#payeddate').datetimepicker({
             lang: 'de',

@@ -176,6 +176,7 @@ if ($_REQUEST["stat_article"]) {
                                               <tr>
                                                   <td style="width: 10px;"><u><h5>ID</h5></u></td>
                                                   <td style="width: 60px;"><u><h5>Nummer</h5></u></td>
+                                                  <td style="width: 60px;"><u><h5>Kunde</h5></u></td>
                                                   <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                                   <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
@@ -193,6 +194,7 @@ if ($_REQUEST["stat_article"]) {
                                                           echo '<tr>';
                                                           echo "<td>{$item->getId()}</td>";
                                                           echo "<td>{$item->getNumber()}</td>";
+                                                          echo "<td>{$item->getBusinesscontact()}</td>";
                                                           echo "<td>{$item->getTitle()}</td>";
                                                           echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                                           echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
@@ -218,6 +220,7 @@ if ($_REQUEST["stat_article"]) {
                                       </div>
                                   </div>
                               </div>
+
                               <div class="col-md-6">
                                   <div class="panel panel-default">
                                       <div class="panel-heading"><div align="center">Monat</div></div>
@@ -274,7 +277,7 @@ if ($_REQUEST["stat_article"]) {
                               </div>
                           </div>
                           <div class="row">
-                              <div class="col-md-6">
+                              <div class="col-md-12">
                                   <div class="panel panel-default">
                                       <div class="panel-heading"><div align="center">Jahr</div></div>
                                       <div class="panel-body">

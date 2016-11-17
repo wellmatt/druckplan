@@ -22,17 +22,17 @@ $marketjobs = Marketing::getAllForList($curr_list);
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-                <img src="<?= $_MENU->getIcon($_REQUEST['page']) ?>">
                 Marketingplan
                 <span class="pull-right">
                     <a href="libs/modules/marketing/marketing.full.php" target="_blank" class="icon-link">
                         <button class="btn btn-xs btn-success">
+                            <span style="color: white;" class="glyphicons glyphicons-more-windows"></span>
                             <?= $_LANG->get('In neuem Fenster öffnen') ?>
                         </button>
                     </a>
-                    <a href="index.php?page=libs/modules/marketing/marketing.edit.php&exec=new&list=<?=$curr_list?>" class="icon-link">
+                    <a href="index.php?page=libs/modules/marketing/marketing.edit.php&exec=new&list=<?=$curr_list?>"  class="icon-link">
                         <button class="btn btn-xs btn-success">
-                            <span class="glyphicons glyphicons-plus"></span>
+                            <span style="color: white;" class="glyphicons glyphicons-plus" ></span>
                             <?= $_LANG->get('Plan erstellen') ?>
                         </button>
                     </a>
