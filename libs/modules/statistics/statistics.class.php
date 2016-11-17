@@ -1,18 +1,20 @@
 <?php
 
-class Statistics {
 
+//$aColumns = array( 'crtdate', 'number','suppliername', 'title',  'netto', 'brutto' );
+
+class Statistics {
     /**
      * @param $timestamp
      * @param $businesscontact
      * @param $user
      * @param $article
      * @param $tradegroup
-     * @param $number
      * @param $status
      * @return CollectiveInvoice[]
      */
-    public static function ColinvCountDay($timestamp, $businesscontact, $user, $number, $article, $tradegroup, $status )
+
+    public static function ColinvCountDay($timestamp, $businesscontact, $user, $article, $tradegroup, $status )
     {
         global $DB;
         date_default_timezone_set('Europe/Berlin');
@@ -24,9 +26,6 @@ class Statistics {
         }
         if ($user != 0 && $user != NULL){
             $where .= " AND `user`.id = {$user} ";
-        }
-        if ($number != 0 && $number != NULL){
-            $where .= " AND `collectiveinvoice.number` = {$number} ";
         }
         if ($article != 0 && $article != NULL){
             $where .= " AND article.id = {$article} ";

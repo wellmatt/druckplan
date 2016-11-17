@@ -48,9 +48,6 @@ if ($_REQUEST["stat_from"]) {
 if ($_REQUEST["stat_to"]) {
     $end = strtotime($_REQUEST["stat_to"]);
 }
-if ($_REQUEST["stat_number"]) {
-    $stat_number = ($_REQUEST["stat_number"]);
-}
 if ($_REQUEST["stat_customer"]) {
     $stat_customer = $_REQUEST["stat_customer"];
 }
@@ -165,10 +162,9 @@ if ($_REQUEST["stat_article"]) {
                                       <input type="text" value="<?php echo $_REQUEST["search_user"];?>" class="form-control" name="search_user" id="search_user">
                                       <input type="hidden" name="stat_user" value="<?php echo $_REQUEST["search_user"];?>" id="stat_user">
                                   </div>
-                                  <label for="" class="col-sm-1 control-label">VO-Number</label>
+                                  <label for="" class="col-sm-1 control-label">Suche</label>
                                   <div class="col-sm-3">
-                                      <input type="text" value="<?php echo $_REQUEST["search_number"];?>" class="form-control" name="search_number" id="search_number">
-                                      <input type="hidden" name="stat_number" value="<?php echo $_REQUEST["stat_number"];?>" id="stat_number">
+                                      <input type="text" id="search" class="form-control" placeholder="">
                                   </div>
                               </div>
 
@@ -359,6 +355,61 @@ if ($_REQUEST["stat_article"]) {
 </form>
 
 
+<!--<script type="text/javascript">-->
+<!--    $(document).ready(function() {-->
+<!--        var table_colinv_day = $('#table_colinv_day').DataTable({-->
+<!--            "dom": 'rti',-->
+<!--            "processing": true,-->
+<!--            "ordering": false,-->
+<!--            "order": [],-->
+<!--            "bServerSide": true,-->
+<!--            "sAjaxSource": "libs/modules/statistics/statistic.class.php",-->
+<!--            "paging": false,-->
+<!--            "columns": [-->
+<!--                null,-->
+<!--                null,-->
+<!--                null,-->
+<!--                null,-->
+<!--                null,-->
+<!--                null-->
+<!--            ],-->
+<!--             "language":-->
+<!--            {-->
+<!--                "emptyTable":     "Keine Daten vorhanden",-->
+<!--                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",-->
+<!--                "infoEmpty": 	  "Keine Seiten vorhanden",-->
+<!--                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",-->
+<!--                "infoPostFix":    "",-->
+<!--                "thousands":      ".",-->
+<!--                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",-->
+<!--                "loadingRecords": "Lade...",-->
+<!--                "processing":     "Verarbeite...",-->
+<!--                "search":         "Suche:",-->
+<!--                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",-->
+<!--                "paginate": {-->
+<!--                    "first":      "Erste",-->
+<!--                    "last":       "Letzte",-->
+<!--                    "next":       "N&auml;chste",-->
+<!--                    "previous":   "Vorherige"-->
+<!--                },-->
+<!--                "aria": {-->
+<!--                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",-->
+<!--                    "sortDescending": ": aktivieren um absteigend zu sortieren"-->
+<!--                }-->
+<!--            }-->
+<!--        } );-->
+<!---->
+<!--        $("#table_colinv_day tbody td").live('click',function(){-->
+<!--            var aPos = $('#table_colinv_day').dataTable().fnGetPosition(this);-->
+<!--            var aData = $('#table_colinv_day').dataTable().fnGetData(aPos[0]);-->
+<!--            document.location='index.php?page=libs/modules/statistics/stat_colinv.php'+aData[0];-->
+<!--        });-->
+<!---->
+<!--        $('#search').keyup(function(){-->
+<!--            table_colinv_day.search( $(this).val() ).draw();-->
+<!--        })-->
+<!--    } );-->
+<!--</script>-->
 
 
 <script>
@@ -385,7 +436,8 @@ if ($_REQUEST["stat_article"]) {
                     "sortDescending": ": aktivieren um absteigend zu sortieren"
                 }
             }
-        });
+        } );
+
 
         var table_colinv_month = $('#table_colinv_month').DataTable({
             "dom": 'rti',
@@ -442,6 +494,17 @@ if ($_REQUEST["stat_article"]) {
             select: function (event, ui) {
                 $('#stat_customer').val(ui.item.value);
                 $('#search_customer').val(ui.item.label);
+                return false;
+            }
+        });
+        $("#search_number").autocomplete({
+            delay: 0,
+            source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_number',
+            minLength: 2,
+            dataType: "json",
+            select: function (event, ui) {
+                $('#stat_number').val(ui.item.value);
+                $('#search_number').val(ui.item.label);
                 return false;
             }
         });
