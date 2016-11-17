@@ -48,6 +48,9 @@ if ($_REQUEST["stat_from"]) {
 if ($_REQUEST["stat_to"]) {
     $end = strtotime($_REQUEST["stat_to"]);
 }
+if ($_REQUEST["stat_number"]) {
+    $stat_number = ($_REQUEST["stat_number"]);
+}
 if ($_REQUEST["stat_customer"]) {
     $stat_customer = $_REQUEST["stat_customer"];
 }
@@ -161,6 +164,11 @@ if ($_REQUEST["stat_article"]) {
                                   <div class="col-sm-3">
                                       <input type="text" value="<?php echo $_REQUEST["search_user"];?>" class="form-control" name="search_user" id="search_user">
                                       <input type="hidden" name="stat_user" value="<?php echo $_REQUEST["search_user"];?>" id="stat_user">
+                                  </div>
+                                  <label for="" class="col-sm-1 control-label">VO-Number</label>
+                                  <div class="col-sm-3">
+                                      <input type="text" value="<?php echo $_REQUEST["search_number"];?>" class="form-control" name="search_number" id="search_number">
+                                      <input type="hidden" name="stat_number" value="<?php echo $_REQUEST["stat_number"];?>" id="stat_number">
                                   </div>
                               </div>
 
