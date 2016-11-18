@@ -10,9 +10,11 @@ require_once 'libs/modules/statistics/statistics.class.php';
 require_once 'libs/basic/globalFunctions.php';
 require_once 'libs/modules/machines/machinegroup.class.php';
 require_once 'libs/modules/machines/machine.class.php';
+require_once 'libs/modules/planning/planning.job.class.php';
 
 $stat_mgroup = 0;
 $stat_mclass = 0;
+$stat_mjobs = 0;
 
 $start = mktime(0, 0, 0, date('m', time()), 1, date('Y', time()));
 $end = mktime(0, 0, 0, date('m', time()), cal_days_in_month(CAL_GREGORIAN, date('m', time()), date('Y', time())), date('Y', time()));
@@ -31,9 +33,14 @@ if ($_REQUEST["stat_mclass"]) {
     $stat_mclass = $_REQUEST["stat_mclass"];
 }
 
+if ($_REQUEST["stat_mjobs"]) {
+    $stat_mjobs = $_REQUEST["stat_mjobs"];
+}
+
 $machstats = Statistics::Maschstat($start, $end, $stat_mgroup);
 $mgroups = MachineGroup::getAllMachineGroups();
 $mclass = Machine::getAllMachines();
+$mjobs = PlanningJob ::getAllJobs();
 ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -110,22 +117,23 @@ $mclass = Machine::getAllMachines();
                                     <th>Name</th>
                                     <th>Soll</th>
                                     <th>Ist</th>
-                                    <th>Wert</th>
+                                    <th>Auftragswert</th>
                                     <th>Anz. Auftr.</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($mgroups as $mgroup) {?>
-                                <tr>
-                                    <td><?php echo $mgroup->getID();?></td>
-                                    <td><?php echo $mgroup->getName();?></td>
-<!--                                    <td>--><?php //echo printPrice($mgroup['zeitsoll'],2);?><!--</td>-->
-<!--                                    <td>--><?php //echo printPrice($mgroup['zeitist'],2);?><!--</td>-->
-<!--                                    <td>--><?php //echo printPrice($mgroup['auftragswert'],2);?><!--</td>-->
-<!--                                    <td>--><?php //echo $mgroup['anzahlauftraege'];?><!--</td>-->
-<!--                                </tr>-->
+                            <?php foreach ($mjobs as $mjob) {?>
+                                <?php foreach ($mclass as $item) {?>
+                                    <tr>
+                                        <td><?php echo $item->getID();?></td>
+                                        <td><?php echo $item->getName();?></td>
+                                        <td><?php echo $mjob->getTplanned();?></td>
+                                        <td><?php echo $mjob->getTactual();?></td>
+                                        <td></td>
+                                        <td></td>
+                                      </tr>
                                 <?php
-//                                $nettotal += $machstat['auftragswert'];
+                                }
                             } ?>
                             <?php
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td></td></tr>';
