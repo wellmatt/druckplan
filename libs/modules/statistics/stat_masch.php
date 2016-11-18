@@ -9,8 +9,10 @@
 require_once 'libs/modules/statistics/statistics.class.php';
 require_once 'libs/basic/globalFunctions.php';
 require_once 'libs/modules/machines/machinegroup.class.php';
+require_once 'libs/modules/machines/machine.class.php';
 
 $stat_mgroup = 0;
+$stat_mclass = 0;
 
 $start = mktime(0, 0, 0, date('m', time()), 1, date('Y', time()));
 $end = mktime(0, 0, 0, date('m', time()), cal_days_in_month(CAL_GREGORIAN, date('m', time()), date('Y', time())), date('Y', time()));
@@ -25,9 +27,13 @@ if ($_REQUEST["stat_to"]) {
 if ($_REQUEST["stat_mgroup"]) {
     $stat_mgroup = $_REQUEST["stat_mgroup"];
 }
+if ($_REQUEST["stat_mclass"]) {
+    $stat_mclass = $_REQUEST["stat_mclass"];
+}
 
 $machstats = Statistics::Maschstat($start, $end, $stat_mgroup);
 $mgroups = MachineGroup::getAllMachineGroups();
+$mclass = Machine::getAllMachines();
 ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -109,17 +115,17 @@ $mgroups = MachineGroup::getAllMachineGroups();
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($machstats as $machstat) {?>
+                            <?php foreach ($mgroups as $mgroup) {?>
                                 <tr>
-                                    <td><?php echo $machstat['id'];?></td>
-                                    <td><?php echo $machstat['name'];?></td>
-                                    <td><?php echo printPrice($machstat['zeitsoll'],2);?></td>
-                                    <td><?php echo printPrice($machstat['zeitist'],2);?></td>
-                                    <td><?php echo printPrice($machstat['auftragswert'],2);?></td>
-                                    <td><?php echo $machstat['anzahlauftraege'];?></td>
-                                </tr>
+                                    <td><?php echo $mgroup->getID();?></td>
+                                    <td><?php echo $mgroup->getName();?></td>
+<!--                                    <td>--><?php //echo printPrice($mgroup['zeitsoll'],2);?><!--</td>-->
+<!--                                    <td>--><?php //echo printPrice($mgroup['zeitist'],2);?><!--</td>-->
+<!--                                    <td>--><?php //echo printPrice($mgroup['auftragswert'],2);?><!--</td>-->
+<!--                                    <td>--><?php //echo $mgroup['anzahlauftraege'];?><!--</td>-->
+<!--                                </tr>-->
                                 <?php
-                                $nettotal += $machstat['auftragswert'];
+//                                $nettotal += $machstat['auftragswert'];
                             } ?>
                             <?php
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td></td></tr>';

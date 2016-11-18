@@ -193,7 +193,7 @@ class Statistics {
      * @param int $mgroup
      * @return array
      */
-    public static function Maschstat($start, $end, $mgroup)
+    public static function Maschstat($start, $end, $mgroup, $mclass)
     {
         global $DB;
         date_default_timezone_set('Europe/Berlin');
@@ -202,6 +202,9 @@ class Statistics {
         $where = "";
         if ($mgroup != 0){
             $where .= " AND machines.group = {$mgroup} ";
+        }
+        if ($mclass != 0){
+            $where .= " AND machines.class = {$mclass} ";
         }
 
         $sql = "SELECT
