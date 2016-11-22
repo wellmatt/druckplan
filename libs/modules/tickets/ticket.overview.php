@@ -485,13 +485,6 @@ function TicketTableRefresh()
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Suche</label>
-						<div class="col-sm-10">
-							<input type="text" id="ticketsearch" class="form-control" placeholder="">
-						</div>
-					</div>
-
-					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Kunde</label>
 						<div class="col-sm-10">
 							<input type="text" id="custsearch" name="custsearch" class="form-control"><input type="hidden" id="custsearch_id">
@@ -623,6 +616,12 @@ function TicketTableRefresh()
 							<input name="date_cl_max" id="date_cl_max"
 								<?php if ($_SESSION['tkt_cl_date_max']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_cl_date_max']) . '"'; ?>
 								   class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?= $_LANG->get('bis'); ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Suche</label>
+						<div class="col-sm-10">
+							<input type="text" id="ticketsearch" class="form-control" placeholder="">
 						</div>
 					</div>
 

@@ -1233,13 +1233,13 @@ echo $quickmove->generate();
 												 <span class="input-group-addon">St.</span>
 											 </div>
 										 </div>
-										 <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;">&nbsp;</div>
+										 <label class="col-sm-3 control-label form-text" style="font-size: 14px; height: 34px;">pro Stunde</label>
 										 <? $first = false;
 										 $x++;
 									 } // foreach?>
 									 <? if (count($machine->getAllUnitsPerHour()) == 0) { ?>
 										 <div id="tr_machine_paperperhour">
-											 <label for="" class="col-sm-2 control-label">ab</label>
+											 <label for="" class="col-sm-1 control-label">ab</label>
 											 <div class="col-sm-3">
 												 <div class="input-group">
 													 <input name="units_from_0" class="form-control" value="0">

@@ -30,6 +30,7 @@ if ($_REQUEST["exec"] == "delete"){
                      <?= $savemsg ?>
                     <button class="btn btn-xs btn-success"
                             onclick="document.location. href='index.php?page=libs/modules/storage/storage.article.summary.php';">
+                        <span class="glyphicons glyphicons-search"></span>
                     <?= $_LANG->get('Lagerartikel anzeigen') ?>
                     </button>
                     <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
@@ -47,7 +48,7 @@ if ($_REQUEST["exec"] == "delete"){
         	  <div class="panel-body">
                   <div class="form-group">
                       <label for="" class="col-sm-2 control-label">Suche</label>
-                      <div class="col-sm-10">
+                      <div class="col-sm-3">
                           <input type="text" id="search" class="form-control" placeholder="">
                       </div>
                   </div>

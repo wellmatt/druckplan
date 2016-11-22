@@ -274,13 +274,13 @@ if($_REQUEST["subexec"] == "save")
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
-$quickmove->addItem('Speichern','#',"$('#paper_form').submit();",'glyphicon-floppy-disk');
 if($paper->hasPriceBase() && $alternativePaperMode) {
     $quickmove->addItem('Zurück zur Auftragsbearbeitung','#',"prepareProductCloning()",'glyphicon-step-backward');
 }
 else{
     $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 }
+$quickmove->addItem('Speichern','#',"$('#paper_form').submit();",'glyphicon-floppy-disk');
 if ($paper->getId()>0){
     $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/paper/paper.php&exec=delete&id=".$aRow[ $aColumns[0] ]."');", 'glyphicon-trash', true);
 }

@@ -48,7 +48,7 @@ $lists = MarketingList::getAllLists();
                             <input class="form-control" id="newlist" name="newlist" type="text">
                         </div>
                         <div class="col-sm-6">
-                            <button type="submit" class="btn form-control btn-sm btn-success ">
+                            <button type="submit" class="btn btn-sm btn-success form-control">
                                 <span class="glyphicons glyphicons-plus"></span>
                                 Marketingliste Hinzufügen
                             </button>
