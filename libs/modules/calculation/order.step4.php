@@ -135,8 +135,8 @@ if ($order->getArticleid()==0){
     $quickmove->addItem('Artikel Speichern','#',"askDel('index.php?page=libs/modules/article/article.php&exec=fromorder&orderid=".$order->getId()."')",'glyphicons glyphicons-article');
 }
 elseif ($order->getArticleid()>0){
-    $quickmove->addItem('Zum Artikel',"index.php?page=libs/modules/article/article.php&exec=edit&aid=".$order->getArticleid(),'glyphicon-step-backward');
-    $quickmove->addItem('Artikel aktualisieren','#',"askDel('index.php?page=libs/modules/article/article.php&exec=uptfromorder&orderid=".$order->getId()."&aid=".$order->getArticleid()."')",'glyphicon-floppy-disk');
+    $quickmove->addItem('Zum Artikel',"index.php?page=libs/modules/article/article.php&exec=edit&aid=".$order->getArticleid(),'glyphicon-redo');
+    $quickmove->addItem('Artikel aktualisieren','#',"askDel('index.php?page=libs/modules/article/article.php&exec=uptfromorder&orderid=".$order->getId()."&aid=".$order->getArticleid()."')",'glyphicon-refresh');
 
 }
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');

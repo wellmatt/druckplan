@@ -188,40 +188,64 @@ class Statistics {
     }
 
     /**
-     * @param int $start
-     * @param int $end
-     * @param int $mgroup
+     * @param $start
+     * @param $end
+     * @param $mid
+     * @param $mgroup
+     * @param $mname
+     * @param $mtactual
+     * @param $mplanned
+     * @param $ccount
      * @return array
      */
-    public static function Maschstat($start, $end, $mgroup)
+    public static function Maschstat($start, $end, $mid, $mgroup, $mname, $mtactual, $mplanned, $ccount )
     {
         global $DB;
         date_default_timezone_set('Europe/Berlin');
         $retval = [];
 
         $where = "";
+        if ($mid != 0){
+            $where .= " AND machines.group.id = {$mid} ";
+        }
         if ($mgroup != 0){
-            $where .= " AND machines.group = {$mgroup} ";
+            $where .= " AND grpname = {$mgroup} ";
+        }
+        if ($mname != 0){
+            $where .= " AND machname = {$mname} ";
+        }
+        if ($mplanned != 0){
+            $where .= " AND planned = {$mplanned} ";
+        }
+        if ($mtactual != 0){
+            $where .= " AND actual = {$mtactual} ";
+        }
+        if ($ccount != 0){
+            $where .= " AND colcount = {$ccount} ";
         }
 
-        $sql = "SELECT
-                machines.id,
-                machines.`name`,
-                SUM(planning_jobs.tplanned) as zeitsoll,
-                SUM(planning_jobs.tactual) as zeitist,
-                SUM(collectiveinvoice_orderposition.price) as auftragswert,
-                count(planning_jobs.id) as anzahlauftraege
+        $sql = "SELECT machines.name as machname, machine_groups.name as grpname, SUM(planning_jobs.tplanned) as planned, SUM(planning_jobs.tactual) as actual, count(collectiveinvoice.id) as colcount
                 FROM
-                planning_jobs
-                INNER JOIN collectiveinvoice_orderposition ON planning_jobs.opos = collectiveinvoice_orderposition.id
-                INNER JOIN machines ON planning_jobs.artmach = machines.id
+                machines
+                INNER JOIN machine_groups ON machines.group = machine_groups.id
+                INNER JOIN orders_machines ON machines.id = orders_machines.machine_id
+                INNER JOIN orders_calculations ON orders_machines.calc_id = orders_calculations.id
+                INNER JOIN orders ON orders_calculations.order_id = orders.id
+                INNER JOIN article ON orders.id = article.orderid
+                INNER JOIN collectiveinvoice_orderposition ON article.id = collectiveinvoice_orderposition.object_id
+                INNER JOIN collectiveinvoice ON collectiveinvoice_orderposition.collectiveinvoice = collectiveinvoice.id
+                INNER JOIN planning_jobs ON collectiveinvoice_orderposition.id = planning_jobs.opos AND machines.id = planning_jobs.artmach
                 WHERE
-                planning_jobs.type = 2 AND
-                planning_jobs.state = 1 AND
-                planning_jobs.start <= {$end} AND
-                planning_jobs.start >= {$start}
-                {$where}
-                GROUP BY machines.id ";
+                collectiveinvoice_orderposition.type = 1
+                AND
+                article.orderid > 0
+                AND
+                orders_calculations.product_amount = collectiveinvoice_orderposition.quantity
+                GROUP BY machines.id
+                  {$where}
+                ";
+
+
 //        prettyPrint($sql);
 
         if ($DB->no_result($sql)) {

@@ -39,6 +39,10 @@ $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page=libs/modules/accounting/invoicein.overview.php',null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#invin_form').submit();",'glyphicon-floppy-disk');
+
+if ($invoicein->getId()>0){
+    $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/accounting/invoicein.overview.php&exec=delete&id=".$invoicein->getId()."');", 'glyphicon-trash', true);
+}
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
