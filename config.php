@@ -16,7 +16,7 @@ $_CONFIG = new ConfigContainer();
 
 // Lizenz
 $_CONFIG->licensePath = '';
-$_CONFIG->version = '6789875';
+$_CONFIG->version = '3ee741d';
 $_CONFIG->version_date = '2016-09-22 12:51:09';
 
 // Datenbank Webserver
