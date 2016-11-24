@@ -41,8 +41,8 @@ if ($_REQUEST["stat_mgroup"]) {
     $stat_mgroup = $_REQUEST["stat_mgroup"];
 }
 
-$machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_mtactual, $stat_mplanned, $stat_ccount, $stat_mgroup);
 
+$mgroups = MachineGroup::getAllMachineGroups();
 ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -80,7 +80,7 @@ $machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_m
                                 </h3>
                           </div>
                           <div class="panel-body">
-                                <div class="row">
+                   %             <div class="row">
                                     <div class="form-group">
                                         <label for="" class="col-sm-1 control-label">Von</label>
                                         <div class="col-sm-3">
@@ -95,7 +95,7 @@ $machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_m
                                             <select name="stat_mgroup" id="stat_mgroup" class="form-control">
                                                 <option value="0">- Alle -</option>
                                                 <?php
-                                                foreach ($mgroup as $item) {
+                                                foreach ($mgroups as $item) {
                                                     if ($item->getId() == $stat_mgroup){
                                                         echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
                                                     } else {
@@ -124,19 +124,18 @@ $machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_m
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($machstats as $item) {?>
+                            <?php
+                            $machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_mtactual, $stat_mplanned, $stat_ccount, $stat_mgroup);
+                                 foreach ($machstats as $item) {?>
                                     <tr>
-                                        <td><?php echo $item->getID();?></td>
-                                        <td><?php echo $item->getName();?></td>
-                                        <td><?php echo $item->getTplanned();?></td>
-                                        <td><?php echo $item->getTactual();?></td>
+<!--                                        <td>--><?php //echo $item->getID();?><!--</td>-->
+                                        <td><?php echo $machstat->$_REQUEST["stat_mname"];?></td>
+                                        <td><?php echo $machstat->$_REQUEST["stat_mplanned"];?></td>
+                                        <td><?php echo $machstat->$_REQUEST["stat_mtactual"];?></td>
                                         <td></td>
                                         <td></td>
                                       </tr>
-                                <?php
-                                }
-                            echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td></td></tr>';
-                            ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>

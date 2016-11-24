@@ -115,44 +115,42 @@ if($_REQUEST["exec"] == "new"){
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="" class="col-sm-2 control-label">Kunde</label>
-								<div class="col-sm-4">
-									<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
-											onblur="markfield(this,1)" class="form-control">
-										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-										<? foreach ($allcustomer as $cust) { ?>
-											<option value="<?= $cust->getId() ?>"
-												<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
-										<? } ?>
-									</select>
-								</div>
-								<label for="" class="col-sm-2 control-label">Status</label>
-								<div class="col-sm-4">
-									<select type="text" id="payed_status" name="payed_status"
-											onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
-										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-										<option value="1"
-											<? if ($filters["payed_status"] == 1) echo "selected" ?>><?= $_LANG->get('offen') ?></option>
-										<option value="2"
-											<? if ($filters["payed_status"] == 2) echo "selected" ?>><?= $_LANG->get('bezahlt') ?></option>
-									</select>
-								</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Kunde</label>
+							<div class="col-sm-4">
+								<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
+										onblur="markfield(this,1)" class="form-control">
+									<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+									<? foreach ($allcustomer as $cust) { ?>
+										<option value="<?= $cust->getId() ?>"
+											<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
+									<? } ?>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="" class="col-sm-2 control-label">Zeitraum</label>
-								<label for="" class="col-sm-1 control-label">Von</label>
-								<div class="col-sm-4">
-									<input type="text" name="filter_from" id="filter_from" class="form-control date"
-										   value="<?= date("d.m.Y", $filter_from) ?>"/>
-								</div>
-								<label for="" class="col-sm-1 control-label">Bis</label>
-								<div class="col-sm-4">
-									<input type="text" name="filter_to" id="filter_to" class="form-control date" value="<?= date("d.m.Y", $filter_to) ?>"/>
-								</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Status</label>
+							<div class="col-sm-4">
+								<select type="text" id="payed_status" name="payed_status"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+									<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+									<option value="1"
+										<? if ($filters["payed_status"] == 1) echo "selected" ?>><?= $_LANG->get('offen') ?></option>
+									<option value="2"
+										<? if ($filters["payed_status"] == 2) echo "selected" ?>><?= $_LANG->get('bezahlt') ?></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Zeitraum</label>
+							<label for="" class="col-sm-1 control-label">Von</label>
+							<div class="col-sm-4">
+								<input type="text" name="filter_from" id="filter_from" class="form-control date"
+									   value="<?= date("d.m.Y", $filter_from) ?>"/>
+							</div>
+							<label for="" class="col-sm-1 control-label">Bis</label>
+							<div class="col-sm-4">
+								<input type="text" name="filter_to" id="filter_to" class="form-control date" value="<?= date("d.m.Y", $filter_to) ?>"/>
 							</div>
 						</div>
 					</div>

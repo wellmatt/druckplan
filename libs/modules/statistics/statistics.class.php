@@ -240,9 +240,9 @@ class Statistics {
                 AND
                 article.orderid > 0
                 AND
+                {$where}
                 orders_calculations.product_amount = collectiveinvoice_orderposition.quantity
                 GROUP BY machines.id
-                  {$where}
                 ";
 
 

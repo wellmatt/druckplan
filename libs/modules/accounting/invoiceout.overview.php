@@ -9,6 +9,7 @@
 
 
 ?>
+
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
 <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
@@ -25,7 +26,14 @@
     <div class="panel-body">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Filter</h3>
+                <h3 class="panel-title">Filter
+                     <span class="pull-right">
+                              <button class="btn btn-xs btn-success"  onclick="TicketTableRefresh();" href="Javascript:">
+                                  <span class="glyphicons glyphicons-refresh"></span>
+                                  <?=$_LANG->get('Refresh')?>
+                              </button>
+                     </span>
+                </h3>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -47,6 +55,7 @@
                         <div class="col-sm-4">
                             <input type="text" id="search" class="form-control" placeholder="">
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -84,6 +93,10 @@
         var datemax = parseInt($('#ajax_date_max').val());
         window.open('libs/modules/accounting/invoiceout.export.php?datemax='+datemax+'&datemin='+datemin);
     }
+    function TicketTableRefresh()
+    {
+        $('#invouttable').dataTable().fnDraw();
+    }
 
     $(document).ready(function() {
 
@@ -111,6 +124,8 @@
                 }
             }
         );
+
+
 
         var invouttable = $('#invouttable').DataTable( {
             "processing": true,
