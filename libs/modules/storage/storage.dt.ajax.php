@@ -127,6 +127,29 @@ for ( $i=0 ; $i<count($aColumns) ; $i++ )
     }
 }
 
+if ($_GET['ajax_nr'] != ""){
+    if ($sWhere == ""){
+        $sWhere .= " WHERE number LIKE '%{$_GET['ajax_nr']}%' ";
+    } else {
+        $sWhere .= " AND number LIKE '%{$_GET['ajax_nr']}%' ";
+    }
+}
+
+if ($_GET['ajax_location'] != ""){
+    if ($sWhere == ""){
+        $sWhere .= " WHERE location LIKE '%{$_GET['ajax_location']}%' ";
+    } else {
+        $sWhere .= " AND location LIKE '%{$_GET['ajax_location']}%' ";
+    }
+}
+
+if ($_GET['ajax_type'] != ""){
+    if ($sWhere == ""){
+        $sWhere .= " WHERE `type` LIKE '%{$_GET['ajax_type']}%' ";
+    } else {
+        $sWhere .= " AND `type` LIKE '%{$_GET['ajax_type']}%' ";
+    }
+}
 
 /*
  * SQL queries
@@ -139,8 +162,8 @@ $sQuery = "SELECT
             FROM
             storage_areas
             LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
-            GROUP BY storage_areas.id
            $sWhere
+            GROUP BY storage_areas.id
            $sOrder
            $sLimit
            ";
@@ -161,8 +184,8 @@ $sQuery = "SELECT
             FROM
             storage_areas
             LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
-            GROUP BY storage_areas.id
             $sWhere
+            GROUP BY storage_areas.id
             ) t1
             ";
 //     var_dump($sQuery);

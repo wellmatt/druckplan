@@ -132,7 +132,7 @@ class CustomField extends Model{
         <div class="form-group">
           <label for="" class="col-sm-3 control-label">'.$this->name.'</label>
           <div class="col-sm-9">
-              <input type="text" class="form-control" name="custf['.$this->id.']" value="'.$this->fetchValue($object).'">
+              <input type="text" class="form-control" data-type="input" data-fieldid="'.$this->id.'" name="custf['.$this->id.']" value="'.$this->fetchValue($object).'">
           </div>
         </div>
         ';
@@ -141,7 +141,7 @@ class CustomField extends Model{
 
     private function generateSelect($object)
     {
-        $html = '<div class="form-group"><label for="" class="col-sm-3 control-label">'.$this->name.'</label><div class="col-sm-9"><select name="custf['.$this->id.']" class="form-control">';
+        $html = '<div class="form-group"><label for="" class="col-sm-3 control-label">'.$this->name.'</label><div class="col-sm-9"><select data-type="select" data-fieldid="'.$this->id.'" name="custf['.$this->id.']" class="form-control">';
         foreach ($this->_possiblevalues as $item) {
             if ($item->getId() == $this->fetchValue($object))
                 $html .= '<option selected value="' . $item->getId() . '">' . $item->getValue() . '</option>';
@@ -164,7 +164,7 @@ class CustomField extends Model{
               <div class="col-sm-9">
                   <div class="checkbox">
                       <label>
-                          <input type="checkbox" name="custf['.$this->id.']" value="1" '.$checked.'>
+                          <input type="checkbox" data-type="checkbox" data-fieldid="'.$this->id.'" name="custf['.$this->id.']" value="1" '.$checked.'>
                       </label>
                   </div>
               </div>

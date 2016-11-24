@@ -624,10 +624,7 @@ class User {
 	}
 	
 	/**
-	 * @return 	array an array of <code>Emailaddress</code> references
-	 * 			assigned to this <code>User</code>.
-	 * 			If the adresses have been fetched before, the result is
-	 * 			returned, else the database is requested.
+	 * @return 	Emailaddress[]
 	 * @access 	public
 	 */
 	public function getEmailAddresses() {
@@ -641,7 +638,9 @@ class User {
 			if($DB->num_rows($sql) > 0) {
 				$results = $DB->select($sql);
 				foreach ($results as $result) {
-					array_push($this->emailAdresses, new Emailaddress($result["emailaddress"]));
+                    $tmp_mailadress = new Emailaddress($result["emailaddress"]);
+                    if ($tmp_mailadress->getId() > 0)
+                        array_push($this->emailAdresses, $tmp_mailadress);
 				}
 			}
 		}

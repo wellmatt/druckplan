@@ -187,14 +187,27 @@
             $sWhere .= " AND article.id IN ({$bccp_articles}) ";
         }
     }
+
+    $cfwhere = "";
+    foreach(array_keys($_REQUEST) as $key)
+    {
+        if (preg_match("/cfield_(?P<id>\d+)/", $key, $m)) {
+            $fieldid = str_replace("cfield_","",$key);
+            $value = $_REQUEST[$key];
+            $cfwhere .= " AND (custom_fields.id = {$fieldid} AND custom_fields_values.`value` = {$value}) ";
+        }
+    }
+    $sWhere .= $cfwhere;
     
     /*
      * SQL queries
      * Get data to display
      */
-    $sQuery = "SELECT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shoprel
+    $sQuery = "SELECT DISTINCT article.id, '' as art_picture, article.title, article.number, tradegroup.tradegroup_title, article.shoprel
                FROM article 
-               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup 
+               LEFT OUTER JOIN tradegroup ON tradegroup.id = article.tradegroup
+               LEFT OUTER JOIN custom_fields_values ON article.id = custom_fields_values.object
+               LEFT OUTER JOIN custom_fields ON custom_fields_values.field = custom_fields.id
                $sWhere
                $sOrder
                $sLimit
@@ -205,11 +218,16 @@
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
      
     /* Data set length after filtering */
-    $sQuery = "
-        SELECT COUNT(article.id)
-               FROM article 
-               LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-        $sWhere
+    $sQuery = " SELECT COUNT(id)
+                FROM
+                (
+                SELECT DISTINCT article.id
+                FROM article
+                LEFT OUTER JOIN tradegroup ON tradegroup.id = article.tradegroup
+                LEFT OUTER JOIN custom_fields_values ON article.id = custom_fields_values.object
+                LEFT OUTER JOIN custom_fields ON custom_fields_values.field = custom_fields.id
+                $sWhere
+                ) t1
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -218,11 +236,16 @@
     
      
     /* Total data set length */
-    $sQuery = "
-        SELECT COUNT(article.id) 
-        FROM article 
-        LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup
-        WHERE status = 1
+    $sQuery = " SELECT COUNT(id)
+                FROM
+                (
+                SELECT DISTINCT article.id
+                FROM article
+                LEFT OUTER JOIN tradegroup ON tradegroup.id = article.tradegroup
+                LEFT OUTER JOIN custom_fields_values ON article.id = custom_fields_values.object
+                LEFT OUTER JOIN custom_fields ON custom_fields_values.field = custom_fields.id
+                WHERE article.status = 1
+                ) t1
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -303,6 +326,7 @@
                             $shoptitle .= $shop_cp . "&#10;";
                         } 
                     }
+                    $shoptitle = utf8_encode($shoptitle);
                     $shopstr = '<img src="images/status/green_small.gif" title="'.$shoptitle.'">';
                     $row[] = $shopstr;
                 } else {
@@ -356,5 +380,5 @@
         $output['aaData'][] = $row;
     }
      
-    echo json_encode( $output );
+    echo json_encode( $output, JSON_UNESCAPED_SLASHES );
 ?>

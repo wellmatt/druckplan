@@ -41,17 +41,36 @@ if ($_REQUEST["exec"] == "delete"){
 	  </div>
     <div class="panel-body">
         <div class="panel panel-default">
-        	  <div class="panel-heading">
-        			<h3 class="panel-title">Filter</h3>
-        	  </div>
-        	  <div class="panel-body">
-                  <div class="form-group">
-                      <label for="" class="col-sm-2 control-label">Suche</label>
-                      <div class="col-sm-10">
-                          <input type="text" id="search" class="form-control" placeholder="">
-                      </div>
-                  </div>
-        	  </div>
+            <div class="panel-heading">
+                <h3 class="panel-title">Filter</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Nr</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="ajax_nr" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Ort</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="ajax_location" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Art</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="ajax_type" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Suche</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="search" class="form-control" placeholder="">
+                    </div>
+                </div>
+            </div>
         </div>
         <br>
         <div class="table-responsive">
@@ -106,6 +125,18 @@ if ($_REQUEST["exec"] == "delete"){
                 null,
                 null
             ],
+            "fnServerData": function ( sSource, aoData, fnCallback ) {
+                var ajax_nr = document.getElementById('ajax_nr').value;
+                var ajax_location = document.getElementById('ajax_location').value;
+                var ajax_type = document.getElementById('ajax_type').value;
+                aoData.push( { "name": "ajax_nr", "value": ajax_nr } );
+                aoData.push( { "name": "ajax_location", "value": ajax_location } );
+                aoData.push( { "name": "ajax_type", "value": ajax_type } );
+
+                $.getJSON( sSource, aoData, function (json) {
+                    fnCallback(json)
+                } );
+            },
             "language":
             {
                 "emptyTable":     "Keine Daten vorhanden",

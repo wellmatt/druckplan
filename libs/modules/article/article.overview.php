@@ -80,6 +80,13 @@ $(document).ready(function() {
 		    aoData.push( { "name": "tradegroup", "value": tg, } );
 		    aoData.push( { "name": "bc", "value": bc, } );
 		    aoData.push( { "name": "cp", "value": cp, } );
+
+            // Custom Fields
+            var cfields = $("[data-fieldid]");
+            cfields.each(function(){
+                aoData.push( { "name": "cfield_"+$(this).data("fieldid"), "value": $(this).val() } );
+            });
+
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -245,7 +252,6 @@ $(function() {
                                    onfocus="markfield(this,0)" onblur="markfield(this,1)">
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Suche</label>
                         <div class="col-sm-3">
@@ -253,11 +259,49 @@ $(function() {
                         </div>
                     </div>
 
+                    <?php
+                    $article_fields = CustomField::fetch([
+                        [
+                            'column'=>'class',
+                            'value'=>'Article'
+                        ]
+                    ]);
+                    if (count($article_fields) > 0){?>
+                    <br>
+                    <div class="panel panel-default collapseable">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                Freifeld Filter
+                                <span class="pull-right clickable panel-collapsed"><i class="glyphicon glyphicon glyphicon-chevron-down"></i></span>
+                            </h3>
+                        </div>
+                        <div class="panel-body" style="display: none;">
+                            <div id="cfield_div"></div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Neuer Filter</label>
+                                <div class="col-sm-6">
+                                    <select id="addfilterselect" class="form-control">
+                                        <?php
+                                        foreach ($article_fields as $article_field) {
+                                            echo '<option value="' . $article_field->getId() . '">' . $article_field->getName() . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <button class="btn btn-sm btn-warning" onclick="addFilter();">
+                                        Hinzufügen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
 
                     <div class="col-sm-12">
                          <span class="pull-right">
                              <button class="btn btn-xs btn-warning"
-                                     onclick="$('#bc_cp').val('');$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();">
+                                     onclick="resetFilter();">
                                  <span class="glyphicons glyphicons-ban-circle pointer"></span>
                                  <?= $_LANG->get('Reset') ?>
                              </button>
@@ -285,3 +329,43 @@ $(function() {
         </div>
 </div>
 
+<script>
+    function resetFilter(){
+        $('#bc_cp').val('');
+        $('#ajax_bc').val(0);
+        $('#ajax_cp').val(0);
+        $('#cfield_div').html("");
+        $('#art_table').dataTable().fnDraw();
+    }
+    function addFilter(){
+        var filterid = $('#addfilterselect').val();
+        $('#addfilterselect option:selected').remove();
+
+        $.ajax({
+            type: "GET",
+            url: "libs/modules/customfields/custom.field.ajax.php",
+            data: { ajax_action: "getFilterField", id: filterid },
+            success: function(data)
+            {
+                $('#cfield_div').append(data);
+                $("[data-fieldid]").each(function(){
+                    $(this).change(function(){
+                        $('#art_table').dataTable().fnDraw();
+                    });
+                });
+            }
+        });
+    }
+    $(document).on('click', '.panel-heading span.clickable', function(e){
+        var $this = $(this);
+        if(!$this.hasClass('panel-collapsed')) {
+            $this.parents('.collapseable').find('.panel-body').slideUp();
+            $this.addClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        } else {
+            $this.parents('.collapseable').find('.panel-body').slideDown();
+            $this.removeClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        }
+    })
+</script>

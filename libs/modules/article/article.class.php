@@ -12,6 +12,7 @@ require_once 'libs/modules/article/article.qusers.class.php';
 require_once 'libs/modules/article/article.orderamount.class.php';
 require_once 'libs/modules/article/article.shopapproval.class.php';
 require_once 'libs/modules/article/article.tag.class.php';
+require_once 'libs/modules/customfields/custom.field.class.php';
 
 class Article {
 

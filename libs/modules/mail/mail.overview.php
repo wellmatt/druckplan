@@ -7,10 +7,13 @@ $mail_servers = Array();
 
 $unique_logins = Array();
 
+//dd($mailadresses);
+
 if (count($mailadresses)>0)
 {
     foreach ($mailadresses as $mailadress)
     {
+//		prettyPrint($mailadress);die();
 		if (!in_array($mailadress->getLogin(),$unique_logins))
 		{
 			$unique_logins[] = $mailadress->getLogin();
@@ -656,10 +659,3 @@ $(document).ready(function(){
 			  </div>
 	  </div>
 </div>
-
-<!-- <span onclick="MailBoxSelectPopup();" class="label label-danger pointer">Test Button</span> -->
-
-
-
-
-
