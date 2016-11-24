@@ -80,7 +80,7 @@ $mgroups = MachineGroup::getAllMachineGroups();
                                 </h3>
                           </div>
                           <div class="panel-body">
-                   %             <div class="row">
+                              <div class="row">
                                     <div class="form-group">
                                         <label for="" class="col-sm-1 control-label">Von</label>
                                         <div class="col-sm-3">
@@ -124,9 +124,9 @@ $mgroups = MachineGroup::getAllMachineGroups();
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php
-                            $machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_mtactual, $stat_mplanned, $stat_ccount, $stat_mgroup);
-                                 foreach ($machstats as $item) {?>
+<!--                            --><?php
+//                            $machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_mtactual, $stat_mplanned, $stat_ccount, $stat_mgroup);
+//                                 foreach ($machstats as $item) {?>
                                     <tr>
 <!--                                        <td>--><?php //echo $item->getID();?><!--</td>-->
                                         <td><?php echo $machstat->$_REQUEST["stat_mname"];?></td>
@@ -135,7 +135,7 @@ $mgroups = MachineGroup::getAllMachineGroups();
                                         <td></td>
                                         <td></td>
                                       </tr>
-                                <?php } ?>
+<!--                                --><?php //} ?>
                             </tbody>
                         </table>
                     </div>

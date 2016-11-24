@@ -7,6 +7,7 @@
  *
  */
 
+require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once 'libs/modules/statistics/statistics.class.php';
 require_once 'libs/basic/globalFunctions.php';
 
@@ -36,6 +37,7 @@ if ($_REQUEST["stat_article"]) {
 }
 
 ?>
+
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <!-- DataTables -->
@@ -107,8 +109,8 @@ if ($_REQUEST["stat_article"]) {
                                 <option <?php if ((int)$_REQUEST["stat_status"]==3) echo ' selected ';?> value="3">angenommen</option>
                                 <option <?php if ((int)$_REQUEST["stat_status"]==4) echo ' selected ';?> value="4">In Produktion</option>
                                 <option <?php if ((int)$_REQUEST["stat_status"]==5) echo ' selected ';?> value="5">Versandbereit</option>
-                                <option <?php if ((int)$_REQUEST["stat_status"]==6) echo ' selected ';?> value="5">Ware versand</option>
-                                <option <?php if ((int)$_REQUEST["stat_status"]==7) echo ' selected ';?> value="5">Erledigt</option>
+                                <option <?php if ((int)$_REQUEST["stat_status"]==6) echo ' selected ';?> value="6">Ware versand</option>
+                                <option <?php if ((int)$_REQUEST["stat_status"]==7) echo ' selected ';?> value="7">Erledigt</option>
                             </select>
                         </div>
                     </div>
@@ -143,8 +145,8 @@ if ($_REQUEST["stat_article"]) {
                         <th>Kundenname</th>
                         <th>Vorgangsnummer</th>
                         <th>Vorgangstitel</th>
-                        <th>Benutzer</th>
-                        <th>Auftr. Status</th>
+<!--                        <th>Benutzer</th>-->
+<!--                        <th>Auftr. Status</th>-->
                         <th>Umsatz netto</th>
                         <th>Umsatz brutto</th>
                         <th>Ertrag in € (netto)</th>
@@ -161,33 +163,43 @@ if ($_REQUEST["stat_article"]) {
                                 echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                 echo "<td>{$item->getNumber()}</td>";
                                 echo "<td>{$item->getTitle()}</td>";
-                                echo "<td>{$stat_user}</td>";
-                                echo "<td>{$item->getStatus()}</td>";
+//                                echo "<td>{$stat_user}</td>";
+//                                echo "<td>{$item->getStatus()}</td>";
                                 echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                 echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
-                                echo "<td></td>";
+                                echo "<td>" .printPrice($item->getMyProfit(),2). "</td>";
                                 echo "<td></td>";
                                 echo '</tr>';
                                 $nettotal += $item->getTotalNetSum();
                                 $grosstotal += $item->getTotalGrossSum();
+                                $profit += $item->getMyProfit();
                             }
                         }
                     }
                     ?>
-                    <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th>Summe Umsatz (netto):</th>
-                        <th>Summe Umsatz (brutto)</th>
-                        <th>Summe Ertrag in € (netto)</th>
-                        <th>Summe Ertrag in %</th>
-                    </tr>
-                    </tfoot>
                 </table>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Gesamt Umsatz</label>
+                    <label for="" class="col-sm-1 control-label">Netto</label>
+                    <div class="col-sm-2 form-text">
+                        <?php echo printPrice($nettotal,2); ?> €
+                    </div>
+                    <label for="" class="col-sm-1 control-label">Brutto</label>
+                    <div class="col-sm-2 form-text">
+                        <?php echo printPrice($grosstotal,2); ?> €
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Gesamt Ertrag</label>
+                        <label for="" class="col-sm-1 control-label">Netto</label>
+                        <div class="col-sm-2 form-text">
+                            <?php echo printPrice($profit,2); ?> €
+                        </div>
+                        <label for="" class="col-sm-1 control-label">in %</label>
+                        <div class="col-sm-2 form-text">
+                            %
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -199,6 +211,20 @@ if ($_REQUEST["stat_article"]) {
             "ordering": false,
             "order": [],
             "paging": false,
+            "tableTools": {
+                "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                    "copy",
+                    "csv",
+                    "xls",
+                    {
+                        "sExtends": "pdf",
+                        "sPdfOrientation": "landscape",
+                        "sPdfMessage": "Contilas - Businesscontacts"
+                    },
+                    "print"
+                ]
+            },
             "language": {
                 "emptyTable": "Keine Daten vorhanden",
                 "info": "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
