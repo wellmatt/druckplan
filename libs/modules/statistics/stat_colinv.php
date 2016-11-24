@@ -569,6 +569,3 @@ if ($_REQUEST["stat_article"]) {
         });
     });
 </script>
-{$order->getDeliverydate()
-"<? echo date('d.m.Y', $order); ?>
-}

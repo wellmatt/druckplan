@@ -1,8 +1,6 @@
 <?php
 
 
-//$aColumns = array( 'crtdate', 'number','suppliername', 'title',  'netto', 'brutto' );
-
 class Statistics {
     /**
      * @param $timestamp
@@ -324,7 +322,65 @@ class Statistics {
         return $retval;
     }
 
+    /**
+     * @param $timestamp
+     * @param $businesscontact
+     * @param $user
+     * @param $article
+     * @param $tradegroup
+     * @param $status
+     * @return CollectiveInvoice[]
+     */
+    public static function ColinvCust($timestamp, $businesscontact, $user, $article, $tradegroup, $status )
+    {
+        global $DB;
+        date_default_timezone_set('Europe/Berlin');
+        $retval = [];
 
+        $where = "";
+        if ($businesscontact != 0 && $businesscontact != NULL){
+            $where .= " AND businesscontact.id = {$businesscontact} ";
+        }
+        if ($user != 0 && $user != NULL){
+            $where .= " AND `user`.id = {$user} ";
+        }
+        if ($article != 0 && $article != NULL){
+            $where .= " AND article.id = {$article} ";
+        }
+        if ($tradegroup != 0 && $tradegroup != NULL){
+            $where .= " AND tradegroup.id = {$tradegroup} ";
+        }
+        if ($status != 0 && $status != NULL){
+            $where .= " AND collectiveinvoice.`status` = {$status} ";
+        }
+
+        $start = mktime(0, 0, 0, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
+        $end = mktime(23, 59, 59, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp));
+
+        $sql = "SELECT DISTINCT
+                collectiveinvoice.id
+                FROM
+                collectiveinvoice
+                LEFT JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+                LEFT JOIN collectiveinvoice_orderposition ON collectiveinvoice.id = collectiveinvoice_orderposition.collectiveinvoice
+                LEFT JOIN `user` ON collectiveinvoice.crtuser = `user`.id
+                LEFT JOIN article ON collectiveinvoice_orderposition.object_id = article.id
+                LEFT JOIN tradegroup ON article.tradegroup = tradegroup.id
+                WHERE collectiveinvoice_orderposition.type IN (2,1)
+                AND collectiveinvoice_orderposition.`status` = 1
+                AND collectiveinvoice.`status` > 0
+                AND collectiveinvoice.crtdate >= {$start}
+                AND collectiveinvoice.crtdate <= {$end}
+                {$where}
+                ";
+
+        if ($DB->no_result($sql)) {
+            foreach($DB->select($sql) as $r){
+                $retval[] = new CollectiveInvoice($r["id"]);
+            }
+        }
+        return $retval;
+    }
 
 
 
