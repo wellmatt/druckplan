@@ -579,23 +579,6 @@ echo $quickmove->generate();
 	<br/>
 	<input	type="hidden" name="count_quantity" id="count_quantity"
 			value="<? if(count($all_items) > 0) echo count($all_items); else echo "1";?>">
-	<div class="panel panel-default">
-		  <div class="panel-heading">
-				<h3 class="panel-title">
-					Eingabefelder
-					<span class="pull-right">
-						<button class="btn btn-xs btn-success" onclick="addItemRow()"
-							<span class="glyphicons glyphicons-plus"></span>
-							<?= $_LANG->get('Feld hinzuf&uuml;gen') ?>
-						</button>
-					</span>
-				</h3>
-		  </div>
-		  <div class="panel-body">
-				Panel body
-		  </div>
-	</div>
-
 	<div class="box1">
 		<table id="table-items">
 			<colgroup>

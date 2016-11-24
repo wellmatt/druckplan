@@ -147,7 +147,7 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 		                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$task->getId()?>"><span class="glyphicons glyphicons-pencil" title="<?=$_LANG->get('Bearbeiten')?>"></span></a>
 						&ensp;
 		                <a href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete&delid=<?=$task->getId()?>')"
-		                	><span class="glyphicons glyphicons-remove" title="<?=$_LANG->get('Entfernen')?>"></span></a>
+		                	><span class="glyphicons glyphicons-remove" style="color: red;" title="<?=$_LANG->get('Entfernen')?>"></span></a>
 	            	</td>
 				</tr>
 				<? $x++;

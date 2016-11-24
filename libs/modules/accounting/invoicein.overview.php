@@ -6,8 +6,12 @@
  *  * Written by Christian Schroeer <cschroeer@ipactor.de>, 2016
  *
  */
+require_once 'libs/modules/accounting/invoicein.class.php';
 
-
+if ($_REQUEST["exec"] == "delete"){
+    $invoicein = new InvoiceIn((int)$_REQUEST["id"]);
+    $invoicein->delete();
+}
 
 ?>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">

@@ -36,8 +36,8 @@ $lists = MarketingList::getAllLists();
 <?php // Qickmove generation
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
-$quickmove->addItem('Zurück','index.php?page=libs/modules/marketing/marketing.overview.php&list='.$_REQUEST['list'].'',null,'glyphicon-step-backward');
 $quickmove->addItem('Als Kopie speichern','#',"$('#entry_id').val(0); $('#marketing_job_form').submit();",'glyphicon-floppy-disk');
+$quickmove->addItem('Zurück','index.php?page=libs/modules/marketing/marketing.overview.php&list='.$_REQUEST['list'].'',null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#marketing_job_form').submit();",'glyphicon-floppy-disk');
 if ($marketingjob->getId()>0){
     $quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$marketingjob->getId()."');", 'glyphicon-trash', true);

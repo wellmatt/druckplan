@@ -52,7 +52,6 @@ echo $quickmove->generate();
 	<div class="panel panel-default">
 		  <div class="panel-heading">
 				<h3 class="panel-title">
-					<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 					<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Serienbrief erstellen')?>
 					<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Serienbrief bearbeiten')?>
 					<span class="pull-right"><?=$savemsg?></span>
@@ -62,21 +61,21 @@ echo $quickmove->generate();
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Titel</label>
-					<div class="col-sm-10">
+					<div class="col-sm-5">
 						<input id="bulk_title" name="bulk_title" type="text" class="form-control" value="<?=$bulk->getTitle()?>" >
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Text</label>
-					<div class="col-sm-10">
+					<div class="col-sm-5">
 						<textarea id="bulk_text" name="bulk_text" type="text" class="form-control" ><?=$bulk->getText()?></textarea>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Kunden-Filter</label>
-					<div class="col-sm-10">
+					<div class="col-sm-5">
 						<div class="input-group">
 							<select name="bulk_filter" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 								<option value="0" <? if($bulk->getCustomerFilter()==0) echo "selected";?>><?=$_LANG->get('Interessent')?></option>
@@ -91,7 +90,7 @@ echo $quickmove->generate();
 
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Kunden-Merkmale</label>
-					<div class="col-sm-10">
+					<div class="col-sm-5">
 						<? if (count($bulk->getCustomerAttrib()) > 0) { foreach ($bulk->getCustomerAttrib() as $attrib){
 							$tmp_expl_attrib = explode(",",$attrib);?>
 							<select name="filter_attrib[]" type="text" class="form-control"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
@@ -125,26 +124,26 @@ echo $quickmove->generate();
 
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Erstellt von</label>
-						<div class="col-sm-10 form-text">
+						<div class="col-sm-5 form-text">
 							<?if($bulk->getCrt_user()->getId() > 0) echo $bulk->getCrt_user()->getNameAsLine()?>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Erstellt am</label>
-						<div class="col-sm-10 form-text">
+						<div class="col-sm-5 form-text">
 							<?if($bulk->getCrt_date() > 0) echo date('d.m.Y - H:i:s',$bulk->getCrt_date())?>
 						</div>
 					</div>
 					<?if($bulk->getUpd_user()->getId() > 0){?>
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Bearbeitet von</label>
-							<div class="col-sm-10 form-text">
+							<div class="col-sm-5 form-text">
 								<?=$bulk->getUpd_user()->getNameAsLine()?>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Bearbeitet am</label>
-							<div class="col-sm-10 form-text">
+							<div class="col-sm-5 form-text">
 								<?if($bulk->getUpd_date() > 0) echo date('d.m.Y - H:i:s',$bulk->getUpd_date())?>
 							</div>
 						</div>

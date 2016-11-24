@@ -12,13 +12,8 @@ require_once 'libs/modules/machines/machinegroup.class.php';
 require_once 'libs/modules/machines/machine.class.php';
 require_once 'libs/modules/planning/planning.job.class.php';
 
-$stat_mgroup = 0;
-$stat_mclass = 0;
-$stat_mjobs = 0;
-
 $start = mktime(0, 0, 0, date('m', time()), 1, date('Y', time()));
 $end = mktime(0, 0, 0, date('m', time()), cal_days_in_month(CAL_GREGORIAN, date('m', time()), date('Y', time())), date('Y', time()));
-
 
 if ($_REQUEST["stat_from"]) {
     $start = strtotime($_REQUEST["stat_from"]);
@@ -26,21 +21,28 @@ if ($_REQUEST["stat_from"]) {
 if ($_REQUEST["stat_to"]) {
     $end = strtotime($_REQUEST["stat_to"]);
 }
+if ($_REQUEST["stat_mid"]) {
+    $stat_mid = $_REQUEST["stat_mid"];
+}
+if ($_REQUEST["stat_mname"]) {
+    $stat_mname = $_REQUEST["stat_mname"];
+}
+if ($_REQUEST["stat_mtactual"]) {
+    $stat_mtactual = $_REQUEST["stat_mtactual"];
+}
+
+if ($_REQUEST["stat_mplanned"]) {
+    $stat_mplanned = $_REQUEST["stat_mplanned"];
+}
+if ($_REQUEST["stat_ccount"]) {
+    $stat_ccount = $_REQUEST["stat_ccount"];
+}
 if ($_REQUEST["stat_mgroup"]) {
     $stat_mgroup = $_REQUEST["stat_mgroup"];
 }
-if ($_REQUEST["stat_mclass"]) {
-    $stat_mclass = $_REQUEST["stat_mclass"];
-}
 
-if ($_REQUEST["stat_mjobs"]) {
-    $stat_mjobs = $_REQUEST["stat_mjobs"];
-}
+$machstats = Statistics::Maschstat($start, $end, $stat_mid, $stat_mname, $stat_mtactual, $stat_mplanned, $stat_ccount, $stat_mgroup);
 
-$machstats = Statistics::Maschstat($start, $end, $stat_mgroup);
-$mgroups = MachineGroup::getAllMachineGroups();
-$mclass = Machine::getAllMachines();
-$mjobs = PlanningJob ::getAllJobs();
 ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -93,7 +95,7 @@ $mjobs = PlanningJob ::getAllJobs();
                                             <select name="stat_mgroup" id="stat_mgroup" class="form-control">
                                                 <option value="0">- Alle -</option>
                                                 <?php
-                                                foreach ($mgroups as $item) {
+                                                foreach ($mgroup as $item) {
                                                     if ($item->getId() == $stat_mgroup){
                                                         echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
                                                     } else {
@@ -122,20 +124,17 @@ $mjobs = PlanningJob ::getAllJobs();
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($mjobs as $mjob) {?>
-                                <?php foreach ($mclass as $item) {?>
+                                <?php foreach ($machstats as $item) {?>
                                     <tr>
                                         <td><?php echo $item->getID();?></td>
                                         <td><?php echo $item->getName();?></td>
-                                        <td><?php echo $mjob->getTplanned();?></td>
-                                        <td><?php echo $mjob->getTactual();?></td>
+                                        <td><?php echo $item->getTplanned();?></td>
+                                        <td><?php echo $item->getTactual();?></td>
                                         <td></td>
                                         <td></td>
                                       </tr>
                                 <?php
                                 }
-                            } ?>
-                            <?php
                             echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="highlight"><b>Gesamt Summe:</b></td><td>' .printPrice($nettotal,2). '</td><td></td></tr>';
                             ?>
                             </tbody>

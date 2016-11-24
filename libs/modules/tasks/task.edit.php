@@ -37,9 +37,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "images/icons/calendar-blue.png",
-                buttonImageOnly: true,
+//                showOn: "button",
+//                buttonImage: "images/icons/calendar-blue.png",
+//                buttonImageOnly: true,
                 onSelect: function(selectedDate) {
                     checkDate(selectedDate);
                 }
@@ -50,7 +50,6 @@ $(function() {
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				<img src="<?=$_MENU->getIcon($_REQUEST['page'])?>">
 				<?if ($_REQUEST["exec"] == "new")  echo $_LANG->get('Aufgabe erstellen')?>
 				<?if ($_REQUEST["exec"] == "edit")  echo $_LANG->get('Aufgabe bearbeiten')?>
 				</td>

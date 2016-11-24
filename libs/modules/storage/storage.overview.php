@@ -30,6 +30,7 @@ if ($_REQUEST["exec"] == "delete"){
                      <?= $savemsg ?>
                     <button class="btn btn-xs btn-success"
                             onclick="document.location. href='index.php?page=libs/modules/storage/storage.article.summary.php';">
+                        <span class="glyphicons glyphicons-search"></span>
                     <?= $_LANG->get('Lagerartikel anzeigen') ?>
                     </button>
                     <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/storage/storage.edit.php&exec=new';">
