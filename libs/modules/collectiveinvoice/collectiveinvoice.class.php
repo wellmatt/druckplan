@@ -339,7 +339,7 @@ class CollectiveInvoice{
 			$profit = 0.0;
 			$orderpositions = Orderposition::getAllOrderposition($this->getId());
 			foreach ($orderpositions as $orderposition) {
-				$profit += $orderposition->getProfit();
+				$profit += ($orderposition->getProfit()/100);
 			}
 			return $profit;
 		} else {
@@ -347,7 +347,9 @@ class CollectiveInvoice{
 		}
 	}
 
-	
+
+
+
 	static function getAllCustomerWithColInvs(){
 	    global $DB;
 	    $retval = Array();
