@@ -782,6 +782,12 @@ class CollectiveInvoice{
 		$sum = 0;
 		$mypositions = Orderposition::getAllOrderposition($this->getId());
 		foreach ($mypositions as $myposition) {
+			if ($myposition->getType() == 0){
+				$sum += $myposition->getNetto();
+			}
+			if ($myposition->getType() == 1){
+				$sum += $myposition->getNetto();
+			}
 			if ($myposition->getType() == 2){
 				$sum += $myposition->getNetto();
 			}
@@ -799,6 +805,12 @@ class CollectiveInvoice{
 		$mypositions = Orderposition::getAllOrderposition($this->getId());
 		foreach ($mypositions as $myposition) {
 			if ($myposition->getType() == 2){
+				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
+			}
+			if ($myposition->getType() == 1){
+				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
+			}
+			if ($myposition->getType() == 0){
 				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
 			}
 		}

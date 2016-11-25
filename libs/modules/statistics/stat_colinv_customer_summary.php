@@ -168,11 +168,12 @@ if ($_REQUEST["stat_article"]) {
                                 echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
                                 echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
                                 echo "<td>" .printPrice($item->getMyProfit(),2). "</td>";
-                                echo "<td></td>";
+                                echo "<td>" .printPrice($item->getMyProfit() * 100 / $item->getTotalNetSum(),2). "</td>";
                                 echo '</tr>';
                                 $nettotal += $item->getTotalNetSum();
                                 $grosstotal += $item->getTotalGrossSum();
                                 $profit += $item->getMyProfit();
+                                $profit1 = $profit * 100 / $item->getTotalNetSum();
                             }
                         }
                     }
@@ -197,7 +198,7 @@ if ($_REQUEST["stat_article"]) {
                         </div>
                         <label for="" class="col-sm-1 control-label">in %</label>
                         <div class="col-sm-2 form-text">
-                            %
+                            <?php echo printPrice($profit1,2); ?> %
                         </div>
                     </div>
             </div>

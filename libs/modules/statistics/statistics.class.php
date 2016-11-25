@@ -366,7 +366,7 @@ class Statistics {
                 LEFT JOIN `user` ON collectiveinvoice.crtuser = `user`.id
                 LEFT JOIN article ON collectiveinvoice_orderposition.object_id = article.id
                 LEFT JOIN tradegroup ON article.tradegroup = tradegroup.id
-                WHERE collectiveinvoice_orderposition.type IN (2,1)
+                WHERE collectiveinvoice_orderposition.type IN (2,1,0)
                 AND collectiveinvoice_orderposition.`status` = 1
                 AND collectiveinvoice.`status` > 0
                 AND collectiveinvoice.crtdate >= {$start}
