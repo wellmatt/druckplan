@@ -576,29 +576,36 @@ echo $quickmove->generate();
 	<br>
 
 	<? // --------------- Eingabefelder -------------------------------------------------------- ?>
-	<br/>
-	<input	type="hidden" name="count_quantity" id="count_quantity"
-			value="<? if(count($all_items) > 0) echo count($all_items); else echo "1";?>">
+<br/>
+<input	type="hidden" name="count_quantity" id="count_quantity"
+		  value="<? if(count($all_items) > 0) echo count($all_items); else echo "1";?>">
+
+	<h1>
+		<?=$_LANG->get('Eingabefelder')?>
+		&emsp; &emsp;
+		<img src="images/icons/plus.png" class="pointer icon-link" onclick="addItemRow()"
+			 alt="Feld hinzuf&uuml;gen" title="Feld hinzuf&uuml;gen">
+	</h1>
 	<div class="box1">
 		<table id="table-items">
 			<colgroup>
-			    <col width="32">
-	        	<col width="220">
-	        	<col width="60">
-	        	<col width="150">		<? // x/y-Position ?>
-	        	<col width="150">
-	        	<col width="90">
-	        	<col width="60">		<? // Text-Ausrichtung ?>
-	        	<col width="80">
-	        	<col width="100">
-	        	<col width="150">
-	        	<col width="100">
-	        	<col>
-	        	<col>
-	        	<col>
-	    	</colgroup>
+				<col width="32">
+				<col width="220">
+				<col width="60">
+				<col width="150">		<? // x/y-Position ?>
+				<col width="150">
+				<col width="90">
+				<col width="60">		<? // Text-Ausrichtung ?>
+				<col width="80">
+				<col width="100">
+				<col width="150">
+				<col width="100">
+				<col>
+				<col>
+				<col>
+			</colgroup>
 			<tr>
-			    <td class="content_row_header">&nbsp;</td>
+				<td class="content_row_header">&nbsp;</td>
 				<td class="content_row_header"><?=$_LANG->get('Titel')?> / <?=$_LANG->get('Platzhalter')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Schrift- gr&ouml;&szlig;e')?></td>
 				<td class="content_row_header"><?=$_LANG->get('x-Position')?>** / <?=$_LANG->get('y-Position')?>**</td>
@@ -616,146 +623,146 @@ echo $quickmove->generate();
 				<td class="content_row_header"><?=$_LANG->get('R.O.')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
 			</tr>
-		<? 	
-		if (count($all_items) > 0 && $all_items != FALSE){
-			$y=1;
-			foreach ($all_items as $item){ $item->getXposAbsolute();?>
-				<tr>
-					<td class="content_row">
-					    <input type="number" name="item_sort_<?=$y?>" value="<?=$item->getSort()?>" style="width: 30px"/>
-					</td>
-					<td class="content_row">
-						<input type="hidden" name="item_id_<?=$y?>" value="<?=$item->getId()?>">
-						<input 	name="item_title_<?=$y?>" class="text" type="text"
-								value ="<?=$item->getTitle()?>" style="width: 200px">
-					</td>
-					<td class="content_row">
-						<input 	name="item_textsize_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getTextsize(), 1)?>" style="width: 50px">
-					</td>
-					<td class="content_row">
-						<input 	name="item_xpos_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getXpos(), 3)?>" style="width: 50px">
-						x
-						<input 	name="item_ypos_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getYpos(), 3)?>" style="width: 50px"> mm
-					</td>
-					<td class="content_row">
-						<input 	name="item_width_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getWidth(), 3)?>" style="width: 50px">
-						x
-						<input 	name="item_height_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getHeight(), 3)?>" style="width: 50px"> mm
-					</td>
-					<td class="content_row">
-						<input 	name="item_tab_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getTab(), 2)?>" style="width: 50px">mm
-					</td>
-					<td class="content_row">
-						<select name="item_boxtype_<?=$y?>" class="text" style="width: 80px">
-							<option value="1" <?if($item->getBoxtype()==1) echo "selected";?>> <?=$_LANG->get('Textfeld');?></option>
-							<option value="2" <?if($item->getBoxtype()==2) echo "selected";?>> <?=$_LANG->get('Textbox');?> </option>
-						</select>
-					</td>
-					<td class="content_row">
-						<select name="item_justification_<?=$y?>" class="text" style="width: 70px">
-							<option value="0" <?if($item->getJustification()==0) echo "selected";?>> <?=$_LANG->get('links');?></option>
-							<option value="1" <?if($item->getJustification()==1) echo "selected";?>> <?=$_LANG->get('zentral');?></option>
-							<option value="2" <?if($item->getJustification()==2) echo "selected";?>> <?=$_LANG->get('rechts');?> </option>
-						</select>
-					</td>
-					<td class="content_row">
+			<?
+			if (count($all_items) > 0 && $all_items != FALSE){
+				$y=1;
+				foreach ($all_items as $item){ $item->getXposAbsolute();?>
+					<tr>
+						<td class="content_row">
+							<input type="number" name="item_sort_<?=$y?>" value="<?=$item->getSort()?>" style="width: 30px"/>
+						</td>
+						<td class="content_row">
+							<input type="hidden" name="item_id_<?=$y?>" value="<?=$item->getId()?>">
+							<input 	name="item_title_<?=$y?>" class="text" type="text"
+									  value ="<?=$item->getTitle()?>" style="width: 200px">
+						</td>
+						<td class="content_row">
+							<input 	name="item_textsize_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getTextsize(), 1)?>" style="width: 50px">
+						</td>
+						<td class="content_row">
+							<input 	name="item_xpos_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getXpos(), 3)?>" style="width: 50px">
+							x
+							<input 	name="item_ypos_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getYpos(), 3)?>" style="width: 50px"> mm
+						</td>
+						<td class="content_row">
+							<input 	name="item_width_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getWidth(), 3)?>" style="width: 50px">
+							x
+							<input 	name="item_height_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getHeight(), 3)?>" style="width: 50px"> mm
+						</td>
+						<td class="content_row">
+							<input 	name="item_tab_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getTab(), 2)?>" style="width: 50px">mm
+						</td>
+						<td class="content_row">
+							<select name="item_boxtype_<?=$y?>" class="text" style="width: 80px">
+								<option value="1" <?if($item->getBoxtype()==1) echo "selected";?>> <?=$_LANG->get('Textfeld');?></option>
+								<option value="2" <?if($item->getBoxtype()==2) echo "selected";?>> <?=$_LANG->get('Textbox');?> </option>
+							</select>
+						</td>
+						<td class="content_row">
+							<select name="item_justification_<?=$y?>" class="text" style="width: 70px">
+								<option value="0" <?if($item->getJustification()==0) echo "selected";?>> <?=$_LANG->get('links');?></option>
+								<option value="1" <?if($item->getJustification()==1) echo "selected";?>> <?=$_LANG->get('zentral');?></option>
+								<option value="2" <?if($item->getJustification()==2) echo "selected";?>> <?=$_LANG->get('rechts');?> </option>
+							</select>
+						</td>
+						<td class="content_row">
 							<? /**************** Anpassungen immer auch in der JavaScript-Funktion machen !  ****************?>
-						<select name="item_font_<?=$y?>" class="text" style="width: 100px">
+							<select name="item_font_<?=$y?>" class="text" style="width: 100px">
 							<option value="2" <?if($item->getFont()==2) echo "selected";?>> <?=$_LANG->get('Courier');?></option>
 							<option value="3" <?if($item->getFont()==3) echo "selected";?>> <?=$_LANG->get('Helvetica');?></option>
 							<option value="4" <?if($item->getFont()==4) echo "selected";?>> <?=$_LANG->get('Times-Roman');?> </option>
 							<option value="5" <?if($item->getFont()==5) echo "selected";?>> <?=$_LANG->get('Trade Gothic');?> </option>
 							<option value="6" <?if($item->getFont()==6) echo "selected";?>> <?=$_LANG->get('Frutiger');?> </option>
 							<option value="99" <?if($item->getFont()==99) echo "selected";?>> <?=$_LANG->get('Symbol');?> </option>
-						</select>
-						***/?>
-						<select name="item_font_<?=$y?>" class="text" style="width: 100px">
-						<?	foreach ($all_fonts AS $font){ ?>
-								<option value="<?=$font->getId()?>" <?if($item->getFont() == $font->getId()) echo 'selected="selected"';?>
-										> <?=$font->getTitle();?> </option>
-						<?	} ?>
-						</select>
-					</td>
-					<td class="content_row" align="center">
-						<input 	name="item_spacing_<?=$y?>" class="text" type="text"
-								value ="<?=printPrice($item->getSpacing(),1)?>" style="width: 50px">
-					</td>
-					<td class="content_row">
-						<input 	name="item_color_c_<?=$y?>" class="text" type="text"
-								value ="<?=$item->getColor_c()?>" style="width: 30px">
-						<input 	name="item_color_m_<?=$y?>" class="text" type="text"
-								value ="<?=$item->getColor_m()?>" style="width: 30px">
-						<input 	name="item_color_y_<?=$y?>" class="text" type="text"
-								value ="<?=$item->getColor_y()?>" style="width: 30px">
-						<input 	name="item_color_k_<?=$y?>" class="text" type="text"
-								value ="<?=$item->getColor_k()?>" style="width: 30px">
-					</td>
-					<td class="content_row">
-						<select name="item_dependency_<?=$y?>" class="text" style="width: 100px">
-							<option value="0" <?if($item->getDependencyID() == 0) echo 'selected="selected"';?>
-									> <?=$_LANG->get('Fix');?></option>
-						<?	foreach ($all_items AS $dep_item){
-								if($dep_item->getId() != $item->getId()){?>
-									<option value="<?=$dep_item->getId()?>" <?if($item->getDependencyID() == $dep_item->getId()) echo 'selected="selected"';?>
-									> <?=$dep_item->getTitle();?></option> 	
-						<?		}
-							}?>
-						</select>
-					</td>
-					<td class="content_row">
-						<select name="item_group_<?=$y?>" class="text" style="width: 100px">
-							<option value="0" <?if($item->getGroup() == 0) echo 'selected="selected"';?>>A</option>
-							<option value="1" <?if($item->getGroup() == 1) echo 'selected="selected"';?>>B</option>
-							<option value="2" <?if($item->getGroup() == 2) echo 'selected="selected"';?>>C</option>
-							<option value="3" <?if($item->getGroup() == 3) echo 'selected="selected"';?>>D</option>
-							<option value="4" <?if($item->getGroup() == 4) echo 'selected="selected"';?>>E</option>
-							<option value="5" <?if($item->getGroup() == 5) echo 'selected="selected"';?>>F</option>
-							<option value="6" <?if($item->getGroup() == 6) echo 'selected="selected"';?>>G</option>
-							<option value="7" <?if($item->getGroup() == 7) echo 'selected="selected"';?>>H</option>
-							<option value="8" <?if($item->getGroup() == 8) echo 'selected="selected"';?>>I</option>
-							<option value="9" <?if($item->getGroup() == 9) echo 'selected="selected"';?>>J</option>
-							<option value="10" <?if($item->getGroup() == 10) echo 'selected="selected"';?>>K</option>
-							<option value="11" <?if($item->getGroup() == 11) echo 'selected="selected"';?>>L</option>
-							<option value="12" <?if($item->getGroup() == 12) echo 'selected="selected"';?>>M</option>
-							<option value="13" <?if($item->getGroup() == 13) echo 'selected="selected"';?>>N</option>
-							<option value="14" <?if($item->getGroup() == 14) echo 'selected="selected"';?>>O</option>
-						</select>
-					</td>
-					<td class="content_row">
-						<input type="checkbox" name="item_site_<?=$y?>" value="1" 
+							</select>
+							 ***/?>
+							<select name="item_font_<?=$y?>" class="text" style="width: 100px">
+								<?	foreach ($all_fonts AS $font){ ?>
+									<option value="<?=$font->getId()?>" <?if($item->getFont() == $font->getId()) echo 'selected="selected"';?>
+									> <?=$font->getTitle();?> </option>
+								<?	} ?>
+							</select>
+						</td>
+						<td class="content_row" align="center">
+							<input 	name="item_spacing_<?=$y?>" class="text" type="text"
+									  value ="<?=printPrice($item->getSpacing(),1)?>" style="width: 50px">
+						</td>
+						<td class="content_row">
+							<input 	name="item_color_c_<?=$y?>" class="text" type="text"
+									  value ="<?=$item->getColor_c()?>" style="width: 30px">
+							<input 	name="item_color_m_<?=$y?>" class="text" type="text"
+									  value ="<?=$item->getColor_m()?>" style="width: 30px">
+							<input 	name="item_color_y_<?=$y?>" class="text" type="text"
+									  value ="<?=$item->getColor_y()?>" style="width: 30px">
+							<input 	name="item_color_k_<?=$y?>" class="text" type="text"
+									  value ="<?=$item->getColor_k()?>" style="width: 30px">
+						</td>
+						<td class="content_row">
+							<select name="item_dependency_<?=$y?>" class="text" style="width: 100px">
+								<option value="0" <?if($item->getDependencyID() == 0) echo 'selected="selected"';?>
+								> <?=$_LANG->get('Fix');?></option>
+								<?	foreach ($all_items AS $dep_item){
+									if($dep_item->getId() != $item->getId()){?>
+										<option value="<?=$dep_item->getId()?>" <?if($item->getDependencyID() == $dep_item->getId()) echo 'selected="selected"';?>
+										> <?=$dep_item->getTitle();?></option>
+									<?		}
+								}?>
+							</select>
+						</td>
+						<td class="content_row">
+							<select name="item_group_<?=$y?>" class="text" style="width: 100px">
+								<option value="0" <?if($item->getGroup() == 0) echo 'selected="selected"';?>>A</option>
+								<option value="1" <?if($item->getGroup() == 1) echo 'selected="selected"';?>>B</option>
+								<option value="2" <?if($item->getGroup() == 2) echo 'selected="selected"';?>>C</option>
+								<option value="3" <?if($item->getGroup() == 3) echo 'selected="selected"';?>>D</option>
+								<option value="4" <?if($item->getGroup() == 4) echo 'selected="selected"';?>>E</option>
+								<option value="5" <?if($item->getGroup() == 5) echo 'selected="selected"';?>>F</option>
+								<option value="6" <?if($item->getGroup() == 6) echo 'selected="selected"';?>>G</option>
+								<option value="7" <?if($item->getGroup() == 7) echo 'selected="selected"';?>>H</option>
+								<option value="8" <?if($item->getGroup() == 8) echo 'selected="selected"';?>>I</option>
+								<option value="9" <?if($item->getGroup() == 9) echo 'selected="selected"';?>>J</option>
+								<option value="10" <?if($item->getGroup() == 10) echo 'selected="selected"';?>>K</option>
+								<option value="11" <?if($item->getGroup() == 11) echo 'selected="selected"';?>>L</option>
+								<option value="12" <?if($item->getGroup() == 12) echo 'selected="selected"';?>>M</option>
+								<option value="13" <?if($item->getGroup() == 13) echo 'selected="selected"';?>>N</option>
+								<option value="14" <?if($item->getGroup() == 14) echo 'selected="selected"';?>>O</option>
+							</select>
+						</td>
+						<td class="content_row">
+							<input type="checkbox" name="item_site_<?=$y?>" value="1"
 								<?if($item->getReverse() == 1) echo 'checked="checked"';?>/>
-					</td>
-					<td class="content_row">
-						<input type="checkbox" name="item_predefined_<?=$y?>" value="1" 
+						</td>
+						<td class="content_row">
+							<input type="checkbox" name="item_predefined_<?=$y?>" value="1"
 								<?if($item->getPreDefined() == 1) echo 'checked="checked"';?>/>
-					</td>
-					<td class="content_row">
-						<input type="checkbox" name="item_readonly_<?=$y?>" value="1" 
+						</td>
+						<td class="content_row">
+							<input type="checkbox" name="item_readonly_<?=$y?>" value="1"
 								<?if($item->getReadOnly() == 1) echo 'checked="checked"';?>/>
-					</td>
-					<td class="content_row">
-						<input type="checkbox" name="item_position_<?=$y?>" value="1" 
+						</td>
+						<td class="content_row">
+							<input type="checkbox" name="item_position_<?=$y?>" value="1"
 								<?if($item->getPosition() == 1) echo 'checked="checked"';?>/>
-					</td>
-				</tr>
-		<? 	$y++;
-			} 	
-		} else { ?>
-			<tr class="<?=getRowColor(0)?>"><td class="content_row" colspan="8" id="td_empty" align="center"><?=$_LANG->get('Keine Felder angelegt');?></td></tr>
-	<?	} ?>
+						</td>
+					</tr>
+					<? 	$y++;
+				}
+			} else { ?>
+				<tr class="<?=getRowColor(0)?>"><td class="content_row" colspan="8" id="td_empty" align="center"><?=$_LANG->get('Keine Felder angelegt');?></td></tr>
+			<?	} ?>
 		</table>
 		<br/>
 		* <?=$_LANG->get('Eingabefeld wird gel&ouml;scht, falls Breite u. H&ouml;he = 0')?> <br/>
 		** <?=$_LANG->get('x- und y-Position ausgehend von der LINKEN OBEREN Ecke (PDF) + Anschnitt')?><br/>
 		*** <?=$_LANG->get('Textausrichtung in den Eingabefeldern ist immer UNTEN LINKS')?>
 	</div>
-	<br/>
+<br/>
 	<? // ---------------------------------------- Preisstaffeln ----------------------------------------------------------------------- ?>
 	<input 	type="hidden" name="count_sep_quantity" id="count_sep_quantity" 
 			value="<? if(count($allprices) > 0) echo count($allprices); else echo "1";?>">
