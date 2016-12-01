@@ -417,7 +417,7 @@ class Statistics {
 
         if ($DB->no_result($sql)) {
             foreach($DB->select($sql) as $r){
-                $retval[] = $r;
+                $retval[] = new Article($r["id"]);
             }
         }
         return $retval;
