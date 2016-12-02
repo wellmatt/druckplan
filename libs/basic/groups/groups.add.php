@@ -240,11 +240,6 @@ echo $quickmove->generate();
                   <div class="panel-body">
                       <div class="table-responsive">
                           <table class="table table-hover">
-                              <colgroup>
-                                  <col width="150">
-                                  <col>
-                                  <col width="60">
-                              </colgroup>
                               <tr>
                                   <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
                                   <td class="content_row_header"><?=$_LANG->get('Voller Name')?></td>
@@ -260,7 +255,9 @@ echo $quickmove->generate();
                                       </tr>
                                   <?}}?>
                               <tr>
-                                  <td class="content_header" colspan="2"><?=$_LANG->get('Verf&uuml;gbare Benutzer')?></td>
+                                  <td class="content_header"><?=$_LANG->get('Verf&uuml;gbare Benutzer')?></td>
+                                  <td></td>
+                                  <td></td>
                               </tr>
                               <tr>
                                   <td class="content_row_header"><?=$_LANG->get('Benutzername')?></td>
