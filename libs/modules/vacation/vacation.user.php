@@ -57,11 +57,11 @@ echo $quickmove->generate();
     <input type="hidden" name="exec" value="save">
 
     <div class="panel panel-default">
-          <div class="panel-heading">
-                <h3 class="panel-title">
-                    Benutzer
-                </h3>
-          </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Benutzer
+            </h3>
+        </div>
         <div class="panel-body">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -70,35 +70,20 @@ echo $quickmove->generate();
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <div class="panel panel-default">
-                    	  <div class="panel-heading">
-                    			<h3 class="panel-title">
-                                   Filter
-                                </h3>
-                    	  </div>
-                    	  <div class="panel-body">
-                              <div class="form-group">
-                                  <label for="" class="col-sm-1 control-label">Suche</label>
-                                  <div class="col-sm-3">
-                                      <input type="text" id="search" class="form-control" placeholder="">
-                                  </div>
-                              </div>
-                    	  </div>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover" id="vac">
                             <thead>
                             <tr>
-                                <td><?=$_LANG->get('ID')?></td>
-                                <td><?=$_LANG->get('Name')?></td>
-                                <td><?=$_LANG->get('Tage/Jahr')?></td>
-                                <td><?=$_LANG->get('Tage übernommen')?></td>
-                                <td><?=$_LANG->get('Gasamt verf.')?></td>
-                                <td><?=$_LANG->get('Urlaub')?></td>
-                                <td><?=$_LANG->get('Überstunden')?></td>
-                                <td><?=$_LANG->get('Krankheit')?></td>
-                                <td><?=$_LANG->get('Sonstiges')?></td>
-                                <td><?=$_LANG->get('verbleibend')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('ID')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Name')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Tage/Jahr')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Tage übernommen')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Gasamt verf.')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Urlaub')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Überstunden')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Krankheit')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('Sonstiges')?></td>
+                                <td class="content_row_header"><?=$_LANG->get('verbleibend')?></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -171,16 +156,16 @@ echo $quickmove->generate();
                     <div class="table-responsive">
                         <table class="table table-hover" id="vacs">
                             <thead>
-                                <tr>
-                                    <th><?=$_LANG->get('ID')?></th>
-                                    <th><?=$_LANG->get('Benutzer')?></th>
-                                    <th><?=$_LANG->get('Tage')?></th>
-                                    <th><?=$_LANG->get('Von')?></th>
-                                    <th><?=$_LANG->get('Bis')?></th>
-                                    <th><?=$_LANG->get('Status')?></th>
-                                    <th><?=$_LANG->get('Typ')?></th>
-                                    <th><?=$_LANG->get('Kommentar')?></th>
-                                </tr>
+                            <tr>
+                                <th><?=$_LANG->get('ID')?></th>
+                                <th><?=$_LANG->get('Benutzer')?></th>
+                                <th><?=$_LANG->get('Tage')?></th>
+                                <th><?=$_LANG->get('Von')?></th>
+                                <th><?=$_LANG->get('Bis')?></th>
+                                <th><?=$_LANG->get('Status')?></th>
+                                <th><?=$_LANG->get('Typ')?></th>
+                                <th><?=$_LANG->get('Kommentar')?></th>
+                            </tr>
                             </thead>
                             <tbody>
                             <?php
@@ -216,80 +201,6 @@ echo $quickmove->generate();
         </div>
     </div>
 </form>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        var vac_table = $('#vac').DataTable( {
-            // "scrollY": "600px",
-            "processing": true,
-            "bServerSide": true,
-            "sAjaxSource": "libs/modules/vacation/vacation.ajax.php",
-            "paging": true,
-            "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
-            "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">lrtip',
-            "tableTools": {
-                "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
-                "aButtons": [
-                    "copy",
-                    "csv",
-                    "xls",
-                    {
-                        "sExtends": "pdf",
-                        "sPdfOrientation": "landscape",
-                        "sPdfMessage": "Contilas - Ansprechpartner"
-                    },
-                    "print"
-                ]
-            },
-            "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
-            "columns": [
-                null,
-                null,
-                null,
-                { "sortable": false }
-            ],
-            "language":
-            {
-                "emptyTable":     "Keine Daten vorhanden",
-                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
-                "infoEmpty": 	  "Keine Seiten vorhanden",
-                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
-                "infoPostFix":    "",
-                "thousands":      ".",
-                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
-                "loadingRecords": "Lade...",
-                "processing":     "Verarbeite...",
-                "search":         "Suche:",
-                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
-                "paginate": {
-                    "first":      "Erste",
-                    "last":       "Letzte",
-                    "next":       "N&auml;chste",
-                    "previous":   "Vorherige"
-                },
-                "aria": {
-                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",
-                    "sortDescending": ": aktivieren um absteigend zu sortieren"
-                }
-            }
-        } );
-
-        $('#search').keyup(function(){
-            vac_table.search( $(this).val() ).draw();
-        })
-
-        $("#vac tbody td").live('click',function(){
-            var aPos = $('#vac').dataTable().fnGetPosition(this);
-            var aData = $('#vac').dataTable().fnGetData(aPos[0]);
-            document.location='index.php?page=/libs/modules/vacation/vacation.ajax.php'+aData[0];
-        });
-    } );
-</script>
-
-
-
-
 
 
 <script type="text/javascript">
@@ -410,7 +321,6 @@ echo $quickmove->generate();
         });
 
     });
-
 
     function callBoxFancy(my_href) {
         var j1 = document.getElementById("hiddenclicker");
