@@ -9,7 +9,7 @@
 
 require_once '../../../config.php';
 
-$aColumns = array( 'id', 'name', 'alloc' );
+$aColumns = array( 'id', 'name', 'alloc', 'intext' );
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = "id";
@@ -158,7 +158,8 @@ if ($_GET['ajax_type'] != ""){
 $sQuery = "SELECT
             storage_areas.id,
             storage_areas.`name`,
-            COALESCE(SUM(storage_positions.allocation),0) as alloc
+            COALESCE(SUM(storage_positions.allocation),0) as alloc,
+            storage_areas.intext
             FROM
             storage_areas
             LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
@@ -225,6 +226,13 @@ while ( $aRow = mysql_fetch_array( $rResult ) )
         } elseif ( $aColumns[$i] == 'alloc')
         {
             $row[] = $aRow[ $aColumns[$i] ].'%';
+        } elseif ( $aColumns[$i] == 'intext')
+        {
+            if ($aRow[ $aColumns[$i] ] == 2){
+                $row[] = "Ja";
+            } else {
+                $row[] = "Nein";
+            }
         }
         else
         {

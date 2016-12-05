@@ -72,7 +72,26 @@ if($_REQUEST["subexec"] == "save")
 	$vacation->setState($_REQUEST["vac_state"]);
 	$vacation->setType($_REQUEST["vac_type"]);
 	$vacation->setComment($_REQUEST["vac_comment"]);
-	$vacation->save();
+	$res = $vacation->save();
+
+	if ($res && $vacation->getState() == VacationEntry::STATE_APPROVED){
+
+		$params = [
+			'start' => CalDavEvent::convertTimestamp($vacation->getStart()),
+			'end' => CalDavEvent::convertTimestamp($vacation->getEnd()),
+			'summary' => "Urlaub: ".$vacation->getUser()->getNameAsLine(),
+			'location' => '',
+			'descr' => $vacation->getComment(),
+			'uid' => "vac-".$vacation->getId()."-".time(),
+		];
+		$calevent = new CalDavEvent($params);
+//        prettyPrint($calevent->generate());
+		$calres = $calevent->saveToMyCal();
+		if (is_a($calres,"CalDAVObject")){
+			echo "Kalendereintrag erfolgreich erstell!<br>";
+		}
+//        prettyPrint($calres);
+	}
 
     echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href="../../../index.php?page=libs/modules/vacation/vacation.user.php";</script>';
 }

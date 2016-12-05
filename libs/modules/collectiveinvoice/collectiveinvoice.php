@@ -1,11 +1,12 @@
 <?php
-//----------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       20.06.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+/**
+ *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *
+ */
+
 require_once('libs/modules/paymentterms/paymentterms.class.php');
 require_once('libs/modules/deliveryterms/deliveryterms.class.php');
 require_once('libs/modules/businesscontact/businesscontact.class.php');

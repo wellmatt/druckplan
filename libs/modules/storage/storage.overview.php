@@ -88,6 +88,7 @@ if ($_REQUEST["exec"] == "delete"){
                     <th><?=$_LANG->get('ID')?></th>
                     <th><?=$_LANG->get('Name')?></th>
                     <th><?=$_LANG->get('Belegung')?></th>
+                    <th><?=$_LANG->get('Extern')?></th>
                 </tr>
                 </thead>
                 <tfoot>
@@ -95,6 +96,7 @@ if ($_REQUEST["exec"] == "delete"){
                     <th><?=$_LANG->get('ID')?></th>
                     <th><?=$_LANG->get('Name')?></th>
                     <th><?=$_LANG->get('Belegung')?></th>
+                    <th><?=$_LANG->get('Extern')?></th>
                 </tr>
                 </tfoot>
             </table>
@@ -129,6 +131,7 @@ if ($_REQUEST["exec"] == "delete"){
             },
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
             "columns": [
+                null,
                 null,
                 null,
                 null
