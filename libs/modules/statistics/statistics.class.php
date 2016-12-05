@@ -382,6 +382,60 @@ class Statistics {
         return $retval;
     }
 
+    /**
+     * @param $businesscontact
+     * @param $user
+     * @param $article
+     * @return array
+     */
+    public static function Artstat($businesscontact, $user, $article)
+    {
+        global $DB;
+        date_default_timezone_set('Europe/Berlin');
+        $retval = [];
+
+        $where = "";
+        if ($businesscontact != 0 && $businesscontact != NULL){
+            $where .= " AND businesscontact.id = {$businesscontact} ";
+        }
+        if ($user != 0 && $user != NULL){
+            $where .= " AND `user`.id = {$user} ";
+        }
+        if ($article != 0 && $article != NULL){
+            $where .= " AND article.id = {$article} ";
+        }
+
+
+        $sql = "SELECT
+                article.id,
+                article.title,
+                article.description
+                FROM
+                article
+                {$where}
+                ";
+
+        if ($DB->no_result($sql)) {
+            foreach($DB->select($sql) as $r){
+                $retval[] = new Article($r["id"]);
+            }
+        }
+        return $retval;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

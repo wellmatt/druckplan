@@ -148,7 +148,7 @@ echo $quickmove->generate();
             'speedOut'		:	200,
             'padding'		:	25,
             'margin'        :   25,
-            'scrolling'     :   'no',
+            'scrolling'     :   'yes',
             'width'		    :	1000,
             'height'        :   800,
             'onComplete'    :   function() {

@@ -7,6 +7,7 @@
  *
  */
 require_once 'libs/basic/model.php';
+require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 
 class InvoiceOut extends Model{
     public $_table = 'invoiceouts';

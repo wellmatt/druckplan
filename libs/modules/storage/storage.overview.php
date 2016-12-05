@@ -46,31 +46,38 @@ if ($_REQUEST["exec"] == "delete"){
                 <h3 class="panel-title">Filter</h3>
             </div>
             <div class="panel-body">
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Nr</label>
-                    <div class="col-sm-10">
-                        <input type="text" id="ajax_nr" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Ort</label>
-                    <div class="col-sm-10">
-                        <input type="text" id="ajax_location" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Art</label>
-                    <div class="col-sm-10">
-                        <input type="text" id="ajax_type" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Suche</label>
-                    <div class="col-sm-10">
-                        <input type="text" id="search" class="form-control" placeholder="">
-                    </div>
-                </div>
+                 <div class="row">
+                     <div class="form-group">
+                         <label for="" class="col-sm-1 control-label">Nr</label>
+                         <div class="col-sm-4">
+                             <input type="text" id="ajax_nr" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="form-group">
+                         <label for="" class="col-sm-1 control-label">Ort</label>
+                         <div class="col-sm-4">
+                             <input type="text" id="ajax_location" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="form-group">
+                         <label for="" class="col-sm-1 control-label">Art</label>
+                         <div class="col-sm-4">
+                             <input type="text" id="ajax_type" class="form-control" onchange="$('#storagetable').dataTable().fnDraw();">
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="form-group">
+                         <label for="" class="col-sm-1 control-label">Suche</label>
+                         <div class="col-sm-4">
+                             <input type="text" id="search" class="form-control" placeholder="">
+                         </div>
+                     </div>
+                 </div>
             </div>
         </div>
         <br>

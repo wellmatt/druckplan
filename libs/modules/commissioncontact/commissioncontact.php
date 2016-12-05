@@ -197,7 +197,7 @@ elseif ($_REQUEST["exec"] == "delete_cp")
 							&ensp;
 							<a href="#"
 							   onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&id=<?= $bc->getId() ?>')"><span
-									class="glyphicons glyphicons-pencil"></span></a>
+									class="glyphicons glyphicons-remove" style="color: red;"></span></a>
 						</td>
 					</tr>
 					</tbody>
