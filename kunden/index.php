@@ -182,7 +182,7 @@ if ($_REQUEST["exec"] == "register_tmp"){
 							<li class="<?if($_REQUEST["pid"] == 40) echo "active";?>"><a href="index.php?pid=40">Personalisierungen</a></li>
 						<?}?>
 						<?if($enabled_article == "on"){?>
-							<li class="<?if($_REQUEST["pid"] == 60) echo "active";?>"><a href="index.php?pid=60">Artikel</a></li>
+							<li class="<?if($_REQUEST["pid"] == 60 || $_REQUEST["pid"] == 61) echo "active";?>"><a href="index.php?pid=60">Artikel</a></li>
 						<?}?>
 						<?if($enabled_marketing == "on"){?>
 							<li class="<?if($_REQUEST["pid"] == 100) echo "active";?>"><a href="index.php?pid=100">Marketing</a></li>
@@ -239,7 +239,8 @@ if ($_REQUEST["exec"] == "register_tmp"){
 				case 3: require_once('kunden/customerdetails.php'); break;
 				case 20: require_once('kunden/modules/tickets/ticket.php'); break;
 				case 40: require_once('kunden/personalization.php'); break;
-				case 60: require_once('kunden/article.php'); break;
+				case 60: require_once('kunden/modules/article/article.php'); break;
+				case 61: require_once('kunden/modules/article/article.detail.php'); break;
 				case 80: require_once('kunden/modules/shoppingbasket/shoppingbasket.php'); break;
 				case 90: require_once('kunden/orderhistory.php'); break;
 				case 100: require_once('kunden/marketing.php'); break;

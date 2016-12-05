@@ -52,17 +52,19 @@ class InvoiceOut extends Model{
         $tax = [];
         $positions = Orderposition::getAllOrderposition($colinv->getId());
         foreach ($positions as $position) {
-            $art = new Article($position->getObjectid());
-            if ($art->getOrderid() > 0){
-                $netto = $position->getPrice();
-                $postax = $position->getTax();
-                $poscost = $position->getCost();
-                $tax[$postax][] = [$netto,$poscost];
-            } else {
-                $netto = $position->getPrice() * $position->getAmount();
-                $postax = $position->getTax();
-                $poscost = $position->getCost() * $position->getAmount();
-                $tax[$postax][] = [$netto,$poscost];
+            if ($position->getStatus() == 1 && $position->getInvrel() == 1){
+                $art = new Article($position->getObjectid());
+                if ($art->getOrderid() > 0){
+                    $netto = $position->getPrice();
+                    $postax = $position->getTax();
+                    $poscost = $position->getCost();
+                    $tax[$postax][] = [$netto,$poscost];
+                } else {
+                    $netto = $position->getPrice() * $position->getAmount();
+                    $postax = $position->getTax();
+                    $poscost = $position->getCost() * $position->getAmount();
+                    $tax[$postax][] = [$netto,$poscost];
+                }
             }
         }
 

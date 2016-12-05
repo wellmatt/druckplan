@@ -890,14 +890,14 @@ echo $quickmove->generate();
 									<textarea name="thirdpartycomment" id="thirdpartycomment" class="form-control" style="<?php if ($collectinv->getThirdparty() == 0) echo 'display: none;';?>"><?php echo $collectinv->getThirdpartycomment();?></textarea>
 								</div>
 							</div>
-							<?php if ($collectinv->getSavedcost() == 1){?>
+							<?php /**if ($collectinv->getSavedcost() == 1){?>
 							<div class="form-group">
 								<label for="" class="col-sm-4 control-label">Errechneter Profit</label>
 								<div class="col-sm-8 form-text">
 									<?php echo printPrice($collectinv->getMyProfit());?>€
 								</div>
 							</div>
-							<?php } ?>
+							<?php }**/ ?>
 						</div> <!-- ENDE COL LINKS -->
 
 						<div class="col-md-6">

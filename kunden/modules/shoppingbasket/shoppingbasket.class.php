@@ -116,6 +116,82 @@ class Shoppingbasket{
 		}
 		return false;
 	}
+
+	public function loadCart($id)
+	{
+		global $DB;
+		$bc = (int)$_SESSION["cust_id"];
+		$cp = (int)$_SESSION["contactperson_id"];
+		$sql = "SELECT `data` FROM shop_savedcarts WHERE id = {$id} AND bc = {$bc} AND cp = {$cp}";
+		$res = $DB->select($sql);
+		if (count($res)>0){
+			$data = $res[0]["data"];
+			$data = unserialize($data);
+			if (count($data)>0){
+				$this->clear();
+				foreach ($data as $item) {
+					if ($item["type"] == 3){
+						$porder = new Personalizationorder($item["id"]);
+						$title = $porder->getTitle();
+						$price = $porder->getPrice((int)$item["amount"]);
+					} else {
+						$article = new Article($item["id"]);
+						$title = $article->getTitle();
+						$price = $article->getPrice((int)$item["amount"]);
+					}
+					$attributes["id"] 		= $item["id"];
+					$attributes["title"] 	= $title;
+					$attributes["amount"] 	= (int)$item["amount"];
+					$attributes["price"]	= $price;
+					$attributes["type"]		= (int)$item["type"];
+					$attributes["entryid"]	= count($this->getEntrys())+1;
+					$tmp_item = new Shoppingbasketitem($attributes);
+					$tmp_item->setDeliveryAdressID((int)$item["deliv"]);
+					$tmp_item->setInvoiceAdressID((int)$item["inv"]);
+					$this->addItem($tmp_item);
+				}
+			}
+		}
+	}
+
+	public function deleteCart($id)
+	{
+		global $DB;
+		$bc = (int)$_SESSION["cust_id"];
+		$cp = (int)$_SESSION["contactperson_id"];
+		$sql = "DELETE FROM shop_savedcarts WHERE id = {$id} AND bc = {$bc} AND cp = {$cp}";
+		$res = $DB->select($sql);
+	}
+
+	public function getSavedCarts()
+	{
+		global $DB;
+		$bc = (int)$_SESSION["cust_id"];
+		$cp = (int)$_SESSION["contactperson_id"];
+		$sql = "SELECT id, title FROM shop_savedcarts WHERE bc = {$bc} AND cp = {$cp}";
+		$res = $DB->select($sql);
+		return $res;
+	}
+
+	public function save($title,$customer,$cp)
+	{
+		global $DB;
+		$articles = [];
+		if (count($this->entrys)>0){
+			foreach ($this->entrys as $entry) {
+				$articles[] = [
+					'id' => $entry->getId(),
+					'amount' => $entry->getAmount(),
+					'deliv' => $entry->getDeliveryAdressID(),
+					'inv' => $entry->getInvoiceAdressID(),
+					'type' => $entry->getType()
+				];
+			}
+			$serialized = serialize($articles);
+			$sql = "INSERT INTO shop_savedcarts VALUES (NULL, '{$title}','{$serialized}',{$customer},{$cp});";
+			$res = $DB->insert($sql);
+		}
+	}
 	
 // 	/**
 // 	 * Funktion fuer das Absenden eines Warenkorbs. 

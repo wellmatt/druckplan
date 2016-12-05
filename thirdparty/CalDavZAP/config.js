@@ -341,7 +341,7 @@ var globalNetworkCheckSettings={
 	checkContentType: true,
 	settingsAccount: true,
 	delegation: true,
-	additionalResources: [],
+	additionalResources: ['company'],
 	hrefLabel: null,
 	forceReadOnly: null,
 	ignoreAlarms: false,
@@ -907,4 +907,7 @@ var globalAppleRemindersMode=true;
 //		}
 //	]
 //};
+
+
+
 

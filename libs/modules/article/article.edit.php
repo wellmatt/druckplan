@@ -229,6 +229,11 @@ function printSubTradegroupsForSelect($parentId, $depth){
 <link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <!-- <link rel="stylesheet" type="text/css" href="jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" media="screen" /> -->
+<style>
+	.mce-tinymce {
+		z-index: 99 !important;
+	}
+</style>
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -316,7 +321,7 @@ echo $quickmove->generate();
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Beschreibung</label>
 								<div class="col-sm-9">
-									<textarea id="article_desc" name="article_desc" rows="4" cols="50" class="form-control artdesc"><?=stripslashes($article->getDesc())?></textarea>
+									<textarea id="article_desc" name="article_desc" rows="4" cols="50" style="z-index: 99;" class="form-control artdesc"><?=stripslashes($article->getDesc())?></textarea>
 								</div>
 							</div>
 							<div class="form-group">
@@ -889,8 +894,9 @@ echo $quickmove->generate();
 			{
 				selector:'#article_desc',
 				menubar: false,
-				statusbar: false,
-				toolbar: false
+				statusbar: true,
+				toolbar: false,
+				resize: "both",
 			}
 		);
 	});

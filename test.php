@@ -1,6 +1,4 @@
 <?php
-error_reporting(-1);
-ini_set('display_errors', 1);
 require_once("config.php");
 require_once("libs/basic/mysql.php");
 require_once("libs/basic/globalFunctions.php");
@@ -27,7 +25,7 @@ require_once 'libs/basic/cachehandler/cachehandler.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/eventqueue/eventclass.interface.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
-require_once 'libs/modules/mail/caldav.service.class.php';
+require_once 'libs/modules/organizer/caldav.service.class.php';
 
 require_once 'vendor/PEAR/Net/SMTP.php';
 require_once 'vendor/PEAR/Net/Socket.php';
@@ -40,6 +38,8 @@ $autoloader->registerAutoloader();
 
 require_once('vendor/simpleCalDAV/SimpleCalDAVClient.php');
 
+error_reporting(-1);
+ini_set('display_errors', 1);
 session_start();
 
 $DB = new DBMysql();
@@ -48,29 +48,8 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-
-$client = new SimpleCalDAVClient();
-
-try {
-    /*
-     * To establish a connection and to choose a calendar on the server, use
-     * connect()
-     * findCalendars()
-     * setCalendar()
-     */
-
-    $client->connect("http://contilas2.mein-druckplan.de/sabre/server.php/calendars/{$_USER->getLogin()}/default", $_USER->getLogin(), $_SESSION["password"]);
+//$cds = new CalDavService();
+//$cds->generalCalendar();
 
 
-    $arrayOfCalendars = $client->findCalendars(); // Returns an array of all accessible calendars on the server.
-    prettyPrint($arrayOfCalendars);
-
-    $client->setCalendar($arrayOfCalendars["default"]);
-    /*
-     * You can getEvents with getEvents()
-     */
-    prettyPrint($client->getEvents());
-}
-catch (Exception $e) {
-    echo $e->__toString();
-}
+prettyPrint($_SERVER);

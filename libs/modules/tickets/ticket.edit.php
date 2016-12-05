@@ -171,7 +171,32 @@ if($_REQUEST["commentid"] && $_REQUEST["newvis"]){
 if($_REQUEST["exec"] == "edit"){
     $ticket = new Ticket($_REQUEST["tktid"]);
     $header_title = $_LANG->get('Ticketdetails');
-    
+
+    if($_REQUEST["subexec"] == "createcalentry"){
+        $tmp_descr = '';
+        $tmp_comments = Comment::getCommentsForObject(get_class($ticket),$ticket->getId());
+        if (count($tmp_comments)>0){
+            $tmp_first_comment = $tmp_comments[0];
+            $tmp_descr = trim(preg_replace( "/\r|\n/", "", strip_tags($tmp_first_comment->getComment()) ));
+        }
+        $tmp_summary = trim("Kunde: ".$ticket->getCustomer()->getNameAsLine() . " // " . $ticket->getCustomer_cp()->getNameAsLine()."\\nErster Kommentar: \\n".$tmp_descr);
+        $params = [
+            'start' => CalDavEvent::convertTimestamp($ticket->getDuedate()),
+            'end' => CalDavEvent::convertTimestamp($ticket->getDuedate()),
+            'summary' => "#".$ticket->getNumber(),
+            'location' => '',
+            'descr' => $tmp_summary,
+            'uid' => $ticket->getNumber()."-".time(),
+        ];
+        $calevent = new CalDavEvent($params);
+//        prettyPrint($calevent->generate());
+        $calres = $calevent->saveToMyCal();
+        if (is_a($calres,"CalDAVObject")){
+            echo "Kalendereintrag erfolgreich erstell!<br>";
+        }
+//        prettyPrint($calres);
+    }
+
     if($_REQUEST["subexec"] == "save"){
         
         $logentry = "";
@@ -1149,6 +1174,10 @@ echo $quickmove->generate();
                                         <a href="#"
                                            onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=new&customer=<?php echo $ticket->getCustomer()->getId(); ?>&contactperson=<?php echo $ticket->getCustomer_cp()->getId(); ?>&asso_class=<?php echo get_class($ticket); ?>&asso_object=<?php echo $ticket->getId() ?>');">Ticket
                                             erstellen (verknüpft)</a>
+                                        <a href="#"
+                                           onclick="askDel('index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid=<?php echo $ticket->getId(); ?>&subexec=createcalentry');">
+                                            Kalender Eintrag
+                                        </a>
                                     </li>
                                 </ul>
                             </div>

@@ -84,7 +84,11 @@ $(document).ready(function() {
             // Custom Fields
             var cfields = $("[data-fieldid]");
             cfields.each(function(){
-                aoData.push( { "name": "cfield_"+$(this).data("fieldid"), "value": $(this).val() } );
+                if ($(this).data("type") == "checkbox" && $(this).is( ":checked" )){
+                    aoData.push( { "name": "cfield_"+$(this).data("fieldid"), "value": 1 } );
+                } else if ($(this).data("type") != "checkbox") {
+                    aoData.push( { "name": "cfield_"+$(this).data("fieldid"), "value": $(this).val() } );
+                }
             });
 
 		    $.getJSON( sSource, aoData, function (json) {
@@ -287,6 +291,13 @@ $(function() {
                                         }
                                         ?>
                                     </select>
+                                    <select id="addfilter_backup" style="display: none;">
+                                        <?php
+                                        foreach ($article_fields as $article_field) {
+                                            echo '<option value="' . $article_field->getId() . '">' . $article_field->getName() . '</option>';
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
                                 <div class="col-sm-3">
                                     <button class="btn btn-sm btn-warning" onclick="addFilter();">
@@ -335,6 +346,11 @@ $(function() {
         $('#ajax_bc').val(0);
         $('#ajax_cp').val(0);
         $('#cfield_div').html("");
+
+        var $options = $("#addfilter_backup > option").clone();
+        $('#addfilterselect').html("");
+        $('#addfilterselect').append($options);
+
         $('#art_table').dataTable().fnDraw();
     }
     function addFilter(){

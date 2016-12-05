@@ -28,6 +28,8 @@ session_start();
 //$_USER = new User();
 //$_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 
+$serverurl = $_SERVER["HTTP_HOST"];
+
 ?>
 
 <!DOCTYPE html>
@@ -89,17 +91,34 @@ session_start();
     <script src="timezones.js" type="text/javascript"></script>
     <script language="JavaScript">
         var globalNetworkCheckSettings={
-            href: 'http://contilas2.mein-druckplan.de/sabre/server.php/principals/',
+            href: 'http://<?php echo $serverurl;?>/sabre/server.php/principals/',
             timeOut: 90000,
             lockTimeOut: 10000,
             checkContentType: true,
             settingsAccount: true,
             delegation: true,
-            additionalResources: [],
+            additionalResources: ['company'],
             hrefLabel: null,
             forceReadOnly: null,
             ignoreAlarms: false,
-            backgroundCalendars: []
+            backgroundCalendars: [],
+            crossDomain: true
+        };
+        var globalSubscribedCalendars={
+            hrefLabel: 'Feiertage',
+            calendars: [
+                {
+                    href: 'http://<?php echo $serverurl;?>/sabre/public/GermanHolidays.ics',
+                    userAuth: {
+                        userName: '',
+                        userPassword: ''
+                    },
+                    typeList: ['vevent'],
+                    ignoreAlarm: true,
+                    displayName: 'Deutschland',
+                    color: '#ff0000'
+                }
+            ]
         };
 
         $(function() {
@@ -136,7 +155,7 @@ session_start();
     <div class="intBlank"></div>
     <div id="intRefresh" title="refresh" onclick="reloadResources();"></div>
     <div class="intBlank"></div>
-    <div id="intLogout" title="logout" onclick="logout();"></div>
+<!--    <div id="intLogout" title="logout" onclick="logout();"></div>-->
 </div>
 <div class="System" id="SystemCalDavZAP">
     <div id="CalDavZAPPopup">
@@ -205,12 +224,12 @@ session_start();
             <div class="resourceCalDAV_item"></div>
         </div>
     </div>
-    <div id="timezoneWrapper">
-        <label data-type="txt_timezonePicker" for="timezonePicker">Timezone:</label>
-        <div id="timezoneSelectDiv">
-            <select id="timezonePicker" name="timezonePicker" data-type="timezonesPicker"></select>
-        </div>
-    </div>
+<!--    <div id="timezoneWrapper">-->
+<!--        <label data-type="txt_timezonePicker" for="timezonePicker">Timezone:</label>-->
+<!--        <div id="timezoneSelectDiv">-->
+<!--            <select id="timezonePicker" name="timezonePicker" data-type="timezonesPicker"></select>-->
+<!--        </div>-->
+<!--    </div>-->
     <div class="headers" id="main_h">
         <input id="ResourceCalDAVToggle" type="image" src="images/resources.svg" alt="Show/Hide Resources" />
         <div id="main_h_placeholder"></div>

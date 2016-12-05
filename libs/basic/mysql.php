@@ -41,6 +41,27 @@ class DBMysql {
       
       return false;
    }
+
+   // select-first-anweisung
+   function first($sql, $column = null) {
+      $retval = Array();
+      $res = mysqli_query($this->conn,$sql);
+      if ($res) {
+         while ($data = mysqli_fetch_assoc($res))
+         {
+            $retval[] = $data;
+         }
+         if (count($retval)>0){
+            if ($column == null)
+               return $retval[0];
+            else {
+               if (array_key_exists($column, $retval[0]))
+                  return $retval[0][$column];
+            }
+         }
+      }
+      return false;
+   }
    
    // select-anweisung
    function select($sql) {

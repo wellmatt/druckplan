@@ -32,6 +32,19 @@ if ($_SESSION["shopping_basket"]){ // Warenkorb aus der Session holen
 	$shopping_basket_entrys = $shopping_basket->getEntrys();
 }
 
+if ($_REQUEST["exec"] == "savecart" && strlen($_REQUEST["carttitle"]) > 0){
+	$shopping_basket->save($_REQUEST["carttitle"],(int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]);
+}
+
+if ($_REQUEST["exec"] == "deletecart" && $_REQUEST["cartid"] > 0){
+	$shopping_basket->deleteCart($_REQUEST["cartid"]);
+}
+
+if ($_REQUEST["exec"] == "loadcart" && $_REQUEST["cartid"] > 0){
+	$shopping_basket->loadCart($_REQUEST["cartid"]);
+	$shopping_basket_entrys = $shopping_basket->getEntrys();
+}
+
 // Einen Eintrag bearbeiten
 if ($_REQUEST["exec"] == 'edit_items'){
 	$shopping_basket->setIntent(trim(addslashes($_REQUEST["shopping_intent"])));
@@ -244,7 +257,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 							<td class="filerow">
 								<table><tr><td>
 											<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-												$tmp_pid = 60;
+												$tmp_pid = 61;
 												$tmp_obj = "articleid=".$entry->getId();
 												$tmp_exec= "exec=showArticleDetails";
 											} else if($entry->getType() == Shoppingbasketitem::TYPE_PRODUCTS){
@@ -391,6 +404,67 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 					</div>
 				</div>
 
+			</div>
+		</div>
+	</div>
+</form>
+
+<form method="post" action="index.php" name="form_shopbasket" id="form_shopbasket" enctype="multipart/form-data">
+	<input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
+	<input type="hidden" id="exec" name="exec" value="savecart">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Gespeicherte Warenkörbe
+			</h3>
+		</div>
+		<div class="panel-body">
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+						<h3 class="panel-title">Warenkorb speichern</h3>
+				  </div>
+				  <div class="panel-body">
+					  <div class="form-group">
+						  <label for="" class="col-sm-2 control-label">Titel</label>
+						  <div class="col-sm-8">
+							  <input type="text" class="form-control" name="carttitle" id="carttitle" placeholder="">
+						  </div>
+						  <div class="col-sm-2">
+							  <button type="submit" class="btn btn-success">Speichern</button>
+						  </div>
+					  </div>
+				  </div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Warenkorb laden</h3>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Titel</th>
+								<th>&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							$entries = $shopping_basket->getSavedCarts();
+							foreach ($entries as $entry) {
+								?>
+								<tr>
+									<td><?php echo $entry["title"];?></td>
+									<td>
+										<button type="button" class="btn btn-info" onclick="window.location.href='index.php?pid=80&exec=loadcart&cartid=<?php echo $entry["id"];?>';">Laden</button>
+										<button type="button" class="btn btn-warning" onclick="window.location.href='index.php?pid=80&exec=deletecart&cartid=<?php echo $entry["id"];?>';">Löschen</button>
+									</td>
+								</tr>
+								<?php
+							}
+							?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

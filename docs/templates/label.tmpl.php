@@ -32,7 +32,7 @@ $pdf->setPrintFooter(false);
 $pdf->SetPageOrientation( 'L', '', '0');
 
 $pdf->SetMargins(5, 6, 5, true);
-$pdf->AddPage();
+//$pdf->AddPage();
 
 if($_REQUEST["label_print_logo"]){
     $path = "docs/templates/etikett_logo.jpg";

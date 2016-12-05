@@ -640,7 +640,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $number
+     * @return string $number
      */
     public function getNumber()
     {
@@ -648,7 +648,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $customer
+     * @return BusinessContact $customer
      */
     public function getCustomer()
     {
@@ -656,7 +656,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $customer_cp
+     * @return ContactPerson $customer_cp
      */
     public function getCustomer_cp()
     {

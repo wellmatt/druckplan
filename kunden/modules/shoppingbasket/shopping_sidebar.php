@@ -51,7 +51,7 @@ if ($_SESSION["shopping_basket"]){
 								<tr>
 									<td class="content_row">
 										<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-											$tmp_pid = 60;
+											$tmp_pid = 61;
 											$tmp_obj = "articleid=".$entry->getId();
 											$tmp_exec= "exec=showArticleDetails";
 										} else if($entry->getType() == Shoppingbasketitem::TYPE_PRODUCTS){

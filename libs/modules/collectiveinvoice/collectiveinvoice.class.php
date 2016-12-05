@@ -339,7 +339,7 @@ class CollectiveInvoice{
 			$profit = 0.0;
 			$orderpositions = Orderposition::getAllOrderposition($this->getId());
 			foreach ($orderpositions as $orderposition) {
-				$profit += ($orderposition->getProfit()/100);
+				$profit += $orderposition->getProfit();
 			}
 			return $profit;
 		} else {
@@ -782,15 +782,7 @@ class CollectiveInvoice{
 		$sum = 0;
 		$mypositions = Orderposition::getAllOrderposition($this->getId());
 		foreach ($mypositions as $myposition) {
-			if ($myposition->getType() == 0){
-				$sum += $myposition->getNetto();
-			}
-			if ($myposition->getType() == 1){
-				$sum += $myposition->getNetto();
-			}
-			if ($myposition->getType() == 2){
-				$sum += $myposition->getNetto();
-			}
+			$sum += $myposition->getNetto();
 		}
 		return $sum;
 	}
@@ -804,15 +796,7 @@ class CollectiveInvoice{
 		$sum = 0;
 		$mypositions = Orderposition::getAllOrderposition($this->getId());
 		foreach ($mypositions as $myposition) {
-			if ($myposition->getType() == 2){
-				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
-			}
-			if ($myposition->getType() == 1){
-				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
-			}
-			if ($myposition->getType() == 0){
-				$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
-			}
+			$sum += $myposition->getNetto() + ($myposition->getNetto()/100*$myposition->getTax());
 		}
 		return $sum;
 	}

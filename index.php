@@ -36,6 +36,7 @@ require_once 'libs/basic/quickmove.class.php';
 require_once 'libs/modules/dashboard/dashboard.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/files/file.class.php';
+require_once 'libs/modules/organizer/caldav.event.class.php';
 
 // Mail Stuff
 require_once 'libs/modules/mail/mailmassage.class.php';
@@ -409,7 +410,7 @@ function sleep(millis, callback) {
                         
             <!-- calendar -->
             <li id='li_calendar' class="dropdown-grid">
-              <a href="index.php?page=libs/modules/organizer/calendar.php&pagetitle=Kalender"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span></a>
+              <a href="index.php?page=libs/modules/organizer/davcalendar.php&pagetitle=Kalender"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span></a>
             </li>
             <!-- /calendar -->
 
@@ -461,7 +462,7 @@ function sleep(millis, callback) {
                       <!-- Menu Footer-->
                       <li class="user-footer">
                           <div class="col-xs-4 text-center">
-<!--                              <a href="JavaScript: callBoxFancyIndex('http://contilas.de/changelog.htm');" class="btn btn-default btn-flat btn-xs">Changelog</a>-->
+                              <a href="http://kb.mein-druckplan.de" target="_blank" class="btn btn-default btn-flat btn-xs">FAQ</a>
                           </div>
                           <div style="" class="col-xs-4 text-center">
                               <a href="mailto:support@contilas.de?Subject=Support" class="btn btn-default btn-flat btn-xs">Support</a>
