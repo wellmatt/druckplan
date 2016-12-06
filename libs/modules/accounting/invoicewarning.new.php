@@ -24,7 +24,7 @@ if($_REQUEST["subexec"] == "create"){
 	$warning->setPriceBrutto($invoice->getPriceBrutto());
 	$warning->setPriceNetto($invoice->getPriceNetto());
 
-	$warning->createDoc(Document::VERSION_PRINT);
+	$res = $warning->createDoc(Document::VERSION_PRINT);
 	$saver = $warning->save();
 
 	$savemsg = getSaveMessage($saver).$DB->getLastError();

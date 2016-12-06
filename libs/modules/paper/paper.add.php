@@ -74,7 +74,7 @@ if($_REQUEST["subexec"] == "save")
             $t["size_height"] = (int)$_REQUEST["price_size_height_{$match["id"]}"];
             $t["weight_from"] = (int)$_REQUEST["price_weight_from_{$match["id"]}"];
             $t["weight_to"] = (int)$_REQUEST["price_weight_to_{$match["id"]}"];
-            $t["quantity_from"] = (int)$_REQUEST["price_quantity_from_{$match["id"]}"];
+            $t["quantity_from"] = tofloat($_REQUEST["price_quantity_from_{$match["id"]}"]);
             $t["price"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["price_{$match["id"]}"])));
             if ($t["weight_from"] && $t["weight_to"] && $t["price"])
                 $prices[] = $t;
@@ -86,7 +86,7 @@ if($_REQUEST["subexec"] == "save")
             $t["size_height"] = (int)$match["height"];
             $t["weight_from"] = (int)$match["weight"];
             $t["weight_to"] = (int)$match["weight"];
-            $t["quantity_from"] = $_REQUEST["quantity_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"];
+            $t["quantity_from"] = tofloat($_REQUEST["quantity_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"]);
             $t["weight"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["kgperthousand_{$t["size_width"]}x{$t["size_height"]}_{$t["weight_from"]}_{$match["id"]}"])));
             $t["price"] = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST[$key])));
             if($_REQUEST['paper_100kg']){
@@ -647,7 +647,7 @@ echo $quickmove->generate();
                                             <div class="form-group">
                                               <div class="col-sm-12">
                                                    <div class="input-group">
-                                                      <input name="quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="form-control" value="'.$price["quantity_from"].'">
+                                                      <input name="quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="form-control" value="'.printPrice($price["quantity_from"],2).'">
                                                        <span class="input-group-addon">';  if ($paper->getRolle() == 0){
                                                                                               echo $_LANG->get('Bogen')." ";
                                                                                           } else {

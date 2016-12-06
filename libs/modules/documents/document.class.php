@@ -573,6 +573,7 @@ class Document
             $letterhead = new Letterhead($this->letterhead);
             if ($this->letterhead === false || ($this->letterhead != false && $letterhead->getId() == 0)){
                 $letterhead = Letterhead::fetchSingle(Array(Array('column'=>'std','value'=>1),Array('column'=>'type','value'=>$this->type)));
+                $this->letterhead = $letterhead;
             }
             if ($letterhead->getId() > 0){
 
