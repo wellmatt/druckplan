@@ -67,6 +67,32 @@ class CalDavEvent {
      * @throws CalDAVException
      * @throws Exception
      */
+    public function saveToGlobalCal()
+    {
+        global $_USER;
+        try {
+            $client = new SimpleCalDAVClient();
+            $client->connect("http://contilas2.mein-druckplan.de/sabre/server.php/calendars/company/company", "company", "contilas");
+            $arrayOfCalendars = $client->findCalendars(); // Returns an array of all accessible calendars on the server.
+            if (array_key_exists("company",$arrayOfCalendars)){
+                $client->setCalendar($arrayOfCalendars["company"]);
+                $event = $this->generate();
+                if ($event != false){
+                    $res = $client->create($event);
+                    return $res;
+                }
+            }
+        } catch (Exception $e) {
+            echo $e->__toString();
+        }
+        return false;
+    }
+
+    /**
+     * @return CalDAVObject|bool
+     * @throws CalDAVException
+     * @throws Exception
+     */
     public function saveToMyCal()
     {
         global $_USER;

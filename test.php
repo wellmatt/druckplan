@@ -48,8 +48,12 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-//$cds = new CalDavService();
-//$cds->generalCalendar();
+$client = new SimpleCalDAVClient();
+$client->connect("http://contilas2.mein-druckplan.de/sabre/server.php/calendars/company/company", "company", "contilas");
+//$client->connect("http://contilas2.mein-druckplan.de/sabre/server.php/calendars/company/company", $_USER->getLogin(), $_SESSION["password"]);
+//$client->connect("http://contilas2.mein-druckplan.de/sabre/server.php/calendars/{$_USER->getLogin()}/default", $_USER->getLogin(), $_SESSION["password"]);
+$arrayOfCalendars = $client->findCalendars(); // Returns an array of all accessible calendars on the server.
 
+prettyPrint($arrayOfCalendars);
 
-prettyPrint($_SERVER);
+?>

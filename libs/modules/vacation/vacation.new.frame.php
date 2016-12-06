@@ -26,6 +26,7 @@ require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/businesscontact/contactperson.class.php';
 require_once 'libs/modules/organizer/event.class.php';
 require_once 'libs/modules/notifications/notification.class.php';
+require_once 'libs/modules/organizer/caldav.event.class.php';
 
 session_start();
 
@@ -86,7 +87,7 @@ if($_REQUEST["subexec"] == "save")
 		];
 		$calevent = new CalDavEvent($params);
 //        prettyPrint($calevent->generate());
-		$calres = $calevent->saveToMyCal();
+		$calres = $calevent->saveToGlobalCal();
 		if (is_a($calres,"CalDAVObject")){
 			echo "Kalendereintrag erfolgreich erstell!<br>";
 		}

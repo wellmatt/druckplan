@@ -33,7 +33,7 @@ $serverurl = $_SERVER["HTTP_HOST"];
 ?>
 
 <!DOCTYPE html>
-<html lang="en" manifest="cache.manifest">
+<html lang="en">
 <head>
     <title>CalDavZAP</title>
     <meta http-equiv="cache-control" content="no-cache" />
@@ -92,9 +92,9 @@ $serverurl = $_SERVER["HTTP_HOST"];
     <script language="JavaScript">
         var globalNetworkCheckSettings={
             href: 'http://<?php echo $serverurl;?>/sabre/server.php/principals/',
-            timeOut: 90000,
-            lockTimeOut: 10000,
-            checkContentType: true,
+            timeOut: 150000,
+            lockTimeOut: 150000,
+            checkContentType: false,
             settingsAccount: true,
             delegation: true,
             additionalResources: ['company'],
