@@ -692,7 +692,7 @@ echo $quickmove->generate();
 
                 <? if($_USER->hasRightsByGroup(Group::RIGHT_DETAILED_CALCULATION)) { ?>
                     <tr>
-                        <td class="content_row_header"><?=$_LANG->get('Zwischensumme')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Fertigungskosten')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub())?> <?=$_USER->getClient()->getCurrency()?></td>
                         <? } ?>
@@ -721,7 +721,7 @@ echo $quickmove->generate();
                         <td class="content_row_clear">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td class="content_row_header"><?=$_LANG->get('Zwischensumme')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Selbstkosten')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub() + ($calc->getPricesub() / 100 * $calc->getMargin()))?> <?=$_USER->getClient()->getCurrency()?></td>
                         <? } ?>
