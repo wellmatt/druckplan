@@ -591,14 +591,17 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                       <h3 class="panel-title">Kosten / Ertragsaufstellung</h3>
                   </div>
                   <ul class="list-group">
+
+                      <li class="list-group-item">
+                          <span class="badge"><?php echo printPrice(($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()))  + (($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope))) ; ?>€</span>
+                          Materialkosten
+                      </li>
                       <li class="list-group-item">
                           <span class="badge"><?php echo printPrice($calc->getPricesub() - ($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()))); ?>€</span>
                           Fertigungskosten
                       </li>
-                      <li class="list-group-item">
-                          <span class="badge"><?php echo printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()) + ($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope)); ?>€</span>
-                          Materialkosten
-                      </li>
+
+
                       <li class="list-group-item">
                           <span class="badge"><?php echo printPrice($calc->getPricesub() + ($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope)); ?>€</span>
                           Produktionskosten insgesamt

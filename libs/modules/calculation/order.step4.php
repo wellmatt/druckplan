@@ -307,7 +307,7 @@ echo $quickmove->generate();
                                     <?php
                                 } else {
                                     ?>
-                                    <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2)?> <?=$_LANG->get('Laufmeter')?> (<?=printPrice((($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000) * tofloat($calc->getPaperContent()->getSelectedSize()["width"])/1000,2)?> <?=$_LANG->get('qm')?>)
+                                    <?=printPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2)?> <?=$_LANG->get('Laufmeter')?> <?=printPrice((($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000) * tofloat($calc->getPaperContent()->getSelectedSize()["width"])/1000,2)?> <?=$_LANG->get('qm')?>
                                     <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2))?>
                                     <?=$_USER->getClient()->getCurrency()?>
                                     <?php
@@ -632,19 +632,10 @@ echo $quickmove->generate();
                 <tr>
                     <td class="content_row_clear">&nbsp;</td>
                 </tr>
-                <tr>
-                    <td class="content_row_header"><?=$_LANG->get('Farbkosten')?></td>
-                    <? foreach($calculations as $calc) { ?>
-                        <td class="content_row_clear value" align="center">
-                            <?php echo printPrice($calc->getColorCost(),2);?> €
-                        </td>
-                    <?  } ?>
-                </tr>
-                <tr>
-                    <td class="content_row_clear">&nbsp;</td>
-                </tr>
 
-                <? // -------- START --------------- Positionskosten ---------------------------- ?>
+
+
+                <!--<? // -------- START --------------- Positionskosten ---------------------------- ?>
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Zus. Positionen')?></td>
                 </tr>
@@ -683,23 +674,49 @@ echo $quickmove->generate();
                             }?>
                         </td>
                     <?}?>
-                </tr>
+                </tr>-->
                 <? // -------- ENDE ---------------- Positionskosten ---------------------------- ?>
 
-                <tr>
-                    <td class="content_row_clear">&nbsp;</td>
-                </tr>
 
+                <tr>
+                    <td class="content_row_header"><?=$_LANG->get('Materialkosten')?></td>
+                    <? foreach($calculations as $calc) { ?>
+
+                        <td class="content_row_header value">
+                            <?php
+                            if ($calc->getPaperContent()->getRolle() != 1){
+                                ?>
+
+                                <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant())  + (($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope))) ; ?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                                <?php
+                            } else {
+                                ?>
+
+                                <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000,2))?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                                <?php
+                            }
+                            ?>
+                        </td>
+                    <? } ?>
+                </tr>
+                <tr>
+                    <td class="content_row_header"><?=$_LANG->get('Farbkosten')?></td>
+                    <? foreach($calculations as $calc) { ?>
+                        <td class="content_row_header value" align="center">
+                            <?php echo printPrice($calc->getColorCost(),2);?> €
+                        </td>
+                    <?  } ?>
+                </tr>
                 <? if($_USER->hasRightsByGroup(Group::RIGHT_DETAILED_CALCULATION)) { ?>
                     <tr>
                         <td class="content_row_header"><?=$_LANG->get('Fertigungskosten')?></td>
                         <? foreach($calculations as $calc) { ?>
-                            <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub())?> <?=$_USER->getClient()->getCurrency()?></td>
+                            <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub() - ($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()))  + (($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope)))  ; ?> <?=$_USER->getClient()->getCurrency()?></td>
                         <? } ?>
                     </tr>
-                    <tr>
-                        <td class="content_row_clear">&nbsp;</td>
-                    </tr>
+
 
                     <tr>
                         <td class="content_row_header"><?=$_LANG->get('Zusatzkosten')?></td>
@@ -722,8 +739,9 @@ echo $quickmove->generate();
                     </tr>
                     <tr>
                         <td class="content_row_header"><?=$_LANG->get('Selbstkosten')?></td>
+
                         <? foreach($calculations as $calc) { ?>
-                            <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub() + ($calc->getPricesub() / 100 * $calc->getMargin()))?> <?=$_USER->getClient()->getCurrency()?></td>
+                            <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub() + ($calc->getPricesub() / 100 * $calc->getMargin()) + $calc->getColorCost())?> <?=$_USER->getClient()->getCurrency()?></td>
                         <? } ?>
                     </tr>
                     <tr>
