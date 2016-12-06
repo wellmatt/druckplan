@@ -8,17 +8,15 @@
 // ----------------------------------------------------------------------------------
 require_once 'thirdparty/smarty/Smarty.class.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
-require_once 'docs/autodoc/smarty_functions.php';
+//require_once 'docs/autodoc/smarty_functions.php';
 
 require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/invoicewarning.tmpl';
-$datei = ckeditor_to_smarty(tmp);
+$datei = ckeditor_to_smarty($tmp);
 
 $smarty->assign("WarningText", $_REQUEST["warn_text"]);
 
 $htmldump = $smarty->fetch('string:'.$datei);
-
-// var_dump($htmltemp);
 
 $pdf->writeHTML($htmldump);
 

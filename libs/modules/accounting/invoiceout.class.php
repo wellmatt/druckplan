@@ -16,11 +16,15 @@ class InvoiceOut extends Model{
     public $colinv = 0;
     public $netvalue = 0.0;
     public $grossvalue = 0.0;
+    /**
+     * @var float
+     */
     public $cost = 0.0;
     public $crtdate = 0;
     public $duedate = 0;
     public $payeddate = 0;
     public $status = 1;
+    public $doc;
 
     const STATE_DELETED = 0;
     const STATE_OPEN = 1;
@@ -39,7 +43,7 @@ class InvoiceOut extends Model{
      * @param PaymentTerms $payterm
      * @return InvoiceOut
      */
-    public static function generate($number, $colinv, $payterm)
+    public static function generate($number, $colinv, $payterm, $doc)
     {
         $nettodays = $payterm->getNettodays();
         $now = time();
@@ -47,6 +51,7 @@ class InvoiceOut extends Model{
         $netvalue = 0.0;
         $grossvalue = 0.0;
         $cost = 0.0;
+
 
         $duedate = ($now + ($nettodays * $aday));
 
@@ -85,6 +90,7 @@ class InvoiceOut extends Model{
             'cost' => $cost,
             'crtdate' => time(),
             'duedate' => $duedate,
+            'doc' => $doc,
         ];
 
         $invout = new InvoiceOut(0,$array);
@@ -218,6 +224,22 @@ class InvoiceOut extends Model{
     public function setCrtdate($crtdate)
     {
         $this->crtdate = $crtdate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDoc()
+    {
+        return $this->doc;
+    }
+
+    /**
+     * @param mixed $doc
+     */
+    public function setDoc($doc)
+    {
+        $this->doc = $doc;
     }
 
 

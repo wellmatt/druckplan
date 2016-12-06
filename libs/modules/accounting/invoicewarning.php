@@ -169,6 +169,11 @@ if($_REQUEST["exec"] == "new"){
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					Mahnungen
+<!--					 <span class="pull-right">-->
+<!--						   <button class="btn btn-md btn-success" type="button" onclick="location.href='index.php?page=libs/modules/accounting/invoicewarning.new.php';">-->
+<!--							   --><?//= $_LANG->get('Mahnung hinzufügen') ?>
+<!--						   </button>-->
+<!--					 </span>-->
 				</h3>
 			</div>
 			<div class="table-responsive">

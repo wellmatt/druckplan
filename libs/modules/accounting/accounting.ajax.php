@@ -15,3 +15,7 @@ if ($_REQUEST["exec"] == "doStorno"){
     $invoiceout->setStatus(3);
     $invoiceout->save();
 }
+if ($_REQUEST["exec"] == "doDelete"){
+    $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
+    $invoiceout->delete();
+}

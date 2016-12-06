@@ -106,10 +106,10 @@ echo $quickmove->generate();
                                         <td><?php echo $tmp_vuser->getUser()->getId(); ?></td>
                                         <td><?php echo $tmp_vuser->getUser()->getNameAsLine(); ?></td>
                                         <td>
-                                            <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]" value="<?php echo $tmp_vuser->getDays(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
+                                            <input class="form-control" type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]" value="<?php echo $tmp_vuser->getDays(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
                                         </td>
                                         <td>
-                                            <input type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
+                                            <input class="form-control" type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
                                         </td>
                                         <td><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast());?></td>
                                         <td><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 1));?></td>

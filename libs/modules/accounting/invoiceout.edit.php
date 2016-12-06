@@ -8,6 +8,12 @@
  */
 require_once 'libs/modules/accounting/invoiceout.class.php';
 
+if($_REQUEST["subexec"] == "delete")
+{
+    $invoiceout = new InvoiceOut($_REQUEST["id"]);
+    $savemsg = getSaveMessage($invoiceout->delete());
+}
+
 if ($_REQUEST["subexec"] == "save"){
     if (isset($_REQUEST['payeddate'])){
         $paydate = strtotime($_REQUEST["payeddate"]);
@@ -31,6 +37,7 @@ $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page=libs/modules/accounting/invoiceout.overview.php',null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#invout_form').submit();",'glyphicon-floppy-disk');
+
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
@@ -47,6 +54,14 @@ echo $quickmove->generate();
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Rechnung - <?php echo $invoiceout->getNumber();?>
+                    <span class="pull-right">
+                           <?php if ($invoiceout->getStatus() == 3){?>
+                               <button class="btn btn-xs btn-danger" type="button"
+                                       onclick="doDelete(<?php echo $invoiceout->getId();?>);">
+                                   <?= $_LANG->get('Löschen'); ?>
+                               </button>
+                           <?php }?>
+                    </span>
                 </h3>
             </div>
             <div class="panel-body">
@@ -148,7 +163,7 @@ echo $quickmove->generate();
                         <label for="" class="col-sm-2 control-label">Mahnung</label>
                         <div class="col-sm-4">
                             <button class="btn btn-xs btn-success" type="button"
-                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?php echo $invoiceout->getId(); ?>';">
+                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?php echo $invoiceout->getDoc(); ?>';">
                                 <?= $_LANG->get('Mahnung') ?>
                             </button>
                         </div>
@@ -166,6 +181,16 @@ echo $quickmove->generate();
                 type: "POST",
                 url: "libs/modules/accounting/accounting.ajax.php",
                 data: { exec: "doStorno", id: id }
+            })
+            .done(function( msg ) {
+                document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php';
+            });
+    }
+    function doDelete(id){
+        $.ajax({
+                type: "POST",
+                url: "libs/modules/accounting/accounting.ajax.php",
+                data: { exec: "doDelete", id: id }
             })
             .done(function( msg ) {
                 document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php';

@@ -110,6 +110,20 @@ if($_REQUEST["subexec"] == "save")
 <script type="text/javascript" src="../../../jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
 <script language="JavaScript" src="../../../jscripts/jquery/local/jquery.ui.datepicker-<?=$_LANG->getCode()?>.js"></script>
 <!-- /jQuery -->
+<!-- MegaNavbar -->
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="../../../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<!-- /MegaNavbar -->
+<!-- Glyphicons -->
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/glyphicons-social.css" />
+<!-- /Glyphicons -->
 <!-- FancyBox -->
 <script	type="text/javascript" src="../../../jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 <script	type="text/javascript" src="../../../jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
@@ -126,9 +140,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "../../../images/icons/calendar-blue.png",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "../../../images/icons/calendar-blue.png",
+//                buttonImageOnly: true
 			}
      );
 	$('#vac_end').datepicker(
@@ -136,9 +150,9 @@ $(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-                showOn: "button",
-                buttonImage: "../../../images/icons/calendar-blue.png",
-                buttonImageOnly: true
+//                showOn: "button",
+//                buttonImage: "../../../images/icons/calendar-blue.png",
+//                buttonImageOnly: true
 			}
      );
 });
@@ -151,110 +165,108 @@ $(function() {
 <input type="hidden" name="exec" value="<?=$_REQUEST["exec"]?>">
 <input type="hidden" name="subexec" value="save">
 <input type="hidden" name="eventid" value="<?=$_REQUEST["eventid"]?>">
-<table width="100%">
-    <tr>
-        <td width="300" class="content_header">
-            <h1><span class="glyphicons glyphicons-alarm"></span> <?=$_LANG->get('Urlaub');?> -
-            <? if ($_REQUEST["id"]) echo $_LANG->get('editieren'); else echo $_LANG->get('Neu')?></h1>
-        </td>
-        <td class="content_header"><?=$savemsg?></td>
-    </tr>
-</table>
-
-<input type="submit" value="<?=$_LANG->get('Speichern')?>" class="text">
-<? if($vacation->getId() && ($vacation->getState() == VacationEntry::STATE_OPEN || $_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))) {
-    echo '<input type="submit" class="buttonRed" name="delete" value="'.$_LANG->get('L&ouml;schen').'">';
- } ?> 
-
-<div class="box1">
-	<table width="100%">
-		<colgroup>
-			<col width="180">
-			<col>
-		</colgroup>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Benutzer')?></td>
-			<td class="content_row_clear">
-				<select name="vac_user" id="vac_user" style="width:160px">
-					<?php
-					if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))
-					{
-						echo '<option value="' . $_USER->getId() . '" selected>' . $_USER->getNameAsLine() . '</option>';
-					} else {
-						foreach ($users as $user) {
-							if ($vacation->getUser()->getId() == 0 && $user->getId() == $_USER->getId()) {
-								echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
-							} elseif ($vacation->getUser()->getId() == $user->getId()) {
-								echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
-							} else {
-								echo '<option value="' . $user->getId() . '">' . $user->getNameAsLine() . '</option>';
-							}
-						}
-					}
-					?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Von')?></td>
-			<td class="content_row_clear">
-				<input name="vac_start" id="vac_start" value="<?=date('d.m.Y', $vacation->getStart())?>" style="width:200px;" class="text">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header"><?=$_LANG->get('Bis')?></td>
-			<td class="content_row_clear">
-				<input name="vac_end" id="vac_end" value="<?=date('d.m.Y', $vacation->getEnd())?>" style="width:200px;" class="text">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header" valign="top"><?=$_LANG->get('Tage')?></td>
-			<td class="content_row_clear">
-				<input name="vac_days" type="number" value="<?=$vacation->getDays()?>" step="0.5" class="text" style="width:200px;">
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header" valign="top"><?=$_LANG->get('Status')?></td>
-			<td class="content_row_clear">
-				<select name="vac_state" class="text" style="width:200px;">
-					<?php
-					if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))
-					{
-						if ($vacation->getId()>0)
-						{
-							if ($vacation->getState()==VacationEntry::STATE_OPEN)
-								echo '<option value="'.VacationEntry::STATE_OPEN.'" selected>Offen</option>';
-							else
-								echo '<option value="'.VacationEntry::STATE_APPROVED.'" selected>Genehmigt</option>';
-						} else {
-							echo '<option value="'.VacationEntry::STATE_OPEN.'" selected>Offen</option>';
-						}
-					} else {
-						?>
-						<option value="<? echo VacationEntry::STATE_OPEN;?>" <?php if ($vacation->getState() == VacationEntry::STATE_OPEN) echo ' selected ';?>>Offen</option>
-						<option value="<? echo VacationEntry::STATE_APPROVED;?>" <?php if ($vacation->getState() == VacationEntry::STATE_APPROVED) echo ' selected ';?>>Genehmigt</option>
-					<?php } ?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header" valign="top"><?=$_LANG->get('Typ')?></td>
-			<td class="content_row_clear">
-				<select name="vac_type" class="text" style="width:200px;">
-					<option value="<? echo VacationEntry::TYPE_URLAUB;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_URLAUB) echo ' selected ';?>>Urlaub</option>
-					<option value="<? echo VacationEntry::TYPE_KRANKHEIT;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_KRANKHEIT) echo ' selected ';?>>Krankheit</option>
-					<option value="<? echo VacationEntry::TYPE_UEBERSTUNDEN;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_UEBERSTUNDEN) echo ' selected ';?>>Überstunden</option>
-					<option value="<? echo VacationEntry::TYPE_SONSTIGES;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_SONSTIGES) echo ' selected ';?>>Sonstiges</option>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="content_row_header" valign="top"><?=$_LANG->get('Kommentar')?></td>
-			<td class="content_row_clear">
-				<textarea name="vac_comment" class="text" style="width:300px;height:150px"><?=$vacation->getComment()?></textarea>
-			</td>
-		</tr>
-	</table>
-</div>
+	<div class="panel panel-default">
+		  <div class="panel-heading">
+				<h3 class="panel-title">
+					Urlaub  -
+					<? if ($_REQUEST["id"]) echo $_LANG->get('editieren'); else echo $_LANG->get('Neu')?>
+					<span class="pull-right">
+						<button class="btn btn-xs btn-success" type="submit">
+							<?=$_LANG->get('Speichern')?>
+						</button>
+						<? if($vacation->getId() && ($vacation->getState() == VacationEntry::STATE_OPEN || $_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))) {?>
+						<button class="btn btn-xs btn-danger" type="submit">
+							<?=$_LANG->get('L&ouml;schen')?>
+						</button>
+						<?php  } ?>
+						<?=$savemsg?>
+					</span>
+				</h3>
+		  </div>
+		  <div class="panel-body">
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Benutzer</label>
+				  <div class="col-sm-4">
+					  <select name="vac_user" id="vac_user" class="form-control">
+						  <?php
+						  if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))
+						  {
+							  echo '<option value="' . $_USER->getId() . '" selected>' . $_USER->getNameAsLine() . '</option>';
+						  } else {
+							  foreach ($users as $user) {
+								  if ($vacation->getUser()->getId() == 0 && $user->getId() == $_USER->getId()) {
+									  echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
+								  } elseif ($vacation->getUser()->getId() == $user->getId()) {
+									  echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
+								  } else {
+									  echo '<option value="' . $user->getId() . '">' . $user->getNameAsLine() . '</option>';
+								  }
+							  }
+						  }
+						  ?>
+					  </select>
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Von</label>
+				  <div class="col-sm-4">
+					  <input name="vac_start" id="vac_start" value="<?=date('d.m.Y', $vacation->getStart())?>" class="form-control">
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Bis</label>
+				  <div class="col-sm-4">
+					  <input name="vac_end" id="vac_end" value="<?=date('d.m.Y', $vacation->getEnd())?>" class="form-control">
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Tage</label>
+				  <div class="col-sm-4">
+					  <input name="vac_days" type="number" value="<?=$vacation->getDays()?>" step="0.5" class="form-control">
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Status</label>
+				  <div class="col-sm-4">
+					  <select name="vac_state" class="form-control">
+						  <?php
+						  if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))
+						  {
+							  if ($vacation->getId()>0)
+							  {
+								  if ($vacation->getState()==VacationEntry::STATE_OPEN)
+									  echo '<option value="'.VacationEntry::STATE_OPEN.'" selected>Offen</option>';
+								  else
+									  echo '<option value="'.VacationEntry::STATE_APPROVED.'" selected>Genehmigt</option>';
+							  } else {
+								  echo '<option value="'.VacationEntry::STATE_OPEN.'" selected>Offen</option>';
+							  }
+						  } else {
+							  ?>
+							  <option value="<? echo VacationEntry::STATE_OPEN;?>" <?php if ($vacation->getState() == VacationEntry::STATE_OPEN) echo ' selected ';?>>Offen</option>
+							  <option value="<? echo VacationEntry::STATE_APPROVED;?>" <?php if ($vacation->getState() == VacationEntry::STATE_APPROVED) echo ' selected ';?>>Genehmigt</option>
+						  <?php } ?>
+					  </select>
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Typ</label>
+				  <div class="col-sm-4">
+					  <select name="vac_type" class="form-control">
+						  <option value="<? echo VacationEntry::TYPE_URLAUB;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_URLAUB) echo ' selected ';?>>Urlaub</option>
+						  <option value="<? echo VacationEntry::TYPE_KRANKHEIT;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_KRANKHEIT) echo ' selected ';?>>Krankheit</option>
+						  <option value="<? echo VacationEntry::TYPE_UEBERSTUNDEN;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_UEBERSTUNDEN) echo ' selected ';?>>Überstunden</option>
+						  <option value="<? echo VacationEntry::TYPE_SONSTIGES;?>" <?php if ($vacation->getType() == VacationEntry::TYPE_SONSTIGES) echo ' selected ';?>>Sonstiges</option>
+					  </select>
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-2 control-label">Kommentar</label>
+				  <div class="col-sm-4">
+					  <textarea name="vac_comment" class="form-control"><?=$vacation->getComment()?></textarea>
+				  </div>
+			  </div>
+		  </div>
+	</div>
 <br>
 </form>
