@@ -1399,6 +1399,18 @@ class Calculation
         $sum += $this->getAddCharge(); // Sonstiger Auf/Abschlag
         return $sum;
     }
+
+    public function getMachTotal()
+    {
+        $sum = 0;
+
+        $me = Machineentry::getAllMachineentries($this->getId());
+        foreach($me as $m){
+            $sum += $m->getPrice();
+        }
+
+        return $sum;
+    }
     
     public function getSubTotal(){
     	$sum = 0;
@@ -1418,19 +1430,27 @@ class Calculation
         	}
         }
         $sum += $total_position_price;
-        
-        $sum += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) + $this->paperContentGrant);
-        $sum += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) + $this->paperAddContentGrant);
-        $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) + $this->paperEnvelopeGrant);
-        $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContent2Grant);
-        $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContent3Grant);
+
+
+        if ($this->getPaperContent()->getRolle() != 1){
+            $sum += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) + $this->paperContentGrant);
+            $sum += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) + $this->paperAddContentGrant);
+            $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) + $this->paperEnvelopeGrant);
+            $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContent2Grant);
+            $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContent3Grant);
+        } else {
+            $sum += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) * $this->getPaperContentHeight() / 1000);
+            $sum += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) * $this->getPaperAddContentHeight() / 1000);
+            $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) * $this->getPaperEnvelopeHeight() / 1000);
+            $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) * $this->getPaperAddContent2Height() / 1000);
+            $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) * $this->getPaperAddContent3Height() / 1000);
+        }
         $colorcost = $this->getColorCost();
         $sum += $colorcost;
         foreach ($machines as $m) {
             $sum += $m;
         }
         return $sum;
-        
     }
     
     public function getAvailableFoldschemes()
