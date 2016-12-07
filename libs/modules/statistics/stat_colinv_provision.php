@@ -8,6 +8,7 @@
  */
 require_once 'libs/modules/statistics/statistics.class.php';
 require_once 'libs/basic/globalFunctions.php';
+require_once 'libs/modules/accounting/accounting.ajax.php';
 
 $monate = array(1=>"Januar",
     2=>"Februar",
@@ -78,7 +79,7 @@ if ($_REQUEST["stat_article"]) {
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
 
 
-<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv" id="stat_colinv" class="form-horizontal" enctype="multipart/form-data">
+<form action="index.php?page=<?= $_REQUEST['page'] ?>" method="post" name="stat_colinv_prov" id="stat_colinv_prov" class="form-horizontal" enctype="multipart/form-data">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Provisionsstatistik</h3>
@@ -88,7 +89,7 @@ if ($_REQUEST["stat_article"]) {
                 <div class="panel-heading">
                     <h3 class="panel-title">Filter
                                   <span class="pull-right">
-                                        <button class="btn btn-xs btn-success" onclick="$('#stat_colinv').submit();">
+                                        <button class="btn btn-xs btn-success" onclick="$('#stat_colinv_prov').submit();">
                                             Filter anwenden
                                         </button>
                                          <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
@@ -174,7 +175,16 @@ if ($_REQUEST["stat_article"]) {
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
-                                <div class="panel-heading"><div align="center">Pro Tag</div></div>
+                                <div class="panel-heading">
+                                    <div align="center">
+                                        Pro Tag
+                                        <span class="pull-right">
+                                            <button class="btn btn-xs btn-success" type="submit">
+                                               Speichern
+                                            </button>
+                                      </span>
+                                    </div>
+                                </div>
                                 <div class="panel-body">
                                     <table id="table_colinv_day" class="stripe hover row-border order-column" style="width: auto" width="100%">
                                         <thead>
@@ -185,14 +195,14 @@ if ($_REQUEST["stat_article"]) {
                                             <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+                                            <td style="width: 80px;"><u><h5>Provision in %</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Provision</h5></u></td>
-
                                         </tr>
                                         </thead>
                                         <?php
                                         $days = GetDays(date('d-m-Y', $start), date('d-m-Y', $end));
                                         foreach ($days as $day) {
-                                            $retval = Statistics::ColinvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                                            $retval = Statistics::ColinvProvCountDay(strtotime($day), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                             if (count($retval) > 0) {
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('d.m.y', strtotime($day)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                 foreach ($retval as $item) {
@@ -203,11 +213,20 @@ if ($_REQUEST["stat_article"]) {
                                                     echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                                     echo "<td>{$item->getTitle()}</td>";
                                                     echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                                    echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
-                                                    echo "<td></td>";
+                                                    echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";?>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input name="provision" id="provision" value="<?php echo $_REQUEST["provision"];?>" class="form-control">
+                                                                <span class="input-group-addon">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </td><?php
+                                                         echo "<td></td>";
                                                     echo '</tr>';
                                                     $nettotal += $item->getTotalNetSum();
                                                     $grosstotal += $item->getTotalGrossSum();
+
                                                 }
                                             }
                                         }
@@ -242,8 +261,8 @@ if ($_REQUEST["stat_article"]) {
                                             <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+                                            <td style="width: 80px;"><u><h5>Provision in %</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Provision</h5></u></td>
-
                                         </tr>
                                         </thead>
 
@@ -252,7 +271,7 @@ if ($_REQUEST["stat_article"]) {
                                         $nettotal = 0;
                                         $grosstotal = 0;
                                         foreach ($months as $month) {
-                                            $retval = Statistics::ColinvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                                            $retval = Statistics::ColinvProvCountMonth(strtotime($month), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                             if (count($retval) > 0) {
 
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . $monate[date('n', strtotime($month))] . ' // ' .  date('Y', strtotime($month)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
@@ -264,11 +283,20 @@ if ($_REQUEST["stat_article"]) {
                                                     echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                                     echo "<td>{$item->getTitle()}</td>";
                                                     echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                                    echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
+                                                    echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";?>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input name="provision" id="provision" value="" class="form-control">
+                                                                <span class="input-group-addon">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </td><?php
                                                     echo "<td></td>";
                                                     echo '</tr>';
                                                     $nettotal += $item->getTotalNetSum();
                                                     $grosstotal += $item->getTotalGrossSum();
+
                                                 }
                                             }
                                         }
@@ -304,6 +332,7 @@ if ($_REQUEST["stat_article"]) {
                                             <td style="width: 200px;"><u><h5>Titel</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Netto</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Brutto</h5></u></td>
+                                            <td style="width: 80px;"><u><h5>Provision in %</h5></u></td>
                                             <td style="width: 80px;"><u><h5>Provision</h5></u></td>
 
                                         </tr>
@@ -314,7 +343,7 @@ if ($_REQUEST["stat_article"]) {
                                         $nettotal = 0;
                                         $grosstotal = 0;
                                         foreach ($years as $year) {
-                                            $retval = Statistics::ColinvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
+                                            $retval = Statistics::ColinvProvCountYear(strtotime($year), $stat_customer, $stat_user, $stat_article, $stat_tradegroup, $stat_status);
                                             if (count($retval) > 0) {
 //                                                      echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td class="highlight">' . date('Y', strtotime($year)) . ' // Anzahl: ' . count($retval) . '</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
                                                 foreach ($retval as $item) {
@@ -325,8 +354,20 @@ if ($_REQUEST["stat_article"]) {
                                                     echo "<td>{$item->getCustomer()->getNameAsLine()}</td>";
                                                     echo "<td>{$item->getTitle()}</td>";
                                                     echo "<td>" .printPrice($item->getTotalNetSum(),2). "</td>";
-                                                    echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";
-                                                    echo "<td></td>";
+                                                    echo "<td>" .printPrice($item->getTotalGrossSum(),2). "</td>";?>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input name="provision" id="provision" value="" class="form-control">
+                                                                <span class="input-group-addon">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-text">
+
+                                                        </div>
+                                                    </td><?php
                                                     echo '</tr>';
 
                                                     $nettotal += $item->getTotalNetSum();
@@ -338,6 +379,7 @@ if ($_REQUEST["stat_article"]) {
                                         }
                                         ?>
                                     </table>
+
                                     <div class="form-group">
                                         <label for="" class="col-sm-3 control-label">Gesamt Summe</label>
                                         <label for="" class="col-sm-1 control-label">Netto</label>
@@ -359,65 +401,14 @@ if ($_REQUEST["stat_article"]) {
     </div>
 </form>
 
-
-<!--<script type="text/javascript">-->
-<!--    $(document).ready(function() {-->
-<!--        var table_colinv_day = $('#table_colinv_day').DataTable({-->
-<!--            "dom": 'rti',-->
-<!--            "processing": true,-->
-<!--            "ordering": false,-->
-<!--            "order": [],-->
-<!--            "bServerSide": true,-->
-<!--            "sAjaxSource": "libs/modules/statistics/statistic.class.php",-->
-<!--            "paging": false,-->
-<!--            "columns": [-->
-<!--                null,-->
-<!--                null,-->
-<!--                null,-->
-<!--                null,-->
-<!--                null,-->
-<!--                null-->
-<!--            ],-->
-<!--             "language":-->
-<!--            {-->
-<!--                "emptyTable":     "Keine Daten vorhanden",-->
-<!--                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",-->
-<!--                "infoEmpty": 	  "Keine Seiten vorhanden",-->
-<!--                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",-->
-<!--                "infoPostFix":    "",-->
-<!--                "thousands":      ".",-->
-<!--                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",-->
-<!--                "loadingRecords": "Lade...",-->
-<!--                "processing":     "Verarbeite...",-->
-<!--                "search":         "Suche:",-->
-<!--                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",-->
-<!--                "paginate": {-->
-<!--                    "first":      "Erste",-->
-<!--                    "last":       "Letzte",-->
-<!--                    "next":       "N&auml;chste",-->
-<!--                    "previous":   "Vorherige"-->
-<!--                },-->
-<!--                "aria": {-->
-<!--                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",-->
-<!--                    "sortDescending": ": aktivieren um absteigend zu sortieren"-->
-<!--                }-->
-<!--            }-->
-<!--        } );-->
-<!---->
-<!--        $("#table_colinv_day tbody td").live('click',function(){-->
-<!--            var aPos = $('#table_colinv_day').dataTable().fnGetPosition(this);-->
-<!--            var aData = $('#table_colinv_day').dataTable().fnGetData(aPos[0]);-->
-<!--            document.location='index.php?page=libs/modules/statistics/stat_colinv.php'+aData[0];-->
-<!--        });-->
-<!---->
-<!--        $('#search').keyup(function(){-->
-<!--            table_colinv_day.search( $(this).val() ).draw();-->
-<!--        })-->
-<!--    } );-->
-<!--</script>-->
-
-
 <script>
+
+
+
+
+
+
+
     $(function () {
         var table_colinv_day = $('#table_colinv_day').DataTable({
             "dom": 'rti',
