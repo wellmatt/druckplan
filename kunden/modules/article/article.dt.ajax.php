@@ -21,6 +21,7 @@ require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/attachment/attachment.class.php';
+require_once 'libs/modules/storage/storage.position.class.php';
 session_start();
 
 $DB = new DBMysql();
@@ -38,7 +39,7 @@ if (!$_REQUEST["bc"] || !$_REQUEST["cp"]) {
     die();
 }
 
-$aColumns = array('id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title');
+$aColumns = array('id', 'art_picture', 'title', 'number', 'article_tags', 'tradegroup_title', 'minstorage');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = "id";
@@ -306,6 +307,10 @@ while ($aRow = mysql_fetch_array($rResult)) {
             /* do not print */
         } else if ($aColumns[$i] == 'id') {
             $row[] = $aRow[ $aColumns[$i] ];
+        } else if ($aColumns[$i] == 'minstorage') {
+            $row[] = StoragePosition::getTotalMinStoredForArticle(new Article((int)$aRow['id']));
+            // add current stored amount as last column
+            $row[] = StoragePosition::getTotalStoredForArticle(new Article((int)$aRow['id']));
         } else if ($aColumns[$i] == 'article.matchcode') {
             $row[] = nl2br(htmlentities(utf8_encode($aRow['matchcode'])));
         } else {

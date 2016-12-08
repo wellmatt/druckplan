@@ -19,6 +19,7 @@ class StoragePosition extends Model
     public $amount = 0;
     public $min_amount = 0;
     public $respuser = 0;
+    public $respcps = "";
     public $description = '';
     public $note = '';
     public $dispatch = '';
@@ -98,6 +99,67 @@ class StoragePosition extends Model
             $retval = $r[0]['allocation'];
         }
         return $retval;
+    }
+
+    /**
+     * Fetch total stored amount for article
+     * @param Article $article
+     * @return int
+     */
+    public static function getTotalStoredForArticle($article)
+    {
+        $spositions = StoragePosition::getAllForArticle($article);
+        $stored = 0;
+        foreach ($spositions as $sposition) {
+            $stored += $sposition->getAmount();
+        }
+        return $stored;
+    }
+
+    /**
+     * Fetch total min amount for article
+     * @param Article $article
+     * @return int
+     */
+    public static function getTotalMinStoredForArticle($article)
+    {
+        $spositions = StoragePosition::getAllForArticle($article);
+        $min = 0;
+        foreach ($spositions as $sposition) {
+            $min += $sposition->getMinAmount();
+        }
+        return $min;
+    }
+
+    /**
+     * Gets all cps assigned as responsible
+     * @return ContactPerson[]
+     */
+    public function getAllRespContactpersons()
+    {
+        $res = [];
+        $cps = explode(',',$this->respcps);
+        foreach ($cps as $cp) {
+            $res[] = new ContactPerson((int)$cp);
+        }
+        return $res;
+    }
+
+    /**
+     * Sets all cps assigned as responsible
+     * @param ContactPerson[] $cps
+     * @return bool
+     */
+    public function setMultipleContactpersons($cps)
+    {
+        $respcps = [];
+        if (count($cps)>0){
+            foreach ($cps as $cp) {
+                $respcps[] = $cp->getId();
+            }
+        }
+        $this->respcps = join(',',$respcps);
+        return true;
     }
 
     /**
@@ -274,5 +336,21 @@ class StoragePosition extends Model
     public function setArticle($article)
     {
         $this->article = $article;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRespcps()
+    {
+        return $this->respcps;
+    }
+
+    /**
+     * @param string $respcps
+     */
+    public function setRespcps($respcps)
+    {
+        $this->respcps = $respcps;
     }
 }

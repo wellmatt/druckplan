@@ -335,6 +335,18 @@ class ContactPerson {
 
 	/**
 	 * @param null $businessContact
+	 * @return int
+	 */
+	public static function getTotalCount($businessContact = NULL)
+	{
+		global $DB;
+		$sql = " SELECT count(id) as `count` FROM contactperson WHERE active > 0 " . (($businessContact == NULL) ? "" : " AND businesscontact = " . $businessContact->getID());
+		$res = $DB->select($sql);
+		return $res[0]['count'];
+	}
+
+	/**
+	 * @param null $businessContact
 	 * @param string $order
 	 * @param string $filter
 	 * @param int $loader

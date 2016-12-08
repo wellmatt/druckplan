@@ -23,6 +23,7 @@ class StorageArea extends Model {
     public $number = '';
     public $intext = 1;
     public $type = '';
+    public $eldate = 0;
 
     const PRIO_LOW = 0;
     const PRIO_MED = 1;
@@ -306,5 +307,21 @@ class StorageArea extends Model {
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEldate()
+    {
+        return $this->eldate;
+    }
+
+    /**
+     * @param int $eldate
+     */
+    public function setEldate($eldate)
+    {
+        $this->eldate = $eldate;
     }
 }

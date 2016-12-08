@@ -56,6 +56,7 @@ function printSubTradegroupsForSelect($parentId, $depth){
     }
 }
 
+
 if ($_REQUEST['exec'] == 'delete'){
     $id = $_REQUEST['id'];
     $storageposition = new StoragePosition($id);
@@ -64,6 +65,7 @@ if ($_REQUEST['exec'] == 'delete'){
 }
 if ($_REQUEST['exec'] == 'save'){
     $id = $_REQUEST['id'];
+    $respcps = join(',',$_REQUEST["respcps"]);
     $create = [
         'area'=>$_REQUEST['area'],
         'article'=>$_REQUEST['article'],
@@ -76,6 +78,7 @@ if ($_REQUEST['exec'] == 'save'){
         'dispatch'=>$_REQUEST['stp_dispatch'],
         'packaging'=>$_REQUEST['stp_packaging'],
         'allocation'=>$_REQUEST['stp_allocation'],
+        'respcps'=>$respcps
     ];
     $storageposition = new StoragePosition($id,$create);
     $storageposition->save();
@@ -137,6 +140,9 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
 <link rel="stylesheet" type="text/css" href="../../../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
 <script src="../../../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 <!-- /MegaNavbar -->
+<link href="../../../jscripts/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="../../../jscripts/select2/dist/js/select2.min.js"></script>
+<script src="../../../jscripts/select2/dist/js/i18n/de.js"></script>
 
 <form action="storage.position.frame.php" id="storagearea_form" name="storagearea_form" class="form-horizontal" method="post">
     <input type="hidden" id="id" name="id" value="<?=$position->getId()?>" />
@@ -194,6 +200,20 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
                       </div>
 
                       <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Externe ASPs</label>
+                          <div class="col-sm-4">
+                              <select name="respcps[]" id="respcps" class="form-control" multiple="multiple">
+                                  <?php
+                                  $cps = $position->getAllRespContactpersons();
+                                  foreach ($cps as $cp) {
+                                      echo '<option value="'.$cp->getId().'" selected>'.$cp->getNameAsLine().'</option>';
+                                  }
+                                  ?>
+                              </select>
+                          </div>
+                      </div>
+
+                      <div class="form-group">
                           <label for="" class="col-sm-3 control-label">Versandart</label>
                           <div class="col-sm-4">
                               <input type="text" id="stp_dispatch" name="stp_dispatch"
@@ -226,7 +246,7 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
                                       </ul>
                                   </div>
                                   <input type="number" min="0" max="<?php echo $maxallocation; ?>" name="stp_allocation"
-                                         id="stp_allocation" class="numberBox">%
+                                         id="stp_allocation" class="numberBox" value="<?php if ($position->getAllocation()>0) echo $position->getAllocation();?>">%
                               </div>
                           </div>
                       </div>
@@ -266,9 +286,46 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
             </div>
         </div>
     </div>
-
+    <input type="submit">
 </form>
 
+<script>
+    $(function() {
+        $("#respcps").select2({
+            ajax: {
+                url: "../../../libs/basic/ajax/select2.ajax.php?ajax_action=search_cp",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+            language: "de",
+            multiple: true,
+            allowClear: true,
+            tags: true
+        }).trigger('change');
+    });
+</script>
 <script>
     $(function() {
         $( "#stp_businesscontact_name" ).autocomplete({

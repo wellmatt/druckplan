@@ -67,7 +67,9 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				null,
 				null,
 				null,
-				{ "sortable": false }
+				{ "sortable": false },
+				{ "searchable": false },
+				{ "searchable": false }
 			],
 			"fnServerData": function ( sSource, aoData, fnCallback ) {
 				var tags = document.getElementById('ajax_tags').value;
@@ -320,6 +322,8 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				<th><?= $_LANG->get('Art.-Nr.') ?></th>
 				<th><?= $_LANG->get('Tags') ?></th>
 				<th><?= $_LANG->get('Warengruppe') ?></th>
+				<th><?= $_LANG->get('Min. Lagerm.') ?></th>
+				<th><?= $_LANG->get('Auf Lager') ?></th>
 			</tr>
 			</thead>
 		</table>

@@ -52,7 +52,7 @@ class Article {
 	private $tags;                  // Artikel Tags
 	private $orderid = 0;           // Verknuepfte Kalk
 	private $usesstorage = 0;		// Lagerartikel
-	
+
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
 	private $qualified_users = Array();
@@ -203,7 +203,7 @@ class Article {
 					isworkhourart		= {$this->isworkhourart}, 
 					matchcode		    = '{$this->matchcode}',
 					usesstorage		    = {$this->usesstorage},
-					orderid             = {$this->orderid} 
+					orderid             = {$this->orderid}
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
 		} else {
@@ -1230,4 +1230,3 @@ class Article {
 		$this->usesstorage = $usesstorage;
 	}
 }
-?>

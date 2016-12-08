@@ -58,7 +58,7 @@ if ($_REQUEST['area']){
                 <th>#</th>
                 <th>Kunde</th>
                 <th>Artikel</th>
-                <th>Artikel #</th>
+                <th>Artikel Nr.</th>
                 <th>Lagermenge</th>
                 <th>Mindestmenge</th>
                 <th>Verantwortlicher</th>
@@ -79,10 +79,10 @@ if ($_REQUEST['area']){
                 <td><?php echo $position->getArticle()->getNumber()?></td>
                 <td>
                     <?php if ($position->getAmount()<=$position->getMinAmount()) echo '<span class="error" style="color: red;">';?>
-                    <?php echo $position->getAmount()?>
+                    <?php echo printPrice($position->getAmount(),0)?>
                     <?php if ($position->getAmount()<=$position->getMinAmount()) echo '</span>';?>
                 </td>
-                <td><?php echo $position->getMinAmount()?></td>
+                <td><?php echo printPrice($position->getMinAmount(),0)?></td>
                 <td><?php echo $position->getRespuser()->getNameAsLine()?></td>
                 <td title="<?php echo $position->getDescription()?>">
                     <?php if (strlen($position->getDescription())>20) echo substr($position->getDescription(),0,20).'...'; else echo $position->getDescription();?>

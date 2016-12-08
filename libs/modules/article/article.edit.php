@@ -64,6 +64,7 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShowShopPrice((int)$_REQUEST["article_show_shop_price"]);
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
 	$article->setMatchcode($_REQUEST["article_matchcode"]);
+
 	if ($_REQUEST['usesstorage'])
 		$article->setUsesstorage($_REQUEST["usesstorage"]);
 	else

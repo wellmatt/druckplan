@@ -20,6 +20,7 @@ if ($_REQUEST["subexec"] == "save"){
         'number' => $_REQUEST["st_number"],
         'type' => $_REQUEST["st_type"],
         'intext' => $_REQUEST["st_intext"],
+        'eldate' => strtotime($_REQUEST["st_date"]),
         'prio' => $_REQUEST['st_prio'],
     ];
     $storagearea = new StorageArea((int)$_REQUEST["id"], $array);
@@ -120,6 +121,12 @@ echo $quickmove->generate();
                                         <option value="1" <?php if ($storagearea->getIntext() == 1) echo ' selected ';?>>Intern</option>
                                         <option value="2" <?php if ($storagearea->getIntext() == 2) echo ' selected ';?>>Extern</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Einl. Datum</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="st_date" id="st_date" value="<?php if($storagearea->getEldate()>0) echo date('d.m.Y', $storagearea->getEldate());?>">
                                 </div>
                             </div>
                         </div>
@@ -234,8 +241,9 @@ echo $quickmove->generate();
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Artikel</th>
+                                <th>Artikel Nr.</th>
                                 <th>Anzahl</th>
                                 <th>Belegung</th>
                                 <th>Herkunft</th>
@@ -248,10 +256,11 @@ echo $quickmove->generate();
                                 <tr>
                                     <td><?php echo $booke->getId();?></td>
                                     <td><?php echo $booke->getArticle()->getTitle();?></td>
+                                    <td><?php echo $booke->getArticle()->getNumber();?></td>
                                     <?php if ($booke->getType() == 1){?>
-                                        <td>+<?php echo $booke->getAmount();?></td>
+                                        <td>+<?php echo printPrice($booke->getAmount(),0);?></td>
                                     <?php } elseif ($booke->getType() == 2){?>
-                                        <td>-<?php echo $booke->getAmount();?></td>
+                                        <td>-<?php echo printPrice($booke->getAmount(),0);?></td>
                                     <?php } ?>
                                     <td><?php echo $booke->getAlloc();?>%</td>
                                     <td><?php echo $booke->getOrigin()->getNumber();?></td>
@@ -284,6 +293,14 @@ echo $quickmove->generate();
 
 <script language="JavaScript">
     $(document).ready(function () {
+        $('#st_date').datepicker(
+            {
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                dateFormat: 'dd.mm.yy'
+            }
+        );
+
         $('#storagearea_form').validate({
             rules: {
                 'st_name': {

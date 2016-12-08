@@ -35,10 +35,20 @@ if ($_REQUEST["ajax_action"] == "search_customer_cp"){
 	$allContactPerson = ContactPerson::getAllContactPersons($customer, ContactPerson::ORDER_NAME, " AND (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");
 	foreach ($allContactPerson as $cp){
 	    $retval[] = Array("value" => $cp->getId(), "label" => $cp->getNameAsLine(), "mail" => $cp->getEmail(), "phone" => $cp->getPhone());
-	} 
+	}
 	$retval = json_encode($retval);
 	header("Content-Type: application/json");
 	echo $retval;
+}
+if ($_REQUEST["ajax_action"] == "search_cp"){
+    $retval = Array();
+    $allContactPerson = ContactPerson::getAllContactPersons(NULL, ContactPerson::ORDER_NAME, " AND (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($allContactPerson as $cp){
+        $retval[] = Array("value" => $cp->getId(), "label" => $cp->getNameAsLine());
+    }
+    $retval = json_encode($retval);
+    header("Content-Type: application/json");
+    echo $retval;
 }
 if ($_REQUEST["ajax_action"] == "search_article"){
     $retval = Array();
