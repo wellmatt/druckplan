@@ -427,9 +427,9 @@ echo $quickmove->generate();
                                                          <td  width="10%">
                                                              <span class="glyphicons glyphicons-minus pointer" onclick="removeOption('size', <?= $i ?>)"></span>
                                                          </td>
-                                                         <? $i++;
-                                                         } ?>
-                                                         <td  width="25%">
+                                                         <td  width="100%">
+                                                             <? $i++;
+                                                             } ?>
                                                              <span class="glyphicons glyphicons-plus pointer" onclick="addSizeField()"></span>
                                                          </td>
                                                      </tr>
@@ -475,9 +475,10 @@ echo $quickmove->generate();
                                                            <td  width="10%">
                                                                <span class="glyphicons glyphicons-minus pointer" onclick="removeOption('weight', <?= $i ?>)"></span>
                                                            </td>
-                                                           <? $i++;
-                                                           } ?>
-                                                           <td  width="33%">
+
+                                                           <td  width="100%">
+                                                               <? $i++;
+                                                               } ?>
                                                                <span class="glyphicons glyphicons-plus pointer" onclick="addWeightField()"></span>
                                                            </td>
                                                        </tr>

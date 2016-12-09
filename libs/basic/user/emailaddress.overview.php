@@ -38,7 +38,7 @@ if ($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec
                 <tr>
                     <th><?= $_LANG->get('ID') ?></th>
                     <th><?= $_LANG->get('Adresse') ?></th>
-                    <th></th>
+                    <th><?= $_LANG->get('Optionen') ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -55,7 +55,7 @@ if ($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec
                                         class="glyphicons glyphicons-file"></span></a>
                                 <a class="icon-link" href="#"
                                    onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=delete&id=<?= $e->getId() ?>')"><span
-                                        class="glyphicons glyphicons-remove"></span></a>
+                                        class="glyphicons glyphicons-remove" style="color: red;"></span></a>
                             </td>
                         </tr>
                     <? } ?>

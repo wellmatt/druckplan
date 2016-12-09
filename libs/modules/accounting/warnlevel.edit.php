@@ -47,36 +47,36 @@ echo $quickmove->generate();
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
-						<label for="" class="col-sm-3 control-label">Titel</label>
-						<div class="col-sm-4">
+						<label for="" class="col-sm-4 control-label">Titel</label>
+						<div class="col-sm-8">
 							<input name="warn_title" id="warn_title" value="<?= $warn->getTitle() ?>"
 								   class="form-control">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-3 control-label">Text</label>
-						<div class="col-sm-9">
+						<label for="" class="col-sm-4 control-label">Text</label>
+						<div class="col-sm-8">
 							<textarea rows="6" id="warn_text" name="warn_text" class="form-control"><?= $warn->getText() ?></textarea>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-3 control-label">Mahnfrist(Tage)</label>
-						<div class="col-sm-4">
+						<label for="" class="col-sm-4 control-label">Mahnfrist (Tage)</label>
+						<div class="col-sm-8">
 							<input name="warn_deadline" id="warn_deadline" value="<?= $warn->getDeadline() ?>" class="form-control">
 						</div>
 					</div>
 					<? if ($warn->getCrt_user()->getId() > 0) { ?>
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Erstellt von</label>
-							<div class="col-sm-4">
+							<label for="" class="col-sm-8 control-label">Erstellt von</label>
+							<div class="col-sm-8">
 								<div class="form-text">
 									<? if ($warn->getCrt_user()->getId() > 0) echo $warn->getCrt_user()->getNameAsLine() ?>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Erstellt am</label>
-							<div class="col-sm-4">
+							<label for="" class="col-sm-4 control-label">Erstellt am</label>
+							<div class="col-sm-8">
 								<div class="form-text">
 									<? if ($warn->getCrt_date() > 0) echo date('d.m.Y - H:i:s', $warn->getCrt_date()) ?>
 								</div>
@@ -84,14 +84,14 @@ echo $quickmove->generate();
 						</div>
 						<? if ($warn->getUpd_user()->getId() > 0) { ?>
 							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Bearbeitet von</label>
-								<div class="col-sm-9">
+								<label for="" class="col-sm-4 control-label">Bearbeitet von</label>
+								<div class="col-sm-8">
 									<?= $warn->getUpd_user()->getNameAsLine() ?>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Bearbeitet am</label>
-								<div class="col-sm-9">
+								<label for="" class="col-sm-4 control-label">Bearbeitet am</label>
+								<div class="col-sm-8">
 									<? if ($warn->getUpd_date() > 0) echo date('d.m.Y - H:i:s', $warn->getUpd_date()) ?>
 								</div>
 							</div>

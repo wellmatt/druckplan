@@ -274,13 +274,13 @@ echo $quickmove->generate();
 				<div id="tabs-1">
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">Zuschuss pro DP:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="zuschussprodp" id="zuschussprodp" class="form-control" value="<?= str_replace(".", ",", $perf->getZuschussProDP()); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">Fortdruckzuschuss & Weiterverarbeitung:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<div class="input-group">
 								<input type="text" name="zuschusspercent" class="form-control" id="zuschusspercent" value="<?= str_replace(".", ",", $perf->getZuschussPercent()); ?>"/>
 								<span class="input-group-addon">%</span>
@@ -298,31 +298,31 @@ echo $quickmove->generate();
 				<div id="tabs-2">
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">SMTP eMail-Adresse:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="smtp_address" id="smtp_address" class="form-control" value="<?=$perf->getSmtpAddress(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">SMTP Server:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="smtp_host" id="smtp_host" class="form-control" value="<?=$perf->getSmtpHost(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">SMTP Port:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="smtp_port" id="smtp_port" class="form-control" value="<?=$perf->getSmtpPort(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">SMTP User:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="smtp_user" id="smtp_user" class="form-control" value="<?=$perf->getSmtpUser(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">SMTP Passwort:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="password" name="smtp_password" id="smtp_password" class="form-control" value="<?=$perf->getSmtpPassword(); ?>"/>
 						</div>
 					</div>
@@ -349,31 +349,31 @@ echo $quickmove->generate();
 					<hr>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">IMAP eMail-Adresse:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="imap_address" id="imap_address" class="form-control" value="<?=$perf->getImapAddress(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">IMAP Server:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="imap_host" id="imap_host" class="form-control" value="<?=$perf->getImapHost(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">IMAP Port:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="imap_port" id="imap_port" class="form-control" value="<?=$perf->getImapPort(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">IMAP User:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" name="imap_user" id="imap_user" class="form-control" value="<?=$perf->getImapUser(); ?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">IMAP Passwort:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="password" name="imap_password" id="imap_password" class="form-control" value="<?=$perf->getImapPassword(); ?>"/>
 						</div>
 					</div>
@@ -451,7 +451,7 @@ echo $quickmove->generate();
 				<div id="tabs-4">
 					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">Def. Anzahl Elemente:</label>
-						<div class="col-sm-2">
+						<div class="col-sm-4">
 							<input type="text" class="form-control" name="datatables_showelements" id="datatables_showelements"
 								   value="<?php echo $perf->getDt_show_default(); ?>"/>
 						</div>

@@ -61,15 +61,15 @@ echo $quickmove->generate();
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Titel</label>
-                        <div class="col-sm-10">
+                        <label for="" class="col-sm-4 control-label">Titel</label>
+                        <div class="col-sm-8">
                             <input type="text" name="title" class="form-control"
                                    value="<?php echo $marketingjob->getTitle(); ?>">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Kunde</label>
-                        <div class="col-sm-10">
+                        <label for="" class="col-sm-4 control-label">Kunde</label>
+                        <div class="col-sm-8">
                             <input class="form-control" type="text" name="search" id="search"
                                    value="<?php echo $marketingjob->getBusinesscontact()->getNameAsLine(); ?>">
                             <input class="form-control" type="hidden" name="businesscontact" id="businesscontact"
@@ -77,8 +77,8 @@ echo $quickmove->generate();
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Datum</label>
-                        <div class="col-sm-4">
+                        <label for="" class="col-sm-4 control-label">Datum</label>
+                        <div class="col-sm-8">
                             <input class=form-control type="text" name="date" id="date"
                                    value="<? if ($marketingjob->getCrtdate() != 0) {
                                        echo date('d.m.Y', $marketingjob->getCrtdate());

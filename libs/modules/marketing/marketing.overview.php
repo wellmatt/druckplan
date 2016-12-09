@@ -50,7 +50,7 @@ $marketjobs = Marketing::getAllForList($curr_list);
                   <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" class="form-horizontal" id="marketing_column_form">
                       <div class="form-group">
                           <label for="" class="col-sm-2 control-label">Vorlage auswählen:</label>
-                          <div  class="col-sm-2 ">
+                          <div  class="col-sm-4 ">
                               <select class="form-control" name="list">
                                   <?php
                                   foreach ($lists as $list) {
@@ -63,7 +63,13 @@ $marketjobs = Marketing::getAllForList($curr_list);
                               </select>
                           </div>
                           <div class="col-sm-2">
-                              <button type="submit" class="btn btn-sm">Weiter</button>
+                              <button type="submit" class="btn btn-sm btn-success">Weiter</button>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Suche</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="search" class="form-control" placeholder="">
                           </div>
                       </div>
                   </form>
@@ -113,10 +119,10 @@ $marketjobs = Marketing::getAllForList($curr_list);
 
 <script language="JavaScript">
     $(document).ready(function () {
-        var marketingtable = $('#marketing_table').DataTable({
+        var marketing_table = $('#marketing_table').DataTable({
             "scrollX": true,
             "aaSorting": [[1, "desc"]],
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -155,6 +161,9 @@ $marketjobs = Marketing::getAllForList($curr_list);
                     "sortDescending": ": aktivieren um absteigend zu sortieren"
                 }
             }
+        });
+        $('#search').keyup(function(){
+            marketing_table.search( $(this).val() ).draw();
         });
 
         $("#marketing_table tbody td").live('click', function () {

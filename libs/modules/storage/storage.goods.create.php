@@ -158,26 +158,27 @@ echo $quickmove->generate();
                     <input type="hidden" id="type" name="type" value="<?=$type?>" />
                     <input type="hidden" id="origin" name="origin" value="<?=$origin->getId()?>" />
                     <input type="hidden" id="exec" name="exec" value="save" />
-
-                    <table border="0" cellpadding="3" cellspacing="1" width="100%">
-                        <colgroup>
-                            <col width="130">
-                            <col>
-                        </colgroup>
-                        <tr>
-                            <td class="content_header"><?=$_LANG->get('Herkunft')?>: </td>
-                            <td class="content_row_clear"><?php echo $origin->getNumber();?></td>
-                        </tr>
-                        <tr>
-                            <?php if (is_a($origin,'SupOrder')){?>
-                                <td class="content_header"><?=$_LANG->get('Lieferant')?>: </td>
-                                <td class="content_row_clear"><?php echo $origin->getSupplier()->getNameAsLine();?></td>
-                            <?php } else if (is_a($origin,'CollectiveInvoice')){?>
-                                <td class="content_header"><?=$_LANG->get('Kunde')?>: </td>
-                                <td class="content_row_clear"><?php echo $origin->getCustomer()->getNameAsLine();?></td>
-                            <?php }?>
-                        </tr>
-                    </table>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Herkunft</label>
+                        <div class="col-sm-4 form-text" >
+                            <?php echo $origin->getNumber();?>
+                        </div>
+                    </div>
+                    <?php if (is_a($origin,'SupOrder')){?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Lieferant</label>
+                            <div class="col-sm-4 form-text">
+                                <?php echo $origin->getSupplier()->getNameAsLine();?>
+                            </div>
+                        </div>
+                    <?php } else if (is_a($origin,'CollectiveInvoice')){?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Kunde</label>
+                            <div class="col-sm-4 form-text">
+                                <?php echo $origin->getCustomer()->getNameAsLine();?>
+                            </div>
+                        </div>
+                    <?php }?>
                     <br>
                     <div id="positions">
                         <?php

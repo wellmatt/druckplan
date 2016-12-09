@@ -121,10 +121,12 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new" || $_REQUEST["exec"
             			<h3 class="panel-title">Filter</h3>
             	  </div>
             	  <div class="panel-body">
-                      <div class="form-group">
-                          <label for="" class="col-sm-2 control-label">Suche</label>
-                          <div class="col-sm-4">
-                              <input type="text" id="search" class="form-control" placeholder="">
+                      <div class="form-horizontal">
+                          <div class="form-group">
+                              <label for="" class="col-sm-2 control-label">Suche</label>
+                              <div class="col-sm-4">
+                                  <input type="text" id="search" class="form-control" placeholder="">
+                              </div>
                           </div>
                       </div>
             	  </div>

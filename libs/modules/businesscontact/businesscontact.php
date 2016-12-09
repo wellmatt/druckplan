@@ -161,10 +161,10 @@ $(document).ready(function() {
 				</h3>
 			</div>
 			<div class="panel-body">
-				 <div class="row">
+				 <div class="form-horizontal">
 					 <div class="form-group">
-						 <label for="" class="col-sm-2 control-label">Merkmal-Filter:</label>
-						 <div class="col-sm-3">
+						 <label for="" class="col-sm-2 control-label">Merkmal-Filter</label>
+						 <div class="col-sm-4">
 							 <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								 <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								 <?
@@ -177,11 +177,9 @@ $(document).ready(function() {
 							 </select>
 						 </div>
 					 </div>
-				 </div>
-				 <div class="row">
 					 <div class="form-group">
-						 <label for="" class="col-sm-2 control-label">Suche:</label>
-						 <div class="col-sm-3">
+						 <label for="" class="col-sm-2 control-label">Suche</label>
+						 <div class="col-sm-4">
 							 <input type="text" id="search" class="form-control" placeholder="">
 						 </div>
 					 </div>

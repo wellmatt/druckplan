@@ -228,7 +228,6 @@ function createSelects(id,count,workload)
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-                <span class="glyphicons glyphicons-pencil"></span>
                 Jobs
                 <span class="pull-right">
                   <?=$savemsg?>

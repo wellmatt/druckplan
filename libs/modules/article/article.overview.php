@@ -217,8 +217,8 @@ $(function() {
             <div class="panel-body">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Tags:</label>
-                        <div class="col-sm-3">
+                        <label for="" class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-4">
                             <input type="hidden" id="ajax_tags" name="ajax_tags"/>
                             <input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)"
                                    onblur="markfield(this,1)">
@@ -226,8 +226,8 @@ $(function() {
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Warengruppe:</label>
-                        <div class="col-sm-3">
+                        <label for="" class="col-sm-2 control-label">Warengruppe</label>
+                        <div class="col-sm-4">
                             <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
                             <select name="tradegroup" id="tradegroup" class="form-control"
                                     onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();"
@@ -247,8 +247,8 @@ $(function() {
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Kunde/Ansprechpartner:</label>
-                        <div class="col-sm-3">
+                        <label for="" class="col-sm-2 control-label">Kunde/Ansprechpartner</label>
+                        <div class="col-sm-4">
                             <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
                             <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
                             <input name="bc_cp" id="bc_cp" class="form-control"
@@ -258,7 +258,7 @@ $(function() {
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Suche</label>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <input type="text" id="search" class="form-control" placeholder="">
                         </div>
                     </div>
@@ -282,8 +282,8 @@ $(function() {
                         <div class="panel-body" style="display: none;">
                             <div id="cfield_div"></div>
                             <div class="form-group">
-                                <label for="" class="col-sm-3 control-label">Neuer Filter</label>
-                                <div class="col-sm-6">
+                                <label for="" class="col-sm-2 control-label">Neuer Filter</label>
+                                <div class="col-sm-4">
                                     <select id="addfilterselect" class="form-control">
                                         <?php
                                         foreach ($article_fields as $article_field) {
@@ -300,7 +300,7 @@ $(function() {
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button class="btn btn-sm btn-warning" onclick="addFilter();">
+                                    <button class="btn btn-sm btn-success" onclick="addFilter();">
                                         Hinzufügen
                                     </button>
                                 </div>

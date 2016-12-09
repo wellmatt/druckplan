@@ -40,20 +40,19 @@ if ($_REQUEST["exec"] == "delete"){
                  <div class="row">
                      <div class="form-group">
                          <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
-                         <label for="" class="col-sm-1 control-label">Von:</label>
                          <div class="col-sm-4">
                              <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
                              <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
                          </div>
-                         <label for="" class="col-sm-1 control-label">Bis:</label>
+                         <label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
                          <div class="col-sm-4">
                              <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
                              <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
                          </div>
                      </div>
                      <div class="form-group">
-                         <label for="" class="col-sm-3 control-label">Suche:</label>
-                         <div class="col-sm-4">
+                         <label for="" class="col-sm-2 control-label">Suche</label>
+                         <div class="col-sm-10">
                              <input type="text" id="search" class="form-control" placeholder="">
                          </div>
                      </div>

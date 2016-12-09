@@ -13,16 +13,16 @@ require_once 'warnlevel.class.php';
 if($_REQUEST["exec"] == "new"){
 	include_once 'invoicewarning.new.php';
 } else {
-	
+
 	$warnlevel = new Warnlevel((int)$_REQUEST["warn_id"]);
 	$invoice = new Document((int)$_REQUEST["invid"]);
-	
+
 	/*
 	if($_REQUEST["subexec"] == "create"){
 		$warn_text = trim(addslashes($_REQUEST["warn_text"]));
-	
+
 		$payable = time() + $warnlevel->getDeadline()*24*60*60;
-	
+
 		$warning = new Document();
 		$warning->setType(Document::TYPE_INVOICEWARNING);
 		$warning->setPayable($payable);
@@ -30,22 +30,22 @@ if($_REQUEST["exec"] == "new"){
 		$warning->setRequestId($invoice->getRequestId());
 		$warning->setPriceBrutto($invoice->getPriceBrutto());
 		$warning->setPriceNetto($invoice->getPriceNetto());
-	
+
 		$warning->createDoc(Document::VERSION_PRINT);
 		$saver = $warning->save();
-	
+
 		$savemsg = getSaveMessage($saver).$DB->getLastError();
-	
+
 		// MahnungsID an der Rechnung anhaengen
 		if ($saver){
 			$invoice->setWarningId($warning->getId());
 			$invoice->save();
-	
+
 			// Weiterleitung, wenn das Speichern in der invoicewarning.new.php geschehen wuerde
 			//echo "<script type=\"text/javascript\">location.href='index.php?id=".$_CONFIG->invoicewarningID."';</script>";
 		}
 	}*/
-	
+
 	if ((int)$_REQUEST["filter_from"] == 0){
 		$this_month = date("m",time());
 		$filter_from = mktime(12,0,0,$this_month,1);
@@ -57,24 +57,24 @@ if($_REQUEST["exec"] == "new"){
 	} else {
 		$filter_to = strtotime($_REQUEST["filter_to"]." 23:59:59");
 	}
-	
+
 	if($_REQUEST["exec"] == "save"){
 		foreach(array_keys($_REQUEST) AS $reqkey){
 			if(strpos($reqkey, "date_") !== false){
 				$idx = substr($reqkey, strrpos($reqkey, "_") +1);
-					
+
 				if(!empty($_REQUEST["date_{$idx}"])) {
 					$doc = new Document((int)$_REQUEST["doc_existingid_{$idx}"]);
 					$doc_payed = strtotime($_REQUEST["date_{$idx}"]);
 					$doc->setPayed($doc_payed);
-					
+
 				 $ret = $doc->save($idx);
 				}
 			}
 			$savemsg = getSaveMessage($ret);
 		}
 	}
-	
+
 	$filters= array("module"=>"",
 			"type"=>Document::TYPE_INVOICEWARNING,
 			"requestId"=>"",
@@ -82,7 +82,7 @@ if($_REQUEST["exec"] == "new"){
 			"payed_status"=> (int)$_REQUEST["payed_status"],
 			"date_from"=>$filter_from,
 			"date_to"=>$filter_to);
-	
+
 	$allcustomer = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, BusinessContact::FILTER_CUST_IST);
 	$documents= Document::getDocuments($filters);
 	$sum_netto = 0;
@@ -114,44 +114,41 @@ if($_REQUEST["exec"] == "new"){
 					</h3>
 				</div>
 				<div class="panel-body">
-					<div class="row">
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Kunde</label>
-							<div class="col-sm-4">
-								<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
-										onblur="markfield(this,1)" class="form-control">
-									<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-									<? foreach ($allcustomer as $cust) { ?>
-										<option value="<?= $cust->getId() ?>"
-											<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
-									<? } ?>
-								</select>
-							</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Zeitraum (erstellt)</label>
+						<div class="col-sm-4">
+							<input type="text" name="filter_from" id="filter_from" class="form-control date"
+								   value="<?= date("d.m.Y", $filter_from) ?>"/>
 						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Status</label>
-							<div class="col-sm-4">
-								<select type="text" id="payed_status" name="payed_status"
-										onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
-									<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-									<option value="1"
-										<? if ($filters["payed_status"] == 1) echo "selected" ?>><?= $_LANG->get('offen') ?></option>
-									<option value="2"
-										<? if ($filters["payed_status"] == 2) echo "selected" ?>><?= $_LANG->get('bezahlt') ?></option>
-								</select>
-							</div>
+						<label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
+						<div class="col-sm-4">
+							<input type="text" name="filter_to" id="filter_to" class="form-control date" value="<?= date("d.m.Y", $filter_to) ?>"/>
 						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-2 control-label">Zeitraum</label>
-							<label for="" class="col-sm-1 control-label">Von</label>
-							<div class="col-sm-4">
-								<input type="text" name="filter_from" id="filter_from" class="form-control date"
-									   value="<?= date("d.m.Y", $filter_from) ?>"/>
-							</div>
-							<label for="" class="col-sm-1 control-label">Bis</label>
-							<div class="col-sm-4">
-								<input type="text" name="filter_to" id="filter_to" class="form-control date" value="<?= date("d.m.Y", $filter_to) ?>"/>
-							</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Kunde</label>
+						<div class="col-sm-10">
+							<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+								<? foreach ($allcustomer as $cust) { ?>
+									<option value="<?= $cust->getId() ?>"
+										<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
+								<? } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Status</label>
+						<div class="col-sm-10">
+							<select type="text" id="payed_status" name="payed_status"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+								<option value="1"
+									<? if ($filters["payed_status"] == 1) echo "selected" ?>><?= $_LANG->get('offen') ?></option>
+								<option value="2"
+									<? if ($filters["payed_status"] == 2) echo "selected" ?>><?= $_LANG->get('bezahlt') ?></option>
+							</select>
 						</div>
 					</div>
 				</div>
@@ -286,11 +283,11 @@ if($_REQUEST["exec"] == "new"){
 </div>
 
 
-	
+
 	<script type="text/javascript"">
 	$(function() {
 		$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
-		
+
 		$('.date').datepicker(
 				{
 					showOtherMonths: true,
@@ -304,7 +301,7 @@ if($_REQUEST["exec"] == "new"){
 	});
 	$(function() {
 		$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
-		
+
 		$('.filter_from').datepicker(
 				{
 					showOtherMonths: true,
@@ -318,7 +315,7 @@ if($_REQUEST["exec"] == "new"){
 	});
 	$(function() {
 		$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
-		
+
 		$('.filter_to').datepicker(
 				{
 					showOtherMonths: true,

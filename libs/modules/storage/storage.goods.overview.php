@@ -39,6 +39,23 @@ $open = array_merge($open_suporder,$open_colinv);
                 <h3 class="panel-title">Warenein-/Ausgänge</h3>
             </div>
             <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Filter
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="" class="col-sm-2 control-label">Suche</label>
+                                <div class="col-sm-4">
+                                    <input type="text" id="search" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- TAB NAVIGATION -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="active"><a href="#tab1" role="tab" data-toggle="tab">Offen</a></li>
@@ -46,6 +63,7 @@ $open = array_merge($open_suporder,$open_colinv);
                     <li><a href="#tab3" role="tab" data-toggle="tab">Ausgänge</a></li>
                 </ul>
                 <!-- TAB CONTENT -->
+
                 <div class="tab-content">
                     <div class="active tab-pane" id="tab1">
                         <br>
@@ -139,7 +157,7 @@ $open = array_merge($open_suporder,$open_colinv);
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -187,6 +205,10 @@ $open = array_merge($open_suporder,$open_colinv);
                 }
             }
         });
+        $('#search').keyup(function(){
+            goods_open.search( $(this).val() ).draw();
+        });
+
 
         var goods_inc = $('#goods_inc').DataTable( {
             "paging": true,

@@ -78,6 +78,9 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                     }
                 }
             } );
+            $('#search').keyup(function(){
+                chromatable.search( $(this).val() ).draw();
+            });
 
             $("#chromatable tbody td:not(:nth-child(7))").live('click',function(){
                 var aPos = $('#chromatable').dataTable().fnGetPosition(this);
@@ -87,9 +90,9 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
         } );
     </script>
 
-    <div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">
+<div class="panel panel-default">
+      <div class="panel-heading">
+            <h3 class="panel-title">
                 Farbigkeit
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
@@ -98,8 +101,26 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                     </button>
                 </span>
             </h3>
-	  </div>
-        <br>
+      </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Filter
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="search" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
       <div class="table-responsive">
           <table id="chromatable" class="table table-hover">
               <thead>

@@ -31,7 +31,25 @@ $partslists = Partslist::getAll();
             </span>
         </h3>
     </div>
-    <br>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Filter
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="search" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover" id="partslisttable">
             <thead>
@@ -62,7 +80,7 @@ $partslists = Partslist::getAll();
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -103,6 +121,9 @@ $partslists = Partslist::getAll();
                 }
             }
         } );
+        $('#search').keyup(function(){
+            partslisttable.search( $(this).val() ).draw();
+        });
 
         $("#partslisttable tbody td").live('click',function(){
             var aPos = $('#partslisttable').dataTable().fnGetPosition(this);

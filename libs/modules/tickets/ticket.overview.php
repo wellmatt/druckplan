@@ -461,7 +461,7 @@ function TicketTableRefresh()
 							<input name="date_min" id="date_min"
 								<?php if ($_SESSION['tkt_date_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_min']) . '"'; ?> class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</div>
-						<label for="" class="col-sm-2 control-label">Bis:</label>
+						<label for="" class="col-sm-2 control-label"style="text-align: center" >Bis</label>
 						<div class="col-sm-4">
 							<input name="ajax_date_max" id="ajax_date_max"
 								   type="hidden" <?php if ($_SESSION['tkt_date_max']) echo 'value="' . $_SESSION['tkt_date_max'] . '"'; ?> />
@@ -476,7 +476,7 @@ function TicketTableRefresh()
 							<input name="date_due_min" id="date_due_min"
 								<?php if ($_SESSION['tkt_date_due_min']) echo 'value="' . date('d.m.Y', $_SESSION['tkt_date_due_min']) . '"'; ?> class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</div>
-						<label for="" class="col-sm-2 control-label">Bis:</label>
+						<label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
 						<div class="col-sm-4">
 							<input name="ajax_date_due_max" id="ajax_date_due_max"
 								   type="hidden" <?php if ($_SESSION['tkt_date_due_max']) echo 'value="' . $_SESSION['tkt_date_due_max'] . '"'; ?> />
