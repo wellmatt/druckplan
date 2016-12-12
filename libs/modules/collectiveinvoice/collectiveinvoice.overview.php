@@ -223,22 +223,22 @@ $(document).ready(function() {
 				</div>
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Datum &nbsp;&nbsp;Von:</label>
-						<div class="col-sm-2">
+						<label for="" class="col-sm-2 control-label">Datum Von</label>
+						<div class="col-sm-4">
 							<input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
 							<input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)"
 								   onblur="markfield(this,1)" title="<?= $_LANG->get('von'); ?>">
 						</div>
-						<label for="" class="col-sm-1 control-label">Bis:</label>
-						<div class="col-sm-2">
+						<label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
+						<div class="col-sm-4">
 							<input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
 							<input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)"
 								   onblur="markfield(this,1)" title="<?= $_LANG->get('bis'); ?>">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Merkmal Vorgang:</label>
-						<div class="col-sm-5">
+						<label for="" class="col-sm-2 control-label">Merkmal Vorgang</label>
+						<div class="col-sm-10">
 							<select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)"
 									onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
@@ -254,8 +254,8 @@ $(document).ready(function() {
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Merkmal Kunde:</label>
-						<div class="col-sm-5">
+						<label for="" class="col-sm-2 control-label">Merkmal Kunde</label>
+						<div class="col-sm-10">
 							<select id="filter_attrib_busicon" name="filter_attrib_busicon" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 								<?
@@ -269,24 +269,24 @@ $(document).ready(function() {
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Kunde:</label>
-						<div class="col-sm-5">
+						<label for="" class="col-sm-2 control-label">Kunde</label>
+						<div class="col-sm-10">
 							<input name="ajax_customer" id="ajax_customer" type="hidden"/>
 							<input name="customer" id="customer" class="form-control" onfocus="markfield(this,0)"
 								   onblur="markfield(this,1)">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Benutzer:</label>
-						<div class="col-sm-5">
+						<label for="" class="col-sm-2 control-label">Benutzer</label>
+						<div class="col-sm-10">
 							<input name="ajax_user" id="ajax_user" type="hidden"/>
 							<input name="user" id="user" class="form-control" onfocus="markfield(this,0)"
 								   onblur="markfield(this,1)">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Status:</label>
-						<div class="col-sm-5">
+						<label for="" class="col-sm-2 control-label">Status</label>
+						<div class="col-sm-10">
 							<select id="filter_status" name="filter_status" onfocus="markfield(this,0)"
 									onblur="markfield(this,1)" class="form-control">
 								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
@@ -311,7 +311,7 @@ $(document).ready(function() {
 					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Suche</label>
-						<div class="col-sm-5">
+						<div class="col-sm-10">
 							<input type="text" id="search" class="form-control" placeholder="">
 						</div>
 					</div>

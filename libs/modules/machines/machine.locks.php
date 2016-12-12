@@ -107,7 +107,7 @@ $(function() {
 				  <div class="panel-body">
 					  <div class="form-group">
 						  <label for="" class="col-sm-2 control-label">Maschine suchen:</label>
-						  <div class="col-sm-5">
+						  <div class="col-sm-4">
 							  <input type="text" class="form-control" id="maschine" name="maschine" onfocus="markfield(this,0)" onblur="markfield(this,1)"/>
 						  </div>
 					  </div>

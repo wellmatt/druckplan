@@ -76,7 +76,6 @@ echo $quickmove->generate();
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Kunden-Filter</label>
 					<div class="col-sm-5">
-						<div class="input-group">
 							<select name="bulk_filter" type="text" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 								<option value="0" <? if($bulk->getCustomerFilter()==0) echo "selected";?>><?=$_LANG->get('Interessent')?></option>
 								<option value="1" <? if($bulk->getCustomerFilter()==1) echo "selected";?>><?=$_LANG->get('Bestandskunde')?></option>
@@ -84,10 +83,8 @@ echo $quickmove->generate();
 								<option value="3" <? if($bulk->getCustomerFilter()==3) echo "selected";?>><?=$_LANG->get('Lieferanten')?></option>
 								<option value="4" <? if($bulk->getCustomerFilter()==4) echo "selected";?>><?=$_LANG->get('Alle')?></option>
 							</select>
-						</div>
 					</div>
 				</div>
-
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Kunden-Merkmale</label>
 					<div class="col-sm-5">
@@ -108,7 +105,7 @@ echo $quickmove->generate();
 								} ?>
 							</select></br>
 						<? }} ?>
-						<select name="filter_attrib[]"type="text" class="form-control"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						<select name="filter_attrib[]" type="text" class="form-control"	onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							<option value="">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
 							<?
 							foreach ($all_attributes AS $attribute){

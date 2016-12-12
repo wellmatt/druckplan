@@ -296,14 +296,14 @@ echo $quickmove->generate();
 							</div>
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Artikelnummer</label>
-								<div class="col-sm-2">
+								<div class="col-sm-9">
 									<input id="article_number" name="article_number" type="text" class="form-control" value="<?=$article->getNumber()?>">
 								</div>
 							</div>
 							<?php if ($article->getId()>0){?>
 								<div class="form-group">
 									<label for="" class="col-sm-3 control-label">Artikel-ID</label>
-									<div class="col-sm-2">
+									<div class="col-sm-9">
 										<input type="text" class="form-control" value="<?=$article->getId()?>">
 									</div>
 								</div>

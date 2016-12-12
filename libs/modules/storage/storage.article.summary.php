@@ -36,6 +36,25 @@ $sarticles = Article::getAllArticlesNeedingStorage();
 		  		</span>
         </h3>
     </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Filter
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="search" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <br>
     <div class="table-responsive">
         <table  id="storagearttable" class="table table-hover">
@@ -105,7 +124,7 @@ $sarticles = Article::getAllArticlesNeedingStorage();
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": 50,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -145,6 +164,9 @@ $sarticles = Article::getAllArticlesNeedingStorage();
                     "sortDescending": ": aktivieren um absteigend zu sortieren"
                 }
             }
+        });
+        $('#search').keyup(function(){
+            storagearttable.search( $(this).val() ).draw();
         });
     } );
 </script>

@@ -67,13 +67,13 @@ echo $quickmove->generate();
                     <input type="hidden" name="id" id="id" value="<?php echo (int)$_REQUEST['id'];?>">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Titel</label>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <input type="text" class="form-control" name="title" id="title" value="<?php echo $partslist->getTitle();?>" placeholder="Titel der Stückliste">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Preis</label>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="price" id="price" value="<?php echo printPrice($partslist->getPrice(),2);?>" placeholder="Preis der Stückliste">
                                 <div class="input-group-addon"><span>€</span></div>
@@ -85,13 +85,13 @@ echo $quickmove->generate();
                         ?>
                         <div class="form-group">
                             <label for="" class="col-sm-2 control-label">Erstellt von</label>
-                            <div class="col-sm-10 form-text">
+                            <div class="col-sm-4 form-text">
                                 <?php echo $partslist->getCrtuser()->getNameAsLine();?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="" class="col-sm-2 control-label">Erstellt am</label>
-                            <div class="col-sm-10 form-text">
+                            <div class="col-sm-4 form-text">
                                 <?php echo date('d.m.y',$partslist->getCrtdate());?>
                             </div>
                         </div>

@@ -58,6 +58,23 @@ $lists = MarketingList::getAllLists();
             </h3>
         </div>
         <div class="panel-body">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Filter
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Suche</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="search" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table id="marketing_table" class="table table-hover">
                     <thead>
@@ -101,9 +118,9 @@ $lists = MarketingList::getAllLists();
 
 <script language="JavaScript">
     $(document).ready(function () {
-        var marketingtable = $('#marketing_table').DataTable({
+        var marketing_table = $('#marketing_table').DataTable({
             "aaSorting": [[1, "asc"]],
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -142,6 +159,9 @@ $lists = MarketingList::getAllLists();
                     "sortDescending": ": aktivieren um absteigend zu sortieren"
                 }
             }
+        });
+        $('#search').keyup(function(){
+            marketing_table.search( $(this).val() ).draw();
         });
 
         $("#marketing_table tbody td").live('click',function(){

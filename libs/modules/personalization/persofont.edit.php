@@ -62,7 +62,7 @@ echo $quickmove->generate();
 
 			  <div class="form-group">
 				  <label for="" class="col-sm-2 control-label">Titel</label>
-				  <div class="col-sm-3">
+				  <div class="col-sm-4">
 					  <input id="font_title" name="font_title" type="text" class="form-control"
 							 value="<?=$persofont->getTitle()?>" >
 				  </div>

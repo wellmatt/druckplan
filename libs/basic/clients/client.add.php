@@ -80,53 +80,52 @@ if($_REQUEST["subexec"] == "save")
 		<div class="panel-body">
 				 <div class="row">
 					 <div class="col-md-6">
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Mandant</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Mandant</label>
+							 <div class="col-sm-8">
 								 <input name="client_name" class="form-control" value="<?=$client->getName()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Adresse</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Adresse</label>
+							 <div class="col-sm-8">
 								 <input name="client_street1" class="form-control" value="<?=$cl_streets[0]?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Adresse/2</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Adresse/2</label>
+							 <div class="col-sm-8">
 								 <input name="client_street2" class="form-control" value="<?=$cl_streets[1]?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Adresse/3</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Adresse/3</label>
+							 <div class="col-sm-8">
 								 <input name="client_street3" class="form-control" value="<?=$cl_streets[2]?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">PLZ / Ort</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">PLZ / Ort</label>
+							 <div class="col-sm-4">
 								 <input name="client_postcode" class="form-control" value="<?=$client->getPostcode()?>"
-										 onfocus="markfield(this,0)" onblur="markfield(this,1)">
+										onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							 </div>
+							 <div class="col-sm-4">
 								 <input name="client_city" class="form-control"
-									 value="<?=$client->getCity()?>" onfocus="markfield(this,0)"
-									 onblur="markfield(this,1)">
+										value="<?=$client->getCity()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Land</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Land</label>
+							 <div class="col-sm-8">
 								 <select name="client_country" class="form-control">
 									 <?
 									 $countries = Country::getAllCountries();
@@ -144,31 +143,31 @@ if($_REQUEST["subexec"] == "save")
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Telefon</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Telefon</label>
+							 <div class="col-sm-8">
 								 <input name="client_phone" class="form-control" value="<?=$client->getPhone()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Fax</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Fax</label>
+							 <div class="col-sm-8">
 								 <input name="client_fax" class="form-control" value="<?=$client->getFax()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">E-Mail</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">E-Mail</label>
+							 <div class="col-sm-8">
 								 <input name="client_email" class="form-control" value="<?=$client->getEmail()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Mandant aktiv</label>
+							 <label for="" class="col-sm-4 control-label">Mandant aktiv</label>
 							 <div class="col-sm-2">
 								 <input name="client_active" type="checkbox" class="form-control"
 										value="1"
@@ -184,106 +183,101 @@ if($_REQUEST["subexec"] == "save")
 						 <br>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Webseite</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Webseite</label>
+							 <div class="col-sm-8">
 								 <input name="client_website" class="form-control" value="<?=$client->getWebsite()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Bank</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Bank</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_name" class="form-control" value="<?=$client->getBankName()?>" onfocus="markfield(this,0)"
 										onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">BLZ</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">BLZ</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_blz" class="form-control" value="<?=$client->getBankBlz()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Kontonr</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Kontonr</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_kto" class="form-control" value="<?=$client->getBankKto()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">IBAN</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">IBAN</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_iban" class="form-control" value="<?=$client->getBankIban()?>" onfocus="markfield(this,0)"
 										onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">BIC</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">BIC</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_bic" class="form-control" value="<?=$client->getBankBic()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Amtsgericht</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Amtsgericht</label>
+							 <div class="col-sm-8">
 								 <input name="client_gericht" class="form-control" value="<?=$client->getGericht()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">Steuernr</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Steuernr</label>
+							 <div class="col-sm-8">
 								 <input name="client_steuernummer" class="form-control" value="<?=$client->getSteuerNummer()?>" onfocus="markfield(this,0)"
 										onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-2 control-label">UstID</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">UstID</label>
+							 <div class="col-sm-8">
 								 <input name="client_ustid" class="form-control" value="<?=$client->getUstId()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
-
-
 					 </div>
-
 					 <div class="col-md-6">
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Währung</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Währung</label>
+							 <div class="col-sm-8">
 								 <input name="client_currency" class="form-control" value="<?=$client->getCurrency()?>">
 							 </div>
 						 </div>
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Dezimaltrenner</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Dezimaltrenner</label>
+							 <div class="col-sm-8">
 								 <input name="client_decimal" class="form-control" value="<?=$client->getDecimal()?>">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Tausendertrenner</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Tausendertrenner</label>
+							 <div class="col-sm-8">
 								 <input name="client_thousand" class="form-control" value="<?=$client->getThousand()?>">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Umsatzsteuer</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Umsatzsteuer</label>
+							 <div class="col-sm-8">
 								 <div class="input-group">
 									 <input name="client_taxes" class="form-control" value="<?=printPrice($client->getTaxes())?>">
 									 <span class="input-group-addon">%</span>
@@ -292,8 +286,8 @@ if($_REQUEST["subexec"] == "save")
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Standardmarge</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Standardmarge</label>
+							 <div class="col-sm-8">
 								 <div class="input-group">
 									 <input name="client_margin" class="form-control" value="<?=printPrice($client->getMargin())?>">
 									 <span class="input-group-addon">%</span>
@@ -302,62 +296,56 @@ if($_REQUEST["subexec"] == "save")
 						 </div>
 						 <br>
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Bank 2 </label>
+							 <label for="" class="col-sm-4 control-label">Bank 2 </label>
 						 </div>
 						 <br>
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Name</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Name</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_name2" class="form-control" value="<?=$client->getBankName2()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">IBAN</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">IBAN</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_iban2" class="form-control" value="<?=$client->getBankIban2()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
 
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">BIC</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">BIC</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_bic2" class="form-control" value="<?=$client->getBankBic2()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Bank 3 </label>
+							 <label for="" class="col-sm-4 control-label">Bank 3 </label>
 						 </div>
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">Name</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">Name</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_name3" class="form-control" value="<?=$client->getBankName3()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">IBAN</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">IBAN</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_iban3" class="form-control" value="<?=$client->getBankIban3()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
-
 						 <div class="form-group">
-							 <label for="" class="col-sm-3 control-label">BIC</label>
-							 <div class="col-sm-6">
+							 <label for="" class="col-sm-4 control-label">BIC</label>
+							 <div class="col-sm-8">
 								 <input name="client_bank_bic3" class="form-control" value="<?=$client->getBankBic3()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
 						 </div>
-
-
 					 </div>
 				 </div>
 				 <div class="row">
@@ -368,11 +356,8 @@ if($_REQUEST["subexec"] == "save")
 							 </button>
 						 </span>
 					 </div>
-
 				 </div>
-
 			</br>
-
 		</div>
 		<div class="panel panel-default">
 			<div class="panel-heading">

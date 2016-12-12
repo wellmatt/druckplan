@@ -349,33 +349,30 @@ $(function() {
 					</h3>
 				</div>
 				<div class="panel-body">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Lieferant</label>
-								<div class="col-sm-6">
-									<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
-											onblur="markfield(this,1)" class="form-control">
-										<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-										<? foreach ($suppliers as $cust) { ?>
-											<option value="<?= $cust->getId() ?>"
-												<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
-										<? } ?>
-									</select>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="col-sm-2"><label for=" control-label">Zeitraum</label></div>
-							<div class="col-sm-1"><label for=" control-label">Von</label></div>
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Zeitraum Von</label>
 							<div class="col-sm-4">
 								<input type="text" name="filter_from" id="filter_from" class="form-control filter_from"
 									   value="<?= date("d.m.Y", $filter_from) ?>"/>
 							</div>
-							<div class="col-sm-1"><label for=" control-label">Bis</label></div>
+							<label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
 							<div class="col-sm-4">
 								<input type="text" name="filter_to" id="filter_to" class="form-control filter_to"
 									   value="<?= date("d.m.Y", $filter_to) ?>"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Lieferant</label>
+							<div class="col-sm-10">
+								<select type="text" id="filter_cust" name="filter_cust" onfocus="markfield(this,0)"
+										onblur="markfield(this,1)" class="form-control">
+									<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+									<? foreach ($suppliers as $cust) { ?>
+										<option value="<?= $cust->getId() ?>"
+											<? if ($filters["cust_id"] == $cust->getId()) echo "selected" ?>><?= $cust->getNameAsLine() ?></option>
+									<? } ?>
+								</select>
 							</div>
 						</div>
 					</div>

@@ -84,14 +84,14 @@ echo $quickmove->generate();
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Titel</label>
-				<div class="col-sm-3">
+				<div class="col-sm-4">
 					<input id="attribute_title" name="attribute_title" type="text" class="form-control" value="<?= $attribute->getTitle() ?>">
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">ID</label>
-				<div class="col-sm-3">
+				<div class="col-sm-4">
 					<input type="text" class="form-control" value="<?= $attribute->getId()?>">
 				</div>
 			</div>

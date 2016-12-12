@@ -70,6 +70,23 @@ echo $quickmove->generate();
                     </h3>
                 </div>
                 <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                Filter
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="" class="col-sm-2 control-label">Suche</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" id="search" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover" id="vac">
                             <thead>
@@ -153,6 +170,23 @@ echo $quickmove->generate();
                     </h3>
                 </div>
                 <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                Filter
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="" class="col-sm-2 control-label">Suche</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" id="search" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover" id="vacs">
                             <thead>
@@ -209,7 +243,7 @@ echo $quickmove->generate();
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
             "language":
             {
@@ -240,7 +274,7 @@ echo $quickmove->generate();
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
             "language":
             {
@@ -267,6 +301,10 @@ echo $quickmove->generate();
                 }
             }
         } );
+        $('#search').keyup(function(){
+            vac.search( $(this).val() ).draw();
+            vacs.search( $(this).val() ).draw();
+        });
     } );
 </script>
 <script>
