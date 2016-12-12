@@ -76,14 +76,14 @@ echo $quickmove->generate();
                         <div class="col-md-6">
                             <?php if ($storagearea->getId() > 0){?>
                             <div class="form-group">
-                                <label for="" class="col-sm-4 control-label">Lagerplatz ID</label>
+                                <label for="" class="col-sm-4 control-label">ID</label>
                                 <div class="col-sm-6 form-text">
                                     <?php echo $storagearea->getId();?>
                                 </div>
                             </div>
                             <?php } ?>
                             <div class="form-group">
-                                <label for="" class="col-sm-4 control-label">Lagerplatz Nr.</label>
+                                <label for="" class="col-sm-4 control-label">Nr.</label>
                                 <div class="col-sm-6">
                                     <input type="text" id="st_number" name="st_number" class="form-control"
                                            value="<?= $storagearea->getNumber(); ?>"
@@ -91,7 +91,7 @@ echo $quickmove->generate();
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="" class="col-sm-4 control-label">Lagerplatzname</label>
+                                <label for="" class="col-sm-4 control-label">Name</label>
                                 <div class="col-sm-6">
                                     <input type="text" id="st_name" name="st_name" class="form-control"
                                            value="<?= $storagearea->getName(); ?>"

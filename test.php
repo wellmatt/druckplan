@@ -49,4 +49,21 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-prettyPrint(ContactPerson::getTotalCount());
+$body = "Sehr geehrter Kunde,<br>
+<br>
+der Bestand des folgenden Artikels hat die Mindesmenge erreicht:<br>
+<br>
+Test (#Test)<br>
+Mindestmenge: 1000 / Verbleibend: 500<br>
+Lagerplatz: Test (#Test)<br>
+<br>
+Um einen reibungslosen Verkauf zu gewährleisten, muss dieser Artikel nachbestellt werden.<br>
+<br>
+Vielen Dank.<br>
+<br>
+Mit freundlich Grüßen<br>
+Ihr Kundenportal-Betreuer
+";
+
+$message = new MailMessage(null,['ascherer@ipactor.de'],"Lager Warnung",$body);
+$message->send();

@@ -36,7 +36,6 @@ class CollectiveInvoice{
 	private $crtuser;
 	private $uptdate;
 	private $uptuser;
-	private $provision;
 	private $deliverycosts = 0;
 	private $comment = "";				// interner Kommentar
 	private $ext_comment = "";			// externer Kommentar
@@ -238,7 +237,6 @@ class CollectiveInvoice{
                     invoice_footer = '{$this->invoice_footer}',  
                     revert_header = '{$this->revert_header}',  
                     revert_footer = '{$this->revert_footer}',
-                    provision = '{$this->provision}',
                     ticket = {$this->ticket},
                     savedcost = {$this->savedcost},
 
@@ -1473,21 +1471,5 @@ class CollectiveInvoice{
 	public function setSavedcost($savedcost)
 	{
 		$this->savedcost = $savedcost;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getProvision()
-	{
-		return $this->provision;
-	}
-
-	/**
-	 * @param mixed $provision
-	 */
-	public function setProvision($provision)
-	{
-		$this->provision = $provision;
 	}
 }

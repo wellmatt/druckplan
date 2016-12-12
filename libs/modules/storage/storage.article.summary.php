@@ -44,6 +44,7 @@ $sarticles = Article::getAllArticlesNeedingStorage();
                 <th><?=$_LANG->get('Art.-Nr.')?></th>
                 <th><?=$_LANG->get('Art.-Name')?></th>
                 <th><?=$_LANG->get('Auf Lager')?></th>
+                <th><?=$_LANG->get('Mindestmenge')?></th>
                 <th><?=$_LANG->get('Lager Plätze')?></th>
             </tr>
             </thead>
@@ -54,18 +55,25 @@ $sarticles = Article::getAllArticlesNeedingStorage();
                     $storages = [];
                     foreach ($spositions as $sposition) {
                         $stored += $sposition->getAmount();
-                        $storages[] = ['name'=>$sposition->getArea()->getName(),'id'=>$sposition->getArea()->getId()];
+                        $storages[] = ['name'=>$sposition->getArea()->getName(),'id'=>$sposition->getArea()->getId(),'minstorage'=>$sposition->getMinAmount()];
                     }
                     ?>
                     <tr>
                         <td><?php echo $sarticle->getNumber();?></td>
                         <td><?php echo $sarticle->getTitle();?></td>
                         <td><?php echo $stored;?></td>
+                        <td><?php echo StoragePosition::getTotalMinStoredForArticle($sarticle);?></td>
                         <td>
                             <?php
                             $i = 1;
                             foreach ($storages as $storage) {
-                                echo '<a href="index.php?page=libs/modules/storage/storage.edit.php&exec=edit&id='.$storage['id'].'">'.$storage['name'].'</a>';
+                                echo '<a href="index.php?page=libs/modules/storage/storage.edit.php&exec=edit&id='.$storage['id'].'">';
+                                if ($storage['minstorage']>0){
+                                    echo '<b><u>'.$storage['name'].'</u></b>';
+                                } else {
+                                    echo $storage['name'];
+                                }
+                                echo '</a>';
                                 if ($i < count($storages))
                                     echo ', ';
                                 $i++;
@@ -81,6 +89,7 @@ $sarticles = Article::getAllArticlesNeedingStorage();
                 <th><?=$_LANG->get('Art.-Nr.')?></th>
                 <th><?=$_LANG->get('Art.-Name')?></th>
                 <th><?=$_LANG->get('Auf Lager')?></th>
+                <th><?=$_LANG->get('Mindestmenge')?></th>
                 <th><?=$_LANG->get('Lager Plätze')?></th>
             </tr>
             </tfoot>

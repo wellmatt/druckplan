@@ -56,6 +56,7 @@ class StorageBookEnrty extends Model
                     $apos->setAmount($apos->getAmount()+$this->getAmount());
                 } else if ($this->type == StorageGoods::TYPE_COLINV){
                     $apos->setAmount($apos->getAmount()-$this->getAmount());
+                    self::checkRemainingAmount($apos);
                 }
                 $apos->setAllocation($this->alloc);
                 $apos->save();
@@ -75,6 +76,44 @@ class StorageBookEnrty extends Model
                 ];
                 $storageposition = new StoragePosition(0,$create);
                 $storageposition->save();
+            }
+        }
+    }
+
+    /**
+     * @param StoragePosition $apos
+     */
+    private function checkRemainingAmount($apos)
+    {
+        $body = "Sehr geehrter Kunde,<br>
+<br>
+der Bestand des folgenden Artikels hat die Mindesmenge erreicht:<br>
+<br>
+{$apos->getArticle()->getTitle()} (#{$apos->getArticle()->getNumber()})<br>
+Mindestmenge: {$apos->getMinAmount()} / Verbleibend: {$apos->getAmount()}<br>
+Lagerplatz: {$apos->getArea()->getName()} (#{$apos->getArea()->getNumber()})<br>
+<br>
+Um einen reibungslosen Verkauf zu gewährleisten, muss dieser Artikel nachbestellt werden.<br>
+<br>
+Vielen Dank.<br>
+<br>
+Mit freundlich Grüßen<br>
+Ihr Kundenportal-Betreuer
+";
+
+        if ($apos->getAmount() < $apos->getMinAmount()){
+            if ($apos->getRespuser()->getId()>0 && $apos->getRespuser()->getEmail() != ""){
+                $message = new MailMessage(null,[$apos->getRespuser()->getEmail()],"Lager Warnung",$body);
+                $message->send();
+            }
+            $respcps = $apos->getAllRespContactpersons();
+            if (count($respcps)>0){
+                foreach ($respcps as $respcp) {
+                    if ($respcp->getId()>0 && $respcp->getEmail() != ""){
+                        $message = new MailMessage(null,[$respcp->getEmail()],"Lager Warnung",$body);
+                        $message->send();
+                    }
+                }
             }
         }
     }

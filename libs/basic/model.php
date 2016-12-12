@@ -58,6 +58,7 @@ class Model {
     public function save()
     {
         global $DB;
+        self::hook_beforeSave();
 
         $set = [];
         $vars = get_object_vars($this);
@@ -72,7 +73,10 @@ class Model {
 
         if ($this->id > 0) {
             $sql = "UPDATE {$this->_table} SET {$set} WHERE id = {$this->id}";
-            return $DB->no_result($sql);
+            $res = $DB->no_result($sql);
+            if ($res){
+                self::hook_afterSave();
+            }
         } else {
             $sql = "INSERT INTO {$this->_table} SET {$set}";
             $res = $DB->no_result($sql);
@@ -80,11 +84,28 @@ class Model {
                 $sql = "SELECT max(id) id FROM {$this->_table}";
                 $thisid = $DB->select($sql);
                 $this->id = $thisid[0]["id"];
+                self::hook_afterSave();
                 return true;
             } else {
                 return false;
             }
         }
+    }
+
+    /**
+     * Function that is executed before the object is saved to DB
+     */
+    private function hook_beforeSave()
+    {
+
+    }
+
+    /**
+     * Function that is executed after the object is saved to DB (successfully)
+     */
+    private function hook_afterSave()
+    {
+
     }
 
     /**
