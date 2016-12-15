@@ -86,7 +86,7 @@ $positions = Orderposition::getAllOrderposition($origin->getId());
                                                                       <li><a href="#" onclick="setAlloc(<?php echo $position->getId();?>,<?php echo $this_storage->getId();?>,100);">100%</a></li>
                                                                   </ul>
                                                               </div>
-                                                              <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
+                                                              <input type="number" min="0" max="<?php echo 100-$storage['alloc'];?>" value="0" name="book[<? echo $position->getId();?>][<?php echo $this_storage->getId();?>][alloc]" id="book_alloc_<?php echo $position->getId();?>_<?php echo $this_storage->getId();?>" class="form-control numberBox">
                                                               <span class="input-group-addon">%</span>
                                                           </div>
                                                       </div>

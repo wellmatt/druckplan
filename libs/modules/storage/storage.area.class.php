@@ -67,7 +67,8 @@ class StorageArea extends Model {
                 LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
                 WHERE
                 storage_positions.article = {$article->getId()}
-                HAVING SUM(storage_positions.allocation) < 100";
+                GROUP BY storage_areas.id";
+//        prettyPrint($sql);
 
         if($DB->no_result($sql)){
             $result = $DB->select($sql);

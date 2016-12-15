@@ -48,8 +48,8 @@ if ($_REQUEST["exec"] == "save"){
                     if ($aid > 0){
                         $area = new StorageArea($aid);
                         $amount = $entry["amount"];
-                        $alloc = $entry["alloc"];
-                        if ($amount > 0 && $alloc > 0){
+                        $alloc = (int)$entry["alloc"];
+                        if ($amount > 0){
                             $array = [
                                 "area" => $area->getId(),
                                 "article" => $article->getId(),

@@ -59,8 +59,8 @@ $open = array_merge($open_suporder,$open_colinv);
                 <!-- TAB NAVIGATION -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="active"><a href="#tab1" role="tab" data-toggle="tab">Offen</a></li>
-                    <li><a href="#tab2" role="tab" data-toggle="tab">Eingänge</a></li>
-                    <li><a href="#tab3" role="tab" data-toggle="tab">Ausgänge</a></li>
+<!--                    <li><a href="#tab2" role="tab" data-toggle="tab">Eingänge</a></li>-->
+<!--                    <li><a href="#tab3" role="tab" data-toggle="tab">Ausgänge</a></li>-->
                 </ul>
                 <!-- TAB CONTENT -->
 

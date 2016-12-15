@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------------
 
 require_once 'libs/basic/user/emailaddress.class.php';
+require_once 'libs/modules/organizer/caldav.service.class.php';
 
 class User {
     const USER_NORMAL = 1;
@@ -282,6 +283,9 @@ class User {
         if ($res)
         {
             Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+            CalDavService::createUserPrincipals();
+            CalDavService::createUserCalendars();
+            CalDavService::generalCalendar();
             return true;
         }
         else

@@ -196,6 +196,8 @@ if ($_REQUEST["bc"] || $_REQUEST["cp"]) {
         $bccp_articles = implode(",", $bccp_articles);
         $sWhere .= " AND article.id IN ({$bccp_articles}) ";
         $aWhere = " AND article.id IN ({$bccp_articles}) ";
+    } else {
+        $sWhere .= " AND 1=2 ";
     }
 }
 
@@ -304,6 +306,8 @@ while ($aRow = mysql_fetch_array($rResult)) {
                 $row[] = '';
             }
         } else if ($aColumns[$i] == 'shoprel') {
+            /* do not print */
+        } else if ($aColumns[$i] == 'tradegroup_title') {
             /* do not print */
         } else if ($aColumns[$i] == 'id') {
             $row[] = $aRow[ $aColumns[$i] ];

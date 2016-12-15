@@ -263,7 +263,7 @@ function sleep(millis, callback) {
 
 <!--   <div class="container"> -->
     <nav class="navbar navbar-default" id="main_navbar" role="navigation">
-      <div class="container-fluid">
+      <div class="container-fluid" style="padding-right: 0px;padding-left: 0px;">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
@@ -380,19 +380,44 @@ function sleep(millis, callback) {
                 }
             }
             ?>
-            
 
-            <!-- divider -->
-            <li class="divider"></li>
+
+              <!-- divider -->
+              <li class="divider"></li>
+
+              <!-- calendar -->
+              <li class="dropdown-grid">
+                  <a data-toggle="dropdown" href="javascript:;" style="padding-bottom: 6px;padding-top: 8px;">
+                      <span class="glyphicons glyphicons-link" style="font-size: 24px;" title="Links"></span>
+                  </a>
+                  <div class="dropdown-grid-wrapper" role="menu">
+                      <ul class="dropdown-menu col-xs-6 col-sm-5 col-md-4 col-lg-2">
+                          <li>
+                              <h4 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;padding-bottom: 0px;"><i class="fa fa-newspaper-o"></i> Links</h4>
+                              <?
+                              require_once 'libs/modules/links/link.frame.php';
+                              ?>
+
+                          </li>
+                      </ul>
+                  </div>
+              </li>
+              <!-- /calendar -->
+
+              <!-- divider -->
+              <li class="divider"></li>
                         
                         
             <!-- calendar -->
             <li class="dropdown-grid">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, updateNotifications);"><i class="fa fa-newspaper-o"></i>&nbsp;<span class="hidden-sm">Benachrichtigungen&nbsp;</span><span id="notify_count" class="badge"></span><span class="caret"></span></a>
+              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" onclick="sleep(500, updateNotifications);" style="padding-bottom: 6px;padding-top: 8px;">
+                  <span class="glyphicons glyphicons-exclamation-sign" style="font-size: 24px;" title="Benachrichtigungen"></span>
+                  <span id="notify_count" class="badge"></span>
+              </a>
               <div class="dropdown-grid-wrapper" role="menu">
                 <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-4"> 
                   <li>
-                      <h3 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;"><i class="fa fa-newspaper-o"></i> Benachrichtigungen</h3>
+                      <h4 class="text-right" style="padding-top:0px; border-bottom: 1px solid #555;padding-bottom: 0px;"><i class="fa fa-newspaper-o"></i> Benachrichtigungen</h4>
 							<? 
 								require_once 'libs/modules/notifications/notification.frame.php'; 
 							?>
@@ -402,52 +427,55 @@ function sleep(millis, callback) {
               </div>
             </li>
             <!-- /calendar -->
-            
-            
-            <!-- divider -->
-            <li class="divider"></li>
-                        
+
+              <!-- divider -->
+              <li class="divider"></li>
                         
             <!-- calendar -->
             <li id='li_calendar' class="dropdown-grid">
-              <a href="index.php?page=libs/modules/organizer/davcalendar.php&pagetitle=Kalender"><i class="fa fa-calendar"></i>&nbsp;<span class="hidden-sm">Kalender</span></a>
+              <a href="index.php?page=libs/modules/organizer/davcalendar.php&pagetitle=Kalender" style="padding-bottom: 6px;padding-top: 8px;">
+                  <span class="glyphicons glyphicons-calendar" style="font-size: 24px;" title="Kalender"></span>
+              </a>
             </li>
             <!-- /calendar -->
 
-            <!-- divider -->
-            <li class="divider"></li>
-                        
+              <!-- divider -->
+              <li class="divider"></li>
                         
             <!-- mails -->
             <li>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                	refreshMailCount();
-                	setInterval( refreshMailCount, 2*60*1000 );
-                });
-                function refreshMailCount() {
-                    $.ajax({
-                        url: "libs/modules/mail/mail.ajax.php?exec=getNewCount",
-                        type: "GET",
-                        dataType: "html",
-                        success: function (data) {
-                            if (parseInt(data) > 0)
-                                $('#nav_mail_count').html(data);
-                        }
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        refreshMailCount();
+                        setInterval( refreshMailCount, 2*60*1000 );
                     });
-                }
-            </script>
-              <a href="index.php?page=libs/modules/mail/mail.overview.php&pagetitle=Mail"><i class="fa fa-inbox"></i>&nbsp;<span class="hidden-sm">Mails&nbsp;</span><span id="nav_mail_count" class="badge"></span></a>
+                    function refreshMailCount() {
+                        $.ajax({
+                            url: "libs/modules/mail/mail.ajax.php?exec=getNewCount",
+                            type: "GET",
+                            dataType: "html",
+                            success: function (data) {
+                                if (parseInt(data) > 0)
+                                    $('#nav_mail_count').html(data);
+                            }
+                        });
+                    }
+                </script>
+                <a href="index.php?page=libs/modules/mail/mail.overview.php&pagetitle=Mail" style="padding-bottom: 6px;padding-top: 8px;">
+                    <span class="glyphicons glyphicons-envelope" style="font-size: 24px;" title="E-Mails"></span><span id="nav_mail_count" class="badge"></span>
+                </a>
             </li>
             <!-- /mails -->
 
-            <!-- divider -->
-            <li class="divider"></li>
-                        
-                        
+              <!-- divider -->
+              <li class="divider"></li>
+
+
             <!-- account -->
             <li class="dropdown-grid user-menu">
-              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle"><img alt="User Image" class="user-image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $_USER->getId();?>">&nbsp;<span class="hidden-sm">Account</span><span class="caret"></span></a>
+              <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle" style="padding-top: 7.5px;padding-bottom: 7.5px;">
+                  <img alt="User Image" class="user-image" src="libs/basic/user/user.avatar.get.php?uid=<?php echo $_USER->getId();?>">
+              </a>
               <div class="dropdown-grid-wrapper" role="menu">
                 <ul class="dropdown-menu col-xs-12 col-sm-10 col-md-8 col-lg-4" style="border-top-left-radius: 0;border-top-right-radius: 0;border-top-width: 0;padding: 1px 0 0;width: 280px;">
                   <li>

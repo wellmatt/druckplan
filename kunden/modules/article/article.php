@@ -67,17 +67,14 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				null,
 				null,
 				null,
-				{ "sortable": false },
 				{ "searchable": false },
 				{ "searchable": false }
 			],
 			"fnServerData": function ( sSource, aoData, fnCallback ) {
 				var tags = document.getElementById('ajax_tags').value;
-				var tg = document.getElementById('ajax_tradegroup').value;
 				var bc = <?php echo (int)$_SESSION["cust_id"];?>;
 				var cp = <?php echo (int)$_SESSION["contactperson_id"];?>;
 				aoData.push( { "name": "search_tags", "value": tags, } );
-				aoData.push( { "name": "tradegroup", "value": tg, } );
 				aoData.push( { "name": "bc", "value": bc, } );
 				aoData.push( { "name": "cp", "value": cp, } );
 
@@ -226,27 +223,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 					</div>
 
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Warengruppe:</label>
-						<div class="col-sm-3">
-							<input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
-							<select name="tradegroup" id="tradegroup" class="form-control"
-									onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();"
-									onfocus="markfield(this,0)" onblur="markfield(this,1)">
-								<option value="0">- Alle -</option>
-								<?php
-								$all_tradegroups = Tradegroup::getAllTradegroups();
-								foreach ($all_tradegroups as $tg) {
-									?>
-									<option value="<?= $tg->getId() ?>">
-										<?= $tg->getTitle() ?></option>
-									<? printSubTradegroupsForSelect($tg->getId(), 0);
-								}
-								?>
-							</select>
-						</div>
-					</div>
-
-					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Suche</label>
 						<div class="col-sm-3">
 							<input type="text" id="search" class="form-control" placeholder="">
@@ -321,7 +297,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				<th><?= $_LANG->get('Titel') ?></th>
 				<th><?= $_LANG->get('Art.-Nr.') ?></th>
 				<th><?= $_LANG->get('Tags') ?></th>
-				<th><?= $_LANG->get('Warengruppe') ?></th>
 				<th><?= $_LANG->get('Min. Lagerm.') ?></th>
 				<th><?= $_LANG->get('Auf Lager') ?></th>
 			</tr>

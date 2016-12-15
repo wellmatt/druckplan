@@ -185,6 +185,9 @@
         {
             $bccp_articles = implode(",", $bccp_articles);
             $sWhere .= " AND article.id IN ({$bccp_articles}) ";
+            $aWhere = " AND article.id IN ({$bccp_articles}) ";
+        } else {
+            $sWhere .= " AND 1=2 ";
         }
     }
 
@@ -244,7 +247,7 @@
                 LEFT OUTER JOIN tradegroup ON tradegroup.id = article.tradegroup
                 LEFT OUTER JOIN custom_fields_values ON article.id = custom_fields_values.object
                 LEFT OUTER JOIN custom_fields ON custom_fields_values.field = custom_fields.id
-                WHERE article.status = 1
+                WHERE article.status = 1 {$aWhere}
                 ) t1
     ";
 //     var_dump($sQuery);

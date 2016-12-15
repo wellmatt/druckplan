@@ -329,11 +329,11 @@ img.quicklink{
 
 .user-image {
 	border-radius: 50%;
-	float: left;
-	height: 25px;
-	margin-right: 10px;
-	margin-top: -2px;
-	width: 25px;
+	/*float: left;*/
+	height: 35px;
+	/*margin-right: 10px;*/
+	/*margin-top: -2px;*/
+	width: 35px;
 }
 
 li.user-header {

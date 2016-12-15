@@ -286,7 +286,7 @@ if ($_REQUEST["aid"] && $_REQUEST["stid"]) {
             </div>
         </div>
     </div>
-    <input type="submit">
+    <input type="submit" style="display: none">
 </form>
 
 <script>
