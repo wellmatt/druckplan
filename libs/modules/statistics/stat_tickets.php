@@ -99,7 +99,7 @@ else
                         ?>
                         </select>
                     <?php } ?>
-                    <table id="table_workload" class="stripe hover row-border order-column">
+                    <table id="table_workload" class="stripe hover row-border order-column" style="width: auto" width="100%">
                         <thead>
                             <tr>
                                 <td style="width: 10px;">ID#</td>

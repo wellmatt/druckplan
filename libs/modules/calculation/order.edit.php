@@ -76,10 +76,6 @@ if($_REQUEST["subexec"] == "clone"){
 // create new Order
 if((int)$_REQUEST["createNew"] == 1){
 	$order->setTitle(trim(addslashes($_REQUEST["order_title"])));
-	$order->setCustomer(new BusinessContact((int)$_REQUEST["order_customer"]));	
-	$tmp_presel_cp = new ContactPerson((int)$_REQUEST["order_contactperson"]);
-	$order->setCustContactperson($tmp_presel_cp);
-	$order->setPaymentTerms($order->getCustomer()->getPaymentTerms());
 	$order->save();
 	
 	if ($_REQUEST["asso_class"] && $_REQUEST["asso_object"])
@@ -98,9 +94,6 @@ if((int)$_REQUEST["createNew"] == 1){
 // Set product
 if((int)$_REQUEST["selProduct"] != 0){
 	$order->setProduct(new Product((int)$_REQUEST["selProduct"]));
-	$order->setTextOffer($order->getProduct()->getTextOffer());
-	$order->setTextOfferconfirm($order->getProduct()->getTextOfferconfirm());
-	$order->setTextInvoice($order->getProduct()->getTextInvoice());
 	$order->save();
 }
 
@@ -163,7 +156,7 @@ if((int)$_REQUEST["step"] == 2){
 			$calc->setTextProcessing($order->getProduct()->getTextProcessing());
 		// Marge des Mandanten einsetzen
 		$calc->setMargin($_USER->getClient()->getMargin());
-		$calc->setDiscount($order->getCustomer()->getDiscount());
+		$calc->setDiscount(0);
 
 		if((int)$_REQUEST["h_folding"] > 0)
 			$calc->setFolding(new Foldtype((int)$_REQUEST["h_folding"]));
@@ -1398,17 +1391,8 @@ if((int)$_REQUEST["step"] == 4)
 		}
 
 		$order->setNotes(trim(addslashes($_REQUEST["order_notes"])));
-		$order->setInvoiceAddress(new Address((int)$_REQUEST["invoice_address"]));
-		$order->setDeliveryAddress(new Address((int)$_REQUEST["delivery_address"]));
-		$order->setDeliveryTerms(new DeliveryTerms((int)$_REQUEST["delivery_terms"]));
-		$order->setPaymentTerms(new PaymentTerms((int)$_REQUEST["payment_terms"]));
-		$order->setDeliveryDate($deliveryDate);
-		$order->setDeliveryCost((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["delivery_cost"]))));
-		$order->setCustContactperson(new ContactPerson((int)$_REQUEST["cust_contactperson"]));
 		$order->setInternContact(new User((int)$_REQUEST["intern_contactperson"]));
 		$order->setTitle(trim(addslashes($_REQUEST["order_title"])));
-		$order->setCustMessage(trim(addslashes($_REQUEST["cust_message"])));
-		$order->setCustSign(trim(addslashes($_REQUEST["cust_sign"])));
 		$order->setBeilagen(trim(addslashes($_REQUEST["order_beilagen"])));
 		$order->save();
 

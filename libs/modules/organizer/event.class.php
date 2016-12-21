@@ -142,19 +142,20 @@ class Event {
             ));
 
             // Orders
-            require_once $_BASEDIR . 'libs/modules/calculation/order.class.php';
-            $orders = Order::getOrdersWithDeliveryDate($dateStr);
-            foreach($orders as $order) {
-                $event = new Event();
-                $event->setTitle('[AUFTRAG] Geplante Fertigstellung für ' . $order->getNumber());
-                $event->setPublic(1);
-                $event->setUser($user);
-                $event->setDesc('Auftrag ' . $order->getNumber() . ' (' . $order->getTitle() . ')');
-                $event->setBegin($today);
-                $event->setEnd($tomorrow);
-				$event->setOrder($order);
-                $retval[] = $event;
-            }
+            // TODO: readd but with colinvs
+//            require_once $_BASEDIR . 'libs/modules/calculation/order.class.php';
+//            $orders = Order::getOrdersWithDeliveryDate($dateStr);
+//            foreach($orders as $order) {
+//                $event = new Event();
+//                $event->setTitle('[AUFTRAG] Geplante Fertigstellung für ' . $order->getNumber());
+//                $event->setPublic(1);
+//                $event->setUser($user);
+//                $event->setDesc('Auftrag ' . $order->getNumber() . ' (' . $order->getTitle() . ')');
+//                $event->setBegin($today);
+//                $event->setEnd($tomorrow);
+//				$event->setOrder($order);
+//                $retval[] = $event;
+//            }
 
             // Tickets
             require_once $_BASEDIR . 'libs/modules/tickets/ticket.class.php';
@@ -219,22 +220,23 @@ class Event {
         if($selectOtherDates) {
 
             // Orders
-            if (in_array("99991", $ticketstates))
-            {
-                require_once $_BASEDIR . 'libs/modules/calculation/order.class.php';
-                $orders = Order::getOrdersWithinTimeFrame($start, $end);
-                foreach($orders as $order) {
-                    $event = new Event();
-                    $event->setTitle('[AUFTRAG] ' . $order->getNumber());
-                    $event->setPublic(1);
-                    $event->setUser($user);
-                    $event->setDesc('Auftrag ' . $order->getNumber() . ' (' . $order->getTitle() . ')');
-                    $event->setBegin(mktime(7,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
-                    $event->setEnd(mktime(8,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
-    				$event->setOrder($order);
-                    $retval[] = $event;
-                }
-            }
+            // TODO: readd but with colinvs
+//            if (in_array("99991", $ticketstates))
+//            {
+//                require_once $_BASEDIR . 'libs/modules/calculation/order.class.php';
+//                $orders = Order::getOrdersWithinTimeFrame($start, $end);
+//                foreach($orders as $order) {
+//                    $event = new Event();
+//                    $event->setTitle('[AUFTRAG] ' . $order->getNumber());
+//                    $event->setPublic(1);
+//                    $event->setUser($user);
+//                    $event->setDesc('Auftrag ' . $order->getNumber() . ' (' . $order->getTitle() . ')');
+//                    $event->setBegin(mktime(7,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
+//                    $event->setEnd(mktime(8,0,0, date('m',$order->getDeliveryDate()), date('d',$order->getDeliveryDate()), date('Y',$order->getDeliveryDate())));
+//    				$event->setOrder($order);
+//                    $retval[] = $event;
+//                }
+//            }
 
             // Tickets
             require_once $_BASEDIR . 'libs/modules/tickets/ticket.class.php';

@@ -21,7 +21,7 @@ $smarty->assign('OrderPos',$orderpos);
 
 $smarty->assign('UserClient',$_USER->getClient()->getName());
     
-$smarty->assign('CustomerAddress', str_replace("\n", "<br />", $order->getDeliveryaddress()->getAddressAsLine()));
+//$smarty->assign('CustomerAddress', str_replace("\n", "<br />", $order->getDeliveryaddress()->getAddressAsLine()));
 
 $htmldump = $smarty->fetch('string:'.$datei);
 

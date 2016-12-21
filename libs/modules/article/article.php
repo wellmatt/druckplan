@@ -143,7 +143,7 @@ switch ($_REQUEST["exec"]) {
 	            $article->setOrderamounts($orderamounts);
 
 				$tags = $article->getTags();
-	            
+
 	            $artdesc = 'Inhalt 1<br>';
 				$artdesc .= 'Produktformat: ' . $firstcalc->getProductFormat()->getName() . " (" . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight()."mm)<br>";
 				$tags[] = $firstcalc->getProductFormat()->getName() . ' (' . $firstcalc->getProductFormatWidth()."x".$firstcalc->getProductFormatHeight().'mm)';
@@ -183,12 +183,16 @@ switch ($_REQUEST["exec"]) {
 	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesEnvelope()->getName() . '<br>';
 	            }
 				$artdesc .= '<br>Verarbeitung: '.$firstcalc->getTextProcessing().'<br>';
+				$artdesc .= '</tr></table>';
 	            $article->setDesc($artdesc);
 				$article->setTags($tags);
 	            
 	            $savemsg = getSaveMessage($article->save()).$DB->getLastError();
 	            
 	            require_once 'article.edit.php';
+
+
+
 	        }
 	    }
 	    break;
