@@ -94,7 +94,7 @@ if($_REQUEST["subexec"] == "save")
             }
             if ($_REQUEST['paper_1qm'])
             {
-                $t["price"] = ((($t["size_width"] * $t["size_height"] / 1000) * ($match["weight"]))*(($_REQUEST['paper_1qm'] / 100) * ($t["quantity_from"])) / 1000);
+                $t["price"] = ((($t["size_width"] * $t["size_height"] / 1000) * (($_REQUEST['paper_1qm'] ) * ($t["quantity_from"])) / 1000));
             }
             //             var_dump($t);
             if ($t["weight_from"] && $t["weight_to"] && $t["price"])
@@ -529,7 +529,7 @@ echo $quickmove->generate();
                               </div>
                               <?  $i++; } ?>
                       </div>
-                  </div>
+                                                                    </div>
               </div>
               <br>
               <div class="panel panel-default">

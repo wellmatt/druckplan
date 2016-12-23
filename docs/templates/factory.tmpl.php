@@ -28,10 +28,6 @@ foreach ($articles as $opos)
         foreach ($calcs as $calc) {
             if ($calc->getState() && $calc->getAmount()==$opos->getQuantity())
             {
-        
-                $zip = $order->getCustomer()->getAddress1()."<br>";
-                $zip .= strtoupper($order->getCustomer()->getCountry()->getCode()) . "-" . $order->getCustomer()->getZip() . " " . $order->getCustomer()->getCity();
-        
                 $paperstr = $_LANG->get('Inhalt') . ": <b>" . $calc->getPaperCount(Calculation::PAPER_CONTENT) . "</b> " . $_LANG->get("B&ouml;gen / St&uuml;ck") . " ";
                 $paperstr .= $calc->getPaperContent()->getName() . " " . $calc->getPaperContentWeight() . "g";
         
@@ -78,14 +74,6 @@ foreach ($articles as $opos)
         
         
                 $dump = array();
-                $dump["CustomerName"] = $order->getCustomer()->getNameAsLine();
-                $dump["CustomerAddress"] = $zip;
-                $dump["CustomerEmail"] = $order->getCustomer()->getEmail();
-                $dump["CustomerPhone"] = $order->getCustomer()->getPhone();
-                $dump["CustomerFax"] = $order->getCustomer()->getFax();
-                $dump["CustomerWebsite"] = $order->getCustomer()->getWeb();
-                $dump["CustomerContact"] = $order->getCustContactperson()->getNameAsLine();
-                $dump["CustomerNote"] = $order->getCustomer();
                 $dump["OrderTitle"] = $order->getTitle();
                 $dump["ProductName"] = $opos_order->getProduct()->getName();
                 $dump["Material"] = $paperstr;

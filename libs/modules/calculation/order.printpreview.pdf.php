@@ -432,17 +432,6 @@ $pdf->y = $mach_top - 160;
  $data[] = Array(	"Eigenschaft"		=> "Auft.-Datum: ",
 					"Wert" 				=> $crt_date);
 					
- if($order->getDeliveryDate() > 0)
-	$delivery_date = date('d.m.Y', $order->getDeliveryDate());
- else
-	$delivery_date = "";
-
-//  $data[] = Array(	"Eigenschaft"		=> "Lieferdatum: ",
-// 					"Wert" 				=> $delivery_date);
-					
-//  $data[] = Array(	"Eigenschaft"		=> "Sachbearbeiter: ",
-// 					"Wert" 				=> $order->getInternContact()->getNameAsLine());
-					
  $data[] = Array(	"Eigenschaft"		=> "Maschine: ",
 					"Wert" 				=> $mach->getName());
 					
@@ -557,13 +546,6 @@ $pdf->y = $mach_top - 160;
 					
  $pdf->ezTable($data,$type,$dummy,$attr);
 
-// if($direction == Paper::PAPER_DIRECTION_SMALL){
-	// $pdf->ezText("".$_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn')."", 30);
-	// // imagettftext($im2, 8, 0, 30, 20, $arrcolor, "./fonts/arial.ttf", "".$_LANG->get('Laufrichtung').":\n".$_LANG->get('schmale Bahn')."");
-// } else{
-	// $pdf->ezText("".$_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn')."", 30);
-	// // imagettftext($im2, 8, 0, 30, 20, $arrcolor, "./fonts/arial.ttf", "".$_LANG->get('Laufrichtung').":\n".$_LANG->get('breite Bahn')."");
-// }
 
 // Senden der Datei an den Browser
 $pdf->ezStream();

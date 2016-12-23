@@ -161,7 +161,7 @@ if ((int)$_REQUEST["cid"] > 0){
 //     		        if ($comment->getCrtuser()->getId() != $_USER->getId()){
 //     		            Notification::generateNotification($comment->getCrtuser(), get_class($tmp_ticket), "CommentEdit", $tmp_ticket->getNumber(), $tmp_ticket->getId());
 //     		        }
-    		        echo '<script language="JavaScript">parent.$.fancybox.close(); 
+    		        echo '<script language="JavaScript">parent.$.fancybox.close();
     		              parent.location.href="../../../index.php?page=libs/modules/tickets/ticket.php&exec=edit&tktid='.$comment->getObjectid().'";</script>';
                 } else if ($comment->getModule() == "BusinessContact") {
                     echo '<script language="JavaScript">parent.$.fancybox.close(); parent.location.href=parent.location.href+"&tabshow=5";</script>';

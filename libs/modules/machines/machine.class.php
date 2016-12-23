@@ -679,7 +679,7 @@ class Machine
                 }
             } else if($this->unit == Machine::UNIT_PERHOUR_MM)
             {
-                $time = (($calc->getProductFormatHeightOpen() * 2 + $calc->getProductFormatWidthOpen() * 2) * $calc->getAmount())/$this->getUnitsPerHour(0)/60;
+                $time = (($calc->getProductFormatHeightOpen() * 2 + $calc->getProductFormatWidthOpen() * 2)) * ($calc->getAmount())/($this->getUnitsPerHour(0)/3600/60/60);
                 if ($debug){
                     echo '$time = (('.$calc->getProductFormatHeightOpen().' * 2 + '.$calc->getProductFormatWidthOpen().' * 2) * '.$calc->getAmount().')/'.$this->getUnitsPerHour(0).'/60 </br>';
                 }
