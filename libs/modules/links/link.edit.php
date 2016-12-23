@@ -15,6 +15,8 @@ if ($_REQUEST["exec"] == "save"){
         'title' => $_REQUEST["title"],
         'url' => $_REQUEST["url"],
         'private' => (int)$_REQUEST["private"],
+        'username' => $_REQUEST["username"],
+        'password' => $_REQUEST["password"],
         'user' => (int)$_USER->getId(),
     ];
     $link = new Link((int)$_REQUEST["id"], $array);
@@ -57,6 +59,18 @@ echo $quickmove->generate();
                   <label for="" class="col-sm-2 control-label">URL</label>
                   <div class="col-sm-10">
                       <input type="text" class="form-control" name="url" id="url" value="<?php echo $link->getUrl();?>" placeholder="http://...">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Benutzer</label>
+                  <div class="col-sm-10">
+                      <input type="text" class="form-control" name="username" id="username" value="<?php echo $link->getUsername();?>">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">Kennwort</label>
+                  <div class="col-sm-10">
+                      <input type="text" class="form-control" name="password" id="password" value="<?php echo $link->getPassword();?>">
                   </div>
               </div>
               <?php if ($_USER->isAdmin()){?>

@@ -205,7 +205,26 @@
      
     /* Data set length after filtering */
     $sQuery = "
-        SELECT FOUND_ROWS()
+        SELECT count(id) FROM
+        (
+        SELECT
+        invoiceouts.id,
+        invoiceouts.number as renr,
+        collectiveinvoice.number as vonr,
+        collectiveinvoice.title,
+        CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
+        invoiceouts.netvalue,
+        invoiceouts.grossvalue,
+        invoiceouts.crtdate,
+        invoiceouts.duedate,
+        invoiceouts.payeddate,
+        invoiceouts.`status`
+        FROM
+        invoiceouts
+        INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
+        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+        ) t1
+        $sWhere
     ";
 //     var_dump($sQuery);
     $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );

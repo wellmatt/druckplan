@@ -49,21 +49,40 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$body = "Sehr geehrter Kunde,<br>
-<br>
-der Bestand des folgenden Artikels hat die Mindesmenge erreicht:<br>
-<br>
-Test (#Test)<br>
-Mindestmenge: 1000 / Verbleibend: 500<br>
-Lagerplatz: Test (#Test)<br>
-<br>
-Um einen reibungslosen Verkauf zu gewährleisten, muss dieser Artikel nachbestellt werden.<br>
-<br>
-Vielen Dank.<br>
-<br>
-Mit freundlich Grüßen<br>
-Ihr Kundenportal-Betreuer
-";
 
-$message = new MailMessage(null,['ascherer@ipactor.de'],"Lager Warnung",$body);
-$message->send();
+$now = time();
+$aday = 86400;
+$netvalue = 0.0;
+$grossvalue = 0.0;
+$cost = 0.0;
+
+
+$duedate = ($now + ($nettodays * $aday));
+
+$tax = [];
+$positions = Orderposition::getAllOrderposition(120);
+prettyPrint($positions);
+foreach ($positions as $position) {
+    if ($position->getStatus() == 1 && $position->getInvrel() == 1){
+        $art = new Article($position->getObjectid());
+        if ($art->getOrderid() > 0){
+            $netto = $position->getPrice();
+            $postax = $position->getTax();
+            $poscost = $position->getCost();
+            $tax[$postax][] = [$netto,$poscost];
+        } else {
+            $netto = $position->getPrice() * $position->getAmount();
+            $postax = $position->getTax();
+            $poscost = $position->getCost() * $position->getAmount();
+            $tax[$postax][] = [$netto,$poscost];
+        }
+    }
+}
+
+foreach ($tax as $mwst => $items) {
+    foreach ($items as $item) {
+        $netvalue += $item[0];
+        $grossvalue += $item[0] * (1 + $mwst/100);
+        $cost += $item[1];
+    }
+}

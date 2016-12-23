@@ -277,9 +277,6 @@ class CollectiveInvoice{
 		if ($res)
 		{
 			Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
-			if ($this->status == 5 || $this->status == 7){
-				$this->saveArticleBuyPrices();
-			}
 			return true;
 		}
 		else
@@ -310,9 +307,10 @@ class CollectiveInvoice{
 	/**
 	 * Saves article cost and profit margin to database
 	 */
-	private function saveArticleBuyPrices(){
-		if ($this->savedcost == 0) {
+	public function saveArticleBuyPrices(){
+//		if ($this->savedcost == 0) { // TODO: couple with inv generation
 			$orderpositions = Orderposition::getAllOrderposition($this->getId());
+			$updated = [];
 			foreach ($orderpositions as $orderposition) {
 				if ($orderposition->getType() == 1 || $orderposition->getType() == 2) {
 					$article = new Article((int)$orderposition->getObjectid());
@@ -320,12 +318,15 @@ class CollectiveInvoice{
 					$profit = ($orderposition->getAmount() * $orderposition->getPrice()) - $cost;
 					$orderposition->setCost($cost);
 					$orderposition->setProfit($profit);
+					$updated[] = $orderposition;
 				}
 			}
-			Orderposition::saveMultipleOrderpositions($orderpositions);
-			$this->savedcost = 1;
-			$this->save();
-		}
+			if (count($updated)>0){
+				Orderposition::saveMultipleOrderpositions($updated);
+				$this->savedcost = 1;
+				$this->save();
+			}
+//		}
 	}
 
 

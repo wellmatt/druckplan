@@ -183,6 +183,10 @@ case 'save':
 	//Positionen der Rechnung speichern
 // 	var_dump($orderpositions);
 	Orderposition::saveMultipleOrderpositions($orderpositions);
+
+	if ($collectinv->getId() > 0 && ($collectinv->getStatus() == 5 || $collectinv->getStatus() == 7)){
+		$collectinv->saveArticleBuyPrices();
+	}
     if ($needs_planning)
     {
         $collectinv->setNeeds_planning(1);

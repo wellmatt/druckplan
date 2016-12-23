@@ -150,9 +150,11 @@ if ($_REQUEST["exec"] == "register_tmp"){
 	else {	
 	
 	    Global $_USER;
-	    if ($_BUSINESSCONTACT->getSupervisor()){
+	    if ($_BUSINESSCONTACT->getSupervisor()->getId() > 0){
 	        $_USER = new User($_BUSINESSCONTACT->getSupervisor()->getId());
-	    }
+	    } else {
+			die ('Fehlender Betreuer-Web. Bitte wenden Sie sich an Ihren Kundenberater!');
+		}
 	    ?>
 		<div id="logout">
 		&emsp;

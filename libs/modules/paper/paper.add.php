@@ -105,10 +105,10 @@ if($_REQUEST["subexec"] == "save")
     for ($i = 0; $i < $_REQUEST["supplier_counter"]; $i++) {
         if ($_REQUEST["supplier_".$i] != "") {
             if (count($supplier) > 0 && !in_array($_REQUEST["supplier_".$i],$supplier)) {
-                $supplier[] = $_REQUEST["supplier_".$i];
+                $supplier[] = ['id'=>$_REQUEST["supplier_".$i],'descr'=>$_REQUEST["supplier_descr_".$i]];
             }
             else if (count($supplier) == 0) {
-                $supplier[] = $_REQUEST["supplier_".$i];
+                $supplier[] = ['id'=>$_REQUEST["supplier_".$i],'descr'=>$_REQUEST["supplier_descr_".$i]];
             }
         }
     }
@@ -496,13 +496,16 @@ echo $quickmove->generate();
 
               <div class="panel panel-default">
                   <div class="panel-heading">
-                      <h3 class="panel-title">Lieferanten</h3>
+                      <h3 class="panel-title">
+                          Lieferanten
+                          <span class="pull-right"><span class="glyphicons glyphicons-plus pointer" onclick="addSupplierRow()"></span></span>
+                      </h3>
                   </div>
                   <div class="panel-body">
                       <input type="hidden" name="supplier_counter" id="supplier_counter" value="<? if(count($paper->getSupplier()) > 0) echo count($paper->getSupplier()); else echo "0";?>">
                       <div id="table-supplier" >
                           <? $i = 0; foreach($paper->getSupplier() as $s) {
-                              $tmp_supplier = new BusinessContact($s);
+                              $tmp_supplier = new BusinessContact($s["id"]);
                               ?>
                               <div id="supplier_tr_<?=$i?>">
                                   <div class="form-group">
@@ -521,9 +524,6 @@ echo $quickmove->generate();
                                       </div>
                                       <div class="col-sm-1">
                                           <span class="glyphicons glyphicons-remove pointer" onclick="removeOption('supplier', <?=$i?>)"></span>
-                                      </div>
-                                      <div class="col-sm-1">
-                                          <span class="glyphicons glyphicons-plus pointer" onclick="addSupplierRow()"></span>
                                       </div>
                                   </div>
                               </div>

@@ -15,6 +15,8 @@ class Link extends Model{
     public $url = '';
     public $user = NULL;
     public $private = 1;
+    public $username = '';
+    public $password = '';
 
     protected function bootClasses()
     {
@@ -124,5 +126,37 @@ class Link extends Model{
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
     }
 }

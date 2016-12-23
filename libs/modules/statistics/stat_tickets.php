@@ -82,23 +82,21 @@ else
             <div class="panel panel-default">
                 <div class="panel-heading">Arbeitszeiten</div>
                 <div class="panel-body">
-                    <?php if ($_USER->isAdmin()){ ?>
-                        Mitarbeiter wählen: <select name="wrkl_user" id="wrkl_user" onchange="$('#stat_ticket').submit();" style="width:160px" required>
-                        <?php
-                        $all_user = User::getAllUser(User::ORDER_NAME);
+                    Mitarbeiter wählen: <select name="wrkl_user" id="wrkl_user" onchange="$('#stat_ticket').submit();" style="width:160px" required>
+                    <?php
+                    $all_user = User::getAllUser(User::ORDER_NAME);
 
-                        foreach ($all_user as $user){
-                            if ($user->getId() == $_USER->getId()) {
-                                echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
-                            } elseif ($_REQUEST["wrkl_user"] == $user->getId()){
-                                echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
-                            } else {
-                                echo '<option value="'.$user->getId().'">'.$user->getNameAsLine().'</option>';
-                            }
+                    foreach ($all_user as $user){
+                        if ($_REQUEST["wrkl_user"] == $user->getId()) {
+                            echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
+                        } elseif ($user->getId() == $_USER->getId() && (int)$_REQUEST["wrkl_user"] == 0){
+                            echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
+                        } else {
+                            echo '<option value="'.$user->getId().'">'.$user->getNameAsLine().'</option>';
                         }
-                        ?>
-                        </select>
-                    <?php } ?>
+                    }
+                    ?>
+                    </select>
                     <table id="table_workload" class="stripe hover row-border order-column">
                         <thead>
                             <tr>
