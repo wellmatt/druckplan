@@ -24,6 +24,7 @@ $workload = Ticket::StatisticsTicketWorkload($start,$end);
 if ($_REQUEST["wrkl_user"])
     $workload_user = Ticket::StatisticsTicketWorkloadUser(new User($_REQUEST["wrkl_user"]),$start,$end);
 else
+
     $workload_user = Ticket::StatisticsTicketWorkloadUser($_USER,$start,$end);
 
 ?>
@@ -149,7 +150,7 @@ else
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <!--<div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">Arbeitszeiten aller Mitarbeiter im ausgewählten Zeitraum</div>
                 <div class="panel-body">
@@ -205,13 +206,14 @@ else
             </div>
         </div>
     </div>
-</form>
+</form>-->
 
 <script language="JavaScript">
     $(function() {
         var table_workload = $('#table_workload').DataTable({
             "aaSorting": [[1, "desc"]],
             "dom": 'rti',
+
             "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                 if ( aData[5] > aData[4] )
                 {
@@ -230,6 +232,7 @@ else
                 "processing": "Verarbeite...",
                 "search": "Suche:",
                 "zeroRecords": "Keine passenden Eintr&auml;ge gefunden",
+
                 "paginate": {
                     "first": "Erste",
                     "last": "Letzte",
