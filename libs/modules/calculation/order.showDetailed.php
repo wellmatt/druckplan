@@ -556,10 +556,10 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                               <li class="list-group-item">
                                       <span class="badge">
                                           <?
-                                          if ($calc->$content['id']()->getPriceBase() != Paper::PRICE_PER_THOUSAND)
-                                              echo $_LANG->get('Preis pro Rolle');
-                                          else
+                                          if (($calc->getPaperContent()->getRolle() != 1))
                                               echo $_LANG->get('Preis pro 1000 Bogen');
+                                          else
+                                              echo $_LANG->get('Preis pro Rolle');
                                           ?>
                                       </span>
                                                   Preisbasis
@@ -593,17 +593,17 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                   <ul class="list-group">
 
                       <li class="list-group-item">
-                          <span class="badge"><?php echo printPrice(($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()))  + (($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope))) ; ?>€</span>
+                          <span class="badge"><?php echo printPrice(($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant())) + $calc->getColorCost()) ; ?>€</span>
                           Materialkosten
                       </li>
                       <li class="list-group-item">
-                          <span class="badge"><?php echo printPrice($calc->getPricesub() - ($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()))); ?>€</span>
+                          <span class="badge"><?php echo printPrice($calc->getMachTotal()); ?>€</span>
                           Fertigungskosten
                       </li>
 
 
                       <li class="list-group-item">
-                          <span class="badge"><?php echo printPrice($calc->getPricesub() + ($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope)); ?>€</span>
+                          <span class="badge"><?php echo printPrice($calc->getPricesub() ); ?>€</span>
                           Produktionskosten insgesamt
                       </li>
                       <li class="list-group-item">
@@ -622,7 +622,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                           Manueller Aufschlag
                       </li>
                       <li class="list-group-item">
-                          <span class="badge"><?php echo printPrice($calc->getPricetotal() + ($sheets_color1) + ($sheets_color2) + ($sheets_color3) + ($sheets_color4) + ($sheets_envelope)); ?>€</span>
+                          <span class="badge"><?php echo printPrice($calc->getPricetotal() ); ?>€</span>
                           Verkaufspreispreis
                       </li>
                   </ul>
