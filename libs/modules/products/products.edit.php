@@ -299,6 +299,7 @@ echo $quickmove->generate();
                       <div class="form-group">
                           <label for="" class="col-sm-3 control-label">Produktbild</label>
                           <div  id="picture_show" class="col-sm-9">
+<!--                              <span class="glyphicons glyphicons-picture"></span>-->
                               <img src="images/products/<?=$product->getPicture()?>">&nbsp;
                           </div>
                       </div>

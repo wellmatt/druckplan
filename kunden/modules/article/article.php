@@ -214,7 +214,7 @@ function printSubTradegroupsForSelect($parentId, $depth){
 			<div class="panel-body">
 				<div class="form-horizontal">
 					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Tags:</label>
+						<label for="" class="col-sm-2 control-label">Tags</label>
 						<div class="col-sm-3">
 							<input type="hidden" id="ajax_tags" name="ajax_tags"/>
 							<input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)"

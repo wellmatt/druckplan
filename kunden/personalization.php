@@ -614,7 +614,7 @@ if ($_REQUEST["exec"] == "edit"){
 	<script type="text/javascript" charset="utf8" src="../jscripts/datatable/dataTables.bootstrap.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		var art_table = $('#porder_table').DataTable( {
+		var porder_table = $('#porder_table').DataTable( {
 			"processing": true,
 			"bServerSide": true,
 			"sAjaxSource": "personalization.dt.ajax.php?customerid=<?php echo $busicon->getId();?>",
@@ -622,7 +622,7 @@ if ($_REQUEST["exec"] == "edit"){
 			"stateSave": false,
 			"pageLength": "25",
 			"aaSorting": [[ 3, "desc" ]],
-			"dom": 'flrtip',
+			"dom": 'lrtip',
 			"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 			"columns": [
 						null,
@@ -658,6 +658,9 @@ if ($_REQUEST["exec"] == "edit"){
 							}
 						}
 		} );
+		$('#search').keyup(function(){
+			porder_table.search( $(this).val() ).draw();
+		});
 	} );
 	</script>
 
@@ -671,13 +674,19 @@ if ($_REQUEST["exec"] == "edit"){
 			  			<h3 class="panel-title">
 							Verfügbar
 							<span class="pull-right">
-								<form action="index.php" method="post" name="perso_ver_search" id="perso_ver_search" >
+								<form action="index.php" method="post" class="form-horizontal" name="perso_ver_search" id="perso_ver_search" >
 									<input name="pid" type="hidden" value="<?=$_REQUEST["pid"]?>" />
-									<input name="search_ver_string" type="text" value="<?=$search_ver_string?>" style="width:150px;"/>
-									<span class="glyphicons glyphicons-search pointer"
-										  alt="<?=$_LANG->get('Suchen');?>"
-										  onClick="document.getElementById('perso_ver_search').submit()">
-									</span>
+									<div class="form-group">
+										<div class="col-sm-10">
+											<input name="search_ver_string" class="form-control" type="text" value="<?=$search_ver_string?>"/>
+										</div>
+										<div class="col-sm-1">
+											<span class="glyphicons glyphicons-search pointer"
+												  alt="<?=$_LANG->get('Suchen');?>"
+												  onClick="document.getElementById('perso_ver_search').submit()">
+											</span>
+										</div>
+									</div>
 								</form>
 							</span>
 						</h3>
@@ -711,6 +720,23 @@ if ($_REQUEST["exec"] == "edit"){
 			  	  <div class="panel-heading">
 			  			<h3 class="panel-title">Gespeichert</h3>
 			  	  </div>
+				  <div class="panel-body">
+					  <div class="panel panel-default">
+						  <div class="panel-heading">
+							  <h3 class="panel-title">
+								  Filter
+							  </h3>
+						  </div>
+						  <div class="panel-body">
+							  <div class="form-group">
+								  <label for="" class="col-sm-2 control-label">Suche</label>
+								  <div class="col-sm-4">
+									  <input type="text" id="search1" class="form-control" placeholder="">
+								  </div>
+							  </div>
+						  </div>
+					  </div>
+				  </div>
 				  <div class="table-responsive">
 					  <table id="porder_table" width="100%" cellpadding="0" cellspacing="0" class="stripe hover row-border order-column">
 						  <thead>

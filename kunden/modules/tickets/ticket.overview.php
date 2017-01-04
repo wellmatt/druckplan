@@ -50,7 +50,7 @@ $(document).ready(function() {
         "paging": true,
 		"stateSave": true,
 // 		"dom": 'flrtip',        
-		"dom": 'T<"clear">flrtip',        
+		"dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "../../../jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -122,6 +122,9 @@ $(document).ready(function() {
 						}
 					}
     } );
+	$('#search').keyup(function(){
+		ticketstable.search( $(this).val() ).draw();
+	});
 
     $("#ticketstable tbody td").live('click',function(){
         var aPos = $('#ticketstable').dataTable().fnGetPosition(this);
@@ -135,9 +138,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "../../../images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "../../../images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
             	$('#ticketstable').dataTable().fnDraw();
@@ -148,9 +151,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "../../../images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "../../../images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
             	$('#ticketstable').dataTable().fnDraw();
@@ -161,9 +164,9 @@ $(document).ready(function() {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				dateFormat: 'dd.mm.yy',
-	            showOn: "button",
-	            buttonImage: "../../../images/icons/calendar-blue.png",
-	            buttonImageOnly: true,
+//	            showOn: "button",
+//	            buttonImage: "../../../images/icons/calendar-blue.png",
+//	            buttonImageOnly: true,
 	            onSelect: function(selectedDate) {
 	                $('#ajax_date_due_min').val(moment($('#date_due_min').val(), "DD-MM-YYYY").unix());
 	            	$('#ticketstable').dataTable().fnDraw();
@@ -174,9 +177,9 @@ $(document).ready(function() {
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			dateFormat: 'dd.mm.yy',
-            showOn: "button",
-            buttonImage: "../../../images/icons/calendar-blue.png",
-            buttonImageOnly: true,
+//            showOn: "button",
+//            buttonImage: "../../../images/icons/calendar-blue.png",
+//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_due_max').val(moment($('#date_due_max').val(), "DD-MM-YYYY").unix()+86340);
             	$('#ticketstable').dataTable().fnDraw();
@@ -206,11 +209,11 @@ $(document).ready(function() {
 			<h3 class="panel-title">
 				Tickets
 				<span class="pull-right">
-					  <span class="glyphicons glyphicons-ticket pointer"></span>
-					  <button class="btn btn-xs btn-success"onclick="document.location.href='index.php?pid=20&exec=new';" class="icon-link">
+					  <button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?pid=20&exec=new';" class="icon-link">
+						  <span class="glyphicons glyphicons-plus pointer"></span>
 						  <?=$_LANG->get('Ticket erstellen')?>
 					  </button>
-			  		</span>
+				</span>
 			</h3>
 	  </div>
 	  <div class="panel-body">
@@ -227,74 +230,68 @@ $(document).ready(function() {
 		  	  </div>
 		  	  <div class="panel-body">
 				  <div class="form-horizontal">
-				 	 <div class="row">
-					 	 <div class="col-md-6">
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-4 control-label">Datum (erstellt)</label>
-								 <div class="col-sm-8">
-									 <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-									 <input name="date_min" id="date_min"  class="form-control"
-											onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
-								 </div>
+						 <div class="form-group">
+							 <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
+							 <div class="col-sm-4">
+								 <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+								 <input name="date_min" id="date_min"  class="form-control"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
 							 </div>
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-4 control-label">Datum (fällig)</label>
-								 <div class="col-sm-8">
-									 <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>
-									 <input name="date_due_min" id="date_due_min"  class="form-control"
-											onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
-								 </div>
-							 </div>
-
-						 </div>
-						 <div class="col-md-6">
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-4 control-label">bis:</label>
-								 <div class="col-sm-8">
-									 <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-									 <input name="date_max" id="date_max" class="form-control"
-												 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
-								 </div>
-							 </div>
-
-							 <div class="form-group">
-								 <label for="" class="col-sm-4 control-label">bis:</label>
-								 <div class="col-sm-8">
-									 <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>
-									 <input name="date_due_max" id="date_due_max" class="form-control"
-												 onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
-								 </div>
+							 <label for="" class="col-sm-2 control-label" style="text-align: center;">bis</label>
+							 <div class="col-sm-4">
+								 <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+								 <input name="date_max" id="date_max" class="form-control"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
 							 </div>
 						 </div>
+						 <div class="form-group">
+							 <label for="" class="col-sm-2 control-label">Datum (fällig)</label>
+							 <div class="col-sm-4">
+								 <input name="ajax_date_due_min" id="ajax_date_due_min" type="hidden"/>
+								 <input name="date_due_min" id="date_due_min"  class="form-control"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">
+							 </div>
+							 <label for="" class="col-sm-2 control-label" style="text-align: center;">bis</label>
+							 <div class="col-sm-4">
+								 <input name="ajax_date_due_max" id="ajax_date_due_max" type="hidden"/>
+								 <input name="date_due_max" id="date_due_max" class="form-control"
+										onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">
+							 </div>
+						 </div>
+						  <div class="form-group">
+							  <label for="" class="col-sm-2 control-label">Kategorie</label>
+							  <div class="col-sm-10">
+								  <input name="ajax_category" id="ajax_category" type="hidden"/>
+								  <select name="category" id="category" class="form-control">
+									  <option value="" selected></option>
+									  <?php
+									  $tkt_all_categories = TicketCategory::getAllCategories();
+									  foreach ($tkt_all_categories as $tkt_category){
+										  if ($_CONTACTPERSON->TC_cansee($tkt_category))
+											  echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
+									  }
+									  ?>
+								  </select>
+							  </div>
+						  </div>
+						  <div class="form-group">
+							  <label for="" class="col-sm-2 control-label">Suche</label>
+							  <div class="col-sm-10">
+								  <input type="text" id="search" class="form-control" placeholder="">
+							  </div>
+						  </div>
+
+						  <div class="form-group">
+							  <label for="" class="col-sm-2 control-label">zeige geschlossene</label>
+							  <div class="col-sm-1">
+								  <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
+								  <input name="showclosed" id="showclosed" type="checkbox" value="1"/>
+							  </div>
+						  </div>
+
 					 </div>
 
-					  <div class="form-group">
-						  <label for="" class="col-sm-2 control-label">Kategorie:</label>
-						  <div class="col-sm-10">
-							  <input name="ajax_category" id="ajax_category" type="hidden"/>
-							  <select name="category" id="category" class="form-control">
-								  <option value="" selected></option>
-								  <?php
-								  $tkt_all_categories = TicketCategory::getAllCategories();
-								  foreach ($tkt_all_categories as $tkt_category){
-									  if ($_CONTACTPERSON->TC_cansee($tkt_category))
-										  echo '<option value="'.$tkt_category->getId().'">'.$tkt_category->getTitle().'</option>';
-								  }
-								  ?>
-							  </select>
-						  </div>
-					  </div>
 
-					  <div class="form-group">
-						  <label for="" class="col-sm-2 control-label">zeige geschlossene:</label>
-						  <div class="col-sm-1">
-							  <input name="ajax_showclosed" id="ajax_showclosed" type="hidden"/>
-							  <input class="form-control" name="showclosed" id="showclosed" type="checkbox" value="1"/>
-						  </div>
-					  </div>
 				  </div>
 		  	  </div>
 		  </div>

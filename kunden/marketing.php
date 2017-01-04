@@ -31,27 +31,42 @@ $marketjobs = Marketing::getAllForListAndBc($curr_list,$_BUSINESSCONTACT);
 	  <div class="panel-heading">
 			<h3 class="panel-title">
                Marketingplan
-                <span class="pull-right"><?=$savemsg?></span>
+                <span class="pull-right">
+                    <?=$savemsg?>
+                </span>
             </h3>
 	  </div>
 	  <div class="panel-body">
           <div class="panel panel-default">
           	  <div class="panel-heading">
           			<h3 class="panel-title">
-                       <b>Filter</b>
+                       Filter
                     </h3>
           	  </div>
           	  <div class="panel-body">
-                  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="marketing_column_form" id="marketing_column_form">
+                  <form action="index.php?page=<?=$_REQUEST['page']?>" class="form-horizontal" method="post" name="marketing_column_form" id="marketing_column_form">
                       <input type="hidden" name="pid" value="100">
-                      Liste auswählen: <select name="list">
-                          <?php
-                          foreach ($lists as $list) {
-                              echo '<option value="'.$list->getId().'">'.$list->getTitle().'</option>';
-                          }
-                          ?>
-                      </select>
-                      <button type="submit" class="btn btn-sm">Weiter</button>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Liste auswählen</label>
+                          <div class="col-sm-4">
+                              <select class="form-control" name="list">
+                                  <?php
+                                  foreach ($lists as $list) {
+                                      echo '<option value="'.$list->getId().'">'.$list->getTitle().'</option>';
+                                  }
+                                  ?>
+                              </select>
+                          </div>
+                          <div class="col-sm-4">
+                              <button type="submit" class="btn btn-sm btn-success">Weiter</button>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Suche</label>
+                          <div class="col-sm-4">
+                              <input type="text" id="search" class="form-control" placeholder="">
+                          </div>
+                      </div>
                   </form>
           	  </div>
           </div>
@@ -101,10 +116,10 @@ $marketjobs = Marketing::getAllForListAndBc($curr_list,$_BUSINESSCONTACT);
 
 <script language="JavaScript">
     $(document).ready(function () {
-        var marketingtable = $('#marketing_table').DataTable({
+        var marketing_table = $('#marketing_table').DataTable({
             "scrollX": true,
             "aaSorting": [[3, "desc"]],
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "../jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -143,6 +158,9 @@ $marketjobs = Marketing::getAllForListAndBc($curr_list,$_BUSINESSCONTACT);
                     "sortDescending": ": aktivieren um absteigend zu sortieren"
                 }
             }
+        });
+        $('#search').keyup(function(){
+            marketing_table.search( $(this).val() ).draw();
         });
     });
 </script>

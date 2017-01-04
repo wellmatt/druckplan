@@ -130,7 +130,7 @@ function askDel(myurl)
 			"paging": true,
 			"stateSave": false,
 			"pageLength": 25,
-			"dom": 'flrtip',
+			"dom": 'lrtip',
 			"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 			"language":
 			{
@@ -157,11 +157,14 @@ function askDel(myurl)
 				}
 			}
 		});
+		$('#search').keyup(function(){
+			table_deliv.search( $(this).val() ).draw();
+		});
 		var table_inv = $('#table_inv').DataTable({
 			"paging": true,
 			"stateSave": false,
 			"pageLength": 25,
-			"dom": 'flrtip',
+			"dom": 'lrtip',
 			"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 			"language":
 			{
@@ -187,6 +190,9 @@ function askDel(myurl)
 					"sortDescending": ": aktivieren um absteigend zu sortieren"
 				}
 			}
+		});
+		$('#search1').keyup(function(){
+			table_inv.search( $(this).val() ).draw();
 		});
 	});
 </script>
@@ -207,44 +213,36 @@ function askDel(myurl)
 						</h3>
 			  	  </div>
 				  <div class="panel-body">
-
-
 					  <div class="row">
 						  <div class="col-sm-3">Firmenname</div>
 						  <div class="col-sm-4" >
 							  <?=$busicon->getName1()?>
 						  </div>
 					  </div>
-
-
 					  <div class="row">
 						  <div class="col-sm-3">Firmenname (Zusatz)</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getName2()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">Straße</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getAddress1()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">Straße (Zusatz)</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getAddress2()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">PLZ/Stadt</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getZip()?>&ensp;<?=$busicon->getCity()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">Land</div>
 						  <div class="col-sm-4 ">
@@ -267,28 +265,24 @@ function askDel(myurl)
 							  <?=$busicon->getEmail()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">Telefon</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getPhone()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">Fax</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getFax()?>
 						  </div>
 					  </div>
-
 					  <div class="row">
 						  <div class="col-sm-3">Web</div>
 						  <div class="col-sm-4 ">
 							  <?=$busicon->getWeb()?>
 						  </div>
 					  </div>
-
 			  	  </div>
 			  </div>
 </form>
@@ -395,8 +389,9 @@ function askDel(myurl)
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label"></label>
 							<div class="col-sm-5">
-								<input type="submit" name="submit" value="<?=$_LANG->get('Speichern')?>">
-								<?=$savemsg?>
+								<button class="btn btn-origin btn-success" type="submit">
+									<?=$_LANG->get('Speichern')?>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -518,58 +513,89 @@ function askDel(myurl)
 					  <div class="panel-heading">
 							<h3 class="panel-title">
 								Lieferadressen
-								<span class="glyphicons glyphicons-user-add pointer"
-									onclick="document.getElementById('neue_lieferadr').style.display=''"
-									 title="<?=$_LANG->get('Neue Lieferadresse anlegen');?>">
+								<span class="pull-right">
+									<button class="btn btn-xs btn-success" type="button" onclick="document.getElementById('neue_lieferadr').style.display=''">
+										<?=$_LANG->get('Neue Lieferadresse anlegen');?>
+									</button>
 								</span>
 							</h3>
 					  </div>
-						  <div class="table-responsive">
-							  <table class="table table-hover" id="table_deliv">
-								  <thead>
-									  <tr>
-										  <th class="content_row"><b>Firma</b></th>
-										  <th class="content_row"><b>Adresse</b></th>
-										  <th class="content_row"><b>PLZ/Ort</b></th>
-										  <th class="content_row"><b>Land</b></th>
-										  <th class="content_row"><b>Telefon</b></th>
-									  </tr>
-								  </thead>
-								  <?	foreach($all_deliveryAddresses AS $deliv){ ?>
-									  <tr>
-										  <td>
-											  <?=$deliv->getNameAsLine()?>
-											  <? if ($deliv->getDefault() == 1) echo ' (Standard)'; ?>
-										  </td>
-										  <td>
-											  <?=$deliv->getAddress1()?> <?=$deliv->getAddress2()?>
-										  </td>
-										  <td>
-											  <?=$deliv->getZip()?> <?=$deliv->getCity()?>
-										  </td>
-										  <td>
-											  <?$c=new Country($deliv->getCountry()->getId()); echo $c->getName()?>
-										  </td>
-										  <td>
-											  <?=$deliv->getPhone()?>
-										  </td>
-									  </tr>
-								  <?	} ?>
-							  </table>
-						  </div>
+					<div class="panel-body">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Filter</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="" class="col-sm-2 control-label">Suche</label>
+									<div class="col-sm-4">
+										<input type="text" id="search" class="form-control" placeholder="">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					  <div class="table-responsive">
+						  <table class="table table-hover" id="table_deliv">
+							  <thead>
+								  <tr>
+									  <th class="content_row"><b>Firma</b></th>
+									  <th class="content_row"><b>Adresse</b></th>
+									  <th class="content_row"><b>PLZ/Ort</b></th>
+									  <th class="content_row"><b>Land</b></th>
+									  <th class="content_row"><b>Telefon</b></th>
+								  </tr>
+							  </thead>
+							  <?	foreach($all_deliveryAddresses AS $deliv){ ?>
+								  <tr>
+									  <td>
+										  <?=$deliv->getNameAsLine()?>
+										  <? if ($deliv->getDefault() == 1) echo ' (Standard)'; ?>
+									  </td>
+									  <td>
+										  <?=$deliv->getAddress1()?> <?=$deliv->getAddress2()?>
+									  </td>
+									  <td>
+										  <?=$deliv->getZip()?> <?=$deliv->getCity()?>
+									  </td>
+									  <td>
+										  <?$c=new Country($deliv->getCountry()->getId()); echo $c->getName()?>
+									  </td>
+									  <td>
+										  <?=$deliv->getPhone()?>
+									  </td>
+								  </tr>
+							  <?	} ?>
+						  </table>
+					  </div>
 				</div>
-
-
 				<div class="panel panel-default">
 					  <div class="panel-heading">
 							<h3 class="panel-title">
 								Rechnungsadressen
-								<span class="glyphicons glyphicons-user-add pointer"
-									  onclick="document.getElementById('neue_rechadr').style.display='' "
-									  title="<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>">
+								<span class="pull-right">
+									<button class="btn btn-xs btn-success" type="button" onclick="document.getElementById('neue_rechadr').style.display='' ">
+										<?=$_LANG->get('Neue Rechnungsadresse anlegen');?>
+									</button>
 								</span>
 							</h3>
 					  </div>
+					<div class="panel-body">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Filter</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="" class="col-sm-2 control-label">Suche</label>
+									<div class="col-sm-4">
+										<input type="text" id="search1" class="form-control" placeholder="">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tabl
 						  <div class="table-responsive">
 							  <table class="table table-hover" id="table_inv">
 								  <thead>

@@ -408,11 +408,14 @@ $(document).ready(function () {
                   </colgroup>
                   <tr>
                       <td class="content_row_header">
-                          <input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-                                    onclick="window.location.href='index.php?pid=20'">
+                          <button class="btn btn-success btn-origin" type="button"  onclick="window.location.href='index.php?pid=20'">
+                              <?=$_LANG->get('Zur&uuml;ck')?>
+                          </button>
                       </td>
                       <td class="content_row_clear" align="right">
-                          <input type="submit" value="<?=$_LANG->get('Speichern')?>">
+                          <button class="btn btn-success btn-origin" type="submit">
+                              <?=$_LANG->get('Speichern')?>
+                          </button>
                       </td>
                   </tr>
               </table>

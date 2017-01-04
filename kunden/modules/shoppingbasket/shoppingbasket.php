@@ -208,6 +208,11 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 			<h3 class="panel-title">
 				Warenkorb
 				<span class="pull-right">
+					<div class="col-sm-4">
+						<button name="clear_shoppingbasket" class="btn btn-xs btn-success" onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">
+							<?=$_LANG->get('Warenkorb leeren')?>
+						</button>
+					</div>
 					<?=$save_msg?>
 				</span>
 			</h3>
@@ -255,7 +260,9 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 								&ensp;
 							</td>
 							<td class="filerow">
-								<table><tr><td>
+								<table>
+									<tr>
+										<td>
 											<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 												$tmp_pid = 61;
 												$tmp_obj = "articleid=".$entry->getId();
@@ -270,12 +277,16 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 												$tmp_exec= "exec=edit";
 											}?>
 											<a href="index.php?pid=<?=$tmp_pid?>&<?=$tmp_obj?>&<?=$tmp_exec?>">
-												<?=substr($entry->getTitle(),0,21)?></a></td>
+												<?=substr($entry->getTitle(),0,21)?></a>
+										</td>
 										<?php if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){if($artic->getShop_needs_upload()==1){?>
-											<td><label class="filebutton">&nbsp;<span class="glyphicons glyphicons-floppy-disk pointer"></span>
-												<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label></td>
+											<td>
+												<label class="filebutton">&nbsp;<span class="glyphicons glyphicons-floppy-disk pointer"></span>
+												<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label>
+											</td>
 										<?php }}?>
-									</tr></table>
+									</tr>
+								</table>
 							</td>
 							<td class="filerow"  align="right">
 								<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
@@ -350,7 +361,6 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 			<?php
 		};
 		?>
-
 		<div class="panel-body">
 			<?
 			if (count($shopping_basket_entrys) == 0 && $_REQUEST["success"] != 1){?>
@@ -364,7 +374,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Kostenstelle/Zweck</label>
 					<div class="col-sm-10">
-						<input type="text"class="form-control" id="shopping_intent" name="shopping_intent"
+						<input type="text" class="form-control" id="shopping_intent" name="shopping_intent"
 							   value="<?=$shopping_basket->getIntent()?>">
 					</div>
 				</div>
@@ -377,95 +387,85 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 					value="<?=$shopping_basket->getNote()?>"> -->
 					</div>
 				</div>
-
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Preis des Warenkorbs</label>
 					<div class="col-sm-10">
 						<div class="form-control"><b><?=printPrice($overall_price)?></b></div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-5">
-						<button name="clear_shoppingbasket" class="btn btn-success"onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">
-							<?=$_LANG->get('Warenkorb leeren')?>
-						</button>
+				<br>
+				<span class="pull-right">
+					<button type="submit" name="clear_shoppingbasket" class="btn btn-origin btn-success">
+						<?=$_LANG->get('&Auml;nderung speichern')?>
+					</button>
+					<button  name="send_shoppingbasket" type="submit" class="btn btn-origin btn-success" onclick="return BasketSubmit();">
+						<?=$_LANG->get('Senden')?>
+					</button>
+				</span>
+			</div>
+			<br>
+			<br>
+			<form method="post" action="index.php" name="form_shopbasket" id="form_shopbasket" enctype="multipart/form-data">
+				<input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
+				<input type="hidden" id="exec" name="exec" value="savecart">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							Gespeicherte Warenkörbe
+						</h3>
 					</div>
-
-					<div class="col-md-6">
-						<button type="submit" name="clear_shoppingbasket" class="btn btn-success">
-							<?=$_LANG->get('&Auml;nderung speichern')?>
-						</button>
-					</div>
-
-					<div class="col-md-1">
-						<button   name="send_shoppingbasket" type="submit" class="btn btn-success" onclick="return BasketSubmit();">
-							<?=$_LANG->get('Senden')?>
-						</button>
+					<div class="panel-body">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Warenkorb speichern</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="" class="col-sm-2 control-label">Titel</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" name="carttitle" id="carttitle" placeholder="">
+									</div>
+									<div class="col-sm-2">
+										<button type="submit" class=" btn btn-origin btn-success">Speichern</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Warenkorb laden</h3>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+									<tr>
+										<th>Titel</th>
+										<th>&nbsp;</th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php
+									$entries = $shopping_basket->getSavedCarts();
+									foreach ($entries as $entry) {
+										?>
+										<tr>
+											<td><?php echo $entry["title"];?></td>
+											<td>
+												<button type="button" class="btn btn-info" onclick="window.location.href='index.php?pid=80&exec=loadcart&cartid=<?php echo $entry["id"];?>';">Laden</button>
+												<button type="button" class="btn btn-warning" onclick="window.location.href='index.php?pid=80&exec=deletecart&cartid=<?php echo $entry["id"];?>';">Löschen</button>
+											</td>
+										</tr>
+										<?php
+									}
+									?>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
-
-			</div>
+			</form>
 		</div>
 	</div>
 </form>
 
-<form method="post" action="index.php" name="form_shopbasket" id="form_shopbasket" enctype="multipart/form-data">
-	<input type="hidden" name="pid" value="<?=(int)$_REQUEST["pid"]?>">
-	<input type="hidden" id="exec" name="exec" value="savecart">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">
-				Gespeicherte Warenkörbe
-			</h3>
-		</div>
-		<div class="panel-body">
-			<div class="panel panel-default">
-				  <div class="panel-heading">
-						<h3 class="panel-title">Warenkorb speichern</h3>
-				  </div>
-				  <div class="panel-body">
-					  <div class="form-group">
-						  <label for="" class="col-sm-2 control-label">Titel</label>
-						  <div class="col-sm-8">
-							  <input type="text" class="form-control" name="carttitle" id="carttitle" placeholder="">
-						  </div>
-						  <div class="col-sm-2">
-							  <button type="submit" class="btn btn-success">Speichern</button>
-						  </div>
-					  </div>
-				  </div>
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Warenkorb laden</h3>
-				</div>
-				<div class="table-responsive">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>Titel</th>
-								<th>&nbsp;</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php
-							$entries = $shopping_basket->getSavedCarts();
-							foreach ($entries as $entry) {
-								?>
-								<tr>
-									<td><?php echo $entry["title"];?></td>
-									<td>
-										<button type="button" class="btn btn-info" onclick="window.location.href='index.php?pid=80&exec=loadcart&cartid=<?php echo $entry["id"];?>';">Laden</button>
-										<button type="button" class="btn btn-warning" onclick="window.location.href='index.php?pid=80&exec=deletecart&cartid=<?php echo $entry["id"];?>';">Löschen</button>
-									</td>
-								</tr>
-								<?php
-							}
-							?>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</form>

@@ -181,7 +181,7 @@ echo $quickmove->generate();
                                 <div class="form-group">
                                     <label for="" class="col-sm-2 control-label">Suche</label>
                                     <div class="col-sm-4">
-                                        <input type="text" id="search" class="form-control" placeholder="">
+                                        <input type="text" id="search1" class="form-control" placeholder="">
                                     </div>
                                 </div>
                             </div>
@@ -303,6 +303,8 @@ echo $quickmove->generate();
         } );
         $('#search').keyup(function(){
             vac.search( $(this).val() ).draw();
+        });
+        $('#search1').keyup(function(){
             vacs.search( $(this).val() ).draw();
         });
     } );

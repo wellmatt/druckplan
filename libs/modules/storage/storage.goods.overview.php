@@ -206,7 +206,9 @@ $open = array_merge($open_suporder,$open_colinv);
             }
         });
         $('#search').keyup(function(){
+            goods_inc.search( $(this).val() ).draw();
             goods_open.search( $(this).val() ).draw();
+            goods_out.search( $(this).val() ).draw();
         });
 
 
@@ -214,7 +216,7 @@ $open = array_merge($open_suporder,$open_colinv);
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -266,7 +268,7 @@ $open = array_merge($open_suporder,$open_colinv);
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
-            "dom": 'T<"clear">flrtip',
+            "dom": 'T<"clear">lrtip',
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
