@@ -525,19 +525,21 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                               <li class="list-group-item">
                                       <span class="badge">
                                           <?php
-                                          if ($calc->getPaperContent()->getRolle() != 1){
-                                              ?>
 
-                                              <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()))?>
-                                              <?=$_USER->getClient()->getCurrency()?>
-                                              <?php
-                                          } else {
-                                              ?>
+                                      if ($calc->getPaperContent()->getRolle() != 1) {
+                                          ?>
 
-                                              <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000))?>
-                                              <?=$_USER->getClient()->getCurrency()?>
-                                              <?php
-                                          }
+                                          <?= printPrice($calc->$content['id']()->getSumPrice($calc->getPaperCount($content['const']) + $calc->$content['grant']()));?>
+                                          <?= $_USER->getClient()->getCurrency() ?>
+                                          <?php
+                                      } else {
+                                          ?>
+
+                                          <?= printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount($content['const']) * $calc->$content['height']() / 1000))) ?>
+                                          <?= $_USER->getClient()->getCurrency() ?>
+                                          <?php
+                                      }
+
                                           ?></span>
                                                   Preis
                                               </li>
