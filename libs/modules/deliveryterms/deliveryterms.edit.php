@@ -45,9 +45,9 @@ echo $quickmove->generate();
 		  <div class="panel-heading">
 				<h3 class="panel-title">
 						<?if($_REQUEST["id"]){
-							echo $_LANG->get('Lieferbedingung bearbeiten');
+							echo $_LANG->get('Lieferarten bearbeiten');
 						} else {
-							echo $_LANG->get('Lieferbedingung anlegen');
+							echo $_LANG->get('Lieferarten anlegen');
 						}?>
 					<span class="pull-right"><?=$savemsg?></span>
 				</h3>

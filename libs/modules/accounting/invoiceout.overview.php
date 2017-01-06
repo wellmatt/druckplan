@@ -95,6 +95,20 @@
         			</tr>
         		</thead>
         	</table>
+            <br/>
+            <div class="form-group">
+                <label for="" class="col-sm-3 control-label">Anzahl der fälligen Rechnungen</label>
+                <div class="col-sm-9 form-text">
+                    <?php echo printPrice($planned,2);?> fällige Rechnungen
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-3 control-label">Anzahl der bezahlten Rechnungen</label>
+                <div class="col-sm-9 form-text">
+                    <?php echo $test ;?> bezahlte Rechnungen
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

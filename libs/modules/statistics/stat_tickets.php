@@ -56,157 +56,166 @@ else
         line-height: 1.2em;
     }
 </style>
+<form action="index.php?page=<?=$_REQUEST['page']?>" class="form-horizonzal" method="post" name="stat_ticket" id="stat_ticket" enctype="multipart/form-data">
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+                Ticket Statistiken
+            </h3>
+	  </div>
+	  <div class="panel-body">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h3 class="panel-title">
+                      Filter
+                  </h3>
+              </div>
+              <div class="panel-body">
+                  <div class="form-group">
+                      <label for="" class="col-sm-2 control-label">Zeitraum</label>
+                      <label for="" class="col-sm-1 control-label">Von</label>
+                      <div class="col-sm-3">
+                          <input type="text" id="stat_from" name="stat_from" class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" value="<?echo date('d.m.Y', $start);?>"/>
+                      </div>
+                      <label for="" class="col-sm-1 control-label">Bis</label>
+                      <div class="col-sm-3">
+                          <input type="text" id="stat_to" name="stat_to" class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" value="<?echo date('d.m.Y', $end);?>"/>
+                      </div>
+                      <div class="col-sm-1">
+                          <button class="btn btn-xs btn-success" type="submit">Refresh</button>
+                      </div>
+                      <div class="col-sm-1">
+                          <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
+                              Drucken
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">Arbeitszeiten</div>
+                      <div class="panel-body">
+                          Mitarbeiter wählen: <select name="wrkl_user" id="wrkl_user" onchange="$('#stat_ticket').submit();" style="width:160px" required>
+                              <?php
+                              $all_user = User::getAllUser(User::ORDER_NAME);
 
-<div class="row">
-    <div class="col-md-12"><h4>Ticket Statistiken</h4></div>
+                              foreach ($all_user as $user){
+                                  if ($_REQUEST["wrkl_user"] == $user->getId()) {
+                                      echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
+                                  } elseif ($user->getId() == $_USER->getId() && (int)$_REQUEST["wrkl_user"] == 0){
+                                      echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
+                                  } else {
+                                      echo '<option value="'.$user->getId().'">'.$user->getNameAsLine().'</option>';
+                                  }
+                              }
+                              ?>
+                          </select>
+                          <table id="table_workload" class="stripe hover row-border order-column">
+                              <thead>
+                              <tr>
+                                  <td style="width: 10px;">ID#</td>
+                                  <td style="width: 60px;">TK#</td>
+                                  <td style="width: 100px;">Kunde</td>
+                                  <td style="width: 200px;">Titel</td>
+                                  <td style="width: 50px;">Soll</td>
+                                  <td style="width: 50px;">Ist</td>
+                                  <td style="width: 60px;">Fällig</td>
+                              </tr>
+                              </thead>
+                              <?php
+                              $planned = 0;
+                              $currend = 0;
+                              foreach ($workload_user as $item) {
+                                  echo '<tr>';
+                                  echo "<td>{$item['id']}</td>";
+                                  echo "<td>{$item['number']}</td>";
+                                  echo "<td>{$item['bc']}</td>";
+                                  echo "<td>{$item['title']}</td>";
+                                  echo "<td>".printPrice($item['planned_time'],2)."</td>";
+                                  echo "<td>".printPrice($item['curr_time'],2)."</td>";
+                                  echo "<td>".date('d.m.y H:i',$item["duedate"])."</td>";
+                                  echo '</tr>';
+
+                                  $planned += $item['planned_time'];
+                                  $currend += $item['curr_time'];
+                              }
+                              ?>
+                          </table>
+                          <br/>
+                          <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Arbeitszeiten ausgewählter Mitarbeiter</label>
+                              <label for="" class="col-sm-1 control-label">Soll</label>
+                              <div class="col-sm-3 form-text">
+                                  <?php echo printPrice($planned,2);?> Stunden
+                              </div>
+                              <label for="" class="col-sm-1 control-label">Ist</label>
+                              <div class="col-sm-3 form-text">
+                                  <?php echo printPrice($currend,2);?> Stunden
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">Arbeitszeiten aller Mitarbeiter im ausgewählten Zeitraum</div>
+                      <div class="panel-body">
+                          <table id="table_workload_summary" class="stripe hover row-border order-column">
+                              <thead>
+                              <tr>
+                                  <td style="width: 160px;">Mitarbeiter</td>
+                                  <td style="width: 100px;">Ist-Arbeitszeit</td>
+                              </tr>
+                              </thead>
+                              <?php
+                              $data_time =0;
+                              foreach ($workload as $item) {
+                                  echo '<tr>';
+                                  echo "<td>{$item['label']}</td>";
+                                  echo "<td>".printPrice($item['data'],2)."</td>";
+                                  echo '</tr>';
+
+                                  $data_time += $item['data'];
+                              }
+                              ?>
+                          </table>
+                          <br/>
+                          <br/>
+                          <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Arbeitszeiten </label>
+                              <label for="" class="col-sm-1 control-label">Ist</label>
+                              <div class="col-sm-3 form-text">
+                                  <?php echo printPrice($data_time,2);?> Stunden
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  </br>
+                  <div class="panel panel-default">
+                      <div class="panel-heading">Stati</div>
+                      <div class="panel-body">
+                          <div id="stati_donut" style="width: 600px; height: 600px;"></div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">Kategorien</div>
+                      <div class="panel-body">
+                          <div id="category_donut" style="width: 600px; height: 600px;"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </form>
+	  </div>
 </div>
 
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="stat_ticket" id="stat_ticket" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-2">
-            Von: <input type="text" style="width:160px" id="stat_from" name="stat_from" class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" value="<?echo date('d.m.Y', $start);?>"/>
-        </div>
-        <div class="col-md-2">
-            Bis: <input type="text" style="width:160px" id="stat_to" name="stat_to" class="text format-d-m-y divider-dot highlight-days-67 no-locale no-transparency" value="<?echo date('d.m.Y', $end);?>"/>
-        </div>
-        <div class="col-md-1"><button class="btn btn-xs btn-success" type="submit">Refresh</button></div>
-        <div class="col-md-1">
-        <button class="btn btn-xs btn-success" value=" drucken " onClick="javascript:window.print();">
-            Drucken
-        </button></div>
-    </div>
-    </br>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Arbeitszeiten</div>
-                <div class="panel-body">
-                    Mitarbeiter wählen: <select name="wrkl_user" id="wrkl_user" onchange="$('#stat_ticket').submit();" style="width:160px" required>
-                    <?php
-                    $all_user = User::getAllUser(User::ORDER_NAME);
-
-                    foreach ($all_user as $user){
-                        if ($_REQUEST["wrkl_user"] == $user->getId()) {
-                            echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
-                        } elseif ($user->getId() == $_USER->getId() && (int)$_REQUEST["wrkl_user"] == 0){
-                            echo '<option value="' . $user->getId() . '" selected>' . $user->getNameAsLine() . '</option>';
-                        } else {
-                            echo '<option value="'.$user->getId().'">'.$user->getNameAsLine().'</option>';
-                        }
-                    }
-                    ?>
-                    </select>
-                    <table id="table_workload" class="stripe hover row-border order-column">
-                        <thead>
-                            <tr>
-                                <td style="width: 10px;">ID#</td>
-                                <td style="width: 60px;">TK#</td>
-                                <td style="width: 100px;">Kunde</td>
-                                <td style="width: 200px;">Titel</td>
-                                <td style="width: 50px;">Soll</td>
-                                <td style="width: 50px;">Ist</td>
-                                <td style="width: 60px;">Fällig</td>
-                            </tr>
-                        </thead>
 
 
-                        <?php
-                        $planned = 0;
-                        $currend = 0;
-                        foreach ($workload_user as $item) {
-                            echo '<tr>';
-                            echo "<td>{$item['id']}</td>";
-                            echo "<td>{$item['number']}</td>";
-                            echo "<td>{$item['bc']}</td>";
-                            echo "<td>{$item['title']}</td>";
-                            echo "<td>".printPrice($item['planned_time'],2)."</td>";
-                            echo "<td>".printPrice($item['curr_time'],2)."</td>";
-                            echo "<td>".date('d.m.y H:i',$item["duedate"])."</td>";
-                            echo '</tr>';
-
-                            $planned += $item['planned_time'];
-                            $currend += $item['curr_time'];
-                        }
-                        ?>
-                    </table>
-                    <br/>
-
-                    <div class="form-group">
-
-                        <label for="" class="col-sm-3 control-label">Arbeitszeiten ausgewählter Mitarbeiter</label>
-                        <label for="" class="col-sm-1 control-label">Soll</label>
-                        <div class="col-sm-3 form-text">
-                            <?php echo printPrice($planned,2);?> Stunden
-                        </div>
-                        <label for="" class="col-sm-1 control-label">Ist</label>
-                        <div class="col-sm-3 form-text">
-                            <?php echo printPrice($currend,2);?> Stunden
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!--<div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">Arbeitszeiten aller Mitarbeiter im ausgewählten Zeitraum</div>
-                <div class="panel-body">
-                    <table id="table_workload_summary" class="stripe hover row-border order-column">
-                        <thead>
-                        <tr>
-                            <td style="width: 160px;">Mitarbeiter</td>
-                            <td style="width: 100px;">Ist-Arbeitszeit</td>
-                        </tr>
-                        </thead>
-                        <?php
-                        $data_time =0;
-                        foreach ($workload as $item) {
-                            echo '<tr>';
-                            echo "<td>{$item['label']}</td>";
-                            echo "<td>".printPrice($item['data'],2)."</td>";
-                            echo '</tr>';
-
-                            $data_time += $item['data'];
-                        }
-                        ?>
-                    </table>
-<br/>
-                    <br/>
-                        <div class="form-group">
-
-                            <label for="" class="col-sm-3 control-label">Arbeitszeiten </label>
-                            <label for="" class="col-sm-1 control-label">Ist</label>
-                            <div class="col-sm-3 form-text">
-                                <?php echo printPrice($data_time,2);?> Stunden
-                            </div>
-
-
-                        </div>
-
-
-                </div>
-            </div>
-            </br>
-            <div class="panel panel-default">
-                <div class="panel-heading">Stati</div>
-                <div class="panel-body">
-                    <div id="stati_donut" style="width: 600px; height: 600px;"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">Kategorien</div>
-                <div class="panel-body">
-                    <div id="category_donut" style="width: 600px; height: 600px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>-->
 
 <script language="JavaScript">
     $(function() {

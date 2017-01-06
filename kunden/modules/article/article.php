@@ -248,8 +248,8 @@ function printSubTradegroupsForSelect($parentId, $depth){
 							<div class="panel-body" style="display: none;">
 								<div id="cfield_div"></div>
 								<div class="form-group">
-									<label for="" class="col-sm-3 control-label">Neuer Filter</label>
-									<div class="col-sm-6">
+									<label for="" class="col-sm-2 control-label">Neuer Filter</label>
+									<div class="col-sm-3">
 										<select id="addfilterselect" class="form-control">
 											<?php
 											foreach ($article_fields as $article_field) {

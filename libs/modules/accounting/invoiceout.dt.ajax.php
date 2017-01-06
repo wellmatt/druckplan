@@ -215,11 +215,16 @@
         $sOrder
         $sLimit
     ";
+//mit datenbank verbinden
+$test = mysql_query("Select count(status) From invoiceouts Where status = 2");
+$status = mysql_fetch_assoc($test);
+//            echo var_dump($test);
+
     
 //     var_dump($sQuery);
     
     $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-     
+
     /* Data set length after filtering */
     $sQuery = "
         SELECT count(id) FROM
@@ -237,6 +242,7 @@
         invoiceouts.duedate,
         invoiceouts.payeddate,
         invoiceouts.`status`
+
         FROM
         invoiceouts
         INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
@@ -259,8 +265,7 @@
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
     $aResultTotal = mysql_fetch_array($rResultTotal);
     $iTotal = $aResultTotal[0];
-     
-     
+
     /*
      * Output
      */

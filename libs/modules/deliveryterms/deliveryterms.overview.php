@@ -11,11 +11,11 @@ $delivterms = DeliveryTerms::getAllDeliveryConditions();
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
-				Lieferbedingungen
+				Lieferarten
 				<span class="pull-right">
 					 <button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';">
 						 <span class="glyphicons glyphicons-plus"></span>
-						 <?=$_LANG->get('Lieferbedingungen hinzuf&uuml;gen')?>
+						 <?=$_LANG->get('Lieferarten hinzuf&uuml;gen')?>
 				</span>
 			</h3>
 	  </div>

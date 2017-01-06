@@ -72,7 +72,7 @@ if ($_REQUEST["subexec"]=="add_item"){
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                Artikeldetails: <?=$article->getTitle()?>
+                Artikeldetails<?=$article->getTitle()?>
             </h3>
         </div>
         <div class="panel-body">
@@ -80,13 +80,13 @@ if ($_REQUEST["subexec"]=="add_item"){
                 <div class="row">
                     <div class="col-md-8">
                         <div class="row">
-                            <div class="col-sm-3">Artikelnummer:</div>
+                            <div class="col-sm-3">Artikelnummer</div>
                             <div class="col-sm-9 ">
                                 <?= $article->getNumber() ?>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-3">Beschreibung:</div>
+                            <div class="col-sm-3">Beschreibung</div>
                             <div class="col-sm-9 ">
                                 <?= $article->getDesc() ?>
                             </div>
