@@ -312,11 +312,11 @@
                 $today_end = mktime(23,59,59,date('m',time()),date('d',time()),date('y',time()));
                 $duedate = date('d.m.y',$aRow[ $aColumns[$i] ]);
                 if ($aRow[ $aColumns[$i] ] < $today) {
-                    $row[] = "<span style='color: green'>{$duedate}</span>";
+                    $row[] = "<span style='color: red'>{$duedate}</span>";
                 } else if ($aRow[ $aColumns[$i] ] >= $today && $aRow[ $aColumns[$i] ] <= $today_end) {
                     $row[] = "<span style='color: orange'>{$duedate}</span>";
                 } else if ($aRow[ $aColumns[$i] ] >= $today) {
-                    $row[] = "<span style='color: red'>{$duedate}</span>";
+                    $row[] = "<span style='color: green'>{$duedate}</span>";
                 }
             }
             else if ( $aColumns[$i] == 'payeddate' )
