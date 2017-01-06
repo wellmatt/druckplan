@@ -107,7 +107,7 @@ echo $quickmove->generate();
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="" class="col-sm-4 control-label">Typ</label>
+                                <label for="" class="col-sm-4 control-label">Art</label>
                                 <div class="col-sm-6">
                                     <input type="text" id="st_type" name="st_type" class="form-control"
                                            value="<?= $storagearea->getType(); ?>"

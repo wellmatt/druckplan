@@ -461,7 +461,7 @@ case 'createFromTicket':
 
 			$collectinv->setBusinesscontact($src_ticket->getCustomer());
 			$collectinv->setNumber($tmp_number);
-			$collectinv->setTitle("Ticket: " . $src_ticket->getNumber());
+			$collectinv->setTitle("Ticket: " . $src_ticket->getNumber() . " - " . $src_ticket->getTitle());
 			$collectinv->setInternContact($_USER);
 			$collectinv->setCustContactperson($src_ticket->getCustomer_cp());
 			$collectinv->setTicket($src_ticket->getId());

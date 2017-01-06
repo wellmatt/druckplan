@@ -194,6 +194,8 @@ foreach ($articles as $opos)
 }
 
 
+$orderpos = $order->getPositions(false,true);
+
 
 require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/factory.tmpl';
@@ -205,6 +207,7 @@ if(trim($datei) == "")
     $datei = tmpl_to_smarty($agent->Get("default_Kalk_DR"));
 }
 
+$smarty->assign('OrderPos',$orderpos);
 $smarty->assign('DelivDate', date('d.m.Y', $order->getDeliveryDate()));
 $smarty->assign('Order', $order);
 $smarty->assign('Drs', $drs);

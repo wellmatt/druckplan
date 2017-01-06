@@ -51,6 +51,24 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Kunde</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="custsearch" name="custsearch" class="form-control" value="<?php echo $_REQUEST["custfilter_name"];?>">
+                            <input type="hidden" id="custsearch_id" value="<?php echo $_REQUEST["custfilter_id"];?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Status</label>
+                        <div class="col-sm-10">
+                            <select name="ajax_status" id="ajax_status" class="form-control">
+                                <option value="0">- Alle -</option>
+                                <option value="1">offen</option>
+                                <option value="2">bezahlt</option>
+                                <option value="3">storniert</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Suche</label>
                         <div class="col-sm-10">
                             <input type="text" id="search" class="form-control" placeholder="">
@@ -124,9 +142,27 @@
             }
         );
 
+        $( "#custsearch" ).autocomplete({
+            source: "libs/modules/tickets/ticket.ajax.php?ajax_action=search_customer",
+            minLength: 2,
+            focus: function( event, ui ) {
+                $( "#custsearch" ).val( ui.item.label );
+                return false;
+            },
+            select: function( event, ui ) {
+                $( "#custsearch" ).val( ui.item.label );
+                $( "#custsearch_id" ).val( ui.item.value );
+                $('#invouttable').dataTable().fnDraw();
+                return false;
+            }
+        });
 
+        $('#ajax_status').change(function(){
+            $('#invouttable').dataTable().fnDraw();
+        });
 
         var invouttable = $('#invouttable').DataTable( {
+            "autoWidth": false,
             "processing": true,
             "bServerSide": true,
             "sAjaxSource": "libs/modules/accounting/invoiceout.dt.ajax.php",
@@ -189,6 +225,10 @@
             "fnServerParams": function ( aoData ) {
                 var iMin = document.getElementById('ajax_date_min').value;
                 var iMax = document.getElementById('ajax_date_max').value;
+                var customer = document.getElementById('custsearch_id').value;
+                var status = document.getElementById('ajax_status').value;
+                aoData.push( { "name": "status", "value": status, } );
+                aoData.push( { "name": "bcid", "value": customer, } );
                 aoData.push( { "name": "start", "value": iMin, } );
                 aoData.push( { "name": "end", "value": iMax, } );
             }

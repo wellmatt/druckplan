@@ -64,10 +64,12 @@ $header = [
     'MWST',
     'Betrag Brutto',
     'Kunde',
+    'Kunden-Nr.',
     'Debitor-Nr.',
     'Erstellt',
     'Zahlbar bis',
     'Bezahlt am',
+    'Status',
     'Bemerkung'
 ];
 $writer->writeHeader($header);
@@ -77,6 +79,22 @@ foreach ($invoiceouts as $invoiceout) {
         $payeddate = date('d.m.y',$invoiceout->getPayeddate());
     else
         $payeddate = '';
+
+    switch($invoiceout->getStatus()){
+        case 0:
+            $status = 'gelöscht';
+            break;
+        case 1:
+            $status = 'offen';
+            break;
+        case 2:
+            $status = 'bezahlt';
+            break;
+        case 3:
+            $status = 'storniert';
+            break;
+    }
+
     $writer->writeRow(array(
         $invoiceout->getNumber(),
         $invoiceout->colinv->getTitle(),
@@ -84,10 +102,12 @@ foreach ($invoiceouts as $invoiceout) {
         ($invoiceout->getGrossvalue() - $invoiceout->getNetvalue()),
         $invoiceout->getGrossvalue(),
         $invoiceout->colinv->getCustomer()->getNameAsLine(),
+        $invoiceout->colinv->getCustomer()->getCustomernumber(),
         $invoiceout->colinv->getCustomer()->getDebitor(),
         date('d.m.y',$invoiceout->getCrtdate()),
         date('d.m.y',$invoiceout->getDuedate()),
         $payeddate,
+        $status,
         ''
     ));
 }

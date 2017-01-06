@@ -61,6 +61,7 @@ $header = [
     'Re-Nr.',
     'Re-Datum.',
     'Lieferant',
+    'Lieferant-Nr.',
     'MWST Satz',
     'MWST',
     'Betrag Netto',
@@ -74,7 +75,12 @@ $header = [
 $writer->writeHeader($header);
 //write row data
 foreach ($invoiceins as $invoicein) {
-    switch ($invoicein->getStatus()) {
+    if ($invoicein->getPayeddate() > 0)
+        $payeddate = date('d.m.y',$invoicein->getPayeddate());
+    else
+        $payeddate = '';
+
+    switch($invoiceout->getStatus()){
         case 0:
             $status = 'gelöscht';
             break;
@@ -84,18 +90,16 @@ foreach ($invoiceins as $invoicein) {
         case 2:
             $status = 'bezahlt';
             break;
-        default:
-            $status = '';
+        case 3:
+            $status = 'storniert';
             break;
     }
-    if ($invoicein->getPayeddate() > 0)
-        $payeddate = date('d.m.y',$invoicein->getPayeddate());
-    else
-        $payeddate = '';
+
     $writer->writeRow(array(
         $invoicein->getNumber(),
         date('d.m.y',$invoicein->getRedate()),
         $invoicein->getSupplier()->getNameAsLine(),
+        $invoicein->getSupplier()->getCustomernumber(),
         $invoicein->getTax(),
         ($invoicein->getGrossvalue() - $invoicein->getNetvalue()),
         $invoicein->getNetvalue(),

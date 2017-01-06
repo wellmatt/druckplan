@@ -41,6 +41,7 @@ class InvoiceOut extends Model{
      * @param $number
      * @param CollectiveInvoice $colinv
      * @param PaymentTerms $payterm
+     * @param int $doc
      * @return InvoiceOut
      */
     public static function generate($number, $colinv, $payterm, $doc)
@@ -63,13 +64,13 @@ class InvoiceOut extends Model{
                 if ($art->getOrderid() > 0){
                     $netto = $position->getPrice();
                     $postax = $position->getTax();
-                    $poscost = $position->getCost();
-                    $tax[$postax][] = [$netto,$poscost];
+                    $gross = $netto * (1+($position->getTax()/100));
+                    $tax[$postax][] = [$netto,$gross];
                 } else {
                     $netto = $position->getPrice() * $position->getAmount();
                     $postax = $position->getTax();
-                    $poscost = $position->getCost() * $position->getAmount();
-                    $tax[$postax][] = [$netto,$poscost];
+                    $gross = $netto * (1+($position->getTax()/100));
+                    $tax[$postax][] = [$netto,$gross];
                 }
             }
         }
@@ -92,6 +93,7 @@ class InvoiceOut extends Model{
             'duedate' => $duedate,
             'doc' => $doc,
         ];
+//        prettyPrint($array);
 
         $invout = new InvoiceOut(0,$array);
         $invout->save();

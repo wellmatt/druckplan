@@ -18,7 +18,7 @@ class Orderposition{
 	const TYPE_ARTICLE 			= 2;
 	const TYPE_PERSONALIZATION 	= 3;
 	private $id = 0;
-	private $status = 0;				// Status z.B.: 0 = geloescht, 1 = aktiv, 2 = soft gelöscht
+	private $status = 1;				// Status z.B.: 0 = geloescht, 1 = aktiv, 2 = soft gelöscht
 	private $quantity = 0;				// Menge/Stueckzahl
 	private $price = 0.0;					// Einzelpreis
 	private $cost = 0.0;				// Einkaufspreis

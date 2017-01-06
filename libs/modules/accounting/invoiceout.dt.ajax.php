@@ -169,7 +169,23 @@
             $sWhere .= " AND crtdate <= {$_GET['end']} ";
         }
     }
-    
+
+    if ($_REQUEST["bcid"]){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE bcid = " . (int)$_REQUEST["bcid"];
+        } else {
+            $sWhere .= " AND bcid = " . (int)$_REQUEST["bcid"];
+        }
+    }
+
+    if ($_REQUEST["status"] > 0){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE `status` = " . (int)$_REQUEST["status"];
+        } else {
+            $sWhere .= " AND `status` = " . (int)$_REQUEST["status"];
+        }
+    }
+
     /*
      * SQL queries
      * Get data to display
@@ -183,6 +199,7 @@
         collectiveinvoice.number as vonr,
         collectiveinvoice.title,
         CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
+        businesscontact.id as bcid,
         invoiceouts.netvalue,
         invoiceouts.grossvalue,
         invoiceouts.crtdate,
@@ -213,6 +230,7 @@
         collectiveinvoice.number as vonr,
         collectiveinvoice.title,
         CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
+        businesscontact.id as bcid,
         invoiceouts.netvalue,
         invoiceouts.grossvalue,
         invoiceouts.crtdate,
@@ -290,7 +308,16 @@
             }
             else if ( $aColumns[$i] == 'duedate' )
             {
-                $row[] = date('d.m.y',$aRow[ $aColumns[$i] ]);
+                $today = mktime(0,0,1,date('m',time()),date('d',time()),date('y',time()));
+                $today_end = mktime(23,59,59,date('m',time()),date('d',time()),date('y',time()));
+                $duedate = date('d.m.y',$aRow[ $aColumns[$i] ]);
+                if ($aRow[ $aColumns[$i] ] < $today) {
+                    $row[] = "<span style='color: green'>{$duedate}</span>";
+                } else if ($aRow[ $aColumns[$i] ] >= $today && $aRow[ $aColumns[$i] ] <= $today_end) {
+                    $row[] = "<span style='color: orange'>{$duedate}</span>";
+                } else if ($aRow[ $aColumns[$i] ] >= $today) {
+                    $row[] = "<span style='color: red'>{$duedate}</span>";
+                }
             }
             else if ( $aColumns[$i] == 'payeddate' )
             {

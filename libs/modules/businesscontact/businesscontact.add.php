@@ -1337,10 +1337,10 @@ echo $quickmove->generate();
 
 		<div id="tabs-9">
 		<?if($businessContact->getId()){
-		    $_REQUEST['page'] = "libs/modules/accounting/outgoinginvoice.php";
-			$_REQUEST["filter_from"] = 1;
-			$_REQUEST["filter_cust"] = $businessContact->getId();
-			require_once('libs/modules/accounting/outgoinginvoice.php');
+		    $_REQUEST['page'] = "libs/modules/accounting/invoiceout.overview.php";
+			$_REQUEST["custfilter_name"] = $businessContact->getNameAsLine();
+			$_REQUEST["custfilter_id"] = $businessContact->getId();
+			require_once('libs/modules/accounting/invoiceout.overview.php');
 		} ?>
 		</div>
 
@@ -1348,10 +1348,10 @@ echo $quickmove->generate();
 
 		<div id="tabs-10">
 		<?if($businessContact->getId()){
-		    $_REQUEST['page'] = "libs/modules/accounting/incominginvoice.php";
-			$_REQUEST["filter_from"] = 1;
-			$_REQUEST["filter_cust"] = $businessContact->getId();
-			require_once('libs/modules/accounting/incominginvoice.php');
+		    $_REQUEST['page'] = "libs/modules/accounting/invoicein.overview.php";
+			$_REQUEST["custfilter_name"] = $businessContact->getNameAsLine();
+			$_REQUEST["custfilter_id"] = $businessContact->getId();
+			require_once('libs/modules/accounting/invoicein.overview.php');
 		} ?>
 		</div>
 
