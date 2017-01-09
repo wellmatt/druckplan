@@ -50,39 +50,5 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 
-$now = time();
-$aday = 86400;
-$netvalue = 0.0;
-$grossvalue = 0.0;
-$cost = 0.0;
-
-
-$duedate = ($now + ($nettodays * $aday));
-
-$tax = [];
-$positions = Orderposition::getAllOrderposition(120);
-prettyPrint($positions);
-foreach ($positions as $position) {
-    if ($position->getStatus() == 1 && $position->getInvrel() == 1){
-        $art = new Article($position->getObjectid());
-        if ($art->getOrderid() > 0){
-            $netto = $position->getPrice();
-            $postax = $position->getTax();
-            $poscost = $position->getCost();
-            $tax[$postax][] = [$netto,$poscost];
-        } else {
-            $netto = $position->getPrice() * $position->getAmount();
-            $postax = $position->getTax();
-            $poscost = $position->getCost() * $position->getAmount();
-            $tax[$postax][] = [$netto,$poscost];
-        }
-    }
-}
-
-foreach ($tax as $mwst => $items) {
-    foreach ($items as $item) {
-        $netvalue += $item[0];
-        $grossvalue += $item[0] * (1 + $mwst/100);
-        $cost += $item[1];
-    }
-}
+$opos = new Orderposition(241);
+prettyPrint($opos);

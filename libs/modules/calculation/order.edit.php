@@ -1094,6 +1094,12 @@ if((int)$_REQUEST["step"] == 3){
 
 						if (isset($_REQUEST["mach_rollcount_{$id}"]))
 							$entry->setRollcount($_REQUEST["mach_rollcount_{$id}"]);
+
+						if (isset($_REQUEST["mach_corediameter_{$id}"]))
+							$entry->setCorediameter(tofloat($_REQUEST["mach_corediameter_{$id}"]));
+
+						if (isset($_REQUEST["mach_rolldiameter_{$id}"]))
+							$entry->setCorediameter(tofloat($_REQUEST["mach_rolldiameter_{$id}"]));
 					}
 
 					if (isset($_REQUEST["mach_dopnutz_{$id}"]))

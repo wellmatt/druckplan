@@ -45,7 +45,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                     </span>
                 </h3>
     	  </div>
-    	  <div class="panel-body slidepanel" style="display: none;">
+    	  <div class="panel-body slidepanel" style="<?php if ($i > 1) echo 'display: none;';?>">
               <div class="panel panel-success">
               	  <div class="panel-heading">
               			<h2 class="panel-title">Fertigungsprozess</h2>
@@ -96,11 +96,19 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                                   <span class="badge"><?php echo ceil($calc->getAmount() / $me->getLabelcount());?></span>
                                                                   Anzahl Rollen Etikettenangabe
                                                               </li>
+                                                              <li class="list-group-item">
+                                                                  <span class="badge"><?php echo printPrice((($calc->getPaperCount($me->getPart()) * $calc->getPaperContentHeight())/1000)/($calc->getAmount() / $me->getLabelcount()));?></span>
+                                                                  Laufmeter Rollen Etikettenangabe
+                                                              </li>
                                                           <?php } ?>
                                                           <?php if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL && $me->getRollcount()) {?>
                                                               <li class="list-group-item">
                                                                   <span class="badge"><?php echo ceil($calc->getAmount() / $me->getRollcount());?></span>
                                                                   Anzahl Rollen Laufmeterangabe
+                                                              </li>
+                                                              <li class="list-group-item">
+                                                                  <span class="badge"><?php echo $me->getRollcount();?></span>
+                                                                  Laufmeter Rollen Laufmeterangabe
                                                               </li>
                                                           <?php } ?>
                                                           <?php if($me->getMachine()->getType() == Machine::TYPE_CTP) {

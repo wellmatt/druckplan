@@ -57,14 +57,16 @@ class Machineentry {
     private $foldtype;
 
     private $labelcount = 0;
-    private $labelradius = 0.0;
+    private $labelradius = 1.0;
     private $rollcount = 0;
     private $doubleutilization = 0;             // Doppelter Nutzen
 
     private $digigrant = 0.0;
     private $dpgrant = 0.0;
     private $percentgrant = 0.0;
-    
+    private $corediameter = 0.0;
+    private $rolldiameter = 0.0;
+
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
         $this->machine = new Machine();
@@ -151,6 +153,8 @@ class Machineentry {
                     $this->dpgrant = $r["dpgrant"];
                     $this->percentgrant = $r["percentgrant"];
                     $this->inlineheften = $r["inlineheften"];
+                    $this->corediameter = $r["corediameter"];
+                    $this->rolldiameter = $r["rolldiameter"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -290,6 +294,8 @@ class Machineentry {
         				dpgrant = {$this->dpgrant},
         				inlineheften = {$this->inlineheften},
         				umschl = {$this->umschl},
+        				corediameter = {$this->corediameter},
+        				rolldiameter = {$this->rolldiameter},
         				doubleutilization = {$this->doubleutilization},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
         if($this->id > 0)
@@ -1070,5 +1076,37 @@ class Machineentry {
     public function setLabelradius($labelradius)
     {
         $this->labelradius = $labelradius;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCorediameter()
+    {
+        return $this->corediameter;
+    }
+
+    /**
+     * @param float $corediameter
+     */
+    public function setCorediameter($corediameter)
+    {
+        $this->corediameter = $corediameter;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRolldiameter()
+    {
+        return $this->rolldiameter;
+    }
+
+    /**
+     * @param float $rolldiameter
+     */
+    public function setRolldiameter($rolldiameter)
+    {
+        $this->rolldiameter = $rolldiameter;
     }
 }

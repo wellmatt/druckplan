@@ -367,7 +367,7 @@ echo $quickmove->generate();
                                                         echo '<input name="mach_labelcount_'.$x.'" class="form-control" type="text" value="'.$mach->getLabelcount().'">';
                                                         echo '</div></div></div>';
                                                         echo '<div class="col-md-4"><div class="form-group">';
-                                                        echo '<label class="control-label">Etiketten Radius</label><div class="input-group">';
+                                                        echo '<label class="control-label">Eckradius</label><div class="input-group">';
                                                         echo '<input name="mach_labelradius_'.$x.'" class="form-control" type="text" value="'.printPrice($mach->getLabelradius()).'">';
                                                         echo '</div></div></div>';
 
@@ -379,6 +379,16 @@ echo $quickmove->generate();
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Anz. Rollen</label><div class="form-control">';
                                                         echo ( ($calc->getAmount() / $mach->getLabelcount()));
+                                                        echo '</div></div></div>';
+
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Kerndurchmesser</label><div class="input-group">';
+                                                        echo '<input name="mach_corediameter_'.$x.'" class="form-control" type="text" value="'.printPrice($mach->getCorediameter()).'">';
+                                                        echo '</div></div></div>';
+
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Rollendurchmesser</label><div class="input-group">';
+                                                        echo '<input name="mach_rolldiameter_'.$x.'" class="form-control" type="text" value="'.printPrice($mach->getRolldiameter()).'">';
                                                         echo '</div></div></div>';
                                                     }
 
@@ -409,7 +419,7 @@ echo $quickmove->generate();
 
                                                     // Zuschuss
                                                     echo '<div class="col-md-4"><div class="form-group">';
-                                                    echo '<label class="control-label"><br/>Zuschuss Bogen</label><div class="input-group">';
+                                                    echo '<label class="control-label"><br/>Zuschuss</label><div class="input-group">';
                                                     echo '<input name="mach_digigrant_'.$x.'" id="mach_digigrant_'.$x.'" class="form-control" value="'.printPrice($mach->getDigigrant(),2).'">';
                                                     echo '</div></div></div>';
 
@@ -532,6 +542,11 @@ echo $quickmove->generate();
                                                         echo '<div class="col-md-4"><div class="form-group">';
                                                         echo '<label class="control-label">Laufmeter pro Rolle</label><div class="input-group">';
                                                         echo '<input name="mach_rollcount_'.$x.'" class="form-control" type="text" value="'.$mach->getRollcount().'">';
+                                                        echo '</div></div></div>';
+
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Kerndurchmesser</label><div class="input-group">';
+                                                        echo '<input name="mach_corediameter_'.$x.'" class="form-control" type="text" value="'.printPrice($mach->getCorediameter()).'">';
                                                         echo '</div></div></div>';
                                                     }
 
