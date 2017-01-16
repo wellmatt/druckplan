@@ -8,6 +8,8 @@
 require_once('contactperson.class.php');
 require_once('address.class.php');
 require_once('libs/modules/paymentterms/paymentterms.class.php');
+require_once 'libs/modules/commissions/commission.class.php';
+require_once 'libs/modules/commissions/commissionlink.class.php';
 
 class BusinessContact {
 	const ORDER_NAME 	= "name1, name2";
@@ -18,8 +20,8 @@ class BusinessContact {
 	const ORDER_CUST_NR	= " cust_number";
 	
 	// 17.04.2014 Sollkunde wird Interessent
-	const FILTER_CUST_SOLL 	= " customer = 2 "; // IstKunde = 1, SollKunde = 2
-	const FILTER_CUST_IST	= " customer = 1 "; // IstKunde = 1, SollKunde = 2
+	const FILTER_CUST_SOLL 	= " customer = 2 "; // Interessenten
+	const FILTER_CUST_IST	= " customer = 1 "; // Kunde
 	const FILTER_CUST 		= " customer > 0 "; // Kunden und Interessenten
 	const FILTER_SUPP 		= " supplier = 1 "; // Lieferant = 1
 	const FILTER_ALL 		= " true ";
@@ -268,6 +270,26 @@ class BusinessContact {
     
     	return $businessContacts;
     }
+
+	/**
+	 * Liefert alle Provisionspartner des Systems
+	 * @param string $filter
+	 * @return BusinessContact[]
+	 */
+	public static function getAllCommissionpartners($filter = self::FILTER_ALL){
+		global $_USER;
+		global $DB;
+		$businessContacts = Array();
+		$sql = "SELECT id FROM businesscontact WHERE active > 0 AND {$filter} AND client = {$_USER->getClient()->getID()} AND commissionpartner = 1";
+//		prettyPrint($sql);
+		if ($DB->num_rows($sql)){
+			$res = $DB->select($sql);
+			foreach ($res as $r)
+				$businessContacts[] = new BusinessContact($r["id"]);
+		}
+
+		return $businessContacts;
+	}
 
 	/**
 	 * Liefert alle BusinessContacts des Systems

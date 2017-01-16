@@ -52,6 +52,7 @@ class Machine
     const DIFFICULTY_PAGES = 4;
     const DIFFICULTY_UNITS_PER_HOUR = 5;
     const DIFFICULTY_PRODUCT_FORMAT = 6;
+    const DIFFICULTY_PAPER = 7;
 
     private $id = 0;
     private $name;
@@ -800,6 +801,11 @@ class Machine
                 if($difficulty["unit"] == self::DIFFICULTY_PRODUCT_FORMAT)
                 {
                     $diff = $this->getDifficultyByValue($calc->getProductFormat()->getId(), $difficulty["id"]);
+                    $time = $time * (1 + ($diff / 100));
+                }
+                if($difficulty["unit"] == self::DIFFICULTY_PAPER)
+                {
+                    $diff = $this->getDifficultyByValue($machineEntry->getMyPaper()->getId(), $difficulty["id"]);
                     $time = $time * (1 + ($diff / 100));
                 }
             }

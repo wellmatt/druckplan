@@ -139,7 +139,7 @@ if ($_SESSION["login_type"] == "businesscontact"){
 	<script language="javascript" src="../jscripts/basic.js"></script>
 </head>
 
-<body>
+<body style="background-image: url('../images/shop_bg.jpg'); background-size: cover">
 
 <? 
 if ($_REQUEST["exec"] == "register_tmp"){
@@ -163,7 +163,8 @@ if ($_REQUEST["exec"] == "register_tmp"){
 
 		<!-- Fixed navbar -->
 		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
+<!--			<div class="container">-->
+			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 						<span class="sr-only">Toggle navigation</span>
@@ -171,6 +172,7 @@ if ($_REQUEST["exec"] == "register_tmp"){
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
+					<a class="navbar-brand" href="index.php"><img src="../images/shop_logo.jpg" alt="Contilas" height="50"></a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">

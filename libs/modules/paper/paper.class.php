@@ -112,7 +112,11 @@ class Paper {
             }
         }
     }
-    
+
+    /**
+     * @param string $order
+     * @return Paper[]
+     */
     static function getAllPapers($order = self::ORDER_NAME)
     {
         global $DB;

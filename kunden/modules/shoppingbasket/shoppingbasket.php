@@ -9,6 +9,7 @@ require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/attachment/attachment.class.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
 
+
 function reArrayFiles(&$file_post) {
 
 	$file_ary = array();
@@ -209,7 +210,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 				Warenkorb
 				<span class="pull-right">
 					<div class="col-sm-4">
-						<button name="clear_shoppingbasket" class="btn btn-xs btn-success" onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">
+						<button name="clear_shoppingbasket" type="button" class="btn btn-xs btn-success" onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">
 							<?=$_LANG->get('Warenkorb leeren')?>
 						</button>
 					</div>
@@ -395,10 +396,15 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 				</div>
 				<br>
 				<span class="pull-right">
-					<button type="submit" name="clear_shoppingbasket" class="btn btn-origin btn-success">
+					<button name="clear_shoppingbasket" class="btn btn-success"onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">
+						<?=$_LANG->get('Warenkorb leeren')?>
+					</button>
+
+					<button type="submit" name="clear_shoppingbasket" class="btn btn-success">
 						<?=$_LANG->get('&Auml;nderung speichern')?>
 					</button>
-					<button  name="send_shoppingbasket" type="submit" class="btn btn-origin btn-success" onclick="return BasketSubmit();">
+
+					<button   name="send_shoppingbasket" type="submit" class="btn btn-success" onclick="return BasketSubmit();">
 						<?=$_LANG->get('Senden')?>
 					</button>
 				</span>

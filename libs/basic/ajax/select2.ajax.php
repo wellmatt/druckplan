@@ -19,4 +19,13 @@ if ($_REQUEST["ajax_action"] == "search_cp"){
     $retval['items'] = $items;
     header("Content-Type: application/json");
     echo json_encode($items);
+} elseif ($_REQUEST["ajax_action"] == "search_commissionpartner"){
+    $items = [];
+    $allcommissionpartners = BusinessContact::getAllCommissionpartners(" (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($allcommissionpartners as $bc){
+        $items[] = Array("id" => $bc->getId(), "text" => $bc->getNameAsLine());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
 }

@@ -96,7 +96,13 @@ class InvoiceOut extends Model{
 //        prettyPrint($array);
 
         $invout = new InvoiceOut(0,$array);
-        $invout->save();
+        $ret = $invout->save();
+        if ($ret){
+            // TODO: lockup the colinv after successful generation of invoice
+            $commissionpartners = CommissionLink::getAllForBC($colinv->getBusinesscontact());
+            if (count($commissionpartners)>0)
+                Commission::generateCommission($colinv, $netvalue);
+        }
         return $invout;
     }
 

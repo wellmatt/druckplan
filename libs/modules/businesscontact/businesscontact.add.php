@@ -47,7 +47,11 @@ if ($_REQUEST["subexec"] == "save")
 	}
 	
     $businessContact->setActive(1);
-    $businessContact->setCommissionpartner(trim(addslashes($_REQUEST["commissionpartner"])));
+    if ($_REQUEST["commissionpartner"] == 1){
+        $businessContact->setCommissionpartner(1);
+    } else {
+        $businessContact->setCommissionpartner(0);
+    }
     $businessContact->setcustomer(trim(addslashes($_REQUEST["customertype"])));
     $businessContact->setSupplier(trim(addslashes($_REQUEST["supplier"])));
     $businessContact->setName1(trim(addslashes($_REQUEST["name1"])));
@@ -497,6 +501,7 @@ echo $quickmove->generate();
 			<li><a href="#tabs-9"><? echo $_LANG->get('Rechnungsausgang');?></a></li>
 			<li><a href="#tabs-10"><? echo $_LANG->get('Rechnungseingang');?></a></li>
 			<li><a href="#tabs-11"><? echo $_LANG->get('Vorg&auml;nge');?></a></li>
+			<li><a href="#tabs-13"><? echo $_LANG->get('Provisionspartner');?></a></li>
 			<?php } ?>
 		</ul>
 
@@ -941,23 +946,8 @@ echo $quickmove->generate();
 								 <div class="form-group">
 									 <label for="" class="col-sm-4 control-label">Provisionspartner</label>
 									 <div class="col-sm-2">
-										 <input name="has_commissionpartner" id="has_commissionpartner" type="checkbox" class="form-control" value="1"
-											 <? if ($businessContact->getCommissionpartner()>0) echo "checked";?> onclick="commi_checkbox()">
-									 </div>
-								 </div>
-								 <div  style="display: <? if (!$businessContact->getCommissionpartner()>0) echo 'none';?>" id="commi_title">
-									 <label for="" class="col-sm-4 control-label"><?=$_LANG->get('Partner: ')?></label>
-									 <div class="col-sm-8">
-										 <select name="commissionpartner" class="form-control" id="commissionpartner">
-											 <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-											 <? $commissioncontacts = CommissionContact::getAllCommissionContacts(CommissionContact::ORDER_ID, CommissionContact::FILTER_ALL, CommissionContact::LOADER_BASIC);
-											 foreach($commissioncontacts as $comcon)
-											 {
-												 echo '<option value="'.$comcon->getId().'" ';
-												 if($businessContact->getCommissionpartner() == $comcon->getId()) echo 'selected="selected"';
-												 echo '>'.$comcon->getName1().', '.$comcon->getCity().'</option>';
-											 }?>
-										 </select>
+										 <input name="commissionpartner" id="commissionpartner" type="checkbox" class="form-control" value="1"
+											 <? if ($businessContact->getCommissionpartner() == 1) echo " checked ";?>">
 									 </div>
 								 </div>
 								 <div class="form-group">
@@ -1402,6 +1392,53 @@ echo $quickmove->generate();
 				</table>
 				<?php }?>
 			</div>
+		</div>
+
+		<? // ------------------------------------- Provisionspartner ----------------------------------------------?>
+
+		<div id="tabs-13">
+            <?if($businessContact->getId()){
+            $commissionlinks = CommissionLink::getAllForBC($businessContact);
+            ?>
+            <div class="panel panel-default">
+            	  <div class="panel-heading">
+            			<h3 class="panel-title">
+            			Provisionspartner
+            			<span class="pull-right">
+                            <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='index.php?page=libs/modules/commissions/commissionlink.create.php&bcid=<?php echo $businessContact->getId();?>';">
+                                <span class="glyphicons glyphicons-plus"></span>
+                                Hinzufügen
+                            </button>
+            			</span>
+            			</h3>
+            	  </div>
+            	  <div class="table-responsive">
+            	  	<table class="table table-hover">
+            	  		<thead>
+            	  			<tr>
+            	  				<th>Partner</th>
+            	  				<th>Prozent</th>
+            	  				<th></th>
+            	  			</tr>
+            	  		</thead>
+            	  		<tbody>
+            	  		<?php foreach ($commissionlinks as $commissionlink) {?>
+            	  			<tr>
+            	  				<td><?php echo $commissionlink->getPartner()->getNameAsLine();?></td>
+            	  				<td><?php echo printPrice($commissionlink->getPercentage());?></td>
+            	  				<td>
+                                    <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='index.php?page=libs/modules/commissions/commissionlink.create.php&bcid=<?php echo $businessContact->getId();?>&del=<?php echo $commissionlink->getId();?>'">
+                                        <span class="glyphicons glyphicons-remove"></span>
+                                        Löschen
+                                    </button>
+            	  				</td>
+            	  			</tr>
+            	  		<?php } ?>
+            	  		</tbody>
+            	  	</table>
+            	  </div>
+            </div>
+            <?php }?>
 		</div>
 
 	<? // ------------------------------------- Navigations und Speicher Buttons ------------------------------------?>

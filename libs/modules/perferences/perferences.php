@@ -18,12 +18,20 @@ if ($_REQUEST["exec"] == "mergeArticles"){
 
 if ($_REQUEST["exec"] == "save")
 {
-	if($_FILES){
-		if(move_uploaded_file($_FILES["pdf_back"]["tmp_name"], "./docs/templates/briefbogen.jpg")){
-// 			$savemsg = getSaveMessage(true);
-		} else {
-// 			$savemsg = getSaveMessage(false);
-		}
+	if($_FILES["pdf_back"]){
+		move_uploaded_file($_FILES["pdf_back"]["tmp_name"], "./docs/templates/briefbogen.jpg");
+	}
+	if($_FILES["page_logo"]){
+		move_uploaded_file($_FILES["page_logo"]["tmp_name"], "./images/page_logo.jpg");
+	}
+	if($_FILES["shop_logo"]){
+		move_uploaded_file($_FILES["shop_logo"]["tmp_name"], "./images/shop_logo.jpg");
+	}
+	if($_FILES["shop_bg"]){
+		move_uploaded_file($_FILES["shop_bg"]["tmp_name"], "./images/shop_bg.jpg");
+	}
+	if ($_REQUEST["shop_bg_remove"] == 1){
+		unlink("./images/shop_bg.jpg");
 	}
 	
 	$tmp_formats_raw = Array();
@@ -129,9 +137,9 @@ function load_image(id,ext)
    if(validateExtension(ext) == false)
    {
       alert("Es wird nur das JPG Format unterstützt");
-      document.getElementById("pdf_back").innerHTML = "";
-      document.getElementById("pdf_back").value = "";
-      document.getElementById("pdf_back").focus();
+      document.getElementById(id).innerHTML = "";
+      document.getElementById(id).value = "";
+      document.getElementById(id).focus();
       return;
    }
 }
@@ -256,18 +264,67 @@ echo $quickmove->generate();
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Briefbogen</label>
 						<div class="col-sm-10">
-							<input type="file" name="pdf_back" onChange="load_image(this.id,this.value)"
-								   id="pdf_back"/>
+							<input type="file" name="pdf_back" onChange="load_image(this.id,this.value)" id="pdf_back"/>
 						</div>
 					</div>
 					<br>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label"></label>
 						<div class="col-sm-10">
-							vorhandenen in neuem Fenster <a target="_blank"
-															href="docs/templates/briefbogen.jpg"><b>öffnen</b></a></br></br>
+							vorhandenen in neuem Fenster <a target="_blank"	href="docs/templates/briefbogen.jpg"><b>öffnen</b></a></br></br>
 							Möglichst hohe Auflösung bei geringer Dateigröße </br>
 							(300dpi / 100-300KB) ist empfolen!
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Seiten Logo</label>
+						<div class="col-sm-10">
+							<input type="file" name="page_logo" id="page_logo"/>
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							vorhandenen in neuem Fenster <a target="_blank"	href="images/page_logo.jpg"><b>öffnen</b></a></br></br>
+							Bild wird auf eine Höhe von 50px skaliert! </br>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Shop Logo</label>
+						<div class="col-sm-10">
+							<input type="file" name="shop_logo" id="shop_logo"/>
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							vorhandenen in neuem Fenster <a target="_blank"	href="images/shop_logo.jpg"><b>öffnen</b></a></br></br>
+							Bild wird auf eine Höhe von 50px skaliert! </br>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Shop Hintergrund</label>
+						<div class="col-sm-10">
+							<input type="file" name="shop_bg" id="shop_bg"/>
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							vorhandenen in neuem Fenster <a target="_blank"	href="images/shop_bg.jpg"><b>öffnen</b></a></br></br>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Hintergrundbild entfernen</label>
+						<div class="col-sm-10">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="shop_bg_remove" id="shop_bg_remove" value="1">
+								</label>
+							</div>
 						</div>
 					</div>
 				</div>

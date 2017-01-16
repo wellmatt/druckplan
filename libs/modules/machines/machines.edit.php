@@ -48,6 +48,7 @@ if($_REQUEST["subexec"] == "save")
     }
 
 
+//	prettyPrint($_REQUEST["machine_difficulty"]);
     foreach ($_REQUEST["machine_difficulty"] as $tmp_req_difficulty){
         if ($tmp_req_difficulty["unit"] != 0 && count($tmp_req_difficulty["values"]) > 0){
             $difficulties[$tmp_req_difficulty["id"]]["id"] = $tmp_req_difficulty["id"];
@@ -164,6 +165,7 @@ if($_REQUEST["subexec"] == "save")
 }
 
 $paperformats = Paperformat::getAllPaperFormats();
+$papers = Paper::getAllPapers();
 ?>
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -437,6 +439,13 @@ function addDifficultyField(id)
 		text += '</select></div><div class="col-sm-3"><div class="input-group">';
 		text += '<input class="form-control" name="machine_difficulty['+id+'][percents][]" value=""><span class="input-group-addon">%</span>';
 		text += '</div></div><div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;"> &nbsp;</div>';
+	} else if (unit == <?=Machine::DIFFICULTY_PAPER?>){
+		text = '<label for="" class="col-sm-3 control-label">&nbsp;</label><div class="col-sm-3">';
+		text += '<select name="machine_difficulty['+id+'][values][]" class="form-control">';
+		text += '<?php foreach ($papers as $item) { echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>'; } ?>';
+		text += '</select></div><div class="col-sm-3"><div class="input-group">';
+		text += '<input class="form-control" name="machine_difficulty['+id+'][percents][]" value=""><span class="input-group-addon">%</span>';
+		text += '</div></div><div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;"> &nbsp;</div>';
 	} else {
 		text = '<label for="" class="col-sm-3 control-label">&nbsp;</label><div class="col-sm-3"><input class="form-control" name="machine_difficulty['+id+'][values][]"></div>';
 		text += '<div class="col-sm-3"><div class="input-group"><input class="form-control" name="machine_difficulty['+id+'][percents][]"><span class="input-group-addon">%</span></div></div>';
@@ -608,8 +617,6 @@ echo $quickmove->generate();
 				</span>
 			</h3>
 		</div>
-
-
 
 		<div class="panel-body">
 			<div class="panel panel-default">
@@ -1298,6 +1305,8 @@ echo $quickmove->generate();
 														 value="<?= Machine::DIFFICULTY_UNITS_PER_HOUR ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_UNITS_PER_HOUR) echo "selected" ?>><?= $_LANG->get('Laufleistung') ?></option>
 													 <option
 														 value="<?= Machine::DIFFICULTY_PRODUCT_FORMAT ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_PRODUCT_FORMAT) echo "selected" ?>><?= $_LANG->get('Produktformat') ?></option>
+													 <option
+														 value="<?= Machine::DIFFICULTY_PAPER ?>" <? if ($difficulty["unit"] == Machine::DIFFICULTY_PAPER) echo "selected" ?>><?= $_LANG->get('Papier') ?></option>
 												 </select>
 											 </div>
 											 <div class="col-sm-2">
@@ -1318,9 +1327,36 @@ echo $quickmove->generate();
 																 ?>
 																 <label for="" class="col-sm-3 control-label">&nbsp;</label>
 																 <div class="col-sm-3">
-																	 <select name="machine_difficulty[<?php echo $difficulty["id"]; ?>]" class="form-control">
+																	 <select name="machine_difficulty[<?php echo $difficulty["id"]; ?>][values][]" class="form-control">
 																		 <?php
 																		 foreach ($paperformats as $item) {
+																			 if ($item->getId() == $diff)
+																				 echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+																			 else
+																				 echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+																		 }
+																		 ?>
+																	 </select>
+																 </div>
+																 <div class="col-sm-3">
+																	 <div class="input-group">
+																		 <input class="form-control"
+																				name="machine_difficulty[<?php echo $difficulty["id"]; ?>][percents][]"
+																				value="<?php echo $difficulty["percents"][$x]; ?>">
+																		 <span class="input-group-addon">%</span>
+																	 </div>
+																 </div>
+																 <div class="col-sm-3 form-text" style="font-size: 14px; height: 34px;"> &nbsp;</div>
+																 <?php $x++;
+															 }
+														 } else if ($difficulty["unit"] == Machine::DIFFICULTY_PAPER){
+															 foreach ($difficulty["values"] as $diff) {
+																 ?>
+																 <label for="" class="col-sm-3 control-label">&nbsp;</label>
+																 <div class="col-sm-3">
+																	 <select name="machine_difficulty[<?php echo $difficulty["id"]; ?>][values][]" class="form-control">
+																		 <?php
+																		 foreach ($papers as $item) {
 																			 if ($item->getId() == $diff)
 																				 echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
 																			 else

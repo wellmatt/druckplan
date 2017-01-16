@@ -270,7 +270,7 @@ function sleep(millis, callback) {
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php"><img src="images/page/page-logo.png" alt="Contilas" height="50"></a>
+          <a class="navbar-brand" href="index.php"><img src="images/page_logo.jpg" alt="Contilas" height="50"></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
@@ -433,9 +433,12 @@ function sleep(millis, callback) {
                         
             <!-- calendar -->
             <li id='li_calendar' class="dropdown-grid">
-              <a href="index.php?page=libs/modules/organizer/davcalendar.php&pagetitle=Kalender" style="padding-bottom: 6px;padding-top: 8px;">
+              <a href="index.php?page=libs/modules/organizer/calendar.php&pagetitle=Kalender" style="padding-bottom: 6px;padding-top: 8px;">
                   <span class="glyphicons glyphicons-calendar" style="font-size: 24px;" title="Kalender"></span>
               </a>
+<!--                <a href="index.php?page=libs/modules/organizer/davcalendar.php&pagetitle=Kalender" style="padding-bottom: 6px;padding-top: 8px;">-->
+<!--                    <span class="glyphicons glyphicons-calendar" style="font-size: 24px;" title="Kalender"></span>-->
+<!--                </a>-->
             </li>
             <!-- /calendar -->
 

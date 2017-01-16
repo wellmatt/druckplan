@@ -79,6 +79,7 @@ class Model {
             }
         } else {
             $sql = "INSERT INTO {$this->_table} SET {$set}";
+//            prettyPrint($sql);
             $res = $DB->no_result($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM {$this->_table}";

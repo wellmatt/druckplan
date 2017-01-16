@@ -29,6 +29,16 @@ if ($_REQUEST["ajax_action"] == "search_customer"){
 	header("Content-Type: application/json");
 	echo $retval;
 }
+if ($_REQUEST["ajax_action"] == "search_commissionpartner"){
+    $retval = Array();
+    $customers = BusinessContact::getAllCommissionpartners(" (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%' OR matchcode LIKE '%{$_REQUEST['term']}%') ");
+    foreach ($customers as $c){
+        $retval[] = Array("label" => $c->getNameAsLine(), "value" => $c->getId());
+    }
+    $retval = json_encode($retval);
+    header("Content-Type: application/json");
+    echo $retval;
+}
 if ($_REQUEST["ajax_action"] == "search_customer_cp"){
     $retval = Array();
 	$customer = new BusinessContact((int)$_REQUEST["customerID"]);
