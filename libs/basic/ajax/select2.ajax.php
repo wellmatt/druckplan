@@ -8,6 +8,7 @@
  */
 chdir("../../../");
 require_once 'libs/basic/basic.importer.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 
 if ($_REQUEST["ajax_action"] == "search_cp"){
@@ -24,6 +25,15 @@ if ($_REQUEST["ajax_action"] == "search_cp"){
     $allcommissionpartners = BusinessContact::getAllCommissionpartners(" (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");
     foreach ($allcommissionpartners as $bc){
         $items[] = Array("id" => $bc->getId(), "text" => $bc->getNameAsLine());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
+} elseif ($_REQUEST["ajax_action"] == "search_taxkey"){
+    $items = [];
+    $alltaxkeys = TaxKey::getAll();
+    foreach ($alltaxkeys as $tk){
+        $items[] = Array("id" => $tk->getId(), "text" => $tk->getValue().'%');
     }
     $retval['items'] = $items;
     header("Content-Type: application/json");

@@ -179,12 +179,11 @@ class Article {
 		global $DB;
 		global $_USER;
 		$now = time();
-		$groupid = $this->tradegroup->getId();
-		
+
 		if($this->id > 0){
 			$sql = "UPDATE article SET 
 					title 		= '{$this->title}', 
-					tradegroup 	= {$groupid}, 
+					tradegroup 	= {$this->tradegroup->getId()},
 					number		= '{$this->number}', 
 					description = '{$this->desc}', 
 					shoprel 	= {$this->shoprel}, 
