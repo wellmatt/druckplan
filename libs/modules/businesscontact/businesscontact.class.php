@@ -73,6 +73,7 @@ class BusinessContact {
 	private $kreditor = 0;			// Kreditornummer
 	private $bic;
 	private $iban;
+	private $revenueaccount;
 	
 	private $alt_name1;  // Alternative-Adresse
 	private $alt_name2; 
@@ -186,9 +187,11 @@ class BusinessContact {
 				$this->discount = $res[0]["discount"];
 				$this->customernumber = $res[0]["cust_number"];
 				$this->matchcode = $res[0]["matchcode"];
+				$this->revenueaccount = new RevenueAccount($res[0]["revenueaccount"]);
 				$this->supervisor = new User((int)$res[0]["supervisor"]);
 				$this->salesperson = new User((int)$res[0]["salesperson"]);
 				$this->tourmarker = $res[0]["tourmarker"];
+
 
 				// Daten nur laden, wenn die Loader-Variable es hergibt
 //				if ($loader <= self::LOADER_MEDIUM) {
@@ -639,9 +642,11 @@ class BusinessContact {
         			salesperson = {$this->salesperson->getId()},
         			matchcode = '{$this->matchcode}', 
         			notes = '{$this->notes}', 
-        			tourmarker = '{$this->tourmarker}' 
+        			tourmarker = '{$this->tourmarker}',
+        			revenueaccount = {$this->revenueaccount->getId()}
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql); //Aenderungen speichern
+//			prettyPrint($sql);
 		}
 		else
 		{
@@ -657,7 +662,7 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode, supervisor, tourmarker, notes, salesperson )
+		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -670,8 +675,9 @@ class BusinessContact {
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
-		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()} )";
+		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()}, {$this->revenueaccount->getId()} )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
+//			prettyPrint($sql);
 			echo $DB->getLastError();
 			if ($res)
             {
@@ -1593,7 +1599,22 @@ class BusinessContact {
     {
         $this->salesperson = $salesperson;
     }
+
+	/**
+	 * @return RevenueAccount
+	 */
+	public function getRevenueaccount()
+	{
+		return $this->revenueaccount;
+	}
+
+	/**
+	 * @param RevenueAccount $revenueaccount
+	 */
+	public function setRevenueaccount($revenueaccount)
+	{
+		$this->revenueaccount = $revenueaccount;
+	}
     
     
 }
-?>

@@ -97,6 +97,7 @@ $(document).ready(function() {
                 <button class="btn btn-xs btn-success" onclick="document.location='index.php?page=libs/modules/privatecontacts/privatecontact.add.php&exec=edit&id=0';">
                     <span class="glyphicons glyphicons-plus"></span>
                     <?=$_LANG->get('Neuer Kontakt') ?>
+                </button>
             </span>
         </h3>
     </div>
@@ -119,12 +120,12 @@ $(document).ready(function() {
         <div class="table-responsive">
             <table id="cp_table" class="table table-hover">
                 <thead>
-                <tr>
-                    <th width="10">ID</th>
-                    <th>Name</th>
-                    <th>Firma</th>
-                    <th>Benutzer</th>
-                </tr>
+                    <tr>
+                        <th width="10">ID</th>
+                        <th>Name</th>
+                        <th>Firma</th>
+                        <th>Benutzer</th>
+                    </tr>
                 </thead>
             </table>
         </div>

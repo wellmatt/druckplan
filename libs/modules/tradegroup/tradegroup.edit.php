@@ -6,6 +6,8 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
+require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
+
 $_REQUEST["id"] = (int)$_REQUEST["id"];
 
 if($_REQUEST["exec"] == "new"){
@@ -30,11 +32,12 @@ if($_REQUEST["subexec"] == "save"){
 	} else {
 		
 	}
-	
+	$tradegroup->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
 	$savemsg = getSaveMessage($tradegroup->save())." ".$DB->getLastError();
 }
 
 $all_tradegroups = Tradegroup::getAllTradegroups(0);
+$revaccounts = RevenueAccount::getAll();
 
 function printSubTradegroupsForSelect($parentId, $depth){
 	global $tradegroup;
@@ -50,6 +53,9 @@ function printSubTradegroupsForSelect($parentId, $depth){
 	}
 }
 ?>
+<link href="jscripts/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="jscripts/select2/dist/js/select2.min.js"></script>
+<script src="jscripts/select2/dist/js/i18n/de.js"></script>
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -59,9 +65,6 @@ $quickmove->addItem('Speichern','#',"$('#tradegroup_edit').submit();",'glyphicon
 if ($tradegroup->getId()>0){
 	$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$tradegroup->getId()."');", 'glyphicon-trash', true);
 }
-
-
-
 echo $quickmove->generate();
 // end of Quickmove generation ?>
 
@@ -86,22 +89,18 @@ echo $quickmove->generate();
 					<input id="tradegroup_title" name="tradegroup_title" type="text" class="form-control" value="<?=$tradegroup->getTitle()?>">
 				</div>
 			</div>
-
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Beschreibung</label>
 				<div class="col-sm-4">
 					<textarea id="tradegroup_desc" name="tradegroup_desc" type="text" class="form-control"><?=$tradegroup->getDesc()?></textarea>
-					</div>
 				</div>
-
-				<div class="form-group">
-					<label for="" class="col-sm-2 control-label">Shop-Freigabe</label>
-					<div class="col-sm-4">
-						<input 	id="tradegroup_shoprel" name="tradegroup_shoprel" class="text" type="checkbox" value="1" <?if ($tradegroup->getShoprel() == 1) echo "checked"; ?>>
-						</div>
-					</div>
-
-
+			</div>
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Shop-Freigabe</label>
+				<div class="col-sm-4">
+					<input 	id="tradegroup_shoprel" name="tradegroup_shoprel" class="text" type="checkbox" value="1" <?if ($tradegroup->getShoprel() == 1) echo "checked"; ?>>
+				</div>
+			</div>
 			<div class="form-group">
 				<label for="" class="col-sm-2 control-label">Übergeordnete Gruppe</label>
 				<div class="col-sm-4">
@@ -117,7 +116,42 @@ echo $quickmove->generate();
 					</select>
 				</div>
 			</div>
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Erlöskonto</label>
+				<div class="col-sm-4">
+					<select name="revenueaccount" id="revenueaccount" class="form-control">
+						<?php
+						foreach ($revaccounts as $revaccount) { ?>
+							<?php
+							if ($tradegroup->getId() > 0) {
+								if ($revaccount->getId() == $tradegroup->getRevenueaccount()->getId()) { ?>
+									<option
+										value="<?php echo $tradegroup->getRevenueaccount()->getId(); ?>"
+										selected><?php echo $tradegroup->getRevenueaccount()->getTitle(); ?></option>
+								<?php } else { ?>
+									<option
+										value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+								<?php } ?>
+							<?php } else {?>
+								<option
+									value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+							<?php } ?>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>
+<script>
+	$(function() {
+		$("#revenueaccount").select2();
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".js-example-basic-single").select2();
+	});
+</script>
+
 

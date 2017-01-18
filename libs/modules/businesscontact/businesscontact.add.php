@@ -9,13 +9,14 @@
 // require_once('libs/modules/organizer/nachricht.class.php');
 require_once ('libs/modules/tickets/ticket.class.php');
 require_once ('libs/modules/commissioncontact/commissioncontact.class.php');
+require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
 
 global $_CONFIG;
 $_USER;
 
 $_REQUEST["id"] = (int)$_REQUEST["id"];
+$revaccounts = RevenueAccount::getAll();
 $businessContact = new BusinessContact($_REQUEST["id"]);
-
 $all_attributes = Attribute::getAllAttributesForCustomer();
 
 // Nachricht senden, dann Speichern
@@ -27,6 +28,8 @@ if($_REQUEST["subexec"] == "send"){
 
 if ($_REQUEST["subexec"] == "save")
 {
+
+
 	if ($_REQUEST["subform"] == "user_details"){ //Form von Tab1 auslesen
 		
 	}
@@ -61,7 +64,8 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setZip(trim(addslashes($_REQUEST["zip"])));
     $businessContact->setCity(trim(addslashes($_REQUEST["city"])));
     $businessContact->setCountry(new Country (trim(addslashes($_REQUEST["country"]))));
-    
+
+
     $businessContact->setEmail(trim(addslashes($_REQUEST["email"])));
     $businessContact->setPhone(trim(addslashes($_REQUEST["phone"])));
     $businessContact->setFax(trim(addslashes($_REQUEST["fax"])));
@@ -134,7 +138,8 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setSalesperson(new User((int)$_REQUEST["salesperson"]));
     $businessContact->setTourmarker($_REQUEST["tourmarker"]);
     $businessContact->setNotes($_REQUEST["notes"]);
-   
+
+    $businessContact->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
     $savemsg = getSaveMessage($businessContact->save());
 	if($DB->getLastError()!=NULL && $DB->getLastError()!=""){
     	$savemsg .= $DB->getLastError();
@@ -207,6 +212,7 @@ if($businessContact->getId()){
 	$deliveryAddresses = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_DELIV);
 	$invoiceAddresses = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
     $ticketcount = Ticket::getAllTicketsCount(" WHERE customer = {$businessContact->getId()} AND state > 1 ");
+
 }
 
 $show_tab=(int)$_REQUEST["tabshow"];
@@ -216,12 +222,14 @@ $all_active_attributes = $businessContact->getActiveAttributeItemsInput();
 $all_user = User::getAllUser(User::ORDER_NAME);
 
 
+
+
+
 /**************************************************************************
  ******* 				Java-Script									*******
  *************************************************************************/
 ?>
 
-<!-- DataTables -->
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css"
 	href="css/dataTables.bootstrap.css">
@@ -233,6 +241,9 @@ $all_user = User::getAllUser(User::ORDER_NAME);
 	src="jscripts/datatable/dataTables.bootstrap.js"></script>
 <script type="text/javascript" charset="utf8"
 	src="jscripts/datatable/date-uk.js"></script>
+	<link href="jscripts/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="jscripts/select2/dist/js/select2.min.js"></script>
+<script src="jscripts/select2/dist/js/i18n/de.js"></script>
 	
 <div id="tktc_hidden_clicker" style="display:none"><a id="tktc_hiddenclicker" href="http://www.google.com" >Hidden Clicker</a></div>
 
@@ -310,7 +321,11 @@ $(document).ready(function() {
 	}
 } );
 </script>
-
+<script>
+	$(function() {
+		$("#revenueaccount").select2();
+	});
+</script>
  <script>
 $(function() {
    $( "#name1" ).autocomplete({
@@ -329,7 +344,6 @@ $(function() {
 		$( "#tabs" ).tabs({ selected: <?=$show_tab?> });
 	});
 </script>
-
 
 <script language="javascript">
 function checkpass(obj){
@@ -475,17 +489,20 @@ echo $quickmove->generate();
 // end of Quickmove generation ?>
 
 
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form" enctype="multipart/form-data"
-	onSubmit="return checkCustomerNumber(new Array(this.name1));" >
-	<?// gucken, ob die Passwoerter (Webshop-Login) gleich sind und ob alle notwendigen Felder gef�llt sind?>
 
-	<input type="hidden" name="exec" value="edit">
-	<input type="hidden" name="subexec" id="subexec" value="save">
-	<input type="hidden" name="subform" value="user_details">
-	<input type="hidden" name="id" value="<?=$businessContact->getId()?>">
 
 <div class="demo">
 	<div id="tabs">
+
+        <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="user_form" id="user_form" enctype="multipart/form-data"
+              onSubmit="return checkCustomerNumber(new Array(this.name1));" >
+            <?// gucken, ob die Passwoerter (Webshop-Login) gleich sind und ob alle notwendigen Felder gef�llt sind?>
+
+            <input type="hidden" name="exec" value="edit">
+            <input type="hidden" name="subexec" id="subexec" value="save">
+            <input type="hidden" name="subform" value="user_details">
+            <input type="hidden" name="id" value="<?=$businessContact->getId()?>">
+
 		<ul>
 			<li><a href="#tabs-0"><? echo $_LANG->get('&Uuml;bersicht');?></a></li>
 			<?php if ($_USER->getBCshowOnlyOverview() == 0){?>
@@ -713,8 +730,8 @@ echo $quickmove->generate();
 	</div>
 
 	<?php if ($_USER->getBCshowOnlyOverview() == 0){?>
-	<? /* ------------------------------------- STAMMDATEN ------------------------------------------------------ */ ?>
 
+	<? /* ------------------------------------- STAMMDATEN ------------------------------------------------------ */ ?>
 	<div id="tabs-1">
 		<div class="panel panel-default">
 			  <div class="panel-heading">
@@ -973,7 +990,30 @@ echo $quickmove->generate();
 										 <input class="form-control" name="tourmarker" id="tourmarker" value="<?=$businessContact->getTourmarker()?>">
 									 </div>
 								 </div>
-
+								 <div class="form-group">
+                                    <label for="" class="col-sm-4 control-label">Erlöskonto</label>
+                                    <div class="col-sm-8">
+                                        <select name="revenueaccount" id="revenueaccount" class="form-control">
+                                            <?php
+                                            foreach ($revaccounts as $revaccount) { ?>
+                                                <?php
+                                                if ($businessContact->getId() > 0) {
+                                                    if ($revaccount->getId() == $businessContact->getRevenueaccount()->getId()) { ?>
+                                                        <option
+                                                            value="<?php echo $businessContact->getRevenueaccount()->getId(); ?>"
+                                                            selected><?php echo $businessContact->getRevenueaccount()->getTitle(); ?></option>
+                                                    <?php } else { ?>
+                                                        <option
+                                                            value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+                                                    <?php } ?>
+                                                <?php } else {?>
+                                                    <option
+                                                        value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+                                                <?php } ?>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                 </div>
 							 </div>
 						 </div>
 					</div>
@@ -984,104 +1024,104 @@ echo $quickmove->generate();
 	<? // -------------------------------- ADRESSEN -------------------------------------------------------?>
 
 	<div id="tabs-2">
-	<?if($businessContact->getId()){?>
-		<div class="panel panel-default">
-			  <div class="panel-heading">
-					<h3 class="panel-title">
-						Adressen
-					</h3>
-			  </div>
+        <?if($businessContact->getId()){?>
+            <div class="panel panel-default">
+                  <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Adressen
+                        </h3>
+                  </div>
 
-			<div class="table-responsive">
-				<table class="table table-hover">
-					<thead>
-					<tr>
-						<th width="25%"><?php echo $_LANG->get('Rechnungsadresse');?></th>
-						<th width="25%">&nbsp;</th>
-						<th width="25%">&nbsp;</th>
-						<th width="25%">
-							<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>';">
-								<span class="glyphicons glyphicons-plus"></span>
-								<?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?>
-							</button>
-						</th>
-					</tr>
-					</thead>
-					<?php $addressInvoice = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
-					foreach($addressInvoice as $ai)
-					{
-						?>
-						<tbody>
-						<tr>
-							<td><? echo $ai->getName1() . ' ' . $ai->getName2();
-								if ($ai->getDefault() == 1) echo ' (Standard)';?>
-							</td>
-							<td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
-							<td><? echo $ai->getZip()." ".$ai->getCity();?></td>
-							<td>
-								<a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
-							</td>
-						</tr>
-						</tbody>
-						<?php
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th width="25%"><?php echo $_LANG->get('Rechnungsadresse');?></th>
+                            <th width="25%">&nbsp;</th>
+                            <th width="25%">&nbsp;</th>
+                            <th width="25%">
+                                <button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id=<?=$businessContact->getID()?>';">
+                                    <span class="glyphicons glyphicons-plus"></span>
+                                    <?=$_LANG->get('Rechnungsadresse hinzuf&uuml;gen')?>
+                                </button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <?php $addressInvoice = Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC);
+                        foreach($addressInvoice as $ai)
+                        {
+                            ?>
+                            <tbody>
+                            <tr>
+                                <td><? echo $ai->getName1() . ' ' . $ai->getName2();
+                                    if ($ai->getDefault() == 1) echo ' (Standard)';?>
+                                </td>
+                                <td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
+                                <td><? echo $ai->getZip()." ".$ai->getCity();?></td>
+                                <td>
+                                    <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <?php
 
-					}
-					?>
-				</table>
-			</div>
-			<?}?>
+                        }
+                        ?>
+                    </table>
+                </div>
+                <?}?>
 
-			<? if ($businessContact->getId()) { ?>
-				<div class="table-responsive">
-					<table class="table table-hover">
-						<thead>
-						<tr>
-							<th width="25%"><?php echo $_LANG->get('Lieferadresse');?></th>
-							<th width="25%">&nbsp;</th>
-							<th width="25%">&nbsp;</th>
-							<th width="25%">
-								<button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id=<?=$businessContact->getID()?>';">
-									<span class="glyphicons glyphicons-plus"></span>
-									<?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?>
-								</button>
-							</th>
-						</tr>
-						</thead>
-						<?php
-						$addressDelivery = Address::getAllAddresses($businessContact, Address::ORDER_NAME, Address::FILTER_DELIV);
-						foreach ($addressDelivery as $ad) {
-							?>
-							<tbody>
-							<tr>
-								<td><? echo $ad->getName1() . ' ' . $ad->getName2();
-									if ($ad->getDefault() == 1) echo ' (Standard)'; ?>
-								</td>
-								<td><? echo $ad->getAddress1() . " " . $ad->getAddress2(); ?></td>
-								<td><? echo $ad->getZip() . " " . $ad->getCity(); ?></td>
-								<td>
-									<?/*gln*/
-									?>
-									<img src="images/status/
-					<? if ($ad->getShoprel() == 0) {
-										echo "red_small.gif";
-									} else {
-										echo "green_small.gif";
-									}
-									?>" title="<?= $_LANG->get('Shop-Freigabe') ?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-									<a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_ad&id_a=<?= $ad->getId() ?>&id=<?= $businessContact->getID() ?>"><span
-											class="glyphicons glyphicons-pencil"></span></a>
-								</td>
-							</tr>
-							</tbody>
+                <? if ($businessContact->getId()) { ?>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th width="25%"><?php echo $_LANG->get('Lieferadresse');?></th>
+                                <th width="25%">&nbsp;</th>
+                                <th width="25%">&nbsp;</th>
+                                <th width="25%">
+                                    <button class="btn btn-xs btn-success" type="button" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit_ad&id=<?=$businessContact->getID()?>';">
+                                        <span class="glyphicons glyphicons-plus"></span>
+                                        <?=$_LANG->get('Lieferadresse hinzuf&uuml;gen')?>
+                                    </button>
+                                </th>
+                            </tr>
+                            </thead>
+                            <?php
+                            $addressDelivery = Address::getAllAddresses($businessContact, Address::ORDER_NAME, Address::FILTER_DELIV);
+                            foreach ($addressDelivery as $ad) {
+                                ?>
+                                <tbody>
+                                <tr>
+                                    <td><? echo $ad->getName1() . ' ' . $ad->getName2();
+                                        if ($ad->getDefault() == 1) echo ' (Standard)'; ?>
+                                    </td>
+                                    <td><? echo $ad->getAddress1() . " " . $ad->getAddress2(); ?></td>
+                                    <td><? echo $ad->getZip() . " " . $ad->getCity(); ?></td>
+                                    <td>
+                                        <?/*gln*/
+                                        ?>
+                                        <img src="images/status/
+                        <? if ($ad->getShoprel() == 0) {
+                                            echo "red_small.gif";
+                                        } else {
+                                            echo "green_small.gif";
+                                        }
+                                        ?>" title="<?= $_LANG->get('Shop-Freigabe') ?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                        <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_ad&id_a=<?= $ad->getId() ?>&id=<?= $businessContact->getID() ?>"><span
+                                                class="glyphicons glyphicons-pencil"></span></a>
+                                    </td>
+                                </tr>
+                                </tbody>
 
-							<?php
-						}
-						?>
-					</table>
-				</div>
-			<? } ?>
-		</div>
-	</div>
+                                <?php
+                            }
+                            ?>
+                        </table>
+                    </div>
+                </div>
+        <? } ?>
+    </div>
 
 		<? // ------------------------------------- Ansprechpartner ----------------------------------------------?>
 		<div id="tabs-3">
@@ -1171,9 +1211,8 @@ echo $quickmove->generate();
 							?>
 						</table>
 					</div>
-					<? } ?>
-				</div>
-			<p></p>
+                </div>
+            <? } ?>
 		</div>
 	<? // ------------------------------------- Merkmale ----------------------------------------------?>
 		<div id="tabs-5">
@@ -1258,8 +1297,6 @@ echo $quickmove->generate();
 						</table>
 					</div>
 				</div>
-
-				<p></p>
 			</div>
 		</div>
 
@@ -1316,12 +1353,12 @@ echo $quickmove->generate();
 							</tbody>
 							<input type="hidden" value="<?=$i?>" name="position_titles_count" id="position_titles_count">
 						</table>
-						<? } ?>
 					</div>
 				</div>
 			</div>
+        <? } ?>
 		</div>
-</form>
+        </form>
 
 		<? // ------------------------------------- Rechnungsausgang ----------------------------------------------?>
 
@@ -1390,8 +1427,8 @@ echo $quickmove->generate();
 					</tr>
 					</thead>
 				</table>
-				<?php }?>
 			</div>
+            <?php }?>
 		</div>
 
 		<? // ------------------------------------- Provisionspartner ----------------------------------------------?>

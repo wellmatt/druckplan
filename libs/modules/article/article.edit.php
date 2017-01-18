@@ -10,6 +10,7 @@
 require_once 'libs/modules/tradegroup/tradegroup.class.php';
 require_once 'libs/modules/warehouse/warehouse.class.php';
 require_once 'libs/modules/customfields/custom.field.class.php';
+require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
 
 $_REQUEST["aid"] = (int)$_REQUEST["aid"];
 
@@ -64,6 +65,8 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShowShopPrice((int)$_REQUEST["article_show_shop_price"]);
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
 	$article->setMatchcode($_REQUEST["article_matchcode"]);
+	$article->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+
 
 	if ($_REQUEST['usesstorage'])
 		$article->setUsesstorage($_REQUEST["usesstorage"]);
@@ -115,6 +118,7 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setOrderamounts($tmp_orderamounts);
 
 	$article->setTradegroup(new Tradegroup((int)$_REQUEST["article_tradegroup"]));
+
 	$savemsg = getSaveMessage($article->save()).$DB->getLastError();
 
 	// Alle VK-Preisstaffeln loeschen
@@ -197,6 +201,7 @@ $all_pictures = $article->getAllPictures();
 $allprices = $article->getPrices();
 $allcostprices = $article->getCosts();
 $allsupplier = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME,' supplier = 1 ');
+$revaccounts = RevenueAccount::getAll();
 
 /****************************** PHP-Funktionen ***********************************************************************/
 
@@ -230,6 +235,10 @@ function printSubTradegroupsForSelect($parentId, $depth){
 <link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
 <script src="jscripts/jvalidation/dist/jquery.validate.min.js"></script>
 <!-- <link rel="stylesheet" type="text/css" href="jscripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" media="screen" /> -->
+<link href="jscripts/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="jscripts/select2/dist/js/select2.min.js"></script>
+<script src="jscripts/select2/dist/js/i18n/de.js"></script>
+
 <style>
 	.mce-tinymce {
 		z-index: 99 !important;
@@ -391,6 +400,30 @@ echo $quickmove->generate();
 										<input id="article_tax" name="article_tax" type="text" class="form-control" value="<?=printPrice($article->getTax())?>">
 										<span class="input-group-addon">%</span>
 									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-5 control-label">Erlöskonto</label>
+								<div class="col-sm-7">
+									<select name="revenueaccount" id="revenueaccount" class="form-control">
+										<?php
+											foreach ($revaccounts as $revaccount) { ?>
+												<?php
+												if ($article->getId() > 0) {
+													if ($revaccount->getId() == $article->getRevenueaccount()->getId()) { ?>
+														<option
+															value="<?php echo $article->getRevenueaccount()->getId(); ?>"
+															selected><?php echo $article->getRevenueaccount()->getTitle(); ?></option>
+													<?php } else { ?>
+														<option
+															value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+													<?php } ?>
+													<?php } else {?>
+														<option
+															value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+												<?php } ?>
+											<?php } ?>
+									</select>
 								</div>
 							</div>
 							<br>
@@ -884,10 +917,16 @@ echo $quickmove->generate();
 		</form>
 	</div>
 </div>
-
-
-
-
+<script>
+	$(function() {
+		$("#revenueaccount").select2();
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".js-example-basic-single").select2();
+	});
+</script>
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {

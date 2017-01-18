@@ -350,7 +350,6 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 			<?php
 		};
 		?>
-
 		<div class="panel-body">
 			<?
 			if (count($shopping_basket_entrys) == 0 && $_REQUEST["success"] != 1){?>
@@ -368,7 +367,6 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 							   value="<?=$shopping_basket->getIntent()?>">
 					</div>
 				</div>
-
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Hinweis/Bemerkung</label>
 					<div class="col-sm-10">
@@ -377,7 +375,6 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 					value="<?=$shopping_basket->getNote()?>"> -->
 					</div>
 				</div>
-
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Preis des Warenkorbs</label>
 					<div class="col-sm-10">
@@ -390,20 +387,17 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 							<?=$_LANG->get('Warenkorb leeren')?>
 						</button>
 					</div>
-
 					<div class="col-md-6">
 						<button type="submit" name="clear_shoppingbasket" class="btn btn-success">
 							<?=$_LANG->get('&Auml;nderung speichern')?>
 						</button>
 					</div>
-
 					<div class="col-md-1">
 						<button   name="send_shoppingbasket" type="submit" class="btn btn-success" onclick="return BasketSubmit();">
 							<?=$_LANG->get('Senden')?>
 						</button>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>

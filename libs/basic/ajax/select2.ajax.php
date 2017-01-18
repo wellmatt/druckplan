@@ -38,4 +38,13 @@ if ($_REQUEST["ajax_action"] == "search_cp"){
     $retval['items'] = $items;
     header("Content-Type: application/json");
     echo json_encode($items);
+}elseif ($_REQUEST["ajax_action"] == "search_revenue"){
+    $items = [];
+    $revenueaccounts = RevenueAccount::getAll();
+    foreach ($revenueaccounts as $revenueaccount){
+        $items[] = Array("id" => $revenueaccount->getId(), "text" =>$revenueaccount->getTitle());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
 }

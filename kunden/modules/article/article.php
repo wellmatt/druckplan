@@ -291,15 +291,15 @@ function printSubTradegroupsForSelect($parentId, $depth){
 	<div class="table-responsive">
 		<table class="table table-hover" id="art_table">
 			<thead>
-			<tr>
-				<th><?= $_LANG->get('ID') ?></th>
-				<th><?= $_LANG->get('Bild') ?></th>
-				<th><?= $_LANG->get('Titel') ?></th>
-				<th><?= $_LANG->get('Art.-Nr.') ?></th>
-				<th><?= $_LANG->get('Tags') ?></th>
-				<th><?= $_LANG->get('Min. Lagerm.') ?></th>
-				<th><?= $_LANG->get('Auf Lager') ?></th>
-			</tr>
+				<tr>
+					<th><?= $_LANG->get('ID') ?></th>
+					<th><?= $_LANG->get('Bild') ?></th>
+					<th><?= $_LANG->get('Titel') ?></th>
+					<th><?= $_LANG->get('Art.-Nr.') ?></th>
+					<th><?= $_LANG->get('Tags') ?></th>
+					<th><?= $_LANG->get('Min. Lagerm.') ?></th>
+					<th><?= $_LANG->get('Auf Lager') ?></th>
+				</tr>
 			</thead>
 		</table>
 	</div>

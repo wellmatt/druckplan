@@ -27,9 +27,9 @@
             <div class="panel-heading">
                 <h3 class="panel-title">Filter
                      <span class="pull-right">
-                              <button class="btn btn-xs btn-success"  onclick="TicketTableRefresh();" href="Javascript:">
+                              <button class="btn btn-xs btn-success" onclick="TicketTableRefresh();" href="Javascript:">
                                   <span class="glyphicons glyphicons-refresh"></span>
-                                  <?=$_LANG->get('Refresh')?>
+                                  <?= $_LANG->get('Refresh') ?>
                               </button>
                      </span>
                 </h3>
@@ -40,19 +40,22 @@
                         <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
                         <div class="col-sm-4">
                             <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                            <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                            <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)"
+                                   onblur="markfield(this,1)">
                         </div>
                         <label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
                         <div class="col-sm-4">
                             <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                            <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                            <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)"
+                                   onblur="markfield(this,1)">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Kunde</label>
                         <div class="col-sm-10">
-                            <input type="text" id="custsearch" name="custsearch" class="form-control" value="<?php echo $_REQUEST["custfilter_name"];?>">
-                            <input type="hidden" id="custsearch_id" value="<?php echo $_REQUEST["custfilter_id"];?>">
+                            <input type="text" id="custsearch" name="custsearch" class="form-control"
+                                   value="<?php echo $_REQUEST["custfilter_name"]; ?>">
+                            <input type="hidden" id="custsearch_id" value="<?php echo $_REQUEST["custfilter_id"]; ?>">
                         </div>
                     </div>
                     <div class="form-group">
@@ -76,23 +79,23 @@
             </div>
         </div>
         <div class="table-responsive">
-        	<table class="table table-hover" id="invouttable">
-        		<thead>
-        			<tr>
-        				<th>ID</th>
-        				<th>Re.-Nr.</th>
-        				<th>VO-Nr.</th>
-        				<th>VO-Titel</th>
-        				<th>Kunde</th>
-        				<th>Netto</th>
-        				<th>Brutto</th>
-        				<th>Erstellt</th>
-        				<th>Fällig</th>
-        				<th>Bezahlt</th>
-        				<th>Status</th>
-        			</tr>
-        		</thead>
-        	</table>
+            <table class="table table-hover" id="invouttable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Re.-Nr.</th>
+                    <th>VO-Nr.</th>
+                    <th>VO-Titel</th>
+                    <th>Kunde</th>
+                    <th>Netto</th>
+                    <th>Brutto</th>
+                    <th>Erstellt</th>
+                    <th>Fällig</th>
+                    <th>Bezahlt</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>

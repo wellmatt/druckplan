@@ -23,11 +23,12 @@ if ($_REQUEST["exec"] == "delete"){
         <h3 class="panel-title">
             Rechnungseingang
             <span class="pull-right">
-                <button class="btn btn-xs btn-success" onclick="document.location. href='index.php?page=libs/modules/accounting/invoicein.edit.php&exec=new';">
-                     <span class="glyphicons glyphicons-plus"></span>
-                     <?=$_LANG->get('Rechnung hinzuf&uuml;gen')?>
-                 </button>
-<!--                <button class="btn btn-xs btn-success" type="button" onclick="invinexport();">Export</button>-->
+                <button class="btn btn-xs btn-success"
+                        onclick="document.location. href='index.php?page=libs/modules/accounting/invoicein.edit.php&exec=new';">
+                    <span class="glyphicons glyphicons-plus"></span>
+                    <?= $_LANG->get('Rechnung hinzuf&uuml;gen') ?>
+                </button>
+                <!--                <button class="btn btn-xs btn-success" type="button" onclick="invinexport();">Export</button>-->
             </span>
         </h3>
     </div>
@@ -37,44 +38,47 @@ if ($_REQUEST["exec"] == "delete"){
                 <h3 class="panel-title">Filter</h3>
             </div>
             <div class="panel-body">
-                 <div class="row">
-                     <div class="form-group">
-                         <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
-                         <div class="col-sm-4">
-                             <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                             <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                         </div>
-                         <label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
-                         <div class="col-sm-4">
-                             <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                             <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-                         </div>
-                     </div>
-                     <div class="form-group">
-                         <label for="" class="col-sm-2 control-label">Kunde</label>
-                         <div class="col-sm-10">
-                             <input type="text" id="custsearch" name="custsearch" class="form-control" value="<?php echo $_REQUEST["custfilter_name"];?>">
-                             <input type="hidden" id="custsearch_id" value="<?php echo $_REQUEST["custfilter_id"];?>">
-                         </div>
-                     </div>
-                     <div class="form-group">
-                         <label for="" class="col-sm-2 control-label">Status</label>
-                         <div class="col-sm-10">
-                             <select name="ajax_status" id="ajax_status" class="form-control">
-                                 <option value="0">- Alle -</option>
-                                 <option value="1">offen</option>
-                                 <option value="2">bezahlt</option>
-                                 <option value="3">storniert</option>
-                             </select>
-                         </div>
-                     </div>
-                     <div class="form-group">
-                         <label for="" class="col-sm-2 control-label">Suche</label>
-                         <div class="col-sm-10">
-                             <input type="text" id="search" class="form-control" placeholder="">
-                         </div>
-                     </div>
-                 </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Datum (erstellt)</label>
+                        <div class="col-sm-4">
+                            <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+                            <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)"
+                                   onblur="markfield(this,1)">
+                        </div>
+                        <label for="" class="col-sm-2 control-label" style="text-align: center">Bis</label>
+                        <div class="col-sm-4">
+                            <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+                            <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)"
+                                   onblur="markfield(this,1)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Kunde</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="custsearch" name="custsearch" class="form-control"
+                                   value="<?php echo $_REQUEST["custfilter_name"]; ?>">
+                            <input type="hidden" id="custsearch_id" value="<?php echo $_REQUEST["custfilter_id"]; ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Status</label>
+                        <div class="col-sm-10">
+                            <select name="ajax_status" id="ajax_status" class="form-control">
+                                <option value="0">- Alle -</option>
+                                <option value="1">offen</option>
+                                <option value="2">bezahlt</option>
+                                <option value="3">storniert</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="search" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="table-responsive">

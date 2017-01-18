@@ -15,6 +15,7 @@ class Tradegroup {
 	private $desc;
 	private $shoprel;
 	private $parentID = 0;
+	private $revenueaccount;
 	
 	/**
 	 * Konstruktor der Warengruppen-Klasse
@@ -38,6 +39,7 @@ class Tradegroup {
 				$this->desc 	= $r["tradegroup_desc"];
 				$this->shoprel 	= $r["tradegroup_shoprel"];
 				$this->parentID	= $r["tradegroup_parentid"];
+				$this->revenueaccount = new RevenueAccount($r["revenueaccount"]);
 			}
 		}
 	}
@@ -57,14 +59,15 @@ class Tradegroup {
 					tradegroup_title 	= '{$this->title}', 
 					tradegroup_desc 	= '{$this->desc}', 
 					tradegroup_parentid	= {$this->parentID}, 
-					tradegroup_shoprel 	= {$this->shoprel} 
+					tradegroup_shoprel 	= {$this->shoprel},
+					revenueaccount = {$this->revenueaccount->getId()}
                     WHERE id = {$this->id}";
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO tradegroup 
-					(tradegroup_state, tradegroup_title, tradegroup_desc, tradegroup_shoprel, tradegroup_parentid)
+					(tradegroup_state, tradegroup_title, tradegroup_desc, tradegroup_shoprel, tradegroup_parentid, revenueaccount)
 					VALUES
-					({$this->state}, '{$this->title}', '{$this->desc}', {$this->shoprel}, {$this->parentID})";
+					({$this->state}, '{$this->title}', '{$this->desc}', {$this->shoprel}, {$this->parentID}, {$this->revenueaccount->getId()} )";
 			$res = $DB->no_result($sql);
             
             if($res){
@@ -203,5 +206,20 @@ class Tradegroup {
 	{
 	    $this->parentID = $parentID;
 	}
+
+	/**
+	 * @return RevenueAccount
+	 */
+	public function getRevenueaccount()
+	{
+		return $this->revenueaccount;
+	}
+
+	/**
+	 * @param RevenueAccount $revenueaccount
+	 */
+	public function setRevenueaccount($revenueaccount)
+	{
+		$this->revenueaccount = $revenueaccount;
+	}
 }
-?>

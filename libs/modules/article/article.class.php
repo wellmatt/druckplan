@@ -13,6 +13,9 @@ require_once 'libs/modules/article/article.orderamount.class.php';
 require_once 'libs/modules/article/article.shopapproval.class.php';
 require_once 'libs/modules/article/article.tag.class.php';
 require_once 'libs/modules/customfields/custom.field.class.php';
+require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
+
+
 
 class Article {
 
@@ -52,6 +55,7 @@ class Article {
 	private $tags;                  // Artikel Tags
 	private $orderid = 0;           // Verknuepfte Kalk
 	private $usesstorage = 0;		// Lagerartikel
+	private $revenueaccount;		//Erlöskonto
 
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 	
@@ -118,6 +122,7 @@ class Article {
 					$this->picture = $r["picture"];
 					$this->number = $r["number"];
 					$this->tax = $r["tax"];
+//					$this->tax = new TaxKey($r["tax"]);
 					$this->minorder = $r["minorder"];
 					$this->maxorder = $r["maxorder"];
 					$this->orderunit = $r["orderunit"];
@@ -131,6 +136,8 @@ class Article {
 					$this->matchcode = $r["matchcode"];
 					$this->orderid = $r["orderid"];
 					$this->usesstorage = $r["usesstorage"];
+					$this->revenueaccount = new RevenueAccount($r["revenueaccount"]);
+
 
 					if ($r["tradegroup"] == 0) {
 						$this->tradegroup->setTitle(" &ensp; ");
@@ -189,7 +196,7 @@ class Article {
 					shoprel 	= {$this->shoprel}, 
 					picture		= '{$this->picture}', 
 					uptuser 	= {$_USER->getId()}, 
-					tax			= {$this->tax}, 
+					tax			= {$this->tax},
 					uptdate 	= UNIX_TIMESTAMP(), 
 					minorder 	= {$this->minorder}, 
 					maxorder 	= {$this->maxorder}, 
@@ -203,6 +210,7 @@ class Article {
 					matchcode		    = '{$this->matchcode}',
 					usesstorage		    = {$this->usesstorage},
 					orderid             = {$this->orderid}
+					refenueaccount      = {$this->revenueaccount->getId()}
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
 		} else {
@@ -213,15 +221,15 @@ class Article {
 					minorder, maxorder, orderunit, 
 					orderunitweight, shop_customer_rel, 
 					shop_customer_id, isworkhourart, show_shop_price,  
-					shop_needs_upload, matchcode, orderid, usesstorage )
+					shop_needs_upload, matchcode, orderid, usesstorage, refenueaccount )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',  
 					{$groupid}, {$now}, {$_USER->getId()}, 
-					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax}, 
+					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax},
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
 					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, 
-					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage} )";
+					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage}, {$this->revenueaccount->getId()} )";
 			$res = $DB->no_result($sql);
 // 			echo $sql . "</br>";
             
@@ -1228,4 +1236,21 @@ class Article {
 	{
 		$this->usesstorage = $usesstorage;
 	}
+
+	/**
+	 * @return RevenueAccount
+	 */
+	public function getRevenueaccount()
+	{
+		return $this->revenueaccount;
+	}
+
+	/**
+	 * @param RevenueAccount $revenueaccount
+	 */
+	public function setRevenueaccount($revenueaccount)
+	{
+		$this->revenueaccount = $revenueaccount;
+	}
+
 }
