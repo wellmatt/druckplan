@@ -254,7 +254,8 @@ $(document).ready(function() {
     function get_child ( d,row,idx,tr,control ) {
     	var body = $.ajax({
     		type: "GET",
-    		url: "libs/modules/tickets/ticket.summary.php",
+//    		url: "libs/modules/tickets/ticket.summary.php",
+    		url: "libs/modules/tickets/ticket.overview.table.detail.php",
     		data: { "tktid": d[1], "inline": "true" },
     		success: function(data) 
     		    {

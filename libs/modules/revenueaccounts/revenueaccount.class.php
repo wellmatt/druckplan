@@ -20,6 +20,7 @@ class RevenueAccount extends Model{
      */
     public static function getAll()
     {
+        global $DB;
         return self::fetch();
     }
 
