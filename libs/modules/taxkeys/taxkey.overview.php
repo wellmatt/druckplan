@@ -46,12 +46,12 @@ $taxkeys = TaxKey::getAll();
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Erlöskonten</h3>
+                <h3 class="panel-title">Steuerschlüssel</h3>
             </div>
             <div class="panel-body">
                 <div class="panel panel-default">
                 	  <div class="panel-heading">
-                			<h3 class="panel-title">Neues Konto</h3>
+                			<h3 class="panel-title">Neuer Schlüssel</h3>
                 	  </div>
                 	  <div class="panel-body">
                           <form action="index.php?page=<?php echo $_REQUEST['page']; ?>" name="revaccform" id="revaccform" method="post" class="form-horizontal" role="form">

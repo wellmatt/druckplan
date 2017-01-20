@@ -264,7 +264,7 @@
         }
         $row[] = '<a href="index.php?pid=40&persoorderid='.$aRow[ $aColumns[0] ].'&exec=edit" class="button">Ansehen</a>
 			      &ensp;<a href="index.php?pid=40&deleteid='.$aRow[ $aColumns[0] ].'&exec=delete" class="button" 
-                  onclick="return confirm(\'Personalisierung wirklich l&ouml;schen?\')" style="border: solid 1px red; color: red;">X</a>';
+                  onclick="return confirm(\'Personalisierung wirklich l&ouml;schen?\')"><span style="color: red;" class="glyphicons glyphicons-remove"></span></a>';
         $output['aaData'][] = $row;
     }
      

@@ -72,7 +72,7 @@ if ($_REQUEST["subexec"]=="add_item"){
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                Artikeldetails<?=$article->getTitle()?>
+                Artikeldetails &nbsp;<?=$article->getTitle()?>
             </h3>
         </div>
         <div class="panel-body">
@@ -80,15 +80,78 @@ if ($_REQUEST["subexec"]=="add_item"){
                 <div class="row">
                     <div class="col-md-8">
                         <div class="row">
-                            <div class="col-sm-3">Artikelnummer</div>
-                            <div class="col-sm-9 ">
-                                <?= $article->getNumber() ?>
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Artikelnummer</label>
+                                <div class="col-sm-9">
+                                    <div class="form-text">
+                                        <?= $article->getNumber() ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-3">Beschreibung</div>
-                            <div class="col-sm-9 ">
-                                <?= $article->getDesc() ?>
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Beschreibung</label>
+                                <div class="col-sm-9">
+                                    <div class="form-text">
+                                        <?= $article->getDesc() ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php if ($article->getUsesstorage()){ ?>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Auf Lager</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-text">
+                                            <?=$stored?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <br>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Bestellmenge</label>
+                                <div class="col-sm-6">
+                                    <?php
+                                    if (count($article->getOrderamounts())>0){?>
+                                        <div class="input-group">
+                                            <select class="form-control" name="shopping_amount" id="shopping_amount">
+                                                <option value=""></option>
+                                                <?php
+                                                foreach ($article->getOrderamounts() as $orderamount)
+                                                {
+                                                    echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                            <span class="input-group-addon">Stk</span>
+                                        </div>
+                                    <?php } else {?>
+                                        <div class="input-group">
+                                            <input name="shopping_amount" class="form-control" value="0">
+                                            <span class="input-group-addon">Stk</span>
+                                        </div>
+                                    <?php }?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Lieferadresse</label>
+                                <div class="col-sm-6">
+                                    <select class=form-control name="article_deliv">
+                                        <?	foreach($all_deliveryAddresses AS $deliv){ ?>
+                                            <option value="<?=$deliv->getId()?>"
+                                                <?if($deliv->getDefault()){echo 'selected="selected"';}?>>
+                                                <?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
+                                            </option>
+                                        <?	} ?>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -109,60 +172,16 @@ if ($_REQUEST["subexec"]=="add_item"){
                     </div>
                 </div>
             </div>
-            <div class="form" style="text-align: right">
-                <div class="form-group" style="margin-bottom: 3px;">
-                    <label for="">Bestellmenge</label>
-                    <div class="col-sm-3 col-sm-offset-9">
-                        <?php
-                        if (count($article->getOrderamounts())>0){?>
-                            <div class="input-group">
-                                <select class="form-control" name="shopping_amount" id="shopping_amount">
-                                    <option value=""></option>
-                                    <?php
-                                    foreach ($article->getOrderamounts() as $orderamount)
-                                    {
-                                        echo '<option value="'.$orderamount.'">'.$orderamount.'</option>';
-                                    }
-                                    ?>
-                                </select>
-                                <span class="input-group-addon">Stk</span>
-                            </div>
-                        <?php } else {?>
-                            <div class="input-group">
-                                <input name="shopping_amount" class="form-control" value="0">
-                                <span class="input-group-addon">Stk</span>
-                            </div>
-                        <?php }?>
-                    </div>
-                </div>
-                <?php if ($article->getUsesstorage()){ ?>
-                    <div class="form-group" style="margin-bottom: 3px;">
-                        <label for="">Auf Lager</label>
-                        <div class="input-group col-sm-3 col-sm-offset-9"><?=$stored?></div>
-                    </div>
-                <?php } ?>
-                <div class="form-group" style="margin-bottom: 3px;">
-                    <label for="">Lieferadresse</label>
-                    <div class="input-group col-sm-3 col-sm-offset-9">
-                        <select class=form-control name="article_deliv">
-                            <?	foreach($all_deliveryAddresses AS $deliv){ ?>
-                                <option value="<?=$deliv->getId()?>"
-                                    <?if($deliv->getDefault()){echo 'selected="selected"';}?>>
-                                    <?=$deliv->getNameAsLine()?> (<?=$deliv->getAddressAsLine()?>)
-                                </option>
-                            <?	} ?>
-                        </select>
-                    </div>
-                </div>
+            <br>
+            <br>
+            <div class="form">
                 <div class="row">
-                    <div class="col-sm-3 col-sm-offset-9">
+                    <div class="col-sm-3">
                         <button class="btn btn-success">
                             <?=$_LANG->get('Zum Warenkorb hinzuf&uuml;gen') ?>
                         </button>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3 col-sm-offset-9">
+                    <div class="col-sm-3 col-sm-offset-6">
                         <button type="button" class="btn btn-success" onclick="window.location.href = 'index.php?pid=80';">
                             <?=$_LANG->get('Warenkorb ansehen') ?>
                         </button>

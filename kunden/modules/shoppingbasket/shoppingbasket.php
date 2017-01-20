@@ -220,11 +220,11 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 						<td class="content_row_header"><?=$_LANG->get('Nr.')?></td>
 						<td class="content_row_header">&ensp;</td>
 						<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-						<td class="content_row_header" align="right"><?=$_LANG->get('Menge')?></td>
-						<td class="content_row_header" align="right"><?=$_LANG->get('Preis')?></td>
-						<td class="content_row_header" align="right"><?=$_LANG->get('ges. Preis')?></td>
-						<td class="content_row_header" align="right"><?=$_LANG->get('Lief.-Adresse')?></td>
-						<td class="content_row_header" align="right"><?=$_LANG->get('Rech.-Adresse')?></td>
+						<td class="content_row_header" align="center"><?=$_LANG->get('Menge')?></td>
+						<td class="content_row_header"><?=$_LANG->get('Preis')?></td>
+						<td class="content_row_header"><?=$_LANG->get('ges. Preis')?></td>
+						<td class="content_row_header"><?=$_LANG->get('Lief.-Adresse')?></td>
+						<td class="content_row_header"><?=$_LANG->get('Rech.-Adresse')?></td>
 						<td class="content_row_header">&ensp;</td>
 					</tr>
 					<?foreach ($shopping_basket_entrys as $entry){
@@ -255,7 +255,9 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 								&ensp;
 							</td>
 							<td class="filerow">
-								<table><tr><td>
+								<table>
+									<tr>
+										<td>
 											<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 												$tmp_pid = 61;
 												$tmp_obj = "articleid=".$entry->getId();
@@ -273,35 +275,44 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 												<?=substr($entry->getTitle(),0,21)?></a></td>
 										<?php if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){if($artic->getShop_needs_upload()==1){?>
 											<td><label class="filebutton">&nbsp;<span class="glyphicons glyphicons-floppy-disk pointer"></span>
-													<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label></td>
+													<input type="file" class="artfile" id="myfile_<?=$entry->getEntryid()?>" name="myfile_<?=$entry->getEntryid()?>" style="display: none"></label>
+											</td>
 										<?php }}?>
-									</tr></table>
+									</tr>
+								</table>
 							</td>
-							<td class="filerow"  align="right">
+							<td class="filerow">
 								<?	if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 									$tmp_amount = $entry->getAmount();
 									$tmp_readonly = "";
 									?>
-									<input 	style="width:50px;" name="amount_<?=$entry->getEntryid()?>"
-											  value="<?=$entry->getAmount()?>" <?=$tmp_readonly?>>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<input 	class="form-control" name="amount_<?=$entry->getEntryid()?>" value="<?=$entry->getAmount()?>" <?=$tmp_readonly?>>
+										</div>
+									</div>
 									<?
 								} else if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){?>
-									<select name="amount_<?=$entry->getEntryid()?>" class="text" <? if ($perso_order->getStatus() > 1) echo "disabled";?>
-											style="width: 150px;">
-										<?
-										foreach($allprices AS $price){ ?>
-											<option value="<?=$price["sep_max"]?>"
-												<?if($price["sep_max"] == $entry->getAmount()) echo "selected";?>>
-												<?	echo $price["sep_max"];
-												if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
-											</option>
-										<?	} ?>
-									</select>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<select name="amount_<?=$entry->getEntryid()?>" class="form-control" <? if ($perso_order->getStatus() > 1) echo "disabled";?>
+													style="width: 150px;">
+												<?
+												foreach($allprices AS $price){ ?>
+													<option value="<?=$price["sep_max"]?>"
+														<?if($price["sep_max"] == $entry->getAmount()) echo "selected";?>>
+														<?	echo $price["sep_max"];
+														if($price["sep_show"]==1) echo " (".printPrice($price["sep_price"])." €)";	?>
+													</option>
+												<?	} ?>
+											</select>
+										</div>
+									</div>
 									<?
 								}?>
 							</td>
-							<td class="filerow" align="right"><?=printPrice($entry->getPrice())?> &euro; </td>
-							<td class="filerow" align="right">
+							<td class="filerow" style="width: 70px;"><?=printPrice($entry->getPrice())?> &euro; </td>
+							<td class="filerow" style="width: 70px;">
 								<?	if ($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
 									if ($artic->getOrderid()>0)
 									{
@@ -319,8 +330,8 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 								}
 								echo printPrice($ges_price);?>&euro;
 							</td>
-							<td class="filerow" align="right">
-								<select name="entry_deliv_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
+							<td class="filerow">
+								<select name="entry_deliv_<?=$entry->getEntryid()?>" class="form-control">
 									<?	foreach($all_deliveryAddresses AS $deliv){ ?>
 										<option value="<?=$deliv->getId()?>"
 											<?if($deliv->getId() == $entry->getDeliveryAdressID()){echo 'selected="selected"';} else if ($deliv->getDefault()){echo 'selected="selected"';}?>>
@@ -329,8 +340,8 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 									<?	} ?>
 								</select>
 							</td>
-							<td class="filerow" align="right">
-								<select name="entry_invoice_<?=$entry->getEntryid()?>" class="text"	style="width: 200px;">
+							<td class="filerow">
+								<select name="entry_invoice_<?=$entry->getEntryid()?>" class="form-control">
 									<?	foreach($all_invoiceAddresses AS $invoice){ ?>
 										<option value="<?=$invoice->getId()?>"
 											<?if($invoice->getId() == $entry->getInvoiceAdressID()){echo 'selected="selected"';} else if ($invoice->getDefault()){echo 'selected="selected"';}?>>
@@ -339,8 +350,10 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 									<?	} ?>
 								</select>
 							</td>
-							<td class="filerow" align="center">
-								<input 	type="submit" value="X" name="delete_item" onClick="document.getElementById('del_id').value = <?=$entry->getEntryid()?>;">
+							<td class="filerow">
+								<button class="btn btn-danger btn-origin" type="submit" value="X" name="delete_item" onClick="document.getElementById('del_id').value = <?=$entry->getEntryid()?>;">
+									Löschen
+								</button>
 							</td>
 						</tr>
 						<?$x++;
@@ -378,9 +391,10 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 				<div class="form-group">
 					<label for="" class="col-sm-2 control-label">Preis des Warenkorbs</label>
 					<div class="col-sm-10">
-						<div class="form-control"><b><?=printPrice($overall_price)?></b></div>
+						<div class="form-text"><b><?=printPrice($overall_price)?></b></div>
 					</div>
 				</div>
+				<br>
 				<div class="row">
 					<div class="col-md-5">
 						<button name="clear_shoppingbasket" class="btn btn-success"onclick="if (confirm('<?=$_LANG->get('Warenkorb wirklich leeren ?') ?>')) { $('#exec').val('clear_shoppingbasket'); $('#form_shopbasket').submit();} ">

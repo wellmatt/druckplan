@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 global $_USER;
 global $_CONTACTPERSON;
@@ -30,7 +30,7 @@ if($_REQUEST["exec"] == "new"){
 if($_REQUEST["exec"] == "edit"){
     $ticket = new Ticket($_REQUEST["tktid"]);
     $header_title = $_LANG->get('Ticketdetails');
-    
+
     if($_REQUEST["subexec"] == "save"){
         $ticket->setTitle($_REQUEST["tkt_title"]);
         if ($_REQUEST["tkt_due"] != "" && $_REQUEST["tkt_due"] != 0){
@@ -95,7 +95,7 @@ if($_REQUEST["exec"] == "edit"){
             if ($save_ok) {
                 if ($_FILES['tktc_attachments']) {
                     $file_ary = reArrayFiles($_FILES['tktc_attachments']);
-                
+
                     foreach ($file_ary as $file) {
                         if ($file["name"] != ""){
                             $tmp_attachment = new Attachment();
@@ -165,7 +165,7 @@ $(function() {
 		    'September','Oktober','November','Dezember',
 		   ],
 		   dayOfWeek:[
-		    "So.", "Mo", "Di", "Mi", 
+		    "So.", "Mo", "Di", "Mi",
 		    "Do", "Fr", "Sa.",
 		   ]
 		  }
@@ -217,7 +217,6 @@ $(document).ready(function () {
             </h3>
 	  </div>
 	  <div class="panel-body">
-
           <form action="index.php?pid=20" method="post" name="ticket_edit" id="ticket_edit" enctype="multipart/form-data" class="form-horizontal">
               <input type="hidden" name="exec" value="edit">
               <input type="hidden" name="subexec" value="save">
@@ -234,7 +233,6 @@ $(document).ready(function () {
                   <div class="form-group">
                       <label for="" class="col-sm-4 control-label">Kunde</label>
                       <div class="col-sm-8">
-
                           <input type="text" id="tkt_customer" name="tkt_customer" value="<?php if ($new_ticket == false) {
                               echo $ticket->getCustomer()->getNameAsLine()." - ".$ticket->getCustomer_cp()->getNameAsLine2();
                           } else {
@@ -269,7 +267,7 @@ $(document).ready(function () {
                   <div class="form-group">
                       <label for="" class="col-sm-4 control-label">Telefon</label>
                       <div class="col-sm-8">
-                          <div class="form-control"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getPhone(); } else { $_CONTACTPERSON->getPhone(); }?></div>
+                          <div id="cp_phone" class="form-control"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getPhone(); } else { $_CONTACTPERSON->getPhone(); }?></div>
                       </div>
                   </div>
 
@@ -297,9 +295,9 @@ $(document).ready(function () {
                   </div>
 
                   <div class="form-group">
-                      <label for="" class="col-sm-4 control-label">eMail-Adresse:</label>
+                      <label for="" class="col-sm-4 control-label">eMail-Adresse</label>
                       <div class="col-sm-8">
-                          <div class="form-control"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getEmail();} else { $_CONTACTPERSON->getEmail(); }?></div>
+                          <div id="cp_mail" class="form-control"><?php if ($new_ticket == false) { echo $ticket->getCustomer_cp()->getEmail();} else { $_CONTACTPERSON->getEmail(); }?></div>
                       </div>
                   </div>
 
@@ -356,21 +354,21 @@ $(document).ready(function () {
                   </div>
 
                   <div class="form-group">
-                      <label for="" class="col-sm-4 control-label">Letzte Mitteilung:</label>
+                      <label for="" class="col-sm-4 control-label">Letzte Mitteilung</label>
                       <div class="col-sm-8">
-                          <div class="form-control"><?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?> </div>
+                          <div class="form-control"><?php if ($ticket->getId()>0 && $ticket->getEditdate() > 0) echo date("d.m.Y H:i",$ticket->getEditdate());?></div>
                       </div>
                   </div>
 
                   <div class="form-group">
-                      <label for="" class="col-sm-4 control-label">Erstellt am:</label>
+                      <label for="" class="col-sm-4 control-label">Erstellt am</label>
                       <div class="col-sm-8">
-                          <div class="form-control"><?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?>"</div>
+                          <div class="form-control"><?php if ($ticket->getId()>0) echo date("d.m.Y H:i",$ticket->getCrtdate())?></div>
                       </div>
                   </div>
 
                   <div class="form-group">
-                      <label for="" class="col-sm-4 control-label">Zugewiesen an:</label>
+                      <label for="" class="col-sm-4 control-label">Zugewiesen an</label>
                       <div class="col-sm-8">
                           <div class="form-control">
                           <?php

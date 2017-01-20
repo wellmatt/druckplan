@@ -314,7 +314,6 @@ if ($_REQUEST["exec"] == "edit"){
 																  <? if ($tmp_label == "spacer") { echo "&nbsp;"; } else { echo $tmp_label; }?>
 															  </label>
 															  <div class="col-sm-6">
-
 																  <? if ($page_type == "perso" && $item->getPosition() == 1){
 																	  $position_titles = $busicon->getPositionTitles();
 																	  // print_r($position_titles);

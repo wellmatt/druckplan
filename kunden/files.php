@@ -92,7 +92,7 @@ function askDel(myurl)
         </td>-->
                           <td class="filerow">
                               <a href="../get.php?type=2&hash=<?=$file["ftp_hash"]?>" class="button">Download</a>
-                              <a href="#" onclick="askDel('index.php?pid=<?=$_REQUEST["pid"]?>&delete=<?=$file["ftp_hash"]?>')" class="button_del">L&ouml;schen</a>
+                              <a href="#" onclick="askDel('index.php?pid=<?=$_REQUEST["pid"]?>&delete=<?=$file["ftp_hash"]?>')"  class="button_del"><span style="color: red;" class="glyphicons glyphicons-remove"></span></a>
                           </td>
                       </tr>
                       <? $x++; } ?>
