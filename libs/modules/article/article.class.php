@@ -210,9 +210,10 @@ class Article {
 					matchcode		    = '{$this->matchcode}',
 					usesstorage		    = {$this->usesstorage},
 					orderid             = {$this->orderid}
-					refenueaccount      = {$this->revenueaccount->getId()}
+					revenueaccount      = {$this->revenueaccount->getId()}
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
+//			prettyPrint($sql);
 		} else {
 			$sql = "INSERT INTO article 
 					(status, description, title, 
@@ -221,18 +222,18 @@ class Article {
 					minorder, maxorder, orderunit, 
 					orderunitweight, shop_customer_rel, 
 					shop_customer_id, isworkhourart, show_shop_price,  
-					shop_needs_upload, matchcode, orderid, usesstorage, refenueaccount )
+					shop_needs_upload, matchcode, orderid, usesstorage, revenueaccount )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',  
-					{$groupid}, {$now}, {$_USER->getId()}, 
+					{$this->tradegroup->getId()}, {$now}, {$_USER->getId()},
 					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax},
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
 					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, 
 					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage}, {$this->revenueaccount->getId()} )";
 			$res = $DB->no_result($sql);
-// 			echo $sql . "</br>";
-            
+//            prettyPrint($sql);
+
             if($res){
                 $sql = "SELECT max(id) id FROM article WHERE title = '{$this->title}'";
                 $thisid = $DB->select($sql);
