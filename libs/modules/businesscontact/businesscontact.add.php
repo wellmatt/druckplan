@@ -260,7 +260,7 @@ $(document).ready(function() {
         "sAjaxSource": "libs/modules/businesscontact/businesscontact.comments.dt.ajax.php?bcid=<?php echo $businessContact->getId();?>&access=<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
 		"stateSave": false,
 		"pageLength": 10,
-		"dom": 'flrtip',
+		"dom": 'lrtip',
 		"aaSorting": [[ 1, "desc" ]],
 		"lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
 		"columns": [
@@ -286,6 +286,9 @@ $(document).ready(function() {
         var aData = $('#comment_table').dataTable().fnGetData(aPos[0]);
         callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[1]+'&tktid=0');
     });
+	$('#search').keyup(function(){
+		search_tickets.search( $(this).val() ).draw();
+	})
 
 	$("a#tktc_hiddenclicker").fancybox({
 		'type'          :   'iframe',
@@ -1413,6 +1416,21 @@ echo $quickmove->generate();
 							</span>
 						</h3>
 				  </div>
+				<div class="panel-body">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Filter</h3>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label for="" class="col-sm-2 control-label">Suche</label>
+								<div class="col-sm-4">
+									<input type="text" id="search" class="form-control" placeholder="">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<br>
 				<table id="comment_table" width="100%" cellpadding="0"
 					   cellspacing="0" class="stripe hover row-border order-column">

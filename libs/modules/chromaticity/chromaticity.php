@@ -37,7 +37,7 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
                 "paging": true,
                 "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
                 "pageLength": <?php echo $perf->getDt_show_default();?>,
-                "dom": 'T<"clear">flrtip',
+                "dom": 'T<"clear">lrtip',
                 "tableTools": {
                     "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                     "aButtons": [

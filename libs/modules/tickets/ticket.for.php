@@ -61,7 +61,7 @@ $(document).ready(function() {
 		"pageLength": <?php echo $perf->getDt_show_default();?>,
 		"stateSave": true,
 // 		"dom": 'flrtip',        
-		"dom": 'T<"clear">flrtip',        
+		"dom": 'T<"clear">lrtip',
 		"tableTools": {
 			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -139,6 +139,9 @@ $(document).ready(function() {
 						}
 					}
     } );
+    $('#search').keyup(function(){
+        ticketstable.search( $(this).val() ).draw();
+    })
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	$('#date_min').datepicker(
@@ -425,6 +428,12 @@ if ($from_busicon){
                                 }
                                 ?>
                             </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="search" class="form-control" placeholder="">
                         </div>
                     </div>
                     <div class="row">

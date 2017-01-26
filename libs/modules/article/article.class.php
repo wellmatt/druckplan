@@ -33,7 +33,7 @@ class Article {
 	private $number = 0;			// Artikelnummer
 	private $title;					// Titel des Artikels
 	private $desc;					// Beschreibung des Artikels
-	private $tradegroup;			// ID der Warengruppe			
+	private $tradegroup;			// ID der Warengruppe
 	private $seperation; 			// Preis-Staffelungen
 	private $picture;				// Verweis auf das Bild, das mit dem Artikel verknuepft ist
 	private $crt_date;				// Erstelldatum
@@ -58,7 +58,7 @@ class Article {
 	private $revenueaccount;		//Erlöskonto
 
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
-	
+
 	private $qualified_users = Array();
 
 	/**
@@ -71,7 +71,7 @@ class Article {
 		global $_USER;
 
 		$this->tradegroup = new Tradegroup(0);
-		
+
 		if ($id > 0){
 			$valid_cache = true;
 			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
@@ -179,7 +179,7 @@ class Article {
 
 	/**
 	 * Speicher-Funktion fuer Artikel
-	 * 
+	 *
 	 * @return boolean
 	 */
 	function save(){
@@ -188,132 +188,130 @@ class Article {
 		$now = time();
 
 		if($this->id > 0){
-			$sql = "UPDATE article SET 
-					title 		= '{$this->title}', 
+			$sql = "UPDATE article SET
+					title 		= '{$this->title}',
 					tradegroup 	= {$this->tradegroup->getId()},
-					number		= '{$this->number}', 
-					description = '{$this->desc}', 
-					shoprel 	= {$this->shoprel}, 
-					picture		= '{$this->picture}', 
-					uptuser 	= {$_USER->getId()}, 
+					number		= '{$this->number}',
+					description = '{$this->desc}',
+					shoprel 	= {$this->shoprel},
+					picture		= '{$this->picture}',
+					uptuser 	= {$_USER->getId()},
 					tax			= {$this->tax},
-					uptdate 	= UNIX_TIMESTAMP(), 
-					minorder 	= {$this->minorder}, 
-					maxorder 	= {$this->maxorder}, 
-					orderunit 	= {$this->orderunit}, 
-					orderunitweight 	= {$this->orderunitweight}, 
-					shop_customer_rel	= {$this->shopCustomerRel}, 
-					shop_customer_id	= {$this->shopCustomerID}, 
-					show_shop_price		= {$this->show_shop_price}, 
-					shop_needs_upload	= {$this->shop_needs_upload}, 
-					isworkhourart		= {$this->isworkhourart}, 
+					uptdate 	= UNIX_TIMESTAMP(),
+					minorder 	= {$this->minorder},
+					maxorder 	= {$this->maxorder},
+					orderunit 	= {$this->orderunit},
+					orderunitweight 	= {$this->orderunitweight},
+					shop_customer_rel	= {$this->shopCustomerRel},
+					shop_customer_id	= {$this->shopCustomerID},
+					show_shop_price		= {$this->show_shop_price},
+					shop_needs_upload	= {$this->shop_needs_upload},
+					isworkhourart		= {$this->isworkhourart},
 					matchcode		    = '{$this->matchcode}',
 					usesstorage		    = {$this->usesstorage},
 					orderid             = {$this->orderid}
 					revenueaccount      = {$this->revenueaccount->getId()}
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
-//			prettyPrint($sql);
 		} else {
-			$sql = "INSERT INTO article 
-					(status, description, title, 
-					tradegroup, crtdate, crtuser, 
-					shoprel, picture, number, tax, 
-					minorder, maxorder, orderunit, 
-					orderunitweight, shop_customer_rel, 
-					shop_customer_id, isworkhourart, show_shop_price,  
+			$sql = "INSERT INTO article
+					(status, description, title,
+					tradegroup, crtdate, crtuser,
+					shoprel, picture, number, tax,
+					minorder, maxorder, orderunit,
+					orderunitweight, shop_customer_rel,
+					shop_customer_id, isworkhourart, show_shop_price,
 					shop_needs_upload, matchcode, orderid, usesstorage, revenueaccount )
 					VALUES
-					({$this->status}, '{$this->desc}', '{$this->title}',  
+					({$this->status}, '{$this->desc}', '{$this->title}',
 					{$this->tradegroup->getId()}, {$now}, {$_USER->getId()},
 					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax},
-					{$this->minorder}, {$this->maxorder}, {$this->orderunit}, 
-					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID}, 
-					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload}, 
+					{$this->minorder}, {$this->maxorder}, {$this->orderunit},
+					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID},
+					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload},
 					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage}, {$this->revenueaccount->getId()} )";
 			$res = $DB->no_result($sql);
-//            prettyPrint($sql);
 
-            if($res){
-                $sql = "SELECT max(id) id FROM article WHERE title = '{$this->title}'";
-                $thisid = $DB->select($sql);
-                $this->id = $thisid[0]["id"];
-                $res = true;
-            } else {
-                $res = false;
-            }
+			if($res){
+				$sql = "SELECT max(id) id FROM article WHERE title = '{$this->title}'";
+				$thisid = $DB->select($sql);
+				$this->id = $thisid[0]["id"];
+				$res = true;
+			} else {
+				$res = false;
+			}
 		}
 
 		$sql = "DELETE FROM article_qualified_users WHERE article = {$this->id}";
 		$DB->no_result($sql);
-		
+
 		foreach($this->qualified_users as $qusr)
 		{
-		    $sql = "INSERT INTO article_qualified_users
+			$sql = "INSERT INTO article_qualified_users
 		    (article, user)
 		    VALUES
 		    ({$this->id}, {$qusr->getId()})";
-		    $DB->no_result($sql);
+			$DB->no_result($sql);
 		}
-		
-		$sql = "DELETE FROM article_orderamounts 
+
+		$sql = "DELETE FROM article_orderamounts
 		        WHERE article_id = {$this->id}";
 		$DB->no_result($sql);
-		
+
 		if (count($this->orderamounts)>0)
 		{
-		    foreach ($this->orderamounts as $orderamount)
-		    {
-		        $sql = "INSERT INTO article_orderamounts
+			foreach ($this->orderamounts as $orderamount)
+			{
+				$sql = "INSERT INTO article_orderamounts
 		        (article_id, amount)
 		        VALUES
 		        ({$this->id}, {$orderamount})";
-		        $res = $DB->no_result($sql);
-		    }
+				$res = $DB->no_result($sql);
+			}
 		}
-		
-		$sql = "DELETE FROM article_tags 
+
+		$sql = "DELETE FROM article_tags
 		        WHERE article = {$this->id}";
 		$DB->no_result($sql);
-		
+
 		if (count($this->tags)>0)
 		{
-		    foreach ($this->tags as $tag)
-		    {
-		        $sql = "INSERT INTO article_tags
+			foreach ($this->tags as $tag)
+			{
+				$sql = "INSERT INTO article_tags
 		        (article, tag)
 		        VALUES
 		        ({$this->id}, '{$tag}')";
-		        $res = $DB->no_result($sql);
-		    }
+				$res = $DB->no_result($sql);
+			}
 		}
-		
-		$sql = "DELETE FROM article_shop_approval 
+
+		$sql = "DELETE FROM article_shop_approval
 		        WHERE article = {$this->id}";
 		$DB->no_result($sql);
-		
+
 		if (count($this->shop_approval["BCs"]>0))
 		{
-		    foreach($this->shop_approval["BCs"] as $shopappr)
-		    {
-		        $sql = "INSERT INTO article_shop_approval
+			foreach($this->shop_approval["BCs"] as $shopappr)
+			{
+				$sql = "INSERT INTO article_shop_approval
 		        (article, bc, cp)
 		        VALUES
 		        ({$this->id}, {$shopappr}, 0)";
-		        $DB->no_result($sql);
-		    }
+				$DB->no_result($sql);
+			}
 		}
 		if (count($this->shop_approval["CPs"]>0))
 		{
-		    foreach($this->shop_approval["CPs"] as $shopappr)
-		    {
-		        $sql = "INSERT INTO article_shop_approval
+			foreach($this->shop_approval["CPs"] as $shopappr)
+			{
+				$sql = "INSERT INTO article_shop_approval
 		        (article, bc, cp)
 		        VALUES
 		        ({$this->id}, 0, {$shopappr})";
-		        $DB->no_result($sql);
-		    }
-	    }
+				$DB->no_result($sql);
+			}
+		}
 
 		if ($res)
 		{
@@ -322,19 +320,19 @@ class Article {
 		}
 		else
 			return false;
-		
+
 	}
-	
+
 	/**
 	 * Loeschfunktion fuer Artikel.
 	 * Der Artikel wird nicht entgueltig geloescht, der Status und die Freigabe wird auf 0 gesetzt
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function delete(){
 		global $DB;
 		if($this->id > 0){
-			$sql = "UPDATE article 
+			$sql = "UPDATE article
 					SET
 					shoprel = 0,
 					status = 0
@@ -389,23 +387,23 @@ class Article {
 			}
 		}
 	}
-	
+
 	public static function searchTags($term)
 	{
 		global $DB;
 		$retval = Array();
-		$sql = "SELECT DISTINCT tag FROM article_tags WHERE tag LIKE '%{$term}%'"; 
+		$sql = "SELECT DISTINCT tag FROM article_tags WHERE tag LIKE '%{$term}%'";
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
-			    $retval[] = Array("label" => $r["tag"], "value" => $r["tag"]);
+				$retval[] = Array("label" => $r["tag"], "value" => $r["tag"]);
 			}
 		}
 		return $retval;
-	} 
-	
+	}
+
 	/**
 	 * Ueberpruefung, ob eine eingegebene Artikelnummer schon vergeben ist.
-	 * 
+	 *
 	 * @param String $number
 	 * @return boolean : true, wenn vergeben
 	 */
@@ -439,10 +437,10 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	/**
-     * Suchfunktion fuer Artikel. Sucht in Titel und Auftragsnummer.
-	 * 
+	 * Suchfunktion fuer Artikel. Sucht in Titel und Auftragsnummer.
+	 *
 	 * @param string $search
 	 * @param string $order
 	 * @return Article[]
@@ -462,10 +460,10 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	/**
-     * Suchfunktion für Artikel. Sucht in Titel und Auftragsnummer in festgelegter Warengruppe.
-	 * 
+	 * Suchfunktion für Artikel. Sucht in Titel und Auftragsnummer in festgelegter Warengruppe.
+	 *
 	 * @param STING $str
 	 * @return Array : Article
 	 */
@@ -485,7 +483,7 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Funktion liefert alle aktiven Artikel der Datenbank nach angegebener Reighenfolge
 	 *
@@ -503,7 +501,7 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	static function getAllArticleIdsForApi($apiid){
 		global $DB;
 		$retval = Array();
@@ -511,7 +509,7 @@ class Article {
                 FROM
                 apis_objects
                 INNER JOIN article ON apis_objects.object = article.id
-                WHERE article.`status` > 0 AND apis_objects.api = {$apiid} AND apis_objects.type = 1 
+                WHERE article.`status` > 0 AND apis_objects.api = {$apiid} AND apis_objects.type = 1
                 ORDER BY article.id ASC";
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
@@ -520,8 +518,8 @@ class Article {
 		}
 		return $retval;
 	}
-	
-	
+
+
 	/**
 	 * Funktion liefert alle aktiven Arbeitszeit-Artikel der Datenbank nach angegebener Reighenfolge
 	 *
@@ -539,8 +537,8 @@ class Article {
 		}
 		return $retval;
 	}
-	
-	
+
+
 	/**
 	 * Funktion liefert alle aktiven Artikel der angebenen Warengruppe
 	 *
@@ -558,7 +556,7 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Funktion liefert alle aktiven Artikel der angebenen Warengruppe
 	 *
@@ -569,8 +567,8 @@ class Article {
 	static function getAllShopArticleByGroup($tg_id, $order = self::ORDER_ID){
 		global $DB;
 		$retval = Array();
-		$sql = "SELECT id FROM article WHERE 
-				status > 0 AND 
+		$sql = "SELECT id FROM article WHERE
+				status > 0 AND
 				shoprel = 1 AND
 				tradegroup = {$tg_id}
 				ORDER BY {$order}";
@@ -581,7 +579,7 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Funktion liefert alle aktiven Artikel, die fuer den Benutzer freigegeben sind
 	 *
@@ -592,15 +590,15 @@ class Article {
 	static function getAllShopArticleByCustomer($cust_id, $order = self::ORDER_ID){
 		global $DB;
 		$retval = Array();
-		
+
 		$sql = "SELECT id FROM article WHERE
 				status > 0 AND
-				( shoprel = 1 
-				  OR 
+				( shoprel = 1
+				  OR
 				  (shop_customer_id = {$cust_id} AND shop_customer_rel = 1 )
 				)
 				ORDER BY {$order} ";
-		
+
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Article($r["id"]);
@@ -608,7 +606,7 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	static function getAllShopArticleByCustomerAndCp($cust_id, $cp_id, $filter = null){
 		global $DB;
 		$retval = Array();
@@ -625,7 +623,7 @@ class Article {
 				) t1
 				{$filter}
 				ORDER BY id ASC";
-		
+
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Article($r["id"]);
@@ -633,7 +631,7 @@ class Article {
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Funktion liefert alle aktiven Artikel mit angegebenen Suchstring
 	 *
@@ -648,7 +646,7 @@ class Article {
 				status > 0 AND
 				shoprel = 1 AND
 				(title LIKE '%{$search_str}%' OR
-				 desc LIKE '%{$search_str}%' ) 
+				 desc LIKE '%{$search_str}%' )
 				ORDER BY {$order}";
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
@@ -658,7 +656,7 @@ class Article {
 		echo mysql_error();
 		return $retval;
 	}
-	
+
 	/******************************* VK-Preise ***************************************************/
 
 	/**
@@ -679,14 +677,14 @@ class Article {
 		$pricescale = new PriceScale(0, $create);
 		$pricescale->save();
 	}
-	
+
 	/**
-	* Loeschfunktion fuer alle Preisstaffelungen
-	*/
+	 * Loeschfunktion fuer alle Preisstaffelungen
+	 */
 	function deltePriceSeperations(){
 		PriceScale::deleteAllForArticle($this,PriceScale::TYPE_SELL);
 	}
-	
+
 	/**
 	 * Funktion liefert alle Preisstaffelungen eines Artikels als Array
 	 */
@@ -707,12 +705,12 @@ class Article {
 
 		return $retval;
 	}
-	
+
 	public function setPrices($prices)
 	{
 		$this->prices = $prices;
 	}
-	
+
 	/**
 	 * Funktion liefert einen Preis zu einer bestimmten Menge
 	 * @param int $amount
@@ -721,9 +719,9 @@ class Article {
 	public function getPrice($amount){
 		return PriceScale::getPriceForAmount($this,$amount);
 	}
-	
+
 	/**************************************** EK-Preise ****************************************************/
-	
+
 	/**
 	 * Funktion speichert eine EK-Preisstaffelung eines Artikels
 	 *
@@ -748,8 +746,8 @@ class Article {
 	}
 
 	/**
-		* Loeschfunktion fuer alle EK-Preisstaffelungen
-		*/
+	 * Loeschfunktion fuer alle EK-Preisstaffelungen
+	 */
 	function delteCostSeperations(){
 		PriceScale::deleteAllForArticle($this,PriceScale::TYPE_BUY);
 	}
@@ -790,48 +788,48 @@ class Article {
 	public function getCost($amount){
 		return PriceScale::getPriceForAmount($this,$amount,PriceScale::TYPE_BUY);
 	}
-	
+
 	/*********************************** Artikelbilder ************************************************/
-	
+
 	/**
 	 * ... liefert alle Bilder eines Artikels
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function getAllPictures(){
 		global $DB;
 		$retval=FALSE;
-		
+
 		$sql = "SELECT * FROM article_pictures WHERE articleid = {$this->id} ORDER BY id ASC ";
-		
+
 		if($DB->num_rows($sql)){
 			$retval = $DB->select($sql);
-		} 
+		}
 		return $retval;
 	}
-	
+
 	/**
 	 * ... liefert die Details zu einem Bild als Array
-	 *  
+	 *
 	 * @param int $pic_id
-	 * @return Array 
+	 * @return Array
 	 */
 	public function getPictureUrl($pic_id){
 		global $DB;
 		$retval=FALSE;
-		
+
 		$sql = "SELECT * FROM article_pictures WHERE articleid = {$this->id} AND id = {$pic_id}";
-		
+
 		if($DB->num_rows($sql)){
 			$retval = $DB->select($sql);
 			$retval = $retval[0];
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Loescht das angegeben Artikelbild
-	 * 
+	 *
 	 * @param int $picid
 	 * @return boolean
 	 */
@@ -840,9 +838,9 @@ class Article {
 		$sql = "DELETE FROM article_pictures WHERE id = {$picid}";
 		return $DB->no_result($sql);
 	}
-	
+
 	/**
-	 * ... speichert ein Artikelbild 
+	 * ... speichert ein Artikelbild
 	 *
 	 * @param string $picurl
 	 * @return boolean
@@ -850,102 +848,102 @@ class Article {
 	public function addPicture($picurl){
 		global $DB;
 		$now = time();
-		
-		$sql = "INSERT INTO article_pictures 
+
+		$sql = "INSERT INTO article_pictures
 				( url, crtdate, articleid )
 				VALUES
 				( '{$picurl}', $now, {$this->id} )";
 		return $DB->no_result($sql);
 	}
-	
-	
+
+
 	/**
 	 * Loeschfunktion fuer die Id
 	 */
 	function clearId(){
 		$this->id = 0;
 	}
-	
+
 	/*********************************** GETTER u. SETTER *********************************************/
 
 	public function getId()
 	{
-	    return $this->id;
+		return $this->id;
 	}
 
 	public function getStatus()
 	{
-	    return $this->status;
+		return $this->status;
 	}
 
 	public function setStatus($status)
 	{
-	    $this->status = $status;
+		$this->status = $status;
 	}
 
 	public function getShoprel()
 	{
-	    return $this->shoprel;
+		return $this->shoprel;
 	}
 
 	public function setShoprel($shoprel)
 	{
-	    $this->shoprel = $shoprel;
+		$this->shoprel = $shoprel;
 	}
 
 	public function getTitle()
 	{
-	    return $this->title;
+		return $this->title;
 	}
 
 	public function setTitle($title)
 	{
-	    $this->title = $title;
+		$this->title = $title;
 	}
 
 	public function getDesc()
 	{
-	    return $this->desc;
+		return $this->desc;
 	}
 
 	public function setDesc($desc)
 	{
-	    $this->desc = $desc;
+		$this->desc = $desc;
 	}
 
 	public function getTradegroup()
 	{
-	    return $this->tradegroup;
+		return $this->tradegroup;
 	}
 
 	public function setTradegroup($tradegroup)
 	{
-	    $this->tradegroup = $tradegroup;
+		$this->tradegroup = $tradegroup;
 	}
 
 	public function getSeperation()
 	{
-	    return $this->seperation;
+		return $this->seperation;
 	}
 
 	public function setSeperation($seperation)
 	{
-	    $this->seperation = $seperation;
+		$this->seperation = $seperation;
 	}
-	
+
 	public function getPicture()
 	{
-	    return $this->picture;
+		return $this->picture;
 	}
 
 	public function setPicture($picture)
 	{
-	    $this->picture = $picture;
+		$this->picture = $picture;
 	}
 
 	public function getCrt_date()
 	{
-	    return $this->crt_date;
+		return $this->crt_date;
 	}
 	public function getCrtdate()
 	{
@@ -954,12 +952,12 @@ class Article {
 
 	public function setCrt_date($crt_date)
 	{
-	    $this->crt_date = $crt_date;
+		$this->crt_date = $crt_date;
 	}
 
 	public function getCrt_user()
 	{
-	    return $this->crt_user;
+		return $this->crt_user;
 	}
 	public function getCrtuser()
 	{
@@ -968,12 +966,12 @@ class Article {
 
 	public function setCrt_user($crt_user)
 	{
-	    $this->crt_user = $crt_user;
+		$this->crt_user = $crt_user;
 	}
 
 	public function getUpt_date()
 	{
-	    return $this->upt_date;
+		return $this->upt_date;
 	}
 	public function getUptdate()
 	{
@@ -982,12 +980,12 @@ class Article {
 
 	public function setUpt_date($upt_date)
 	{
-	    $this->upt_date = $upt_date;
+		$this->upt_date = $upt_date;
 	}
 
 	public function getUpt_user()
 	{
-	    return $this->upt_user;
+		return $this->upt_user;
 	}
 	public function getUptuser()
 	{
@@ -996,231 +994,231 @@ class Article {
 
 	public function setUpt_user($upt_user)
 	{
-	    $this->upt_user = $upt_user;
+		$this->upt_user = $upt_user;
 	}
 
 	public function getNumber()
 	{
-	    return $this->number;
+		return $this->number;
 	}
 
 	public function setNumber($number)
 	{
-	    $this->number = $number;
+		$this->number = $number;
 	}
 
-    public function getTax()
-    {
-        return $this->tax;
-    }
+	public function getTax()
+	{
+		return $this->tax;
+	}
 
-    public function setTax($tax)
-    {
-        $this->tax = $tax;
-    }
+	public function setTax($tax)
+	{
+		$this->tax = $tax;
+	}
 
 	public function getMinorder()
 	{
-	    return $this->minorder;
+		return $this->minorder;
 	}
 
 	public function setMinorder($minorder)
 	{
-	    $this->minorder = $minorder;
+		$this->minorder = $minorder;
 	}
 
 	public function getMaxorder()
 	{
-	    return $this->maxorder;
+		return $this->maxorder;
 	}
 
 	public function setMaxorder($maxorder)
 	{
-	    $this->maxorder = $maxorder;
+		$this->maxorder = $maxorder;
 	}
 
 	public function getOrderunit()
 	{
-	    return $this->orderunit;
+		return $this->orderunit;
 	}
 
 	public function setOrderunit($orderunit)
 	{
-	    $this->orderunit = $orderunit;
+		$this->orderunit = $orderunit;
 	}
 
 	public function getOrderunitweight()
 	{
-	    return $this->orderunitweight;
+		return $this->orderunitweight;
 	}
 
 	public function setOrderunitweight($orderunitweight)
 	{
-	    $this->orderunitweight = $orderunitweight;
+		$this->orderunitweight = $orderunitweight;
 	}
 
-    public function getShopCustomerRel()
-    {
-        return $this->shopCustomerRel;
-    }
+	public function getShopCustomerRel()
+	{
+		return $this->shopCustomerRel;
+	}
 
-    public function setShopCustomerRel($shopCustomerRel)
-    {
-        $this->shopCustomerRel = $shopCustomerRel;
-    }
+	public function setShopCustomerRel($shopCustomerRel)
+	{
+		$this->shopCustomerRel = $shopCustomerRel;
+	}
 
-    public function getShopCustomerID()
-    {
-        return $this->shopCustomerID;
-    }
+	public function getShopCustomerID()
+	{
+		return $this->shopCustomerID;
+	}
 
-    public function setShopCustomerID($shopCustomerID)
-    {
-        $this->shopCustomerID = $shopCustomerID;
-    }
+	public function setShopCustomerID($shopCustomerID)
+	{
+		$this->shopCustomerID = $shopCustomerID;
+	}
 
-    public function getIsWorkHourArt()
-    {
-        return $this->isworkhourart;
-    }
+	public function getIsWorkHourArt()
+	{
+		return $this->isworkhourart;
+	}
 
-    public function setIsWorkHourArt($isworkhourart)
-    {
-        $this->isworkhourart = $isworkhourart;
-    }
+	public function setIsWorkHourArt($isworkhourart)
+	{
+		$this->isworkhourart = $isworkhourart;
+	}
 
-    public function getShowShopPrice()
-    {
-        return $this->show_shop_price;
-    }
+	public function getShowShopPrice()
+	{
+		return $this->show_shop_price;
+	}
 
-    public function setShowShopPrice($show_shop_price)
-    {
-        $this->show_shop_price = $show_shop_price;
-    }
-    
-	/**
-     * @return the $orderamounts
-     */
-    public function getOrderamounts()
-    {
-        return $this->orderamounts;
-    }
+	public function setShowShopPrice($show_shop_price)
+	{
+		$this->show_shop_price = $show_shop_price;
+	}
 
 	/**
-     * @param multitype: $orderamounts
-     */
-    public function setOrderamounts($orderamounts)
-    {
-        $this->orderamounts = $orderamounts;
-    }
-    
+	 * @return the $orderamounts
+	 */
+	public function getOrderamounts()
+	{
+		return $this->orderamounts;
+	}
+
 	/**
-     * @return the $qualified_users
-     */
-    public function getQualified_users()
-    {
-        return $this->qualified_users;
-    }
+	 * @param multitype: $orderamounts
+	 */
+	public function setOrderamounts($orderamounts)
+	{
+		$this->orderamounts = $orderamounts;
+	}
+
+	/**
+	 * @return the $qualified_users
+	 */
+	public function getQualified_users()
+	{
+		return $this->qualified_users;
+	}
 	public function getQualifiedusers()
 	{
 		return $this->qualified_users;
 	}
 
 	/**
-     * @param multitype: $qualified_users
-     */
-    public function setQualified_users($qualified_users)
-    {
-        $this->qualified_users = $qualified_users;
-    }
-    
+	 * @param multitype: $qualified_users
+	 */
+	public function setQualified_users($qualified_users)
+	{
+		$this->qualified_users = $qualified_users;
+	}
+
 	/**
-     * @return the $shop_needs_upload
-     */
-    public function getShop_needs_upload()
-    {
-        return $this->shop_needs_upload;
-    }
+	 * @return the $shop_needs_upload
+	 */
+	public function getShop_needs_upload()
+	{
+		return $this->shop_needs_upload;
+	}
 	public function getShopneedsupload()
 	{
 		return $this->shop_needs_upload;
 	}
 
 	/**
-     * @param field_type $shop_needs_upload
-     */
-    public function setShop_needs_upload($shop_needs_upload)
-    {
-        $this->shop_needs_upload = $shop_needs_upload;
-    }
-    
-	/**
-     * @return the $matchcode
-     */
-    public function getMatchcode()
-    {
-        return $this->matchcode;
-    }
+	 * @param field_type $shop_needs_upload
+	 */
+	public function setShop_needs_upload($shop_needs_upload)
+	{
+		$this->shop_needs_upload = $shop_needs_upload;
+	}
 
 	/**
-     * @param field_type $matchcode
-     */
-    public function setMatchcode($matchcode)
-    {
-        $this->matchcode = $matchcode;
-    }
+	 * @return the $matchcode
+	 */
+	public function getMatchcode()
+	{
+		return $this->matchcode;
+	}
+
 	/**
-     * @return the $shop_approval
-     */
-    public function getShop_approval()
-    {
-        return $this->shop_approval;
-    }
+	 * @param field_type $matchcode
+	 */
+	public function setMatchcode($matchcode)
+	{
+		$this->matchcode = $matchcode;
+	}
+	/**
+	 * @return the $shop_approval
+	 */
+	public function getShop_approval()
+	{
+		return $this->shop_approval;
+	}
 	public function getShopapproval()
 	{
 		return $this->shop_approval;
 	}
 
 	/**
-     * @param field_type $shop_approval
-     */
-    public function setShop_approval($shop_approval)
-    {
-        $this->shop_approval = $shop_approval;
-    }
-    
-	/**
-     * @return the $tags
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
+	 * @param field_type $shop_approval
+	 */
+	public function setShop_approval($shop_approval)
+	{
+		$this->shop_approval = $shop_approval;
+	}
 
 	/**
-     * @param Ambigous <multitype:unknown , multitype:Ambigous <multitype:> > $tags
-     */
-    public function setTags($tags)
-    {
-        $this->tags = $tags;
-    }
-    
-	/**
-     * @return the $orderid
-     */
-    public function getOrderid()
-    {
-        return $this->orderid;
-    }
+	 * @return the $tags
+	 */
+	public function getTags()
+	{
+		return $this->tags;
+	}
 
 	/**
-     * @param number $orderid
-     */
-    public function setOrderid($orderid)
-    {
-        $this->orderid = $orderid;
-    }
+	 * @param Ambigous <multitype:unknown , multitype:Ambigous <multitype:> > $tags
+	 */
+	public function setTags($tags)
+	{
+		$this->tags = $tags;
+	}
+
+	/**
+	 * @return the $orderid
+	 */
+	public function getOrderid()
+	{
+		return $this->orderid;
+	}
+
+	/**
+	 * @param number $orderid
+	 */
+	public function setOrderid($orderid)
+	{
+		$this->orderid = $orderid;
+	}
 
 	/**
 	 * @return int
