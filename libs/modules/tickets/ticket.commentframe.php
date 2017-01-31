@@ -296,7 +296,9 @@ function precise_round(num, decimals) {
      <table width="100%">
         <tr>
             <td class="content_row_clear" align="right">
-            	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
+                <button class="btn btn-origin btn-default" value="" type="submit">
+                    <?=$_LANG->get('Speichern')?>
+                </button>
             </td>
         </tr>
      </table>

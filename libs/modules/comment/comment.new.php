@@ -397,11 +397,14 @@ $(function () {
 	    </colgroup> 
 	    <tr>
 	        <td class="content_row_header">
-	        	<input 	type="button" value="<?=$_LANG->get('Zur&uuml;ck')?>" class="button"
-	        			onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+                <button class="btn btn-origin btn-default" type="button" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>'">
+                    <?=$_LANG->get('Zur&uuml;ck')?>
+                </button>
 	        </td>
 	        <td class="content_row_clear" align="right">
-	        	<input type="submit" value="<?=$_LANG->get('Speichern')?>">
+                <button class="btn btn-origin btn-success" type="submit">
+                    <?=$_LANG->get('Speichern')?>
+                </button>
 	        </td>
 	    </tr>
 	</table>

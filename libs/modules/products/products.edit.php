@@ -307,9 +307,14 @@ echo $quickmove->generate();
                           <label for="" class="col-sm-3 control-label"></label>
                           <div  id="picture_show" class="col-sm-9">
                               <a href="libs/modules/products/picture.iframe.php" id="picture_select" class="products">
-                                  <input type="button" class="button" value="<?=$_LANG->get('&auml;ndern')?>"></a>
+                                  <button value="" class="btn btn-origin btn-default" type="button">
+                                      <?=$_LANG->get('&auml;ndern')?>
+                                  </button>
+                              </a>
                               <? if($product->getPicture() != "") {?>
-                                  <input type="button" class="buttonRed" value="<?=$_LANG->get('L&ouml;schen')?>" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$product->getId()?>&deletePicture=1'">
+                                  <button class="btn btn-origin btn-danger" value="" type="button" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$product->getId()?>&deletePicture=1'">
+                                      <?=$_LANG->get('L&ouml;schen')?>
+                                  </button>
                               <? } ?>
                           </div>
                       </div>
@@ -657,7 +662,7 @@ echo $quickmove->generate();
               <div class="panel panel-default">
               	  <div class="panel-heading">
               			<h3 class="panel-title">
-                            Weitere Angaben
+                            Optionen Umfang Inhalt
                         </h3>
               	  </div>
               	  <div class="panel-body">
@@ -690,7 +695,7 @@ echo $quickmove->generate();
                              </div>
                          </div>
                        <div class="row">
-                           <div class="col-md-3"><label for="" class=" control-label">Faktor offen/geschlossen</label></div>
+                           <div class="col-md-3"><label for="" class=" control-label">Verhältniss Offenes zum geschlossenem Format</label></div>
                            <div class="col-md-3">
                                <div class="form-group">
                                    <label for="" class="col-sm-3 control-label">Breite</label>
