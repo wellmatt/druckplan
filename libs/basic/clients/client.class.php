@@ -81,6 +81,7 @@ class Client {
     private $number_counter_work;
     private $number_format_suporder;
     private $number_counter_suporder;
+    private $number_counter_customer;
      
     function __construct($id = 0) {
         global $DB;
@@ -185,6 +186,7 @@ class Client {
                     $this->number_counter_work = $res[0]["number_counter_work"];
                     $this->number_format_suporder = $res[0]["number_format_suporder"];
                     $this->number_counter_suporder = $res[0]["number_counter_suporder"];
+                    $this->number_counter_customer = $res[0]["number_counter_customer"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -272,7 +274,8 @@ class Client {
             number_format_work  = '{$this->number_format_work}',
             number_counter_work  = '{$this->number_counter_work}',
             number_format_suporder  = '{$this->number_format_suporder}',
-            number_counter_suporder  = '{$this->number_counter_suporder}'
+            number_counter_suporder  = '{$this->number_counter_suporder}',
+            number_counter_customer = '{$this->number_counter_customer}'
 
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -293,7 +296,7 @@ class Client {
             number_counter_delivery, number_format_paper_order, number_counter_paper_order,
             number_format_invoice, number_counter_invoice, number_format_revert, number_counter_revert,
             number_format_warning, number_counter_warning, number_format_work, number_counter_work,
-            number_format_suporder, number_counter_suporder)
+            number_format_suporder, number_counter_suporder, number_counter_customer)
             VALUES
             ('{$this->name}', '{$this->street1}', '{$this->street2}', '{$this->street3}',
             '{$this->postcode}', '{$this->city}', '{$this->phone}', '{$this->fax}', '{$this->email}',
@@ -309,7 +312,8 @@ class Client {
             '{$this->number_counter_delivery}','{$this->number_format_paper_order}','{$this->number_counter_paper_order}',
             '{$this->number_format_invoice}','{$this->number_counter_invoice}','{$this->number_format_revert}',
             '{$this->number_counter_revert}','{$this->number_format_warning}','{$this->number_counter_warning}',
-            '{$this->number_format_work}','{$this->number_counter_work}', '{$this->number_format_suporder}','{$this->number_counter_suporder}')";
+            '{$this->number_format_work}','{$this->number_counter_work}', '{$this->number_format_suporder}','{$this->number_counter_suporder}',
+            '{$this->number_counter_customer}')";
             $res = $DB->no_result($sql);
              
             if ($res)
@@ -1210,5 +1214,19 @@ class Client {
         $this->number_format_suporder = $number_format_suporder;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getNumberCounterCustomer()
+    {
+        return $this->number_counter_customer;
+    }
 
+    /**
+     * @param mixed $number_counter_customer
+     */
+    public function setNumberCounterCustomer($number_counter_customer)
+    {
+        $this->number_counter_customer = $number_counter_customer;
+    }
 }

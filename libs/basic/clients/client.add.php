@@ -58,6 +58,7 @@ if($_REQUEST["subexec"] == "save")
 	$client->setNumberCounterWarning($_REQUEST["number_counter_warning"]);
 	$client->setNumberFormatWork($_REQUEST["number_format_work"]);
 	$client->setNumberCounterWork($_REQUEST["number_counter_work"]);
+	$client->setNumberCounterCustomer((int)$_REQUEST["number_counter_customer"]);
 
     $savemsg = getSaveMessage($client->save());
     $savemsg .= $DB->getLastError();
@@ -371,6 +372,13 @@ if($_REQUEST["subexec"] == "save")
 						<td class="content_row_header"><?=$_LANG->get('Betrifft');?></td>
 						<td class="content_row_header"><?=$_LANG->get('Format');?></td>
 						<td class="content_row_header"><?=$_LANG->get('Counter');?></td>
+					</tr>
+					<tr>
+						<td><?=$_LANG->get('Kundennummer');?></td>
+						<td></td>
+						<td>
+							<input name="number_counter_customer" class="form-control" value="<?=$client->getNumberCounterCustomer()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
 					</tr>
 					<tr>
 						<td><?=$_LANG->get('Kalkulation');?></td>

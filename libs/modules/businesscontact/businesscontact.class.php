@@ -574,6 +574,7 @@ class BusinessContact {
 	public function save()
 	{
 		global $DB;
+		global $_USER;
 		$positiontitles = serialize($this->positiontitles);
 		$tmp_notify_mail_adr = serialize($this->notifymailadr);
 		if ($this->id > 0)
@@ -650,6 +651,7 @@ class BusinessContact {
 		}
 		else
 		{
+			$this->customernumber = $_USER->getClient()->generadeCustomerNumber();
 			$sql = " INSERT INTO businesscontact
 		            (active, commissionpartner, customer, supplier, client, name1,
 		            name2, address1, address2, zip, city, country, phone,
@@ -848,6 +850,61 @@ class BusinessContact {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * @return SimpleXMLElement
+	 */
+	public function genSAPXML()
+	{
+		$data = [
+			"kontenart" => "D",
+			"kontonummer" => $this->getCustomernumber(),
+			"bezeichnung" => $this->name1 . " " . $this->name2,
+			"umsatzsteuerIdentNummer" => "",
+			"steuernummer" => "",
+			"waehrungsschluessel" => "EUR",
+			"Geschaeftspartner" => [
+				"nummer" => $this->getCustomernumber(),
+				"Personendaten" => [
+					"name1" => $this->name1,
+					"name2" => $this->name2
+				],
+				"Anschrift" => [
+					"name3" => "",
+					"strasse" => $this->getAddress1() . " " .$this->getAddress2(),
+					"plz" => $this->getZip(),
+					"ort" => $this->getCity(),
+					"postfach" => "",
+					"postfachPlz" => "",
+					"postfachOrt" => "",
+					"landkennzeichen" => $this->country->getCode()
+				],
+				"TeleKommunikationen" => [
+					"TeleKommunikation" => [
+						"qualifier" => "update",
+						"art" => "geschäftlich",
+						"rufnummer" => $this->getPhone()
+					],
+					"TeleKommunikation" => [
+						"qualifier" => "update",
+						"art" => "Fax",
+						"rufnummer" => $this->getFax()
+					]
+				],
+				"OnlineKommunikationen" => [
+					"OnlineKommunikation" => [
+						"qualifier" => "update",
+						"art" => "geschäftlich",
+						"email" => $this->getEmail()
+					],
+				],
+			]
+		];
+
+		$xml_data = new SimpleXMLElement('<?xml version="1.0"?><Personenkonto></Personenkonto>');
+		array_to_xml($data,$xml_data);
+		return $xml_data->asXML();
 	}
 	
 	// ***************************** GETTER & SETTER ********************************************************
