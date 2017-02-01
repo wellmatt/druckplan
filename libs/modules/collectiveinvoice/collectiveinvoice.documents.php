@@ -171,7 +171,7 @@ if ($_REQUEST["subexec"] == "send")
 		  //---------------------------------------------------------------------------
 		  ?>
 		  <div id="tabs">
-			  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="form_collectiveinvoices" name="form_collectiveinvoices">
+			  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="form_collectiveinvoices" class="form-horizontal" name="form_collectiveinvoices">
 				  <input 	type="hidden" name="exec" value="docs">
 				  <input 	type="hidden" name="subexec" value="doc_texts">
 				  <input 	type="hidden" name="ciid" value="<?php echo $collectinv->getId();?>">
@@ -246,685 +246,688 @@ if ($_REQUEST["subexec"] == "send")
 	  </div>
 </div>
 <br>
+<br>
 <div class="panel panel-default">
-	  <div class="panel-heading">
-			<h3 class="panel-title">
-				Dokumente
-			</h3>
-	  </div>
-	  <div class="panel-body">
-		  <table width="100%" cellspacing="0" cellpadding="0" border="0">
-			  <colgroup>
-				  <col width="10%">
-				  <col width="25%">
-				  <col width="5%">
-				  <col width="10%">
-				  <col width="10%">
-				  <col width="15%">
-			  </colgroup>
-			  <tr>
-				  <td class="content_row_header"><?=$_LANG->get('Typ')?></td>
-				  <td class="content_row_header"><?=$_LANG->get('Dokumentenname')?></td>
-				  <td class="content_row_header"><?=$_LANG->get('Versch.')?></td>
-				  <td class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
-				  <td class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
-				  <td class="content_row_header"><?=$_LANG->get('Dokumente')?></td>
-			  </tr>
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Dokumente
+		</h3>
+	</div>
+	<div class="panel-body">
+		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+			<colgroup>
+				<col width="10%">
+				<col width="25%">
+				<col width="5%">
+				<col width="10%">
+				<col width="10%">
+				<col width="15%">
+			</colgroup>
+			<tr>
+				<td class="content_row_header"><?=$_LANG->get('Typ')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Dokumentenname')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Versch.')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Erstellt von')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
+				<td class="content_row_header"><?=$_LANG->get('Dokumente')?></td>
+			</tr>
 
-			  <?
-			  //---------------------------------------------------------------------------
-			  // Angebot
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_OFFER, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Angebot')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
-										  </ul>
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear">
-					  <!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
-				  </td>
-				  <td class="content_row_clear">&nbsp;</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(1);
-						  ?>
-						  <select name="letterhead_offer" id="letterhead_offer" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offer"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offer').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
+			<?
+			//---------------------------------------------------------------------------
+			// Angebot
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_OFFER, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Angebot')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
+										</ul>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear">
+					<!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
+				</td>
+				<td class="content_row_clear">&nbsp;</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(1);
+						?>
+						<select name="letterhead_offer" id="letterhead_offer" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offer"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offer').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
 
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){
-					  if($doc->getSent() == 0){
-						  $senddocs[] = $doc;
-					  }
-				  }
-			  }
-			  //---------------------------------------------------------------------------
-			  // Angebotsbets�tigung
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){
+					if($doc->getSent() == 0){
+						$senddocs[] = $doc;
+					}
+				}
+			}
+			//---------------------------------------------------------------------------
+			// Angebotsbets�tigung
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
 
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Auftragsbest&auml;tigung')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
-										  </ul>
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="40%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear">
-					  <!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
-				  </td>
-				  <td class="content_row_clear">&nbsp;</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(Document::TYPE_OFFERCONFIRM);
-						  ?>
-						  <select name="letterhead_offerconfirm" id="letterhead_offerconfirm" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offerconfirm"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offerconfirm').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Auftragsbest&auml;tigung')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
+										</ul>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="40%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear">
+					<!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
+				</td>
+				<td class="content_row_clear">&nbsp;</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(Document::TYPE_OFFERCONFIRM);
+						?>
+						<select name="letterhead_offerconfirm" id="letterhead_offerconfirm" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=offerconfirm"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offerconfirm').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
 
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){
-					  if($doc->getSent() == 0){
-						  $senddocs[] = $doc;
-					  }
-				  }
-			  }
-			  ?>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){
+					if($doc->getSent() == 0){
+						$senddocs[] = $doc;
+					}
+				}
+			}
+			?>
 
-			  <?php
-			  //---------------------------------------------------------------------------
-			  // Auftragstasche
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_FACTORY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Auftragstasche')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <!-- ul class="postnav_text">
+			<?php
+			//---------------------------------------------------------------------------
+			// Auftragstasche
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_FACTORY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));?>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Auftragstasche')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<!-- ul class="postnav_text">
 						<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
 					</ul--> &ensp;
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="40%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear">
-					  <!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
-				  </td>
-				  <td class="content_row_clear">&nbsp;</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(Document::TYPE_FACTORY);
-						  ?>
-						  <select name="letterhead_factory" id="letterhead_factory" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=factory"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_factory').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="40%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear">
+					<!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
+				</td>
+				<td class="content_row_clear">&nbsp;</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(Document::TYPE_FACTORY);
+						?>
+						<select name="letterhead_factory" id="letterhead_factory" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=factory"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_factory').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
 
-			  </tr>
-			  <?php
+			</tr>
+			<?php
 
-			  //---------------------------------------------------------------------------
-			  // Lieferschein
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_DELIVERY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Lieferschein')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
-										  </ul>
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="40%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear">
-					  <!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
-				  </td>
-				  <td class="content_row_clear">&nbsp;</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(Document::TYPE_DELIVERY);
-						  ?>
-						  <select name="letterhead_delivery" id="letterhead_delivery" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=delivery"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_delivery').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
+			//---------------------------------------------------------------------------
+			// Lieferschein
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_DELIVERY, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Lieferschein')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
+										</ul>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="40%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear">
+					<!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
+				</td>
+				<td class="content_row_clear">&nbsp;</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(Document::TYPE_DELIVERY);
+						?>
+						<select name="letterhead_delivery" id="letterhead_delivery" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=delivery"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_delivery').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
 
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){
-					  if($doc->getSent() == 0){
-						  $senddocs[] = $doc;
-					  }
-				  }
-			  }
-			  //---------------------------------------------------------------------------
-			  // Etiketten
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_LABEL, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Etiketten')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <!--ul class="postnav_text">
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){
+					if($doc->getSent() == 0){
+						$senddocs[] = $doc;
+					}
+				}
+			}
+			//---------------------------------------------------------------------------
+			// Etiketten
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_LABEL, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Etiketten')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<!--ul class="postnav_text">
 						<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
 					</ul-->
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="40%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear" colspan="4">
-					  <?=$_LANG->get('Menge');?>:
-					  <input type="text" class="text" name="label_box_amount" id="label_box_amount" style="width: 80px;" value="1">
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="40%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear" colspan="4">
+					<div class="form-group">
+						<label for="" class="col-xs-1 control-label">Menge</label>
+						<div class="col-xs-2">
+							<input type="text" class="form-control" name="label_box_amount" id="label_box_amount" value="1">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-xs-2 control-label">Logo drucken</label>
+						<div class="col-xs-1">
+							<input type="checkbox" name="label_print_logo" id="label_print_logo" value="1"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-xs-1  control-label">Titel</label>
+						<div class="col-xs-3">
+							<input type="text" class="form-control" name="label_title" id="label_title"
+					</div>
+				</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(Document::TYPE_LABEL);
+						?>
+						<select name="letterhead_label" id="letterhead_label" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=label"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_label').val()+'&label_box_amount='+$('#label_box_amount').val()+'&label_print_logo='+$('#label_print_logo').val()+'&label_title='+$('#label_title').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
+			</tr>
+			<?php
+			//---------------------------------------------------------------------------
+			// Rechnung
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Rechnung')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
+										</ul>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="40%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear">
+					<!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
+				</td>
+				<td class="content_row_clear">&nbsp;</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(Document::TYPE_INVOICE);
+						?>
+						<select name="letterhead_invoice" id="letterhead_invoice" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=invoice"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_invoice').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
 
-					  &emsp; &emsp;
-					  <input type="checkbox" name="label_print_logo" id="label_print_logo" value="1"/>
-					  <?=$_LANG->get('Logo drucken');?>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){
+					if($doc->getSent() == 0){
+						$senddocs[] = $doc;
+					}
+				}
+			}
 
-					  &emsp; &emsp;
-					  <?=$_LANG->get('Titel');?>:
-					  <input type="text" class="text" name="label_title" id="label_title" style="width: 280px;"
-							 value="<? echo $collectinv->getTitle();?>">
-				  </td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(Document::TYPE_LABEL);
-						  ?>
-						  <select name="letterhead_label" id="letterhead_label" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=label"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_label').val()+'&label_box_amount='+$('#label_box_amount').val()+'&label_print_logo='+$('#label_print_logo').val()+'&label_title='+$('#label_title').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
-			  </tr>
-			  <?php
-			  //---------------------------------------------------------------------------
-			  // Rechnung
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Rechnung')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
-										  </ul>
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="40%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear">
-					  <!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
-				  </td>
-				  <td class="content_row_clear">&nbsp;</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(Document::TYPE_INVOICE);
-						  ?>
-						  <select name="letterhead_invoice" id="letterhead_invoice" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=invoice"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_invoice').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
+			//---------------------------------------------------------------------------
+			// Gutschriften
+			//---------------------------------------------------------------------------
+			$docs = Document::getDocuments(Array("type" => Document::TYPE_REVERT, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
+			<tr class="<?=getRowColor(1)?>">
+				<td class="content_row" colspan="6"><b><?=$_LANG->get('Gutschrift')?></b></td>
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){ ?>
+					<tr class="<?=getRowColor(0)?>">
+						<td class="content_row_clear">&ensp;</td>
+						<td class="content_row_clear">
+							<span class="ok"><?=$doc->getName()?></span>
+						</td>
+						<td class="content_row_clear">
+							<? 	if($doc->getSent())
+								echo '<img src="images/status/green_small.svg">';
+							else
+								echo '<img src="images/status/red_small.svg">'; ?>
+						</td>
+						<td class="content_row_clear">
+							<?=$doc->getCreateUser()->getNameAsLine()?>
+						</td>
+						<td class="content_row_clear">
+							<?=date('d.m.Y H:m', $doc->getCreateDate())?>
+						</td>
+						<td class="content_row_clear">
+							<table cellpaddin="0" cellspacing="0" width="100%">
+								<tr>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
+										</ul>
+									</td>
+									<td width="30%">
+										<ul class="postnav_text">
+											<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
+										</ul>
+									</td>
+									<td width="40%">
+										<ul class="postnav_text_del">
+											<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?	$x++;
+				}
+			}
+			?>
+			<tr class="<?=getRowColor(0)?>">
+				<td class="content_row_clear">&emsp;</td>
+				<td class="content_row_clear">
+					<!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
+				</td>
+				<td class="content_row_clear">&nbsp;</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">- - -</td>
+				<td class="content_row_clear">
+					<ul class="postnav_text_save">
+						<?php
+						$letterheads = Letterhead::getAllForType(Document::TYPE_REVERT);
+						?>
+						<select name="letterhead_revert" id="letterhead_revert" class="form-control" style="margin-bottom: 5px;">
+							<?php
+							foreach ($letterheads as $item) {
+								if ($item->getStd() == 1)
+									echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+								else
+									echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+							}
+							?>
+						</select>
+						<a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=revert"
+						   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_revert').val());"><?=$_LANG->get('Generieren')?></a>
+					</ul>
+				</td>
 
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){
-					  if($doc->getSent() == 0){
-						  $senddocs[] = $doc;
-					  }
-				  }
-			  }
-
-			  //---------------------------------------------------------------------------
-			  // Gutschriften
-			  //---------------------------------------------------------------------------
-			  $docs = Document::getDocuments(Array("type" => Document::TYPE_REVERT, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
-			  <tr class="<?=getRowColor(1)?>">
-				  <td class="content_row" colspan="6"><b><?=$_LANG->get('Gutschrift')?></b></td>
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){ ?>
-					  <tr class="<?=getRowColor(0)?>">
-						  <td class="content_row_clear">&ensp;</td>
-						  <td class="content_row_clear">
-							  <span class="ok"><?=$doc->getName()?></span>
-						  </td>
-						  <td class="content_row_clear">
-							  <? 	if($doc->getSent())
-								  echo '<img src="images/status/green_small.svg">';
-							  else
-								  echo '<img src="images/status/red_small.svg">'; ?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=$doc->getCreateUser()->getNameAsLine()?>
-						  </td>
-						  <td class="content_row_clear">
-							  <?=date('d.m.Y H:m', $doc->getCreateDate())?>
-						  </td>
-						  <td class="content_row_clear">
-							  <table cellpaddin="0" cellspacing="0" width="100%">
-								  <tr>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=email"><?=$_LANG->get('E-Mail')?></a>
-										  </ul>
-									  </td>
-									  <td width="30%">
-										  <ul class="postnav_text">
-											  <a href="libs/modules/documents/document.get.iframe.php?getDoc=<?=$doc->getId()?>&version=print"><?=$_LANG->get('Print')?></a>
-										  </ul>
-									  </td>
-									  <td width="40%">
-										  <ul class="postnav_text_del">
-											  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&deleteDoc=<?=$doc->getId()?>"><?=$_LANG->get('L&ouml;schen')?></a>
-										  </ul>
-									  </td>
-								  </tr>
-							  </table>
-						  </td>
-					  </tr>
-					  <?	$x++;
-				  }
-			  }
-			  ?>
-			  <tr class="<?=getRowColor(0)?>">
-				  <td class="content_row_clear">&emsp;</td>
-				  <td class="content_row_clear">
-					  <!-- span class="error"><?=$_LANG->get('nicht vorhanden')?></span--> &ensp;
-				  </td>
-				  <td class="content_row_clear">&nbsp;</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">- - -</td>
-				  <td class="content_row_clear">
-					  <ul class="postnav_text_save">
-						  <?php
-						  $letterheads = Letterhead::getAllForType(Document::TYPE_REVERT);
-						  ?>
-						  <select name="letterhead_revert" id="letterhead_revert" class="form-control" style="margin-bottom: 5px;">
-							  <?php
-							  foreach ($letterheads as $item) {
-								  if ($item->getStd() == 1)
-									  echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-								  else
-									  echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-							  }
-							  ?>
-						  </select>
-						  <a href="index.php?page=<?=$_REQUEST['page']?>&ciid=<?=$collectinv->getId()?>&exec=docs&createDoc=revert"
-							 onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_revert').val());"><?=$_LANG->get('Generieren')?></a>
-					  </ul>
-				  </td>
-
-			  </tr>
-			  <?
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){
-					  if($doc->getSent() == 0){
-						  $senddocs[] = $doc;
-					  }
-				  }
-			  }
+			</tr>
+			<?
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){
+					if($doc->getSent() == 0){
+						$senddocs[] = $doc;
+					}
+				}
+			}
 
 
-			  //---------------------------------------------------------------------------
-			  // Ende Dokumente
-			  //---------------------------------------------------------------------------?>
-			  <?
+			//---------------------------------------------------------------------------
+			// Ende Dokumente
+			//---------------------------------------------------------------------------?>
+			<?
 
-			  if(count($docs) > 0){
-				  foreach ($docs AS $doc){
-					  if($doc->getSent() == 0){
-						  $senddocs[] = $doc;
-					  }
-				  }
-			  }
-			  //---------------------------------------------------------------------------
-			  // Ende Dokumente
-			  //---------------------------------------------------------------------------
-			  $nachricht->setAttachments($senddocs);?>
-
-		  </table>
-	  </div>
+			if(count($docs) > 0){
+				foreach ($docs AS $doc){
+					if($doc->getSent() == 0){
+						$senddocs[] = $doc;
+					}
+				}
+			}
+			//---------------------------------------------------------------------------
+			// Ende Dokumente
+			//---------------------------------------------------------------------------
+			$nachricht->setAttachments($senddocs);?>
+		</table>
+	</div>
 </div>
-
-
-<br>
 <table width="100%">
     <tr>
         <td>

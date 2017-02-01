@@ -1110,7 +1110,7 @@ echo $quickmove->generate();
                                         } else {
                                             echo "green_small.gif";
                                         }
-                                        ?>" title="<?= $_LANG->get('Shop-Freigabe') ?>"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                        ?>" title="<?= $_LANG->get('Shop-Freigabe') ?>">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                                         <a href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit_ad&id_a=<?= $ad->getId() ?>&id=<?= $businessContact->getID() ?>"><span
                                                 class="glyphicons glyphicons-pencil"></span></a>
                                     </td>

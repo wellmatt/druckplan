@@ -563,7 +563,7 @@ echo $quickmove->generate();
 							if ($collectinv->getId()>0 && $collectinv->getTicket()>0) {
 								?>
 								<button type="button"
-										onclick="window.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=updatefromticket&ciid=<?= $collectinv->getId() ?>';"
+										onclick="askDel('index.php?page=<?= $_REQUEST['page'] ?>&exec=updatefromticket&ciid=<?= $collectinv->getId() ?>');"
 										class="btn btn-sm btn-default">Aus Ticket aktualisieren
 								</button>
 								<?php
