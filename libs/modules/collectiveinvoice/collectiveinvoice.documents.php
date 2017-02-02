@@ -1054,101 +1054,107 @@ function removeAttach(id)
 </script>
 <link rel="stylesheet" type="text/css" href="./css/mail.css" />
 <br>
-<div class="box2" id="sendmail" style="display:none">
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post">
-	<input type="hidden" name="exec" value="docs">
-	<input type="hidden" name="subexec" value="send">
-	<input type="hidden" name="id" value="<?=$collectinv->getId()?>">
-	<div class="newmailHeader">
-		<table width="100%">
-			<colgroup>
-				<col width="150">
-				<col>
-			</colgroup>
-			<tr>
-				<td><b><?=$_LANG->get('Empf&auml;nger')?> </b></td>
-				<td id="td_mail_to" name="td_mail_to"><?
-				foreach($nachricht->getTo() as $to)
-				{
-				    // Falls Empf�nger Benutzer -> anzeigen
-				    if (is_a($to, "User"))
-				    {
-				        $addStr = '<span class="newmailToField" id="touserfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'user\', '.$to->getId().')"></span>';
-				        $addStr .= '<input type="hidden" name="mail_touser_'.$to->getId().'" id="mail_touser_'.$to->getId().'" value="1"></span>';
-				        echo $addStr;
-				    }
+<div id="sendmail" class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				Mail-Client
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  <form action="index.php?page=<?=$_REQUEST['page']?>" method="post">
+			  <input type="hidden" name="exec" value="docs">
+			  <input type="hidden" name="subexec" value="send">
+			  <input type="hidden" name="id" value="<?=$collectinv->getId()?>">
+			  <div class="newmailHeader">
+				  <table width="100%">
+					  <tr>
+						  <td><b><?=$_LANG->get('Empf&auml;nger')?> </b></td>
+						  <td id="td_mail_to" name="td_mail_to"><?
+							  foreach($nachricht->getTo() as $to)
+							  {
+								  // Falls Empf�nger Benutzer -> anzeigen
+								  if (is_a($to, "User"))
+								  {
+									  $addStr = '<span class="newmailToField" id="touserfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+									  $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'user\', '.$to->getId().')"></span>';
+									  $addStr .= '<input type="hidden" name="mail_touser_'.$to->getId().'" id="mail_touser_'.$to->getId().'" value="1"></span>';
+									  echo $addStr;
+								  }
 
-				    // Falls Empf�nger Gruppe -> anzeigen
-				    if (is_a($to, "Group"))
-				    {
-				        $addStr = '<span class="newmailToField" id="togroupfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getName().'&nbsp;&nbsp;';
-				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'group\', '.$to->getId().')"></span>';
-				        $addStr .= '<input type="hidden" name="mail_togroup_'.$to->getId().'" id="mail_togroup_'.$to->getId().'" value="1"></span>';
-				        echo $addStr;
-				    }
+								  // Falls Empf�nger Gruppe -> anzeigen
+								  if (is_a($to, "Group"))
+								  {
+									  $addStr = '<span class="newmailToField" id="togroupfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getName().'&nbsp;&nbsp;';
+									  $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'group\', '.$to->getId().')"></span>';
+									  $addStr .= '<input type="hidden" name="mail_togroup_'.$to->getId().'" id="mail_togroup_'.$to->getId().'" value="1"></span>';
+									  echo $addStr;
+								  }
 
-				    // Falls Empf�nger UserContact -> anzeigen
-				    if (is_a($to, "UserContact"))
-				    {
-				        $addStr = '<span class="newmailToField" id="tousercontactfield_'.$to->getId().'"><span class="glyphicons glyphicons-remove"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'usercontact\', '.$to->getId().')"></span>';
-				        $addStr .= '<input type="hidden" name="mail_tousercontact_'.$to->getId().'" id="mail_tousercontact_'.$to->getId().'" value="1"></span>';
-				        echo $addStr;
-				    }
+								  // Falls Empf�nger UserContact -> anzeigen
+								  if (is_a($to, "UserContact"))
+								  {
+									  $addStr = '<span class="newmailToField" id="tousercontactfield_'.$to->getId().'"><span class="glyphicons glyphicons-remove"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+									  $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'usercontact\', '.$to->getId().')"></span>';
+									  $addStr .= '<input type="hidden" name="mail_tousercontact_'.$to->getId().'" id="mail_tousercontact_'.$to->getId().'" value="1"></span>';
+									  echo $addStr;
+								  }
 
-				    // Falls Empf�nger BusinessContact -> anzeigen
-				    if (is_a($to, "BusinessContact"))
-				    {
-				        $addStr = '<span class="newmailToField" id="tobusinesscontactfield_'.$to->getId().'"><span class="glyphicons glyphicons-remove"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'businesscontact\', '.$to->getId().')"></span>';
-				        $addStr .= '<input type="hidden" name="mail_tobusinesscontact_'.$to->getId().'" id="mail_tobusinesscontact_'.$to->getId().'" value="1"></span>';
-				        echo $addStr;
-				    }
+								  // Falls Empf�nger BusinessContact -> anzeigen
+								  if (is_a($to, "BusinessContact"))
+								  {
+									  $addStr = '<span class="newmailToField" id="tobusinesscontactfield_'.$to->getId().'"><span class="glyphicons glyphicons-remove"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+									  $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'businesscontact\', '.$to->getId().')"></span>';
+									  $addStr .= '<input type="hidden" name="mail_tobusinesscontact_'.$to->getId().'" id="mail_tobusinesscontact_'.$to->getId().'" value="1"></span>';
+									  echo $addStr;
+								  }
 
-				    // Falls Empf�nger BusinessContact -> anzeigen
-				    if (is_a($to, "ContactPerson"))
-				    {
-				        $addStr = '<span class="newmailToField" id="tocontactpersonfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
-				        $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'contactperson\', '.$to->getId().')"></span>';
-				        $addStr .= '<input type="hidden" name="mail_tocontactperson_'.$to->getId().'" id="mail_tocontactperson_'.$to->getId().'" value="1"></span>';
-				        echo $addStr;
-				    }
+								  // Falls Empf�nger BusinessContact -> anzeigen
+								  if (is_a($to, "ContactPerson"))
+								  {
+									  $addStr = '<span class="newmailToField" id="tocontactpersonfield_'.$to->getId().'"><span class="glyphicons glyphicons-user"></span>&nbsp;'.$to->getNameAsLine().'&nbsp;&nbsp;';
+									  $addStr .= '<span class="glyphicons glyphicons-remove pointer"onclick="removeMailto(\'contactperson\', '.$to->getId().')"></span>';
+									  $addStr .= '<input type="hidden" name="mail_tocontactperson_'.$to->getId().'" id="mail_tocontactperson_'.$to->getId().'" value="1"></span>';
+									  echo $addStr;
+								  }
 
-				}
-				?> <a href="libs/modules/organizer/nachrichten.addrcpt.php"
-					id="add_to"><span class="glyphicons glyphicons-plus" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></span>
-				   </a>
-				</td>
-			</tr>
-			<tr>
-				<td><b><?=$_LANG->get('Betreff')?> </b></td>
-				<td id="td_mail_subject" name="td_mail_subject"><input
-					name="mail_subject" style="width: 635px"
-					value="<? if ($nachricht->getSubject() == "" || $nachricht->getSubject() == null) echo 'Dokumente zum Auftrag '.$collectinv->getNumber();?>"></td>
-			</tr>
-			<tr>
-			    <td><b><?=$_LANG->get('Anh&auml;nge')?> </b></td>
-			    <td id="td_mail_attach" name="td_mail_attach">
-			        <? 
-			            foreach($nachricht->getAttachments() as $sd)
-			            {
-			                echo '<span class="newmailAttachmentField" id="attachfield_'.$sd->getId().'"><span class="glyphicons glyphicons-plus"></span>';
-			                echo $sd->getName().' <span class="glyphicons glyphicons-plus pointer" onclick="removeAttach('.$sd->getId().')"></span>';
-			                echo '<input type="hidden" name="mail_attach_'.$sd->getId().'" id="mail_attach_'.$sd->getId().'" value="1"></span>';
-			            }
-			        ?>
-			    </td>
-			<tr>
-			    
-			</tr>
-		</table>
-	</div>
-	<div class="newmailBody">
-		<textarea name="mail_body" style="height: 200px; width: 790px">
-			<?=$nachricht->getText() ?>
-		</textarea>
-	</div>
-	<input type="submit" value="<?=$_LANG->get('Abschicken')?>">
-</form>
+							  }
+							  ?> <a href="libs/modules/organizer/nachrichten.addrcpt.php"
+									id="add_to"><span class="glyphicons glyphicons-plus" title="<?=$_LANG->get('Hinzuf&uuml;gen')?>"></span>
+							  </a>
+						  </td>
+					  </tr>
+					  <tr>
+						  <td><b><?=$_LANG->get('Betreff')?> </b></td>
+						  <td id="td_mail_subject" name="td_mail_subject">
+							  <input 	name="mail_subject" style="width: 635px"
+								  value="<? if ($nachricht->getSubject() == "" || $nachricht->getSubject() == null) echo 'Dokumente zum Auftrag '.$collectinv->getNumber();?>"></td>
+					  </tr>
+					  <tr>
+						  <td><b><?=$_LANG->get('Anh&auml;nge')?> </b></td>
+						  <td id="td_mail_attach" name="td_mail_attach">
+							  <?
+							  foreach($nachricht->getAttachments() as $sd)
+							  {
+								  echo '<span class="newmailAttachmentField" id="attachfield_'.$sd->getId().'"><span class="glyphicons glyphicons-plus"></span>';
+								  echo $sd->getName().' <span class="glyphicons glyphicons-plus pointer" onclick="removeAttach('.$sd->getId().')"></span>';
+								  echo '<input type="hidden" name="mail_attach_'.$sd->getId().'" id="mail_attach_'.$sd->getId().'" value="1"></span>';
+							  }
+							  ?>
+						  </td>
+					  <tr>
+
+					  </tr>
+				  </table>
+			  </div>
+			  <div class="newmailBody">
+				<textarea name="mail_body" style="height: 200px; width: 790px">
+					<?=$nachricht->getText() ?>
+				</textarea>
+			  </div>
+			  <input type="submit" value="<?=$_LANG->get('Abschicken')?>">
+		  </form>
+
+	  </div>
 </div>
+
+
