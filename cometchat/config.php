@@ -185,7 +185,7 @@ $notificationsFeature = 1;      // Set to yes, only if you are using notificatio
 
 /* MEMCACHE START */
 
-define('MEMCACHE','1');       // Set to 0 if you want to disable caching and 1 to enable it.
+define('MEMCACHE','0');       // Set to 0 if you want to disable caching and 1 to enable it.
 define('MC_SERVER','localhost');  // Set name of your memcache  server
 define('MC_PORT','11211');      // Set port of your memcache  server
 define('MC_USERNAME','');           // Set username of memcachier  server

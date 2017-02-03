@@ -833,3 +833,7 @@ span .glyphicons {
 .collapsable a.collapsed:after {
 	content:"\e080";
 }
+
+.table-striped > tbody > tr:nth-child(2n+1).selected > td, .table-striped > tbody > tr:nth-child(2n+1).selected > th {
+	background-color: inherit;
+}

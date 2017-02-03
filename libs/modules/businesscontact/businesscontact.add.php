@@ -1104,8 +1104,7 @@ echo $quickmove->generate();
                                     <td>
                                         <?/*gln*/
                                         ?>
-                                        <img src="images/status/
-                        <? if ($ad->getShoprel() == 0) {
+                                        <img src="images/status/<? if ($ad->getShoprel() == 0) {
                                             echo "red_small.gif";
                                         } else {
                                             echo "green_small.gif";

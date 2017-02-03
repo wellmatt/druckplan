@@ -112,71 +112,203 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     <script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.categories.js"></script>
     <!-- /FLOT -->
 
+    <!-- DataTables Editor -->
     <link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/datatables.min.css"/>
     <script type="text/javascript" src="jscripts/datatableeditor/datatables.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/Editor-1.6.1/css/dataTables.editor.css"/>
-    <script type="text/javascript" src="jscripts/datatableeditor/Editor-1.6.1/js/dataTables.editor.min.js"></script>
 
+    <script type="text/javascript" src="jscripts/datatableeditor/FieldType-autoComplete/editor.autoComplete.js"></script>
+    <link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.css"/>
+    <script type="text/javascript" src="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.js"></script>
+    <script type="text/javascript" src="jscripts/datatableeditor/FieldType-datetimepicker-2/editor.datetimepicker-2.js"></script>
+
+    <script type="text/javascript" src="jscripts/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="jscripts/ckeditor/config.js"></script>
+    <link rel="stylesheet" type="text/css" href="jscripts/ckeditor/skins/bootstrapck/editor.css"/>
+    <script type="text/javascript" src="jscripts/datatableeditor/FieldType-ckeditor/editor.ckeditor.js"></script>
+    <!-- /DataTables Editor -->
 
 
     <script type="text/javascript" language="javascript" class="init">
         var editor; // use a global for the submit and return data rendering in the examples
+        var table; // use global for table
 
         $(document).ready(function() {
+
             editor = new $.fn.dataTable.Editor( {
-                ajax: "libs/basic/datatables/user.php",
-                table: "#example",
-                fields: [ {
-                    label: "id:",
-                    name: "id",
-                    type: "readonly"
-                }, {
-                    label: "login:",
-                    name: "login"
-                }, {
-                    label: "user_firstname:",
-                    name: "user_firstname"
-                }, {
-                    label: "user_lastname:",
-                    name: "user_lastname"
-                }, {
-                    label: "user_email:",
-                    name: "user_email"
-                }
+                ajax: {
+                    url: 'libs/basic/datatables/orderposition.php',
+                    data: {
+                        "collectiveinvoice": 141
+                    }
+                },
+                table: "#datatable",
+                fields: [
+                    {
+                        label: "Status:",
+                        name: "status",
+                        type: "select"
+                    },
+                    {
+                        label: "Beschreibung:",
+                        name: "comment",
+                        type: "ckeditor",
+                        opts: {
+                            toolbarGroups: [
+                                { name: 'forms', groups: [ 'forms' ] },
+                                { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+                                { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+                                { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                                { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+                                { name: 'links', groups: [ 'links' ] },
+                                { name: 'insert', groups: [ 'insert' ] },
+                                { name: 'styles', groups: [ 'styles' ] },
+                                { name: 'colors', groups: [ 'colors' ] },
+                                { name: 'tools', groups: [ 'tools' ] },
+                                { name: 'others', groups: [ 'others' ] },
+                                { name: 'about', groups: [ 'about' ] }
+                            ],
+                            removeButtons: 'Source,Save,Templates,NewPage,Preview,Print,Cut,Copy,Paste,PasteText,PasteFromWord,Find,SelectAll,Scayt,Replace,Form,Checkbox,TextField,Radio,Textarea,Select,Button,ImageButton,HiddenField,Subscript,Superscript,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Image,Flash,Smiley,SpecialChar,Iframe,Font,About,Maximize'
+                        }
+                    }, {
+                        label: "Menge:",
+                        name: "quantity"
+                    }, {
+                        label: "Preis:",
+                        name: "price"
+                    }, {
+                        label: "Steuer:",
+                        name: "tax",
+                        type: "select"
+                    }
                 ]
             } );
+            // Disable KeyTable while the main editing form is open
+            editor
+                .on( 'open', function () {
+                    table.keys.disable();
+                } )
+                .on( 'close', function () {
+                    table.keys.enable();
+                } );
 
             // Activate an inline edit on click of a table cell
-            $('#example').on( 'click', 'tbody td:not(:first-child)', function (e) {
-                editor.inline( this );
+            $('#datatable').on( 'click', 'tbody td:not(:first-child)', function (e) {
+                editor.inline( this, {
+                    // Submit on leaving field
+                    onBlur: 'submit'
+                } );
             } );
 
-            $('#example').DataTable( {
-                dom: "Bfrtip",
-                ajax: "libs/basic/datatables/user.php",
+
+            table = $('#datatable').DataTable( {
+//                dom: "Bfrtip",
+                dom: "<'row'<'col-sm-4'l><'col-sm-4'B><'col-sm-4'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
+                ajax: {
+                    url: 'libs/basic/datatables/orderposition.php',
+                    data: {
+                        "collectiveinvoice": 141
+                    }
+                },
                 order: [[ 1, 'asc' ]],
                 columns: [
-                    {
-                        data: null,
-                        defaultContent: '',
-                        className: 'select-checkbox',
-                        orderable: false
-                    },
                     { data: "id" },
-                    { data: "login" },
-                    { data: "user_firstname" },
-                    { data: "user_lastname" },
-                    { data: "user_email" }
+                    { data: "type" },
+                    { data: "status" },
+                    { data: "comment" },
+                    { data: "quantity" },
+                    { data: "price" },
+                    { data: "tax" }
                 ],
-                select: {
-//                    style:    'os',
-                    selector: 'td:first-child'
-                },
+                // Keyboard Navigation
+//                keys: {
+//                    columns: ':not(:first-child)',
+//                    editor:  editor
+//                },
+                select: false,
                 buttons: [
-                    { extend: "create", editor: editor },
-                    { extend: "edit",   editor: editor },
-                    { extend: "remove", editor: editor }
-                ]
+//                    { extend: "create", editor: editor },
+//                    { extend: "edit",   editor: editor },
+//                    { extend: "remove", editor: editor },
+                    // Export Button
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            'pdf',
+                            'print'
+                        ]
+                    },
+                    // Duplicate Button
+//                    {
+//                        extend: "selectedSingle",
+//                        text: 'Duplicate',
+//                        action: function ( e, dt, node, config ) {
+//                            // Place the selected row into edit mode (but hidden),
+//                            // then get the values for all fields in the form
+//                            var values = editor.edit(
+//                                table.row( { selected: true } ).index(),
+//                                false
+//                                )
+//                                .val();
+//
+//                            // Create a new entry (discarding the previous edit) and
+//                            // set the values from the read values
+//                            editor
+//                                .create( {
+//                                    title: 'Duplicate record',
+//                                    buttons: 'Create from existing'
+//                                } )
+//                                .set( values );
+//                        }
+//                    }
+                ],
+                footerCallback: function ( row, data, start, end, display ) {
+                    var api = this.api(), data;
+
+                    // Total over all pages
+                    total_price = api
+                        .column( 5 )
+                        .data()
+                        .reduce( function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0 );
+
+                    // Total over this page
+                    pageTotal_price = api
+                        .column( 5, { page: 'current'} )
+                        .data()
+                        .reduce( function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0 );
+
+                    // Total over all pages
+                    total_qty = api
+                        .column( 4 )
+                        .data()
+                        .reduce( function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0 );
+
+                    // Total over this page
+                    pageTotal_qty = api
+                        .column( 4, { page: 'current'} )
+                        .data()
+                        .reduce( function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0 );
+
+                    // Update footer
+                    $( api.column( 5 ).footer() ).html(
+                        pageTotal_price +' ( '+ total_price +' )'
+                    );
+                    $( api.column( 4 ).footer() ).html(
+                        pageTotal_qty +' ( '+ total_qty +' )'
+                    );
+                }
             } );
         } );
     </script>
@@ -184,16 +316,33 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 </head>
 
 <div class="container">
-    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
-        <thead>
-        <tr>
-            <th></th>
-            <th>id</th>
-            <th>login</th>
-            <th>user_firstname</th>
-            <th>user_lastname</th>
-            <th>user_email</th>
-        </tr>
-        </thead>
-    </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Test</h3>
+        </div>
+        <div class="table-responsive">
+            <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Typ</th>
+                        <th>Status</th>
+                        <th>Beschreibung</th>
+                        <th>Menge</th>
+                        <th>Preis in €</th>
+                        <th>Steuer</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <th>Summen:</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </div>

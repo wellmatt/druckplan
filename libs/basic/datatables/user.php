@@ -51,6 +51,8 @@ error_reporting(-1);
 ini_set('display_errors', 1);
 session_start();
 
+global $_CONFIG;
+global $_USER;
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 
@@ -68,8 +70,21 @@ use
     DataTables\Editor\Upload,
     DataTables\Editor\Validate;
 
+
+if ($_POST){
+    if (count($_POST["data"]) > 0){
+        foreach ($_POST["data"] as $item => $values) {
+            if (strpos($item,"row_") !== false){
+                $itemid = str_replace("row_","",$item);
+                Cachehandler::removeCache($_CONFIG->cookieSecret."_User_".$itemid);
+            }
+        }
+    }
+}
+
 // Build our Editor instance and process the data coming from _POST
 Editor::inst( $db, 'user' )
+    ->where( 'user_level', 0, '>' )
     ->fields(
         Field::inst( 'id' )->validator( 'Validate::unique' )->validator( 'Validate::numeric' ),
         Field::inst( 'login' )->validator( 'Validate::notEmpty' ),
