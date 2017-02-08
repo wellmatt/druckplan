@@ -837,3 +837,10 @@ span .glyphicons {
 .table-striped > tbody > tr:nth-child(2n+1).selected > td, .table-striped > tbody > tr:nth-child(2n+1).selected > th {
 	background-color: inherit;
 }
+
+tr.canceled td {
+	font-style: italic;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWP4JST0HwAFRgIefzRCKwAAAABJRU5ErkJggg==');
+	background-repeat: repeat-x;
+	background-position: 50% 50%;
+}

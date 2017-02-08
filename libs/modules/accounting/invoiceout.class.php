@@ -60,17 +60,18 @@ class InvoiceOut extends Model{
         $positions = Orderposition::getAllOrderposition($colinv->getId());
         foreach ($positions as $position) {
             if ($position->getStatus() == 1 && $position->getInvrel() == 1){
-                $art = new Article($position->getObjectid());
-                if ($art->getOrderid() > 0){
+                if ($position->getType() == 1){
                     $netto = $position->getPrice();
                     $postax = $position->getTax();
                     $gross = $netto * (1+($position->getTax()/100));
-                    $tax[$postax][] = [$netto,$gross];
+                    $cost = $position->getCost();
+                    $tax[$postax][] = [$netto,$gross,$cost];
                 } else {
                     $netto = $position->getPrice() * $position->getAmount();
                     $postax = $position->getTax();
                     $gross = $netto * (1+($position->getTax()/100));
-                    $tax[$postax][] = [$netto,$gross];
+                    $cost = $position->getCost();
+                    $tax[$postax][] = [$netto,$gross,$cost];
                 }
             }
         }
@@ -78,8 +79,8 @@ class InvoiceOut extends Model{
         foreach ($tax as $mwst => $items) {
             foreach ($items as $item) {
                 $netvalue += $item[0];
-                $grossvalue += $item[0] * (1 + $mwst/100);
-                $cost += $item[1];
+                $grossvalue += $item[1];
+                $cost += $item[2];
             }
         }
 
@@ -98,7 +99,8 @@ class InvoiceOut extends Model{
         $invout = new InvoiceOut(0,$array);
         $ret = $invout->save();
         if ($ret){
-            // TODO: lockup the colinv after successful generation of invoice
+            $colinv->setLocked(1);
+            $colinv->save();
             $commissionpartners = CommissionLink::getAllForBC($colinv->getBusinesscontact());
             if (count($commissionpartners)>0)
                 Commission::generateCommission($colinv, $netvalue);

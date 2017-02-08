@@ -542,9 +542,11 @@ function addPositionRow(type,objectid,label,orderamounts,orderid,price = 0,quant
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
-$quickmove->addItem('Speichern','#',"$('#form_collectiveinvoices').submit();",'glyphicon-floppy-disk');
-if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
-	$quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=".$collectinv->getId()."');", 'glyphicon-trash', true);
+if ($collectinv->getLocked() == 0){
+	$quickmove->addItem('Speichern','#',"$('#form_collectiveinvoices').submit();",'glyphicon-floppy-disk');
+	if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
+		$quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=".$collectinv->getId()."');", 'glyphicon-trash', true);
+	}
 }
 echo $quickmove->generate();
 // end of Quickmove generation ?>
@@ -1001,6 +1003,7 @@ echo $quickmove->generate();
 					<h3 class="panel-title">
 						Positionen
 					<span class="pull-right">
+						<?php if ($collectinv->getLocked() == 0){?>
 						<button type="button" class="btn btn-default btn-sm" onclick="addPositionRow(0,0,'Manuell',0,0);">
 							<span class="glyphicons glyphicons-remove pointer" title="neue manuelle Position"></span>
 							Manuell
@@ -1013,6 +1016,7 @@ echo $quickmove->generate();
 							<span class="glyphicons glyphicons-remove pointer" title="neue Stückliste"></span>
 							Stückliste
 						</button>
+						<?php } ?>
 					</span>
 					</h3>
 				</div>
@@ -1140,40 +1144,56 @@ echo $quickmove->generate();
 											<?if ($position->getRevrel() == 1) echo "checked";?>>
 									</td>
 									<td valign="top">
-										<?php if ($position->getStatus() == 2){?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Wiederherstellen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=restorepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-brightness-increase"></span>
-											</button>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Endgültig löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=deletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-remove"></span>
-											</button>
-										<?php } else {?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('Vorrübergehend löschen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=softdeletepos&ciid=<?=$_REQUEST["ciid"]?>&delpos=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-remove"></span>
-											</button>
-											<?
-										}
-										if ($i == 0){
-											?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-arrow-down"></span>
-											</button>
-											<?php
-										} else if ($i+1 >= count($collectinv->getPositions())){
-											?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-arrow-up"></span>
-											</button>
-											<?php
-										} else {
-											?>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach unten bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=movedown&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-arrow-down"></span>
-											</button>
-											<button class="btn btn-default btn-sm pointer" type="button" title="<?= $_LANG->get('nach oben bewegen')?>" onclick="window.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit&subexec=moveup&ciid=<?=$_REQUEST["ciid"]?>&posid=<?=$position->getId()?>';">
-												<span class="glyphicons glyphicons-arrow-up"></span>
-											</button>
-											<?php
+										<?php if ($collectinv->getLocked() == 0) { ?>
+											<?php if ($position->getStatus() == 2) { ?>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('Wiederherstellen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=restorepos&ciid=<?= $_REQUEST["ciid"] ?>&delpos=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-brightness-increase"></span>
+												</button>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('Endgültig löschen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=deletepos&ciid=<?= $_REQUEST["ciid"] ?>&delpos=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-remove"></span>
+												</button>
+											<?php } else { ?>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('Vorrübergehend löschen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=softdeletepos&ciid=<?= $_REQUEST["ciid"] ?>&delpos=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-remove"></span>
+												</button>
+												<?
+											}
+											if ($i == 0) {
+												?>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('nach unten bewegen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=movedown&ciid=<?= $_REQUEST["ciid"] ?>&posid=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-arrow-down"></span>
+												</button>
+												<?php
+											} else if ($i + 1 >= count($collectinv->getPositions())) {
+												?>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('nach oben bewegen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=moveup&ciid=<?= $_REQUEST["ciid"] ?>&posid=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-arrow-up"></span>
+												</button>
+												<?php
+											} else {
+												?>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('nach unten bewegen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=movedown&ciid=<?= $_REQUEST["ciid"] ?>&posid=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-arrow-down"></span>
+												</button>
+												<button class="btn btn-default btn-sm pointer" type="button"
+														title="<?= $_LANG->get('nach oben bewegen') ?>"
+														onclick="window.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&subexec=moveup&ciid=<?= $_REQUEST["ciid"] ?>&posid=<?= $position->getId() ?>';">
+													<span class="glyphicons glyphicons-arrow-up"></span>
+												</button>
+												<?php
+											}
 										}
 										if($position->getType() == 1) {
 											$tmp_art = new Article($position->getObjectid());

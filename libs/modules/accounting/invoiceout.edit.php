@@ -55,12 +55,14 @@ echo $quickmove->generate();
                 <h3 class="panel-title">
                     Rechnung - <?php echo $invoiceout->getNumber();?>
                     <span class="pull-right">
-                           <?php if ($invoiceout->getStatus() == 3){?>
-                               <button class="btn btn-xs btn-danger" type="button"
-                                       onclick="doDelete(<?php echo $invoiceout->getId();?>);">
-                                   <?= $_LANG->get('Löschen'); ?>
-                               </button>
-                           <?php }?>
+                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='libs/modules/documents/document.get.iframe.php?getDoc=<?= $invoiceout->getDoc() ?>&version=email';">
+                            <span class="filetypes filetypes-pdf"></span>
+                            E-Mail
+                        </button>
+                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='libs/modules/documents/document.get.iframe.php?getDoc=<?= $invoiceout->getDoc() ?>&version=print';">
+                            <span class="filetypes filetypes-pdf"></span>
+                            Print
+                        </button>
                     </span>
                 </h3>
             </div>
@@ -159,6 +161,7 @@ echo $quickmove->generate();
                     </div>
                     <?php }?>
 
+                    <?php if ($invoiceout->getStatus() == 3) {?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Mahnung</label>
                         <div class="col-sm-4">
@@ -168,6 +171,7 @@ echo $quickmove->generate();
                             </button>
                         </div>
                     </div>
+                    <?php }?>
                 </form>
             </div>
         </div>

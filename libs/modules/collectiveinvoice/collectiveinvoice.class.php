@@ -60,6 +60,7 @@ class CollectiveInvoice{
 
 	private $ticket = 0;				// TicketID falls durch ticket erstellt
 	private $savedcost = 0;				// Einkaufspreise und Profit gesetzt
+	private $locked = 0;				// Gesperrt da Rechnung generiert
     
     // Doc texts
 
@@ -170,6 +171,7 @@ class CollectiveInvoice{
 					$this->thirdpartycomment = $r["thirdpartycomment"];
 					$this->ticket = $r["ticket"];
 					$this->savedcost = $r["savedcost"];
+					$this->locked = $r["locked"];
 
 					// doc texts
 					$this->offer_header = $r["offer_header"];
@@ -239,6 +241,7 @@ class CollectiveInvoice{
                     revert_footer = '{$this->revert_footer}',
                     ticket = {$this->ticket},
                     savedcost = {$this->savedcost},
+                    locked = {$this->locked},
 
 					intent = '{$this->intent}'
 					WHERE id = {$this->id}";
@@ -256,7 +259,7 @@ class CollectiveInvoice{
 				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
-				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost)
+				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost,locked)
 			VALUES
 				({$this->status}, {$this->type},'{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
@@ -266,7 +269,7 @@ class CollectiveInvoice{
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
 				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}',
-				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0)";
+				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0, 0)";
 			$res = $DB->no_result($sql);
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
@@ -312,10 +315,18 @@ class CollectiveInvoice{
 			$orderpositions = Orderposition::getAllOrderposition($this->getId());
 			$updated = [];
 			foreach ($orderpositions as $orderposition) {
-				if ($orderposition->getType() == 1 || $orderposition->getType() == 2) {
+				if ($orderposition->getType() == 1) {
 					$article = new Article((int)$orderposition->getObjectid());
-					$cost = $orderposition->getAmount() * PriceScale::getPriceForAmount($article, $orderposition->getAmount(), PriceScale::TYPE_BUY);
-					$profit = ($orderposition->getAmount() * $orderposition->getPrice()) - $cost;
+					$cost = PriceScale::getPriceForAmount($article, tofloat($orderposition->getAmount()), PriceScale::TYPE_BUY);
+					$profit = PriceScale::getPriceForAmount($article, tofloat($orderposition->getAmount()), PriceScale::TYPE_SELL) - $cost;
+					$orderposition->setCost($cost);
+					$orderposition->setProfit($profit);
+					$updated[] = $orderposition;
+				}
+				if ($orderposition->getType() == 2) {
+					$article = new Article((int)$orderposition->getObjectid());
+					$cost = tofloat($orderposition->getAmount()) * PriceScale::getPriceForAmount($article, tofloat($orderposition->getAmount()), PriceScale::TYPE_BUY);
+					$profit = (tofloat($orderposition->getAmount()) * tofloat($orderposition->getPrice())) - $cost;
 					$orderposition->setCost($cost);
 					$orderposition->setProfit($profit);
 					$updated[] = $orderposition;
@@ -1472,5 +1483,21 @@ class CollectiveInvoice{
 	public function setSavedcost($savedcost)
 	{
 		$this->savedcost = $savedcost;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLocked()
+	{
+		return $this->locked;
+	}
+
+	/**
+	 * @param int $locked
+	 */
+	public function setLocked($locked)
+	{
+		$this->locked = $locked;
 	}
 }

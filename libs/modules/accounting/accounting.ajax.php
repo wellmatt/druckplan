@@ -13,9 +13,24 @@ require_once 'libs/modules/accounting/invoiceout.class.php';
 if ($_REQUEST["exec"] == "doStorno"){
     $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
     $invoiceout->setStatus(3);
-    $invoiceout->save();
+    $res = $invoiceout->save();
+    if ($res){
+        $colinv = $invoiceout->getColinv();
+        $colinv->setLocked(0);
+        $colinv->save();
+        $doc = new Document($invoiceout->getDoc());
+        $doc->setStornoDate(time());
+        $doc->save();
+    }
 }
 if ($_REQUEST["exec"] == "doDelete"){
     $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
-    $invoiceout->delete();
+    $res = $invoiceout->delete();
+    if ($res){
+        $colinv = $invoiceout->getColinv();
+        $colinv->setLocked(0);
+        $colinv->save();
+        $doc = new Document($invoiceout->getDoc());
+        $doc->delete();
+    }
 }

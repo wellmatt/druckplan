@@ -167,7 +167,7 @@ if ($_REQUEST["subexec"] == "send")
 						<button type="button" onclick="window.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&ciid=<?=$collectinv->getId()?>';" class="btn btn-sm btn-default">
 							<?=$_LANG->get('Zurück')?>
 						</button>
-						<button class="btn btn-origin btn-success" type="submit">
+						<button class="btn btn-sm btn-success" type="submit">
 							<?=$_LANG->get('Speichern')?>
 						</button>
 					</span>
@@ -277,23 +277,22 @@ if ($_REQUEST["subexec"] == "send")
 			Dokumente
 		</h3>
 	</div>
-	<div class="panel-body">
-		<div class="panel panel-default">
+	<div class="panel-body" style="padding: 5px;">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Angebot
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -306,7 +305,6 @@ if ($_REQUEST["subexec"] == "send")
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
 							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -349,7 +347,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td>
 							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
 						</td>
@@ -381,22 +378,21 @@ if ($_REQUEST["subexec"] == "send")
 				</table>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Auftragsbest&auml;tigung
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -416,7 +412,6 @@ if ($_REQUEST["subexec"] == "send")
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
 							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -459,7 +454,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td>
 							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
 						</td>
@@ -501,22 +495,21 @@ if ($_REQUEST["subexec"] == "send")
 				</table>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Auftragstasche
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -532,7 +525,6 @@ if ($_REQUEST["subexec"] == "send")
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
 							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -575,7 +567,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td>
 							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
 						</td>
@@ -607,22 +598,21 @@ if ($_REQUEST["subexec"] == "send")
 				</table>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Lieferschein
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -636,7 +626,6 @@ if ($_REQUEST["subexec"] == "send")
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
 							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -679,7 +668,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td>
 							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
 						</td>
@@ -711,22 +699,21 @@ if ($_REQUEST["subexec"] == "send")
 				</table>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Etiketten
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -746,7 +733,6 @@ if ($_REQUEST["subexec"] == "send")
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
 							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -789,7 +775,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td colspan="4">
 							<div class="form-horizontal">
 								<div class="form-group">
@@ -833,22 +818,21 @@ if ($_REQUEST["subexec"] == "send")
 				</table>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Rechnung
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -860,8 +844,7 @@ if ($_REQUEST["subexec"] == "send")
 					<?
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
-							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
+							<tr class="<?= getRowColor(0) ?> <?php if ($doc->getStornoDate() > 0) echo ' canceled ';?>">
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -870,6 +853,7 @@ if ($_REQUEST["subexec"] == "send")
 										echo '<img src="images/status/green_small.svg">';
 									else
 										echo '<img src="images/status/red_small.svg">'; ?>
+									<?php if ($doc->getStornoDate()) {?>Storno: <?= date('d.m.Y H:m', $doc->getStornoDate()) ?><?php } ?>
 								</td>
 								<td>
 									<?= $doc->getCreateUser()->getNameAsLine() ?>
@@ -890,11 +874,11 @@ if ($_REQUEST["subexec"] == "send")
 													<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?= $doc->getId() ?>&version=print"><?= $_LANG->get('Print') ?></a>
 												</ul>
 											</td>
-											<td width="40%">
-												<ul class="postnav_text_del">
-													<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&deleteDoc=<?= $doc->getId() ?>"><?= $_LANG->get('L&ouml;schen') ?></a>
-												</ul>
-											</td>
+<!--											<td width="40%">-->
+<!--												<ul class="postnav_text_del">-->
+<!--													<a href="index.php?page=--><?//= $_REQUEST['page'] ?><!--&ciid=--><?//= $collectinv->getId() ?><!--&exec=docs&deleteDoc=--><?//= $doc->getId() ?><!--">--><?//= $_LANG->get('L&ouml;schen') ?><!--</a>-->
+<!--												</ul>-->
+<!--											</td>-->
 										</tr>
 									</table>
 								</td>
@@ -904,7 +888,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td>
 							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
 						</td>
@@ -912,6 +895,7 @@ if ($_REQUEST["subexec"] == "send")
 						<td>- - -</td>
 						<td>- - -</td>
 						<td>
+							<?php if ($collectinv->getLocked() == 0){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(Document::TYPE_INVOICE);
@@ -930,28 +914,28 @@ if ($_REQUEST["subexec"] == "send")
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=invoice"
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_invoice').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
+							<?php } ?>
 						</td>
 					</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: -2px;">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h3 class="panel-title" style="font-size: 16px;">
 					Gutschrift
 				</h3>
 			</div>
-			<div class="table-responsive">
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
 				<table class="table table-hover">
 					<thead>
 					<tr>
-						<th><?= $_LANG->get('Typ') ?></th>
-						<th><?= $_LANG->get('Dokumentenname') ?></th>
-						<th><?= $_LANG->get('Versch.') ?></th>
-						<th><?= $_LANG->get('Erstellt von') ?></th>
-						<th><?= $_LANG->get('Erstellt am') ?></th>
-						<th><?= $_LANG->get('Dokumente') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -973,7 +957,6 @@ if ($_REQUEST["subexec"] == "send")
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
 							<tr class="<?= getRowColor(0) ?>">
-								<td>&ensp;</td>
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -1016,7 +999,6 @@ if ($_REQUEST["subexec"] == "send")
 					}
 					?>
 					<tr class="<?= getRowColor(0) ?>">
-						<td>&emsp;</td>
 						<td>
 							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
 						</td>
@@ -1207,7 +1189,7 @@ function removeAttach(id)
 </script>
 <link rel="stylesheet" type="text/css" href="./css/mail.css" />
 <br>
-<div id="sendmail" class="panel panel-default">
+<div id="sendmail" class="panel panel-default" style="display: none">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
 				Mail-Client

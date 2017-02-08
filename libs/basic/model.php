@@ -47,10 +47,7 @@ class Model {
         $this->bootClasses();
     }
 
-    protected function bootClasses()
-    {
-
-    }
+    protected function bootClasses(){}
 
     /**
      * @return bool
@@ -76,6 +73,9 @@ class Model {
             $res = $DB->no_result($sql);
             if ($res){
                 self::hook_afterSave();
+                return true;
+            } else {
+                return false;
             }
         } else {
             $sql = "INSERT INTO {$this->_table} SET {$set}";
@@ -96,18 +96,12 @@ class Model {
     /**
      * Function that is executed before the object is saved to DB
      */
-    private function hook_beforeSave()
-    {
-
-    }
+    protected function hook_beforeSave(){}
 
     /**
      * Function that is executed after the object is saved to DB (successfully)
      */
-    private function hook_afterSave()
-    {
-
-    }
+    protected function hook_afterSave(){}
 
     /**
      * @return bool
@@ -215,7 +209,6 @@ class Model {
                 return [];
             }
         }
-        return [];
     }
 
     /**
