@@ -86,26 +86,27 @@ if ($_POST){
 Editor::inst( $db, 'collectiveinvoice_orderposition' )
     ->where( 'status', 0, '>' )
     ->where( 'collectiveinvoice', $_REQUEST['collectiveinvoice'] )
+    ->debug( true )
     ->fields(
         Field::inst( 'id' )->set(false)->validator( 'Validate::unique' )->validator( 'Validate::numeric' ),
         Field::inst( 'status' )
             ->options( function () {
                 return array(
-                    array( 'value' => '0', 'label' => 'gelöscht' ),
                     array( 'value' => '1', 'label' => 'aktiv' ),
                     array( 'value' => '2', 'label' => 'deaktiviert' ),
+                    array( 'value' => '0', 'label' => 'gelöscht' ),
                 );
-            }),
-//            ->getFormatter( function ( $val, $data, $opts ) {
-//                switch($val){
-//                    case 0:
-//                        return 'gelöscht';
-//                    case 1:
-//                        return 'aktiv';
-//                    case 2:
-//                        return 'deaktiviert';
-//                }
-//            } ),
+            })
+            ->getFormatter( function ( $val, $data, $opts ) {
+                switch($val){
+                    case 0:
+                        return 'gelöscht';
+                    case 1:
+                        return 'aktiv';
+                    case 2:
+                        return 'deaktiviert';
+                }
+            } ),
         Field::inst( 'quantity' )
             ->validator( 'Validate::numeric' )
             ->getFormatter( 'Format::toDecimalChar' )
@@ -128,16 +129,47 @@ Editor::inst( $db, 'collectiveinvoice_orderposition' )
             } )
             ->setFormatter( 'Format::fromDecimalChar' ),
         Field::inst( 'comment' ),
-        Field::inst( 'type' )->set(false)->options( function () {
-            return array(
-                array( 'value' => '0', 'label' => 'Manuell' ),
-                array( 'value' => '1', 'label' => 'Artikel (Kalk)' ),
-                array( 'value' => '2', 'label' => 'Artikel' ),
-                array( 'value' => '3', 'label' => 'Perso' ),
-            );
-        }),
+        Field::inst( 'type' )->set(false)
+            ->getFormatter( function ( $val, $data, $opts ) {
+                switch($val){
+                    case 0:
+                        return 'Manuell';
+                    case 1:
+                        return 'Artikel (Kalk)';
+                    case 2:
+                        return 'Artikel';
+                    case 3:
+                        return 'Perso';
+                }
+            } ),
         Field::inst( 'file_attach' )->set(false),
-        Field::inst( 'perso_order' )->set(false)
+        Field::inst( 'perso_order' )->set(false),
+        Field::inst( null, 'options' )->set(false)->getFormatter( function ( $val, $data, $opts ) {
+            return $data["id"];
+        } ),
+        Field::inst( 'sequence' )->validator( 'Validate::numeric' )
     )
+    ->on( 'preCreate', function ( $editor, $values ) {
+        // On create update all the other records to make room for our new one
+        $editor->db()
+            ->query( 'update', 'collectiveinvoice_orderposition' )
+            ->set( 'sequence', 'sequence+1', false )
+            ->where( 'sequence', $values['sequence'], '>=' )
+            ->exec();
+    } )
+    ->on( 'preRemove', function ( $editor, $id, $values ) {
+        // On remove, the sequence needs to be updated to decrement all rows
+        // beyond the deleted row. Get the current reading order by id (don't
+        // use the submitted value in case of a multi-row delete).
+        $order = $editor->db()
+            ->select( 'collectiveinvoice_orderposition', 'sequence', array('id' => $id) )
+            ->fetch();
+
+        $editor->db()
+            ->query( 'update', 'collectiveinvoice_orderposition' )
+            ->set( 'sequence', 'sequence-1', false )
+            ->where( 'sequence', $order['sequence'], '>' )
+            ->exec();
+    } )
     ->process( $_POST )
     ->json();

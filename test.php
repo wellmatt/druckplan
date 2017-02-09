@@ -144,6 +144,11 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                 table: "#datatable",
                 fields: [
                     {
+                        label: 'Sortierung',
+                        name: 'sequence',
+                        multiEditable: false
+                    },
+                    {
                         label: "Status:",
                         name: "status",
                         type: "select"
@@ -200,6 +205,21 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                 } );
             } );
 
+            editor
+//                .on( 'postCreate postRemove', function () {
+//                     After create or edit, a number of other rows might have been effected -
+//                     so we need to reload the table, keeping the paging in the current position
+//                    table.ajax.reload( null, false );
+//                } )
+                .on( 'initCreate', function () {
+                    // Enable order for create
+                    editor.field( 'sequence' ).enable();
+                } )
+                .on( 'initEdit', function () {
+                    // Disable for edit (re-ordering is performed by click and drag)
+                    editor.field( 'sequence' ).disable();
+                } );
+
 
             table = $('#datatable').DataTable( {
 //                dom: "Bfrtip",
@@ -210,16 +230,25 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                         "collectiveinvoice": 141
                     }
                 },
-                order: [[ 1, 'asc' ]],
+//                order: [[ 1, 'asc' ]],
                 columns: [
-                    { data: "id" },
-                    { data: "type" },
-                    { data: "status" },
-                    { data: "comment" },
-                    { data: "quantity" },
-                    { data: "price" },
-                    { data: "tax" }
+                    { data: 'sequence', className: 'reorder', orderable: false },
+                    { data: "id", orderable: false },
+                    { data: "type", orderable: false },
+                    { data: "status", orderable: false },
+                    { data: "comment", orderable: false },
+                    { data: "quantity", orderable: false },
+                    { data: "price", orderable: false },
+                    { data: "tax", orderable: false },
+                    { data: "options", orderable: false }
                 ],
+                rowReorder: {
+                    dataSrc: 'sequence',
+                    editor:  editor
+                },
+//                columnDefs: [
+//                    { orderable: false, targets: [ 0,1,2,3,4,5,6,7,8 ] }
+//                ],
                 // Keyboard Navigation
 //                keys: {
 //                    columns: ':not(:first-child)',
@@ -271,7 +300,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
                     // Total over all pages
                     total_price = api
-                        .column( 5 )
+                        .column( 6 )
                         .data()
                         .reduce( function (a, b) {
                             return parseFloat(a) + parseFloat(b);
@@ -279,7 +308,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
                     // Total over this page
                     pageTotal_price = api
-                        .column( 5, { page: 'current'} )
+                        .column( 6, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return parseFloat(a) + parseFloat(b);
@@ -287,7 +316,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
                     // Total over all pages
                     total_qty = api
-                        .column( 4 )
+                        .column( 5 )
                         .data()
                         .reduce( function (a, b) {
                             return parseFloat(a) + parseFloat(b);
@@ -295,17 +324,17 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
                     // Total over this page
                     pageTotal_qty = api
-                        .column( 4, { page: 'current'} )
+                        .column( 5, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return parseFloat(a) + parseFloat(b);
                         }, 0 );
 
                     // Update footer
-                    $( api.column( 5 ).footer() ).html(
+                    $( api.column( 6 ).footer() ).html(
                         pageTotal_price +' ( '+ total_price +' )'
                     );
-                    $( api.column( 4 ).footer() ).html(
+                    $( api.column( 5 ).footer() ).html(
                         pageTotal_qty +' ( '+ total_qty +' )'
                     );
                 }
@@ -324,6 +353,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
             <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>
+                        <th>Sortierung</th>
                         <th>#</th>
                         <th>Typ</th>
                         <th>Status</th>
@@ -331,16 +361,21 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                         <th>Menge</th>
                         <th>Preis in €</th>
                         <th>Steuer</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tfoot>
-                    <th>Summen:</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <tr>
+                        <th>Summen:</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                 </tfoot>
             </table>
         </div>

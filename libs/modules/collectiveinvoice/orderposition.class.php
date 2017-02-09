@@ -1,10 +1,11 @@
-<?//--------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       17.09.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
+ *
+ */
 
 require_once 'libs/modules/collectiveinvoice/contentpdf.class.php';
 
@@ -32,6 +33,7 @@ class Orderposition{
 	private $revrel = 0;				// Gutschein-Relevanz
 	private $file_attach = 0;           // Artikle File
 	private $perso_order = 0;           // Falls Perso Order Bestellung
+	private $sequence = 0;				// Sortierung Reihenfolge
 
 	/**
 	 * Konstruktor fuer Eintraege (Auftragspositionen) in Sammelrechungen
@@ -96,6 +98,7 @@ class Orderposition{
 					$this->revrel = $r["rev_rel"];
 					$this->file_attach = $r["file_attach"];
 					$this->perso_order = $r["perso_order"];
+					$this->sequence = $r["sequence"];
 
 					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 				}
@@ -132,7 +135,7 @@ class Orderposition{
 	/**
 	 * Speicher-Funktion fuer ein Array von Orderpositionen
 	 * 
-	 * @param Array $orderpositions
+	 * @param Orderposition[] $orderpositions
 	 * @return boolean
 	 */
 	static function saveMultipleOrderpositions($orderpositions){
@@ -145,11 +148,11 @@ class Orderposition{
 				$sql = "INSERT INTO collectiveinvoice_orderposition
 						(quantity, comment, price, cost, profit,
 						tax, status, collectiveinvoice, type, 
-						object_id, inv_rel, rev_rel, file_attach, perso_order )
+						object_id, inv_rel, rev_rel, file_attach, perso_order, sequence )
 						VALUES
 						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, {$opos->getCost()}, {$opos->getProfit()},
 						{$opos->getTax()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
-						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()}, {$opos->getFile_attach()}, {$opos->getPerso_order()} )";
+						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()}, {$opos->getFile_attach()}, {$opos->getPerso_order()}, {$opos->getSequence()} )";
 				$res = $DB->no_result($sql);
 				if($res){
 					$sql = " SELECT max(id) id FROM collectiveinvoice_orderposition";
@@ -176,7 +179,8 @@ class Orderposition{
 						rev_rel = {$opos->getRevrel()},  
 						file_attach = {$opos->getFile_attach()},  
 						collectiveinvoice = {$opos->getCollectiveinvoice()},
-						perso_order = {$opos->getPerso_order()} 
+						sequence = {$opos->getSequence()},
+						perso_order = {$opos->getPerso_order()}
 						WHERE id = {$opos->getId()}";
 				$res = $DB->no_result($sql);
 				if($res){
@@ -477,5 +481,21 @@ class Orderposition{
 	public function setProfit($profit)
 	{
 		$this->profit = $profit;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getSequence()
+	{
+		return $this->sequence;
+	}
+
+	/**
+	 * @param int $sequence
+	 */
+	public function setSequence($sequence)
+	{
+		$this->sequence = $sequence;
 	}
 }
