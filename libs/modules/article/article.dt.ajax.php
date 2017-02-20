@@ -197,7 +197,7 @@
         if (preg_match("/cfield_(?P<id>\d+)/", $key, $m)) {
             $fieldid = str_replace("cfield_","",$key);
             $value = $_REQUEST[$key];
-            $cfwhere .= " AND (custom_fields.id = {$fieldid} AND custom_fields_values.`value` = {$value}) ";
+            $cfwhere .= " AND (custom_fields.id = {$fieldid} AND custom_fields_values.`value` = '{$value}') ";
         }
     }
     $sWhere .= $cfwhere;
