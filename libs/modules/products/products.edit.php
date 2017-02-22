@@ -110,7 +110,6 @@ if($_REQUEST["subexec"] == "save")
     $product->setHasEnvelope((int)$_REQUEST["product_hasenvelope"]);
     $product->setFactorWidth((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["factor_width"]))));
     $product->setFactorHeight((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["factor_height"]))));
-    $product->setTaxes((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["taxes"]))));
     $product->setGrantPaper((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["grantpaper"]))));
     $product->setType((int)$_REQUEST["product_type"]);
     $product->setTextOffer(trim(addslashes($_REQUEST["text_offer"])));

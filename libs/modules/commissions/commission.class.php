@@ -9,6 +9,7 @@
 
 require_once 'libs/basic/model.php';
 require_once 'commissionlink.class.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 class Commission extends Model{
     public $_table = 'commissions';
@@ -83,7 +84,7 @@ class Commission extends Model{
             $commissionpos->setQuantity(1);
             $commissionpos->setRevrel(1);
             $commissionpos->setStatus(1);
-            $commissionpos->setTax(19.0);
+            $commissionpos->setTaxkey(TaxKey::getDefaultTaxKey());
             $commissionpos->setType(0);
             $commissionpos->setObjectid(0);
             $ret = Orderposition::saveMultipleOrderpositions([$commissionpos]);

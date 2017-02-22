@@ -11,6 +11,7 @@ require_once 'libs/basic/model.php';
 
 class TaxKey extends Model{
     public $_table = 'taxkeys';
+
     public $value = '';
     public $key = '';
     public $default = 0;
@@ -43,7 +44,7 @@ class TaxKey extends Model{
     {
         $ret = self::fetchSingle([
             [
-                "column" => "default",
+                "column" => "`default`",
                 "value" => 1
             ]
         ]);

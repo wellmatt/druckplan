@@ -137,52 +137,9 @@ case 'save':
 	    $new_asso->save();
 	}
 	
-	echo mysql_error();
-	
 	if($collectinv->getId()==NULL){
 		$collectinv = CollectiveInvoice::getLastSavedCollectiveInvoice();
 	}
-	
-	// Positionen speichern/ändern/erstellen
-	$orderpositions = Array(); 
-	$xi=0;
-//	$au_suffix=1;
-	foreach ($_REQUEST["orderpos"] as $single_order){
-		if ( !( $_REQUEST["orderpos"][$xi]["id"] == "0" && 			// Wenn in den "Neu"-Feldern nichts drin steht
-				$_REQUEST["orderpos"][$xi]["comment"] == "" &&		// soll er auch nichts speichern
-				$_REQUEST["orderpos"][$xi]["quantity"] == "")){
-			
-			if ($_REQUEST["orderpos"][$xi]["id"]==""){ 		// Fuer bestehende Orderpositionen
-				$newpos = new Orderposition();
-				$old_amount = 0;
-			} else {											// Fuer neue Orderpositionen
-				$newpos = new Orderposition((int)$_REQUEST["orderpos"][$xi]["id"]);
-				$old_amount = $newpos->getQuantity();
-			}
-			//Daten passend konvertieren
-			$tmp_oprice = tofloat($_REQUEST["orderpos"][$xi]["price"]);
-			
-			$newpos->setPrice($tmp_oprice);
-			$newpos->setComment(trim(addslashes($_REQUEST["orderpos"][$xi]["comment"])));
-			$newpos->setQuantity((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["orderpos"][$xi]["quantity"]))));
-			$newpos->setType((int)$_REQUEST["orderpos"][$xi]["type"]);
-			$newpos->setInvrel((int)$_REQUEST["orderpos"][$xi]["inv_rel"]);
-			$newpos->setRevrel((int)$_REQUEST["orderpos"][$xi]["rev_rel"]);
-			$newpos->setObjectid((int)$_REQUEST["orderpos"][$xi]["obj_id"]); // Artikelnummer
-			$newpos->setTax((int)$_REQUEST["orderpos"][$xi]["tax"]);
-			$newpos->setCollectiveinvoice((int)$collectinv->getId());
-			
-			$tmp_art = new Article($newpos->getObjectid());
-			if ($tmp_art->getIsWorkHourArt() || $tmp_art->getOrderid()>0)
-			    $needs_planning = true;
-
-			$orderpositions[] = $newpos;
-			$xi++;
-		}
-	}
-	//Positionen der Rechnung speichern
-// 	var_dump($orderpositions);
-	Orderposition::saveMultipleOrderpositions($orderpositions);
 
 	if ($collectinv->getId() > 0){ // && ($collectinv->getStatus() == 5 || $collectinv->getStatus() == 7)
 		$collectinv->saveArticleBuyPrices();
@@ -192,8 +149,6 @@ case 'save':
         $collectinv->setNeeds_planning(1);
         $collectinv->save();
     }
-	
-	//echo "<br><br>".$DB->getLastError();
 	
 	require_once 'collectiveinvoice.edit.php';
 	break;

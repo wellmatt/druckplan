@@ -143,12 +143,10 @@ foreach ($articles as $opos)
         
                         if ($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) { //  && $me->getMachine()->getUmschlUmst() > 0 && $me->getUmschlagenUmstuelpen() > 0
                             $temp["Position"] .= '<br>Druckart: ';
-                            if ((int)$me->getUmschl() == 1)
-                                $temp["Position"] .= '<b>Umschlagen</b>';
-                            elseif ((int)$me->getUmst() == 1)
-                            $temp["Position"] .= '<b>Umscht&uuml;lpen</b>';
+                            if ((int)$me->getUmschlagenUmstuelpen() == 1)
+                                $temp["Position"] .= '<b>Umschlagen / Umst&uuml;lpen</b>';
                             else
-                                $temp["Position"] .= '<b>Sch&ouml;n & Wider</b>';
+                                $temp["Position"] .= '<b>Sch&ouml;n & Widerdruck</b>';
                             $temp["Position"] .= '<br>';
                         }
         

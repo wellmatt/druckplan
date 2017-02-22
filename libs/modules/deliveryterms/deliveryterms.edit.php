@@ -5,12 +5,13 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 $delterm = new DeliveryTerms($_REQUEST["did"]);
 
 if($_REQUEST["subexec"] == "save"){
 	$delterm->setCharges((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["dt_charges"]))));
-	$delterm->setTax((float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["dt_tax"]))));
+	$delterm->setTaxkey(new TaxKey((int)$_REQUEST["dt_tax"]));
 	$delterm->setName1(trim(addslashes($_REQUEST["dt_name"])));
 	$delterm->setComment(trim(addslashes($_REQUEST["dt_comment"])));
 	
@@ -79,12 +80,11 @@ echo $quickmove->generate();
 				</div>
 
 				<div class="form-group">
-					<label for="" class="col-sm-2 control-label">Mwst</label>
+					<label for="" class="col-sm-2 control-label">Umsatzsteuer</label>
 					<div class="col-sm-4">
-						<div class="input-group">
-							<input name="dt_tax"  type="text" class="form-control" value="<?=printPrice($delterm->getTax())?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
-							<span class="input-group-addon">%</span>
-						</div>
+						<select id="dt_tax" name="dt_tax" class="form-control">
+							<?php if ($delterm->getTaxkey()->getId() > 0) echo '<option value="'.$delterm->getTaxkey()->getId().'">'.$delterm->getTaxkey()->getValue().'%</option>';?>
+						</select>
 					</div>
 				</div>
 				<?/***if($_CONFIG->shopActivation){?>
@@ -99,4 +99,43 @@ echo $quickmove->generate();
 		</div>
 	</div>
 </form>
+
+<script>
+	$(function () {
+		$("#dt_tax").select2({
+			ajax: {
+				url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_taxkey",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						term: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					// parse the results into the format expected by Select2
+					// since we are using custom formatting functions we do not need to
+					// alter the remote JSON data, except to indicate that infinite
+					// scrolling can be used
+					params.page = params.page || 1;
+
+					return {
+						results: data,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				cache: true
+			},
+			minimumInputLength: 0,
+			language: "de",
+			multiple: false,
+			allowClear: false,
+			tags: false
+		}).val(<?php echo $delterm->getTaxkey()->getId();?>).trigger('change');
+	});
+</script>
+
 

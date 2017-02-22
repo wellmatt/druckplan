@@ -197,7 +197,7 @@ $sQuery = "
         invoiceins.id,
         invoiceins.number AS renr,
         invoiceins.netvalue,
-        invoiceins.tax,
+        taxkeys.value as taxvalue,
         invoiceins.description,
         invoiceins.redate,
         invoiceins.duedate,
@@ -209,6 +209,7 @@ $sQuery = "
         FROM
         invoiceins
         LEFT JOIN businesscontact ON invoiceins.supplier = businesscontact.id
+        LEFT JOIN taxkeys ON invoiceins.taxkey = taxkeys.id
         ) t1
         $sWhere
         $sOrder
@@ -226,7 +227,7 @@ $sQuery = "SELECT COUNT(id) FROM
         invoiceins.id,
         invoiceins.number AS renr,
         invoiceins.netvalue,
-        invoiceins.tax,
+        taxkeys.value as taxvalue,
         invoiceins.description,
         invoiceins.redate,
         invoiceins.duedate,
@@ -238,6 +239,7 @@ $sQuery = "SELECT COUNT(id) FROM
         FROM
         invoiceins
         LEFT JOIN businesscontact ON invoiceins.supplier = businesscontact.id
+        LEFT JOIN taxkeys ON invoiceins.taxkey = taxkeys.id
         ) t1
         $sWhere
     ";
@@ -254,7 +256,7 @@ $sQuery = "SELECT COUNT(id) FROM
         invoiceins.id,
         invoiceins.number AS renr,
         invoiceins.netvalue,
-        invoiceins.tax,
+        taxkeys.value as taxvalue,
         invoiceins.description,
         invoiceins.redate,
         invoiceins.duedate,
@@ -266,6 +268,7 @@ $sQuery = "SELECT COUNT(id) FROM
         FROM
         invoiceins
         LEFT JOIN businesscontact ON invoiceins.supplier = businesscontact.id
+        LEFT JOIN taxkeys ON invoiceins.taxkey = taxkeys.id
         ) t1
         WHERE `status` > 0
     ";
@@ -316,7 +319,7 @@ while ( $aRow = mysql_fetch_array( $rResult ) )
         {
             $row[] = printPrice($aRow[ $aColumns[$i] ],2).'€';
         }
-        else if ( $aColumns[$i] == 'tax' )
+        else if ( $aColumns[$i] == 'taxvalue' )
         {
             $row[] = printPrice($aRow[ $aColumns[$i] ],2).'%';
         }

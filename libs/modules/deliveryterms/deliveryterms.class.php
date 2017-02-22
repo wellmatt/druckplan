@@ -5,6 +5,7 @@
 // Any unauthorized redistribution, reselling, modifying or reproduction of part
 // or all of the contents in any form is strictly prohibited.
 //----------------------------------------------------------------------------------
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 class DeliveryTerms{
 	
@@ -17,7 +18,7 @@ class DeliveryTerms{
 	private $status;
 	private $client;
 	private $shoprel;
-	private $tax;
+	private $taxkey;
 	
 	
 	/**
@@ -41,8 +42,14 @@ class DeliveryTerms{
 				$this->charges = $r["charges"];
 				$this->client = new Client($r["client"]);
 				$this->shoprel = $r["shoprel"];
-				$this->tax = $r["tax"];
+				$this->taxkey = new TaxKey($r["taxkey"]);
 			}
+			// -- Temporary measure to assure default taxkey if none is set! //
+			if ($this->taxkey->getId() == 0){
+				$defaulttaxkey = TaxKey::getDefaultTaxKey();
+				$this->taxkey = $defaulttaxkey; // grabbing the default taxkey just to be sure that one is set
+			}
+			//
 		}
 	}
 	
@@ -80,16 +87,16 @@ class DeliveryTerms{
 					comment = '{$this->comment}',
 					shoprel = {$this->shoprel},
 					charges	= {$this->charges},
-					tax	= {$this->tax}
+					taxkey	= {$this->taxkey->getId()}
 					WHERE id = {$this->id}";
 				return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO deliveryterms
 					(name1, comment, shoprel, charges, 
-					active, client, tax)
+					active, client, taxkey)
 					VALUES
 					('{$this->name1}', '{$this->comment}', {$this->shoprel}, {$this->charges}, 
-					1 , {$_USER->getClient()->getId()}, {$this->tax})";
+					1 , {$_USER->getClient()->getId()}, {$this->taxkey->getId()})";
 			$res = $DB->no_result($sql);
 
 			if($res){
@@ -197,13 +204,22 @@ class DeliveryTerms{
 
     public function getTax()
     {
-        return $this->tax;
+        return $this->taxkey->getValue();
     }
 
-    public function setTax($tax)
-    {
-        $this->tax = $tax;
-    }
+	/**
+	 * @return TaxKey
+	 */
+	public function getTaxkey()
+	{
+		return $this->taxkey;
+	}
+
+	/**
+	 * @param TaxKey $taxkey
+	 */
+	public function setTaxkey($taxkey)
+	{
+		$this->taxkey = $taxkey;
+	}
 }
-
-?>

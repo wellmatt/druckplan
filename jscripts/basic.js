@@ -102,3 +102,14 @@ function dialNumber(link){
 			}
 	);
 }
+
+function parseGermanFloat(number){
+	number = number.replace(/\./g, '').replace(',', '.');
+	return parseFloat(number);
+}
+
+function printPriceJs(zahl,nks = 2){
+	var ret = zahl.toFixed(nks);
+	ret = ret.replace(".",",");
+	return ret;
+}

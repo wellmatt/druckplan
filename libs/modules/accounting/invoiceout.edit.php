@@ -161,7 +161,7 @@ echo $quickmove->generate();
                     </div>
                     <?php }?>
 
-                    <?php if ($invoiceout->getStatus() == 3) {?>
+                    <?php if ($invoiceout->getStatus() == 1) {?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Mahnung</label>
                         <div class="col-sm-4">

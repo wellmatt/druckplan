@@ -145,13 +145,72 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                 fields: [
                     {
                         label: 'Sortierung',
-                        name: 'collectiveinvoice_orderposition.sequence',
+                        name: 'sequence',
                         multiEditable: false
+                    },
+                    {
+                        label: "Status:",
+                        name: "status",
+                        type: "select"
+                    },
+                    {
+                        label: "Beschreibung:",
+                        name: "comment",
+                        type: "ckeditor",
+                        opts: {
+                            toolbarGroups: [
+                                { name: 'forms', groups: [ 'forms' ] },
+                                { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+                                { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+                                { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                                { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+                                { name: 'links', groups: [ 'links' ] },
+                                { name: 'insert', groups: [ 'insert' ] },
+                                { name: 'styles', groups: [ 'styles' ] },
+                                { name: 'colors', groups: [ 'colors' ] },
+                                { name: 'tools', groups: [ 'tools' ] },
+                                { name: 'others', groups: [ 'others' ] },
+                                { name: 'about', groups: [ 'about' ] }
+                            ],
+                            removeButtons: 'Source,Save,Templates,NewPage,Preview,Print,Cut,Copy,Paste,PasteText,PasteFromWord,Find,SelectAll,Scayt,Replace,Form,Checkbox,TextField,Radio,Textarea,Select,Button,ImageButton,HiddenField,Subscript,Superscript,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Image,Flash,Smiley,SpecialChar,Iframe,Font,About,Maximize'
+                        }
+                    }, {
+                        label: "Menge:",
+                        name: "quantity"
+                    }, {
+                        label: "Preis:",
+                        name: "price"
+                    }, {
+                        label: "Steuer:",
+                        name: "taxkey",
+                        type: "select"
                     }
                 ]
             } );
+            // Disable KeyTable while the main editing form is open
+            editor
+                .on( 'open', function () {
+                    table.keys.disable();
+                } )
+                .on( 'close', function () {
+                    table.keys.enable();
+                } );
+
+            // Activate an inline edit on click of a table cell
+            $('#datatable').on( 'click', 'tbody td:not(:first-child)', function (e) {
+                editor.inline( this, {
+                    // Submit on leaving field
+                    onBlur: 'submit'
+                } );
+            } );
 
             editor
+//                .on( 'postCreate postRemove', function () {
+//                     After create or edit, a number of other rows might have been effected -
+//                     so we need to reload the table, keeping the paging in the current position
+//                    table.ajax.reload( null, false );
+//                } )
                 .on( 'initCreate', function () {
                     // Enable order for create
                     editor.field( 'sequence' ).enable();
@@ -163,36 +222,79 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
 
             table = $('#datatable').DataTable( {
-                dom: "<'row'<'col-sm-12'tr>>",
+//                dom: "Bfrtip",
+                dom: "<'row'<'col-sm-4'l><'col-sm-4'B><'col-sm-4'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
                 ajax: {
                     url: 'libs/basic/datatables/orderposition.php',
                     data: {
                         "collectiveinvoice": 142
                     }
                 },
-                paging: false,
-                searching: false,
 //                order: [[ 1, 'asc' ]],
                 columns: [
-                    { data: 'collectiveinvoice_orderposition.sequence', className: 'reorder', orderable: false },
-                    { data: "collectiveinvoice_orderposition.id", orderable: false, className: 'pointer' },
-                    { data: "collectiveinvoice_orderposition.type", orderable: false, className: 'pointer' },
-                    { data: "collectiveinvoice_orderposition.status", orderable: false, className: 'pointer' },
-                    { data: "title", orderable: false, className: 'pointer' },
-                    { data: "collectiveinvoice_orderposition.quantity", orderable: false, className: 'pointer' },
-                    { data: "collectiveinvoice_orderposition.price", orderable: false, className: 'pointer' },
-                    { data: "collectiveinvoice_orderposition.taxkey", orderable: false, className: 'pointer' },
+                    { data: 'sequence', className: 'reorder', orderable: false },
+                    { data: "id", orderable: false },
+                    { data: "type", orderable: false },
+                    { data: "status", orderable: false },
+                    { data: "comment", orderable: false },
+                    { data: "quantity", orderable: false },
+                    { data: "price", orderable: false },
+                    { data: "taxkey", orderable: false },
                     { data: "options", orderable: false }
                 ],
                 rowReorder: {
-                    dataSrc: 'collectiveinvoice_orderposition.sequence',
+                    dataSrc: 'sequence',
                     editor:  editor
                 },
 //                columnDefs: [
 //                    { orderable: false, targets: [ 0,1,2,3,4,5,6,7,8 ] }
 //                ],
+                // Keyboard Navigation
+//                keys: {
+//                    columns: ':not(:first-child)',
+//                    editor:  editor
+//                },
                 select: false,
-                buttons: [],
+                buttons: [
+//                    { extend: "create", editor: editor },
+//                    { extend: "edit",   editor: editor },
+//                    { extend: "remove", editor: editor },
+                    // Export Button
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            'pdf',
+                            'print'
+                        ]
+                    },
+                    // Duplicate Button
+//                    {
+//                        extend: "selectedSingle",
+//                        text: 'Duplicate',
+//                        action: function ( e, dt, node, config ) {
+//                            // Place the selected row into edit mode (but hidden),
+//                            // then get the values for all fields in the form
+//                            var values = editor.edit(
+//                                table.row( { selected: true } ).index(),
+//                                false
+//                                )
+//                                .val();
+//
+//                            // Create a new entry (discarding the previous edit) and
+//                            // set the values from the read values
+//                            editor
+//                                .create( {
+//                                    title: 'Duplicate record',
+//                                    buttons: 'Create from existing'
+//                                } )
+//                                .set( values );
+//                        }
+//                    }
+                ],
                 footerCallback: function ( row, data, start, end, display ) {
                     var api = this.api(), data;
 
@@ -235,66 +337,9 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                     $( api.column( 5 ).footer() ).html(
                         pageTotal_qty +' ( '+ total_qty +' )'
                     );
-                },
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.13/i18n/German.json'
-                }
-            } );
-
-            // Add event listener for opening and closing details
-            // table.ajax.reload( null, false );
-            $('#datatable tbody').on('click', 'td:not(:first-child,:last-child)', function () {
-                var tr = $(this).closest('tr');
-                var row = table.row( tr );
-
-                if ( row.child.isShown() ) {
-                    // This row is already open - close it
-                    row.child.remove();
-                    tr.removeClass('shown');
-                }
-                else {
-                    // Open this row
-                    // fetch position form
-                    get_child( row.data(), row, tr );
                 }
             } );
         } );
-
-        function get_child ( data, row, tr ) {
-            $.ajax({
-                dataType: "html",
-                type: "GET",
-                url: "libs/modules/collectiveinvoice/orderposition.ajax.php",
-                data: { "exec": "getPosForm", "oid": data["collectiveinvoice_orderposition"]["id"] },
-                success: function(data)
-                {
-                    row.child( data ).show();
-                    CKEDITOR.replace( 'opos_comment' );
-                    tr.addClass('shown');
-                }
-            });
-        }
-
-        function submitForm(form){
-            CKupdate();
-            $.ajax({
-                type: 'GET',
-                url: 'libs/modules/collectiveinvoice/orderposition.ajax.php?exec=updatePos',
-                data: $(form).serialize(),
-                success: function() {
-                    table.ajax.reload( null, false );
-                    console.log("successful");
-                },
-                error: function() {
-                    console.log("unsuccessful");
-                }
-            });
-        }
-
-        function CKupdate(){
-            for ( instance in CKEDITOR.instances )
-                CKEDITOR.instances[instance].updateElement();
-        }
     </script>
 
 </head>
@@ -304,7 +349,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         <div class="panel-heading">
             <h3 class="panel-title">Test</h3>
         </div>
-        <div class="table-responsive" style="margin: -7px -1px -7px -1px;">
+        <div class="table-responsive">
             <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>
@@ -312,7 +357,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                         <th>ID</th>
                         <th>Typ</th>
                         <th>Status</th>
-                        <th>Artikel</th>
+                        <th>Beschreibung</th>
                         <th>Menge</th>
                         <th>Preis in €</th>
                         <th>Steuer</th>

@@ -166,8 +166,16 @@ $(document).ready(function() {
     $("#art_table tbody td").live('click',function(){
         var aPos = $('#art_table').dataTable().fnGetPosition(this);
         var aData = $('#art_table').dataTable().fnGetData(aPos[0]);
-        parent.addArticle(aData[0]); 
-        parent.$.fancybox.close();
+
+        $.ajax({
+            url: "../../../libs/modules/collectiveinvoice/orderposition.ajax.php",
+            data: { exec: 'addPosArticle', ciid: '', aid: '' },
+            dataType: "json",
+            success: function( data ) {
+                parent.addArticle(aData[0]);
+                parent.$.fancybox.close();
+            }
+        });
     });
 } );
 </script>

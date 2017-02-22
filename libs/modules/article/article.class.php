@@ -14,6 +14,7 @@ require_once 'libs/modules/article/article.shopapproval.class.php';
 require_once 'libs/modules/article/article.tag.class.php';
 require_once 'libs/modules/customfields/custom.field.class.php';
 require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 
 
@@ -40,7 +41,7 @@ class Article {
 	private $crt_user;				// ID des Erstellers
 	private $upt_date;				// Datum, der letzten Aenderung
 	private $upt_user;				// ID des Benutzers, der zuletzt bearbeitet hat
-	private $tax = 19;				// Steuern
+	private $taxkey = 0;			// Steuer Objekt
 	private $minorder = 0;			// Minimale Bestellmenge
 	private $maxorder = 0;			// Maximale Bestellmenge
 	private $orderunit = 0;			// Verpackungseinheit
@@ -121,8 +122,7 @@ class Article {
 					$this->desc = $r["description"];
 					$this->picture = $r["picture"];
 					$this->number = $r["number"];
-					$this->tax = $r["tax"];
-//					$this->tax = new TaxKey($r["tax"]);
+					$this->taxkey = new TaxKey($r["taxkey"]);
 					$this->minorder = $r["minorder"];
 					$this->maxorder = $r["maxorder"];
 					$this->orderunit = $r["orderunit"];
@@ -174,6 +174,13 @@ class Article {
 					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 				}
 			}
+
+			// -- Temporary measure to assure default taxkey if none is set! //
+			if ($this->taxkey->getId() == 0){
+				$defaulttaxkey = TaxKey::getDefaultTaxKey();
+				$this->taxkey = $defaulttaxkey; // grabbing the default taxkey just to be sure that one is set
+			}
+			//
 		}
 	}
 
@@ -196,7 +203,7 @@ class Article {
 					shoprel 	= {$this->shoprel},
 					picture		= '{$this->picture}',
 					uptuser 	= {$_USER->getId()},
-					tax			= {$this->tax},
+					taxkey		= {$this->taxkey->getId()},
 					uptdate 	= UNIX_TIMESTAMP(),
 					minorder 	= {$this->minorder},
 					maxorder 	= {$this->maxorder},
@@ -217,7 +224,7 @@ class Article {
 			$sql = "INSERT INTO article
 					(status, description, title,
 					tradegroup, crtdate, crtuser,
-					shoprel, picture, number, tax,
+					shoprel, picture, number, taxkey,
 					minorder, maxorder, orderunit,
 					orderunitweight, shop_customer_rel,
 					shop_customer_id, isworkhourart, show_shop_price,
@@ -225,7 +232,7 @@ class Article {
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',
 					{$this->tradegroup->getId()}, {$now}, {$_USER->getId()},
-					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->tax},
+					{$this->shoprel}, '{$this->picture}', '{$this->number}', {$this->taxkey->getId()},
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit},
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID},
 					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload},
@@ -488,7 +495,7 @@ class Article {
 	 * Funktion liefert alle aktiven Artikel der Datenbank nach angegebener Reighenfolge
 	 *
 	 * @param STRING $order Reihenfolge, in der die Artikel sortiert werden
-	 * @return Array : Article
+	 * @return Article[]
 	 */
 	static function getAllArticle($order = self::ORDER_NUMBER, $filter = ""){
 		global $DB;
@@ -1009,12 +1016,7 @@ class Article {
 
 	public function getTax()
 	{
-		return $this->tax;
-	}
-
-	public function setTax($tax)
-	{
-		$this->tax = $tax;
+		return $this->taxkey->getValue();
 	}
 
 	public function getMinorder()
@@ -1098,7 +1100,7 @@ class Article {
 	}
 
 	/**
-	 * @return the $orderamounts
+	 * @return array $orderamounts
 	 */
 	public function getOrderamounts()
 	{
@@ -1250,6 +1252,22 @@ class Article {
 	public function setRevenueaccount($revenueaccount)
 	{
 		$this->revenueaccount = $revenueaccount;
+	}
+
+	/**
+	 * @return TaxKey
+	 */
+	public function getTaxkey()
+	{
+		return $this->taxkey;
+	}
+
+	/**
+	 * @param TaxKey $taxkey
+	 */
+	public function setTaxkey($taxkey)
+	{
+		$this->taxkey = $taxkey;
 	}
 
 }

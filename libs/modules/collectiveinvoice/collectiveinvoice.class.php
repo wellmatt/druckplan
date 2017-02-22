@@ -423,7 +423,7 @@ class CollectiveInvoice{
                    $tmp_art = new Article($position->getObjectid());
                    if ($tmp_art->getIsWorkHourArt())
                        $needs_planning = true;
-                   $newpos->setTax($position->getTax());
+                   $newpos->setTaxkey($position->getTaxkey());
                    $newpos->setCollectiveinvoice($collectinv->getId());
                    if ($newpos->getType() == 1){
                        $tmp_order = new Order($newpos->getObjectid());

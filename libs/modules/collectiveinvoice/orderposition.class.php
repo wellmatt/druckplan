@@ -8,6 +8,7 @@
  */
 
 require_once 'libs/modules/collectiveinvoice/contentpdf.class.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 /**
  * Klasse fuer Auftrags Positionen in Sammelrechnungen
@@ -21,10 +22,10 @@ class Orderposition{
 	private $id = 0;
 	private $status = 1;				// Status z.B.: 0 = geloescht, 1 = aktiv, 2 = soft gelöscht
 	private $quantity = 0;				// Menge/Stueckzahl
-	private $price = 0.0;					// Einzelpreis
+	private $price = 0.0;				// Einzelpreis
 	private $cost = 0.0;				// Einkaufspreis
 	private $profit = 0.0;				// Marge (Profit)
-	private $tax = 19; 					// MWST
+	private $taxkey = 0;				// Steuerschlüssel
 	private $comment = ""; 				// Beschreibung
 	private $collectiveinvoice = 0;		// ID der Sammelrechnung
 	private $type;						// Typ (Artikel/Kalkulation/Manuell)
@@ -89,7 +90,7 @@ class Orderposition{
 					$this->price = $r["price"];
 					$this->cost = $r["cost"];
 					$this->profit = $r["profit"];
-					$this->tax = $r["tax"];
+					$this->taxkey = new TaxKey($r["taxkey"]);
 					$this->comment = $r["comment"];
 					$this->collectiveinvoice = $r["collectiveinvoice"];
 					$this->type = $r["type"];
@@ -103,9 +104,26 @@ class Orderposition{
 					Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 				}
 			}
+			// -- Temporary measure to assure default taxkey if none is set! //
+			if ($this->taxkey->getId() == 0){
+				$defaulttaxkey = TaxKey::getDefaultTaxKey();
+				$this->taxkey = $defaulttaxkey; // grabbing the default taxkey just to be sure that one is set
+			}
+			//
 		}
 	}
-	
+
+	public static function getNextSequence(CollectiveInvoice $collectiveinvoice)
+	{
+		global $DB;
+		$sql = " SELECT max(sequence) sequence FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveinvoice->getId()}";
+		$selseq = $DB->select($sql);
+		$seq = $selseq[0]["sequence"] + 1;
+		if ($seq <= 0 )
+			$seq = 1;
+		return $seq;
+	}
+
 	/**
 	 * ...liefert alle Eintraege/Auftragspositionen einer Sammelrechnung
 	 * 
@@ -131,6 +149,62 @@ class Orderposition{
 		}
 		return $orderpos;
 	}
+
+	public function save()
+	{
+		global $DB;
+
+		if ($this->id == 0){
+			//Neuer Eintrag in DB
+			$sql = "INSERT INTO collectiveinvoice_orderposition
+						(`quantity`, `comment`, price, cost, profit,
+						taxkey, `status`, collectiveinvoice, type,
+						object_id, inv_rel, rev_rel, file_attach, perso_order, sequence )
+						VALUES
+						({$this->getQuantity()}, '{$this->getComment()}', {$this->getPrice()}, {$this->getCost()}, {$this->getProfit()},
+						{$this->taxkey->getId()}, {$this->getStatus()}, {$this->getCollectiveinvoice()}, {$this->getType()},
+						{$this->getObjectid()}, {$this->getInvrel()}, {$this->getRevrel()}, {$this->getFile_attach()}, {$this->getPerso_order()}, {$this->getSequence()} )";
+			$res = $DB->no_result($sql);
+			prettyPrint($sql);
+			if($res){
+				$sql = " SELECT max(id) id FROM collectiveinvoice_orderposition";
+				$thisid = $DB->select($sql);
+				$this->id = $thisid[0]["id"];
+				Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			//update
+			$sql = "UPDATE collectiveinvoice_orderposition
+						SET
+						`quantity` = {$this->getQuantity()},
+						`comment` = '{$this->getComment()}',
+						price = {$this->getPrice()},
+						cost = {$this->getCost()},
+						profit = {$this->getProfit()},
+						taxkey = {$this->taxkey->getId()},
+						type = {$this->getType()},
+						`status` = {$this->getStatus()},
+						object_id = {$this->getObjectid()},
+						inv_rel = {$this->getInvrel()},
+						rev_rel = {$this->getRevrel()},
+						file_attach = {$this->getFile_attach()},
+						collectiveinvoice = {$this->getCollectiveinvoice()},
+						sequence = {$this->getSequence()},
+						perso_order = {$this->getPerso_order()}
+						WHERE id = {$this->getId()}";
+			$res = $DB->no_result($sql);
+			prettyPrint($sql);
+			if($res){
+				Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 	
 	/**
 	 * Speicher-Funktion fuer ein Array von Orderpositionen
@@ -147,11 +221,11 @@ class Orderposition{
 				//Neuer Eintrag in DB
 				$sql = "INSERT INTO collectiveinvoice_orderposition
 						(quantity, comment, price, cost, profit,
-						tax, status, collectiveinvoice, type, 
+						taxkey, status, collectiveinvoice, type,
 						object_id, inv_rel, rev_rel, file_attach, perso_order, sequence )
 						VALUES
 						({$opos->getQuantity()}, '{$opos->getComment()}', {$opos->getPrice()}, {$opos->getCost()}, {$opos->getProfit()},
-						{$opos->getTax()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
+						{$opos->taxkey->getId()}, 1, {$opos->getCollectiveinvoice()}, {$opos->getType()},
 						{$opos->getObjectid()}, {$opos->getInvrel()}, {$opos->getRevrel()}, {$opos->getFile_attach()}, {$opos->getPerso_order()}, {$opos->getSequence()} )";
 				$res = $DB->no_result($sql);
 				if($res){
@@ -172,7 +246,7 @@ class Orderposition{
 						price = {$opos->getPrice()},
 						cost = {$opos->getCost()},
 						profit = {$opos->getProfit()},
-						tax = {$opos->getTax()},
+						taxkey = {$opos->taxkey->getId()},
 						type = {$opos->getType()},
 						object_id = {$opos->getObjectid()},
 						inv_rel = {$opos->getInvrel()},
@@ -257,7 +331,7 @@ class Orderposition{
 	 */
 	public function getTitle(){
 		$retval = "N.A.";
-		if ($this->type == self::TYPE_ARTICLE){
+		if ($this->type == self::TYPE_ARTICLE || $this->type == self::TYPE_ORDER){
 			$tmp_art = new Article($this->objectid);
 			$retval = $tmp_art->getTitle() . " (".$tmp_art->getNumber().")"; 
 		} 
@@ -334,11 +408,7 @@ class Orderposition{
 	}
 	
 	public function getTax(){
-		return $this->tax;
-	}
-	
-	public function setTax($tax){
-		$this->tax = $tax;
+		return $this->taxkey->getValue();
 	}
 	
 	public function getComment(){
@@ -497,5 +567,21 @@ class Orderposition{
 	public function setSequence($sequence)
 	{
 		$this->sequence = $sequence;
+	}
+
+	/**
+	 * @return TaxKey
+	 */
+	public function getTaxkey()
+	{
+		return $this->taxkey;
+	}
+
+	/**
+	 * @param TaxKey $taxkey
+	 */
+	public function setTaxkey($taxkey)
+	{
+		$this->taxkey = $taxkey;
 	}
 }

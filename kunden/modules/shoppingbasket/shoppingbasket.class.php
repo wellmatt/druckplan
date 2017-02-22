@@ -14,6 +14,7 @@ require_once 'libs/modules/warehouse/warehouse.class.php';
 require_once 'libs/modules/businesscontact/contactperson.class.php';
 require_once 'libs/modules/notifications/notification.class.php';
 require_once 'libs/modules/attachment/attachment.class.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 class Shoppingbasket{
 	
@@ -336,8 +337,8 @@ class Shoppingbasket{
         	                        $tmp_order_pos->setType(Orderposition::TYPE_ORDER);
         	                    else 
         	                        $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
-        	                    $tax = $tmp_article->getTax();
-        	                    $tmp_order_pos->setTax($tax);
+        	                    $tax = $tmp_article->getTaxkey();
+        	                    $tmp_order_pos->setTaxkey($tax);
         	                    $tmp_order_pos->setComment($tmp_article->getDesc());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
         	                    if ($tmp_article->getShop_needs_upload()==1 && (int)$entry->getFile()>0)
@@ -354,7 +355,7 @@ class Shoppingbasket{
         	                    $tmp_order_pos->setObjectid($tmp_article->getId());
         	                    
         	                    $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
-        	                    $tmp_order_pos->setTax(CollectiveInvoice::TAX_PEROSALIZATION);
+        	                    $tmp_order_pos->setTaxkey(TaxKey::getDefaultTaxKey());
         	                    $tmp_order_pos->setComment($tmp_perso_order->getTitle());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
         	                    $tmp_order_pos->setPerso_order($tmp_perso_order->getId());

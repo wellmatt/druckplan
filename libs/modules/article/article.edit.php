@@ -53,7 +53,7 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setDesc(trim(addslashes($_REQUEST["article_desc"])));
 	$article->setNumber(trim(addslashes($_REQUEST["article_number"])));
 	$article->setPicture($_REQUEST["new_picture"]);
-	$article->setTax($tax);
+	$article->setTaxkey(new TaxKey((int)$_REQUEST["article_taxkey"]));
 	$article->setShoprel((int)$_REQUEST["article_shoprel"]);
 	$article->setMinorder((int)$_REQUEST["article_minorder"]);
 	$article->setMaxorder((int)$_REQUEST["article_maxorder"]);
@@ -222,7 +222,7 @@ function printSubTradegroupsForSelect($parentId, $depth){
 
 
 /****************************** PHP-Funktionen ***********************************************************************/
-
+//prettyPrint($article);
 //var_dump($article);
 ?>
 
@@ -396,10 +396,9 @@ echo $quickmove->generate();
 							<div class="form-group">
 								<label for="" class="col-sm-5 control-label">Umsatzsteuer</label>
 								<div class="col-sm-3">
-									<div class="input-group">
-										<input id="article_tax" name="article_tax" type="text" class="form-control" value="<?=printPrice($article->getTax())?>">
-										<span class="input-group-addon">%</span>
-									</div>
+									<select id="article_taxkey" name="article_taxkey" class="form-control">
+										<?php if ($article->getTaxkey()->getId() > 0) echo '<option value="'.$article->getTaxkey()->getId().'">'.$article->getTaxkey()->getValue().'%</option>';?>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
@@ -1148,5 +1147,42 @@ echo $quickmove->generate();
 				e.preventDefault();
 			}
 		});
+	});
+</script>
+<script>
+	$(function () {
+		$("#article_taxkey").select2({
+			ajax: {
+				url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_taxkey",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						term: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					// parse the results into the format expected by Select2
+					// since we are using custom formatting functions we do not need to
+					// alter the remote JSON data, except to indicate that infinite
+					// scrolling can be used
+					params.page = params.page || 1;
+
+					return {
+						results: data,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				cache: true
+			},
+			minimumInputLength: 0,
+			language: "de",
+			multiple: false,
+			allowClear: false,
+			tags: false
+		}).val(<?php echo $article->getTaxkey()->getId();?>).trigger('change');
 	});
 </script>

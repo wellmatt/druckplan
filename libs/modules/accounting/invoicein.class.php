@@ -7,6 +7,7 @@
  *
  */
 require_once 'libs/basic/model.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 class InvoiceIn extends model
 {
@@ -16,7 +17,7 @@ class InvoiceIn extends model
     public $supplier = 0;
     public $status = 1;
     public $netvalue = 0.0;
-    public $tax = 19;
+    public $taxkey = 0;
     public $redate = 0;
     public $duedate = '';
     public $payeddate = 0;
@@ -32,9 +33,17 @@ class InvoiceIn extends model
     const state_payed = 2;
 
 
-    protected function bootclasses()
+    protected function BootClasses()
     {
         $this->supplier = new BusinessContact($this->supplier);
+        $this->taxkey = new TaxKey($this->taxkey);
+
+        // -- Temporary measure to assure default taxkey if none is set! //
+        if ($this->taxkey->getId() == 0){
+            $defaulttaxkey = TaxKey::getDefaultTaxKey();
+            $this->taxkey = $defaulttaxkey; // grabbing the default taxkey just to be sure that one is set
+        }
+        //
     }
 
     /**
@@ -106,15 +115,7 @@ class InvoiceIn extends model
      */
     public function getTax()
     {
-        return $this->tax;
-    }
-
-    /**
-     * @param int $tax
-     */
-    public function setTax($tax)
-    {
-        $this->tax = $tax;
+        return $this->taxkey->getValue();
     }
 
     /**
@@ -197,5 +198,20 @@ class InvoiceIn extends model
         $this->description = $description;
     }
 
+    /**
+     * @return TaxKey
+     */
+    public function getTaxkey()
+    {
+        return $this->taxkey;
+    }
+
+    /**
+     * @param TaxKey $taxkey
+     */
+    public function setTaxkey($taxkey)
+    {
+        $this->taxkey = $taxkey;
+    }
 }
 

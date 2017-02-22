@@ -19,7 +19,7 @@ if ($_REQUEST["subexec"] == "save"){
         'status' => $status,
         'description' => $_REQUEST["description"],
         'netvalue' => $_REQUEST["netvalue"],
-        'tax' => $_REQUEST["tax"],
+        'taxkey' => $_REQUEST["taxkey"],
         'redate' => strtotime($_REQUEST["redate"]),
         'payeddate' => strtotime($_REQUEST["payeddate"]),
         'duedate' => strtotime($_REQUEST["duedate"]),
@@ -133,12 +133,11 @@ echo $quickmove->generate();
                                  </div>
                              </div>
                              <div class="form-group">
-                                 <label for="" class="col-sm-4 control-label">MwSt-Satz</label>
+                                 <label for="" class="col-sm-4 control-label">Umsatzsteuer</label>
                                  <div class="col-sm-8">
-                                     <div class="input-group">
-                                         <input name="tax" id="tax" value="<?php echo $invoicein->getTax();?>" class="form-control">
-                                         <span class="input-group-addon">%</span>
-                                     </div>
+                                     <select id="taxkey" name="taxkey" class="form-control">
+                                         <?php if ($invoicein->getTaxkey()->getId() > 0) echo '<option value="'.$invoicein->getTaxkey()->getId().'">'.$invoicein->getTaxkey()->getValue().'%</option>';?>
+                                     </select>
                                  </div>
                              </div>
                              <?php if ($invoicein->getPayeddate()>0){?>
@@ -236,5 +235,42 @@ echo $quickmove->generate();
             timepicker: false,
             format: 'd.m.Y'
         });
+    });
+</script>
+<script>
+    $(function () {
+        $("#taxkey").select2({
+            ajax: {
+                url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_taxkey",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+            language: "de",
+            multiple: false,
+            allowClear: false,
+            tags: false
+        }).val(<?php echo $invoicein->getTaxkey()->getId();?>).trigger('change');
     });
 </script>

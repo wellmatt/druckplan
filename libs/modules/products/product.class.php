@@ -41,7 +41,6 @@ class Product {
     private $hasAddContent3 = 0;
     private $factorWidth = 0.0;
     private $factorHeight = 0.0;
-    private $taxes = 19;
     private $grantPaper = 0;
     private $type = 0;
     private $textOffer;
@@ -59,11 +58,6 @@ class Product {
     function __construct($id = 0){
         global $DB;
         global $_USER;
-        if($_USER == NULL){
-        	$this->taxes = 19;
-        }else {
-        	$this->taxes = $_USER->getClient()->getTaxes();
-        }
         $this->tradegroup = new Tradegroup();
         
         if($id > 0)
@@ -89,7 +83,6 @@ class Product {
                 $this->hasEnvelope = $res["has_envelope"];
                 $this->factorWidth = $res["factor_width"];
                 $this->factorHeight = $res["factor_height"];
-                $this->taxes = $res["taxes"];
                 $this->grantPaper = $res["grant_paper"];
                 $this->type = $res["type"];
                 $this->textOffer = $res["text_offer"];
@@ -247,7 +240,6 @@ class Product {
                         has_envelope = {$this->hasEnvelope},
                         factor_width = {$this->factorWidth},
                         factor_height = {$this->factorHeight},
-                        taxes = {$this->taxes},
                         grant_paper = {$this->grantPaper},
                         type = {$this->type},
                         text_offer = '{$this->textOffer}',
@@ -350,14 +342,14 @@ class Product {
             $sql = "INSERT INTO products
                         (name, state, description, picture, pages_from, pages_to, pages_step,
                          has_content, has_addcontent, has_envelope, factor_width, factor_height,
-                         taxes, grant_paper, type, text_offer, text_offerconfirm, text_invoice,
+                         grant_paper, type, text_offer, text_offerconfirm, text_invoice,
                          text_processing, shop_rel, tradegroup, is_individual, 
                          has_addcontent2, has_addcontent3, load_dummydata )
                     VALUES
                         ('{$this->name}', 1, '{$this->description}', '{$this->picture}',
                          {$this->pagesFrom}, {$this->pagesTo}, {$this->pagesStep}, {$this->hasContent},
                          {$this->hasAddContent}, {$this->hasEnvelope}, {$this->factorWidth}, {$this->factorHeight},
-                         {$this->taxes}, {$this->grantPaper}, {$this->type}, '{$this->textOffer}', 
+                         {$this->grantPaper}, {$this->type}, '{$this->textOffer}',
                          '{$this->textOfferconfirm}', '{$this->textInvoice}', '{$this->textProcessing}',
                          {$this->shoprel}, {$this->getTradegroup()->getId()}, {$this->isIndivual},
                          {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData} )";
@@ -732,16 +724,6 @@ class Product {
     public function setFactorHeight($factorHeight)
     {
         $this->factorHeight = $factorHeight;
-    }
-
-    public function getTaxes()
-    {
-        return $this->taxes;
-    }
-
-    public function setTaxes($taxes)
-    {
-        $this->taxes = $taxes;
     }
 
     public function getGrantPaper()

@@ -70,6 +70,7 @@ class Model {
 
         if ($this->id > 0) {
             $sql = "UPDATE {$this->_table} SET {$set} WHERE id = {$this->id}";
+//            prettyPrint($sql);
             $res = $DB->no_result($sql);
             if ($res){
                 self::hook_afterSave();

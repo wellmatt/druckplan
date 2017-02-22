@@ -42,54 +42,54 @@ $_LANG = $_USER->getLang();
 $_REQUEST["exec"] = trim(addslashes($_REQUEST["exec"]));
 
 // Details eines Auftrags holen
-if ($_REQUEST['exec'] == 'getOrderDetails'){
-	$orderid = (int)$_REQUEST['orderid'];
-	$order = new Order($orderid);
-	$calcs = Calculation::getAllCalculations($order);
-	$sum_price = 0;
-	$detailtext = "";
-	$i=1;
-	
-	$detailtext .= $_LANG->get('Produkt').": ".$order->getProduct()->getName()."\n";
-	$detailtext .= $_LANG->get('Beschreibung').": ".$order->getProduct()->getDescription()."\n \n";
-	$detailtext .= "------------------------- \n";
-	foreach ($calcs as $calc){
-		if ($calc->getState() > 0){ // nur rechnungsrelevante/beauftragte Kalkulationen verwenden
-			$sum_price += $calc->getSummaryPrice();
-			$detailtext .= $_LANG->get('Kalkulation')." ".$i.": \n";
-			$detailtext .= " ".$_LANG->get('Format').": ".$calc->getProductFormat()->getName()."\n";
-			$detailtext .= " ".$_LANG->get('Auflage').": ".$calc->getAmount()." ".$_LANG->get('Stk.')."\n \n";
-			//Inhalt
-			$detailtext .= $_LANG->get('Inhalt')." \n";
-			$detailtext .= " ".$_LANG->get('Seiten').": ".$calc->getPagesContent()."\n";
-			$detailtext .= " ".$_LANG->get('Papier').": ".$calc->getPaperContent()->getName();
-			$detailtext .= " ".$_LANG->get('in')." ".$calc->getPaperContentWeight()." g \n";
-			$detailtext .= " ".$_LANG->get('Farbigkeit').": ".$calc->getChromaticitiesContent()->getName()."\n";
-			if($calc->getPaperAddContent()->getId() != 0){
-				$detailtext .= "\n".$_LANG->get('Zus. Inhalt')." \n";
-				$detailtext .= " ".$_LANG->get('Seiten').": ".$calc->getPagesAddContent()."\n";
-				$detailtext .= " ".$_LANG->get('Papier').": ".$calc->getPaperAddContent()->getName();
-				$detailtext .= " in ".$calc->getPaperAddContentWeight()." g \n";
-				$detailtext .= " ".$_LANG->get('Farbigkeit').": ".$calc->getChromaticitiesAddContent()->getName()."\n";
-			}
-			if($calc->getPaperEnvelope()->getId() != 0){
-				$detailtext .= "\n".$_LANG->get('Umschlag')." \n";
-				$detailtext .= " ".$_LANG->get('Seiten').": ".$calc->getPagesEnvelope()."\n";
-				$detailtext .= " ".$_LANG->get('Papier').": ".$calc->getPaperEnvelope()->getName();
-				$detailtext .= " in ".$calc->getPaperEnvelopeWeight()." g \n";
-				$detailtext .= " ".$_LANG->get('Farbigkeit').": ".$calc->getChromaticitiesEnvelope()->getName()."\n";
-			}
-			$detailtext .= "\n----- -----\n";
-			$i++;
-		}
-	}
-	$detailtext = substr( $detailtext, 0, -12);
-
-	echo $order->getId()."-+-+-";
-	echo $sum_price."-+-+-";
-	echo $order->getProduct()->getTaxes()."-+-+-";
-	echo $detailtext;
-}
+//if ($_REQUEST['exec'] == 'getOrderDetails'){
+//	$orderid = (int)$_REQUEST['orderid'];
+//	$order = new Order($orderid);
+//	$calcs = Calculation::getAllCalculations($order);
+//	$sum_price = 0;
+//	$detailtext = "";
+//	$i=1;
+//
+//	$detailtext .= $_LANG->get('Produkt').": ".$order->getProduct()->getName()."\n";
+//	$detailtext .= $_LANG->get('Beschreibung').": ".$order->getProduct()->getDescription()."\n \n";
+//	$detailtext .= "------------------------- \n";
+//	foreach ($calcs as $calc){
+//		if ($calc->getState() > 0){ // nur rechnungsrelevante/beauftragte Kalkulationen verwenden
+//			$sum_price += $calc->getSummaryPrice();
+//			$detailtext .= $_LANG->get('Kalkulation')." ".$i.": \n";
+//			$detailtext .= " ".$_LANG->get('Format').": ".$calc->getProductFormat()->getName()."\n";
+//			$detailtext .= " ".$_LANG->get('Auflage').": ".$calc->getAmount()." ".$_LANG->get('Stk.')."\n \n";
+//			//Inhalt
+//			$detailtext .= $_LANG->get('Inhalt')." \n";
+//			$detailtext .= " ".$_LANG->get('Seiten').": ".$calc->getPagesContent()."\n";
+//			$detailtext .= " ".$_LANG->get('Papier').": ".$calc->getPaperContent()->getName();
+//			$detailtext .= " ".$_LANG->get('in')." ".$calc->getPaperContentWeight()." g \n";
+//			$detailtext .= " ".$_LANG->get('Farbigkeit').": ".$calc->getChromaticitiesContent()->getName()."\n";
+//			if($calc->getPaperAddContent()->getId() != 0){
+//				$detailtext .= "\n".$_LANG->get('Zus. Inhalt')." \n";
+//				$detailtext .= " ".$_LANG->get('Seiten').": ".$calc->getPagesAddContent()."\n";
+//				$detailtext .= " ".$_LANG->get('Papier').": ".$calc->getPaperAddContent()->getName();
+//				$detailtext .= " in ".$calc->getPaperAddContentWeight()." g \n";
+//				$detailtext .= " ".$_LANG->get('Farbigkeit').": ".$calc->getChromaticitiesAddContent()->getName()."\n";
+//			}
+//			if($calc->getPaperEnvelope()->getId() != 0){
+//				$detailtext .= "\n".$_LANG->get('Umschlag')." \n";
+//				$detailtext .= " ".$_LANG->get('Seiten').": ".$calc->getPagesEnvelope()."\n";
+//				$detailtext .= " ".$_LANG->get('Papier').": ".$calc->getPaperEnvelope()->getName();
+//				$detailtext .= " in ".$calc->getPaperEnvelopeWeight()." g \n";
+//				$detailtext .= " ".$_LANG->get('Farbigkeit').": ".$calc->getChromaticitiesEnvelope()->getName()."\n";
+//			}
+//			$detailtext .= "\n----- -----\n";
+//			$i++;
+//		}
+//	}
+//	$detailtext = substr( $detailtext, 0, -12);
+//
+//	echo $order->getId()."-+-+-";
+//	echo $sum_price."-+-+-";
+//	echo $order->getProduct()->getTaxes()."-+-+-";
+//	echo $detailtext;
+//}
 
 // Details eines Artikels holen
 if ($_REQUEST['exec'] == 'getArticleDetails'){

@@ -33,8 +33,8 @@ $DB->connect($_CONFIG->db);
 $vp_user = User::getAllUserFiltered(User::ORDER_ID," AND login = 'viaprinto' ");
 if (count($vp_user) == 1){
     $_USER = $vp_user[0];
-    $postData = file_get_contents('php://input');
-    $xml = simplexml_load_string($postData);
+    $xmlData = $_REQUEST["xml"];
+    $xml = simplexml_load_string($xmlData);
     if ($xml){
         $colinv = new CollectiveInvoice();
         $colinv->setClient(new Client(1));

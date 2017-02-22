@@ -37,6 +37,7 @@ require_once 'libs/modules/dashboard/dashboard.class.php';
 require_once 'libs/basic/eventqueue/eventqueue.class.php';
 require_once 'libs/basic/files/file.class.php';
 require_once 'libs/modules/organizer/caldav.event.class.php';
+require_once 'libs/modules/taxkeys/taxkey.class.php';
 
 // Mail Stuff
 require_once 'libs/modules/mail/mailmassage.class.php';
@@ -106,7 +107,7 @@ if ($_USER == false)
 {
 
 //    if ($_USER->getLogin() != "ascherer")
-//        die('contilas2 ist im Wartungsmodus (05.02.2017 by A.Scherer)');
+//        die('contilas2 ist im Wartungsmodus (17.02.2017 by A.Scherer)');
 
     /* Logindaten merken?
      * Daten werden für 365 Tage gemerkt
@@ -198,6 +199,18 @@ if ($_USER == false)
 <script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.pie.js"></script>
 <script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.categories.js"></script>
 <!-- /FLOT -->
+
+<!-- Select2 -->
+<link href="jscripts/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="jscripts/select2/dist/js/select2.min.js"></script>
+<script src="jscripts/select2/dist/js/i18n/de.js"></script>
+<!-- /Select2 -->
+
+<!-- CKEditor -->
+<script type="text/javascript" src="jscripts/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="jscripts/ckeditor/config.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/ckeditor/skins/bootstrapck/editor.css"/>
+<!-- /CKEditor -->
 
 <?php
 if ($_REQUEST["pagetitle"]){
