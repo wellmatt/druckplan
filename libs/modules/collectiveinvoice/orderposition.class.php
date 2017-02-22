@@ -330,7 +330,7 @@ class Orderposition{
 	 * @return string
 	 */
 	public function getTitle(){
-		$retval = "N.A.";
+		$retval = "Manuell";
 		if ($this->type == self::TYPE_ARTICLE || $this->type == self::TYPE_ORDER){
 			$tmp_art = new Article($this->objectid);
 			$retval = $tmp_art->getTitle() . " (".$tmp_art->getNumber().")"; 

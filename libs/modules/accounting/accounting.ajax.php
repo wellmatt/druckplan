@@ -9,6 +9,7 @@
 chdir("../../../");
 require_once 'libs/basic/basic.importer.php';
 require_once 'libs/modules/accounting/invoiceout.class.php';
+require_once 'libs/modules/accounting/revert.class.php';
 
 if ($_REQUEST["exec"] == "doStorno"){
     $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
@@ -19,6 +20,16 @@ if ($_REQUEST["exec"] == "doStorno"){
         $colinv->setLocked(0);
         $colinv->save();
         $doc = new Document($invoiceout->getDoc());
+        $doc->setStornoDate(time());
+        $doc->save();
+    }
+}
+if ($_REQUEST["exec"] == "doStornoRevert"){
+    $revert = new Revert((int)$_REQUEST["id"]);
+    $revert->setStatus(3);
+    $res = $revert->save();
+    if ($res){
+        $doc = new Document($revert->getDoc());
         $doc->setStornoDate(time());
         $doc->save();
     }

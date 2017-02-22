@@ -42,18 +42,19 @@ hiermit erhalten Sie eine Gutschrift mit folgenden Positionen:</span></span></p>
 			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">GP (Netto)</span></span></th>
 		</tr>
 	</thead>
-	<tbody><!-- {foreach $OrderPos as $Pos} --><!-- {if $Pos->getRevrel() eq 1} -->
-		<tr>
-			<td style="text-align:center; width:25px">
-			<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos@iteration}</span></span></p>
-			</td>
-			<td style="text-align:left; width:200px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></td>
-			<td style="text-align:left; width:65px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getQuantity()}</span></span></td>
-			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getTax()} %</span></span></td>
-			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getPrice()} {$Currency}</span></span></td>
-			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getNetto()} {$Currency}</span></span></td>
-		</tr>
-		<!-- {/if} --><!-- {/foreach} -->
+	<tbody>
+	    <!-- {foreach $OrderPos as $Pos} -->
+            <tr>
+                <td style="text-align:center; width:25px">
+                <p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos@iteration}</span></span></p>
+                </td>
+                <td style="text-align:left; width:200px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getOpos()-&gt;getComment()}</span></span></td>
+                <td style="text-align:left; width:65px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getAmount()}</span></span></td>
+                <td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getOpos()-&gt;getTax()} %</span></span></td>
+                <td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getPrice()} {$Currency}</span></span></td>
+                <td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getPrice()} {$Currency}</span></span></td>
+            </tr>
+		<!-- {/foreach} -->
 	</tbody>
 </table>
 

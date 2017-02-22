@@ -1,17 +1,17 @@
 <?php
 /**
- *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
  *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
  *  * Proprietary and confidential
- *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
  *
  */
-require_once 'libs/modules/accounting/invoiceout.class.php';
+require_once 'libs/modules/accounting/revert.class.php';
 
 if($_REQUEST["subexec"] == "delete")
 {
-    $invoiceout = new InvoiceOut($_REQUEST["id"]);
-    $savemsg = getSaveMessage($invoiceout->delete());
+    $revert = new Revert($_REQUEST["id"]);
+    $savemsg = getSaveMessage($revert->delete());
 }
 
 if ($_REQUEST["subexec"] == "save"){
@@ -22,12 +22,12 @@ if ($_REQUEST["subexec"] == "save"){
                 'payeddate' => $paydate,
                 'status' => 2,
             ];
-            $invoiceout = new InvoiceOut((int)$_REQUEST["id"], $array);
-            $invoiceout->save();
+            $revert = new Revert((int)$_REQUEST["id"], $array);
+            $revert->save();
         }
     }
 }
-$invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
+$revert = new Revert((int)$_REQUEST["id"]);
 
 ?>
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -36,8 +36,8 @@ $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page=libs/modules/accounting/invoiceout.overview.php',null,'glyphicon-step-backward');
-if ($invoiceout->getStatus() != 3)
-    $quickmove->addItem('Speichern','#',"$('#invout_form').submit();",'glyphicon-floppy-disk');
+if ($revert->getStatus() != 3)
+    $quickmove->addItem('Speichern','#',"$('#revert_form').submit();",'glyphicon-floppy-disk');
 
 echo $quickmove->generate();
 // end of Quickmove generation ?>
@@ -54,13 +54,13 @@ echo $quickmove->generate();
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    Rechnung - <?php echo $invoiceout->getNumber();?>
+                    Gutschrift - <?php echo $revert->getNumber();?>
                     <span class="pull-right">
-                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='libs/modules/documents/document.get.iframe.php?getDoc=<?= $invoiceout->getDoc() ?>&version=email';">
+                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='libs/modules/documents/document.get.iframe.php?getDoc=<?php echo $revert->getDoc();?>&version=email';">
                             <span class="filetypes filetypes-pdf"></span>
                             E-Mail
                         </button>
-                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='libs/modules/documents/document.get.iframe.php?getDoc=<?= $invoiceout->getDoc() ?>&version=print';">
+                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='libs/modules/documents/document.get.iframe.php?getDoc=<?php echo $revert->getDoc();?>&version=print';">
                             <span class="filetypes filetypes-pdf"></span>
                             Print
                         </button>
@@ -68,27 +68,27 @@ echo $quickmove->generate();
                 </h3>
             </div>
             <div class="panel-body">
-                <form action="index.php?page=<?=$_REQUEST['page']?>" id="invout_form" name="invout_form" method="post" role="form" class="form-horizontal">
-                    <input type="hidden" id="id" name="id" value="<?=$invoiceout->getId()?>" />
+                <form action="index.php?page=<?=$_REQUEST['page']?>" id="revert_form" name="revert_form" method="post" role="form" class="form-horizontal">
+                    <input type="hidden" id="id" name="id" value="<?=$revert->getId()?>" />
                     <input type="hidden" id="exec" name="exec" value="edit" />
                     <input type="hidden" id="subexec" name="subexec" value="save" />
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Titel</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo $invoiceout->getColinv()->getTitle();?>
+                            <?php echo $revert->getColinv()->getTitle();?>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">VO-Nummer</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo $invoiceout->getColinv()->getNumber();?>
+                            <?php echo $revert->getColinv()->getNumber();?>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Status</label>
                         <div class="col-sm-4 form-text">
                             <?php
-                            switch ($invoiceout->getStatus()){
+                            switch ($revert->getStatus()){
                                 case 0:
                                     echo 'gelöscht';
                                     break;
@@ -108,67 +108,55 @@ echo $quickmove->generate();
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Netto Betrag</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo printPrice($invoiceout->getNetvalue(),2);?>€
+                            <?php echo printPrice($revert->getNetvalue(),2);?>€
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Brutto Betrag</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo printPrice($invoiceout->getGrossvalue(),2);?>€
+                            <?php echo printPrice($revert->getGrossvalue(),2);?>€
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Erstellt</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo date('d.m.y',$invoiceout->getCrtdate());?>
+                            <?php echo date('d.m.y',$revert->getCrtdate());?>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Fälligkeit</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo date('d.m.y',$invoiceout->getDuedate());?>
+                            <?php echo date('d.m.y',$revert->getDuedate());?>
                         </div>
                     </div>
 
-                    <?php if ($invoiceout->getPayeddate()>0){?>
+                    <?php if ($revert->getPayeddate()>0){?>
                         <div class="form-group">
-                            <label for="" class="col-sm-2 control-label">Bezahlt am</label>
+                            <label for="" class="col-sm-2 control-label">Ausgezahlt am</label>
                             <div class="col-sm-4 form-text">
-                                <?php echo date('d.m.y',$invoiceout->getPayeddate());?>
+                                <?php echo date('d.m.y',$revert->getPayeddate());?>
                             </div>
                         </div>
-                    <?php } else if($invoiceout->getStatus() != 3) { ?>
+                    <?php } elseif ($revert->getStatus() != 3) { ?>
                         <div class="form-group">
-                            <label for="" class="col-sm-2 control-label">Bezahlt am</label>
+                            <label for="" class="col-sm-2 control-label">Ausgezahlt am</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="payeddate" id="payeddate"
-                                       value="<?php if ($invoiceout->getPayeddate() > 0) echo date('d.m.y',$invoiceout->getPayeddate());?>">
+                                       value="<?php if ($revert->getPayeddate() > 0) echo date('d.m.y',$revert->getPayeddate());?>">
                             </div>
                         </div>
                     <?php } ?>
 
-                    <?php if ($invoiceout->getStatus() < 3){?>
+                    <?php if ($revert->getStatus() < 3){?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Storno</label>
                         <div class="col-sm-4">
                             <button class="btn btn-xs btn-success" type="button"
-                                    onclick="doStorno(<?php echo $invoiceout->getId();?>);">
+                                    onclick="doStornoRevert(<?php echo $revert->getId();?>);">
                                      <?= $_LANG->get('Storno'); ?>
-                            </button>
-                        </div>
-                    </div>
-                    <?php }?>
-
-                    <?php if ($invoiceout->getStatus() == 1) {?>
-                    <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Mahnung</label>
-                        <div class="col-sm-4">
-                            <button class="btn btn-xs btn-success" type="button"
-                                    onclick="document.location.href='index.php?page=libs/modules/accounting/invoicewarning.php&exec=new&invid=<?php echo $invoiceout->getDoc(); ?>';">
-                                <?= $_LANG->get('Mahnung') ?>
                             </button>
                         </div>
                     </div>
@@ -181,21 +169,11 @@ echo $quickmove->generate();
 
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <script>
-    function doStorno(id){
+    function doStornoRevert(id){
         $.ajax({
                 type: "POST",
                 url: "libs/modules/accounting/accounting.ajax.php",
-                data: { exec: "doStorno", id: id }
-            })
-            .done(function( msg ) {
-                document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php';
-            });
-    }
-    function doDelete(id){
-        $.ajax({
-                type: "POST",
-                url: "libs/modules/accounting/accounting.ajax.php",
-                data: { exec: "doDelete", id: id }
+                data: { exec: "doStornoRevert", id: id }
             })
             .done(function( msg ) {
                 document.location.href='index.php?page=libs/modules/accounting/invoiceout.overview.php';

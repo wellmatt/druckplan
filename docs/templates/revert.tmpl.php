@@ -1,34 +1,34 @@
-<?
-// ----------------------------------------------------------------------------------
-// Author: Klein Druck+Medien GmbH
-// Updated: 23.12.2014
-// Copyright: Klein Druck+Medien GmbH - All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-// ----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
+ *
+ */
+error_reporting(-1);
+ini_set('display_errors', 1);
 
 require_once 'thirdparty/smarty/Smarty.class.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
 
-$orderpos = $order->getPositions();
+$revert = Revert::getNewestForColinv($order);
+$positions = RevertPosition::getAllForRevert($revert);
 
-//Gesamtpreis
 $sum = 0;
 $gesnetto = 0;
 $taxeskey = Array();
 $taxes = Array();
-foreach ($orderpos as $op)
+
+foreach ($positions as $revpos)
 {
-//     echo $op->getRevrel();
-    if ($op->getRevrel() == 1)
-    {
-        $gesnetto += $op->getNetto();
-        if(!in_array($op->getTax(), $taxeskey))
-            $taxeskey[] = $op->getTax();
-    
-        $taxes[$op->getTax()] += $op->getNetto() / 100 * $op->getTax();
-    }
+    $gesnetto += $revpos->getPrice();
+    if(!in_array($revpos->getTaxkey()->getValue(), $taxeskey))
+        $taxeskey[] = $revpos->getTaxkey()->getValue();
+
+    $taxes[$revpos->getTaxkey()->getValue()] += $revpos->getPrice() / 100 * $revpos->getTaxkey()->getValue();
 }
+
 
 require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/revert.tmpl';
@@ -36,7 +36,7 @@ $datei = ckeditor_to_smarty($tmp);
 
 // Table
 
-$smarty->assign('OrderPos',$orderpos);
+$smarty->assign('OrderPos',$positions);
 
 $smarty->assign('DeliveryCosts',$order->getDeliveryCosts());
 if ($order->getDeliveryCosts()) {

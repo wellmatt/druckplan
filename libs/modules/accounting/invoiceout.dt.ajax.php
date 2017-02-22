@@ -19,7 +19,7 @@
     require_once 'thirdparty/phpfastcache/phpfastcache.php';
     session_start();
 
-    $aColumns = array( 'id', 'renr', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'crtdate', 'duedate', 'payeddate', 'status' );
+    $aColumns = array( 'id', 'renr', 'type', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'crtdate', 'duedate', 'payeddate', 'status' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -186,31 +186,68 @@
         }
     }
 
+    if ($_REQUEST["type"] > 0){
+        if ($sWhere == ""){
+            $sWhere .= " WHERE `type` = " . (int)$_REQUEST["type"];
+        } else {
+            $sWhere .= " AND `type` = " . (int)$_REQUEST["type"];
+        }
+    }
+
     /*
      * SQL queries
      * Get data to display
      */
     $sQuery = "
         SELECT * FROM
-        (
-        SELECT
-        invoiceouts.id,
-        invoiceouts.number as renr,
-        collectiveinvoice.number as vonr,
-        collectiveinvoice.title,
-        CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
-        businesscontact.id as bcid,
-        invoiceouts.netvalue,
-        invoiceouts.grossvalue,
-        invoiceouts.crtdate,
-        invoiceouts.duedate,
-        invoiceouts.payeddate,
-        invoiceouts.`status`
-        FROM
-        invoiceouts
-        INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
-        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-        ) t1
+	(
+		SELECT
+			'1' AS type,
+			invoiceouts.id,
+			invoiceouts.number AS renr,
+			collectiveinvoice.number AS vonr,
+			collectiveinvoice.title,
+			CONCAT(
+				businesscontact.name1,
+				' ',
+				businesscontact.name2
+			) AS bname,
+			businesscontact.id AS bcid,
+			invoiceouts.netvalue,
+			invoiceouts.grossvalue,
+			invoiceouts.crtdate,
+			invoiceouts.duedate,
+			invoiceouts.payeddate,
+			invoiceouts.`status`
+		FROM
+			invoiceouts
+		INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
+		INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+		UNION ALL
+		SELECT
+			'2' AS type,
+			reverts.id,
+			reverts.number AS renr,
+			collectiveinvoice.number AS vonr,
+			collectiveinvoice.title,
+			CONCAT(
+				businesscontact.name1,
+				' ',
+				businesscontact.name2
+			) AS bname,
+			businesscontact.id AS bcid,
+			reverts.netvalue,
+			reverts.grossvalue,
+			reverts.crtdate,
+			reverts.duedate,
+			reverts.payeddate,
+			reverts.`status`
+		FROM
+			reverts
+		INNER JOIN collectiveinvoice ON reverts.colinv = collectiveinvoice.id
+		INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+	) t1
+
         $sWhere
         $sOrder
         $sLimit
@@ -228,26 +265,53 @@ $status = mysql_fetch_assoc($test);
     /* Data set length after filtering */
     $sQuery = "
         SELECT count(id) FROM
-        (
-        SELECT
-        invoiceouts.id,
-        invoiceouts.number as renr,
-        collectiveinvoice.number as vonr,
-        collectiveinvoice.title,
-        CONCAT(businesscontact.name1,' ',businesscontact.name2) as bname,
-        businesscontact.id as bcid,
-        invoiceouts.netvalue,
-        invoiceouts.grossvalue,
-        invoiceouts.crtdate,
-        invoiceouts.duedate,
-        invoiceouts.payeddate,
-        invoiceouts.`status`
-
-        FROM
-        invoiceouts
-        INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
-        INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-        ) t1
+	(
+		SELECT
+			'1' AS type,
+			invoiceouts.id,
+			invoiceouts.number AS renr,
+			collectiveinvoice.number AS vonr,
+			collectiveinvoice.title,
+			CONCAT(
+				businesscontact.name1,
+				' ',
+				businesscontact.name2
+			) AS bname,
+			businesscontact.id AS bcid,
+			invoiceouts.netvalue,
+			invoiceouts.grossvalue,
+			invoiceouts.crtdate,
+			invoiceouts.duedate,
+			invoiceouts.payeddate,
+			invoiceouts.`status`
+		FROM
+			invoiceouts
+		INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
+		INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+		UNION ALL
+		SELECT
+			'2' AS type,
+			reverts.id,
+			reverts.number AS renr,
+			collectiveinvoice.number AS vonr,
+			collectiveinvoice.title,
+			CONCAT(
+				businesscontact.name1,
+				' ',
+				businesscontact.name2
+			) AS bname,
+			businesscontact.id AS bcid,
+			reverts.netvalue,
+			reverts.grossvalue,
+			reverts.crtdate,
+			reverts.duedate,
+			reverts.payeddate,
+			reverts.`status`
+		FROM
+			reverts
+		INNER JOIN collectiveinvoice ON reverts.colinv = collectiveinvoice.id
+		INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+	) t1
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -258,8 +322,56 @@ $status = mysql_fetch_assoc($test);
      
     /* Total data set length */
     $sQuery = "
-        SELECT COUNT(".$sIndexColumn.")
-        FROM   $sTable WHERE `status` > 0
+        SELECT COUNT($sIndexColumn)
+        FROM
+	(
+		SELECT
+			'1' AS type,
+			invoiceouts.id,
+			invoiceouts.number AS renr,
+			collectiveinvoice.number AS vonr,
+			collectiveinvoice.title,
+			CONCAT(
+				businesscontact.name1,
+				' ',
+				businesscontact.name2
+			) AS bname,
+			businesscontact.id AS bcid,
+			invoiceouts.netvalue,
+			invoiceouts.grossvalue,
+			invoiceouts.crtdate,
+			invoiceouts.duedate,
+			invoiceouts.payeddate,
+			invoiceouts.`status`
+		FROM
+			invoiceouts
+		INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
+		INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+		UNION ALL
+		SELECT
+			'2' AS type,
+			reverts.id,
+			reverts.number AS renr,
+			collectiveinvoice.number AS vonr,
+			collectiveinvoice.title,
+			CONCAT(
+				businesscontact.name1,
+				' ',
+				businesscontact.name2
+			) AS bname,
+			businesscontact.id AS bcid,
+			reverts.netvalue,
+			reverts.grossvalue,
+			reverts.crtdate,
+			reverts.duedate,
+			reverts.payeddate,
+			reverts.`status`
+		FROM
+			reverts
+		INNER JOIN collectiveinvoice ON reverts.colinv = collectiveinvoice.id
+		INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
+	) t1
+        WHERE `status` > 0
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
@@ -296,6 +408,17 @@ $status = mysql_fetch_assoc($test);
                         break;
                     case 3:
                         $row[] = 'storniert';
+                        break;
+                }
+            }
+            if ( $aColumns[$i] == 'type' )
+            {
+                switch ($aRow[ $aColumns[$i] ]) {
+                    case 1:
+                        $row[] = 'Rechnung';
+                        break;
+                    case 2:
+                        $row[] = 'Gutschrift';
                         break;
                 }
             }

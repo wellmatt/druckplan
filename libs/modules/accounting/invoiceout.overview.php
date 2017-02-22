@@ -70,6 +70,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Typ</label>
+                        <div class="col-sm-10">
+                            <select name="ajax_type" id="ajax_type" class="form-control">
+                                <option value="0">- Alle -</option>
+                                <option value="1">Rechnungen</option>
+                                <option value="2">Gutschriften</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Suche</label>
                         <div class="col-sm-10">
                             <input type="text" id="search" class="form-control" placeholder="">
@@ -83,7 +93,8 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Re.-Nr.</th>
+                    <th>Dok.-Nr.</th>
+                    <th>Typ</th>
                     <th>VO-Nr.</th>
                     <th>VO-Titel</th>
                     <th>Kunde</th>
@@ -162,6 +173,10 @@
             $('#invouttable').dataTable().fnDraw();
         });
 
+        $('#ajax_type').change(function(){
+            $('#invouttable').dataTable().fnDraw();
+        });
+
         var invouttable = $('#invouttable').DataTable( {
             "autoWidth": false,
             "processing": true,
@@ -187,6 +202,7 @@
             },
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
             "columns": [
+                null,
                 null,
                 null,
                 null,
@@ -228,6 +244,8 @@
                 var iMax = document.getElementById('ajax_date_max').value;
                 var customer = document.getElementById('custsearch_id').value;
                 var status = document.getElementById('ajax_status').value;
+                var type = document.getElementById('ajax_type').value;
+                aoData.push( { "name": "type", "value": type, } );
                 aoData.push( { "name": "status", "value": status, } );
                 aoData.push( { "name": "bcid", "value": customer, } );
                 aoData.push( { "name": "start", "value": iMin, } );
@@ -242,7 +260,10 @@
         $("#invouttable tbody td").live('click',function(){
             var aPos = $('#invouttable').dataTable().fnGetPosition(this);
             var aData = $('#invouttable').dataTable().fnGetData(aPos[0]);
-            document.location='index.php?page=libs/modules/accounting/invoiceout.edit.php&exec=edit&id='+aData[0];
+            if (aData[2] == 'Rechnung')
+                document.location='index.php?page=libs/modules/accounting/invoiceout.edit.php&exec=edit&id='+aData[0];
+            if (aData[2] == 'Gutschrift')
+                document.location='index.php?page=libs/modules/accounting/revert.edit.php&exec=edit&id='+aData[0];
         });
 
     } );

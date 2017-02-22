@@ -956,7 +956,7 @@ if ($_REQUEST["subexec"] == "send")
 					<?
 					if (count($docs) > 0) {
 						foreach ($docs AS $doc) { ?>
-							<tr class="<?= getRowColor(0) ?>">
+							<tr class="<?= getRowColor(0) ?> <?php if ($doc->getStornoDate() > 0) echo ' canceled ';?>">
 								<td>
 									<span class="ok"><?= $doc->getName() ?></span>
 								</td>
@@ -965,6 +965,7 @@ if ($_REQUEST["subexec"] == "send")
 										echo '<img src="images/status/green_small.svg">';
 									else
 										echo '<img src="images/status/red_small.svg">'; ?>
+									<?php if ($doc->getStornoDate()) {?>Storno: <?= date('d.m.Y H:m', $doc->getStornoDate()) ?><?php } ?>
 								</td>
 								<td>
 									<?= $doc->getCreateUser()->getNameAsLine() ?>
@@ -985,11 +986,11 @@ if ($_REQUEST["subexec"] == "send")
 													<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?= $doc->getId() ?>&version=print"><?= $_LANG->get('Print') ?></a>
 												</ul>
 											</td>
-											<td width="40%">
-												<ul class="postnav_text_del">
-													<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&deleteDoc=<?= $doc->getId() ?>"><?= $_LANG->get('L&ouml;schen') ?></a>
-												</ul>
-											</td>
+<!--											<td width="40%">-->
+<!--												<ul class="postnav_text_del">-->
+<!--													<a href="index.php?page=--><?//= $_REQUEST['page'] ?><!--&ciid=--><?//= $collectinv->getId() ?><!--&exec=docs&deleteDoc=--><?//= $doc->getId() ?><!--">--><?//= $_LANG->get('L&ouml;schen') ?><!--</a>-->
+<!--												</ul>-->
+<!--											</td>-->
 										</tr>
 									</table>
 								</td>
@@ -1007,22 +1008,7 @@ if ($_REQUEST["subexec"] == "send")
 						<td>- - -</td>
 						<td>
 							<ul class="postnav_text_save">
-								<?php
-								$letterheads = Letterhead::getAllForType(Document::TYPE_REVERT);
-								?>
-								<select name="letterhead_revert" id="letterhead_revert" class="form-control"
-										style="margin-bottom: 5px;">
-									<?php
-									foreach ($letterheads as $item) {
-										if ($item->getStd() == 1)
-											echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
-										else
-											echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
-									}
-									?>
-								</select>
-								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=revert"
-								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_revert').val());"><?= $_LANG->get('Generieren') ?></a>
+								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=createNewRevert"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
 						</td>
 
