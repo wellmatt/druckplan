@@ -24,6 +24,7 @@ $open = array_merge($open_suporder,$open_colinv);
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
 <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/1.10.13/sorting/datetime-moment.js"></script>
 
 <?php if (isset($savemsg)) { ?>
     <div class="alert alert-info">
@@ -153,11 +154,13 @@ $open = array_merge($open_suporder,$open_colinv);
 
 <script type="text/javascript">
     $(document).ready(function() {
+        $.fn.dataTable.moment( 'DD.MM.YYYY HH:mm' );
         var goods_open = $('#goods_open').DataTable( {
             "paging": true,
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
             "dom": 'T<"clear">lrtip',
+            "order": [[ 4, 'asc' ]],
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -167,7 +170,7 @@ $open = array_merge($open_suporder,$open_colinv);
                     {
                         "sExtends": "pdf",
                         "sPdfOrientation": "landscape",
-                        "sPdfMessage": "Contilas - Articles"
+                        "sPdfMessage": "Contilas - Waren"
                     },
                     "print"
                 ]
