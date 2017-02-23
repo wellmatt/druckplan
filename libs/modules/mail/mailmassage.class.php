@@ -104,6 +104,7 @@ class MailMessage{
 
         // New Horde Horde_Mail_Transport_Smtp Object
         $this->mailer = new Horde_Mail_Transport_Smtp($smtp_params);
+//        dd($this->mailer->getSMTPObject());
 
         // New Horde MIME_Mail Object
         $this->mail = new Horde_Mime_Mail();

@@ -47,6 +47,7 @@ class Perferences
     private $imap_password = '';
     private $imap_ssl = 0;
     private $imap_tls = 0;
+    private $system_signature = '';
 
     function __construct()
     {
@@ -79,6 +80,7 @@ class Perferences
             $this->smtp_tls = $r["smtp_tls"];
             $this->imap_ssl = $r["imap_ssl"];
             $this->imap_tls = $r["imap_tls"];
+            $this->system_signature = $r["system_signature"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -135,6 +137,7 @@ class Perferences
                smtp_tls 	= '{$this->smtp_tls}',
                imap_ssl 	= '{$this->imap_ssl}',
                imap_tls 	= '{$this->imap_tls}',
+               system_signature 	= '{$this->system_signature}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -506,5 +509,21 @@ class Perferences
     public function setImapTls($imap_tls)
     {
         $this->imap_tls = $imap_tls;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSystemSignature()
+    {
+        return $this->system_signature;
+    }
+
+    /**
+     * @param string $system_signature
+     */
+    public function setSystemSignature($system_signature)
+    {
+        $this->system_signature = $system_signature;
     }
 }

@@ -227,7 +227,7 @@ class Document
      * type => constant Type
      * requestId => id of requesting object in module
      *
-     * @return Array of matching documents
+     * @return Document[]
      */
     static public function getDocuments($filter)
     {
@@ -250,6 +250,12 @@ class Document
         }
         if ($filter["payed_status"] == 2) {
             $sql .= " AND t1.doc_payed > 0 ";
+        }
+        if ($filter["sent"] === false) {
+            $sql .= " AND t1.doc_sent = 0 ";
+        }
+        if ($filter["storno"] != true) {
+            $sql .= " AND t1.doc_storno_date = 0 ";
         }
         
         if ($filter["date_from"] > 0 && $filter["date_to"]) {

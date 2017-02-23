@@ -1070,7 +1070,7 @@ class CollectiveInvoice{
     }
     
 	/**
-     * @return the $custContactperson
+     * @return ContactPerson
      */
     public function getCustContactperson()
     {

@@ -61,6 +61,7 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setImapPort($_REQUEST["imap_port"]);
 	$perf->setImapUser($_REQUEST["imap_user"]);
 	$perf->setImapPassword($_REQUEST["imap_password"]);
+	$perf->setSystemSignature($_REQUEST["system_signature"]);
 	if ($_REQUEST["imap_ssl"] == 1){
 		$perf->setImapSsl(1);
 	} else {
@@ -129,6 +130,7 @@ $(function() {
 <script>
 	$(function() {
 		$( "#tabs" ).tabs({ selected: 0 });
+		CKEDITOR.replace( 'system_signature' );
 	});
 </script>
 <script type="text/javascript">
@@ -455,6 +457,12 @@ echo $quickmove->generate();
 						</div>
 					</div>
 					<p>* Hinweis: Aktuell werden nur SSL Verbindungen unterstützt</p>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Signatur</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" name="system_signature" id="system_signature"><?php echo $perf->getSystemSignature();?></textarea>
+						</div>
+					</div>
 				</div>
 				<div id="tabs-3">
 					<?php
