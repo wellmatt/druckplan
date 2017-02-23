@@ -1075,7 +1075,7 @@ echo $quickmove->generate();
                             </div>
                             <?php
                             $association_object = $ticket;
-                            $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId(), true);
+                            $associations = Association::getAssociationsForObject(get_class($association_object), $association_object->getId(), false);
                             ?>
                             <script type="text/javascript">
                                 function removeAsso(id) {
