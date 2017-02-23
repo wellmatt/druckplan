@@ -29,6 +29,7 @@ class Bulkletter{
     private $contactperson;         // Ansprechpartner der Firma
     private $doc_email_created=0;	// Ob das Dokument mit Birefpapier erstellt wurde
 	private $doc_print_created=0;	// Ob das Dokument ohne Birefpapier erstellt wurde
+	private $docid = 0;				// ID des Dokuments
 
 	private $customer_filter = 4;   // Kunden Filter
 	private $customer_attrib = Array();       // Kunden Filter Attribute
@@ -60,6 +61,7 @@ class Bulkletter{
 				$this->doc_email_created = $r["doc_email_created"];
 				$this->doc_print_created = $r["doc_print_created"];
 				$this->customer_filter = $r["customer_filter"];
+				$this->docid = $r["docid"];
         		$this->customer_attrib = unserialize($r["customer_attrib"]);
 			}
 		}
@@ -87,16 +89,17 @@ class Bulkletter{
 					doc_email_created = {$this->doc_email_created}, 
 					customer_filter = {$this->customer_filter}, 
 					customer_attrib = '{$custatrib}', 
+					docid = '{$this->docid}',
 					doc_print_created = {$this->doc_print_created}
 					WHERE id = {$this->id}";
 				return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO bulkletter
 					(status, title, text, 
-					crt_date, crt_user, customer_filter, customer_attrib )
+					crt_date, crt_user, customer_filter, customer_attrib, docid )
 					VALUES
 					({$this->status}, '{$this->title}', '{$this->text}', 
-					{$now}, {$_USER->getId()}, {$this->customer_filter}, '{$custatrib}' )";
+					{$now}, {$_USER->getId()}, {$this->customer_filter}, '{$custatrib}', '{$this->docid}' )";
 			$res = $DB->no_result($sql);
 	
 			if($res){
@@ -130,40 +133,20 @@ class Bulkletter{
 			}
 		}
 	}
-	
+
 	/**
 	 * Erstellt das PDF-Dokument eines Anschreibens in Abhaengigkeit der Version (E-Mail vs. Print)
 	 */
 	public function createDocument(){
-		global $_CONFIG;
-		global $_USER;
-
-		foreach (Array(Document::VERSION_EMAIL,Document::VERSION_PRINT) as $version){
-			$docformat = DocumentFormat::getForDocType(DocumentFormat::TYPE_BULKLETTER);
-			$format[0] = $docformat->getWidth();
-			$format[1] = $docformat->getHeight();
-
-			$filename = $this->getPdfLink($version);
-
-			if ($version == Document::VERSION_EMAIL)
-			{
-				$pdf = new TCPDF_BG($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
-				$pdf->SetPrintHeader(true);
-				$pdf->SetPrintFooter(false);
-			}
-			else
-			{
-				$pdf = new TCPDF($docformat->getOrientation(), 'mm', $format, true, 'UTF-8', false);
-				$pdf->SetPrintHeader(false);
-				$pdf->SetPrintFooter(false);
-			}
-			$pdf->setPageOrientation($docformat->getOrientation(), TRUE, $docformat->getMarginBottom());
-			$pdf->SetMargins($this->tofloat($docformat->getMarginLeft()), $this->tofloat($docformat->getMarginTop()), $this->tofloat($docformat->getMarginRight()), TRUE);
-			$pdf->AddPage();
-
-			require 'docs/templates/bulkletter.tmpl.php';
-			$pdf->Output($filename, 'F');
-		}
+		$doc = new Document();
+		$doc->setRequestId($this->getId());
+		$doc->setRequestModule(Document::REQ_MODULE_BULKLETTER);
+		$doc->setType(Document::TYPE_BULKLETTER);
+		$hash = $doc->createDoc(Document::VERSION_EMAIL);
+		$doc->createDoc(Document::VERSION_PRINT, $hash);
+		$doc->save();
+		$this->docid = $doc->getId();
+		$this->save();
 	}
 	
 	/**
@@ -328,8 +311,19 @@ class Bulkletter{
         $this->customer_attrib = $customer_attrib;
     }
 
-	
-	
+	/**
+	 * @return int
+	 */
+	public function getDocid()
+	{
+		return $this->docid;
+	}
 
+	/**
+	 * @param int $docid
+	 */
+	public function setDocid($docid)
+	{
+		$this->docid = $docid;
+	}
 }
-?>

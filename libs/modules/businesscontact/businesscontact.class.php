@@ -323,38 +323,22 @@ class BusinessContact {
      *
      * @param String $order : Reihenfolge
      * @param String $filter : Filter
-     * @return multitype:BusinessContact
+     * @return BusinessContact[]
      */
     public static function getAllBusinessContactsForLists($order = self::ORDER_ID, $filter = self::FILTER_ALL, $filter_attrib = 0, $filter_item = 0){
     	global $_USER;
     	global $DB;
     	$businessContacts = Array();
-    	$sql = "SELECT id, name1, name2, customer, supplier, cust_number, 
-    					address1, address2, zip, city, country, phone, fax		
+    	$sql = "SELECT id
     			FROM businesscontact 
     			WHERE 
     			active > 0 
-    			AND {$filter} 
-    			AND client = {$_USER->getClient()->getID()} 
+    			AND {$filter}
     			ORDER BY {$order}";
-    	// echo $sql;
     	if ($DB->num_rows($sql)){
     		$res = $DB->select($sql);
     		foreach ($res as $r){
-    			$tmp_busicon = new BusinessContact();
-    			$tmp_busicon->setId((int)$r["id"]);
-    			$tmp_busicon->setName1($r["name1"]);
-    			$tmp_busicon->setName2($r["name2"]);
-    			$tmp_busicon->setCustomer($r["customer"]);
-    			$tmp_busicon->setCustomernumber($r["cust_number"]);
-    			$tmp_busicon->setSupplier($r["supplier"]);
-    			$tmp_busicon->setAddress1($r["address1"]);
-    			$tmp_busicon->setAddress2($r["address2"]);
-    			$tmp_busicon->setZip($r["zip"]);
-    			$tmp_busicon->setCity($r["city"]);
-    			$tmp_busicon->setCountry(new Country((int)$r["country"]));
-    			$tmp_busicon->setPhone($r["phone"]);
-    			$tmp_busicon->setFax($r["fax"]);
+    			$tmp_busicon = new BusinessContact((int)$r["id"]);
 				if ($filter_attrib != 0 && $filter_item != 0) {
 					if ($tmp_busicon->getIsAttributeItemActive($filter_attrib, $filter_item)) {
 						$businessContacts[] = $tmp_busicon;

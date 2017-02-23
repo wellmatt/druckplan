@@ -1,21 +1,21 @@
 <!-- {foreach $Busicons as $Con} -->
-<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
+    <p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
 
-<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$Con-&gt;getNameAsLine()}<br />
-{ReplaceLn var=$Con-&gt;getAddressAsLine()}</span></span></p>
+    <p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$Con-&gt;getNameAsLine()}<br />
+    {ReplaceLn var=$Con-&gt;getAddressAsLine()}</span></span></p>
 
-<p>&nbsp;</p>
+    <p>&nbsp;</p>
 
-<!--{if $Con->getMainContactperson()->getId() > 0 }-->
-    <!--{if $Con->getMainContactperson()->getTitle() == 'Herrn'}-->
-        Sehr geehrter Herr {$Con->getMainContactperson()->getName1()},<br />
+    <!--{if $Con->getMainContactperson()->getId() > 0 }-->
+        <!--{if $Con->getMainContactperson()->getTitle() == 'Herrn'}-->
+            Sehr geehrter Herr {$Con->getMainContactperson()->getName1()},<br />
+        <!--{else}-->
+            Sehr geehrte Frau {$Con->getMainContactperson()->getName1()},<br />
+        <!--{/if}-->
     <!--{else}-->
-        Sehr geehrte Frau {$Con->getMainContactperson()->getName1()},<br />
+        Sehr geehrte Damen und Herren,<br />
     <!--{/if}-->
-<!--{else}-->
-    Sehr geehrte Damen und Herren,<br />
-<!--{/if}-->
-<p>&nbsp;</p>
-<p>{$Text}</p>
-<div pagebreak="true"></div>
+    <p>&nbsp;</p>
+    <p>{$Text}</p>
+    <div pagebreak="true"></div>
 <!-- {/foreach}-->

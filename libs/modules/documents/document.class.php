@@ -1,11 +1,11 @@
-<? 
-// ------------------------------------------------------------------------------
-   // Author: iPactor GmbH
-   // Updated: 24.04.2012
-   // Copyright: 2012 by iPactor GmbH. All Rights Reserved.
-   // Any unauthorized redistribution, reselling, modifying or reproduction of part
-   // or all of the contents in any form is strictly prohibited.
-   // ----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
+ *
+ */
 
 require_once 'libs/modules/personalization/persopdf.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
@@ -14,80 +14,50 @@ require_once 'libs/modules/perferences/perferences.class.php';
 require_once 'libs/modules/documentformats/documentformat.class.php';
 require_once 'libs/modules/letterhead/letterhead.class.php';
 require_once 'fpdipdf.class.php';
+require_once 'libs/modules/bulkLetter/bulkLetter.class.php';
 
 class Document
 {
-
     const TYPE_OFFER = 1; // Angebot
-
     const TYPE_OFFERCONFIRM = 2; // Angebotsbestaetigung
-
     const TYPE_DELIVERY = 3; // Lieferschein
-
     const TYPE_INVOICE = 4; // Rechnung
-
     const TYPE_FACTORY = 5; // Drucktasche
-
     const TYPE_INVOICEWARNING = 6; // Mahnung
-
     const TYPE_REVERT = 7; // Gutschrift
-
     const TYPE_PERSONALIZATION = 10; // Personalisierung
-
     const TYPE_PERSONALIZATION_ORDER = 11; // Personalisierungsbestellung
-
     const TYPE_LABEL = 15; // Etiketten fuer Kartons/Palette
-
     const TYPE_PAPER_ORDER = 20; // Etiketten fuer Kartons/Palette
+    const TYPE_BULKLETTER = 21; // Etiketten fuer Kartons/Palette
 
     const REQ_MODULE_ORDER = 1;
-
     const REQ_MODULE_MANORDER = 2;
-
     const REQ_MODULE_COLLECTIVEORDER = 3;
-
     const REQ_MODULE_PERSONALIZATION = 4;
+    const REQ_MODULE_BULKLETTER = 5;
 
     const VERSION_EMAIL = 1;
-
     const VERSION_PRINT = 2;
 
     private $id = 0;
-
     private $name;
-
     private $requestId = 0;
-
     private $requestModule = '';
-
     private $type = 0;
-
     private $hash = 0;
-
     private $createDate = 0;
-
     private $createUser = 0;
-
     private $priceNetto = 0;
-
     private $priceBrutto = 0;
-
     private $payable = 0;
-
     private $payed = 0;
-
     private $sent = 0;
-
     private $warningId = 0;
-
     private $reverse = 0; // z.B. fuer Rueckseite bei Personalisierungen
-
     private $stornoDate = 0;
-
     private $paper_order_pid = 0; // nur f�r Papier Bestellungen
-    
     private $preview = 0; // vorschau
-
     private $letterhead = false;
 
     function __construct($id = 0)
@@ -176,7 +146,7 @@ class Document
                     }
                 }
                 
-                if ($this->requestModule == self::REQ_MODULE_ORDER) {
+                if ($this->requestModule == self::REQ_MODULE_ORDER || $this->requestModule == self::REQ_MODULE_BULKLETTER) {
                     $filename = $_CONFIG->docsBaseDir;
                 } elseif ($this->requestModule == self::REQ_MODULE_COLLECTIVEORDER) {
                     $filename = $_CONFIG->docsBaseDir . "col";
@@ -218,6 +188,9 @@ class Document
                     case self::TYPE_PERSONALIZATION_ORDER: // Bei Personalization ist $order eine Personalisierungsbestellung
                         $filename .= 'sonalization/' . $_USER->getClient()->getId() . '.' . "per_" . $this->hash;
                         break; // Bitte auch bei der Create-Funktion anpassen
+                    case self::TYPE_BULKLETTER:
+                        $filename .= 'bulkletter/' . $_USER->getClient()->getId() . '.' . $this->hash;
+                        break;
                 }
                 
                 if (! $this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
@@ -241,7 +214,8 @@ class Document
             "Mahnung" => 6,
             "Gutschrift" => 7,
             "Etikett" => 15,
-            "Papierbestellung" => 20
+            "Papierbestellung" => 20,
+            "Serienbrief" => 21
         ];
     }
 
@@ -431,26 +405,30 @@ class Document
         global $_USER;
         global $_CONFIG;
         global $_LANG;
-        
-        if ($this->requestModule == Document::REQ_MODULE_ORDER)
-            $order = new Order($this->requestId);
-        else 
-            if ($this->requestModule == Document::REQ_MODULE_MANORDER)
-                $order = new ManualInvoice($this->requestId);
-            else 
-                if ($this->requestModule == Document::REQ_MODULE_COLLECTIVEORDER)
-                    $order = new CollectiveInvoice($this->requestId);
-                else 
-                    if ($this->requestModule == Document::REQ_MODULE_PERSONALIZATION) {
-                        if ($this->type == self::TYPE_PERSONALIZATION) {
-                            $order = new Personalization($this->requestId);
-                        }
-                        if ($this->type == self::TYPE_PERSONALIZATION_ORDER) {
-                            $perso_order = new Personalizationorder($this->requestId);
-                            $order = new Personalization($perso_order->getPersoID());
-                        }
-                    }
-        
+
+        switch ($this->requestModule){
+            case self::REQ_MODULE_ORDER:
+                $order = new Order($this->requestId);
+                break;
+            case self::REQ_MODULE_COLLECTIVEORDER:
+                $order = new CollectiveInvoice($this->requestId);
+                break;
+            case self::REQ_MODULE_PERSONALIZATION:
+                if ($this->type == self::TYPE_PERSONALIZATION) {
+                    $order = new Personalization($this->requestId);
+                }
+                if ($this->type == self::TYPE_PERSONALIZATION_ORDER) {
+                    $perso_order = new Personalizationorder($this->requestId);
+                    $order = new Personalization($perso_order->getPersoID());
+                }
+                break;
+            case self::REQ_MODULE_BULKLETTER:
+                $order = new Bulkletter($this->requestId);
+                break;
+            default:
+                return false;
+        }
+
         // create Document Name if empty
         if ($this->name == "" && $this->preview == 0) {
             // Test if we have already a freed number
@@ -505,6 +483,9 @@ class Document
                     case self::TYPE_PERSONALIZATION_ORDER: // Bei Personalization ist $order eine Personalisierungsbestellung
                         $this->name = $_USER->getClient()->getId() . "_" . $order->getId() . "_" . $order->getArticle()->getId();
                         break; // Bitte auch bei der Loeschfunktion anpassen
+                    case self::TYPE_BULKLETTER:
+                        $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_BULKLETTER);
+                        break;
                 }
             }
         }
@@ -630,25 +611,26 @@ class Document
                 require 'docs/templates/paper_order.tmpl.php';
             if ($this->type == self::TYPE_INVOICEWARNING)
                 require 'docs/templates/invoicewarning.tmpl.php';
-        } else {
-            if ($this->requestModule == self::REQ_MODULE_COLLECTIVEORDER) {
-                if ($this->type == self::TYPE_OFFER)
-                    require 'docs/templates/coloffer.tmpl.php';
-                if ($this->type == self::TYPE_OFFERCONFIRM)
-                    require 'docs/templates/colofferconfirm.tmpl.php';
-                if ($this->type == self::TYPE_FACTORY)
-                    require 'docs/templates/factory.tmpl.php';
-                if ($this->type == self::TYPE_INVOICE)
-                    require 'docs/templates/colinvoice.tmpl.php';
-                if ($this->type == self::TYPE_LABEL)
-                    require 'docs/templates/label.tmpl.php';
-                if ($this->type == self::TYPE_DELIVERY)
-                    require 'docs/templates/coldelivery.tmpl.php';
-                if ($this->type == self::TYPE_INVOICEWARNING)
-                    require 'docs/templates/invoicewarning.tmpl.php';
-                if ($this->type == self::TYPE_REVERT)
-                    require 'docs/templates/revert.tmpl.php';
-            }
+        } else if ($this->requestModule == self::REQ_MODULE_COLLECTIVEORDER) {
+            if ($this->type == self::TYPE_OFFER)
+                require 'docs/templates/coloffer.tmpl.php';
+            if ($this->type == self::TYPE_OFFERCONFIRM)
+                require 'docs/templates/colofferconfirm.tmpl.php';
+            if ($this->type == self::TYPE_FACTORY)
+                require 'docs/templates/factory.tmpl.php';
+            if ($this->type == self::TYPE_INVOICE)
+                require 'docs/templates/colinvoice.tmpl.php';
+            if ($this->type == self::TYPE_LABEL)
+                require 'docs/templates/label.tmpl.php';
+            if ($this->type == self::TYPE_DELIVERY)
+                require 'docs/templates/coldelivery.tmpl.php';
+            if ($this->type == self::TYPE_INVOICEWARNING)
+                require 'docs/templates/invoicewarning.tmpl.php';
+            if ($this->type == self::TYPE_REVERT)
+                require 'docs/templates/revert.tmpl.php';
+        } else if ($this->requestModule == self::REQ_MODULE_BULKLETTER){
+            if ($this->type == self::TYPE_BULKLETTER)
+                require 'docs/templates/bulkletter.tmpl.php';
         }
         
         // create PDF-File
@@ -680,7 +662,7 @@ class Document
     {
         global $_USER;
         global $_CONFIG;
-        if ($this->requestModule == self::REQ_MODULE_ORDER)
+        if ($this->requestModule == self::REQ_MODULE_ORDER || $this->requestModule == self::REQ_MODULE_BULKLETTER)
             $filename = $_CONFIG->docsBaseDir;
         if ($this->requestModule == self::REQ_MODULE_MANORDER)
             $filename = $_CONFIG->docsBaseDir . "man";
@@ -719,6 +701,9 @@ class Document
                 break;
             case self::TYPE_PERSONALIZATION_ORDER:
                 $filename .= 'sonalization/' . $_USER->getClient()->getId() . '.' . "per_" . $this->hash;
+                break;
+            case self::TYPE_BULKLETTER:
+                $filename .= 'bulkletter/' . $_USER->getClient()->getId() . '.' . "per_" . $this->hash;
                 break;
         }
         

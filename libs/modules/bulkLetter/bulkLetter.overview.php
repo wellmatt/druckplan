@@ -1,17 +1,16 @@
-<? // -------------------------------------------------------------------------------
-// Author:			iPactor GmbH
-// Updated:			27.09.2013
-// Copyright:		2013 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-// ----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
+ *
+ */
 require_once 'libs/modules/bulkLetter/bulkLetter.class.php';
 
 if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
-	// Mahnstufe bearbeiten
 	require_once 'libs/modules/bulkLetter/bulkLetter.edit.php';
 } else {
-	
 	// Uebersicht ausgeben
 	
 	if ($_REQUEST["exec"] == "delete") {
@@ -39,10 +38,7 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 			<tr>
 				<td class="content_row_header"><?=$_LANG->get('ID')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Titel')?></td>
-				<td class="content_row_header"><?=$_LANG->get('Text')?></td>
                 <td class="content_row_header"><?=$_LANG->get('Erstellt am')?></td>
-                <td class="content_row_header" ><?=$_LANG->get('Ansprechpartner')?></td>
-                <td class="content_row_header" ><?=$_LANG->get('Gesch&auml;ftskontakte')?></td>
                 <td class="content_row_header"><?=$_LANG->get('Optionen')?></td>
 				<td class="content_row_header"><?=$_LANG->get('Download')?></td>
 
@@ -57,17 +53,8 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 						<?=$bulk->getTitle()?>
 					</td>
 					<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$bulk->getId()?>'">
-						<?=substr($bulk->getText(), 0, 250)?> <?if(strlen($bulk->getText()) > 250 ) echo "...";?>
-					</td>
-					<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$bulk->getId()?>'">
 						<?=date('d.m.Y',$bulk->getCrt_date())?>
 					</td>
-                    <td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$bulk->getId()?>'">
-                        <?=$bulk->getTitle()?>
-                    </td>
-                    <td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$bulk->getId()?>'">
-                        <?=$bulk->getTitle()?>
-                    </td>
 					<td class="content_row">
 		                <a href="index.php?page=<?=$_REQUEST['page']?>&exec=edit&bid=<?=$bulk->getId()?>"><span class="glyphicons glyphicons-pencil" title="<?=$_LANG->get('Bearbeiten')?>"></span></a>
 						&ensp;
@@ -75,15 +62,15 @@ if($_REQUEST["exec"] == "new" || $_REQUEST["exec"] == "edit"){
 		                	><span style="color: red;" class="glyphicons glyphicons-remove" title="<?=$_LANG->get('Entfernen')?>"></span></a>
 	            	</td>
 	            	<td class="content_row" >
-	            	
+	            		<?php $document = new Document($bulk->getDocid()); ?>
 						<ul class="postnav_save_small" style="padding:0px">
-							<a href="<?=$bulk->getPdfLink(Document::VERSION_EMAIL)?>"
-								title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
+							<a href="<?=$document->getFilename(Document::VERSION_EMAIL)?>"
+								title="PDF mit Hintergrund" target="_blank"><?=$_LANG->get('E-Mail')?></a>
 						</ul>
 					
 						<ul class="postnav_save_small" style="padding:0px">
-							<a href="<?=$bulk->getPdfLink(Document::VERSION_PRINT)?>"
-								title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
+							<a href="<?=$document->getFilename(Document::VERSION_PRINT)?>"
+								title="PDF ohne Hintergrund" target="_blank"><?=$_LANG->get('Print')?></a>
 						</ul>
 					</td>
 					

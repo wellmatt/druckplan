@@ -1,10 +1,12 @@
-<? // -------------------------------------------------------------------------------
-// Author:			iPactor GmbH
-// Updated:			28.10.2013
-// Copyright:		2013 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-// ----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
+ *
+ */
+
 require_once 'libs/modules/businesscontact/attribute.class.php';
 
 $bulk = new Bulkletter((int)$_REQUEST["bid"]);
@@ -25,8 +27,12 @@ if($_REQUEST["subexec"] == "save"){
 	
 	$ret_save = $bulk->save();
 	$savemsg = getSaveMessage($ret_save)." ".$DB->getLastError();
-	
+
 	if($ret_save){
+		if ($bulk->getDocid() > 0){
+			$doc = new Document($bulk->getDocid());
+			$doc->delete();
+		}
 		$bulk->createDocument();
 	}
 }
@@ -145,18 +151,28 @@ echo $quickmove->generate();
 							</div>
 						</div>
 					<?}?>
-					<div class="row">
-						<div class="col-sm-2 control-label"><b>Download</b></div>
-						<div class="col-sm-1 control-label" style="text-align: left;">
-							<a href="<?=$bulk->getPdfLink(Document::VERSION_EMAIL)?>"
-							   title="PDF mit Hintergrund"><?=$_LANG->get('E-Mail')?></a>
+					<?php if ($bulk->getId()>0){
+						$document = new Document($bulk->getDocid());
+						?>
+						<div class="row">
+							<div class="col-sm-2 control-label"><b>Download</b></div>
+							<div class="col-sm-1 control-label" style="text-align: left;">
+								<a href="<?=$document->getFilename(Document::VERSION_EMAIL)?>"
+								   title="PDF mit Hintergrund" target="_blank"><?=$_LANG->get('E-Mail')?></a>
+							</div>
+							<div class="col-sm-1 control-label" style="text-align: left;">
+								<a href="<?=$document->getFilename(Document::VERSION_PRINT)?>"
+								   title="PDF ohne Hintergrund" target="_blank"><?=$_LANG->get('Print')?></a>
+							</div>
 						</div>
-						<div class="col-sm-1 control-label" style="text-align: left;">
-							<a href="<?=$bulk->getPdfLink(Document::VERSION_PRINT)?>"
-							   title="PDF ohne Hintergrund"><?=$_LANG->get('Print')?></a>
-						</div>
-					</div>
+					<?php } ?>
 				<?}?>
 		</div>
 	</div>
 </form>
+
+<script>
+	$(function () {
+		CKEDITOR.replace( 'bulk_text' );
+	});
+</script>

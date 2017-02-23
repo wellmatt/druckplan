@@ -59,6 +59,8 @@ if($_REQUEST["subexec"] == "save")
 	$client->setNumberFormatWork($_REQUEST["number_format_work"]);
 	$client->setNumberCounterWork($_REQUEST["number_counter_work"]);
 	$client->setNumberCounterCustomer((int)$_REQUEST["number_counter_customer"]);
+	$client->setNumberCounterBulkletter($_REQUEST["number_counter_bulkletter"]);
+	$client->setNumberFormatBulkletter($_REQUEST["number_format_bulkletter"]);
 
     $savemsg = getSaveMessage($client->save());
     $savemsg .= $DB->getLastError();
@@ -477,6 +479,15 @@ if($_REQUEST["subexec"] == "save")
 						</td>
 						<td>
 							<input name="number_counter_work" class="form-control" value="<?=$client->getNumberCounterSuporder()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td><?=$_LANG->get('Serienbrief');?></td>
+						<td>
+							<input name="number_format_bulkletter" class="form-control" value="<?=$client->getNumberFormatBulkletter()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td>
+							<input name="number_counter_bulkletter" class="form-control" value="<?=$client->getNumberCounterBulkletter()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</td>
 					</tr>
 				</table>
