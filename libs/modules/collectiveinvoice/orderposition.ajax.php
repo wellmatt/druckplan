@@ -60,7 +60,10 @@ if ($_REQUEST['exec'] == 'addPosArticle' && $_REQUEST["ciid"] && $_REQUEST["aid"
     $newpos->setTaxkey($article->getTaxkey());
     $newpos->setComment($article->getDesc());
     $newpos->setCollectiveinvoice($colinv->getId());
-    $newpos->setType(1);
+    if ($article->getOrderid() > 0)
+        $newpos->setType(1);
+    else
+        $newpos->setType(2);
     $newpos->setObjectid($article->getId());
     $newpos->setSequence(Orderposition::getNextSequence($colinv));
     $newpos->save();
