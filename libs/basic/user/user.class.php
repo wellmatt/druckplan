@@ -59,6 +59,9 @@ class User {
 	private $w_su = 0;
 	private $w_month = 0;
 
+    private $loginip = '';
+    private $loginagent = '';
+
 	const WEEKDAY_SUNDAY = 0;
 	const WEEKDAY_MONDAY = 1;
 	const WEEKDAY_TUESDAY = 2;
@@ -159,6 +162,9 @@ class User {
 
                     $this->homepage = $res[0]["homepage"];
 
+                    $this->loginip = $res[0]["loginip"];
+                    $this->loginagent = $res[0]["loginagent"];
+
                     // Arbeiter
                     $tmp_worktimes = Array();
                     $sql = "SELECT * FROM user_worktimes WHERE user = {$this->id}";
@@ -217,6 +223,8 @@ class User {
             w_su = '{$this->w_su}',
             w_month = '{$this->w_month}',
             homepage = '{$this->homepage}',
+            loginip = '{$this->loginip}',
+            loginagent = '{$this->loginagent}',
             telefon_ip = '{$this->telefonIP}'
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -239,14 +247,14 @@ class User {
             (user_firstname, user_lastname, user_email, user_phone, user_signature,
             user_active, user_level, login, password, client, user_forwardmail, user_lang,
             telefon_ip, cal_birthdays, cal_tickets, cal_orders, w_mo, w_tu, w_we, w_th, w_fr, w_sa,
-            w_su, w_month, homepage, BCshowOnlyOverview )
+            w_su, w_month, homepage, BCshowOnlyOverview, loginip, loginagent )
             VALUES
             ('{$this->firstname}', '{$this->lastname}', '{$this->email}', '{$this->phone}',
             '{$tmp_signature}', {$this->active}, {$this->userlevel}, '{$this->login}',
             '{$this->password}', {$this->client->getId()}, {$this->forwardmail}, {$this->lang->getId()},
             '{$this->telefonIP}', {$this->calendar_birthdays}, {$this->calendar_tickets}, {$this->calendar_orders},
             '{$this->w_mo}', '{$this->w_tu}', '{$this->w_we}', '{$this->w_th}', '{$this->w_fr}', '{$this->w_sa}',
-            '{$this->w_su}', '{$this->w_month}', '{$this->homepage}', {$this->BCshowOnlyOverview} )";
+            '{$this->w_su}', '{$this->w_month}', '{$this->homepage}', {$this->BCshowOnlyOverview}, '{$this->loginip}', '{$this->loginagent}' )";
             $res = $DB->no_result($sql);
 
             if ($res)
@@ -396,7 +404,7 @@ class User {
      * @param int $client
      * @return User|boolean
      */
-    static function login($user, $password, $client = null)
+    static function login($user, $password, $client = 1)
     {
         global $DB;
         if (trim($user) != "" || trim($password) != "")
@@ -1016,5 +1024,37 @@ class User {
     public function setBCshowOnlyOverview($BCshowOnlyOverview)
     {
         $this->BCshowOnlyOverview = $BCshowOnlyOverview;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginip()
+    {
+        return $this->loginip;
+    }
+
+    /**
+     * @param string $loginip
+     */
+    public function setLoginip($loginip)
+    {
+        $this->loginip = $loginip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginagent()
+    {
+        return $this->loginagent;
+    }
+
+    /**
+     * @param string $loginagent
+     */
+    public function setLoginagent($loginagent)
+    {
+        $this->loginagent = $loginagent;
     }
 }

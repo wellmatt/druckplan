@@ -83,21 +83,41 @@ if ($_REQUEST["doLogout"] == 1)
 } else
 {
     session_start();
-     
+
     // Anmelden
     if (trim($_REQUEST["login_login"] != "") && trim($_REQUEST["login_password"]) != "")
     {
         $_SESSION["login"] = addslashes(trim($_REQUEST["login_login"]));
         $_SESSION["password"] = addslashes(trim($_REQUEST["login_password"]));
         $_SESSION["domain"] = (int)$_REQUEST["login_domain"];
-    } else if ($_COOKIE["vic_login"] && $_COOKIE["vic_iv"])
+        $_SESSION["ipadress"] = $_SERVER['REMOTE_ADDR'];
+        $_SESSION["useragent"] = $_SERVER['HTTP_USER_AGENT'];
+        $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+        // save user agent + ip to database
+        if ($_USER){
+            $_USER->setLoginip($_SESSION['ipadress']);
+            $_USER->setLoginagent($_SESSION['useragent']);
+            $_USER->save();
+        }
+    } else
     {
-        $userstring = mcrypt_decrypt(MCRYPT_BLOWFISH, $_CONFIG->cookieSecret, $_COOKIE["vic_login"], MCRYPT_MODE_CBC, $_COOKIE["vic_iv"]);
-        $userdata = explode(' ', $userstring);
+        $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+        // Logout User if there was another login from different IP or agent
+        if ($_USER){
+            if ($_USER->getLoginip() != $_SESSION['ipadress'] || $_USER->getLoginagent() != $_SESSION["useragent"]){
+                session_destroy();
+                session_start();
+                setcookie('vic_login', "", time());
+                $_SESSION = Array();
+                ?>
+                <script language="JavaScript">
+                    alert('Ihre Sitzung wurde aufgrund eines zweiten Logins beendet.');
+                    location.href='index.php'
+                </script>
+                <?php
+            }
+        }
     }
-
-    $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
-    
 }
 
 if ($_USER == false)
@@ -108,22 +128,6 @@ if ($_USER == false)
 
 //    if ($_USER->getLogin() != "ascherer")
 //        die('contilas2 ist im Wartungsmodus (17.02.2017 by A.Scherer)');
-
-    /* Logindaten merken?
-     * Daten werden für 365 Tage gemerkt
-    */
-    if ($_REQUEST["login_keeplogin"])
-    {
-        $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB), MCRYPT_RAND);
-        $userstring = addslashes(trim($_REQUEST["login_login"]))." ".addslashes(trim($_REQUEST["login_password"]))." ".(int)$_REQUEST["login_domain"];
-        $crypted = mcrypt_encrypt(MCRYPT_BLOWFISH, $_CONFIG->cookieSecret, $userstring, MCRYPT_MODE_CBC, $iv);
-        setcookie('vic_login', $crypted, time()+60*60*24*365);
-        setcookie('vic_iv', $iv, time()+60*60*24*365);
-    }
-
-    // save pid
-    if ($_REQUEST["pid"] != "")
-        $_SESSION["pid"] = $_REQUEST["pid"];
      
     // Sprache laden
     $_LANG = $_USER->getLang();
