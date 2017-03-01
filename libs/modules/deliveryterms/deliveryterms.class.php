@@ -30,6 +30,9 @@ class DeliveryTerms{
 	{
 		global $DB;
 		global $_USER;
+
+		$this->taxkey = new TaxKey(0);
+
 		if($id>0){
 			$sql = "SELECT * FROM deliveryterms WHERE id = {$id} ";
 			if($DB->num_rows($sql)){

@@ -72,6 +72,7 @@ class Article {
 		global $_USER;
 
 		$this->tradegroup = new Tradegroup(0);
+		$this->taxkey = new TaxKey(0);
 
 		if ($id > 0){
 			$valid_cache = true;

@@ -42,6 +42,9 @@ class Orderposition{
 	 */
 	public function __construct($id=0){
 		global $DB;
+
+		$this->taxkey = new TaxKey(0);
+
 		if($id>0){
 			$valid_cache = true;
 			if (Cachehandler::exists(Cachehandler::genKeyword($this,$id))){
