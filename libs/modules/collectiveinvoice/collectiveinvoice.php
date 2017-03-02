@@ -217,7 +217,7 @@ case 'createFromTicket':
 							$newpos->setInvrel(1);
 							$newpos->setRevrel(1);
 							$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-							$newpos->setTax($c_article->getArticle()->getTax());
+							$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 							$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 							$orderpositions[] = $newpos;
@@ -244,7 +244,7 @@ case 'createFromTicket':
 								$newpos->setInvrel(1);
 								$newpos->setRevrel(1);
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-								$newpos->setTax($c_article->getArticle()->getTax());
+								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 								$orderpositions[] = $newpos;
@@ -277,7 +277,7 @@ case 'createFromTicket':
 			$sumpos->setInvrel(1);
 			$sumpos->setRevrel(0);
 			$sumpos->setObjectid(0); // Artikelnummer
-			$sumpos->setTax(0);
+			$sumpos->setTaxkey(TaxKey::getDefaultTaxKey());
 			$sumpos->setCollectiveinvoice((int)$collectinv->getId());
             
             $orderpositions[] = $sumpos;
@@ -328,7 +328,7 @@ case 'createFromTicket':
 								$newpos->setInvrel(1);
 								$newpos->setRevrel(1);
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-								$newpos->setTax($c_article->getArticle()->getTax());
+								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 								$orderpositions[] = $newpos;
@@ -355,7 +355,7 @@ case 'createFromTicket':
 									$newpos->setInvrel(1);
 									$newpos->setRevrel(1);
 									$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-									$newpos->setTax($c_article->getArticle()->getTax());
+									$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 									$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 									$orderpositions[] = $newpos;
@@ -388,7 +388,7 @@ case 'createFromTicket':
 				$sumpos->setInvrel(1);
 				$sumpos->setRevrel(0);
 				$sumpos->setObjectid(0); // Artikelnummer
-				$sumpos->setTax(0);
+				$sumpos->setTaxkey(TaxKey::getDefaultTaxKey());
 				$sumpos->setCollectiveinvoice((int)$collectinv->getId());
 
 				$orderpositions[] = $sumpos;
@@ -451,7 +451,7 @@ case 'createFromTicketComments':
 							$newpos->setInvrel(1);
 							$newpos->setRevrel(1);
 							$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-							$newpos->setTax($c_article->getArticle()->getTax());
+							$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 							$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 							$orderpositions[] = $newpos;
@@ -478,7 +478,7 @@ case 'createFromTicketComments':
 								$newpos->setInvrel(1);
 								$newpos->setRevrel(1);
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-								$newpos->setTax($c_article->getArticle()->getTax());
+								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 								$orderpositions[] = $newpos;
@@ -511,7 +511,7 @@ case 'createFromTicketComments':
 			$sumpos->setInvrel(1);
 			$sumpos->setRevrel(0);
 			$sumpos->setObjectid(0); // Artikelnummer
-			$sumpos->setTax(0);
+			$sumpos->setTaxkey(TaxKey::getDefaultTaxKey());
 			$sumpos->setCollectiveinvoice((int)$collectinv->getId());
 
 			$orderpositions[] = $sumpos;
