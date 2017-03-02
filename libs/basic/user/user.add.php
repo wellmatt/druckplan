@@ -28,139 +28,144 @@ if ($_REQUEST["subexec"] == "deletemail")
 
 if ($_REQUEST["subexec"] == "save")
 {
-    $user->setLogin(trim(addslashes($_REQUEST["user_login"])));
-    $user->setFirstname(trim(addslashes($_REQUEST["user_firstname"])));
-    $user->setLastname(trim(addslashes($_REQUEST["user_lastname"])));
-    $user->setEmail(trim(addslashes($_REQUEST["user_email"])));
-    $user->setPhone(trim(addslashes($_REQUEST["user_phone"])));
-    $user->setSignature(trim($_REQUEST["user_signature"]));
-    $user->setActive((int)$_REQUEST["user_active"]);
-    $user->setForwardMail((int)$_REQUEST["user_forwardmail"]);
-    $user->setClient(new Client((int)$_REQUEST["user_client"]));
-    $user->setLang(new Translator((int)$_REQUEST["user_lang"]));
-    $user->setTelefonIP(trim(addslashes($_REQUEST["user_telefonip"])));
-	
-    $user->setCalBirthday((int)$_REQUEST["user_cal_birthday"]);
-    $user->setCalTickets((int)$_REQUEST["user_cal_tickets"]);
-    $user->setCalOrders((int)$_REQUEST["user_cal_orders"]);
-	$user->setBCshowOnlyOverview((int)$_REQUEST["BCshowOnlyOverview"]);
+	$allusers = User::getAllUser();
+	$usercount = count($allusers);
+	if ($usercount >= $_CONFIG->maxusers){
+		$savemsg = 'Fehler beim Speichern. Sie haben die maximale Anzahl an Benutzern erreicht.';
+	} else {
+		$user->setLogin(trim(addslashes($_REQUEST["user_login"])));
+		$user->setFirstname(trim(addslashes($_REQUEST["user_firstname"])));
+		$user->setLastname(trim(addslashes($_REQUEST["user_lastname"])));
+		$user->setEmail(trim(addslashes($_REQUEST["user_email"])));
+		$user->setPhone(trim(addslashes($_REQUEST["user_phone"])));
+		$user->setSignature(trim($_REQUEST["user_signature"]));
+		$user->setActive((int)$_REQUEST["user_active"]);
+		$user->setForwardMail((int)$_REQUEST["user_forwardmail"]);
+		$user->setClient(new Client((int)$_REQUEST["user_client"]));
+		$user->setLang(new Translator((int)$_REQUEST["user_lang"]));
+		$user->setTelefonIP(trim(addslashes($_REQUEST["user_telefonip"])));
 
-	$user->setHomepage($_REQUEST["menu_path"]);
+		$user->setCalBirthday((int)$_REQUEST["user_cal_birthday"]);
+		$user->setCalTickets((int)$_REQUEST["user_cal_tickets"]);
+		$user->setCalOrders((int)$_REQUEST["user_cal_orders"]);
+		$user->setBCshowOnlyOverview((int)$_REQUEST["BCshowOnlyOverview"]);
 
-	if(isset($_FILES['avatar']) && $_FILES['avatar']['size'] > 0) {
-		$fileName = $_FILES['avatar']['name'];
-		$tmpName = $_FILES['avatar']['tmp_name'];
-		$fileSize = $_FILES['avatar']['size'];
-		$fileType = $_FILES['avatar']['type'];
-		$topath = 'docs/avatars/' . $user->getId() . '.png';
-		move_uploaded_file($tmpName, $topath);
-	}
+		$user->setHomepage($_REQUEST["menu_path"]);
 
-    if ($_REQUEST["user_type"] == "admin")
-        $user->setAdmin(true);
-    else
-        $user->setAdmin(false);
+		if(isset($_FILES['avatar']) && $_FILES['avatar']['size'] > 0) {
+			$fileName = $_FILES['avatar']['name'];
+			$tmpName = $_FILES['avatar']['tmp_name'];
+			$fileSize = $_FILES['avatar']['size'];
+			$fileType = $_FILES['avatar']['type'];
+			$topath = 'docs/avatars/' . $user->getId() . '.png';
+			move_uploaded_file($tmpName, $topath);
+		}
 
-    if ($user->getId()>0){
-        if ($_REQUEST["user_password"] && $_REQUEST["user_password_repeat"] == $_REQUEST["user_password"])
-            $user->setPassword(trim(addslashes($_REQUEST["user_password"])));
-    }
-    
-    $tmp_wtime_arr = Array();
-    if ($_REQUEST["wotime"])
-    {
-        for($i=0;$i<7;$i++)
-        {
-            $day_total = 0;
-            if (count($_REQUEST["wotime"][$i])>0)
-            {
-                foreach ($_REQUEST["wotime"][$i] as $wtime)
-                {
-                    if ($wtime["start"]>0 && $wtime["end"]>0)
-                    {
-                        $tmp_wtime_arr[$i][] = Array("start"=>strtotime($wtime["start"]),"end"=>strtotime($wtime["end"]));
-                        $day_total += (strtotime($wtime["end"])-strtotime($wtime["start"]));
-                    }
-                }
-            }
-            if ($day_total>0)
-                $day_total = $day_total/60/60;
-            switch ($i)
-            {
-                case 0:
-                    $user->setW_su(tofloat($day_total));
-                    break;
-                case 1:
-                    $user->setW_mo(tofloat($day_total));
-                    break;
-                case 2:
-                    $user->setW_tu(tofloat($day_total));
-                    break;
-                case 3:
-                    $user->setW_we(tofloat($day_total));
-                    break;
-                case 4:
-                    $user->setW_th(tofloat($day_total));
-                    break;
-                case 5:
-                    $user->setW_fr(tofloat($day_total));
-                    break;
-                case 6:
-                    $user->setW_sa(tofloat($day_total));
-                    break;
-            }
-        }
-    }
-    $user->setWorkinghours($tmp_wtime_arr);
-    $user->setW_month(tofloat($_REQUEST["w_month"]));
-    
-    $saver = $user->save();
-    
-    if($saver){
-		if ($_REQUEST["mailaddress"]){
-			$usermailaddresses = Emailaddress::getAllEmailaddressForUser($user);
-			$e = 0;
-			foreach ($_REQUEST["mailaddress"] as $mailaddres) {
-				$hasaddress = false;
-				$tmp_mailaddress = new Emailaddress($mailaddres);
-				foreach ($usermailaddresses as $usermailaddress) {
-					if ($tmp_mailaddress->getId() == $usermailaddress->getId()){
-						$hasaddress = true;
+		if ($_REQUEST["user_type"] == "admin")
+			$user->setAdmin(true);
+		else
+			$user->setAdmin(false);
+
+		if ($user->getId()>0){
+			if ($_REQUEST["user_password"] && $_REQUEST["user_password_repeat"] == $_REQUEST["user_password"])
+				$user->setPassword(trim(addslashes($_REQUEST["user_password"])));
+		}
+
+		$tmp_wtime_arr = Array();
+		if ($_REQUEST["wotime"])
+		{
+			for($i=0;$i<7;$i++)
+			{
+				$day_total = 0;
+				if (count($_REQUEST["wotime"][$i])>0)
+				{
+					foreach ($_REQUEST["wotime"][$i] as $wtime)
+					{
+						if ($wtime["start"]>0 && $wtime["end"]>0)
+						{
+							$tmp_wtime_arr[$i][] = Array("start"=>strtotime($wtime["start"]),"end"=>strtotime($wtime["end"]));
+							$day_total += (strtotime($wtime["end"])-strtotime($wtime["start"]));
+						}
 					}
 				}
-				if (!$hasaddress)
-					Emailaddress::assignToUser($tmp_mailaddress, $user);
-				if ($e == 0 && count($usermailaddresses) == 0){
-					Emailaddress::setDefaultForUser(new Emailaddress($mailaddres), $user);
+				if ($day_total>0)
+					$day_total = $day_total/60/60;
+				switch ($i)
+				{
+					case 0:
+						$user->setW_su(tofloat($day_total));
+						break;
+					case 1:
+						$user->setW_mo(tofloat($day_total));
+						break;
+					case 2:
+						$user->setW_tu(tofloat($day_total));
+						break;
+					case 3:
+						$user->setW_we(tofloat($day_total));
+						break;
+					case 4:
+						$user->setW_th(tofloat($day_total));
+						break;
+					case 5:
+						$user->setW_fr(tofloat($day_total));
+						break;
+					case 6:
+						$user->setW_sa(tofloat($day_total));
+						break;
 				}
-				$e++;
 			}
 		}
-    }
+		$user->setWorkinghours($tmp_wtime_arr);
+		$user->setW_month(tofloat($_REQUEST["w_month"]));
 
-	if ($_REQUEST["dash"]){
-		DashBoard::clearForUser($user);
-		$r = 1;
-		foreach ($_REQUEST["dash"] as $dashrow) {
-			if (count($dashrow)>0){
-				$c = 1;
-				foreach ($dashrow as $dashitem) {
-					$d_e = new DashBoard();
-					$d_e->setUser($user);
-					$d_e->setRow($r);
-					$d_e->setColumn($c);
-					$d_e->setModule($dashitem);
-					$d_e->save();
-					$c++;
+		$saver = $user->save();
+
+		if($saver){
+			if ($_REQUEST["mailaddress"]){
+				$usermailaddresses = Emailaddress::getAllEmailaddressForUser($user);
+				$e = 0;
+				foreach ($_REQUEST["mailaddress"] as $mailaddres) {
+					$hasaddress = false;
+					$tmp_mailaddress = new Emailaddress($mailaddres);
+					foreach ($usermailaddresses as $usermailaddress) {
+						if ($tmp_mailaddress->getId() == $usermailaddress->getId()){
+							$hasaddress = true;
+						}
+					}
+					if (!$hasaddress)
+						Emailaddress::assignToUser($tmp_mailaddress, $user);
+					if ($e == 0 && count($usermailaddresses) == 0){
+						Emailaddress::setDefaultForUser(new Emailaddress($mailaddres), $user);
+					}
+					$e++;
 				}
 			}
-			$r++;
 		}
+
+		if ($_REQUEST["dash"]){
+			DashBoard::clearForUser($user);
+			$r = 1;
+			foreach ($_REQUEST["dash"] as $dashrow) {
+				if (count($dashrow)>0){
+					$c = 1;
+					foreach ($dashrow as $dashitem) {
+						$d_e = new DashBoard();
+						$d_e->setUser($user);
+						$d_e->setRow($r);
+						$d_e->setColumn($c);
+						$d_e->setModule($dashitem);
+						$d_e->save();
+						$c++;
+					}
+				}
+				$r++;
+			}
+		}
+
+		$savemsg = getSaveMessage($saver);
+		$savemsg .= " ".$DB->getLastError();
 	}
-
-    $savemsg = getSaveMessage($saver);
-    $savemsg .= " ".$DB->getLastError();
-     
 }
 $dash_widgets = DashBoard::getWidgets();
 

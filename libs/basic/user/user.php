@@ -20,16 +20,26 @@ if ($_REQUEST["exec"] == "edit")
     }
     $users = User::getAllUser(User::ORDER_LOGIN);
 
+	$usercount = count($users);
+	if ($usercount >= $_CONFIG->maxusers){
+		$newusers = false;
+	} else {
+		$newusers = true;
+	}
     ?>
 <div class="panel panel-default">
 	  <div class="panel-heading">
 			<h3 class="panel-title">
 				Benutzer
 				<span class="pull-right">
-					<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
-						<span class="glyphicons glyphicons-plus"></span>
-						<?=$_LANG->get('Benutzer hinzuf&uuml;gen')?>
-					</button>
+					<?php if ($newusers){?>
+						<button class="btn btn-xs btn-success" onclick="document.location.href='index.php?page=<?=$_REQUEST['page']?>&exec=edit';" >
+							<span class="glyphicons glyphicons-plus"></span>
+							<?=$_LANG->get('Benutzer hinzuf&uuml;gen')?>
+						</button>
+					<?php } else {?>
+						Maximale Anzahl an Benutzern erreicht.
+					<?php } ?>
 				</span>
 			</h3>
 	  </div>

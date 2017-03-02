@@ -361,6 +361,24 @@
         });
     }
 
+    function getUpdatedPrice(oid, quantity){
+        $.ajax({
+            type: 'GET',
+            dataType: "html",
+            url: 'libs/modules/collectiveinvoice/orderposition.ajax.php',
+            data: { "exec": "getUpdatedPrice", "oid": oid, "quantity": quantity },
+            success: function(data) {
+                var obj = jQuery.parseJSON(data);
+                console.log(data);
+                $('#opos_price_'+oid).val(obj.price);
+                console.log("successful");
+            },
+            error: function() {
+                console.log("unsuccessful");
+            }
+        });
+    }
+
     function CKupdate(){
         for ( instance in CKEDITOR.instances )
             CKEDITOR.instances[instance].updateElement();
