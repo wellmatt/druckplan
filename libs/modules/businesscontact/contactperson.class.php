@@ -431,7 +431,7 @@ class ContactPerson {
 				WHERE active > 0 AND
 				shop_login = '{$username}' AND  
 				shop_pass = '{$password}' ";
-		//error_log("SQL: ".$sql);
+//		error_log("SQL: ".$sql);
 		if($DB->num_rows($sql)){
 			$r = $DB->select($sql);
 				$retval = new ContactPerson($r[0]["id"]);

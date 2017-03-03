@@ -1,10 +1,11 @@
-<?//--------------------------------------------------------------------------------
-// Author:			iPactor GmbH
-// Updated:			18.10.2012
-// Copyright:		2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
 
 $all_country = Country::getEveryCountry();
 $anz_country = count($all_country);
@@ -14,6 +15,8 @@ $save = true;
 if ($_REQUEST["exec"] == "save"){
 	for ($i=1; $i <= $anz_country; $i++){
 		$country = new Country($i);
+		$country->setEu((int)$_REQUEST["county_eu_".$i]);
+		$country->setVat(tofloat($_REQUEST["county_vat_".$i]));
 		$country->setActive((int)$_REQUEST["county_active_".$i]);
 		$ret = $country->save();
 		if(!$ret){
@@ -47,9 +50,9 @@ echo $quickmove->generate();
 					<tr>
 						<td width="20%"><?=$_LANG->get('Name')?></td>
 						<td width="20%"><?=$_LANG->get('L&auml;nderk&uuml;rzel')?></td>
-						<td>&ensp;</td>
+						<td>EU-Mitglied</td>
+						<td>USt</td>
 						<td><?=$_LANG->get('Aktivierung')?></td>
-						<td>&ensp;</td>
 					</tr>
 					<? $x = 0;
 					foreach($all_country as $country){
@@ -61,7 +64,16 @@ echo $quickmove->generate();
 							<td class="content_row pointer">
 								<?=$country->getCode()?>&ensp;
 							</td>
-							<td class="content_row pointer" >&ensp;</td>
+							<td class="content_row pointer">
+								<input 	id="county_eu_<?=$country->getId()?>" name="county_eu_<?=$country->getId()?>"
+										  class="text" type="checkbox"
+										  value="1" <?if ($country->getEu() == 1) echo "checked"; ?>>
+							</td>
+							<td class="content_row pointer">
+								<input id="county_vat_<?=$country->getId()?>" name="county_vat_<?=$country->getId()?>"
+										  class="text" type="text"
+										  value="<?php echo printPrice($country->getVat());?>">
+							</td>
 							<td class="content_row pointer">
 								<input 	id="county_active_<?=$country->getId()?>" name="county_active_<?=$country->getId()?>"
 										  class="text" type="checkbox"
@@ -75,16 +87,4 @@ echo $quickmove->generate();
 				</table>
 			</div>
 		</form>
-</div>
-
-<br/>
-<?// Speicher & Navigations-Button ?>
-<div class="table-responsive">
-	<table class="table table-hover">
-		<tr>
-			<td class="content_row_clear" align="right">
-				<input type="submit" value="<?=$_LANG->get('Speichern')?>">
-			</td>
-		</tr>
-	</table>
 </div>

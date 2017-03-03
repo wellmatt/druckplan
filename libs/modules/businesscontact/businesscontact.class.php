@@ -105,6 +105,8 @@ class BusinessContact {
 	private $notes;
 	private $salesperson;
 
+	private $isprivate = 0;
+
 	/* Konstruktor
      * Falls id uebergeben, werden die entsprechenden Daten direkt geladen
     */
@@ -191,6 +193,7 @@ class BusinessContact {
 				$this->supervisor = new User((int)$res[0]["supervisor"]);
 				$this->salesperson = new User((int)$res[0]["salesperson"]);
 				$this->tourmarker = $res[0]["tourmarker"];
+				$this->isprivate = $res[0]["isprivate"];
 
 
 				// Daten nur laden, wenn die Loader-Variable es hergibt
@@ -618,7 +621,8 @@ class BusinessContact {
 		            produkte = {$this->produkte}, 
 		            bedarf = {$this->bedarf}, 
 		    		kreditor_number = {$this->kreditor},
-		    		debitor_number = {$this->debitor}, 
+		    		isprivate = {$this->isprivate},
+		    		debitor_number = {$this->debitor},
 		            cust_number = '{$this->customernumber}', 
 		            position_titles = '{$positiontitles}', 
 		            notifymailadr = '{$tmp_notify_mail_adr}', 
@@ -648,7 +652,7 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount )
+		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount, isprivate )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -661,7 +665,7 @@ class BusinessContact {
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
-		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()}, {$this->revenueaccount->getId()} )";
+		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()}, {$this->revenueaccount->getId()}, {$this->isprivate} )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 //			prettyPrint($sql);
 			echo $DB->getLastError();
@@ -1656,6 +1660,20 @@ class BusinessContact {
 	{
 		$this->revenueaccount = $revenueaccount;
 	}
-    
-    
+
+	/**
+	 * @return int
+	 */
+	public function getIsprivate()
+	{
+		return $this->isprivate;
+	}
+
+	/**
+	 * @param int $isprivate
+	 */
+	public function setIsprivate($isprivate)
+	{
+		$this->isprivate = $isprivate;
+	}
 }

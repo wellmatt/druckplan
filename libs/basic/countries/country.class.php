@@ -16,6 +16,8 @@ class Country {
     private $nameInt;
     private $code;
     private $active;
+    private $eu = 0;
+    private $vat = 0.0;
     
     /**
      * Konstruktor der Land-Klasse. Holt ein Land aus der Datenbank, wenn die ID > 0 ist.
@@ -36,6 +38,8 @@ class Country {
                 $this->nameInt = $r[0]["country_name_int"];
                 $this->code = $r[0]["country_code"];
                 $this->active = $r[0]["country_active"];
+                $this->eu = $r[0]["country_eu"];
+                $this->vat = $r[0]["country_vat"];
             }
         }
     }
@@ -66,7 +70,7 @@ class Country {
      * Liefer alle Laender, auch die, die nicht aktiviert sind
      *
      * @param String $order
-     * @return multitype:Country
+     * @return Country[]
      */
     static function getEveryCountry($order = self::ORDER_ACTIVE_NAME)
     {
@@ -85,7 +89,7 @@ class Country {
     }
     
     /**
-     * Speicherfunktion für Laender
+     * Speicherfunktion fÃ¼r Laender
      */
     public function save($allcountries){
     	global $DB;
@@ -96,7 +100,9 @@ class Country {
 		    		country_name = '{$this->name}',
 		    		country_name_int = '{$this->nameInt}',
 		    		country_code = '{$this->code}',
-		    		country_active = {$this->active} 
+		    		country_active = {$this->active},
+		    		country_eu = {$this->eu},
+		    		country_vat = {$this->vat}
     				WHERE id = {$this->id} ";
     		return $DB->no_result($sql);
     	}
@@ -147,5 +153,36 @@ class Country {
     {
         $this->active = $active;
     }
+
+    /**
+     * @return int
+     */
+    public function getEu()
+    {
+        return $this->eu;
+    }
+
+    /**
+     * @param int $eu
+     */
+    public function setEu($eu)
+    {
+        $this->eu = $eu;
+    }
+
+    /**
+     * @return float
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @param float $vat
+     */
+    public function setVat($vat)
+    {
+        $this->vat = $vat;
+    }
 }
-?>

@@ -139,6 +139,12 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setTourmarker($_REQUEST["tourmarker"]);
     $businessContact->setNotes($_REQUEST["notes"]);
 
+	if ($_REQUEST["isprivate"] == 1){
+		$businessContact->setIsprivate(1);
+	} else {
+		$businessContact->setIsprivate(0);
+	}
+
     $businessContact->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
     $savemsg = getSaveMessage($businessContact->save());
 	if($DB->getLastError()!=NULL && $DB->getLastError()!=""){
@@ -834,6 +840,16 @@ echo $quickmove->generate();
 									 <label for="" class="col-sm-3 control-label">Bemerkung</label>
 									 <div class="col-sm-9">
 										 <textarea name="notes" class="form-control" rows="2" onfocus="markfield(this,0)" onblur="markfield(this,1)"><?=$businessContact->getNotes()?></textarea>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Privatkunde</label>
+									 <div class="col-sm-9">
+										 <div class="checkbox">
+											 <label>
+												 <input type="checkbox" name="isprivate" id="isprivate" value="1" <?php if ($businessContact->getIsprivate() == 1) echo ' checked ';?>>
+											 </label>
+										 </div>
 									 </div>
 								 </div>
 							 </div>
