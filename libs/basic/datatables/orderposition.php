@@ -58,6 +58,11 @@ $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
+if ($_USER == false){
+    error_log("Login failed (basic-importer.php)");
+    die("Login failed");
+}
+$ClientId = $_USER->getClient()->getId();
 $_LANG = $_USER->getLang();
 
 include( "jscripts/datatableeditor/Editor-1.6.1/php/DataTables.php" );
@@ -189,7 +194,7 @@ Editor::inst( $db, 'collectiveinvoice_orderposition' )
                     "module" => Document::REQ_MODULE_PERSONALIZATION));
                 if (count($docs) > 0)
                 {
-                    $tmp_id = $_USER->getClient()->getId();
+                    $tmp_id = $ClientId;
                     $hash = $docs[0]->getHash();
                     $ret .= '<button class="btn btn-default btn-sm pointer" type="button" title="Download mit Hintergrund" onclick="window.open(\'./docs/personalization/'.$tmp_id.'.per_'.$hash.'_e.pdf\');">
 													<span class="glyphicons glyphicons-cd">

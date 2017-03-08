@@ -195,13 +195,6 @@ function printSubTradegroupsForSelect($parentId, $depth){
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			Artikel
-			 <span class="pull-right">
-				<button class="btn btn-xs btn-success"
-						onclick="document.location.href='index.php?page=<?= $_REQUEST['page'] ?>&exec=new';">
-					<span class="glyphicons glyphicons-plus"></span>
-					<?= $_LANG->get('Artikel hinzuf&uuml;gen') ?>
-				</button>
-			</span>
 		</h3>
 	</div>
 	<div class="panel-body">
