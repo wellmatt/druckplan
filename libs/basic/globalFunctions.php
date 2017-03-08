@@ -489,3 +489,7 @@ function array_to_xml( $data, &$xml_data ) {
 		}
 	}
 }
+
+function roundPrice($val, $decimals = 2){
+	return round($val, $decimals);
+}

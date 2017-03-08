@@ -50,5 +50,5 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 
-$message = new MailMessage(null,$mail_to,$mail_subject,$mail_text,$mail_ccs,$mail_bcc,$attachments);
-$message->send();
+$colinv = new CollectiveInvoice((int)$_REQUEST['id']);
+prettyPrint($colinv->getPriceTable());

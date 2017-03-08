@@ -64,25 +64,21 @@ hiermit erhalten Sie die Rechnung zum Auftrag {$OrderId}</span></span></p>
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Porto und Verpackung</span></span></td>
 			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{PrintPrice var=$DeliveryCosts} {$Currency}</span></span></td>
-			<td>&nbsp;</td>
 		</tr>
 		<!-- {/if} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Netto)</strong></span></span></td>
 			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{PrintPrice var=$SumNetto} {$Currency}</strong></span></span></td>
-			<td>&nbsp;</td>
 		</tr>
-		<!-- {foreach $TaxesKey as $Key} -->
+		<!-- {foreach key=taxkey item=value from=$Taxes} -->
 		<tr>
-			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">USt. ({$Key} %)</span></span></td>
-			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{PrintPrice var=$Taxes.$Key} {$Currency}</span></span></td>
-			<td>&nbsp;</td>
+			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">USt. ({$taxkey} %)</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{PrintPrice var=$value} {$Currency}</span></span></td>
 		</tr>
 		<!-- {/foreach} -->
 		<tr>
 			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Brutto)</strong></span></span></td>
 			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{PrintPrice var=$SumBrutto} {$Currency}</strong></span></span></td>
-			<td>&nbsp;</td>
 		</tr>
 	</tbody>
 </table>

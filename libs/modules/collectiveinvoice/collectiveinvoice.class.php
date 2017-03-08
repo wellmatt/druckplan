@@ -786,6 +786,59 @@ class CollectiveInvoice{
 	}
 
 	/**
+	 * Gets a array of price values correctly rounded for further use
+	 * @return array
+	 */
+	public function getPriceTable()
+	{
+		$netvalue = 0.0;
+		$grossvalue = 0.0;
+		$costvalue = 0.0;
+		$tax = [];
+		$taxvalues = [];
+
+		$positions = Orderposition::getAllOrderposition($this->getId());
+
+		// position prices (net / gross) and cost
+		foreach ($positions as $position) {
+			if ($position->getStatus() == 1 && $position->getInvrel() == 1){
+				if ($position->getType() == 1){
+					$netto = $position->getPrice();
+					$postax = $position->getTax();
+					$gross = $netto * (1+($position->getTax()/100));
+					$cost = $position->getCost();
+					$tax[$postax][] = [roundPrice($netto),roundPrice($gross),roundPrice($cost)];
+				} else {
+					$netto = $position->getPrice() * $position->getAmount();
+					$postax = $position->getTax();
+					$gross = $netto * (1+($position->getTax()/100));
+					$cost = $position->getCost();
+					$tax[$postax][] = [roundPrice($netto),roundPrice($gross),roundPrice($cost)];
+				}
+			}
+		}
+
+		// add delivery cost to equation
+		if ($this->deliveryterm->getId() > 0) {
+			$delivtax = $this->deliveryterm->getTaxkey()->getValue();
+			$tax[$delivtax][] = [roundPrice($this->deliveryterm->getCharges()),roundPrice($this->deliveryterm->getCharges() + $this->deliveryterm->getCharges() / 100 * 19),0];
+		}
+
+		// sum up values of different taxkeys
+		foreach ($tax as $mwst => $items) {
+			foreach ($items as $item) {
+				$netvalue += roundPrice($item[0]);
+				$grossvalue += roundPrice($item[1]);
+				$costvalue += roundPrice($item[2]);
+				$taxvalues[$mwst] += roundPrice($item[1] - $item[0]);
+			}
+		}
+
+		$output = ['total_net'=>$netvalue, 'total_gross'=>$grossvalue, 'total_cost'=>$costvalue, 'taxes'=>$tax, 'taxvalues'=>$taxvalues];
+		return $output;
+	}
+
+	/**
 	 * Gibt die Gesamt-Netto-Summe des Auftrags zurück
 	 * @return float
 	 */

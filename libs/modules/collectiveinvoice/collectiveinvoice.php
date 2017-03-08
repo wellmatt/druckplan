@@ -185,7 +185,7 @@ case 'createFromTicket':
         $collectinv->setInternContact($_USER);
         $collectinv->setCustContactperson($src_ticket->getCustomer_cp());
 		$collectinv->setTicket($src_ticket->getId());
-		$collectinv->setPaymentterm($collectinv->getBusinesscontact()->getPaymentTerms());
+		$collectinv->setPaymentterm($src_ticket->getCustomer()->getPaymentTerms());
         
         $savemsg = getSaveMessage($collectinv->save());
         

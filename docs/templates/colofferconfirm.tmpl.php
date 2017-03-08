@@ -1,11 +1,11 @@
-<?
-// ----------------------------------------------------------------------------------
-// Author: Klein Druck+Medien GmbH
-// Updated: 23.12.2014
-// Copyright: Klein Druck+Medien GmbH - All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-// ----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
 
 require_once 'thirdparty/smarty/Smarty.class.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
@@ -13,55 +13,28 @@ require_once 'thirdparty/tcpdf/tcpdf.php';
 // $orderpos = $order->getPositions();
 $orderpos = $order->getPositions(false,true);
 
-//Gesamtpreis
-$sum = 0;
-$gesnetto = 0;
-$taxeskey = Array();
-$taxes = Array();
-foreach ($orderpos as $op)
-{
-    $gesnetto += $op->getNetto();
-    if(!in_array($op->getTax(), $taxeskey))
-        $taxeskey[] = $op->getTax();
-
-    $taxes[$op->getTax()] += $op->getNetto() / 100 * $op->getTax();
-}
-
 require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/colofferconfirm.tmpl';
 $datei = ckeditor_to_smarty($tmp);
 
+// pricetable from colinv
+$pricetable = $order->getPriceTable();
+$gesnetto = $pricetable['total_net'];
+$sum = $pricetable['total_gross'];
+$taxes = $pricetable['taxvalues'];
+
+// Table
 $smarty->assign('OrderPos',$orderpos);
-
-
-$smarty->assign('DeliveryCosts',$order->getDeliveryCosts());
-if ($order->getDeliveryCosts()) {
-    // Versandkosten werden auch besteuert (hier 19%)
-    if(!in_array("19", $taxeskey))
-        $taxeskey[] = "19";
-    $taxes["19"] += $order->getDeliveryCosts() / 100 * 19;
-    $gesnetto += $order->getDeliveryCosts();
-}
-
-$sum = $gesnetto;
+$smarty->assign('DeliveryCosts',$order->getDeliveryterm()->getCharges());
 $smarty->assign('SumNetto',$gesnetto);
-
 
 // Steuern
 $smarty->assign('Taxes',$taxes);
-$smarty->assign('TaxesKey',$taxeskey);
 
 // Gesamtsumme
-$sum = $gesnetto + array_sum ($taxes);
 $smarty->assign('SumBrutto',$sum);
 
 // Footer
-
 $smarty->assign('UserClient',$_USER->getClient()->getName());
-
 $htmldump = $smarty->fetch('string:'.$datei);
-
-// var_dump($htmltemp);
-
 $pdf->writeHTML($htmldump);
-?>

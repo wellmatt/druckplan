@@ -49,52 +49,24 @@ class InvoiceOut extends Model{
         $nettodays = $payterm->getNettodays();
         $now = time();
         $aday = 86400;
-        $netvalue = 0.0;
-        $grossvalue = 0.0;
-        $cost = 0.0;
-
 
         $duedate = ($now + ($nettodays * $aday));
 
-        $tax = [];
-        $positions = Orderposition::getAllOrderposition($colinv->getId());
-        foreach ($positions as $position) {
-            if ($position->getStatus() == 1 && $position->getInvrel() == 1){
-                if ($position->getType() == 1){
-                    $netto = $position->getPrice();
-                    $postax = $position->getTax();
-                    $gross = $netto * (1+($position->getTax()/100));
-                    $cost = $position->getCost();
-                    $tax[$postax][] = [$netto,$gross,$cost];
-                } else {
-                    $netto = $position->getPrice() * $position->getAmount();
-                    $postax = $position->getTax();
-                    $gross = $netto * (1+($position->getTax()/100));
-                    $cost = $position->getCost();
-                    $tax[$postax][] = [$netto,$gross,$cost];
-                }
-            }
-        }
-
-        foreach ($tax as $mwst => $items) {
-            foreach ($items as $item) {
-                $netvalue += $item[0];
-                $grossvalue += $item[1];
-                $cost += $item[2];
-            }
-        }
+        $pricetable = $colinv->getPriceTable();
+        $netvalue = $pricetable['total_net'];
+        $grossvalue = $pricetable['total_gross'];
+        $costvalue = $pricetable['total_cost'];
 
         $array = [
             'number' => $number,
             'colinv' => $colinv->getId(),
-            'netvalue' => $netvalue,
-            'grossvalue' => $grossvalue,
-            'cost' => $cost,
+            'netvalue' => roundPrice($netvalue),
+            'grossvalue' => roundPrice($grossvalue),
+            'cost' => roundPrice($costvalue),
             'crtdate' => time(),
             'duedate' => $duedate,
             'doc' => $doc,
         ];
-//        prettyPrint($array);
 
         $invout = new InvoiceOut(0,$array);
         $ret = $invout->save();

@@ -6,8 +6,6 @@
  *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
  *
  */
-error_reporting(-1);
-ini_set('display_errors', 1);
 
 require_once 'thirdparty/smarty/Smarty.class.php';
 require_once 'thirdparty/tcpdf/tcpdf.php';
@@ -26,7 +24,7 @@ foreach ($positions as $revpos)
     if(!in_array($revpos->getTaxkey()->getValue(), $taxeskey))
         $taxeskey[] = $revpos->getTaxkey()->getValue();
 
-    $taxes[$revpos->getTaxkey()->getValue()] += $revpos->getPrice() / 100 * $revpos->getTaxkey()->getValue();
+    $taxes[$revpos->getTaxkey()->getValue()] += roundPrice($revpos->getPrice() / 100 * $revpos->getTaxkey()->getValue());
 }
 
 
@@ -38,17 +36,17 @@ $datei = ckeditor_to_smarty($tmp);
 
 $smarty->assign('OrderPos',$positions);
 
-$smarty->assign('DeliveryCosts',$order->getDeliveryCosts());
+$smarty->assign('DeliveryCosts',$order->getDeliveryterm()->getCharges());
 if ($order->getDeliveryCosts()) {
     // Versandkosten werden auch besteuert (hier 19%)
     if(!in_array("19", $taxeskey))
         $taxeskey[] = "19";
-    $taxes["19"] += $order->getDeliveryCosts() / 100 * 19;
+    $taxes["19"] += roundPrice($order->getDeliveryCosts() / 100 * 19);
     $gesnetto += $order->getDeliveryCosts();
 }
 
 $sum = $gesnetto;
-$smarty->assign('SumNetto',$gesnetto);
+$smarty->assign('SumNetto',roundPrice($gesnetto));
 
 
 // Steuern
@@ -57,7 +55,7 @@ $smarty->assign('TaxesKey',$taxeskey);
 
 // Gesamtsumme
 $sum = $gesnetto + array_sum ($taxes);
-$smarty->assign('SumBrutto',$sum);
+$smarty->assign('SumBrutto',roundPrice($sum));
 
 
 // Footer
@@ -79,5 +77,3 @@ else
 $this->priceNetto = $gesnetto;
 $this->priceBrutto = $sum;
 $this->payable = mktime(0, 0, 0, date('m'), date('d'), date('Y')) + ($tmp_nettodays * 86400);
-
-?>
