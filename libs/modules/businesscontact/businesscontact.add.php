@@ -16,6 +16,7 @@ $_USER;
 
 $_REQUEST["id"] = (int)$_REQUEST["id"];
 $revaccounts = RevenueAccount::getAll();
+$costobjects = CostObject::getAll();
 $businessContact = new BusinessContact($_REQUEST["id"]);
 $all_attributes = Attribute::getAllAttributesForCustomer();
 
@@ -146,6 +147,8 @@ if ($_REQUEST["subexec"] == "save")
 	}
 
     $businessContact->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+    $businessContact->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
+
     $savemsg = getSaveMessage($businessContact->save());
 	if($DB->getLastError()!=NULL && $DB->getLastError()!=""){
     	$savemsg .= $DB->getLastError();
@@ -333,6 +336,7 @@ $(document).ready(function() {
 <script>
 	$(function() {
 		$("#revenueaccount").select2();
+		$("#costobject").select2();
 	});
 </script>
  <script>
@@ -1013,6 +1017,8 @@ echo $quickmove->generate();
                                     <label for="" class="col-sm-4 control-label">Erlöskonto</label>
                                     <div class="col-sm-8">
                                         <select name="revenueaccount" id="revenueaccount" class="form-control">
+											<option
+												value="0">- Nicht Überschreiben -</option>
                                             <?php
                                             foreach ($revaccounts as $revaccount) { ?>
                                                 <?php
@@ -1033,6 +1039,32 @@ echo $quickmove->generate();
                                         </select>
                                     </div>
                                  </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">Kostenträger</label>
+									 <div class="col-sm-8">
+										 <select name="costobject" id="costobject" class="form-control">
+											 <option
+												 value="0">- Nicht Überschreiben -</option>
+											 <?php
+											 foreach ($costobjects as $costobject) { ?>
+												 <?php
+												 if ($businessContact->getId() > 0) {
+													 if ($costobject->getId() == $businessContact->getCostobject()->getId()) { ?>
+														 <option
+															 value="<?php echo $businessContact->getCostobject()->getId(); ?>"
+															 selected><?php echo $businessContact->getCostobject()->getTitle(); ?></option>
+													 <?php } else { ?>
+														 <option
+															 value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+													 <?php } ?>
+												 <?php } else {?>
+													 <option
+														 value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+												 <?php } ?>
+											 <?php } ?>
+										 </select>
+									 </div>
+								 </div>
 							 </div>
 						 </div>
 					</div>

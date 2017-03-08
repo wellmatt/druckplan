@@ -16,7 +16,8 @@ class Tradegroup {
 	private $shoprel;
 	private $parentID = 0;
 	private $revenueaccount;
-	
+	private $costobject;
+
 	/**
 	 * Konstruktor der Warengruppen-Klasse
 	 * Falls id > 0, wird die entsprechende Warengruppe aus der DB geholt
@@ -26,6 +27,9 @@ class Tradegroup {
 	function __construct($id = 0){
 		global $DB;
 		global $_USER;
+
+		$this->revenueaccount = new RevenueAccount();
+		$this->costobject = new CostObject();
 	
 		if($id>0){
 			$sql = "SELECT * FROM tradegroup WHERE id = {$id}";
@@ -40,6 +44,7 @@ class Tradegroup {
 				$this->shoprel 	= $r["tradegroup_shoprel"];
 				$this->parentID	= $r["tradegroup_parentid"];
 				$this->revenueaccount = new RevenueAccount($r["revenueaccount"]);
+				$this->costobject = new CostObject($r["costobject"]);
 			}
 		}
 	}
@@ -60,14 +65,15 @@ class Tradegroup {
 					tradegroup_desc 	= '{$this->desc}', 
 					tradegroup_parentid	= {$this->parentID}, 
 					tradegroup_shoprel 	= {$this->shoprel},
-					revenueaccount = {$this->revenueaccount->getId()}
+					revenueaccount = {$this->revenueaccount->getId()},
+					costobject = {$this->costobject->getId()}
                     WHERE id = {$this->id}";
 			return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO tradegroup 
-					(tradegroup_state, tradegroup_title, tradegroup_desc, tradegroup_shoprel, tradegroup_parentid, revenueaccount)
+					(tradegroup_state, tradegroup_title, tradegroup_desc, tradegroup_shoprel, tradegroup_parentid, revenueaccount, costobject)
 					VALUES
-					({$this->state}, '{$this->title}', '{$this->desc}', {$this->shoprel}, {$this->parentID}, {$this->revenueaccount->getId()} )";
+					({$this->state}, '{$this->title}', '{$this->desc}', {$this->shoprel}, {$this->parentID}, {$this->revenueaccount->getId()}, {$this->costobject->getId()} )";
 			$res = $DB->no_result($sql);
             
             if($res){
@@ -221,5 +227,21 @@ class Tradegroup {
 	public function setRevenueaccount($revenueaccount)
 	{
 		$this->revenueaccount = $revenueaccount;
+	}
+
+	/**
+	 * @return CostObject
+	 */
+	public function getCostobject()
+	{
+		return $this->costobject;
+	}
+
+	/**
+	 * @param CostObject $costobject
+	 */
+	public function setCostobject($costobject)
+	{
+		$this->costobject = $costobject;
 	}
 }

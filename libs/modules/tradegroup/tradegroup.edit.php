@@ -33,11 +33,13 @@ if($_REQUEST["subexec"] == "save"){
 		
 	}
 	$tradegroup->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+	$tradegroup->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
 	$savemsg = getSaveMessage($tradegroup->save())." ".$DB->getLastError();
 }
 
 $all_tradegroups = Tradegroup::getAllTradegroups(0);
 $revaccounts = RevenueAccount::getAll();
+$costobjects = CostObject::getAll();
 
 function printSubTradegroupsForSelect($parentId, $depth){
 	global $tradegroup;
@@ -120,6 +122,8 @@ echo $quickmove->generate();
 				<label for="" class="col-sm-2 control-label">Erlöskonto</label>
 				<div class="col-sm-4">
 					<select name="revenueaccount" id="revenueaccount" class="form-control">
+						<option
+							value="0">- Nicht Überschreiben -</option>
 						<?php
 						foreach ($revaccounts as $revaccount) { ?>
 							<?php
@@ -140,17 +144,39 @@ echo $quickmove->generate();
 					</select>
 				</div>
 			</div>
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Kostenträger</label>
+				<div class="col-sm-4">
+					<select name="costobject" id="costobject" class="form-control">
+						<option
+							value="0">- Nicht Überschreiben -</option>
+						<?php
+						foreach ($costobjects as $costobject) { ?>
+							<?php
+							if ($tradegroup->getId() > 0) {
+								if ($costobject->getId() == $tradegroup->getCostobject()->getId()) { ?>
+									<option
+										value="<?php echo $tradegroup->getCostobject()->getId(); ?>"
+										selected><?php echo $tradegroup->getCostobject()->getTitle(); ?></option>
+								<?php } else { ?>
+									<option
+										value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+								<?php } ?>
+							<?php } else {?>
+								<option
+									value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+							<?php } ?>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>
 <script>
 	$(function() {
 		$("#revenueaccount").select2();
-	});
-</script>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(".js-example-basic-single").select2();
+		$("#costobject").select2();
 	});
 </script>
 

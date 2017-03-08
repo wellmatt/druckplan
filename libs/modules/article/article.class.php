@@ -56,7 +56,8 @@ class Article {
 	private $tags;                  // Artikel Tags
 	private $orderid = 0;           // Verknuepfte Kalk
 	private $usesstorage = 0;		// Lagerartikel
-	private $revenueaccount;		//Erlöskonto
+	private $revenueaccount;		// Erlöskonto
+	private $costobject;			// Kostenträger
 
 	private $orderamounts = Array();// Falls keine manuellen Bestellmengen erwünscht befinden sich hier die möglichen Bestellmengen
 
@@ -73,6 +74,8 @@ class Article {
 
 		$this->tradegroup = new Tradegroup(0);
 		$this->taxkey = new TaxKey(0);
+		$this->revenueaccount = new RevenueAccount(0);
+		$this->costobject = new CostObject(0);
 
 		if ($id > 0){
 			$valid_cache = true;
@@ -138,6 +141,7 @@ class Article {
 					$this->orderid = $r["orderid"];
 					$this->usesstorage = $r["usesstorage"];
 					$this->revenueaccount = new RevenueAccount($r["revenueaccount"]);
+					$this->costobject = new CostObject($r["costobject"]);
 
 
 					if ($r["tradegroup"] == 0) {
@@ -217,8 +221,9 @@ class Article {
 					isworkhourart		= {$this->isworkhourart},
 					matchcode		    = '{$this->matchcode}',
 					usesstorage		    = {$this->usesstorage},
-					orderid             = {$this->orderid}
-					revenueaccount      = {$this->revenueaccount->getId()}
+					orderid             = {$this->orderid},
+					revenueaccount      = {$this->revenueaccount->getId()},
+					costobject      = {$this->costobject->getId()}
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);
 		} else {
@@ -229,7 +234,7 @@ class Article {
 					minorder, maxorder, orderunit,
 					orderunitweight, shop_customer_rel,
 					shop_customer_id, isworkhourart, show_shop_price,
-					shop_needs_upload, matchcode, orderid, usesstorage, revenueaccount )
+					shop_needs_upload, matchcode, orderid, usesstorage, revenueaccount, costobject )
 					VALUES
 					({$this->status}, '{$this->desc}', '{$this->title}',
 					{$this->tradegroup->getId()}, {$now}, {$_USER->getId()},
@@ -237,7 +242,7 @@ class Article {
 					{$this->minorder}, {$this->maxorder}, {$this->orderunit},
 					{$this->orderunitweight}, {$this->shopCustomerRel}, {$this->shopCustomerID},
 					{$this->isworkhourart}, {$this->show_shop_price}, {$this->shop_needs_upload},
-					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage}, {$this->revenueaccount->getId()} )";
+					'{$this->matchcode}', {$this->orderid}, {$this->usesstorage}, {$this->revenueaccount->getId()}, {$this->costobject->getId()} )";
 			$res = $DB->no_result($sql);
 
 			if($res){
@@ -1271,4 +1276,19 @@ class Article {
 		$this->taxkey = $taxkey;
 	}
 
+	/**
+	 * @return CostObject
+	 */
+	public function getCostobject()
+	{
+		return $this->costobject;
+	}
+
+	/**
+	 * @param CostObject $costobject
+	 */
+	public function setCostobject($costobject)
+	{
+		$this->costobject = $costobject;
+	}
 }

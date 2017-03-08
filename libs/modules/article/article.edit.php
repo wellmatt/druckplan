@@ -66,6 +66,7 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
 	$article->setMatchcode($_REQUEST["article_matchcode"]);
 	$article->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+	$article->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
 
 
 	if ($_REQUEST['usesstorage'])
@@ -202,6 +203,7 @@ $allprices = $article->getPrices();
 $allcostprices = $article->getCosts();
 $allsupplier = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME,' supplier = 1 ');
 $revaccounts = RevenueAccount::getAll();
+$costobjects = CostObject::getAll();
 
 /****************************** PHP-Funktionen ***********************************************************************/
 
@@ -405,6 +407,8 @@ echo $quickmove->generate();
 								<label for="" class="col-sm-5 control-label">Erlöskonto</label>
 								<div class="col-sm-7">
 									<select name="revenueaccount" id="revenueaccount" class="form-control">
+										<option
+											value="0">- Nicht Überschreiben -</option>
 										<?php
 											foreach ($revaccounts as $revaccount) { ?>
 												<?php
@@ -422,6 +426,32 @@ echo $quickmove->generate();
 															value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
 												<?php } ?>
 											<?php } ?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-5 control-label">Kostenträger</label>
+								<div class="col-sm-7">
+									<select name="costobject" id="costobject" class="form-control">
+										<option
+											value="0">- Nicht Überschreiben -</option>
+										<?php
+										foreach ($costobjects as $costobject) { ?>
+											<?php
+											if ($article->getId() > 0) {
+												if ($costobject->getId() == $article->getCostobject()->getId()) { ?>
+													<option
+														value="<?php echo $article->getCostobject()->getId(); ?>"
+														selected><?php echo $article->getCostobject()->getTitle(); ?></option>
+												<?php } else { ?>
+													<option
+														value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+												<?php } ?>
+											<?php } else {?>
+												<option
+													value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+											<?php } ?>
+										<?php } ?>
 									</select>
 								</div>
 							</div>
@@ -919,6 +949,7 @@ echo $quickmove->generate();
 <script>
 	$(function() {
 		$("#revenueaccount").select2();
+		$("#costobject").select2();
 	});
 </script>
 <script type="text/javascript">
