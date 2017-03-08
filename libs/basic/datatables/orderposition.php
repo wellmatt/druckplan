@@ -194,7 +194,7 @@ Editor::inst( $db, 'collectiveinvoice_orderposition' )
                     "module" => Document::REQ_MODULE_PERSONALIZATION));
                 if (count($docs) > 0)
                 {
-                    $tmp_id = $ClientId;
+                    $tmp_id = $docs[0]->getCreateUser()->getClient()->getId();
                     $hash = $docs[0]->getHash();
                     $ret .= '<button class="btn btn-default btn-sm pointer" type="button" title="Download mit Hintergrund" onclick="window.open(\'./docs/personalization/'.$tmp_id.'.per_'.$hash.'_e.pdf\');">
 													<span class="glyphicons glyphicons-cd">
