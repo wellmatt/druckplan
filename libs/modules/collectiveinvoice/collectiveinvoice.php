@@ -98,9 +98,7 @@ case 'restorepos':
 case 'save':
 	$tmp_deliv = (float)sprintf("%.2f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["colinv_deliverycosts"])));
 
-	$needs_planning = false;
 	$collectinv->setClient($_USER->getClient());
-	// $collectinv->setStatus((int)$_REQUEST["colinv_status"]);
 	$collectinv->setBusinesscontact(new BusinessContact((int)$_REQUEST["colinv_businesscontact"]));
 	$collectinv->setDeliveryterm(new DeliveryTerms((int)$_REQUEST["colinv_deliveryterm"]));
 	$collectinv->setDeliverycosts($tmp_deliv);
@@ -127,7 +125,7 @@ case 'save':
 	
 	$savemsg = getSaveMessage($collectinv->save());
 	
-	if ($_REQUEST["asso_class"] && $_REQUEST["asso_object"])
+	if ($_REQUEST["asso_class"] != '' && $_REQUEST["asso_object"] != '')
 	{
 	    $new_asso = new Association();
 	    $new_asso->setModule1(get_class($collectinv));
@@ -135,6 +133,8 @@ case 'save':
 	    $new_asso->setModule2($_REQUEST["asso_class"]);
 	    $new_asso->setObjectid2((int)$_REQUEST["asso_object"]);
 	    $new_asso->save();
+		$_REQUEST["asso_class"] = '';
+		$_REQUEST["asso_object"] = '';
 	}
 	
 	if($collectinv->getId()==NULL){
@@ -144,11 +144,6 @@ case 'save':
 	if ($collectinv->getId() > 0){ // && ($collectinv->getStatus() == 5 || $collectinv->getStatus() == 7)
 		$collectinv->saveArticleBuyPrices();
 	}
-    if ($needs_planning)
-    {
-        $collectinv->setNeeds_planning(1);
-        $collectinv->save();
-    }
 	
 	require_once 'collectiveinvoice.edit.php';
 	break;
@@ -246,6 +241,7 @@ case 'createFromTicket':
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
+								$newpos->setSequence($newpos->getNextSequence($collectinv));
 
 								$orderpositions[] = $newpos;
 
@@ -330,6 +326,7 @@ case 'createFromTicket':
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
+								$newpos->setSequence($newpos->getNextSequence($collectinv));
 
 								$orderpositions[] = $newpos;
 

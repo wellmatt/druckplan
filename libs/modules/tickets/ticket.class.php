@@ -159,6 +159,7 @@ class Ticket {
             source		    = {$this->source} 
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
+//            prettyPrint($sql);
         } else {
             if ($this->crtuser)
                 $tmp_crtuser = $this->crtuser->getId();
@@ -174,6 +175,7 @@ class Ticket {
               {$this->customer_cp->getId()}, {$this->assigned_user->getId()}, {$this->assigned_group->getId()}, {$this->state->getId()}, {$this->category->getId()}, {$this->priority->getId()},
               {$this->source}, {$now}, $tmp_crtuser, {$this->planned_time})";
             $res = $DB->no_result($sql);
+//            prettyPrint($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM tickets WHERE title = '{$this->title}'";
                 $thisid = $DB->select($sql);
