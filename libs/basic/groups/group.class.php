@@ -47,7 +47,7 @@ class Group {
             $this->name = $res[0]["group_name"];
             $this->rights = $res[0]["group_rights"];
             $this->description = $res[0]["group_description"];
-            
+
             if($adduser)
             {
                $sql = " SELECT * FROM user_groups WHERE group_id = {$this->id}";
@@ -55,13 +55,18 @@ class Group {
                {
                   $res = $this->db->select($sql);
                   foreach ($res as $r)
-                     $this->members[] = new User($r["user_id"], false);
+                     $this->members[] = new User($r["user_id"]);
                }
             }
          }
       }
    }
-   
+
+   /**
+    * @param int $order
+    * @param int $client
+    * @return Group[]
+    */
    static function getAllGroups($order = 1, $client = 0) {
       global $DB;
       $groups = Array();
@@ -98,6 +103,33 @@ class Group {
       }
       return $groups;
    }
+
+   public static function refreshAndCleanup()
+   {
+      global $DB;
+      foreach (Group::getAllGroups() as $group) {
+         $memberidarray = [];
+         foreach ($group->getMembers() as $member) {
+            if (!in_array($member->getId(),$memberidarray) && $member->getId() > 0)
+               $memberidarray[] = $member->getId();
+         }
+         $group->clearMembers();
+         foreach ($memberidarray as $userid) {
+            $tmp_user = new User($userid);
+            $group->addMember($tmp_user);
+            Cachehandler::removeCache(Cachehandler::genKeyword($tmp_user));
+         }
+         $group->save();
+      }
+
+      $sql = " DELETE FROM user_groups WHERE group_id = 0 ";
+      $DB->no_result($sql);
+   }
+
+   public function clearMembers()
+   {
+      $this->members = [];
+   }
    
    function getId() {
       return $this->id;
@@ -110,7 +142,10 @@ class Group {
    function getDescription () {
       return $this->description;
    }
-   
+
+   /**
+    * @return User[]
+    */
    function getMembers() {
       return $this->members;
    }
@@ -209,4 +244,3 @@ class Group {
    }
  
 }
-?>

@@ -60,7 +60,6 @@ $_LICENSE = new License();
 
 if (!$_LICENSE->isValid())
     die("No valid licensefile, please contact iPactor GmbH for further assistance");
-
 // Handle uservalidation
 $_USER = new User();
 

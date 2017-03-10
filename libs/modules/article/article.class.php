@@ -217,7 +217,7 @@ class Article {
 					isworkhourart		= {$this->isworkhourart},
 					matchcode		    = '{$this->matchcode}',
 					usesstorage		    = {$this->usesstorage},
-					orderid             = {$this->orderid}
+					orderid             = {$this->orderid},
 					revenueaccount      = {$this->revenueaccount->getId()}
                     WHERE id = {$this->id}";
 			$res = $DB->no_result($sql);

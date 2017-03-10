@@ -6,41 +6,45 @@ if ($_REQUEST["subexec"] == "adduser")
 {
    $group->addMember(new User($_REQUEST["uid"]));
    $savemsg = getSaveMessage($group->save());
+    Group::refreshAndCleanup();
 }
 
 if ($_REQUEST["subexec"] == "removeuser")
 {
    $group->delMember(new User($_REQUEST["uid"]));
    $savemsg = getSaveMessage($group->save());
+    Group::refreshAndCleanup();
 }
 
 if ($_REQUEST["subexec"] == "save")
-{      
-   $group->setName(trim(addslashes($_REQUEST["group_name"])));
-   $group->setDescription(trim(addslashes($_REQUEST["group_description"])));
-   $group->setRight(Group::RIGHT_URLAUB, (int)$_REQUEST["right_urlaub"]);
-   $group->setRight(Group::RIGHT_MACHINE_SELECTION, (int)$_REQUEST["right_machineselection"]);
-   $group->setRight(Group::RIGHT_DETAILED_CALCULATION, (int)$_REQUEST["right_detailed_calc"]);
-   $group->setRight(Group::RIGHT_SEE_TARGETTIME, (int)$_REQUEST["right_targettime"]);
-   $group->setRight(Group::RIGHT_PARTS_EDIT, (int)$_REQUEST["right_parts_edit"]);
-   $group->setRight(Group::RIGHT_ALL_CALENDAR, (int)$_REQUEST["right_all_calendar"]);
-   $group->setRight(Group::RIGHT_SEE_ALL_CALENDAR, (int)$_REQUEST["right_see_all_calendar"]);
-   $group->setRight(Group::RIGHT_EDIT_BC, (int)$_REQUEST["right_edit_bc"]);
-   $group->setRight(Group::RIGHT_DELETE_BC, (int)$_REQUEST["right_delete_bc"]);
-   $group->setRight(Group::RIGHT_EDIT_CP, (int)$_REQUEST["right_edit_cp"]);
-   $group->setRight(Group::RIGHT_DELETE_CP, (int)$_REQUEST["right_delete_cp"]);
-   $group->setRight(Group::RIGHT_DELETE_SCHEDULE, (int)$_REQUEST["right_delete_schedule"]);
-   $group->setRight(Group::RIGHT_DELETE_ORDER, (int)$_REQUEST["right_delete_order"]);
-   $group->setRight(Group::RIGHT_DELETE_COLINV, (int)$_REQUEST["right_delete_colinv"]);
-   $group->setRight(Group::RIGHT_COMBINE_COLINV, (int)$_REQUEST["right_combine_colinv"]);
-   $group->setRight(Group::RIGHT_TICKET_CHANGE_OWNER, (int)$_REQUEST["right_ticket_change_owner"]);
-   $group->setRight(Group::RIGHT_ASSO_DELETE, (int)$_REQUEST["right_asso_delete"]);
-   $group->setRight(Group::RIGHT_NOTES_BC, (int)$_REQUEST["right_notes_bc"]);
-   $group->setRight(Group::RIGHT_APPROVE_VACATION, (int)$_REQUEST["right_approve_vacation"]);
+{
+    $group->setName(trim(addslashes($_REQUEST["group_name"])));
+    $group->setDescription(trim(addslashes($_REQUEST["group_description"])));
+    $group->setRight(Group::RIGHT_URLAUB, (int)$_REQUEST["right_urlaub"]);
+    $group->setRight(Group::RIGHT_MACHINE_SELECTION, (int)$_REQUEST["right_machineselection"]);
+    $group->setRight(Group::RIGHT_DETAILED_CALCULATION, (int)$_REQUEST["right_detailed_calc"]);
+    $group->setRight(Group::RIGHT_SEE_TARGETTIME, (int)$_REQUEST["right_targettime"]);
+    $group->setRight(Group::RIGHT_PARTS_EDIT, (int)$_REQUEST["right_parts_edit"]);
+    $group->setRight(Group::RIGHT_ALL_CALENDAR, (int)$_REQUEST["right_all_calendar"]);
+    $group->setRight(Group::RIGHT_SEE_ALL_CALENDAR, (int)$_REQUEST["right_see_all_calendar"]);
+    $group->setRight(Group::RIGHT_EDIT_BC, (int)$_REQUEST["right_edit_bc"]);
+    $group->setRight(Group::RIGHT_DELETE_BC, (int)$_REQUEST["right_delete_bc"]);
+    $group->setRight(Group::RIGHT_EDIT_CP, (int)$_REQUEST["right_edit_cp"]);
+    $group->setRight(Group::RIGHT_DELETE_CP, (int)$_REQUEST["right_delete_cp"]);
+    $group->setRight(Group::RIGHT_DELETE_SCHEDULE, (int)$_REQUEST["right_delete_schedule"]);
+    $group->setRight(Group::RIGHT_DELETE_ORDER, (int)$_REQUEST["right_delete_order"]);
+    $group->setRight(Group::RIGHT_DELETE_COLINV, (int)$_REQUEST["right_delete_colinv"]);
+    $group->setRight(Group::RIGHT_COMBINE_COLINV, (int)$_REQUEST["right_combine_colinv"]);
+    $group->setRight(Group::RIGHT_TICKET_CHANGE_OWNER, (int)$_REQUEST["right_ticket_change_owner"]);
+    $group->setRight(Group::RIGHT_ASSO_DELETE, (int)$_REQUEST["right_asso_delete"]);
+    $group->setRight(Group::RIGHT_NOTES_BC, (int)$_REQUEST["right_notes_bc"]);
+    $group->setRight(Group::RIGHT_APPROVE_VACATION, (int)$_REQUEST["right_approve_vacation"]);
     $group->setRight(Group::RIGHT_TICKET_EDIT_INTERNAL, (int)$_REQUEST["right_ticket_edit_internal"]);
     $group->setRight(Group::RIGHT_TICKET_EDIT_OFFICAL, (int)$_REQUEST["right_ticket_edit_offical"]);
-   $savemsg = getSaveMessage($group->save());
-   $savemsg .= $DB->getLastError();  
+    $savemsg = getSaveMessage($group->save());
+    $savemsg .= $DB->getLastError();
+
+    Group::refreshAndCleanup();
 }
 
 $users = User::getAllUser(User::ORDER_LOGIN);

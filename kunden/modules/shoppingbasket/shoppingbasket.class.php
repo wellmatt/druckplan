@@ -1,10 +1,12 @@
-<?//--------------------------------------------------------------------------------
-// Author:			iPactor GmbH
-// Updated:			29.08.2012
-// Copyright:		2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
+
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/personalization/personalization.order.class.php';
@@ -193,63 +195,6 @@ class Shoppingbasket{
 			$res = $DB->insert($sql);
 		}
 	}
-	
-// 	/**
-// 	 * Funktion fuer das Absenden eines Warenkorbs. 
-// 	 * Es wird eine Sammelrechnung erzeugt und alle Warenkorbeinträge in Auftragspositionen uebernommen.
-// 	 * @return boolean
-// 	 */
-// 	public function send(){
-// 		global $busicon;
-// 		global $_LANG;
-// 		$save_items = Array();
-		
-// 		$col_inv = new CollectiveInvoice();
-// 		$col_inv->setBusinesscontact($busicon);
-// 		$col_inv->setIntent($this->intent);
-// 		$col_inv->setTitle($_LANG->get("Bestellung aus dem Kunden-Portal"));
-// 		$col_inv->setPaymentterm($busicon->getPaymentTerms());
-// 		$col_inv->setDeliveryaddressById($this->deliveryAdressID);
-// 		$tmp_saver = $col_inv->save();
-		
-// 		// Wenn Sammelrechnung gespeichert/angelegt, dann Positionen hinzufuegen
-// 		if($tmp_saver){
-// 			foreach ($this->entrys AS $entry){
-// 				$tmp_order_pos =  new Orderposition();
-// 				$tmp_order_pos->setPrice($entry->getPrice());
-// 				$tmp_order_pos->setObjectid($entry->getId());
-// 				$tmp_order_pos->setCollectiveinvoice($col_inv->getId());
-// 				$tmp_order_pos->setStatus(1);
-				
-// 				if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
-// 					$tmp_article = new Article($entry->getId());
-// 					$tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
-// 					$tax = $tmp_article->getTax();
-// 					$tmp_order_pos->setTax($tax);
-// 					$tmp_order_pos->setComment($tmp_article->getDesc());
-// 					$tmp_order_pos->setQuantity($entry->getAmount());
-// 				}
-// 				if($entry->getType() == Shoppingbasketitem::TYPE_PERSONALIZATION){
-// 					$tmp_perso = new Personalizationorder($entry->getId());
-// 					$tmp_order_pos->setType(Orderposition::TYPE_PERSONALIZATION);
-// 					$tmp_order_pos->setTax(CollectiveInvoice::TAX_PEROSALIZATION);
-// 					$tmp_order_pos->setComment($tmp_perso->getTitle()." (".$entry->getAmount()." ".$_LANG->get("Stk.").")");
-// 					$tmp_order_pos->setQuantity(1);
-// 					// Bestellung aktualisieren, damit sie im Backend auftaucht
-// 					// $tmp_perso->setStatus(2);	// nicht mehr den Status umsetzen, damit diese als Vorlage bleibt
-// 					$tmp_perso->setOrderdate(time());
-// 					$tmp_perso->save();
-// 					$tmp_perso->copyPersoOrderForShopOrder();
-// 				} 
-// 				$save_items[] = $tmp_order_pos;
-// 			}
-// 			$tmp_saver2 = Orderposition::saveMultipleOrderpositions($save_items);
-// 			// echo "Debug $tmp_saver2: "; 
-// 			// echo $tmp_saver2 ? 'true' : 'false';
-// 			// echo "</br>";
-// 		}
-// 		return 	(bool)($tmp_saver && $tmp_saver2);
-// 	}
 
 	/**
 	 * Funktion fuer das Absenden eines Warenkorbs.
@@ -326,6 +271,7 @@ class Shoppingbasket{
         	                $tmp_order_pos->setObjectid($entry->getId());
         	                $tmp_order_pos->setCollectiveinvoice($col_inv->getId());
         	                $tmp_order_pos->setStatus(1);
+							$tmp_order_pos->setSequence($tmp_order_pos->getNextSequence($col_inv));
         	        
         	                if($entry->getType() == Shoppingbasketitem::TYPE_ARTICLE){
         	                    $tmp_article = new Article($entry->getId());
