@@ -67,6 +67,11 @@ if ($_REQUEST['exec'] == 'addPosArticle' && $_REQUEST["ciid"] && $_REQUEST["aid"
     $newpos->setObjectid($article->getId());
     $newpos->setSequence(Orderposition::getNextSequence($colinv));
     $newpos->save();
+
+    if ($article->getIsWorkHourArt()){
+        $colinv->setNeeds_planning(1);
+        $colinv->save();
+    }
 }
 
 if ($_REQUEST['exec'] == 'addPosPartslist' && $_REQUEST["ciid"] && $_REQUEST["plid"]){
@@ -87,6 +92,11 @@ if ($_REQUEST['exec'] == 'addPosPartslist' && $_REQUEST["ciid"] && $_REQUEST["pl
         $newpos->setObjectid($article->getId());
         $newpos->setSequence(Orderposition::getNextSequence($colinv));
         $newpos->save();
+
+        if ($article->getIsWorkHourArt()){
+            $colinv->setNeeds_planning(1);
+            $colinv->save();
+        }
     }
 }
 

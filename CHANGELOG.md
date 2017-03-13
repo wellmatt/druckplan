@@ -1,5 +1,3 @@
-contilas
-========
 # Change Log
 
 ## [Unreleased](https://github.com/schealex/contilas/tree/HEAD)

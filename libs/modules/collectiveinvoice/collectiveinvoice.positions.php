@@ -79,7 +79,7 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             Positionen
-            <?php if ($collectinv->getLocked() == 0){?>
+            <?php if ($collectinv->getLocked() == 0 && $collectinv->getId() > 0){?>
                 <span class="pull-right" style="width: 75%; text-align: right; white-space: nowrap;">
                     <!-- Artikel -->
                     <label for="" class="control-label">Artikel</label>

@@ -43,12 +43,12 @@ $groups = Group::getAllGroups(Group::ORDER_NAME);
                      <td><?=$group->getName()?></td>
                      <td><?=$group->getDescription()?></td>
                      <td>
-                        <? $str = "";
-                        foreach ($group->getMembers() as $m)
-                        {
-                           $str .= $m->getLogin().", ";
+                        <?php
+                        $userlogins = [];
+                        foreach ($group->getMembers() as $member) {
+                           $userlogins[] = $member->getLogin();
                         }
-                        echo substr($str, 0, -2);
+                        echo implode(', ',$userlogins);
                         ?>&nbsp;
                      </td>
                      <td class="content_row">
