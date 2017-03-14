@@ -50,5 +50,4 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 
-$colinv = new CollectiveInvoice((int)$_REQUEST['id']);
-prettyPrint($colinv->getPriceTable());
+prettyPrint(TaxKey::evaluateTax(new CollectiveInvoice(155),new Article(84)));

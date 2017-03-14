@@ -1,9 +1,9 @@
 <?php
 /**
- *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
  *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
  *  * Proprietary and confidential
- *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2016
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
  *
  */
 
@@ -157,14 +157,11 @@ case 'setState':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();
 	echo "<script language='JavaScript'>location.href='index.php?page=".$_REQUEST['page']."&ciid=".$collectinv->getId()."&exec=edit'</script>";
-// 	require_once('collectiveinvoice.overview.php');
 	break;
 case 'setState2':
 	$collectinv->setStatus((int)$_REQUEST["state"]);
 	$collectinv->save();
-// 	echo "<script language='JavaScript'>location.href='index.php?page=libs/modules/calculation/order.php'</script>";
 	echo "<script language='JavaScript'>location.href='index.php?page=".$_REQUEST['page']."&ciid=".$collectinv->getId()."&exec=edit'</script>";
-// 	require_once('collectiveinvoice.edit.php');
 	break;
 case 'createFromTicket':
     if ($_REQUEST["tktid"]){
@@ -181,6 +178,8 @@ case 'createFromTicket':
         $collectinv->setCustContactperson($src_ticket->getCustomer_cp());
 		$collectinv->setTicket($src_ticket->getId());
 		$collectinv->setPaymentterm($src_ticket->getCustomer()->getPaymentTerms());
+		$collectinv->setInvoiceAddress(Address::getDefaultAddress($src_ticket->getCustomer(),Address::FILTER_INVC));
+		$collectinv->setDeliveryaddress(Address::getDefaultAddress($src_ticket->getCustomer(),Address::FILTER_DELIV));
         
         $savemsg = getSaveMessage($collectinv->save());
         
@@ -212,7 +211,7 @@ case 'createFromTicket':
 							$newpos->setInvrel(1);
 							$newpos->setRevrel(1);
 							$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-							$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
+							$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 							$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 							$orderpositions[] = $newpos;
@@ -239,7 +238,7 @@ case 'createFromTicket':
 								$newpos->setInvrel(1);
 								$newpos->setRevrel(1);
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
+								$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
 								$newpos->setSequence($newpos->getNextSequence($collectinv));
 
@@ -273,7 +272,7 @@ case 'createFromTicket':
 			$sumpos->setInvrel(1);
 			$sumpos->setRevrel(0);
 			$sumpos->setObjectid(0); // Artikelnummer
-			$sumpos->setTaxkey(TaxKey::getDefaultTaxKey());
+			$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
 			$sumpos->setCollectiveinvoice((int)$collectinv->getId());
             
             $orderpositions[] = $sumpos;
@@ -324,7 +323,7 @@ case 'createFromTicket':
 								$newpos->setInvrel(1);
 								$newpos->setRevrel(1);
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
+								$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
 								$newpos->setSequence($newpos->getNextSequence($collectinv));
 
@@ -352,7 +351,7 @@ case 'createFromTicket':
 									$newpos->setInvrel(1);
 									$newpos->setRevrel(1);
 									$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-									$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
+									$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 									$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 									$orderpositions[] = $newpos;
@@ -385,7 +384,7 @@ case 'createFromTicket':
 				$sumpos->setInvrel(1);
 				$sumpos->setRevrel(0);
 				$sumpos->setObjectid(0); // Artikelnummer
-				$sumpos->setTaxkey(TaxKey::getDefaultTaxKey());
+				$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
 				$sumpos->setCollectiveinvoice((int)$collectinv->getId());
 
 				$orderpositions[] = $sumpos;
@@ -417,6 +416,9 @@ case 'createFromTicketComments':
 		$collectinv->setInternContact($_USER);
 		$collectinv->setCustContactperson($src_ticket->getCustomer_cp());
 		$collectinv->setTicket($src_ticket->getId());
+		$collectinv->setPaymentterm($src_ticket->getCustomer()->getPaymentTerms());
+		$collectinv->setInvoiceAddress(Address::getDefaultAddress($src_ticket->getCustomer(),Address::FILTER_INVC));
+		$collectinv->setDeliveryaddress(Address::getDefaultAddress($src_ticket->getCustomer(),Address::FILTER_DELIV));
 
 		$savemsg = getSaveMessage($collectinv->save());
 
@@ -448,7 +450,7 @@ case 'createFromTicketComments':
 							$newpos->setInvrel(1);
 							$newpos->setRevrel(1);
 							$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-							$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
+							$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 							$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 							$orderpositions[] = $newpos;
@@ -475,7 +477,7 @@ case 'createFromTicketComments':
 								$newpos->setInvrel(1);
 								$newpos->setRevrel(1);
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
-								$newpos->setTaxkey($c_article->getArticle()->getTaxkey());
+								$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
 
 								$orderpositions[] = $newpos;
@@ -508,7 +510,7 @@ case 'createFromTicketComments':
 			$sumpos->setInvrel(1);
 			$sumpos->setRevrel(0);
 			$sumpos->setObjectid(0); // Artikelnummer
-			$sumpos->setTaxkey(TaxKey::getDefaultTaxKey());
+			$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
 			$sumpos->setCollectiveinvoice((int)$collectinv->getId());
 
 			$orderpositions[] = $sumpos;
@@ -523,8 +525,6 @@ case 'createFromTicketComments':
 		$association->setModule2("CollectiveInvoice");
 		$association->setObjectid2($collectinv->getId());
 		$save_ok = $association->save();
-
-//         echo "<br><br>".$DB->getLastError();
 
 		require_once 'collectiveinvoice.edit.php';
 	}

@@ -1,10 +1,15 @@
-<?//--------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       18.10.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
+<?php
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
+require_once 'libs/modules/taxkeys/taxkey.class.php';
+require_once 'libs/modules/costobjects/costobject.class.php';
+require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
+
 class Country {
     const ORDER_ID = "id";
     const ORDER_NAME = "country_name";
@@ -17,7 +22,7 @@ class Country {
     private $code;
     private $active;
     private $eu = 0;
-    private $vat = 0.0;
+    private $taxkey;
     
     /**
      * Konstruktor der Land-Klasse. Holt ein Land aus der Datenbank, wenn die ID > 0 ist.
@@ -27,6 +32,9 @@ class Country {
     function __construct($id = 0)
     {
         global $DB;
+
+        $this->taxkey = new TaxKey();
+
         if($id > 0)
         {
             $sql = "SELECT * FROM countries WHERE id = {$id}";
@@ -39,7 +47,7 @@ class Country {
                 $this->code = $r[0]["country_code"];
                 $this->active = $r[0]["country_active"];
                 $this->eu = $r[0]["country_eu"];
-                $this->vat = $r[0]["country_vat"];
+                $this->taxkey = new TaxKey((int)$r[0]["country_taxkey"]);
             }
         }
     }
@@ -102,7 +110,7 @@ class Country {
 		    		country_code = '{$this->code}',
 		    		country_active = {$this->active},
 		    		country_eu = {$this->eu},
-		    		country_vat = {$this->vat}
+		    		country_taxkey = {$this->taxkey->getId()}
     				WHERE id = {$this->id} ";
     		return $DB->no_result($sql);
     	}
@@ -171,18 +179,18 @@ class Country {
     }
 
     /**
-     * @return float
+     * @return TaxKey
      */
-    public function getVat()
+    public function getTaxkey()
     {
-        return $this->vat;
+        return $this->taxkey;
     }
 
     /**
-     * @param float $vat
+     * @param TaxKey $taxkey
      */
-    public function setVat($vat)
+    public function setTaxkey($taxkey)
     {
-        $this->vat = $vat;
+        $this->taxkey = $taxkey;
     }
 }

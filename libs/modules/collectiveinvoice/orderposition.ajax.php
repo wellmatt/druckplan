@@ -57,7 +57,7 @@ if ($_REQUEST['exec'] == 'addPosArticle' && $_REQUEST["ciid"] && $_REQUEST["aid"
 
     $newpos->setQuantity($quantity);
     $newpos->setPrice($article->getPrice(1));
-    $newpos->setTaxkey($article->getTaxkey());
+    $newpos->setTaxkey(TaxKey::evaluateTax($colinv, $article));
     $newpos->setComment($article->getDesc());
     $newpos->setCollectiveinvoice($colinv->getId());
     if ($article->getOrderid() > 0)
@@ -85,7 +85,7 @@ if ($_REQUEST['exec'] == 'addPosPartslist' && $_REQUEST["ciid"] && $_REQUEST["pl
         $newpos = new Orderposition();
         $newpos->setQuantity($quantity);
         $newpos->setPrice($article->getPrice(1));
-        $newpos->setTaxkey($article->getTaxkey());
+        $newpos->setTaxkey(TaxKey::evaluateTax($colinv, $article));
         $newpos->setComment($article->getDesc());
         $newpos->setCollectiveinvoice($colinv->getId());
         $newpos->setType(1);
@@ -106,7 +106,7 @@ if ($_REQUEST['exec'] == 'addPosManually' && $_REQUEST["ciid"]){
 
     $newpos->setQuantity(1);
     $newpos->setPrice(1);
-    $newpos->setTaxkey(TaxKey::getDefaultTaxKey());
+    $newpos->setTaxkey(TaxKey::evaluateTax($colinv, new Article()));
     $newpos->setComment("");
     $newpos->setCollectiveinvoice($colinv->getId());
     $newpos->setType(0);
@@ -137,6 +137,7 @@ if ($_REQUEST['exec'] == 'getUpdatedPrice' && $_REQUEST["oid"] && $_REQUEST["qua
 }
 
 if ($_REQUEST['exec'] == 'getPosForm' && $_REQUEST["oid"]){
+    $taxkeys = TaxKey::getAll();
     $pos = new Orderposition((int)$_REQUEST["oid"]);
     $tmp_art = new Article((int)$pos->getObjectid());
     ?>
@@ -202,7 +203,15 @@ if ($_REQUEST['exec'] == 'getPosForm' && $_REQUEST["oid"]){
                           <label for="" class="col-sm-1 control-label">Steuer</label>
                           <div class="col-sm-2">
                               <select id="opos_taxkey_<?php echo $_REQUEST["oid"];?>" name="opos_taxkey" class="form-control">
-                                  <?php if ($pos->getTaxkey()->getId() > 0) echo '<option value="'.$pos->getTaxkey()->getId().'">'.$pos->getTaxkey()->getValue().'%</option>';?>
+                                  <?php
+                                  foreach ($taxkeys as $taxkey) {
+                                      if ($pos->getTaxkey()->getId() == $taxkey->getId()){
+                                          echo '<option value="'.$taxkey->getId().'" selected>'.$taxkey->getValue().'% ('.$taxkey->getTypeText().')</option>';
+                                      } else {
+                                          echo '<option value="'.$taxkey->getId().'">'.$taxkey->getValue().'% ('.$taxkey->getTypeText().')</option>';
+                                      }
+                                  }
+                                  ?>
                               </select>
                           </div>
                       </div>

@@ -206,6 +206,7 @@ class Shoppingbasket{
 	    global $_LANG;
 	    $inv_ad = Array();
 	    $deli_ad = Array();
+		$needs_planning = false;
 	
 	    foreach ($this->entrys AS $entry){
 	        if (!in_array($entry->getInvoiceAdressID(), $inv_ad)) {
@@ -258,6 +259,7 @@ class Shoppingbasket{
     	            $tmp_deli_pos->setType(Orderposition::TYPE_MANUELL);
     	            $tmp_deli_pos->setQuantity(1);
     	            $tmp_deli_pos->setObjectid(0);
+					$tmp_deli_pos->setTaxkey(TaxKey::evaluateTax($col_inv, new Article()));
     	            $tmp_deli_pos->setComment("Lieferadresse:\n".$tmp_deli_ad->getNameAsLine()."\n".$tmp_deli_ad->getAddressAsLine()."\n
     	                                       Rechnungsadresse:\n".$tmp_inv_ad->getNameAsLine()."\n".$tmp_inv_ad->getAddressAsLine());
     	            $save_items[] = $tmp_deli_pos;
@@ -283,8 +285,7 @@ class Shoppingbasket{
         	                        $tmp_order_pos->setType(Orderposition::TYPE_ORDER);
         	                    else 
         	                        $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
-        	                    $tax = $tmp_article->getTaxkey();
-        	                    $tmp_order_pos->setTaxkey($tax);
+								$tmp_order_pos->setTaxkey(TaxKey::evaluateTax($col_inv, $tmp_article));
         	                    $tmp_order_pos->setComment($tmp_article->getDesc());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
         	                    if ($tmp_article->getShop_needs_upload()==1 && (int)$entry->getFile()>0)
@@ -301,7 +302,7 @@ class Shoppingbasket{
         	                    $tmp_order_pos->setObjectid($tmp_article->getId());
         	                    
         	                    $tmp_order_pos->setType(Orderposition::TYPE_ARTICLE);
-        	                    $tmp_order_pos->setTaxkey(TaxKey::getDefaultTaxKey());
+								$tmp_order_pos->setTaxkey(TaxKey::evaluateTax($col_inv, $tmp_article));
         	                    $tmp_order_pos->setComment($tmp_perso_order->getTitle());
         	                    $tmp_order_pos->setQuantity($entry->getAmount());
         	                    $tmp_order_pos->setPerso_order($tmp_perso_order->getId());

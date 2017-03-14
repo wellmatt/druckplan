@@ -16,7 +16,7 @@ if ($_REQUEST["exec"] == "save"){
 	for ($i=1; $i <= $anz_country; $i++){
 		$country = new Country($i);
 		$country->setEu((int)$_REQUEST["county_eu_".$i]);
-		$country->setVat(tofloat($_REQUEST["county_vat_".$i]));
+		$country->setTaxkey(new TaxKey((int)$_REQUEST["county_taxkey_".$i]));
 		$country->setActive((int)$_REQUEST["county_active_".$i]);
 		$ret = $country->save();
 		if(!$ret){
@@ -26,6 +26,7 @@ if ($_REQUEST["exec"] == "save"){
 	$savemsg = getSaveMessage($save);
 }
 $all_country = Country::getEveryCountry();
+$taxkeys = TaxKey::getAll();
 ?>
 <?php // Qickmove generation
 $quickmove = new QuickMove();
@@ -70,9 +71,18 @@ echo $quickmove->generate();
 										  value="1" <?if ($country->getEu() == 1) echo "checked"; ?>>
 							</td>
 							<td class="content_row pointer">
-								<input id="county_vat_<?=$country->getId()?>" name="county_vat_<?=$country->getId()?>"
-										  class="text" type="text"
-										  value="<?php echo printPrice($country->getVat());?>">
+								<select id="county_taxkey_<?=$country->getId()?>" name="county_taxkey_<?=$country->getId()?>" class="text">
+									<option value="0">- N/A -</option>
+									<?php
+									foreach ($taxkeys as $taxkey) {
+										if ($country->getTaxkey()->getId() == $taxkey->getId()){
+											echo '<option value="'.$taxkey->getId().'" selected>'.$taxkey->getValue().' %</option>';
+										} else {
+											echo '<option value="'.$taxkey->getId().'">'.$taxkey->getValue().' %</option>';
+										}
+									}
+									?>
+								</select>
 							</td>
 							<td class="content_row pointer">
 								<input 	id="county_active_<?=$country->getId()?>" name="county_active_<?=$country->getId()?>"

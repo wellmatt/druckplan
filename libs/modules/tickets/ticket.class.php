@@ -578,7 +578,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $id
+     * @return int $id
      */
     public function getId()
     {
@@ -586,7 +586,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $title
+     * @return string $title
      */
     public function getTitle()
     {
@@ -594,7 +594,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $crtdate
+     * @return int $crtdate
      */
     public function getCrtdate()
     {

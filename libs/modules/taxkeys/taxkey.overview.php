@@ -22,6 +22,7 @@ if ($_REQUEST["exec"] == "save"){
     $array = [
         "value" => tofloat($_REQUEST["value"]),
         "key" => $_REQUEST["key"],
+        "type" => (int)$_REQUEST["type"],
         "default" => 0,
     ];
     $taxkey = new TaxKey(0, $array);
@@ -72,6 +73,18 @@ $taxkeys = TaxKey::getAll();
                                   </div>
                               </div>
                               <div class="form-group">
+                                  <label for="" class="col-sm-2 control-label">Typ</label>
+                                  <div class="col-sm-10">
+                                      <select name="type" id="type" class="form-control">
+                                          <option value="1">Standard</option>
+                                          <option value="2">USt Frei</option>
+                                          <option value="3">Innergemeinschaftlich</option>
+                                          <option value="4">Reverse Charge</option>
+                                          <option value="5">Ausfuhr</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="form-group">
                                   <label for="" class="col-sm-2 control-label">Standard</label>
                                   <div class="col-sm-10">
                                       <div class="checkbox">
@@ -86,6 +99,7 @@ $taxkeys = TaxKey::getAll();
                                   Speichern
                               </button>
                           </form>
+                          <p>* Bitte stellen Sie sicher, das es für jeden Typ mindestens einen Eintrag gibt. Zudem muss ein Schlüssel als Standard definiert sein (Checkbox).</p>
                 	  </div>
                 </div>
                 <div class="table-responsive">
@@ -95,6 +109,7 @@ $taxkeys = TaxKey::getAll();
                 				<th>ID</th>
                 				<th>Prozentsatz</th>
                 				<th>Schlüssel</th>
+                				<th>Typ</th>
                 				<th></th>
                 			</tr>
                 		</thead>
@@ -104,6 +119,7 @@ $taxkeys = TaxKey::getAll();
                                     <td><?php echo $tk->getId();?></td>
                                     <td><?php echo printPrice($tk->getValue());?>%</td>
                                     <td><?php echo $tk->getKey();?></td>
+                                    <td><?php echo $tk->getTypeText();?></td>
                                     <td>
                                         <?php if ($tk->getDefault() == 1){?>
                                             <span class="glyphicons glyphicons-star"></span>
