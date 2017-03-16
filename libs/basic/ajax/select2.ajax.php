@@ -45,7 +45,7 @@ if ($_REQUEST["ajax_action"] == "search_cp"){
     $items = [];
     $alltaxkeys = TaxKey::getAll();
     foreach ($alltaxkeys as $tk){
-        $items[] = Array("id" => $tk->getId(), "text" => $tk->getValue().'%');
+        $items[] = Array("id" => $tk->getId(), "text" => $tk->getValue().'% ('.$tk->getTypeText().')');
     }
     $retval['items'] = $items;
     header("Content-Type: application/json");

@@ -107,6 +107,7 @@ class BusinessContact {
 	private $salesperson;
 
 	private $isprivate = 0;
+	private $isaffiliatedcompany = 0;
 
 	/* Konstruktor
      * Falls id uebergeben, werden die entsprechenden Daten direkt geladen
@@ -198,6 +199,7 @@ class BusinessContact {
 				$this->salesperson = new User((int)$res[0]["salesperson"]);
 				$this->tourmarker = $res[0]["tourmarker"];
 				$this->isprivate = $res[0]["isprivate"];
+				$this->isaffiliatedcompany = $res[0]["isaffiliatedcompany"];
 
 
 				// Daten nur laden, wenn die Loader-Variable es hergibt
@@ -626,6 +628,7 @@ class BusinessContact {
 		            bedarf = {$this->bedarf}, 
 		    		kreditor_number = {$this->kreditor},
 		    		isprivate = {$this->isprivate},
+		    		isaffiliatedcompany = {$this->isaffiliatedcompany},
 		    		debitor_number = {$this->debitor},
 		            cust_number = '{$this->customernumber}', 
 		            position_titles = '{$positiontitles}', 
@@ -657,7 +660,7 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount, costobject, isprivate )
+		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount, costobject, isprivate, isaffiliatedcompany )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -670,7 +673,8 @@ class BusinessContact {
 		            '{$this->shoplogin}', '{$this->shoppass}', {$this->loginexpire}, {$this->personalizationenabled}, 
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
-		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()}, {$this->revenueaccount->getId()}, {$this->costobject->getId()}, {$this->isprivate} )";
+		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()},
+		             {$this->revenueaccount->getId()}, {$this->costobject->getId()}, {$this->isprivate}, {$this->isaffiliatedcompany}  )";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 //			prettyPrint($sql);
 			echo $DB->getLastError();
@@ -1696,5 +1700,21 @@ class BusinessContact {
 	public function setCostobject($costobject)
 	{
 		$this->costobject = $costobject;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getIsaffiliatedcompany()
+	{
+		return $this->isaffiliatedcompany;
+	}
+
+	/**
+	 * @param int $isaffiliatedcompany
+	 */
+	public function setIsaffiliatedcompany($isaffiliatedcompany)
+	{
+		$this->isaffiliatedcompany = $isaffiliatedcompany;
 	}
 }

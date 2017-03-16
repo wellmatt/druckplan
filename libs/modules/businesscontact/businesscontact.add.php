@@ -146,6 +146,12 @@ if ($_REQUEST["subexec"] == "save")
 		$businessContact->setIsprivate(0);
 	}
 
+	if ($_REQUEST["isaffiliatedcompany"] == 1){
+		$businessContact->setIsaffiliatedcompany(1);
+	} else {
+		$businessContact->setIsaffiliatedcompany(0);
+	}
+
     $businessContact->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
     $businessContact->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
 
@@ -852,6 +858,16 @@ echo $quickmove->generate();
 										 <div class="checkbox">
 											 <label>
 												 <input type="checkbox" name="isprivate" id="isprivate" value="1" <?php if ($businessContact->getIsprivate() == 1) echo ' checked ';?>>
+											 </label>
+										 </div>
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Verbundenes Unternehmen</label>
+									 <div class="col-sm-9">
+										 <div class="checkbox">
+											 <label>
+												 <input type="checkbox" name="isaffiliatedcompany" id="isaffiliatedcompany" value="1" <?php if ($businessContact->getIsaffiliatedcompany() == 1) echo ' checked ';?>>
 											 </label>
 										 </div>
 									 </div>

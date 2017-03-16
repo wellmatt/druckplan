@@ -18,16 +18,6 @@ if ($_REQUEST["remove"] > 0){
     $startrevacc->delete();
 }
 
-if ($_REQUEST["exec"] == "save"){
-    $array = [
-        "title" => $_REQUEST["title"],
-        "default" => $_REQUEST["default"],
-        "number" => intval($_REQUEST["number"]),
-    ];
-    $revaccount = new RevenueAccount(0, $array);
-    $ret = $revaccount->save();
-}
-
 $revenueaccounts = RevenueAccount::getAll();
 
 ?>
@@ -43,78 +33,61 @@ $revenueaccounts = RevenueAccount::getAll();
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Erlöskonten</h3>
+                <h3 class="panel-title">
+                    Erlöskonten
+                    <span class="pull-right">
+                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php';">
+                            <span class="glyphicons glyphicons-plus"></span>
+                            Hinzufügen
+                        </button>
+                    </span>
+                </h3>
             </div>
-            <div class="panel-body">
-                <div class="panel panel-default">
-                	  <div class="panel-heading">
-                			<h3 class="panel-title">Neues Konto</h3>
-                	  </div>
-                	  <div class="panel-body">
-                          <form action="index.php?page=<?php echo $_REQUEST['page']; ?>" name="revaccform" id="revaccform" method="post" class="form-horizontal" role="form">
-                              <input type="hidden" name="exec" value="save">
-                              <div class="form-group">
-                                  <label for="" class="col-sm-2 control-label">Titel</label>
-                                  <div class="col-sm-10">
-                                      <input type="text" class="form-control" name="title" id="title">
-                                  </div>
-                              </div>
-                              <div class="form-group">
-                                  <label for="" class="col-sm-2 control-label">Nummer</label>
-                                  <div class="col-sm-10">
-                                      <input type="text" class="form-control" name="number" id="number">
-                                  </div>
-                              </div>
-                              <div class="form-group">
-                                  <label for="" class="col-sm-2 control-label">Standard</label>
-                                  <div class="col-sm-10">
-                                      <div class="checkbox">
-                                          <label>
-                                              <input type="checkbox" name="default" id="default" value="1">
-                                          </label>
-                                      </div>
-                                  </div>
-                              </div>
-                              <button class="btn btn-xs btn-success pull-right" type="submit">
-                                  <span class="glyphicons glyphicons-disk"></span>
-                                  Speichern
-                              </button>
-                          </form>
-                	  </div>
-                </div>
-                <div class="table-responsive">
-                	<table class="table table-hover">
-                		<thead>
-                			<tr>
-                				<th>ID</th>
-                				<th>Titel</th>
-                				<th>Nummer</th>
-                				<th></th>
-                			</tr>
-                		</thead>
-                		<tbody>
-                            <?php foreach ($revenueaccounts as $revenueaccount) {?>
-                                <tr>
-                                    <td><?php echo $revenueaccount->getId();?></td>
-                                    <td><?php echo $revenueaccount->getTitle();?></td>
-                                    <td><?php echo $revenueaccount->getNumber();?></td>
-                                    <td>
-                                        <?php if ($revenueaccount->getDefault() == 1){?>
-                                            <span class="glyphicons glyphicons-star"></span>
-                                        <?php } else {?>
-                                            <span class="glyphicons glyphicons-star-empty pointer" onclick="window.location.href='index.php?page=<?php echo $_REQUEST['page']; ?>&star=<?php echo $revenueaccount->getId();?>';"></span>
-                                        <?php } ?>
-                                        <?php if ($revenueaccount->getDefault() == 0){?>
-                                            &nbsp;<button class="btn btn-xs btn-danger" type="button" onclick="window.location.href='index.php?page=<?php echo $_REQUEST['page']; ?>&remove=<?php echo $revenueaccount->getId();?>';">
-                                            Löschen
-                                        </button>
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                		</tbody>
-                	</table>
-                </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titel</th>
+                            <th>Nummer</th>
+                            <th>Steuer</th>
+                            <th>Porto</th>
+                            <th>VU</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($revenueaccounts as $revenueaccount) {?>
+                            <tr class="pointer">
+                                <td onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php&id=<?php echo $revenueaccount->getId();?>';">
+                                    <?php echo $revenueaccount->getId();?>
+                                </td>
+                                <td onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php&id=<?php echo $revenueaccount->getId();?>';">
+                                    <?php echo $revenueaccount->getTitle();?>
+                                </td>
+                                <td onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php&id=<?php echo $revenueaccount->getId();?>';">
+                                    <?php echo $revenueaccount->getNumber();?>
+                                </td>
+                                <td onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php&id=<?php echo $revenueaccount->getId();?>';">
+                                    <?php echo $revenueaccount->getTaxkey()->getValue().'% ('.$revenueaccount->getTaxkey()->getTypeText().')';?>
+                                </td>
+                                <td onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php&id=<?php echo $revenueaccount->getId();?>';">
+                                    <?php if ($revenueaccount->getPostage() == 1) echo '<span class="glyphicons glyphicons-ok"></span>'; else echo '<span class="glyphicons glyphicons-remove"></span>';?>
+                                </td>
+                                <td onclick="window.location.href='index.php?page=libs/modules/revenueaccounts/revenueaccount.edit.php&id=<?php echo $revenueaccount->getId();?>';">
+                                    <?php if ($revenueaccount->getAffiliatedcompany() == 1) echo '<span class="glyphicons glyphicons-ok"></span>'; else echo '<span class="glyphicons glyphicons-remove"></span>';?>
+                                </td>
+                                <td>
+                                    <?php if ($revenueaccount->getDefault() == 1){?>
+                                        <span class="glyphicons glyphicons-star"></span>
+                                    <?php } else {?>
+                                        <span class="glyphicons glyphicons-star-empty pointer" onclick="window.location.href='index.php?page=<?php echo $_REQUEST['page']; ?>&star=<?php echo $revenueaccount->getId();?>';"></span>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

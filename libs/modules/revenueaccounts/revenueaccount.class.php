@@ -1,9 +1,9 @@
 <?php
 /**
- *  Copyright (c) 2017 Klein Druck + Medien GmbH - All Rights Reserved
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
  *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
  *  * Proprietary and confidential
- *  * Written by Alexander Scherer <ascherer@ipactor.de>, 2017
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
  *
  */
 
@@ -14,6 +14,13 @@ class RevenueAccount extends Model{
     public $title = '';
     public $number = 0;
     public $default = 0;
+    public $taxkey;
+    public $postage = 0;
+    public $affiliatedcompany = 0;
+
+    protected function bootClasses(){
+        $this->taxkey = new TaxKey($this->taxkey);
+    }
 
     /**
      * @return RevenueAccount[]
@@ -83,5 +90,53 @@ class RevenueAccount extends Model{
     public function setNumber($number)
     {
         $this->number = $number;
+    }
+
+    /**
+     * @return TaxKey
+     */
+    public function getTaxkey()
+    {
+        return $this->taxkey;
+    }
+
+    /**
+     * @param TaxKey $taxkey
+     */
+    public function setTaxkey($taxkey)
+    {
+        $this->taxkey = $taxkey;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPostage()
+    {
+        return $this->postage;
+    }
+
+    /**
+     * @param int $postage
+     */
+    public function setPostage($postage)
+    {
+        $this->postage = $postage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAffiliatedcompany()
+    {
+        return $this->affiliatedcompany;
+    }
+
+    /**
+     * @param int $affiliatedcompany
+     */
+    public function setAffiliatedcompany($affiliatedcompany)
+    {
+        $this->affiliatedcompany = $affiliatedcompany;
     }
 }
