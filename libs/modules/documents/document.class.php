@@ -254,7 +254,7 @@ class Document
         if ($filter["sent"] === false) {
             $sql .= " AND t1.doc_sent = 0 ";
         }
-        if ($filter["storno"] != true) {
+        if ($filter["storno"] === false) {
             $sql .= " AND t1.doc_storno_date = 0 ";
         }
         
