@@ -3,13 +3,6 @@
 ## [v3.1.2](https://github.com/schealex/contilas/tree/v3.1.2) (2017-03-17)
 [Full Changelog](https://github.com/schealex/contilas/compare/v3.1.1...v3.1.2)
 
-**Implemented enhancements:**
-
-- Erlöskonten Erweitern Steuer / VU / Porto [\#48](https://github.com/schealex/contilas/issues/48)
-- Verbundenes Unternehmen im Geschäftskontakt hinterlegen [\#44](https://github.com/schealex/contilas/issues/44)
-- Logik für Steuerauswahl im Vorgang [\#25](https://github.com/schealex/contilas/issues/25)
-- Berücksichtigung von Verkauf an Nicht-EU Länder [\#15](https://github.com/schealex/contilas/issues/15)
-
 **Fixed bugs:**
 
 - Geschäfskontakt Notizen Such-Filter ohne Funktion [\#47](https://github.com/schealex/contilas/issues/47)
