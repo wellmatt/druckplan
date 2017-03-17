@@ -300,7 +300,7 @@ $(document).ready(function() {
         var aData = $('#comment_table').dataTable().fnGetData(aPos[0]);
         callBoxFancytktc('libs/modules/comment/comment.edit.php?cid='+aData[1]+'&tktid=0');
     });
-	$('#search').keyup(function(){
+	$('#notes_search').keyup(function(){
 		search_tickets.search( $(this).val() ).draw();
 	})
 
@@ -1469,12 +1469,12 @@ echo $quickmove->generate();
 							Notizen
 							<span class="pull-right">
 				 <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
-								<span
+								<span>
 									<button class="btn btn-xs btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">
 										<span class="glyphicons glyphicons-plus pointer"></span>
 											<?= $_LANG->get(' Neu') ?>
 									</button>
-							</span>
+								</span>
 							<?php }?>
 							</span>
 						</h3>
@@ -1488,7 +1488,7 @@ echo $quickmove->generate();
 							<div class="form-group">
 								<label for="" class="col-sm-2 control-label">Suche</label>
 								<div class="col-sm-4">
-									<input type="text" id="search" class="form-control" placeholder="">
+									<input type="text" id="notes_search" class="form-control" placeholder="">
 								</div>
 							</div>
 						</div>

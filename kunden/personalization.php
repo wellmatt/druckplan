@@ -657,7 +657,7 @@ if ($_REQUEST["exec"] == "edit"){
 							}
 						}
 		} );
-		$('#search').keyup(function(){
+		$('#search1').keyup(function(){
 			porder_table.search( $(this).val() ).draw();
 		});
 	} );
