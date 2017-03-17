@@ -1,22 +1,37 @@
 # Change Log
 
-## [Unreleased](https://github.com/schealex/contilas/tree/HEAD)
-
-[Full Changelog](https://github.com/schealex/contilas/compare/v3.1.0...HEAD)
+## [v3.1.2](https://github.com/schealex/contilas/tree/v3.1.2) (2017-03-17)
+[Full Changelog](https://github.com/schealex/contilas/compare/v3.1.1...v3.1.2)
 
 **Implemented enhancements:**
 
-- Kostenträger in Artikel und Warengruppe \(WG Prio\) [\#24](https://github.com/schealex/contilas/issues/24)
+- Erlöskonten Erweitern Steuer / VU / Porto [\#48](https://github.com/schealex/contilas/issues/48)
+- Verbundenes Unternehmen im Geschäftskontakt hinterlegen [\#44](https://github.com/schealex/contilas/issues/44)
+- Logik für Steuerauswahl im Vorgang [\#25](https://github.com/schealex/contilas/issues/25)
+- Berücksichtigung von Verkauf an Nicht-EU Länder [\#15](https://github.com/schealex/contilas/issues/15)
 
 **Fixed bugs:**
 
-- ClientId Fehler über SESSION Login bei KleinDruck [\#34](https://github.com/schealex/contilas/issues/34)
+- Geschäfskontakt Notizen Such-Filter ohne Funktion [\#47](https://github.com/schealex/contilas/issues/47)
+- Vorgangs Dokumente Stornierte Dokumente werden nicht mehr angezeigt [\#46](https://github.com/schealex/contilas/issues/46)
+- Kundenportal Personalisierungen Such-Filter ohne Funktion [\#43](https://github.com/schealex/contilas/issues/43)
+
+## [v3.1.1](https://github.com/schealex/contilas/tree/v3.1.1) (2017-03-10)
+[Full Changelog](https://github.com/schealex/contilas/compare/v3.1.0...v3.1.1)
+
+**Fixed bugs:**
+
+- Vorgang Verknüpfungen verkoppeln sich nach jedem Speichern [\#39](https://github.com/schealex/contilas/issues/39)
+- Beim Erstellen oder Aktualisieren eines Vorgangs aus Ticket fehlt die Sequenz [\#38](https://github.com/schealex/contilas/issues/38)
+- In Planung können keine Job-Tickets mehr generiert werden [\#35](https://github.com/schealex/contilas/issues/35)
+- ClientId Fehler über SESSION Login [\#34](https://github.com/schealex/contilas/issues/34)
 - Kundenportal Artikel hinzufügen entfernen [\#32](https://github.com/schealex/contilas/issues/32)
 - Rundungsfehler in Vorgang und Rechnungsausgang [\#31](https://github.com/schealex/contilas/issues/31)
 
 **Closed issues:**
 
 - Button "aus Ticket aktualisieren" im Vorgang [\#28](https://github.com/schealex/contilas/issues/28)
+- 3rd Party Code aus Paket entfernen und Lizenzen auflisten [\#8](https://github.com/schealex/contilas/issues/8)
 
 ## [v3.1.0](https://github.com/schealex/contilas/tree/v3.1.0) (2017-03-03)
 [Full Changelog](https://github.com/schealex/contilas/compare/v3.2.004-alpha...v3.1.0)
