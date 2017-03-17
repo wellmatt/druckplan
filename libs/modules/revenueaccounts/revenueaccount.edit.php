@@ -14,6 +14,7 @@ if ($_REQUEST["subexec"] == "save"){
         "title" => $_REQUEST["title"],
         "number" => intval($_REQUEST["number"]),
         "taxkey" => $_REQUEST["taxkey"],
+        "revenueaccountcategory" => $_REQUEST["revenueaccountcategory"],
         "postage" => ($_REQUEST["postage"] == 1) ? 1 : 0,
         "affiliatedcompany" => ($_REQUEST["affiliatedcompany"] == 1) ? 1 : 0
     ];
@@ -53,6 +54,23 @@ echo $quickmove->generate();
                 <label for="" class="col-sm-2 control-label">Nummer</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" name="number" id="number" placeholder="1020301" value="<?php echo $revenueaccount->getNumber();?>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">Kategorie</label>
+                <div class="col-sm-10">
+                    <select name="revenueaccountcategory" id="revenueaccountcategory" class="form-control">
+                        <?php
+                        foreach (RevenueaccountCategory::getAll() as $rac) {
+                            if ($rac->getId() == $revenueaccount->getRevenueaccountcategory()->getId())
+                                echo '<option selected value="' . $rac->getId() . '">' . $rac->getTitle() . '</option>';
+                            else if ($revenueaccount->getId() == 0 && $_REQUEST["rac"] == $rac->getId())
+                                echo '<option selected value="' . $rac->getId() . '">' . $rac->getTitle() . '</option>';
+                            else
+                                echo '<option value="' . $rac->getId() . '">' . $rac->getTitle() . '</option>';
+                        }
+                        ?>
+                    </select>
                 </div>
             </div>
             <div class="form-group">

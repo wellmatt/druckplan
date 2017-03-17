@@ -74,7 +74,7 @@ class Article {
 
 		$this->tradegroup = new Tradegroup(0);
 		$this->taxkey = new TaxKey(0);
-		$this->revenueaccount = new RevenueAccount(0);
+		$this->revenueaccount = new RevenueaccountCategory(0);
 		$this->costobject = new CostObject(0);
 
 		if ($id > 0){
@@ -140,7 +140,7 @@ class Article {
 					$this->matchcode = $r["matchcode"];
 					$this->orderid = $r["orderid"];
 					$this->usesstorage = $r["usesstorage"];
-					$this->revenueaccount = new RevenueAccount($r["revenueaccount"]);
+					$this->revenueaccount = new RevenueaccountCategory($r["revenueaccount"]);
 					$this->costobject = new CostObject($r["costobject"]);
 
 
@@ -1245,7 +1245,7 @@ class Article {
 	}
 
 	/**
-	 * @return RevenueAccount
+	 * @return RevenueaccountCategory
 	 */
 	public function getRevenueaccount()
 	{
@@ -1253,7 +1253,7 @@ class Article {
 	}
 
 	/**
-	 * @param RevenueAccount $revenueaccount
+	 * @param RevenueaccountCategory $revenueaccount
 	 */
 	public function setRevenueaccount($revenueaccount)
 	{

@@ -15,7 +15,6 @@ global $_CONFIG;
 $_USER;
 
 $_REQUEST["id"] = (int)$_REQUEST["id"];
-$revaccounts = RevenueAccount::getAll();
 $costobjects = CostObject::getAll();
 $businessContact = new BusinessContact($_REQUEST["id"]);
 $all_attributes = Attribute::getAllAttributesForCustomer();
@@ -152,7 +151,7 @@ if ($_REQUEST["subexec"] == "save")
 		$businessContact->setIsaffiliatedcompany(0);
 	}
 
-    $businessContact->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+    $businessContact->setRevenueaccount(new RevenueaccountCategory((int)$_REQUEST["revenueaccount"]));
     $businessContact->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
 
     $savemsg = getSaveMessage($businessContact->save());
@@ -1030,31 +1029,32 @@ echo $quickmove->generate();
 									 </div>
 								 </div>
 								 <div class="form-group">
-                                    <label for="" class="col-sm-4 control-label">Erlöskonto</label>
-                                    <div class="col-sm-8">
-                                        <select name="revenueaccount" id="revenueaccount" class="form-control">
-											<option
-												value="0">- Nicht Überschreiben -</option>
-                                            <?php
-                                            foreach ($revaccounts as $revaccount) { ?>
-                                                <?php
-                                                if ($businessContact->getId() > 0) {
-                                                    if ($revaccount->getId() == $businessContact->getRevenueaccount()->getId()) { ?>
-                                                        <option
-                                                            value="<?php echo $businessContact->getRevenueaccount()->getId(); ?>"
-                                                            selected><?php echo $businessContact->getRevenueaccount()->getTitle(); ?></option>
-                                                    <?php } else { ?>
-                                                        <option
-                                                            value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
-                                                    <?php } ?>
-                                                <?php } else {?>
-                                                    <option
-                                                        value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                 </div>
+									 <label for="" class="col-sm-4 control-label">Erlöskonto</label>
+									 <div class="col-sm-8">
+										 <select name="revenueaccount" id="revenueaccount" class="form-control">
+											 <option
+												 value="0">- Nicht Überschreiben -</option>
+											 <?php
+											 $racs = RevenueaccountCategory::getAll();
+											 foreach ($racs as $rac) { ?>
+												 <?php
+												 if ($businessContact->getId() > 0) {
+													 if ($rac->getId() == $businessContact->getRevenueaccount()->getId()) { ?>
+														 <option
+															 value="<?php echo $businessContact->getRevenueaccount()->getId(); ?>"
+															 selected><?php echo $businessContact->getRevenueaccount()->getTitle(); ?></option>
+													 <?php } else { ?>
+														 <option
+															 value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
+													 <?php } ?>
+												 <?php } else {?>
+													 <option
+														 value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
+												 <?php } ?>
+											 <?php } ?>
+										 </select>
+									 </div>
+								 </div>
 								 <div class="form-group">
 									 <label for="" class="col-sm-4 control-label">Kostenträger</label>
 									 <div class="col-sm-8">

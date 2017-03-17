@@ -8,10 +8,13 @@
  */
 
 require_once 'libs/basic/model.php';
+require_once 'revenueaccount.category.class.php';
 
 class RevenueAccount extends Model{
     public $_table = 'revenueaccounts';
+
     public $title = '';
+    public $revenueaccountcategory;
     public $number = 0;
     public $default = 0;
     public $taxkey;
@@ -20,6 +23,7 @@ class RevenueAccount extends Model{
 
     protected function bootClasses(){
         $this->taxkey = new TaxKey($this->taxkey);
+        $this->revenueaccountcategory = new RevenueaccountCategory($this->revenueaccountcategory);
     }
 
     /**
@@ -31,10 +35,68 @@ class RevenueAccount extends Model{
         return self::fetch();
     }
 
+    /**
+     * @param $category RevenueaccountCategory
+     * @return RevenueAccount[]
+     */
+    public static function fetchAllForCategory(RevenueaccountCategory $category)
+    {
+        $ret = self::fetch([
+            [
+                "column" => "revenueaccountcategory",
+                "value" => $category->getId()
+            ]
+        ]);
+        return $ret;
+    }
+
+    /**
+     * @param $revenueaccountCategory RevenueaccountCategory
+     * @param $taxKey TaxKey
+     * @return RevenueAccount
+     */
+    public static function fetchForCategoryAndTaxkeyOrDefault(RevenueaccountCategory $revenueaccountCategory, TaxKey $taxKey)
+    {
+        $ret = self::fetchSingle([
+            [
+                "column" => "revenueaccountcategory",
+                "value" => $revenueaccountCategory->getId()
+            ],
+            [
+                "column" => "taxkey",
+                "value" => $taxKey->getId()
+            ]
+        ]);
+        if ($ret->getId() == 0){
+            return self::fetchDefaultForCategory($revenueaccountCategory);
+        } else {
+            return $ret;
+        }
+    }
+
+    /**
+     * @param $category RevenueaccountCategory
+     * @return RevenueAccount
+     */
+    public static function fetchDefaultForCategory(RevenueaccountCategory $category)
+    {
+        $ret = self::fetchSingle([
+            [
+                "column" => "revenueaccountcategory",
+                "value" => $category->getId()
+            ],
+            [
+                "column" => "default",
+                "value" => 1
+            ]
+        ]);
+        return $ret;
+    }
+
     public function star()
     {
-        $all = self::getAll();
-        foreach ($all as $item) {
+        $allincategory = RevenueAccount::fetchAllForCategory($this->revenueaccountcategory);
+        foreach ($allincategory as $item) {
             if ($item->getDefault() == 1) {
                 $item->setDefault(0);
                 $item->save();
@@ -138,5 +200,21 @@ class RevenueAccount extends Model{
     public function setAffiliatedcompany($affiliatedcompany)
     {
         $this->affiliatedcompany = $affiliatedcompany;
+    }
+
+    /**
+     * @return RevenueaccountCategory
+     */
+    public function getRevenueaccountcategory()
+    {
+        return $this->revenueaccountcategory;
+    }
+
+    /**
+     * @param RevenueaccountCategory $revenueaccountcategory
+     */
+    public function setRevenueaccountcategory($revenueaccountcategory)
+    {
+        $this->revenueaccountcategory = $revenueaccountcategory;
     }
 }

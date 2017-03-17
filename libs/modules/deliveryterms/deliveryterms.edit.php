@@ -14,6 +14,7 @@ if($_REQUEST["subexec"] == "save"){
 	$delterm->setTaxkey(new TaxKey((int)$_REQUEST["dt_tax"]));
 	$delterm->setName1(trim(addslashes($_REQUEST["dt_name"])));
 	$delterm->setComment(trim(addslashes($_REQUEST["dt_comment"])));
+	$delterm->setRevenueaccount(new RevenueaccountCategory((int)$_REQUEST["revenueaccount"]));
 	
 	if($_CONFIG->shopActivation){
 		$delterm->setShoprel((int)$_REQUEST["dt_shoprel"]);
@@ -87,6 +88,33 @@ echo $quickmove->generate();
 						</select>
 					</div>
 				</div>
+				<div class="form-group">
+					<label for="" class="col-sm-2 control-label">Erlöskonto</label>
+					<div class="col-sm-4">
+						<select name="revenueaccount" id="revenueaccount" class="form-control">
+							<option
+								value="0">- Nicht Überschreiben -</option>
+							<?php
+							$racs = RevenueaccountCategory::getAll();
+							foreach ($racs as $rac) { ?>
+								<?php
+								if ($delterm->getId() > 0) {
+									if ($rac->getId() == $delterm->getRevenueaccount()->getId()) { ?>
+										<option
+											value="<?php echo $delterm->getRevenueaccount()->getId(); ?>"
+											selected><?php echo $delterm->getRevenueaccount()->getTitle(); ?></option>
+									<?php } else { ?>
+										<option
+											value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
+									<?php } ?>
+								<?php } else {?>
+									<option
+										value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
+								<?php } ?>
+							<?php } ?>
+						</select>
+					</div>
+				</div>
 				<?/***if($_CONFIG->shopActivation){?>
 				<tr>
 				<td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td>
@@ -139,3 +167,8 @@ echo $quickmove->generate();
 </script>
 
 
+<script>
+	$(function() {
+		$("#revenueaccount").select2();
+	});
+</script>

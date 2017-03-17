@@ -32,13 +32,12 @@ if($_REQUEST["subexec"] == "save"){
 	} else {
 		
 	}
-	$tradegroup->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+	$tradegroup->setRevenueaccount(new RevenueaccountCategory((int)$_REQUEST["revenueaccount"]));
 	$tradegroup->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
 	$savemsg = getSaveMessage($tradegroup->save())." ".$DB->getLastError();
 }
 
 $all_tradegroups = Tradegroup::getAllTradegroups(0);
-$revaccounts = RevenueAccount::getAll();
 $costobjects = CostObject::getAll();
 
 function printSubTradegroupsForSelect($parentId, $depth){
@@ -125,20 +124,21 @@ echo $quickmove->generate();
 						<option
 							value="0">- Nicht Überschreiben -</option>
 						<?php
-						foreach ($revaccounts as $revaccount) { ?>
+						$racs = RevenueaccountCategory::getAll();
+						foreach ($racs as $rac) { ?>
 							<?php
 							if ($tradegroup->getId() > 0) {
-								if ($revaccount->getId() == $tradegroup->getRevenueaccount()->getId()) { ?>
+								if ($rac->getId() == $tradegroup->getRevenueaccount()->getId()) { ?>
 									<option
 										value="<?php echo $tradegroup->getRevenueaccount()->getId(); ?>"
 										selected><?php echo $tradegroup->getRevenueaccount()->getTitle(); ?></option>
 								<?php } else { ?>
 									<option
-										value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+										value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
 								<?php } ?>
 							<?php } else {?>
 								<option
-									value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+									value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
 							<?php } ?>
 						<?php } ?>
 					</select>

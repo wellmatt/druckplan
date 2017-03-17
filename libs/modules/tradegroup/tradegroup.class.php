@@ -32,7 +32,7 @@ class Tradegroup {
 		global $DB;
 		global $_USER;
 
-		$this->revenueaccount = new RevenueAccount();
+		$this->revenueaccount = new RevenueaccountCategory();
 		$this->costobject = new CostObject();
 	
 		if($id>0){
@@ -47,7 +47,7 @@ class Tradegroup {
 				$this->desc 	= $r["tradegroup_desc"];
 				$this->shoprel 	= $r["tradegroup_shoprel"];
 				$this->parentID	= $r["tradegroup_parentid"];
-				$this->revenueaccount = new RevenueAccount($r["revenueaccount"]);
+				$this->revenueaccount = new RevenueaccountCategory($r["revenueaccount"]);
 				$this->costobject = new CostObject($r["costobject"]);
 			}
 		}
@@ -218,7 +218,7 @@ class Tradegroup {
 	}
 
 	/**
-	 * @return RevenueAccount
+	 * @return RevenueaccountCategory
 	 */
 	public function getRevenueaccount()
 	{
@@ -226,7 +226,7 @@ class Tradegroup {
 	}
 
 	/**
-	 * @param RevenueAccount $revenueaccount
+	 * @param RevenueaccountCategory $revenueaccount
 	 */
 	public function setRevenueaccount($revenueaccount)
 	{

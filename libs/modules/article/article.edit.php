@@ -65,7 +65,7 @@ if($_REQUEST["subexec"] == "save"){
 	$article->setShowShopPrice((int)$_REQUEST["article_show_shop_price"]);
 	$article->setShop_needs_upload((int)$_REQUEST["article_shop_needs_upload"]);
 	$article->setMatchcode($_REQUEST["article_matchcode"]);
-	$article->setRevenueaccount(new RevenueAccount((int)$_REQUEST["revenueaccount"]));
+	$article->setRevenueaccount(new RevenueaccountCategory((int)$_REQUEST["revenueaccount"]));
 	$article->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
 
 
@@ -202,7 +202,6 @@ $all_pictures = $article->getAllPictures();
 $allprices = $article->getPrices();
 $allcostprices = $article->getCosts();
 $allsupplier = BusinessContact::getAllBusinessContacts(BusinessContact::ORDER_NAME,' supplier = 1 ');
-$revaccounts = RevenueAccount::getAll();
 $costobjects = CostObject::getAll();
 
 /****************************** PHP-Funktionen ***********************************************************************/
@@ -410,20 +409,21 @@ echo $quickmove->generate();
 										<option
 											value="0">- Nicht Überschreiben -</option>
 										<?php
-											foreach ($revaccounts as $revaccount) { ?>
+										$racs = RevenueaccountCategory::getAll();
+											foreach ($racs as $rac) { ?>
 												<?php
 												if ($article->getId() > 0) {
-													if ($revaccount->getId() == $article->getRevenueaccount()->getId()) { ?>
+													if ($rac->getId() == $article->getRevenueaccount()->getId()) { ?>
 														<option
 															value="<?php echo $article->getRevenueaccount()->getId(); ?>"
 															selected><?php echo $article->getRevenueaccount()->getTitle(); ?></option>
 													<?php } else { ?>
 														<option
-															value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+															value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
 													<?php } ?>
 													<?php } else {?>
 														<option
-															value="<?php echo $revaccount->getId(); ?>"><?php echo $revaccount->getTitle(); ?></option>
+															value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
 												<?php } ?>
 											<?php } ?>
 									</select>

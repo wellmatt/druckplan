@@ -121,7 +121,7 @@ class BusinessContact {
         $this->paymentTerms = new PaymentTerms();
         $this->supervisor = new User();
         $this->salesperson = new User();
-		$this->revenueaccount = new RevenueAccount();
+		$this->revenueaccount = new RevenueaccountCategory();
 		$this->costobject = new CostObject();
 
 		$this->country = new Country(55); // Auf Deutschland setzen
@@ -193,7 +193,7 @@ class BusinessContact {
 				$this->discount = $res[0]["discount"];
 				$this->customernumber = $res[0]["cust_number"];
 				$this->matchcode = $res[0]["matchcode"];
-				$this->revenueaccount = new RevenueAccount($res[0]["revenueaccount"]);
+				$this->revenueaccount = new RevenueaccountCategory($res[0]["revenueaccount"]);
 				$this->costobject = new CostObject($res[0]["costobject"]);
 				$this->supervisor = new User((int)$res[0]["supervisor"]);
 				$this->salesperson = new User((int)$res[0]["salesperson"]);
@@ -1655,7 +1655,7 @@ class BusinessContact {
     }
 
 	/**
-	 * @return RevenueAccount
+	 * @return RevenueaccountCategory
 	 */
 	public function getRevenueaccount()
 	{
@@ -1663,7 +1663,7 @@ class BusinessContact {
 	}
 
 	/**
-	 * @param RevenueAccount $revenueaccount
+	 * @param RevenueaccountCategory $revenueaccount
 	 */
 	public function setRevenueaccount($revenueaccount)
 	{

@@ -312,16 +312,30 @@ class Orderposition{
 	 * 
 	 * @return boolean
 	 */
-	public function restore(){
+	public function restore()
+	{
 		global $DB;
 		$sql = "UPDATE collectiveinvoice_orderposition SET status = 1 WHERE id = {$this->id}";
 		$res = $DB->no_result($sql);
-		if($res){
+		if ($res) {
 			Cachehandler::removeCache(Cachehandler::genKeyword($this));
 			unset($this);
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+
+	public function getMyArticle(){
+		if ($this->type == self::TYPE_ARTICLE || $this->type == self::TYPE_ORDER)
+			return new Article($this->objectid);
+		else if ($this->type == self::TYPE_PERSONALIZATION){
+			$tmp_perso_order = new Personalizationorder($this->objectid);
+			$tmp_perso = new Personalization($tmp_perso_order->getPersoID());
+			return $tmp_perso->getArticle();
+		} else {
+			return new Article();
 		}
 	}
 	
@@ -438,10 +452,18 @@ class Orderposition{
 	
 	public function getNetto()
 	{
-	    if ($this->getType() != 1)
+	    if ($this->getType() != self::TYPE_ORDER)
 	        return $this->getPrice() * $this->getQuantity();
 	    else
 	        return $this->getPrice();
+	}
+
+	public function getGross()
+	{
+		if ($this->getType() != self::TYPE_ORDER)
+			return ($this->getPrice() * $this->getQuantity()) + ($this->getPrice() * $this->getQuantity() / 100 * $this->taxkey->getValue());
+		else
+			return $this->getPrice() + ($this->getPrice() / 100 * $this->taxkey->getValue());
 	}
 
 	public function getType()

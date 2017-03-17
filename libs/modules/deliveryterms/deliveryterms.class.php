@@ -19,6 +19,7 @@ class DeliveryTerms{
 	private $client;
 	private $shoprel;
 	private $taxkey;
+	private $revenueaccount;
 	
 	
 	/**
@@ -32,6 +33,7 @@ class DeliveryTerms{
 		global $_USER;
 
 		$this->taxkey = new TaxKey(0);
+		$this->revenueaccount = new RevenueaccountCategory();
 
 		if($id>0){
 			$sql = "SELECT * FROM deliveryterms WHERE id = {$id} ";
@@ -46,6 +48,7 @@ class DeliveryTerms{
 				$this->client = new Client($r["client"]);
 				$this->shoprel = $r["shoprel"];
 				$this->taxkey = new TaxKey($r["taxkey"]);
+				$this->revenueaccount = new RevenueaccountCategory($r["revenueaccount"]);
 			}
 			// -- Temporary measure to assure default taxkey if none is set! //
 			if ($this->taxkey->getId() == 0){
@@ -90,16 +93,17 @@ class DeliveryTerms{
 					comment = '{$this->comment}',
 					shoprel = {$this->shoprel},
 					charges	= {$this->charges},
+					revenueaccount = {$this->revenueaccount->getId()},
 					taxkey	= {$this->taxkey->getId()}
 					WHERE id = {$this->id}";
 				return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO deliveryterms
 					(name1, comment, shoprel, charges, 
-					active, client, taxkey)
+					active, client, taxkey, revenueaccount)
 					VALUES
 					('{$this->name1}', '{$this->comment}', {$this->shoprel}, {$this->charges}, 
-					1 , {$_USER->getClient()->getId()}, {$this->taxkey->getId()})";
+					1 , {$_USER->getClient()->getId()}, {$this->taxkey->getId()}, {$this->revenueaccount->getId()})";
 			$res = $DB->no_result($sql);
 
 			if($res){
@@ -224,5 +228,21 @@ class DeliveryTerms{
 	public function setTaxkey($taxkey)
 	{
 		$this->taxkey = $taxkey;
+	}
+
+	/**
+	 * @return RevenueaccountCategory
+	 */
+	public function getRevenueaccount()
+	{
+		return $this->revenueaccount;
+	}
+
+	/**
+	 * @param RevenueaccountCategory $revenueaccount
+	 */
+	public function setRevenueaccount($revenueaccount)
+	{
+		$this->revenueaccount = $revenueaccount;
 	}
 }

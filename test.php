@@ -50,4 +50,57 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 
-prettyPrint(TaxKey::evaluateTax(new CollectiveInvoice(155),new Article(84)));
+$collectinv = new CollectiveInvoice(156);
+$positions = Orderposition::getAllOrderposition($collectinv->getId());
+
+$bcrevenue = $collectinv->getCustomer()->getRevenueaccount();
+$bcaffiliate = $collectinv->getCustomer()->getIsaffiliatedcompany();
+
+$output = [];
+
+foreach ($positions as $position) {
+    if ($position->getType() == Orderposition::TYPE_ARTICLE || $position->getType() == Orderposition::TYPE_ORDER){
+        // Article or Calc Article position
+        $article = new Article($position->getObjectid());
+
+        if ($bcrevenue->getId() > 0)
+            $revcat = $bcrevenue;
+        else if ($article->getTradegroup()->getRevenueaccount()->getId() > 0)
+            $revcat = $article->getTradegroup()->getRevenueaccount();
+        else
+            $revcat = $article->getRevenueaccount();
+
+    } else if ($position->getType() == Orderposition::TYPE_PERSONALIZATION) {
+        // Perso position
+        $tmp_persoorder = new Personalizationorder($position->getObjectid());
+        $tmp_perso = new Personalization($tmp_persoorder->getPersoID());
+        $article = $tmp_perso->getArticle();
+
+        if ($bcrevenue->getId() > 0)
+            $revcat = $bcrevenue;
+        else if ($article->getTradegroup()->getRevenueaccount()->getId() > 0)
+            $revcat = $article->getTradegroup()->getRevenueaccount();
+        else
+            $revcat = $article->getRevenueaccount();
+
+    } else {
+        // manual position
+        // TODO: revenue default for manually created positions
+    }
+    $revenueacc = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revcat, $position->getTaxkey());
+
+    $output[$revenueacc->getId()][$position->getTaxkey()->getId()][] = $position->getNetto();
+}
+
+prettyPrint($output);
+
+
+
+
+
+
+
+
+
+
+
