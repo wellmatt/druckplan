@@ -68,7 +68,7 @@ if ($_REQUEST['exec'] == 'addPosArticle' && $_REQUEST["ciid"] && $_REQUEST["aid"
     $newpos->setSequence(Orderposition::getNextSequence($colinv));
     $newpos->save();
 
-    if ($article->getIsWorkHourArt()){
+    if ($article->getIsWorkHourArt() || $newpos->getType() == 1){
         $colinv->setNeeds_planning(1);
         $colinv->save();
     }
@@ -88,12 +88,15 @@ if ($_REQUEST['exec'] == 'addPosPartslist' && $_REQUEST["ciid"] && $_REQUEST["pl
         $newpos->setTaxkey($article->getTaxkey());
         $newpos->setComment($article->getDesc());
         $newpos->setCollectiveinvoice($colinv->getId());
-        $newpos->setType(1);
+        if ($article->getOrderid() > 0)
+            $newpos->setType(1);
+        else
+            $newpos->setType(2);
         $newpos->setObjectid($article->getId());
         $newpos->setSequence(Orderposition::getNextSequence($colinv));
         $newpos->save();
 
-        if ($article->getIsWorkHourArt()){
+        if ($article->getIsWorkHourArt() || $newpos->getType() == 1){
             $colinv->setNeeds_planning(1);
             $colinv->save();
         }
@@ -143,76 +146,76 @@ if ($_REQUEST['exec'] == 'getPosForm' && $_REQUEST["oid"]){
     <form name="posform_<?php echo $_REQUEST["oid"];?>" id="posform_<?php echo $_REQUEST["oid"];?>" class="form-horizontal" role="form">
         <input type="hidden" name="oid" value="<?php echo $_REQUEST["oid"];?>">
         <div class="panel panel-default" style="margin-bottom: 0; border-radius: 0;">
-              <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <?php echo $pos->getTitle();?>
-                        <span class="pull-right">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <?php echo $pos->getTitle();?>
+                    <span class="pull-right">
                             <button class="btn btn-xs btn-success" type="button" onclick="submitForm($(this).closest('form'));">
-                              <span class="glyphicons glyphicons-plus"></span>
-                              Speichern
+                                <span class="glyphicons glyphicons-plus"></span>
+                                Speichern
                             </button>
                             <button class="btn btn-xs btn-warning" type="button" onclick="$(this).closest('tr').remove();">
                                 <span class="glyphicons glyphicons-plus"></span>
                                 Verwerfen
                             </button>
                         </span>
-                    </h3>
-              </div>
-              <div class="panel-body">
-                      <div class="form-group">
-                          <label for="" class="col-sm-1 control-label">Status</label>
-                          <div class="col-sm-2">
-                              <select name="opos_status" id="opos_status_<?php echo $_REQUEST["oid"];?>" class="form-control">
-                                  <option value="0" <?php if ($pos->getStatus() == 0) echo ' selected ';?>>gelöscht</option>
-                                  <option value="1" <?php if ($pos->getStatus() == 1) echo ' selected ';?>>aktiv</option>
-                                  <option value="2" <?php if ($pos->getStatus() == 2) echo ' selected ';?>>deaktiviert</option>
-                              </select>
-                          </div>
-                          <label for="" class="col-sm-1 control-label">Menge</label>
-                          <div class="col-sm-2">
-                              <?php
-                              if ($pos->getType() == 1 || $pos->getType() == 2)
-                              {
-                                  if (count($tmp_art->getOrderamounts())>0)
-                                  {
-                                      echo '<select name="opos_quantity" id="opos_quantity_'.$_REQUEST["oid"].'" class="form-control" onchange="getUpdatedPrice('.$_REQUEST["oid"].', this.value)">';
-                                      foreach ($tmp_art->getOrderamounts() as $orderamount)
-                                      {
-                                          echo '<option value="'.$orderamount.'" ';
-                                          if ($pos->getQuantity() == $orderamount)
-                                              echo ' selected ';
-                                          echo ' >'.$orderamount.'</option>';
-                                      }
-                                      echo '</select>';
-                                  } else {
-                                      echo '<input name="opos_quantity" id="opos_quantity_'.$_REQUEST["oid"].'" value="'.printPrice($pos->getQuantity(),2).'" class="form-control" onchange="getUpdatedPrice('.$_REQUEST["oid"].', this.value)">';
-                                  }
-                              } else {
-                                  echo '<input name="opos_quantity" id="opos_quantity_'.$_REQUEST["oid"].'" value="'.printPrice($pos->getQuantity(),2).'" class="form-control" onchange="getUpdatedPrice('.$_REQUEST["oid"].', this.value)">';
-                              }
-                              ?>
-                          </div>
-                          <label for="" class="col-sm-1 control-label">Preis</label>
-                          <div class="col-sm-2">
-                              <div class="input-group">
-                                  <input 	name="opos_price" id="opos_price_<?php echo $_REQUEST["oid"];?>" class="form-control" value="<?= printPrice($pos->getPrice(),3)?>">
-                                  <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
-                              </div>
-                          </div>
-                          <label for="" class="col-sm-1 control-label">Steuer</label>
-                          <div class="col-sm-2">
-                              <select id="opos_taxkey_<?php echo $_REQUEST["oid"];?>" name="opos_taxkey" class="form-control">
-                                  <?php if ($pos->getTaxkey()->getId() > 0) echo '<option value="'.$pos->getTaxkey()->getId().'">'.$pos->getTaxkey()->getValue().'%</option>';?>
-                              </select>
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          <label for="" class="col-sm-1 control-label">Beschreibung</label>
-                          <div class="col-sm-12">
-                              <textarea rows="10" name="opos_comment" class="poscomment form-control" id="opos_comment_<?php echo $_REQUEST["oid"];?>" style="width: 100%;"><?php echo $pos->getComment()?></textarea>
-                          </div>
-                      </div>
-              </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="" class="col-sm-1 control-label">Status</label>
+                    <div class="col-sm-2">
+                        <select name="opos_status" id="opos_status_<?php echo $_REQUEST["oid"];?>" class="form-control">
+                            <option value="0" <?php if ($pos->getStatus() == 0) echo ' selected ';?>>gelöscht</option>
+                            <option value="1" <?php if ($pos->getStatus() == 1) echo ' selected ';?>>aktiv</option>
+                            <option value="2" <?php if ($pos->getStatus() == 2) echo ' selected ';?>>deaktiviert</option>
+                        </select>
+                    </div>
+                    <label for="" class="col-sm-1 control-label">Menge</label>
+                    <div class="col-sm-2">
+                        <?php
+                        if ($pos->getType() == 1 || $pos->getType() == 2)
+                        {
+                            if (count($tmp_art->getOrderamounts())>0)
+                            {
+                                echo '<select name="opos_quantity" id="opos_quantity_'.$_REQUEST["oid"].'" class="form-control" onchange="getUpdatedPrice('.$_REQUEST["oid"].', this.value)">';
+                                foreach ($tmp_art->getOrderamounts() as $orderamount)
+                                {
+                                    echo '<option value="'.$orderamount.'" ';
+                                    if ($pos->getQuantity() == $orderamount)
+                                        echo ' selected ';
+                                    echo ' >'.$orderamount.'</option>';
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '<input name="opos_quantity" id="opos_quantity_'.$_REQUEST["oid"].'" value="'.printPrice($pos->getQuantity(),2).'" class="form-control" onchange="getUpdatedPrice('.$_REQUEST["oid"].', this.value)">';
+                            }
+                        } else {
+                            echo '<input name="opos_quantity" id="opos_quantity_'.$_REQUEST["oid"].'" value="'.printPrice($pos->getQuantity(),2).'" class="form-control" onchange="getUpdatedPrice('.$_REQUEST["oid"].', this.value)">';
+                        }
+                        ?>
+                    </div>
+                    <label for="" class="col-sm-1 control-label">Preis</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input 	name="opos_price" id="opos_price_<?php echo $_REQUEST["oid"];?>" class="form-control" value="<?= printPrice($pos->getPrice(),3)?>">
+                            <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+                        </div>
+                    </div>
+                    <label for="" class="col-sm-1 control-label">Steuer</label>
+                    <div class="col-sm-2">
+                        <select id="opos_taxkey_<?php echo $_REQUEST["oid"];?>" name="opos_taxkey" class="form-control">
+                            <?php if ($pos->getTaxkey()->getId() > 0) echo '<option value="'.$pos->getTaxkey()->getId().'">'.$pos->getTaxkey()->getValue().'%</option>';?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-1 control-label">Beschreibung</label>
+                    <div class="col-sm-12">
+                        <textarea rows="10" name="opos_comment" class="poscomment form-control" id="opos_comment_<?php echo $_REQUEST["oid"];?>" style="width: 100%;"><?php echo $pos->getComment()?></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
     <?php
