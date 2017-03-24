@@ -142,7 +142,7 @@ class Orderposition{
 		    $status = " AND status = 1 ";
 		if ($relevant)
 		    $status .= " AND inv_rel > 0 ";
-		$sql = "SELECT id FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveId} {$status}";
+		$sql = "SELECT id FROM collectiveinvoice_orderposition WHERE collectiveinvoice = {$collectiveId} {$status} ORDER BY sequence";
 		$orderpos = Array();
 		if($DB->no_result($sql)){
 			$result = $DB->select($sql);
