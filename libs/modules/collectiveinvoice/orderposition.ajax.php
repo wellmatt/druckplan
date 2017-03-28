@@ -68,7 +68,7 @@ if ($_REQUEST['exec'] == 'addPosArticle' && $_REQUEST["ciid"] && $_REQUEST["aid"
     $newpos->setSequence(Orderposition::getNextSequence($colinv));
     $newpos->save();
 
-    if ($article->getIsWorkHourArt()){
+    if ($article->getIsWorkHourArt() || $newpos->getType() == 1){
         $colinv->setNeeds_planning(1);
         $colinv->save();
     }
@@ -88,12 +88,15 @@ if ($_REQUEST['exec'] == 'addPosPartslist' && $_REQUEST["ciid"] && $_REQUEST["pl
         $newpos->setTaxkey(TaxKey::evaluateTax($colinv, $article));
         $newpos->setComment($article->getDesc());
         $newpos->setCollectiveinvoice($colinv->getId());
-        $newpos->setType(1);
+        if ($article->getOrderid() > 0)
+            $newpos->setType(1);
+        else
+            $newpos->setType(2);
         $newpos->setObjectid($article->getId());
         $newpos->setSequence(Orderposition::getNextSequence($colinv));
         $newpos->save();
 
-        if ($article->getIsWorkHourArt()){
+        if ($article->getIsWorkHourArt() || $newpos->getType() == 1){
             $colinv->setNeeds_planning(1);
             $colinv->save();
         }
@@ -144,13 +147,13 @@ if ($_REQUEST['exec'] == 'getPosForm' && $_REQUEST["oid"]){
     <form name="posform_<?php echo $_REQUEST["oid"];?>" id="posform_<?php echo $_REQUEST["oid"];?>" class="form-horizontal" role="form">
         <input type="hidden" name="oid" value="<?php echo $_REQUEST["oid"];?>">
         <div class="panel panel-default" style="margin-bottom: 0; border-radius: 0;">
-              <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <?php echo $pos->getTitle();?>
-                        <span class="pull-right">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <?php echo $pos->getTitle();?>
+                    <span class="pull-right">
                             <button class="btn btn-xs btn-success" type="button" onclick="submitForm($(this).closest('form'));">
-                              <span class="glyphicons glyphicons-plus"></span>
-                              Speichern
+                                <span class="glyphicons glyphicons-plus"></span>
+                                Speichern
                             </button>
                             <button class="btn btn-xs btn-warning" type="button" onclick="$(this).closest('tr').remove();">
                                 <span class="glyphicons glyphicons-plus"></span>

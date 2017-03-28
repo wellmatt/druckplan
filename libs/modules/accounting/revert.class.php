@@ -80,11 +80,11 @@ class Revert extends Model{
         }
 
         // Generate Revert Number
-        $number = $_USER->getClient()->createOrderNumber(Client::NUMBER_REVERT);
+//        $number = $_USER->getClient()->createOrderNumber(Client::NUMBER_REVERT);
 
         // Create the Revert
         $array = [
-            'number' => $number,
+            'number' => "",
             'colinv' => $colinv->getId(),
             'netvalue' => $netvalue,
             'grossvalue' => $grossvalue,
@@ -110,6 +110,7 @@ class Revert extends Model{
             $doc->createDoc(Document::VERSION_PRINT, $hash);
             $doc->save();
             $revert->setDoc($doc->getId());
+            $revert->setNumber($doc->getName());
             $revert->save();
         }
         return $revert;
