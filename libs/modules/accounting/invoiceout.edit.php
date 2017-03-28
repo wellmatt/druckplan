@@ -18,9 +18,18 @@ if ($_REQUEST["subexec"] == "save"){
     if (isset($_REQUEST['payeddate'])){
         $paydate = strtotime($_REQUEST["payeddate"]);
         if ($paydate > 0){
+
+            if ($invoiceout->getDuedatesk2() > 0 && $invoiceout->getDuedatesk2() > time()){
+                $skontovalue = $invoiceout->getGrossvalue() / 100 * $invoiceout->getSk2Percent();
+            } else if ($invoiceout->getDuedatesk1() > 0 && $invoiceout->getDuedatesk1() > time()){
+                $skontovalue = $invoiceout->getGrossvalue() / 100 * $invoiceout->getSk1Percent();
+            } else {
+                $skontovalue = 0;
+            }
             $array = [
                 'payeddate' => $paydate,
                 'status' => 2,
+                'payedskonto' => $skontovalue,
             ];
             $invoiceout = new InvoiceOut((int)$_REQUEST["id"], $array);
             $invoiceout->save();
@@ -81,7 +90,7 @@ echo $quickmove->generate();
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">VO-Nummer</label>
                         <div class="col-sm-4 form-text">
-                            <?php echo $invoiceout->getColinv()->getNumber();?>
+                            <a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?php echo $invoiceout->getColinv()->getId();?>"><?php echo $invoiceout->getColinv()->getNumber();?></a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -105,6 +114,7 @@ echo $quickmove->generate();
                             ;?>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Netto Betrag</label>
                         <div class="col-sm-4 form-text">
@@ -116,6 +126,46 @@ echo $quickmove->generate();
                         <label for="" class="col-sm-2 control-label">Brutto Betrag</label>
                         <div class="col-sm-4 form-text">
                             <?php echo printPrice($invoiceout->getGrossvalue(),2);?>€
+                        </div>
+                    </div>
+
+                    <?php
+                    if ($invoiceout->getDuedatesk2() > 0 && $invoiceout->getDuedatesk2() > time()){
+                        $gross = ($invoiceout->getGrossvalue() - ($invoiceout->getGrossvalue() / 100 * $invoiceout->getSk2Percent()));
+                        $net = ($invoiceout->getNetvalue() - ($invoiceout->getNetvalue() / 100 * $invoiceout->getSk2Percent()));
+                        $skontovalue = $invoiceout->getGrossvalue() / 100 * $invoiceout->getSk2Percent();
+                        $skonto = 'Skonto 2';
+                    } else if ($invoiceout->getDuedatesk1() > 0 && $invoiceout->getDuedatesk1() > time()){
+                        $gross = ($invoiceout->getGrossvalue() - ($invoiceout->getGrossvalue() / 100 * $invoiceout->getSk1Percent()));
+                        $net = ($invoiceout->getNetvalue() - ($invoiceout->getNetvalue() / 100 * $invoiceout->getSk1Percent()));
+                        $skontovalue = $invoiceout->getGrossvalue() / 100 * $invoiceout->getSk2Percent();
+                        $skonto = 'Skonto 1';
+                    } else {
+                        $gross = $invoiceout->getGrossvalue();
+                        $net = $invoiceout->getNetvalue();
+                        $skontovalue = 0;
+                        $skonto = 'Kein Skonto';
+                    }
+                    ?>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Netto Betrag nach Skonto</label>
+                        <div class="col-sm-4 form-text">
+                            <?php echo printPrice($net,2);?>€ (<?php echo $skonto;?>)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Brutto Betrag nach Skonto</label>
+                        <div class="col-sm-4 form-text">
+                            <?php echo printPrice($gross,2);?>€ (<?php echo $skonto;?>)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Skonto Brutto</label>
+                        <div class="col-sm-4 form-text">
+                            <?php echo printPrice($skontovalue,2);?>€ (<?php echo $skonto;?>)
                         </div>
                     </div>
 
@@ -176,6 +226,18 @@ echo $quickmove->generate();
                 </form>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <?php
+            $fibuxml = new FibuXML([Receipt::getForOrigin($invoiceout)]);
+            $xml = $fibuxml->generateXML1();
+            $dom = dom_import_simplexml($xml)->ownerDocument;
+            $dom->formatOutput = true;
+            prettyPrint(htmlentities($dom->saveXML(NULL, LIBXML_NOEMPTYTAG)));
+        ?>
     </div>
 </div>
 

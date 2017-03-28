@@ -40,6 +40,7 @@ require_once 'libs/modules/organizer/caldav.event.class.php';
 require_once 'libs/modules/taxkeys/taxkey.class.php';
 require_once 'libs/modules/costobjects/costobject.class.php';
 require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
+require_once 'libs/modules/accounting/receipt.class.php';
 
 // Mail Stuff
 require_once 'libs/modules/mail/mailmassage.class.php';

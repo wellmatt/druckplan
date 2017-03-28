@@ -22,7 +22,12 @@ class InvoiceOut extends Model{
     public $cost = 0.0;
     public $crtdate = 0;
     public $duedate = 0;
+    public $duedatesk1 = 0;
+    public $sk1_percent = 0.0;
+    public $duedatesk2 = 0;
+    public $sk2_percent = 0.0;
     public $payeddate = 0;
+    public $payedskonto = 0.0;
     public $status = 1;
     public $doc;
 
@@ -57,6 +62,15 @@ class InvoiceOut extends Model{
         $grossvalue = $pricetable['total_gross'];
         $costvalue = $pricetable['total_cost'];
 
+        $sk1days = $payterm->getSkontodays1();
+        $sk1daysduedate = ($now + ($sk1days * $aday));
+
+        $sk2days = $payterm->getSkontodays2();
+        $sk2daysduedate = ($now + ($sk2days * $aday));
+
+        $sk1_percent = $payterm->getSkonto1();
+        $sk2_percent = $payterm->getSkonto2();
+
         $array = [
             'number' => $number,
             'colinv' => $colinv->getId(),
@@ -66,11 +80,17 @@ class InvoiceOut extends Model{
             'crtdate' => time(),
             'duedate' => $duedate,
             'doc' => $doc,
+            'duedatesk1' => $sk1daysduedate,
+            'sk1_percent' => $sk1_percent,
+            'duedatesk2' => $sk2daysduedate,
+            'sk2_percent' => $sk2_percent,
         ];
 
         $invout = new InvoiceOut(0,$array);
         $ret = $invout->save();
         if ($ret){
+            Receipt::generateReceipt($invout);
+
             $colinv->setLocked(1);
             $colinv->save();
             $commissionpartners = CommissionLink::getAllForBC($colinv->getBusinesscontact());
@@ -222,6 +242,86 @@ class InvoiceOut extends Model{
     public function setDoc($doc)
     {
         $this->doc = $doc;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDuedatesk1()
+    {
+        return $this->duedatesk1;
+    }
+
+    /**
+     * @param int $duedatesk1
+     */
+    public function setDuedatesk1($duedatesk1)
+    {
+        $this->duedatesk1 = $duedatesk1;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSk1Percent()
+    {
+        return $this->sk1_percent;
+    }
+
+    /**
+     * @param float $sk1_percent
+     */
+    public function setSk1Percent($sk1_percent)
+    {
+        $this->sk1_percent = $sk1_percent;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDuedatesk2()
+    {
+        return $this->duedatesk2;
+    }
+
+    /**
+     * @param int $duedatesk2
+     */
+    public function setDuedatesk2($duedatesk2)
+    {
+        $this->duedatesk2 = $duedatesk2;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSk2Percent()
+    {
+        return $this->sk2_percent;
+    }
+
+    /**
+     * @param float $sk2_percent
+     */
+    public function setSk2Percent($sk2_percent)
+    {
+        $this->sk2_percent = $sk2_percent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPayedskonto()
+    {
+        return $this->payedskonto;
+    }
+
+    /**
+     * @param float $payedskonto
+     */
+    public function setPayedskonto($payedskonto)
+    {
+        $this->payedskonto = $payedskonto;
     }
 
 

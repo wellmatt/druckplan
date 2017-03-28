@@ -33,7 +33,10 @@ function smarty_function_printPrice($params, Smarty_Internal_Template $template)
         trigger_error("missing 'var' parameter");
         return "";
     }
-    return printPrice($params['var']);
+    if (empty($params['nks'])){
+        $params['nks'] = 2;
+    }
+    return printPrice($params['var'], $params['nks']);
 }
 
 function smarty_function_printPrice2($params, Smarty_Internal_Template $template)

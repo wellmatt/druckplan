@@ -186,6 +186,7 @@
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
             "dom": 'T<"clear">lrtip',
+            "aaSorting": [[ 9, "desc" ]],
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
