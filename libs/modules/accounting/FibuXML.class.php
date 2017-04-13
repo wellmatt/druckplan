@@ -12,14 +12,17 @@ require_once 'thirdparty/GreenCape/XML/Converter.php';
 class FibuXML{
 
     public $receipts = [];
+    public $busicons = [];
 
     /**
      * FibuXML constructor.
      * @param Receipt[] $receipts
+     * @param BusinessContact[] $busicons
      */
-    public function __construct(array $receipts)
+    public function __construct(array $receipts, array $busicons)
     {
         $this->receipts = $receipts;
+        $this->busicons = $busicons;
     }
 
     private function array_to_xml( $data ) {
@@ -38,21 +41,58 @@ class FibuXML{
         return $xml_data;
     }
 
-    public function getXML1()
+    public function generateBusiconXML()
     {
-        $array = $this->generateArray();
-        $xml = $this->array_to_xml($array);
-        return $xml;
+        $xml_data = new SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-1"?><EGeckoPersonenkonten objectgroupNr="3000" datumFormat="dd.MM.yyyy" splittenHausnummer="j" anzahlObjekte="'.count($this->busicons).'"></EGeckoPersonenkonten>', LIBXML_NOEMPTYTAG);
+
+        foreach ($this->busicons as $busicon) {
+            $Personenkonto = $xml_data->addChild('Personenkonto');
+            $Personenkonto->addChild('kontenart','D');
+            $Personenkonto->addChild('kontonummer',$busicon->getCustomernumber());
+            $Personenkonto->addChild('bezeichnung',$busicon->getName1().' '.$busicon->getName2());
+            $Personenkonto->addChild('umsatzsteuerIdentNummer',$busicon->getVatidentnumber());
+            $Personenkonto->addChild('steuernummer',$busicon->getVatnumber());
+            $Personenkonto->addChild('waehrungsschluessel','EUR');
+
+            $Geschaeftspartner = $Personenkonto->addChild('Geschaeftspartner');
+            $Geschaeftspartner->addChild('nummer',$busicon->getCustomernumber());
+
+            $Personendaten = $Geschaeftspartner->addChild('Personendaten');
+            $Personendaten->addChild('name1',$busicon->getName1());
+            $Personendaten->addChild('name2',$busicon->getName2());
+
+            $Anschrift = $Geschaeftspartner->addChild('Anschrift');
+            $Anschrift->addChild('name3','');
+            $Anschrift->addChild('strasse',$busicon->getAddress1() . " " .$busicon->getAddress2());
+            $Anschrift->addChild('plz',$busicon->getZip());
+            $Anschrift->addChild('ort',$busicon->getCity());
+            $Anschrift->addChild('postfach','');
+            $Anschrift->addChild('postfachPlz','');
+            $Anschrift->addChild('postfachOrt','');
+            $Anschrift->addChild('landkennzeichen','');
+
+            $TeleKommunikationen = $Geschaeftspartner->addChild('TeleKommunikationen');
+            $Tele1 = $TeleKommunikationen->addChild('TeleKommunikation');
+            $Tele1->addChild('qualifier','update');
+            $Tele1->addChild('art','geschäftlich');
+            $Tele1->addChild('rufnummer',$busicon->getPhone());
+
+            $Tele2 = $TeleKommunikationen->addChild('TeleKommunikation');
+            $Tele2->addChild('qualifier','update');
+            $Tele2->addChild('art','Fax');
+            $Tele2->addChild('rufnummer',$busicon->getFax());
+
+            $OnlineKommunikationen = $Geschaeftspartner->addChild('OnlineKommunikationen');
+            $OnlineKommunikation = $OnlineKommunikationen->addChild('OnlineKommunikation');
+            $OnlineKommunikation->addChild('qualifier','update');
+            $OnlineKommunikation->addChild('art','geschäftlich');
+            $OnlineKommunikation->addChild('email',$busicon->getEmail());
+
+        }
+        return $xml_data;
     }
 
-    public function getXML2()
-    {
-        $array = $this->generateArray();
-        $xml = new \GreenCape\Xml\Converter($array);
-        return $xml;
-    }
-
-    public function generateXML1()
+    public function generateReceiptXML()
     {
         $xml_data = new SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-1"?><FibuBelege firmaNr="3000" Anzahlobjekte="'.count($this->receipts).'"></FibuBelege>', LIBXML_NOEMPTYTAG);
 
@@ -73,26 +113,53 @@ class FibuXML{
             foreach ($receipt->getReceiptpositions() as $receiptposition) {
                 $FibuBelegposition = $FibuBelegpositionen->addChild('FibuBelegposition');
                 $FibuBelegposition->addChild('buchungsschluessel',$receiptposition->getPostingkey());
-                $FibuBelegposition->addChild('kontonummer',$receiptposition->getAccountnumber());
-                $FibuBelegposition->addChild('betrag',$receiptposition->getAmount());
+
+                if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
+                    $FibuBelegposition->addChild('kontonummer',$receiptposition->getAccountnumber());
+                else
+                    $FibuBelegposition->addChild('kontonummer',$receiptposition->getRevenueaccount());
+
+                if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
+                    $FibuBelegposition->addChild('betrag',$receiptposition->getAmount());
+                else
+                    $FibuBelegposition->addChild('betrag',"-".$receiptposition->getAmount());
 
                 if ($receiptposition->getType() == ReceiptPosition::TYPE_CREDIT){
+                    $sk1date = '';
+                    $sk1percent = '';
+                    $sk1betrag = '';
+                    if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE) {
+                        if ($receipt->getOrigin()->getDuedatesk1())
+                            $sk1date = date('d.m.Y', $receipt->getOrigin()->getDuedatesk1());
+                        if ($receipt->getOrigin()->getSk1Percent()) {
+                            $sk1percent = $receipt->getOrigin()->getSk1Percent();
+                            $sk1betrag = $receiptposition->getAmount() / 100 * $sk1percent;
+                        }
+                    }
+
                     $FibuBelegposition->addChild('steuerschluessel','');
                     $FibuBelegposition->addChild('steuerbetrag','');
 
                     $OpInfos = $FibuBelegposition->addChild('OpInfos');
                     $OpInfos->addChild('opNr',$receipt->getNumber());
-                    $OpInfos->addChild('ziel1','');
-                    $OpInfos->addChild('skonto1Betrag','');
-                    $OpInfos->addChild('skonto1Prozent','');
-                    $OpInfos->addChild('faelligAm','');
+                    $OpInfos->addChild('ziel1',$sk1date);
+                    $OpInfos->addChild('skonto1Betrag',$sk1betrag);
+                    $OpInfos->addChild('skonto1Prozent',$sk1percent);
+                    $OpInfos->addChild('faelligAm',date('d.m.Y',$receipt->getOrigin()->getDuedate()));
                 } else {
                     $FibuBelegposition->addChild('steuerschluessel',$receiptposition->getTaxKey());
-                    $FibuBelegposition->addChild('steuerbetrag',$receiptposition->getTaxAmount());
+                    if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
+                        $FibuBelegposition->addChild('steuerbetrag',$receiptposition->getTaxAmount());
+                    else
+                        $FibuBelegposition->addChild('steuerbetrag',"-".$receiptposition->getTaxAmount());
 
                     $FibuKoreBelegposition = $FibuBelegposition->addChild('FibuKoreBelegposition');
-                    $FibuKoreBelegposition->addChild('kostentraeger',$receiptposition->getRevenueaccount());
-                    $FibuKoreBelegposition->addChild('nettobetrag',$receiptposition->getAmount());
+                    $FibuKoreBelegposition->addChild('kostentraeger',$receiptposition->getAccountnumber());
+
+                    if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
+                        $FibuKoreBelegposition->addChild('nettobetrag',$receiptposition->getAmount());
+                    else
+                        $FibuKoreBelegposition->addChild('nettobetrag',"-".$receiptposition->getAmount());
                 }
             }
 
@@ -101,77 +168,24 @@ class FibuXML{
             foreach ($receipt->getReceipttaxpositions() as $receipttaxposition) {
                 $FibuSteuerposition = $FibuSteuerpositionen->addChild('FibuSteuerposition');
                 $FibuSteuerposition->addChild('stposSchluessel',$receipttaxposition->getKey());
-                $FibuSteuerposition->addChild('stposBetrag',$receipttaxposition->getAmount());
+
+                if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
+                    $FibuSteuerposition->addChild('stposBetrag',$receipttaxposition->getAmount());
+                else
+                    $FibuSteuerposition->addChild('stposBetrag',"-".$receipttaxposition->getAmount());
+
                 $FibuSteuerposition->addChild('stposProzent',$receipttaxposition->getPercent());
             }
         }
         return $xml_data;
     }
+    
+    
 
-    public function generateArray()
+    public static function listExports()
     {
-        $array = [];
-
-        foreach ($this->receipts as $receipt) {
-            $beleg = ['FibuBeleg' => []];
-            $Belegkopf = [
-                'belegart' => 'RA',
-                'belegnummer' => $receipt->getNumber(),
-                'belegdatum' => date('d.m.Y',$receipt->getDate()),
-                'belegperiode' => date('Y',$receipt->getDate()).'/'.date('m',$receipt->getDate()),
-                'belegwaehrung' => $receipt->getCurrency(),
-                'bruttoErfassung' => 'j',
-                'buchungstext' => $receipt->getDescription()
-            ];
-            $beleg['FibuBeleg']['Belegkopf'] = $Belegkopf;
-
-            $position_array = [];
-            foreach ($receipt->getReceiptpositions() as $receiptposition) {
-                $posarray = ['FibuBelegposition' => [
-                    'buchungsschluessel' => $receiptposition->getPostingkey(),
-                    'kontonummer' => $receiptposition->getAccountnumber(),
-                    'betrag' => $receiptposition->getAmount(),
-                ]];
-                if ($receiptposition->getType() == ReceiptPosition::TYPE_CREDIT){
-                    $posarray['FibuBelegposition']['steuerschluessel'] = '';
-                    $posarray['FibuBelegposition']['steuerbetrag'] = '';
-                    $posarray['FibuBelegposition']['OpInfos'] = [
-                        'OpAngaben' => [
-                            'opNr' => $receipt->getNumber(),
-                            'ziel1' => '',
-                            'skonto1Betrag' => '',
-                            'skonto1Prozent' => '',
-                            'faelligAm'
-                        ]
-                    ];
-                } else {
-                    $posarray['FibuBelegposition']['steuerschluessel'] = $receiptposition->getTaxKey();
-                    $posarray['FibuBelegposition']['steuerbetrag'] = $receiptposition->getTaxAmount();
-                    $posarray['FibuBelegposition']['FibuKoreBelegposition'] = [
-                        'kostentraeger' => $receiptposition->getRevenueaccount(),
-                        'nettobetrag' => $receiptposition->getAmount()
-                    ];
-                }
-                $position_array[] = $posarray;
-            }
-            $beleg['FibuBeleg']['FibuBelegpositionen'] = $position_array;
-
-            $taxposition_array = [];
-
-            foreach ($receipt->getReceipttaxpositions() as $receipttaxposition) {
-                $taxarray = [
-                    'FibuSteuerposition' => [
-                        'stposSchluessel' => $receipttaxposition->getKey(),
-                        'stposBetrag' => $receipttaxposition->getAmount(),
-                        'stposProzent' => $receipttaxposition->getPercent(),
-                    ]
-                ];
-                $taxposition_array[] = $taxarray;
-            }
-            $beleg['FibuBeleg']['FibuSteuerpositionen'] = $taxposition_array;
-
-            $array[] = $beleg;
-        }
-        return $array;
+        $path    = 'docs/fibuexports';
+        $files = array_diff(scandir($path, 1), array('.', '..','.gitkeep'));
+        return $files;
     }
 }

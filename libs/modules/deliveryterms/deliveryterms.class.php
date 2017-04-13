@@ -20,6 +20,7 @@ class DeliveryTerms{
 	private $shoprel;
 	private $taxkey;
 	private $revenueaccount;
+	private $costobject;
 	
 	
 	/**
@@ -34,6 +35,7 @@ class DeliveryTerms{
 
 		$this->taxkey = new TaxKey(0);
 		$this->revenueaccount = new RevenueaccountCategory();
+		$this->costobject = new CostObject();
 
 		if($id>0){
 			$sql = "SELECT * FROM deliveryterms WHERE id = {$id} ";
@@ -49,6 +51,7 @@ class DeliveryTerms{
 				$this->shoprel = $r["shoprel"];
 				$this->taxkey = new TaxKey($r["taxkey"]);
 				$this->revenueaccount = new RevenueaccountCategory($r["revenueaccount"]);
+				$this->costobject = new CostObject($r["costobject"]);
 			}
 			// -- Temporary measure to assure default taxkey if none is set! //
 			if ($this->taxkey->getId() == 0){
@@ -94,16 +97,17 @@ class DeliveryTerms{
 					shoprel = {$this->shoprel},
 					charges	= {$this->charges},
 					revenueaccount = {$this->revenueaccount->getId()},
+					costobject = {$this->costobject->getId()},
 					taxkey	= {$this->taxkey->getId()}
 					WHERE id = {$this->id}";
 				return $DB->no_result($sql);
 		} else {
 			$sql = "INSERT INTO deliveryterms
 					(name1, comment, shoprel, charges, 
-					active, client, taxkey, revenueaccount)
+					active, client, taxkey, revenueaccount, costobject)
 					VALUES
 					('{$this->name1}', '{$this->comment}', {$this->shoprel}, {$this->charges}, 
-					1 , {$_USER->getClient()->getId()}, {$this->taxkey->getId()}, {$this->revenueaccount->getId()})";
+					1 , {$_USER->getClient()->getId()}, {$this->taxkey->getId()}, {$this->revenueaccount->getId()}, {$this->costobject->getId()})";
 			$res = $DB->no_result($sql);
 
 			if($res){
@@ -244,5 +248,21 @@ class DeliveryTerms{
 	public function setRevenueaccount($revenueaccount)
 	{
 		$this->revenueaccount = $revenueaccount;
+	}
+
+	/**
+	 * @return CostObject
+	 */
+	public function getCostobject()
+	{
+		return $this->costobject;
+	}
+
+	/**
+	 * @param CostObject $costobject
+	 */
+	public function setCostobject($costobject)
+	{
+		$this->costobject = $costobject;
 	}
 }

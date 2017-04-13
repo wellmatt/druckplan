@@ -220,6 +220,19 @@ class Tradegroup {
 	/**
 	 * @return RevenueaccountCategory
 	 */
+	public function getRecursiveRevenueaccount()
+	{
+		if ($this->revenueaccount->getId() == 0 && $this->parentID > 0){
+			$parent = new Tradegroup($this->parentID);
+			if ($parent->getRevenueaccount()->getId() > 0)
+				return $parent->getRevenueaccount();
+		}
+		return $this->revenueaccount;
+	}
+
+	/**
+	 * @return RevenueaccountCategory
+	 */
 	public function getRevenueaccount()
 	{
 		return $this->revenueaccount;
@@ -231,6 +244,19 @@ class Tradegroup {
 	public function setRevenueaccount($revenueaccount)
 	{
 		$this->revenueaccount = $revenueaccount;
+	}
+
+	/**
+	 * @return CostObject
+	 */
+	public function getRecursiveCostobject()
+	{
+		if ($this->costobject->getId() == 0 && $this->parentID > 0){
+			$parent = new Tradegroup($this->parentID);
+			if ($parent->getCostobject()->getId() > 0)
+				return $parent->getCostobject();
+		}
+		return $this->costobject;
 	}
 
 	/**

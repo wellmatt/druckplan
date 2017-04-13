@@ -696,6 +696,7 @@ echo $quickmove->generate();
 										   value="<?php if ($collectinv->getDeliverydate()>0) echo date('d.m.Y',$collectinv->getDeliverydate()); else echo date('d.m.Y');?>">
 								</div>
 							</div>
+							<?php if ($perf->getDecativateManualDelivcost() == 0){?>
 							<div class="form-group">
 								<label for="" class="col-sm-4 control-label">Vers. Kosten</label>
 								<div class="col-sm-8">
@@ -705,6 +706,7 @@ echo $quickmove->generate();
 									</div>
 								</div>
 							</div>
+							<?php } ?>
 							<?if ($collectinv->getId()>0){?>
 								<div class="form-group">
 									<label for="" class="col-sm-4 control-label">Planung</label>

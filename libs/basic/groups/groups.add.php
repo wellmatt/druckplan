@@ -41,6 +41,7 @@ if ($_REQUEST["subexec"] == "save")
     $group->setRight(Group::RIGHT_APPROVE_VACATION, (int)$_REQUEST["right_approve_vacation"]);
     $group->setRight(Group::RIGHT_TICKET_EDIT_INTERNAL, (int)$_REQUEST["right_ticket_edit_internal"]);
     $group->setRight(Group::RIGHT_TICKET_EDIT_OFFICAL, (int)$_REQUEST["right_ticket_edit_offical"]);
+    $group->setRight(Group::RIGHT_FIBU_ADMIN, (int)$_REQUEST["right_fibu_admin"]);
     $savemsg = getSaveMessage($group->save());
     $savemsg .= $DB->getLastError();
 
@@ -227,6 +228,12 @@ echo $quickmove->generate();
                              <label for="" class="col-sm-3 control-label">Urlaube genehmingen</label>
                              <div class="col-sm-1">
                                  <input type="checkbox" class="form-control"  name="right_approve_vacation" value="1" <? if($group->hasRight(Group::RIGHT_APPROVE_VACATION)) echo "checked";?>>
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <label for="" class="col-sm-3 control-label">Admin Buchhaltung</label>
+                             <div class="col-sm-1">
+                                 <input type="checkbox" class="form-control"  name="right_fibu_admin" value="1" <? if($group->hasRight(Group::RIGHT_FIBU_ADMIN)) echo "checked";?>>
                              </div>
                          </div>
                      </div>

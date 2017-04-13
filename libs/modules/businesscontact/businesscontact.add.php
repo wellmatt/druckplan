@@ -77,6 +77,11 @@ if ($_REQUEST["subexec"] == "save")
     //$businessContact->setComment(trim(addslashes($_REQUEST["comment"])));
     $businessContact->setNumberatcustomer(trim(addslashes($_REQUEST["numberatcustomer"])));
     $businessContact->setCustomernumber(trim(addslashes($_REQUEST["customernumber"])));
+
+	if ($businessContact->getCustomernumber() == '' || $businessContact->getCustomernumber() == null){
+		$businessContact->setCustomernumber($_USER->getClient()->generadeCustomerNumber());
+	}
+
     $businessContact->setKreditor((int)($_REQUEST["kreditor"]));
     $businessContact->setDebitor((int)($_REQUEST["debitor"]));
     $businessContact->setBic(trim(addslashes($_REQUEST["bic"])));
@@ -138,6 +143,9 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setSalesperson(new User((int)$_REQUEST["salesperson"]));
     $businessContact->setTourmarker($_REQUEST["tourmarker"]);
     $businessContact->setNotes($_REQUEST["notes"]);
+
+    $businessContact->setVatidentnumber($_REQUEST["vatidentnumber"]);
+    $businessContact->setVatnumber($_REQUEST["vatnumber"]);
 
 	if ($_REQUEST["isprivate"] == 1){
 		$businessContact->setIsprivate(1);
@@ -961,6 +969,18 @@ echo $quickmove->generate();
 									 <label for="" class="col-sm-4 control-label">BIC</label>
 									 <div class="col-sm-8">
 										 <input class="form-control" name="bic" value="<?=$businessContact->getBic()?>">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">UST-Ident</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="vatidentnumber" value="<?=$businessContact->getVatidentnumber()?>">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-4 control-label">UST-Nr</label>
+									 <div class="col-sm-8">
+										 <input class="form-control" name="vatnumber" value="<?=$businessContact->getVatnumber()?>">
 									 </div>
 								 </div>
 								 <div class="form-group">

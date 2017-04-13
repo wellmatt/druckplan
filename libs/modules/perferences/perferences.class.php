@@ -29,6 +29,11 @@ class Perferences
     private $dt_show_default = 20;
     private $dt_state_save = 1;
 
+    // Toggles
+
+    private $deactivate_manual_articles = 0;
+    private $decativate_manual_delivcost = 0;
+
     // Mail
 
     private $mail_domain = '';
@@ -81,6 +86,8 @@ class Perferences
             $this->imap_ssl = $r["imap_ssl"];
             $this->imap_tls = $r["imap_tls"];
             $this->system_signature = $r["system_signature"];
+            $this->deactivate_manual_articles = $r["deactivate_manual_articles"];
+            $this->decativate_manual_delivcost = $r["decativate_manual_delivcost"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -138,6 +145,8 @@ class Perferences
                imap_ssl 	= '{$this->imap_ssl}',
                imap_tls 	= '{$this->imap_tls}',
                system_signature 	= '{$this->system_signature}',
+               deactivate_manual_articles 	= '{$this->deactivate_manual_articles}',
+               decativate_manual_delivcost 	= '{$this->decativate_manual_delivcost}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -525,5 +534,37 @@ class Perferences
     public function setSystemSignature($system_signature)
     {
         $this->system_signature = $system_signature;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeactivateManualArticles()
+    {
+        return $this->deactivate_manual_articles;
+    }
+
+    /**
+     * @param int $deactivate_manual_articles
+     */
+    public function setDeactivateManualArticles($deactivate_manual_articles)
+    {
+        $this->deactivate_manual_articles = $deactivate_manual_articles;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDecativateManualDelivcost()
+    {
+        return $this->decativate_manual_delivcost;
+    }
+
+    /**
+     * @param int $decativate_manual_delivcost
+     */
+    public function setDecativateManualDelivcost($decativate_manual_delivcost)
+    {
+        $this->decativate_manual_delivcost = $decativate_manual_delivcost;
     }
 }

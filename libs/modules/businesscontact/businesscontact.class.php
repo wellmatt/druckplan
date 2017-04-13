@@ -75,6 +75,8 @@ class BusinessContact {
 	private $iban;
 	private $revenueaccount;
 	private $costobject;
+	private $vatidentnumber = '';
+	private $vatnumber = '';
 
 	private $alt_name1;  // Alternative-Adresse
 	private $alt_name2; 
@@ -200,6 +202,8 @@ class BusinessContact {
 				$this->tourmarker = $res[0]["tourmarker"];
 				$this->isprivate = $res[0]["isprivate"];
 				$this->isaffiliatedcompany = $res[0]["isaffiliatedcompany"];
+				$this->vatidentnumber = $res[0]["vatidentnumber"];
+				$this->vatnumber = $res[0]["vatnumber"];
 
 
 				// Daten nur laden, wenn die Loader-Variable es hergibt
@@ -640,7 +644,9 @@ class BusinessContact {
         			notes = '{$this->notes}', 
         			tourmarker = '{$this->tourmarker}',
         			revenueaccount = {$this->revenueaccount->getId()},
-        			costobject = {$this->costobject->getId()}
+        			costobject = {$this->costobject->getId()},
+        			vatidentnumber = '{$this->vatidentnumber}',
+        			vatnumber = '{$this->vatnumber}'
 					WHERE id = {$this->id}";
 			$res = $DB->no_result($sql); //Aenderungen speichern
 //			prettyPrint($sql);
@@ -660,7 +666,8 @@ class BusinessContact {
 		            shop_login, shop_pass, login_expire, personalization_enabled,
 		            branche, type, produkte, bedarf, 
 		            cust_number, number_at_customer, kreditor_number, debitor_number, position_titles, notifymailadr,
-		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount, costobject, isprivate, isaffiliatedcompany )
+		            matchcode, supervisor, tourmarker, notes, salesperson, revenueaccount, costobject, isprivate, isaffiliatedcompany,
+		            vatidentnumber, vatnumber )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
 		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
@@ -674,7 +681,8 @@ class BusinessContact {
 		            {$this->branche}, {$this->type}, {$this->produkte}, {$this->bedarf},
 		            '{$this->customernumber}', '{$this->numberatcustomer}', {$this->kreditor}, {$this->debitor}, '{$positiontitles}', '{$tmp_notify_mail_adr}',
 		            '{$this->matchcode}', {$this->supervisor->getId()}, '{$this->tourmarker}', '{$this->notes}', {$this->salesperson->getId()},
-		             {$this->revenueaccount->getId()}, {$this->costobject->getId()}, {$this->isprivate}, {$this->isaffiliatedcompany}  )";
+		             {$this->revenueaccount->getId()}, {$this->costobject->getId()}, {$this->isprivate}, {$this->isaffiliatedcompany},
+		            '{$this->vatidentnumber}', '{$this->vatnumber}')";
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 //			prettyPrint($sql);
 			echo $DB->getLastError();
@@ -858,8 +866,8 @@ class BusinessContact {
 			"kontenart" => "D",
 			"kontonummer" => $this->getCustomernumber(),
 			"bezeichnung" => $this->name1 . " " . $this->name2,
-			"umsatzsteuerIdentNummer" => "",
-			"steuernummer" => "",
+			"umsatzsteuerIdentNummer" => $this->vatidentnumber,
+			"steuernummer" => $this->vatnumber,
 			"waehrungsschluessel" => "EUR",
 			"Geschaeftspartner" => [
 				"nummer" => $this->getCustomernumber(),
@@ -901,7 +909,7 @@ class BusinessContact {
 
 		$xml_data = new SimpleXMLElement('<?xml version="1.0"?><Personenkonto></Personenkonto>');
 		array_to_xml($data,$xml_data);
-		return $xml_data->asXML();
+		return $xml_data;
 	}
 	
 	// ***************************** GETTER & SETTER ********************************************************
@@ -1716,5 +1724,37 @@ class BusinessContact {
 	public function setIsaffiliatedcompany($isaffiliatedcompany)
 	{
 		$this->isaffiliatedcompany = $isaffiliatedcompany;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getVatidentnumber()
+	{
+		return $this->vatidentnumber;
+	}
+
+	/**
+	 * @param string $vatidentnumber
+	 */
+	public function setVatidentnumber($vatidentnumber)
+	{
+		$this->vatidentnumber = $vatidentnumber;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getVatnumber()
+	{
+		return $this->vatnumber;
+	}
+
+	/**
+	 * @param string $vatnumber
+	 */
+	public function setVatnumber($vatnumber)
+	{
+		$this->vatnumber = $vatnumber;
 	}
 }

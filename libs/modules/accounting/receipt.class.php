@@ -10,6 +10,8 @@ require_once 'libs/basic/model.php';
 require_once 'receipt.position.class.php';
 require_once 'receipt.taxposition.class.php';
 require_once 'FibuXML.class.php';
+require_once 'invoiceout.class.php';
+require_once 'revert.class.php';
 
 
 class Receipt extends Model{
@@ -25,6 +27,7 @@ class Receipt extends Model{
     public $date = 0;                       // invoice date
     public $currency = 'EUR';               // default EUR
     public $description = '';               // max 50 chars
+    public $exported = 0;
 
     public $_receiptpositions = [];
     public $_receipttaxpositions = [];
@@ -42,6 +45,149 @@ class Receipt extends Model{
     }
 
     /**
+     * @param array $filterarray
+     * @param int $single
+     * @return Receipt[]
+     */
+    public static function fetch($filterarray = Array(), $single = 0)
+    {
+        return parent::fetch($filterarray, $single);
+    }
+
+    /**
+     * Validates the receipt for successful export
+     * @return array
+     */
+    public function validate()
+    {
+        $fatal = [];
+        $warning = [];
+        $info = [];
+
+        if ($this->getOriginType() == self::ORIGIN_INVOICE) {
+            $positions = Orderposition::getAllOrderposition($this->_origin->getColinv()->getId());
+            if (count($positions) == 0)
+                $warning[] = 'Keine Positionen!';
+            foreach ($positions as $position) {
+                if ($position->getStatus() == 1){
+                    $revenue = new RevenueaccountCategory();
+                    $costobject = new CostObject();
+                    $article = $position->getMyArticle();
+                    if ($article->getId()>0){
+                        if ($article->getTradegroup()->getId() == 0)
+                            $fatal[] = 'Artikel hat keine Warengruppe!';
+                        if ($article->getCostobject()->getId() > 0) {
+                            $costobject = $article->getCostobject();
+                            $info[] = 'Kostenstelle aus Artikel ('.$article->getTitle().') übernommen';
+                        } else if ($article->getTradegroup()->getRecursiveCostobject()->getId()>0) {
+                            $costobject = $article->getTradegroup()->getRecursiveCostobject();
+                            $info[] = 'Kostenstelle aus Warengruppe ('.$article->getTradegroup()->getTitle().') übernommen';
+                        }
+                        if ($article->getRevenueaccount()->getId() > 0) {
+                            $revenue = $article->getRevenueaccount();
+                            $info[] = 'Erlöskategorie ('.$revenue->getTitle().') aus Artikel ('.$article->getTitle().') übernommen';
+                        } else if ($article->getTradegroup()->getRecursiveRevenueaccount()->getId() > 0) {
+                            $revenue = $article->getTradegroup()->getRecursiveRevenueaccount();
+                            $info[] = 'Erlöskategorie ('.$revenue->getTitle().') aus Warengruppe ('.$article->getTradegroup()->getTitle().') übernommen';
+                        }
+                    } else {
+                        $fatal[] = 'Artikel nicht gefunden!';
+                    }
+                    if ($revenue->getId() == 0){
+                        $fatal[] = 'Erlöskategorie nicht gesetzt!';
+                    }
+                    if ($costobject->getId() == 0){
+                        $fatal[] = 'Kostenstelle nicht gesetzt!';
+                    }
+
+                    $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                    $revenueaccount_default = RevenueAccount::fetchDefaultForCategory($revenue);
+                    if ($revenue->getId() > 0 && $revenueaccount->getId() == $revenueaccount_default->getId()){
+                        $warning[] = 'Keine Übereinstimmung Erlöskategorie + Steuerschlüssel, benutze Standard der Kategorie: '.$revenue->getTitle();
+                    }
+                    if ($revenueaccount->getId() == 0){
+                        $fatal[] = 'Erlöskonto nicht gesetzt!';
+                    }
+                    if ($this->_origin->getColinv()->getBusinesscontact()->getCustomernumber() == null || $this->_origin->getColinv()->getBusinesscontact()->getCustomernumber() == '')
+                        $fatal[] = 'Kundennummer nicht gesetzt!';
+                }
+            }
+        } else {
+            $positions = RevertPosition::getAllForRevert($this->getOrigin());
+            if (count($positions) == 0)
+                $warning[] = 'Keine Positionen!';
+            foreach ($positions as $position) {
+                $revenue = new RevenueaccountCategory();
+                $costobject = new CostObject();
+                $article = $position->getOpos()->getMyArticle();
+                if ($article->getId()>0){
+                    if ($article->getTradegroup()->getId() == 0)
+                        $fatal[] = 'Artikel hat keine Warengruppe!';
+                    if ($article->getCostobject()->getId() > 0) {
+                        $costobject = $article->getCostobject();
+                        $info[] = 'Kostenstelle aus Artikel ('.$article->getTitle().') übernommen';
+                    } else if ($article->getTradegroup()->getRecursiveCostobject()->getId() > 0) {
+                        $costobject = $article->getTradegroup()->getRecursiveCostobject();
+                        $info[] = 'Kostenstelle aus Warengruppe ('.$article->getTradegroup()->getTitle().') übernommen';
+                    }
+                    if ($article->getRevenueaccount()->getId() > 0) {
+                        $revenue = $article->getRevenueaccount();
+                        $info[] = 'Erlöskategorie ('.$revenue->getTitle().') aus Artikel ('.$article->getTitle().') übernommen';
+                    } else if ($article->getTradegroup()->getRecursiveRevenueaccount()->getId() > 0) {
+                        $revenue = $article->getTradegroup()->getRecursiveRevenueaccount();
+                        $info[] = 'Erlöskategorie ('.$revenue->getTitle().') aus Warengruppe ('.$article->getTradegroup()->getTitle().') übernommen';
+                    }
+                } else {
+                    $fatal[] = 'Artikel nicht gefunden!';
+                }
+                if ($revenue->getId() == 0){
+                    $fatal[] = 'Erlöskategorie nicht gesetzt!';
+                }
+                if ($costobject->getId() == 0){
+                    $fatal[] = 'Kostenstelle nicht gesetzt!';
+                }
+
+                $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                $revenueaccount_default = RevenueAccount::fetchDefaultForCategory($revenue);
+                if ($revenue->getId() > 0 && $revenueaccount->getId() == $revenueaccount_default->getId()){
+                    $warning[] = 'Keine Übereinstimmung Erlöskategorie + Steuerschlüssel, benutze Standard der Kategorie: '.$revenue->getTitle();
+                }
+                if ($revenueaccount->getId() == 0){
+                    $fatal[] = 'Erlöskonto nicht gesetzt!';
+                }
+                if ($this->_origin->getColinv()->getBusinesscontact()->getCustomernumber() == null || $this->_origin->getColinv()->getBusinesscontact()->getCustomernumber() == '')
+                    $fatal[] = 'Kundennummer nicht gesetzt!';
+            }
+        }
+        $errors = ['fatal'=>$fatal,'warning'=>$warning,'info'=>$info];
+        return $errors;
+    }
+
+    public static function formatValidation($errors, $break = '/r/n')
+    {
+        $res = '';
+        if (count($errors['info'])>0){
+            $res .= 'INFO:'.$break;
+            foreach ($errors['info'] as $info) {
+                $res .= '-> '.$info.$break;
+            }
+        }
+        if (count($errors['warning'])>0){
+            $res .= 'WARNUNG:'.$break;
+            foreach ($errors['warning'] as $warning) {
+                $res .= '-> '.$warning.$break;
+            }
+        }
+        if (count($errors['fatal'])>0){
+            $res .= 'FEHLER:'.$break;
+            foreach ($errors['fatal'] as $fatal) {
+                $res .= '-> '.$fatal.$break;
+            }
+        }
+        return $res;
+    }
+
+    /**
      * @param InvoiceOut|Revert $origin
      * @return boolean|Receipt
      */
@@ -51,7 +197,7 @@ class Receipt extends Model{
             $origin_type = self::ORIGIN_INVOICE;
             $origin_id = $origin->getId();
         } elseif (is_a($origin,"Revert")) {
-            $origin_type = self::ORIGIN_INVOICE;
+            $origin_type = self::ORIGIN_REVERT;
             $origin_id = $origin->getId();
         } else {
             return false;
@@ -59,10 +205,15 @@ class Receipt extends Model{
         $number = $origin->getNumber();
         $date = $origin->getCrtdate();
 
-        $description = 'Buchung zu '.$number;
+        if ($origin_type == self::ORIGIN_INVOICE)
+            $description = 'Rechnung zu Auftrag '.$origin->getColinv()->getNumber();
+        else
+            $description = 'Gutschrift zu Auftrag '.$origin->getColinv()->getNumber();
         $positions = Orderposition::getAllOrderposition($origin->getColinv()->getId());
         if (count($positions)>0){
-            $description = substr($positions[0]->getCommentClean(),0,49);
+            $description_tmp = substr($positions[0]->getCommentStripped(),0,49);
+            if (strlen($description_tmp)>0)
+                $description = $description_tmp;
         }
 
         $array = [
@@ -91,33 +242,158 @@ class Receipt extends Model{
     private function generatePositions(){
         if ($this->getOriginType() == self::ORIGIN_INVOICE) {
             $positions = Orderposition::getAllOrderposition($this->_origin->getColinv()->getId());
+
+            $creditposition = [
+                'receipt'=>$this->getId(),
+                'type'=>1,
+                'postingkey'=>210,
+                'accountnumber'=>$this->getOrigin()->getColinv()->getBusinesscontact()->getCustomernumber(),
+                'amount' => 0.0
+            ];
+
             foreach ($positions as $position) {
-                // create credit positon
-                $array = [
-                    'receipt' => $this->getId(),
-                    'type' => 1,
-                    'postingkey' => 210,
-                    'accountnumber' => $this->_origin->getColinv()->getBusinesscontact()->getCustomernumber(),
-                    'amount' => $position->getGross(),
-                ];
-                $rctp_pos_credit = new ReceiptPosition(0,$array);
-                $rctp_pos_credit = $rctp_pos_credit->save();
-                if ($rctp_pos_credit === false)
-                    return false;
+                if ($position->getStatus() == 1){
+
+                    if ($position->getType() == 1){
+                        $netto = $position->getPrice();
+                        $gross = $netto * (1+($position->getTax()/100));
+                    } else {
+                        $netto = $position->getPrice() * $position->getAmount();
+                        $gross = $netto * (1+($position->getTax()/100));
+                    }
+
+                    $creditposition['amount'] = $creditposition['amount'] + $gross;
+
+                    // create debit positon
+                    $costobject = '';
+                    $revenue = new RevenueaccountCategory();
+                    $article = $position->getMyArticle();
+                    if ($article->getId()>0){
+                        if ($article->getTradegroup()->getRecursiveCostobject()->getId()>0) {
+                            $tmp_cost_obj = $article->getTradegroup()->getRecursiveCostobject();
+                            $costobject = $tmp_cost_obj->getNumber();
+                        }
+                        if ($article->getCostobject()->getId()>0)
+                            $costobject = $article->getCostobject()->getNumber();
+                    }
+                    if ($article->getId()>0){
+                        if ($article->getTradegroup()->getRecursiveRevenueaccount()->getId()>0)
+                            $revenue = $article->getTradegroup()->getRecursiveRevenueaccount();
+                        if ($article->getRevenueaccount()->getId()>0)
+                            $revenue = $article->getRevenueaccount();
+                    }
+                    $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                    $array = [
+                        'receipt' => $this->getId(),
+                        'type' => 2,
+                        'postingkey' => 150,
+                        'accountnumber' => $costobject,
+                        'amount' => $gross,
+                        'tax_key' => $position->getTaxkey()->getKey(),
+                        'tax_amount' => ($gross-$netto),
+                        'revenueaccount' => $revenueaccount->getNumber(),
+                    ];
+                    $rctp_pos_debit = new ReceiptPosition(0,$array);
+                    $rctp_pos_debit = $rctp_pos_debit->save();
+                    if ($rctp_pos_debit === false)
+                        return false;
+
+                    // create tax positon
+                    $array = [
+                        'receipt' => $this->getId(),
+                        'key' => $position->getTaxkey()->getKey(),
+                        'amount' => ($gross-$netto),
+                        'percent' => $position->getTaxkey()->getValue(),
+                    ];
+                    $rctp_pos_tax = new ReceiptTaxPosition(0,$array);
+                    $rctp_pos_tax = $rctp_pos_tax->save();
+                    if ($rctp_pos_tax === false)
+                        return false;
+                }
+            }
+
+            if ($this->getOrigin()->getColinv()->getDeliveryterm()->getId()>0){
+                $deliv = $this->getOrigin()->getColinv()->getDeliveryterm();
+                if ($deliv->getCharges() > 0){
+                    $netvalue = $deliv->getCharges() - ($deliv->getCharges()/100*$deliv->getTaxkey()->getValue());
+                    $grossvalue = $deliv->getCharges();
+
+                    $creditposition['amount'] = $creditposition['amount'] + $grossvalue;
+
+                    $revenue = new RevenueaccountCategory();
+                    if ($deliv->getRevenueaccount()->getId()>0)
+                        $revenue = $deliv->getRevenueaccount();
+                    $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $deliv->getTaxkey());
+
+                    $array = [
+                        'receipt' => $this->getId(),
+                        'type' => 2,
+                        'postingkey' => 150,
+                        'accountnumber' => $deliv->getCostobject()->getNumber(),
+                        'amount' => $deliv->getCharges(),
+                        'tax_key' => $deliv->getTaxkey()->getKey(),
+                        'tax_amount' => ($grossvalue-$netvalue),
+                        'revenueaccount' => $revenueaccount->getNumber(),
+                    ];
+                    $rctp_pos_debit = new ReceiptPosition(0,$array);
+                    $rctp_pos_debit = $rctp_pos_debit->save();
+                    if ($rctp_pos_debit === false)
+                        return false;
+
+                    // create tax positon
+                    $array = [
+                        'receipt' => $this->getId(),
+                        'key' => $deliv->getTaxkey()->getKey(),
+                        'amount' => ($grossvalue-$netvalue),
+                        'percent' => $deliv->getTaxkey()->getValue(),
+                    ];
+                    $rctp_pos_tax = new ReceiptTaxPosition(0,$array);
+                    $rctp_pos_tax = $rctp_pos_tax->save();
+                    if ($rctp_pos_tax === false)
+                        return false;
+
+                }
+            }
+
+            // create credit positon
+            $rctp_pos_credit = new ReceiptPosition(0,$creditposition);
+            $rctp_pos_credit = $rctp_pos_credit->save();
+            if ($rctp_pos_credit === false)
+                return false;
+
+        } else {
+            $positions = RevertPosition::getAllForRevert($this->getOrigin());
+
+            $creditposition = [
+                'receipt'=>$this->getId(),
+                'type'=>1,
+                'postingkey'=>210,
+                'accountnumber'=>$this->getOrigin()->getColinv()->getBusinesscontact()->getCustomernumber(),
+                'amount' => 0.0
+            ];
+
+            foreach ($positions as $position) {
+
+                $netto = $position->getPrice();
+                $gross = $netto * (1+($position->getTaxkey()->getValue()/100));
+
+                $creditposition['amount'] = $creditposition['amount'] + $gross;
 
                 // create debit positon
                 $costobject = '';
                 $revenue = new RevenueaccountCategory();
-                $article = $position->getMyArticle();
+                $article = $position->getOpos()->getMyArticle();
                 if ($article->getId()>0){
-                    if ($article->getTradegroup()->getCostobject()->getId()>0)
-                        $costobject = $article->getTradegroup()->getCostobject()->getNumber();
+                    if ($article->getTradegroup()->getRecursiveCostobject()->getId()>0) {
+                        $tmp_cost_obj = $article->getTradegroup()->getRecursiveCostobject();
+                        $costobject = $tmp_cost_obj->getNumber();
+                    }
                     if ($article->getCostobject()->getId()>0)
                         $costobject = $article->getCostobject()->getNumber();
                 }
                 if ($article->getId()>0){
-                    if ($article->getTradegroup()->getRevenueaccount()->getId()>0)
-                        $revenue = $article->getTradegroup()->getRevenueaccount();
+                    if ($article->getTradegroup()->getRecursiveRevenueaccount()->getId()>0)
+                        $revenue = $article->getTradegroup()->getRecursiveRevenueaccount();
                     if ($article->getRevenueaccount()->getId()>0)
                         $revenue = $article->getRevenueaccount();
                 }
@@ -125,11 +401,11 @@ class Receipt extends Model{
                 $array = [
                     'receipt' => $this->getId(),
                     'type' => 2,
-                    'postingkey' => 150,
+                    'postingkey' => 110,
                     'accountnumber' => $costobject,
-                    'amount' => $position->getGross(),
+                    'amount' => $gross,
                     'tax_key' => $position->getTaxkey()->getKey(),
-                    'tax_amount' => ($position->getGross()-$position->getPrice()),
+                    'tax_amount' => ($gross-$netto),
                     'revenueaccount' => $revenueaccount->getNumber(),
                 ];
                 $rctp_pos_debit = new ReceiptPosition(0,$array);
@@ -141,7 +417,7 @@ class Receipt extends Model{
                 $array = [
                     'receipt' => $this->getId(),
                     'key' => $position->getTaxkey()->getKey(),
-                    'amount' => ($position->getGross()-$position->getPrice()),
+                    'amount' => ($gross-$netto),
                     'percent' => $position->getTaxkey()->getValue(),
                 ];
                 $rctp_pos_tax = new ReceiptTaxPosition(0,$array);
@@ -149,7 +425,12 @@ class Receipt extends Model{
                 if ($rctp_pos_tax === false)
                     return false;
             }
-        } else {
+
+            // create credit positon
+            $rctp_pos_credit = new ReceiptPosition(0,$creditposition);
+            $rctp_pos_credit = $rctp_pos_credit->save();
+            if ($rctp_pos_credit === false)
+                return false;
 
         }
         return true;
@@ -165,7 +446,7 @@ class Receipt extends Model{
             $origin_type = self::ORIGIN_INVOICE;
             $origin_id = $origin->getId();
         } elseif (is_a($origin,"Revert")) {
-            $origin_type = self::ORIGIN_INVOICE;
+            $origin_type = self::ORIGIN_REVERT;
             $origin_id = $origin->getId();
         } else {
             return new Receipt();
@@ -181,6 +462,44 @@ class Receipt extends Model{
             ]
         ]);
         return $retval;
+    }
+
+    /**
+     * @param string $datemin
+     * @param string $datemax
+     * @param int $exported
+     * @return Receipt[]
+     */
+    public static function getAllFiltered($datemin, $datemax, $exported = 0)
+    {
+        if (strtotime($datemin) == 0 || strtotime($datemax) == 0){
+            $datemin = date("d.m.y",mktime(0,0,1,date("m",time()),1,date("y",time())));
+            $datemax = date("d.m.y",mktime(0,0,1,date("m",time()),date("t",time()),date("y",time())));
+        }
+
+        $filters = [
+            [
+                'column'=>'date',
+                'value'=>strtotime($datemin),
+                'operator'=>'>='
+            ],
+            [
+                'column'=>'date',
+                'value'=>strtotime($datemax),
+                'operator'=>'<='
+            ]
+        ];
+
+        if ($exported == 0){
+            $filters[] = [
+                    'column'=>'exported',
+                    'value'=>$exported
+            ];
+        }
+
+        $receipts = self::fetch($filters);
+
+        return $receipts;
     }
 
     /**
@@ -307,5 +626,29 @@ class Receipt extends Model{
     public function getReceipttaxpositions()
     {
         return $this->_receipttaxpositions;
+    }
+
+    /**
+     * @return InvoiceOut|Revert
+     */
+    public function getOrigin()
+    {
+        return $this->_origin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExported()
+    {
+        return $this->exported;
+    }
+
+    /**
+     * @param int $exported
+     */
+    public function setExported($exported)
+    {
+        $this->exported = $exported;
     }
 }

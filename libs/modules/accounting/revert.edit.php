@@ -167,6 +167,18 @@ echo $quickmove->generate();
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12">
+        <?php
+        $fibuxml = new FibuXML([Receipt::getForOrigin($revert)]);
+        $xml = $fibuxml->generateXML1();
+        $dom = dom_import_simplexml($xml)->ownerDocument;
+        $dom->formatOutput = true;
+        prettyPrint(htmlentities($dom->saveXML(NULL, LIBXML_NOEMPTYTAG)));
+        ?>
+    </div>
+</div>
+
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <script>
     function doStornoRevert(id){

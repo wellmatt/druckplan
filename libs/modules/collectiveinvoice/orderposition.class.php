@@ -437,6 +437,11 @@ class Orderposition{
 		$ret = str_replace('</p>','',$ret);
 		return $ret;
 	}
+
+	public function getCommentStripped(){
+		$ret = strip_tags($this->comment);
+		return $ret;
+	}
 	
 	public function setComment($comment){
 		$this->comment = $comment;

@@ -27,6 +27,7 @@ require_once 'libs/basic/eventqueue/eventclass.interface.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
 require_once 'libs/modules/organizer/caldav.service.class.php';
 require_once 'libs/modules/storage/storage.position.class.php';
+require_once 'libs/modules/accounting/receipt.class.php';
 
 require_once 'vendor/PEAR/Net/SMTP.php';
 require_once 'vendor/PEAR/Net/Socket.php';
@@ -50,49 +51,9 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 
-$collectinv = new CollectiveInvoice(156);
-$positions = Orderposition::getAllOrderposition($collectinv->getId());
+$data = Receipt::getAllFiltered(0,0,0);
 
-$bcrevenue = $collectinv->getCustomer()->getRevenueaccount();
-$bcaffiliate = $collectinv->getCustomer()->getIsaffiliatedcompany();
-
-$output = [];
-
-foreach ($positions as $position) {
-    if ($position->getType() == Orderposition::TYPE_ARTICLE || $position->getType() == Orderposition::TYPE_ORDER){
-        // Article or Calc Article position
-        $article = new Article($position->getObjectid());
-
-        if ($bcrevenue->getId() > 0)
-            $revcat = $bcrevenue;
-        else if ($article->getTradegroup()->getRevenueaccount()->getId() > 0)
-            $revcat = $article->getTradegroup()->getRevenueaccount();
-        else
-            $revcat = $article->getRevenueaccount();
-
-    } else if ($position->getType() == Orderposition::TYPE_PERSONALIZATION) {
-        // Perso position
-        $tmp_persoorder = new Personalizationorder($position->getObjectid());
-        $tmp_perso = new Personalization($tmp_persoorder->getPersoID());
-        $article = $tmp_perso->getArticle();
-
-        if ($bcrevenue->getId() > 0)
-            $revcat = $bcrevenue;
-        else if ($article->getTradegroup()->getRevenueaccount()->getId() > 0)
-            $revcat = $article->getTradegroup()->getRevenueaccount();
-        else
-            $revcat = $article->getRevenueaccount();
-
-    } else {
-        // manual position
-        // TODO: revenue default for manually created positions
-    }
-    $revenueacc = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revcat, $position->getTaxkey());
-
-    $output[$revenueacc->getId()][$position->getTaxkey()->getId()][] = $position->getNetto();
-}
-
-prettyPrint($output);
+prettyPrint($data);
 
 
 

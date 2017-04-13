@@ -37,6 +37,10 @@ if ($_REQUEST["exec"] == "doStornoRevert"){
         $doc->setStornoDate(time());
         $doc->save();
     }
+
+    $receipt = Receipt::getForOrigin($revert);
+    if ($receipt->getId() > 0)
+        $receipt->delete();
 }
 if ($_REQUEST["exec"] == "doDelete"){
     $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);

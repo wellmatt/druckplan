@@ -15,7 +15,8 @@ if($_REQUEST["subexec"] == "save"){
 	$delterm->setName1(trim(addslashes($_REQUEST["dt_name"])));
 	$delterm->setComment(trim(addslashes($_REQUEST["dt_comment"])));
 	$delterm->setRevenueaccount(new RevenueaccountCategory((int)$_REQUEST["revenueaccount"]));
-	
+	$delterm->setCostobject(new CostObject((int)$_REQUEST["costobject"]));
+
 	if($_CONFIG->shopActivation){
 		$delterm->setShoprel((int)$_REQUEST["dt_shoprel"]);
 	} else {
@@ -110,6 +111,31 @@ echo $quickmove->generate();
 								<?php } else {?>
 									<option
 										value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
+								<?php } ?>
+							<?php } ?>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-sm-2 control-label">Kostenträger</label>
+					<div class="col-sm-4">
+						<select name="costobject" id="costobject" class="form-control">
+							<?php
+							$costobjects = CostObject::getAll();
+							foreach ($costobjects as $costobject) { ?>
+								<?php
+								if ($delterm->getId() > 0) {
+									if ($costobject->getId() == $delterm->getCostobject()->getId()) { ?>
+										<option
+											value="<?php echo $delterm->getCostobject()->getId(); ?>"
+											selected><?php echo $delterm->getCostobject()->getTitle(); ?></option>
+									<?php } else { ?>
+										<option
+											value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+									<?php } ?>
+								<?php } else {?>
+									<option
+										value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
 								<?php } ?>
 							<?php } ?>
 						</select>

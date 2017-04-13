@@ -51,6 +51,19 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
 
+
+	if ($_REQUEST["deactivate_manual_articles"] == 1){
+		$perf->setDeactivateManualArticles(1);
+	} else {
+		$perf->setDeactivateManualArticles(0);
+	}
+	if ($_REQUEST["decativate_manual_delivcost"] == 1){
+		$perf->setDecativateManualDelivcost(1);
+	} else {
+		$perf->setDecativateManualDelivcost(0);
+	}
+
+
 	$perf->setSmtpAddress($_REQUEST["smtp_address"]);
 	$perf->setSmtpHost($_REQUEST["smtp_host"]);
 	$perf->setSmtpPort($_REQUEST["smtp_port"]);
@@ -260,6 +273,7 @@ echo $quickmove->generate();
 					<li><a href="#tabs-4"><? echo $_LANG->get('Datatables'); ?></a></li>
 					<li><a href="#tabs-5"><? echo $_LANG->get('Kalender'); ?></a></li>
 					<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen'); ?></a></li>
+					<li><a href="#tabs-7"><? echo $_LANG->get('Schalter'); ?></a></li>
 				</ul>
 
 				<div id="tabs-0">
@@ -586,6 +600,29 @@ echo $quickmove->generate();
 							onclick="location.href='index.php?page=libs/modules/perferences/perferences.php&exec=mergeArticles';">
 						Artikel Preisstaffeln zusammenführen
 					</button>
+				</div>
+				<div id="tabs-7">
+					Schalter für Funktionen:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Deaktiviere manuelle Artikel</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="deactivate_manual_articles" id="deactivate_manual_articles" value="1" <?php if ($perf->getDeactivateManualArticles()) echo ' checked ';?>>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Deaktiviere manuelle Versandkosten</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="decativate_manual_delivcost" id="decativate_manual_delivcost" value="1" <?php if ($perf->getDecativateManualDelivcost()) echo ' checked ';?>>
+								</label>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</form>

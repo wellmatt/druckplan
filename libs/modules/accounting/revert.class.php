@@ -49,27 +49,29 @@ class Revert extends Model{
 
         $tax = [];
         foreach ($positions as $opos => $amount) {
-            $position = new Orderposition($opos);
-            $taxkey = $position->getTaxkey()->getId();
-            if ($position->getType() == 1){
-                $netto = $position->getPrice() / $position->getAmount() * $amount;
-                $postax = $position->getTax();
-                $gross = $netto * (1+($position->getTax()/100));
-                $tax[$postax][] = [$netto,$gross];
-            } else {
-                $netto = $position->getPrice() * $amount;
-                $postax = $position->getTax();
-                $gross = $netto * (1+($position->getTax()/100));
-                $tax[$postax][] = [$netto,$gross];
+            if ($amount > 0){
+                $position = new Orderposition($opos);
+                $taxkey = $position->getTaxkey()->getId();
+                if ($position->getType() == 1){
+                    $netto = $position->getPrice() / $position->getAmount() * $amount;
+                    $postax = $position->getTax();
+                    $gross = $netto * (1+($position->getTax()/100));
+                    $tax[$postax][] = [$netto,$gross];
+                } else {
+                    $netto = $position->getPrice() * $amount;
+                    $postax = $position->getTax();
+                    $gross = $netto * (1+($position->getTax()/100));
+                    $tax[$postax][] = [$netto,$gross];
+                }
+                // Generate RevertPosition
+                $array = [
+                    'opos' => $opos,
+                    'amount' => $amount,
+                    'taxkey' => $taxkey,
+                    'price' => $netto
+                ];
+                $revertpositions[] = new RevertPosition(0,$array);
             }
-            // Generate RevertPosition
-            $array = [
-                'opos' => $opos,
-                'amount' => $amount,
-                'taxkey' => $taxkey,
-                'price' => $netto
-            ];
-            $revertpositions[] = new RevertPosition(0,$array);
         }
 
         foreach ($tax as $mwst => $items) {
@@ -112,6 +114,8 @@ class Revert extends Model{
             $revert->setDoc($doc->getId());
             $revert->setNumber($doc->getName());
             $revert->save();
+
+            Receipt::generateReceipt($revert);
         }
         return $revert;
     }

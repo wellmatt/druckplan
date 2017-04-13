@@ -13,7 +13,7 @@ if ($_REQUEST["subexec"] == "save"){
     if (count($positions) > 0 && $_REQUEST["letterhead_revert"]){
         $letterhead = (int)$_REQUEST["letterhead_revert"];
         $revert = Revert::generate($collectinv, $positions, new Letterhead($letterhead));
-        echo '<script>window.location.href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=docs&ciid='.$collectinv->getId().'"</script>';
+//        echo '<script>window.location.href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=docs&ciid='.$collectinv->getId().'"</script>';
     }
 }
 
@@ -73,9 +73,9 @@ $orderpositions = Orderposition::getAllOrderposition($collectinv->getId());
                                     foreach ($revertpositions as $revertposition) {
                                         if ($revertposition->getRevert()->getStatus() != Revert::STATE_STORNO){
                                             $revertamount += $revertposition->getAmount();
-                                            $reverts .= $revertposition->getRevert()->getNumber().': '.printPrice($revertposition->getAmount());
+                                            $reverts .= $revertposition->getRevert()->getNumber().': '.printPrice($revertposition->getAmount()).'<br/>';
                                         } else {
-                                            $reverts .= '<s>'.$revertposition->getRevert()->getNumber().': '.printPrice($revertposition->getAmount()).'</s>';
+                                            $reverts .= '<s>'.$revertposition->getRevert()->getNumber().': '.printPrice($revertposition->getAmount()).'</s><br/>';
                                         }
                                     }
                                 }

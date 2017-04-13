@@ -50,13 +50,9 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$fibuxml = new FibuXML([Receipt::getForOrigin(new InvoiceOut(37))]);
-$xml = $fibuxml->generateXML1();
 
+$busi = new BusinessContact(1);
+$xml = $busi->genSAPXML();
 $dom = dom_import_simplexml($xml)->ownerDocument;
 $dom->formatOutput = true;
-header('Content-Type: application/xml');
-echo $dom->saveXML(NULL, LIBXML_NOEMPTYTAG);
-
-//print ($xml);
-?>
+prettyPrint(htmlentities($dom->saveXML(NULL, LIBXML_NOEMPTYTAG)));

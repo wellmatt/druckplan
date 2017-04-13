@@ -37,6 +37,7 @@ if ($_REQUEST["subexec"] == "save"){
     }
 }
 $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
+$receipt = Receipt::getForOrigin($invoiceout);
 
 ?>
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
@@ -163,7 +164,7 @@ echo $quickmove->generate();
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">Skonto Brutto</label>
+                        <label for="" class="col-sm-2 control-label">Abzug Skonto Brutto</label>
                         <div class="col-sm-4 form-text">
                             <?php echo printPrice($skontovalue,2);?>€ (<?php echo $skonto;?>)
                         </div>
@@ -200,7 +201,7 @@ echo $quickmove->generate();
                         </div>
                     <?php } ?>
 
-                    <?php if ($invoiceout->getStatus() < 3){?>
+                    <?php if ($invoiceout->getStatus() < 3 && $receipt->getExported() == 0){?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">Storno</label>
                         <div class="col-sm-4">
@@ -232,8 +233,8 @@ echo $quickmove->generate();
 <div class="row">
     <div class="col-md-12">
         <?php
-            $fibuxml = new FibuXML([Receipt::getForOrigin($invoiceout)]);
-            $xml = $fibuxml->generateXML1();
+            $fibuxml = new FibuXML([Receipt::getForOrigin($invoiceout)],[]);
+            $xml = $fibuxml->generateReceiptXML();
             $dom = dom_import_simplexml($xml)->ownerDocument;
             $dom->formatOutput = true;
             prettyPrint(htmlentities($dom->saveXML(NULL, LIBXML_NOEMPTYTAG)));

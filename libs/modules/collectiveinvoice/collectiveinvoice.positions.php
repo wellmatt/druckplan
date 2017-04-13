@@ -90,8 +90,9 @@
                     <label for="" class="control-label">Stückliste</label>
                     <select id="partslist_selector" style="width: 200px"></select>
                     <button class="btn btn-xs btn-success" id="partslist_add_btn" disabled type="button" onclick="addPartslist();"><span class="glyphicons glyphicons-plus"></span></button>
-
-                    <button class="btn btn-xs btn-success" type="button" onclick="addManually();"><span class="glyphicons glyphicons-plus"></span>Manuell</button>
+                    <?php if ($perf->getDeactivateManualArticles() == 0){?>
+                        <button class="btn btn-xs btn-success" type="button" onclick="addManually();"><span class="glyphicons glyphicons-plus"></span>Manuell</button>
+                    <?php } ?>
                 </span>
             <?php } ?>
         </h3>
