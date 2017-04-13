@@ -114,7 +114,7 @@ class FibuXML{
                 $FibuBelegposition = $FibuBelegpositionen->addChild('FibuBelegposition');
                 $FibuBelegposition->addChild('buchungsschluessel',$receiptposition->getPostingkey());
 
-                if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
+                if ($receiptposition->getType() == ReceiptPosition::TYPE_CREDIT)
                     $FibuBelegposition->addChild('kontonummer',$receiptposition->getAccountnumber());
                 else
                     $FibuBelegposition->addChild('kontonummer',$receiptposition->getRevenueaccount());
@@ -133,7 +133,7 @@ class FibuXML{
                             $sk1date = date('d.m.Y', $receipt->getOrigin()->getDuedatesk1());
                         if ($receipt->getOrigin()->getSk1Percent()) {
                             $sk1percent = $receipt->getOrigin()->getSk1Percent();
-                            $sk1betrag = $receiptposition->getAmount() / 100 * $sk1percent;
+                            $sk1betrag = round($receiptposition->getAmount() / 100 * $sk1percent,2);
                         }
                     }
 

@@ -110,6 +110,29 @@ class Receipt extends Model{
                     }
                     if ($this->_origin->getColinv()->getBusinesscontact()->getCustomernumber() == null || $this->_origin->getColinv()->getBusinesscontact()->getCustomernumber() == '')
                         $fatal[] = 'Kundennummer nicht gesetzt!';
+
+                    if ($this->getOrigin()->getColinv()->getDeliveryterm()->getId()>0){
+                        $deliv = $this->getOrigin()->getColinv()->getDeliveryterm();
+                        if ($deliv->getCharges() > 0){
+                            $revenue = new RevenueaccountCategory();
+                            if ($deliv->getRevenueaccount()->getId()>0)
+                                $revenue = $deliv->getRevenueaccount();
+                            $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $deliv->getTaxkey());
+
+                            if ($revenue->getId() == 0){
+                                $fatal[] = 'Versandkosten: '.$deliv->getName1().': Erlöskategorie nicht gesetzt!';
+                            }
+                            if ($revenueaccount->getId() == 0){
+                                $fatal[] = 'Versandkosten: '.$deliv->getName1().': Erlöskonto nicht gesetzt!';
+                            }
+                            if ($deliv->getCostobject()->getId() == 0){
+                                $fatal[] = 'Versandkosten: '.$deliv->getName1().': Kostenstelle nicht gesetzt!';
+                            }
+                            if ($deliv->getTaxkey()->getId() == 0){
+                                $fatal[] = 'Versandkosten: '.$deliv->getName1().': Steuersatz nicht gesetzt!';
+                            }
+                        }
+                    }
                 }
             }
         } else {
@@ -240,6 +263,8 @@ class Receipt extends Model{
     }
 
     private function generatePositions(){
+        $receipt_positions = [];
+
         if ($this->getOriginType() == self::ORIGIN_INVOICE) {
             $positions = Orderposition::getAllOrderposition($this->_origin->getColinv()->getId());
 
@@ -294,9 +319,7 @@ class Receipt extends Model{
                         'revenueaccount' => $revenueaccount->getNumber(),
                     ];
                     $rctp_pos_debit = new ReceiptPosition(0,$array);
-                    $rctp_pos_debit = $rctp_pos_debit->save();
-                    if ($rctp_pos_debit === false)
-                        return false;
+                    $receipt_positions[] = $rctp_pos_debit;
 
                     // create tax positon
                     $array = [
@@ -306,9 +329,7 @@ class Receipt extends Model{
                         'percent' => $position->getTaxkey()->getValue(),
                     ];
                     $rctp_pos_tax = new ReceiptTaxPosition(0,$array);
-                    $rctp_pos_tax = $rctp_pos_tax->save();
-                    if ($rctp_pos_tax === false)
-                        return false;
+                    $receipt_positions[] = $rctp_pos_tax;
                 }
             }
 
@@ -336,9 +357,7 @@ class Receipt extends Model{
                         'revenueaccount' => $revenueaccount->getNumber(),
                     ];
                     $rctp_pos_debit = new ReceiptPosition(0,$array);
-                    $rctp_pos_debit = $rctp_pos_debit->save();
-                    if ($rctp_pos_debit === false)
-                        return false;
+                    $receipt_positions[] = $rctp_pos_debit;
 
                     // create tax positon
                     $array = [
@@ -348,18 +367,24 @@ class Receipt extends Model{
                         'percent' => $deliv->getTaxkey()->getValue(),
                     ];
                     $rctp_pos_tax = new ReceiptTaxPosition(0,$array);
-                    $rctp_pos_tax = $rctp_pos_tax->save();
-                    if ($rctp_pos_tax === false)
-                        return false;
+                    $receipt_positions[] = $rctp_pos_tax;
 
                 }
             }
+
 
             // create credit positon
             $rctp_pos_credit = new ReceiptPosition(0,$creditposition);
             $rctp_pos_credit = $rctp_pos_credit->save();
             if ($rctp_pos_credit === false)
                 return false;
+
+            // save other positions
+            foreach ($receipt_positions as $receipt_position) {
+                $res = $receipt_position->save();
+                if ($res === false)
+                    return false;
+            }
 
         } else {
             $positions = RevertPosition::getAllForRevert($this->getOrigin());
@@ -409,9 +434,7 @@ class Receipt extends Model{
                     'revenueaccount' => $revenueaccount->getNumber(),
                 ];
                 $rctp_pos_debit = new ReceiptPosition(0,$array);
-                $rctp_pos_debit = $rctp_pos_debit->save();
-                if ($rctp_pos_debit === false)
-                    return false;
+                $receipt_positions[] = $rctp_pos_debit;
 
                 // create tax positon
                 $array = [
@@ -421,8 +444,12 @@ class Receipt extends Model{
                     'percent' => $position->getTaxkey()->getValue(),
                 ];
                 $rctp_pos_tax = new ReceiptTaxPosition(0,$array);
-                $rctp_pos_tax = $rctp_pos_tax->save();
-                if ($rctp_pos_tax === false)
+                $receipt_positions[] = $rctp_pos_tax;
+            }
+
+            foreach ($receipt_positions as $receipt_position) {
+                $res = $receipt_position->save();
+                if ($res === false)
                     return false;
             }
 
