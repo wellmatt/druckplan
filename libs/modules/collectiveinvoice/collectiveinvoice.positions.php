@@ -114,11 +114,11 @@
             </thead>
             <tfoot>
             <tr>
-                <th>Summen:</th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
+                <th>Summe:</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -272,15 +272,7 @@
                     .column( 6 )
                     .data()
                     .reduce( function (a, b) {
-                        return parseFloat(a) + parseFloat(b);
-                    }, 0 );
-
-                // Total over this page
-                pageTotal_price = api
-                    .column( 6, { page: 'current'} )
-                    .data()
-                    .reduce( function (a, b) {
-                        return parseFloat(a) + parseFloat(b);
+                        return parseFloat(a) + parseFloat(b.replace(".","").replace(",","."));
                     }, 0 );
 
                 // Total over all pages
@@ -288,23 +280,15 @@
                     .column( 5 )
                     .data()
                     .reduce( function (a, b) {
-                        return parseFloat(a) + parseFloat(b);
-                    }, 0 );
-
-                // Total over this page
-                pageTotal_qty = api
-                    .column( 5, { page: 'current'} )
-                    .data()
-                    .reduce( function (a, b) {
-                        return parseFloat(a) + parseFloat(b);
+                        return parseFloat(a) + parseFloat(b.replace(".","").replace(",","."));
                     }, 0 );
 
                 // Update footer
                 $( api.column( 6 ).footer() ).html(
-                    pageTotal_price +' ( '+ total_price +' )'
+                    printPriceJs(total_price, 2) + " €"
                 );
                 $( api.column( 5 ).footer() ).html(
-                    pageTotal_qty +' ( '+ total_qty +' )'
+                    printPriceJs(total_qty, 2)
                 );
             },
             language: {

@@ -382,8 +382,6 @@ echo $quickmove->generate();
 											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=15');">Etiketten</a>
 											<a href="#"
 											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=4');">Rechnung</a>
-											<a href="#"
-											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=7');">Gutschrift</a>
 										</li>
 									</ul>
 								</div>

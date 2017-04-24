@@ -91,21 +91,37 @@
         <div class="table-responsive">
             <table class="table table-hover" id="invouttable">
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Dok.-Nr.</th>
-                    <th>Typ</th>
-                    <th>VO-Nr.</th>
-                    <th>VO-Titel</th>
-                    <th>Kunde</th>
-                    <th>Netto</th>
-                    <th>Brutto</th>
-                    <th>Erstellt</th>
-                    <th>Fällig</th>
-                    <th>Bezahlt</th>
-                    <th>Status</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Dok.-Nr.</th>
+                        <th>Typ</th>
+                        <th>VO-Nr.</th>
+                        <th>VO-Titel</th>
+                        <th>Kunde</th>
+                        <th>Netto</th>
+                        <th>Brutto</th>
+                        <th>Erstellt</th>
+                        <th>Fällig</th>
+                        <th>Bezahlt</th>
+                        <th>Status</th>
+                    </tr>
                 </thead>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Summe:</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -251,6 +267,35 @@
                 aoData.push( { "name": "bcid", "value": customer, } );
                 aoData.push( { "name": "start", "value": iMin, } );
                 aoData.push( { "name": "end", "value": iMax, } );
+            },
+            footerCallback: function ( row, data, start, end, display ) {
+                var api = this.api(), data;
+
+                // Total over this page
+                pageTotal_price_net = api
+                    .column( 6 )
+                    .data()
+                    .reduce( function (a, b) {
+//                        console.log("current: "+parseFloat(a)+" | adding: "+parseFloat(b.replace(".","").replace(",",".")));
+                        return parseFloat(a) + parseFloat(b.replace(".","").replace(",","."));
+                    }, 0 );
+
+                // Total over this page
+                pageTotal_price_gross = api
+                    .column( 7 )
+                    .data()
+                    .reduce( function (a, b) {
+//                        console.log("current: "+parseFloat(a)+" | adding: "+parseFloat(b.replace(".","").replace(",",".")));
+                        return parseFloat(a) + parseFloat(b.replace(".","").replace(",","."));
+                    }, 0 );
+
+                // Update footer
+                $( api.column( 6 ).footer() ).html(
+                    printPriceJs(pageTotal_price_net, 2) + " €"
+                );
+                $( api.column( 7 ).footer() ).html(
+                    printPriceJs(pageTotal_price_gross, 2) + " €"
+                );
             }
         });
 
