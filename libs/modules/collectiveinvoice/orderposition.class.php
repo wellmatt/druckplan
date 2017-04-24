@@ -112,6 +112,13 @@ class Orderposition{
 				$defaulttaxkey = TaxKey::getDefaultTaxKey();
 				$this->taxkey = $defaulttaxkey; // grabbing the default taxkey just to be sure that one is set
 			}
+			
+			// fix for #58 - Rückwärtskompatibilität für orderposition sequence
+			if ($this->sequence == 0){
+				$this->sequence = Orderposition::getNextSequence(new CollectiveInvoice($this->collectiveinvoice));
+				if ($this->sequence > 0)
+					$this->save();
+			}
 			//
 		}
 	}
