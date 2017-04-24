@@ -8,7 +8,7 @@
 require_once('libs/modules/businesscontact/businesscontact.class.php');
 
 function printSubTradegroupsForSelect($parentId, $depth){
-	$all_subgroups = Tradegroup::getAllTradegroups($parentId);
+	$all_subgroups = Tradegroup::getTradegroupsForBCorCPForParent((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"],$parentId);
 	foreach ($all_subgroups AS $subgroup)
 	{
 		global $x;
@@ -21,6 +21,7 @@ function printSubTradegroupsForSelect($parentId, $depth){
 	}
 }
 
+$all_tradegroups = Tradegroup::getTradegroupsForBCorCP((int)$_SESSION["cust_id"],(int)$_SESSION["contactperson_id"]);
 ?>
 <!-- Lightbox -->
 <link rel="stylesheet" href="../../../jscripts/lightbox/lightbox.css" type="text/css" media="screen" />
@@ -74,9 +75,11 @@ function printSubTradegroupsForSelect($parentId, $depth){
 				var tags = document.getElementById('ajax_tags').value;
 				var bc = <?php echo (int)$_SESSION["cust_id"];?>;
 				var cp = <?php echo (int)$_SESSION["contactperson_id"];?>;
+				var tg = document.getElementById('ajax_tradegroup').value;
 				aoData.push( { "name": "search_tags", "value": tags, } );
 				aoData.push( { "name": "bc", "value": bc, } );
 				aoData.push( { "name": "cp", "value": cp, } );
+				aoData.push( { "name": "tradegroup", "value": tg, } );
 
 				// Custom Fields
 				var cfields = $("[data-fieldid]");
@@ -212,6 +215,26 @@ function printSubTradegroupsForSelect($parentId, $depth){
 							<input type="hidden" id="ajax_tags" name="ajax_tags"/>
 							<input name="tags" id="tags" class="form-control" onfocus="markfield(this,0)"
 								   onblur="markfield(this,1)">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Warengruppe</label>
+						<div class="col-sm-4">
+							<input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
+							<select name="tradegroup" id="tradegroup" class="form-control"
+									onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();"
+									onfocus="markfield(this,0)" onblur="markfield(this,1)">
+								<option value="0">- Alle -</option>
+								<?php
+								foreach ($all_tradegroups as $tg) {
+									?>
+									<option value="<?= $tg->getId() ?>">
+										<?= $tg->getTitle() ?></option>
+									<? printSubTradegroupsForSelect($tg->getId(), 0);
+								}
+								?>
+							</select>
 						</div>
 					</div>
 

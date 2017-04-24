@@ -175,7 +175,7 @@ class Orderposition{
 						{$this->taxkey->getId()}, {$this->getStatus()}, {$this->getCollectiveinvoice()}, {$this->getType()},
 						{$this->getObjectid()}, {$this->getInvrel()}, {$this->getRevrel()}, {$this->getFile_attach()}, {$this->getPerso_order()}, {$this->getSequence()} )";
 			$res = $DB->no_result($sql);
-			prettyPrint($sql);
+//			prettyPrint($sql);
 			if($res){
 				$sql = " SELECT max(id) id FROM collectiveinvoice_orderposition";
 				$thisid = $DB->select($sql);
@@ -206,7 +206,7 @@ class Orderposition{
 						perso_order = {$this->getPerso_order()}
 						WHERE id = {$this->getId()}";
 			$res = $DB->no_result($sql);
-			prettyPrint($sql);
+//			prettyPrint($sql);
 			if($res){
 				Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
 				return true;

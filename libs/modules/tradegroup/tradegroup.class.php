@@ -157,6 +157,67 @@ class Tradegroup {
 		}
 		return $retval;
 	}
+
+	/**
+	 * @param $bcid
+	 * @param $cpid
+	 * @return Tradegroup[]
+	 */
+	public static function getTradegroupsForBCorCP($bcid, $cpid)
+	{
+		global $DB;
+		$retval = Array();
+		if ($bcid > 0 && $cpid > 0){
+			$sql = 	"SELECT DISTINCT tradegroup FROM (
+				 SELECT article.tradegroup FROM article
+				 WHERE article.`status` > 0 AND article.shoprel = 1
+				 UNION ALL
+				 SELECT article.tradegroup FROM article
+				 INNER JOIN article_shop_approval ON article.id = article_shop_approval.article
+				 WHERE (article_shop_approval.bc = {$bcid} OR article_shop_approval.cp = {$cpid}) AND article.`status` > 0
+				) t1";
+			if($DB->num_rows($sql))
+			{
+				foreach($DB->select($sql) as $r)
+				{
+					$retval[] = new Tradegroup($r["tradegroup"]);
+				}
+			}
+		}
+		return $retval;
+	}
+
+	/**
+	 * @param $bcid
+	 * @param $cpid
+	 * @param $parentid
+	 * @return Tradegroup[]
+	 */
+	public static function getTradegroupsForBCorCPForParent($bcid, $cpid, $parentid)
+	{
+		global $DB;
+		$retval = Array();
+		if ($bcid > 0 && $cpid > 0 && $parentid >0){
+			$sql = 	"SELECT DISTINCT tradegroup FROM (
+				 SELECT article.tradegroup FROM article
+				 WHERE article.`status` > 0 AND article.shoprel = 1
+				 UNION ALL
+				 SELECT article.tradegroup FROM article
+				 INNER JOIN article_shop_approval ON article.id = article_shop_approval.article
+				 WHERE (article_shop_approval.bc = {$bcid} OR article_shop_approval.cp = {$cpid}) AND article.`status` > 0
+				) t1
+				 INNER JOIN tradegroup ON t1.tradegroup = tradegroup.id
+				 WHERE tradegroup.tradegroup_parentid = {$parentid}";
+			if($DB->num_rows($sql))
+			{
+				foreach($DB->select($sql) as $r)
+				{
+					$retval[] = new Tradegroup($r["tradegroup"]);
+				}
+			}
+		}
+		return $retval;
+	}
 	
 	/********************************************************************************
 	 * 						GETTER und SETTER										*
