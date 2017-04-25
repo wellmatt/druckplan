@@ -461,6 +461,8 @@ class CollectiveInvoice{
 	    $newcol->resetId();
 	    $newcol->setTitle($newcol->getTitle() . " Kopie");
 		$newcol->setNumber($newnumber);
+		$newcol->setStatus(1);
+		$newcol->setLocked(0);
 	    $newcol->save();
 		$newcol->saveActiveAttributes($attribs);
 	    
