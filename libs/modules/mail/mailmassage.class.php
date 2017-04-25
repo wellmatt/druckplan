@@ -93,7 +93,11 @@ class MailMessage{
             $this->imap_port = $perf->getImapPort();
             $this->imap_user = $perf->getImapUser();
             $this->imap_pass = $perf->getImapPassword();
-            $mail_from = $perf->getSmtpAddress();
+            if ($perf->getMailSender() == '')
+                $mail_from = $perf->getSmtpAddress();
+            else {
+                $mail_from = $perf->getMailSender()."<".$perf->getSmtpAddress().">";
+            }
         }
 
         $tos = array_filter($tos);

@@ -64,6 +64,7 @@ if ($_REQUEST["exec"] == "save")
 	}
 
 
+	$perf->setMailSender($_REQUEST["mail_sender"]);
 	$perf->setSmtpAddress($_REQUEST["smtp_address"]);
 	$perf->setSmtpHost($_REQUEST["smtp_host"]);
 	$perf->setSmtpPort($_REQUEST["smtp_port"]);
@@ -370,6 +371,12 @@ echo $quickmove->generate();
 				</div>
 				<div id="tabs-2">
 					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">eMail-Absender:</label>
+						<div class="col-sm-4">
+							<input type="text" name="mail_sender" id="mail_sender" class="form-control" value="<?=$perf->getMailSender(); ?>" placeholder="Manfred Mustermann"/>
+						</div>
+					</div>
+					<div class="form-group">
 						<label for="" class="col-sm-3 control-label">SMTP eMail-Adresse:</label>
 						<div class="col-sm-4">
 							<input type="text" name="smtp_address" id="smtp_address" class="form-control" value="<?=$perf->getSmtpAddress(); ?>"/>
@@ -470,7 +477,6 @@ echo $quickmove->generate();
 							</div>
 						</div>
 					</div>
-					<p>* Hinweis: Aktuell werden nur SSL Verbindungen unterstützt</p>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Signatur</label>
 						<div class="col-sm-10">

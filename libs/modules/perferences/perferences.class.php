@@ -36,6 +36,7 @@ class Perferences
 
     // Mail
 
+    private $mail_sender = '';
     private $mail_domain = '';
     private $smtp_address = '';
     private $smtp_host = '';
@@ -70,6 +71,7 @@ class Perferences
             $this->dt_show_default = (int)$r["dt_show_default"];
             $this->dt_state_save = (bool)$r["dt_state_save"];
             $this->mail_domain = $r["mail_domain"];
+            $this->mail_sender = $r["mail_sender"];
             $this->commentArtDesc = $r["commentArtDesc"];
             $this->smtp_address = $r["smtp_address"];
             $this->smtp_host = $r["smtp_host"];
@@ -131,6 +133,7 @@ class Perferences
                dt_show_default 	= {$this->dt_show_default},
                dt_state_save 	= {$tmp_dt_state_save},
                mail_domain 	= '{$this->mail_domain}',
+               mail_sender 	= '{$this->mail_sender}',
                smtp_address 	= '{$this->smtp_address}',
                smtp_host 	= '{$this->smtp_host}',
                smtp_port 	= '{$this->smtp_port}',
@@ -566,5 +569,21 @@ class Perferences
     public function setDecativateManualDelivcost($decativate_manual_delivcost)
     {
         $this->decativate_manual_delivcost = $decativate_manual_delivcost;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailSender()
+    {
+        return $this->mail_sender;
+    }
+
+    /**
+     * @param string $mail_sender
+     */
+    public function setMailSender($mail_sender)
+    {
+        $this->mail_sender = $mail_sender;
     }
 }
