@@ -514,6 +514,12 @@ echo $quickmove->generate();
 								</div>
 								<div class="col-sm-4">
 									<?=getOrderStatus($collectinv->getStatus(), true)?>
+									<?php
+									$checkdoc = Document::getNewestForModuleIdAndType(Document::REQ_MODULE_COLLECTIVEORDER,$collectinv->getId(),Document::TYPE_INVOICE);
+									if ($checkdoc->getId() > 0 && $checkdoc->getStornoDate() > 0){
+										echo '&nbsp;&nbsp;<span id="notify_count" class="badge">Storno</span>';
+									}
+									?>
 								</div>
 							</div>
 

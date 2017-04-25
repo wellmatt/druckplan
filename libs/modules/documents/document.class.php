@@ -219,6 +219,22 @@ class Document
         ];
     }
 
+    public static function getNewestForModuleIdAndType($doc_req_module, $doc_req_id, $doc_type)
+    {
+        global $DB;
+        $retval = new Document();
+        $sql = "SELECT id FROM documents
+                WHERE doc_req_module = '{$doc_req_module}' AND doc_req_id = {$doc_req_id} AND doc_type = {$doc_type}
+                ORDER BY doc_crtdat desc LIMIT 1";
+
+        if ($DB->num_rows($sql)) {
+            foreach ($DB->select($sql) as $res) {
+                return new Document($res["id"]);
+            }
+        }
+        return $retval;
+    }
+
     /**
      * Gets Documents for given filter.
      * Possible filteroptions are:
