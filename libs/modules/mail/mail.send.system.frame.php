@@ -84,7 +84,6 @@ if ($_REQUEST["fromColinv"] > 0){
         $attachments[] = ["name"=>$doc->getName(), "filename"=>$doc->getFilename(Document::VERSION_EMAIL), "docid"=>$doc->getId()];
     }
     $preset_mail_to = $colinv->getCustContactperson()->getEmail();
-    $preset_mail_cc = $colinv->getCustomer()->getEmail();
     $preset_mail_subject = 'Ihr Vorgang: '.$colinv->getNumber().' - '.$colinv->getTitle();
 
     $preset_mail_content = 'Sehr geehrte/r Frau/Herr '. $colinv->getCustContactperson()->getName1().',';
@@ -397,7 +396,7 @@ if ($_REQUEST["exec"] == "send")
                         <label class="control-label" for="mail_cc">CC</label>
                     </div>
                     <div class=" col-xs-11">
-                        <input type="text" id="mail_cc" name="mail_cc" value="<?php echo $preset_mail_to; ?>">
+                        <input type="text" id="mail_cc" name="mail_cc" value="<?php echo $preset_mail_cc; ?>">
                     </div>
                 </div>
                 <div class="form-group">
