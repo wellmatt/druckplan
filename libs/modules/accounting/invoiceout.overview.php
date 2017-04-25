@@ -113,9 +113,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td>Summe:</td>
-                        <td></td>
-                        <td></td>
+                        <td align="left" style="padding: 8px;">Summe:</td>
+                        <td align="left" style="padding: 8px;"></td>
+                        <td align="left" style="padding: 8px;"></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -123,6 +123,7 @@
                     </tr>
                 </tfoot>
             </table>
+            * Bitte beachten Sie: Die Summen beinhalten ALLE angezeigten Elemente!
         </div>
     </div>
 </div>
