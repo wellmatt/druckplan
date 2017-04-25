@@ -696,6 +696,23 @@ $(function () {
 	} );
 </script>
 <script language="JavaScript">
+function addTextBlock(){
+    var textBlockId = $('#tktc_textblock').val();
+
+    $.ajax({
+        type: "POST",
+        url: "libs/modules/textblocks/textblock.ajax.php",
+        data: { ajax_action: "getText", id: textBlockId },
+        success: function(data)
+        {
+            CKEDITOR.instances.tktc_comment.insertHtml( data, function()
+            {
+                this.checkDirty();  // true
+            });
+        }
+    });
+}
+
 $(function() {
 	$('#tkt_due').datetimepicker({
 		 lang:'de',
@@ -1633,6 +1650,21 @@ echo $quickmove->generate();
                                         <option value="<?php echo Comment::VISABILITY_PRIVATE;?>">priv. Kommentar</option>
                                         <option value="<?php echo Comment::VISABILITY_PUBLICMAIL;?>">Offiz. Antwort (Mail)</option>
                                     </select>
+                                </div>
+                                <label for="" class="col-sm-2 control-label">Textbaustein</label>
+                                <div class="col-sm-3" style="white-space: nowrap">
+                                    <select name="tktc_textblock" id="tktc_textblock" class="form-control" style="width: 100%;display: inline-block;">
+                                        <?php
+                                        $textblocks = TextBlock::fetch([['column'=>'mod_ticket','value'=>1]]);
+                                        foreach ($textblocks as $textblock) {
+                                            foreach ($textblock->getGroups() as $group) {
+                                                if ($group->getGroup()->hasMember($_USER)){?>
+                                                    <option value="<?php echo $textblock->getId();?>"><?php echo $textblock->getName();?></option>
+                                                <?php }
+                                            }
+                                        }
+                                        ?>
+                                    </select><span class="pointer glyphicons glyphicons-plus form-text" title="Textbaustein einfügen" onclick="addTextBlock();"></span>
                                 </div>
                             </div>
                         </div>

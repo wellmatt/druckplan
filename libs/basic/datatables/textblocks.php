@@ -1,4 +1,12 @@
 <?php
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
+chdir("../../../");
 require_once("config.php");
 require_once("libs/basic/mysql.php");
 require_once("libs/basic/globalFunctions.php");
@@ -27,8 +35,6 @@ require_once 'libs/basic/eventqueue/eventclass.interface.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
 require_once 'libs/modules/organizer/caldav.service.class.php';
 require_once 'libs/modules/storage/storage.position.class.php';
-require_once 'libs/modules/accounting/receipt.class.php';
-require_once 'libs/modules/textblocks/textblock.class.php';
 
 require_once 'vendor/PEAR/Net/SMTP.php';
 require_once 'vendor/PEAR/Net/Socket.php';
@@ -45,26 +51,50 @@ error_reporting(-1);
 ini_set('display_errors', 1);
 session_start();
 
+global $_CONFIG;
+global $_USER;
 $DB = new DBMysql();
 $DB->connect($_CONFIG->db);
 
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$textblocks = TextBlock::fetch([
-    ['column' => 'mod_ticket', 'value' => 1]
-]);
+include( "jscripts/datatableeditor/Editor-1.6.1/php/DataTables.php" );
 
-?>
+use
+    DataTables\Editor,
+    DataTables\Editor\Field,
+    DataTables\Editor\Format,
+    DataTables\Editor\Mjoin,
+    DataTables\Editor\Options,
+    DataTables\Editor\Upload,
+    DataTables\Editor\Validate;
 
-<select name="tktc_textblock" id="tktc_textblock" class="form-control">
-    <?php
-    foreach ($textblocks as $textblock) {
-        foreach ($textblock->getGroups() as $group) {
-            if ($group->getGroup()->hasMember($_USER)){?>
-                <option value="<?php echo $textblock->getId();?>"><?php echo $textblock->getName();?></option>
-            <?php }
+
+if ($_POST){
+    if (count($_POST["data"]) > 0){
+        foreach ($_POST["data"] as $item => $values) {
+            if (strpos($item,"row_") !== false){
+                $itemid = str_replace("row_","",$item);
+                Cachehandler::removeCache($_CONFIG->cookieSecret."_TextBlock_".$itemid);
+            }
         }
     }
-    ?>
-</select>
+}
+
+// Build our Editor instance and process the data coming from _POST
+Editor::inst( $db, 'textblocks' )
+    ->fields(
+        Field::inst( 'id' )->set(false),
+        Field::inst( 'name' )->set(false),
+        Field::inst( 'crtdate' )->set(false)
+            ->getFormatter( function ( $val, $data, $opts ) {
+                return date('d.m.y H:i', $val);
+            }),
+        Field::inst( 'uptdate' )->set(false)
+            ->getFormatter( function ( $val, $data, $opts ) {
+                return date('d.m.y H:i', $val);
+            })
+    )
+    ->process( $_POST )
+    ->json();

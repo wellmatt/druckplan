@@ -28,6 +28,7 @@ require_once 'libs/modules/taxkeys/taxkey.class.php';
 require_once 'libs/modules/costobjects/costobject.class.php';
 require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
 require_once 'libs/modules/accounting/receipt.class.php';
+require_once 'libs/modules/textblocks/textblock.class.php';
 
 session_start();
 global $_LANG;

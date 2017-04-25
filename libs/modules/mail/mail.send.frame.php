@@ -20,6 +20,7 @@ require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/perferences/perferences.class.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
+require_once 'libs/modules/textblocks/textblock.class.php';
 
 
 require_once __DIR__.'/../../../vendor/Horde/Autoloader.php';
@@ -457,6 +458,22 @@ $(function () {
 </script>
 
 <script language="JavaScript">
+    function addTextBlock(){
+        var textBlockId = $('#textblock').val();
+
+        $.ajax({
+            type: "POST",
+            url: "../../../libs/modules/textblocks/textblock.ajax.php",
+            data: { ajax_action: "getText", id: textBlockId },
+            success: function(data)
+            {
+                CKEDITOR.instances.mail_text.insertHtml( data, function()
+                {
+                    this.checkDirty();  // true
+                });
+            }
+        });
+    }
 	$(function() {
 		var mail_text = CKEDITOR.replace( 'mail_text', {
 			// Define the toolbar groups as it is a more accessible solution.
@@ -665,6 +682,26 @@ $(function () {
                        class="form-control" style="margin-bottom: 10px;">
             </div>
         </div>
+
+        <div class="form-group">
+            <label for="" class="col-xs-1 control-label">Textbaus.</label>
+            <div class="col-xs-11" style="white-space: nowrap">
+                <select name="textblock" id="textblock" class="form-control" style="width: 100%; display: inline-block; margin-bottom: 10px;">
+                    <?php
+                    $textblocks = TextBlock::fetch([['column'=>'mod_mail','value'=>1]]);
+                    foreach ($textblocks as $textblock) {
+                        foreach ($textblock->getGroups() as $group) {
+                            if ($group->getGroup()->hasMember($_USER)){?>
+                                <option value="<?php echo $textblock->getId();?>"><?php echo $textblock->getName();?></option>
+                            <?php }
+                        }
+                    }
+                    ?>
+                </select><span class="pointer glyphicons glyphicons-plus form-text" title="Textbaustein einfügen" onclick="addTextBlock();"></span>
+            </div>
+        </div>
+        <br/>
+
         <div class="form-group">
             <div class=" col-xs-1">
                 <label class="control-label" for="mail_text">Nachricht</label>

@@ -127,6 +127,19 @@ class Group {
       $DB->no_result($sql);
    }
 
+   /**
+    * @param User $user
+    * @return bool
+    */
+   public function hasMember(User $user)
+   {
+      foreach ($this->members as $member) {
+         if ($member->getId() == $user->getId())
+            return true;
+      }
+      return false;
+   }
+
    public function clearMembers()
    {
       $this->members = [];
