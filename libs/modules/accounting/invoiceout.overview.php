@@ -9,16 +9,29 @@
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
-<link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+<!-- DataTables Editor -->
+<link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/datatables.min.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/datatables.min.js"></script>
+
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-autoComplete/editor.autoComplete.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.js"></script>
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-datetimepicker-2/editor.datetimepicker-2.js"></script>
+
+<script type="text/javascript" src="jscripts/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="jscripts/ckeditor/config.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/ckeditor/skins/bootstrapck/editor.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-ckeditor/editor.ckeditor.js"></script>
+<!-- /DataTables Editor -->
 
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
             Rechnungsausgang
             <span class="pull-right">
-                <button class="btn btn-xs btn-success" type="button" onclick="invoutexport();">Export</button>
+                <button class="btn btn-xs btn-success" type="button" id="Export">Export</button>
+                <button class="btn btn-xs btn-success" type="button" id="printAll">Drucken</button>
+                <button class="btn btn-xs btn-success" type="button" id="printAllEmail">Drucken (eMail)</button>
             </span>
         </h3>
     </div>
@@ -104,6 +117,7 @@
                         <th>Fällig</th>
                         <th>Bezahlt</th>
                         <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -120,6 +134,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>
@@ -128,17 +143,7 @@
     </div>
 </div>
 
-<!-- DataTables -->
-<script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
-<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
-<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
 <script type="text/javascript">
-    function invoutexport(){
-        var datemin = parseInt($('#ajax_date_min').val());
-        var datemax = parseInt($('#ajax_date_max').val());
-        window.open('libs/modules/accounting/invoiceout.export.php?datemax='+datemax+'&datemin='+datemin);
-    }
     function TicketTableRefresh()
     {
         $('#invouttable').dataTable().fnDraw();
@@ -231,7 +236,21 @@
                 null,
                 null,
                 null,
+                null,
+                null,
                 null
+            ],
+            "columnDefs": [
+                {
+                    "targets": [ 13 ],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [ 14 ],
+                    "visible": false,
+                    "searchable": false
+                }
             ],
             "language":
             {
@@ -300,11 +319,42 @@
             }
         });
 
+        $('#printAll').on( 'click', function () {
+            var ids = [];
+            invouttable
+                .column( 13 )
+                .data()
+                .each( function ( value, index ) {
+                    ids.push(value);
+                } );
+            window.open('libs/modules/accounting/invoiceout.print.php?ids='+ids.join());
+        } );
+
+        $('#printAllEmail').on( 'click', function () {
+            var ids = [];
+            invouttable
+                .column( 13 )
+                .data()
+                .each( function ( value, index ) {
+                    ids.push(value);
+                } );
+            window.open('libs/modules/accounting/invoiceout.print.php?version=email&ids='+ids.join());
+        } );
+
+        $('#Export').on( 'click', function () {
+            var elements = [];
+            invouttable.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+                var data = this.data();
+                elements.push([data[0],data[14]]);
+            } );
+            window.open('libs/modules/accounting/invoiceout.export.php?param='+JSON.stringify(elements));
+        } );
+
         $('#search').keyup(function(){
             invouttable.search( $(this).val() ).draw();
         });
 
-        $("#invouttable tbody td").live('click',function(){
+        $("#invouttable tbody td:not(:last-child)").live('click',function(){
             var aPos = $('#invouttable').dataTable().fnGetPosition(this);
             var aData = $('#invouttable').dataTable().fnGetData(aPos[0]);
             if (aData[2] == 'Rechnung')

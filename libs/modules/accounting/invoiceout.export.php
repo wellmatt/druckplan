@@ -20,6 +20,7 @@ require_once 'thirdparty/phpfastcache/phpfastcache.php';
 require_once 'libs/modules/accounting/invoiceout.class.php';
 require_once 'libs/modules/collectiveinvoice/collectiveinvoice.class.php';
 require_once 'libs/basic/csv/CsvWriter.class.php';
+require_once 'libs/modules/accounting/revert.class.php';
 session_start();
 
 $DB = new DBMysql();
@@ -29,91 +30,86 @@ Global $_USER;
 $_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 
-$datemax = $_REQUEST["datemax"];
-$datemin = $_REQUEST["datemin"];
 
-$filter = [];
-if ($datemax > 0){
-    $filter[] = [
-        'column'=>'crtdate',
-        'value'=>$datemax,
-        'operator'=>'<='
-    ];
-}
-if ($datemin > 0){
-    $filter[] = [
-        'column'=>'crtdate',
-        'value'=>$datemin,
-        'operator'=>'>='
-    ];
-}
-
-$invoiceouts = InvoiceOut::fetch($filter);
-
-$filename = $_USER->getId() . '-Rechnungsausgang.csv';
-$csvname = './docs/'.$filename;
-//build the object
-$writer = new CsvWriter();
-//open a file path
-$writer->open($csvname, ';');
-//write header array if needed
-$header = [
-    'Re-Nr.',
-    'Auftragstitel',
-    'Betrag Netto',
-    'MWST',
-    'Betrag Brutto',
-    'Kunde',
-    'Kunden-Nr.',
-    'Debitor-Nr.',
-    'Erstellt',
-    'Zahlbar bis',
-    'Bezahlt am',
-    'Status',
-    'Bemerkung'
-];
-$writer->writeHeader($header);
-//write row data
-foreach ($invoiceouts as $invoiceout) {
-    if ($invoiceout->getPayeddate() > 0)
-        $payeddate = date('d.m.y',$invoiceout->getPayeddate());
-    else
-        $payeddate = '';
-
-    switch($invoiceout->getStatus()){
-        case 0:
-            $status = 'gelöscht';
-            break;
-        case 1:
-            $status = 'offen';
-            break;
-        case 2:
-            $status = 'bezahlt';
-            break;
-        case 3:
-            $status = 'storniert';
-            break;
+$objects = [];
+if (strlen($_REQUEST['param'])>0){
+    $params = json_decode($_REQUEST['param']);
+    if (count($params)>0){
+        foreach ($params as $param) {
+            if ($param[1] == 1)
+                $objects[] = new InvoiceOut($param[0]);
+            elseif ($param[1] == 2)
+                $objects[] = new Revert($param[0]);
+        }
     }
-
-    $writer->writeRow(array(
-        $invoiceout->getNumber(),
-        $invoiceout->colinv->getTitle(),
-        $invoiceout->getNetvalue(),
-        ($invoiceout->getGrossvalue() - $invoiceout->getNetvalue()),
-        $invoiceout->getGrossvalue(),
-        $invoiceout->colinv->getCustomer()->getNameAsLine(),
-        $invoiceout->colinv->getCustomer()->getCustomernumber(),
-        $invoiceout->colinv->getCustomer()->getDebitor(),
-        date('d.m.y',$invoiceout->getCrtdate()),
-        date('d.m.y',$invoiceout->getDuedate()),
-        $payeddate,
-        $status,
-        ''
-    ));
 }
-$writer->__destruct();
 
-header('Content-Type: application/csv');
-header('Content-Disposition: attachment; filename='.$filename);
-header('Pragma: no-cache');
-readfile($csvname);
+if (count($objects)>0){
+    $filename = $_USER->getId() . '-Rechnungsausgang.csv';
+    $csvname = './docs/'.$filename;
+    //build the object
+    $writer = new CsvWriter();
+    //open a file path
+    $writer->open($csvname, ';');
+    //write header array if needed
+    $header = [
+        'Re-Nr.',
+        'Auftragstitel',
+        'Betrag Netto',
+        'MWST',
+        'Betrag Brutto',
+        'Kunde',
+        'Kunden-Nr.',
+        'Debitor-Nr.',
+        'Erstellt',
+        'Zahlbar bis',
+        'Bezahlt am',
+        'Status',
+        'Bemerkung'
+    ];
+    $writer->writeHeader($header);
+    //write row data
+    foreach ($objects as $object) {
+        if ($object->getPayeddate() > 0)
+            $payeddate = date('d.m.y',$object->getPayeddate());
+        else
+            $payeddate = '';
+
+        switch($object->getStatus()){
+            case 0:
+                $status = 'gelöscht';
+                break;
+            case 1:
+                $status = 'offen';
+                break;
+            case 2:
+                $status = 'bezahlt';
+                break;
+            case 3:
+                $status = 'storniert';
+                break;
+        }
+
+        $writer->writeRow(array(
+            $object->getNumber(),
+            $object->colinv->getTitle(),
+            $object->getNetvalue(),
+            ($object->getGrossvalue() - $object->getNetvalue()),
+            $object->getGrossvalue(),
+            $object->colinv->getCustomer()->getNameAsLine(),
+            $object->colinv->getCustomer()->getCustomernumber(),
+            $object->colinv->getCustomer()->getDebitor(),
+            date('d.m.y',$object->getCrtdate()),
+            date('d.m.y',$object->getDuedate()),
+            $payeddate,
+            $status,
+            ''
+        ));
+    }
+    $writer->__destruct();
+
+    header('Content-Type: application/csv');
+    header('Content-Disposition: attachment; filename='.$filename);
+    header('Pragma: no-cache');
+    readfile($csvname);
+}

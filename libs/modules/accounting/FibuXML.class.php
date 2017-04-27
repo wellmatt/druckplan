@@ -115,7 +115,7 @@ class FibuXML{
                 $FibuBelegposition->addChild('buchungsschluessel',$receiptposition->getPostingkey());
 
                 if ($receiptposition->getType() == ReceiptPosition::TYPE_CREDIT)
-                    $FibuBelegposition->addChild('kontonummer',$receiptposition->getAccountnumber());
+                    $FibuBelegposition->addChild('kontonummer',$receipt->getOrigin()->getColinv()->getBusinesscontact()->getCustomernumber());
                 else
                     $FibuBelegposition->addChild('kontonummer',$receiptposition->getRevenueaccount());
 

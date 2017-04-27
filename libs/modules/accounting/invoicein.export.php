@@ -29,6 +29,8 @@ Global $_USER;
 $_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 
+
+
 $datemax = $_REQUEST["datemax"];
 $datemin = $_REQUEST["datemin"];
 

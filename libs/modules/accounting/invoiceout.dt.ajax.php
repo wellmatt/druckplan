@@ -19,7 +19,7 @@
     require_once 'thirdparty/phpfastcache/phpfastcache.php';
     session_start();
 
-    $aColumns = array( 'id', 'renr', 'type', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'crtdate', 'duedate', 'payeddate', 'status' );
+    $aColumns = array( 'id', 'renr', 'type', 'vonr', 'title', 'bname', 'netvalue', 'grossvalue', 'crtdate', 'duedate', 'payeddate', 'status', 'doc' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -218,7 +218,8 @@
 			invoiceouts.crtdate,
 			invoiceouts.duedate,
 			invoiceouts.payeddate,
-			invoiceouts.`status`
+			invoiceouts.`status`,
+			invoiceouts.doc
 		FROM
 			invoiceouts
 		INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
@@ -241,7 +242,8 @@
 			reverts.crtdate,
 			reverts.duedate,
 			reverts.payeddate,
-			reverts.`status`
+			reverts.`status`,
+			reverts.doc
 		FROM
 			reverts
 		INNER JOIN collectiveinvoice ON reverts.colinv = collectiveinvoice.id
@@ -283,7 +285,8 @@ $status = mysql_fetch_assoc($test);
 			invoiceouts.crtdate,
 			invoiceouts.duedate,
 			invoiceouts.payeddate,
-			invoiceouts.`status`
+			invoiceouts.`status`,
+			invoiceouts.doc
 		FROM
 			invoiceouts
 		INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
@@ -306,7 +309,8 @@ $status = mysql_fetch_assoc($test);
 			reverts.crtdate,
 			reverts.duedate,
 			reverts.payeddate,
-			reverts.`status`
+			reverts.`status`,
+			reverts.doc
 		FROM
 			reverts
 		INNER JOIN collectiveinvoice ON reverts.colinv = collectiveinvoice.id
@@ -342,7 +346,8 @@ $status = mysql_fetch_assoc($test);
 			invoiceouts.crtdate,
 			invoiceouts.duedate,
 			invoiceouts.payeddate,
-			invoiceouts.`status`
+			invoiceouts.`status`,
+			invoiceouts.doc
 		FROM
 			invoiceouts
 		INNER JOIN collectiveinvoice ON invoiceouts.colinv = collectiveinvoice.id
@@ -365,7 +370,8 @@ $status = mysql_fetch_assoc($test);
 			reverts.crtdate,
 			reverts.duedate,
 			reverts.payeddate,
-			reverts.`status`
+			reverts.`status`,
+			reverts.doc
 		FROM
 			reverts
 		INNER JOIN collectiveinvoice ON reverts.colinv = collectiveinvoice.id
@@ -411,7 +417,7 @@ $status = mysql_fetch_assoc($test);
                         break;
                 }
             }
-            if ( $aColumns[$i] == 'type' )
+            else if ( $aColumns[$i] == 'type' )
             {
                 switch ($aRow[ $aColumns[$i] ]) {
                     case 1:
@@ -462,11 +468,22 @@ $status = mysql_fetch_assoc($test);
             {
                 $row[] = $aRow[ $aColumns[$i] ];
             }
+            else if ( $aColumns[$i] == 'doc' )
+            {
+                $row[] ='<button class="btn btn-xs btn-success" type="button" onclick="window.location.href=\'libs/modules/documents/document.get.iframe.php?getDoc='.$aRow[ $aColumns[$i] ].'&version=email\';">
+                            E-Mail
+                        </button>
+                        <button class="btn btn-xs btn-success" type="button" onclick="window.location.href=\'libs/modules/documents/document.get.iframe.php?getDoc='.$aRow[ $aColumns[$i] ].'&version=print\';">
+                            Print
+                        </button>';
+                $row[] = $aRow[ $aColumns[$i] ];
+            }
             else
             {
                 $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
+        $row[] = $aRow[ 'type' ];
         $output['aaData'][] = $row;
     }
     echo json_encode( $output );

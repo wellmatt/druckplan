@@ -152,6 +152,11 @@ echo $quickmove->generate();
                       </div>
                       * <b>NUR</b> *.pdf Dateien verwenden!
                   </div>
+                  <?php if (file_exists($letterhead->getFilename1())){?>
+                  <div class="col-sm-8 col-sm-offset-2">
+                      <object data="<?php echo $letterhead->getFilename1();?>" type="application/pdf" width="400" height="400" ></object>
+                  </div>
+                  <?php } ?>
               </div>
 
               <div class="form-group">
@@ -167,6 +172,11 @@ echo $quickmove->generate();
                       </div>
                       * <b>NUR</b> *.pdf Dateien verwenden!
                   </div>
+                  <?php if (file_exists($letterhead->getFilename2())){?>
+                      <div class="col-sm-8 col-sm-offset-2">
+                          <object data="<?php echo $letterhead->getFilename2();?>" type="application/pdf" width="400" height="400" ></object>
+                      </div>
+                  <?php } ?>
               </div>
           </div>
     </div>

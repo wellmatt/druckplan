@@ -336,8 +336,8 @@ class Receipt extends Model{
             if ($this->getOrigin()->getColinv()->getDeliveryterm()->getId()>0){
                 $deliv = $this->getOrigin()->getColinv()->getDeliveryterm();
                 if ($deliv->getCharges() > 0){
-                    $netvalue = $deliv->getCharges() - ($deliv->getCharges()/100*$deliv->getTaxkey()->getValue());
-                    $grossvalue = $deliv->getCharges();
+                    $netvalue = $deliv->getCharges();
+                    $grossvalue = $deliv->getCharges() + ($deliv->getCharges()/100*$deliv->getTaxkey()->getValue());
 
                     $creditposition['amount'] = $creditposition['amount'] + $grossvalue;
 
@@ -351,7 +351,7 @@ class Receipt extends Model{
                         'type' => 2,
                         'postingkey' => 150,
                         'accountnumber' => $deliv->getCostobject()->getNumber(),
-                        'amount' => $deliv->getCharges(),
+                        'amount' => $grossvalue,
                         'tax_key' => $deliv->getTaxkey()->getKey(),
                         'tax_amount' => ($grossvalue-$netvalue),
                         'revenueaccount' => $revenueaccount->getNumber(),
