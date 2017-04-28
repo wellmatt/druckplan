@@ -41,7 +41,7 @@ switch ($_REQUEST["exec"]) {
 	        $article->setOrderid((int)$_REQUEST["orderid"]);
 	        $tmp_order = new Order((int)$_REQUEST["orderid"]);
 	        $article->setTitle($tmp_order->getTitle());
-			$article->setRevenueaccount(new RevenueAccount());
+			$article->setRevenueaccount(new RevenueaccountCategory());
 	        $firstcalc = new Calculation();
 	        if ($tmp_order->getId()>0)
 	        {
