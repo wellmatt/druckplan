@@ -18,6 +18,7 @@ if ($_REQUEST["subexec"] == "save"){
     if (isset($_REQUEST['payeddate'])){
         $paydate = strtotime($_REQUEST["payeddate"]);
         if ($paydate > 0){
+            $invoiceout = new InvoiceOut((int)$_REQUEST["id"]);
 
             if ($invoiceout->getDuedatesk2() > 0 && $invoiceout->getDuedatesk2() > time()){
                 $skontovalue = $invoiceout->getGrossvalue() / 100 * $invoiceout->getSk2Percent();
