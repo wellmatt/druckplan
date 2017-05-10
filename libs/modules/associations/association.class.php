@@ -53,6 +53,9 @@ class Association {
         global $DB;
         global $_USER;
         $now = time();
+
+        if ($this->checkDuplicate() === false)
+            return true;
         
         $sql = "INSERT INTO association
         (module1, objectid1, module2, objectid2, crtdate, crtuser)
@@ -70,6 +73,23 @@ class Association {
         } else {
             return false;
         }
+    }
+
+    private function checkDuplicate(){
+        global $DB;
+        $module1 = $this->module1;
+        $objectid1 = $this->objectid1;
+        $module2 = $this->module2;
+        $objectid2 = $this->objectid2;
+
+        $sql = "SELECT id FROM association WHERE
+                (module1 = '{$module1}' AND objectid1 = '{$objectid1}' AND module2 = '{$module2}' AND objectid2 = '{$objectid2}') OR
+                (module1 = '{$module2}' AND objectid1 = '{$objectid2}' AND module2 = '{$module1}' AND objectid2 = '{$objectid1}')";
+        $res = $DB->num_rows($sql);
+        if ($res > 0){
+            return false;
+        }
+        return true;
     }
 
     /**
