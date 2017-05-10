@@ -8,6 +8,7 @@
 require_once 'libs/modules/article/article.class.php';
 require_once 'libs/modules/attachment/attachment.class.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
+require_once 'libs/modules/perferences/perferences.class.php';
 
 function reArrayFiles(&$file_post) {
 
@@ -140,22 +141,28 @@ if ($_REQUEST["exec"] == 'send_shoppingbasket'){
 		$cc = [];
 		$x=1;
 		// Bestaetigungs-Mails senden
-		$text = 'Sehr geehrter Kunde, <br> ihr Auftrag ist bei uns eingegangen und wird bearbeitet. <br> ';
-		$text .= "Vielen Dank <br><br> Sie haben folgende Angaben gemacht:";
-		$text .= "<table>";
-		$text .= "<tr><td>Pos.</td><td>Artikel</td><td>Menge</td></tr>";
+		$perf = new Perferences();
+		$mailtmpl = $perf->getMailtextConfirmation();
+
+		$positions = "<table>";
+		$positions .= "<tr><td>Pos.</td><td>Artikel</td><td>Menge</td></tr>";
 		foreach ($shopping_basket_entrys AS $entry){
-			$text.="<tr><td>{$x}</td><td>{$entry->getTitle()}</td><td>{$entry->getAmount()}</td></tr>";
+			$positions.="<tr><td>{$x}</td><td>{$entry->getTitle()}</td><td>{$entry->getAmount()}</td></tr>";
 			$x++;
 		}
-		$text .= "</table> <br> <br>";
-		$text .= "Kostenstelle: '" . $shopping_basket->getIntent() . "'<br>";
-		$text .= "Hinweis: '" . $shopping_basket->getNote() . "'<br>";
+		$positions .= "</table> <br> <br>";
+		$mailtmpl = str_replace("%POSITIONEN%",$positions,$mailtmpl);
+		$mailtmpl = str_replace("%KOSTENSTELLE%",$shopping_basket->getIntent(),$mailtmpl);
+		$mailtmpl = str_replace("%HINWEIS%",$shopping_basket->getNote(),$mailtmpl);
 
 		if ($tmp_attachment)
 		{
-			$text .= "Dateiname: " . $tmp_attachment->getOrig_filename() . "<br>";
+			$filetext = "Dateiname: " . $tmp_attachment->getOrig_filename() . "<br>";
+			$mailtmpl = str_replace("%DATEI%",$filetext,$mailtmpl);
+		} else {
+			$mailtmpl = str_replace("%DATEI%","",$mailtmpl);
 		}
+		$text = $mailtmpl;
 
 		$to[] = $_CONTACTPERSON->getEmail();
 
@@ -192,7 +199,7 @@ $all_invoiceAddresses = Address::getAllAddresses($busicon, Address::ORDER_ID, Ad
 			return isFormValid;
 		}
 
-		if (confirm('Warenkorb wirklich absenden ?')) {
+		if (confirm('Jetzt kostenpflichtig bestellen?')) {
 			$('#exec').val('send_shoppingbasket');
 			$('#form_shopbasket').submit();
 		}

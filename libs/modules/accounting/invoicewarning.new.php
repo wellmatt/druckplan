@@ -48,7 +48,10 @@ function updateInvoicewarningText(warnid){
 	$.post("libs/modules/accounting/invoicewarning.ajax.php", 
 			{exec: 'updateInvoicewarningText', invid: <?=$_REQUEST["invid"]?>, warnid:warnid}, 
 			 function(data) {
-				document.getElementById('warn_text').value = data;
+				 CKEDITOR.instances.warn_text.setData( data, function()
+				 {
+					 this.checkDirty();  // true
+				 });
 				document.getElementById('warn_text').focus();
 			});
 }
@@ -101,3 +104,8 @@ function updateInvoicewarningText(warnid){
 </div>
 
 
+<script>
+	$(function () {
+		CKEDITOR.replace( 'warn_text' );
+	});
+</script>

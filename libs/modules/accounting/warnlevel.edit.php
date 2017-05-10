@@ -67,7 +67,7 @@ echo $quickmove->generate();
 					</div>
 					<? if ($warn->getCrt_user()->getId() > 0) { ?>
 						<div class="form-group">
-							<label for="" class="col-sm-8 control-label">Erstellt von</label>
+							<label for="" class="col-sm-4 control-label">Erstellt von</label>
 							<div class="col-sm-8">
 								<div class="form-text">
 									<? if ($warn->getCrt_user()->getId() > 0) echo $warn->getCrt_user()->getNameAsLine() ?>
@@ -110,3 +110,10 @@ echo $quickmove->generate();
 		</form>
 	</div>
 </div>
+
+
+<script>
+	$(function () {
+		CKEDITOR.replace( 'warn_text' );
+	});
+</script>

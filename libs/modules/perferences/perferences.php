@@ -97,6 +97,8 @@ if ($_REQUEST["exec"] == "save")
 		$perf->setSmtpTls(0);
 	}
 
+	$perf->setMailtextConfirmation(trim(addslashes($_REQUEST["mailtext_confirmation"])));
+
 	$savemsg = getSaveMessage($perf->save());
 	
 	HolidayEvent::removeAll();
@@ -275,6 +277,7 @@ echo $quickmove->generate();
 					<li><a href="#tabs-5"><? echo $_LANG->get('Kalender'); ?></a></li>
 					<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen'); ?></a></li>
 					<li><a href="#tabs-7"><? echo $_LANG->get('Schalter'); ?></a></li>
+					<li><a href="#tabs-8"><? echo $_LANG->get('Shop'); ?></a></li>
 				</ul>
 
 				<div id="tabs-0">
@@ -630,8 +633,24 @@ echo $quickmove->generate();
 						</div>
 					</div>
 				</div>
+				<div id="tabs-8">
+					Kundenportal:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Bestätigungsmail</label>
+						<div class="col-sm-10">
+							<textarea rows="10" id="mailtext_confirmation" name="mailtext_confirmation" class="form-control"><?= $perf->getMailtextConfirmation() ?></textarea>
+							** Verfügbare Variablen: %POSITIONEN%, %KOSTENSTELLE%, %HINWEIS%, %DATEI%
+						</div>
+					</div>
+				</div>
 			</div>
 		</form>
 	</div>
 </div>
 
+
+<script>
+	$(function () {
+		CKEDITOR.replace( 'mailtext_confirmation' );
+	});
+</script>

@@ -194,7 +194,8 @@ case 'createFromTicket':
         $art_array = Array();
         
         $all_comments = Comment::getCommentsForObject(get_class($src_ticket),$src_ticket->getId());
-        
+
+		$sequ = Orderposition::getNextSequence($collectinv);
         foreach ($all_comments as $comment){
             if ($comment->getState() > 0){
 				if (count($comment->getArticles()) > 0) {
@@ -213,6 +214,8 @@ case 'createFromTicket':
 							$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 							$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 							$newpos->setCollectiveinvoice((int)$collectinv->getId());
+							$newpos->setSequence($sequ);
+							$sequ++;
 
 							$orderpositions[] = $newpos;
 
@@ -240,7 +243,8 @@ case 'createFromTicket':
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 								$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
-								$newpos->setSequence($newpos->getNextSequence($collectinv));
+								$newpos->setSequence($sequ);
+								$sequ++;
 
 								$orderpositions[] = $newpos;
 
@@ -272,8 +276,10 @@ case 'createFromTicket':
 			$sumpos->setInvrel(1);
 			$sumpos->setRevrel(0);
 			$sumpos->setObjectid(0); // Artikelnummer
-			$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
+			$sumpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
 			$sumpos->setCollectiveinvoice((int)$collectinv->getId());
+			$sumpos->setSequence($sequ);
+			$sequ++;
             
             $orderpositions[] = $sumpos;
         }
@@ -307,6 +313,7 @@ case 'createFromTicket':
 
 			$all_comments = Comment::getCommentsForObject(get_class($src_ticket),$src_ticket->getId());
 
+			$sequ = Orderposition::getNextSequence($collectinv);
 			foreach ($all_comments as $comment){
 				if ($comment->getState() > 0){
 					if (count($comment->getArticles()) > 0) {
@@ -325,7 +332,8 @@ case 'createFromTicket':
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 								$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
-								$newpos->setSequence($newpos->getNextSequence($collectinv));
+								$newpos->setSequence($sequ);
+								$sequ++;
 
 								$orderpositions[] = $newpos;
 
@@ -353,6 +361,8 @@ case 'createFromTicket':
 									$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 									$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 									$newpos->setCollectiveinvoice((int)$collectinv->getId());
+									$newpos->setSequence($sequ);
+									$sequ++;
 
 									$orderpositions[] = $newpos;
 
@@ -386,6 +396,8 @@ case 'createFromTicket':
 				$sumpos->setObjectid(0); // Artikelnummer
 				$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
 				$sumpos->setCollectiveinvoice((int)$collectinv->getId());
+				$sumpos->setSequence($sequ);
+				$sequ++;
 
 				$orderpositions[] = $sumpos;
 			}
@@ -434,6 +446,7 @@ case 'createFromTicketComments':
 
 		$all_comments = Comment::getCommentsForObject(get_class($src_ticket),$src_ticket->getId());
 
+		$sequ = Orderposition::getNextSequence($collectinv);
 		foreach ($all_comments as $comment){
 			if ($comment->getState() > 0){
 				if (count($comment->getArticles()) > 0 && in_array($comment->getId(),$commentids)) {
@@ -452,6 +465,8 @@ case 'createFromTicketComments':
 							$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 							$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 							$newpos->setCollectiveinvoice((int)$collectinv->getId());
+							$newpos->setSequence($sequ);
+							$sequ++;
 
 							$orderpositions[] = $newpos;
 
@@ -479,6 +494,8 @@ case 'createFromTicketComments':
 								$newpos->setObjectid($c_article->getArticle()->getId()); // Artikelnummer
 								$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, $tmp_art));
 								$newpos->setCollectiveinvoice((int)$collectinv->getId());
+								$newpos->setSequence($sequ);
+								$sequ++;
 
 								$orderpositions[] = $newpos;
 
@@ -512,6 +529,8 @@ case 'createFromTicketComments':
 			$sumpos->setObjectid(0); // Artikelnummer
 			$newpos->setTaxkey(TaxKey::evaluateTax($collectinv, new Article()));
 			$sumpos->setCollectiveinvoice((int)$collectinv->getId());
+			$sumpos->setSequence($sequ);
+			$sequ++;
 
 			$orderpositions[] = $sumpos;
 		}

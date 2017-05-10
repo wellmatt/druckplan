@@ -55,6 +55,10 @@ class Perferences
     private $imap_tls = 0;
     private $system_signature = '';
 
+    // Shop
+
+    private $mailtext_confirmation = '';
+
     function __construct()
     {
         global $DB;
@@ -90,6 +94,7 @@ class Perferences
             $this->system_signature = $r["system_signature"];
             $this->deactivate_manual_articles = $r["deactivate_manual_articles"];
             $this->decativate_manual_delivcost = $r["decativate_manual_delivcost"];
+            $this->mailtext_confirmation = $r["mailtext_confirmation"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -99,6 +104,15 @@ class Perferences
                 $formats_raw_tmp[] = Array("id" => $r["id"], "width" => $r["width"], "height" => $r["height"]);
             }
             $this->formats_raw = $formats_raw_tmp;
+        }
+
+        if (strlen($this->mailtext_confirmation) == 0 || $this->mailtext_confirmation == NULL){
+            $this->mailtext_confirmation = 'Sehr geehrter Kunde, <br> ihr Auftrag ist bei uns eingegangen und wird bearbeitet. <br>
+                                            Vielen Dank <br><br> Sie haben folgende Angaben gemacht:<br>
+                                            %POSITIONEN%<br>
+                                            Kostenstelle: %KOSTENSTELLE%<br>
+                                            Hinweis: %HINWEIS%<br>
+                                            %DATEI%';
         }
 
     }
@@ -150,6 +164,7 @@ class Perferences
                system_signature 	= '{$this->system_signature}',
                deactivate_manual_articles 	= '{$this->deactivate_manual_articles}',
                decativate_manual_delivcost 	= '{$this->decativate_manual_delivcost}',
+               mailtext_confirmation 	= '{$this->mailtext_confirmation}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -585,5 +600,21 @@ class Perferences
     public function setMailSender($mail_sender)
     {
         $this->mail_sender = $mail_sender;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailtextConfirmation()
+    {
+        return $this->mailtext_confirmation;
+    }
+
+    /**
+     * @param string $mailtext_confirmation
+     */
+    public function setMailtextConfirmation($mailtext_confirmation)
+    {
+        $this->mailtext_confirmation = $mailtext_confirmation;
     }
 }
