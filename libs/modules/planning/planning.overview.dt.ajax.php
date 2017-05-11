@@ -152,7 +152,7 @@
                SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
                collectiveinvoice.deliverydate,collectiveinvoice.`comment` 
                FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-               WHERE `status` >= 3 AND collectiveinvoice.needs_planning = 1) t1  
+               WHERE `status` >= 1 AND `status` < 5 AND collectiveinvoice.needs_planning = 1) t1
                $sWhere
                $sOrder
                $sLimit";
@@ -171,7 +171,7 @@
                SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
                collectiveinvoice.deliverydate,collectiveinvoice.`comment` 
                FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-               WHERE `status` >= 3 AND collectiveinvoice.needs_planning = 1) t1  
+               WHERE `status` >= 1 AND `status` < 5 AND collectiveinvoice.needs_planning = 1) t1
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -188,7 +188,7 @@
         SELECT collectiveinvoice.id,collectiveinvoice.number,collectiveinvoice.title,CONCAT(businesscontact.name1,' ',businesscontact.name2) as customer,
         collectiveinvoice.deliverydate,collectiveinvoice.`comment` 
         FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id
-        WHERE `status` >= 3 AND collectiveinvoice.needs_planning = 1) t1  
+        WHERE `status` >= 1 AND `status` < 5 AND collectiveinvoice.needs_planning = 1) t1
     ";
 //     var_dump($sQuery);
     $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
