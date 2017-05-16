@@ -60,6 +60,7 @@ class Receipt extends Model{
      */
     public function validate()
     {
+        $perf = new Perferences();
         $fatal = [];
         $warning = [];
         $info = [];
@@ -91,7 +92,9 @@ class Receipt extends Model{
                             $info[] = 'Erlöskategorie ('.$revenue->getTitle().') aus Warengruppe ('.$article->getTradegroup()->getTitle().') übernommen';
                         }
                     } else {
-                        $fatal[] = 'Artikel nicht gefunden!';
+                        $costobject = $perf->getDefaultCostobject();
+                        $revenue = $perf->getDefaultRevenue();
+                        $info[] = 'Artikel nicht gefunden oder manueller Artikel! Standardwerte übernommen!';
                     }
                     if ($revenue->getId() == 0){
                         $fatal[] = 'Erlöskategorie nicht gesetzt!';
@@ -161,7 +164,9 @@ class Receipt extends Model{
                         $info[] = 'Erlöskategorie ('.$revenue->getTitle().') aus Warengruppe ('.$article->getTradegroup()->getTitle().') übernommen';
                     }
                 } else {
-                    $fatal[] = 'Artikel nicht gefunden!';
+                    $costobject = $perf->getDefaultCostobject();
+                    $revenue = $perf->getDefaultRevenue();
+                    $info[] = 'Artikel nicht gefunden oder manueller Artikel! Standardwerte übernommen!';
                 }
                 if ($revenue->getId() == 0){
                     $fatal[] = 'Erlöskategorie nicht gesetzt!';
@@ -264,6 +269,7 @@ class Receipt extends Model{
 
     private function generatePositions(){
         $receipt_positions = [];
+        $perf = new Perferences();
 
         if ($this->getOriginType() == self::ORIGIN_INVOICE) {
             $positions = Orderposition::getAllOrderposition($this->_origin->getColinv()->getId());
@@ -306,6 +312,10 @@ class Receipt extends Model{
                             $revenue = $article->getTradegroup()->getRecursiveRevenueaccount();
                         if ($article->getRevenueaccount()->getId()>0)
                             $revenue = $article->getRevenueaccount();
+                    }
+                    if ($article->getId() == 0){
+                        $costobject = $perf->getDefaultCostobject();
+                        $revenue = $perf->getDefaultRevenue();
                     }
                     $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
                     $array = [
@@ -421,6 +431,10 @@ class Receipt extends Model{
                         $revenue = $article->getTradegroup()->getRecursiveRevenueaccount();
                     if ($article->getRevenueaccount()->getId()>0)
                         $revenue = $article->getRevenueaccount();
+                }
+                if ($article->getId() == 0){
+                    $costobject = $perf->getDefaultCostobject();
+                    $revenue = $perf->getDefaultRevenue();
                 }
                 $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
                 $array = [

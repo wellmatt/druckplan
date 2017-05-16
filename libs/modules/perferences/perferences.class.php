@@ -59,10 +59,18 @@ class Perferences
 
     private $mailtext_confirmation = '';
 
+    // Buchhaltung
+
+    private $default_revenue;
+    private $default_costobject;
+
     function __construct()
     {
         global $DB;
         global $_USER;
+
+        $this->default_revenue = new RevenueaccountCategory();
+        $this->default_costobject = new CostObject();
 
         $sql = "SELECT * FROM perferences";
         if ($DB->num_rows($sql)) {
@@ -95,6 +103,8 @@ class Perferences
             $this->deactivate_manual_articles = $r["deactivate_manual_articles"];
             $this->decativate_manual_delivcost = $r["decativate_manual_delivcost"];
             $this->mailtext_confirmation = $r["mailtext_confirmation"];
+            $this->default_revenue = new RevenueaccountCategory((int)$r["default_revenue"]);
+            $this->default_costobject = new CostObject((int)$r["default_costobject"]);
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -165,6 +175,8 @@ class Perferences
                deactivate_manual_articles 	= '{$this->deactivate_manual_articles}',
                decativate_manual_delivcost 	= '{$this->decativate_manual_delivcost}',
                mailtext_confirmation 	= '{$this->mailtext_confirmation}',
+               default_revenue 	= '{$this->default_revenue->getId()}',
+               default_costobject 	= '{$this->default_costobject->getId()}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -616,5 +628,37 @@ class Perferences
     public function setMailtextConfirmation($mailtext_confirmation)
     {
         $this->mailtext_confirmation = $mailtext_confirmation;
+    }
+
+    /**
+     * @return RevenueaccountCategory
+     */
+    public function getDefaultRevenue()
+    {
+        return $this->default_revenue;
+    }
+
+    /**
+     * @param RevenueaccountCategory $default_revenue
+     */
+    public function setDefaultRevenue($default_revenue)
+    {
+        $this->default_revenue = $default_revenue;
+    }
+
+    /**
+     * @return CostObject
+     */
+    public function getDefaultCostobject()
+    {
+        return $this->default_costobject;
+    }
+
+    /**
+     * @param CostObject $default_costobject
+     */
+    public function setDefaultCostobject($default_costobject)
+    {
+        $this->default_costobject = $default_costobject;
     }
 }

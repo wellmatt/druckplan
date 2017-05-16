@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /**
  *  Copyright (c) 2016 Klein Druck + Medien GmbH - All Rights Reserved
  *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
@@ -98,6 +98,8 @@ if ($_REQUEST["exec"] == "save")
 	}
 
 	$perf->setMailtextConfirmation(trim(addslashes($_REQUEST["mailtext_confirmation"])));
+	$perf->setDefaultRevenue(new RevenueaccountCategory($_REQUEST["revenueaccount"]));
+	$perf->setDefaultCostobject(new CostObject($_REQUEST["costobject"]));
 
 	$savemsg = getSaveMessage($perf->save());
 	
@@ -278,6 +280,7 @@ echo $quickmove->generate();
 					<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen'); ?></a></li>
 					<li><a href="#tabs-7"><? echo $_LANG->get('Schalter'); ?></a></li>
 					<li><a href="#tabs-8"><? echo $_LANG->get('Shop'); ?></a></li>
+					<li><a href="#tabs-9"><? echo $_LANG->get('Buchhaltung'); ?></a></li>
 				</ul>
 
 				<div id="tabs-0">
@@ -643,6 +646,49 @@ echo $quickmove->generate();
 						</div>
 					</div>
 				</div>
+				<div id="tabs-9">
+					Buchhaltung:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Erlöskonto</label>
+						<div class="col-sm-10">
+							<select name="revenueaccount" id="revenueaccount" class="form-control" style="width: 200px">
+								<?php
+								$racs = RevenueaccountCategory::getAll();
+								foreach ($racs as $rac) { ?>
+									<?php
+									if ($rac->getId() == $perf->getDefaultRevenue()->getId()) { ?>
+										<option
+											value="<?php echo $perf->getDefaultRevenue()->getId(); ?>"
+											selected><?php echo $perf->getDefaultRevenue()->getTitle(); ?></option>
+									<?php } else { ?>
+										<option
+											value="<?php echo $rac->getId(); ?>"><?php echo $rac->getTitle(); ?></option>
+									<?php } ?>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Kostenträger</label>
+						<div class="col-sm-10">
+							<select name="costobject" id="costobject" class="form-control" style="width: 200px">
+								<?php
+								$costobjects = CostObject::getAll();
+								foreach ($costobjects as $costobject) { ?>
+									<?php
+										if ($costobject->getId() == $perf->getDefaultRevenue()->getId()) { ?>
+											<option
+												value="<?php echo $perf->getDefaultRevenue()->getId(); ?>"
+												selected><?php echo $perf->getDefaultRevenue()->getTitle(); ?></option>
+										<?php } else { ?>
+											<option
+												value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>
+										<?php } ?>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -652,5 +698,7 @@ echo $quickmove->generate();
 <script>
 	$(function () {
 		CKEDITOR.replace( 'mailtext_confirmation' );
+		$("#revenueaccount").select2();
+		$("#costobject").select2();
 	});
 </script>
