@@ -21,6 +21,7 @@ class Commission extends Model{
     public $crtdate = 0;
     public $creditdate = 0;
     public $creditcolinv = 0;
+    public $doc = 0;
 
     protected function bootClasses()
     {
@@ -28,13 +29,15 @@ class Commission extends Model{
         $this->businesscontact = new BusinessContact($this->businesscontact);
         $this->colinv = new CollectiveInvoice($this->colinv);
         $this->creditcolinv = new CollectiveInvoice($this->creditcolinv);
+        $this->doc = new Document($this->doc);
     }
 
     /**
      * @param CollectiveInvoice $colinv
      * @param float $netvalue
+     * @param int $doc
      */
-    public static function generateCommission($colinv, $netvalue)
+    public static function generateCommission($colinv, $netvalue, $doc)
     {
         if ($colinv->getId() > 0 && $netvalue > 0){
 
@@ -52,6 +55,7 @@ class Commission extends Model{
                     "crtdate" => time(),
                     "creditdate" => 0,
                     "creditcolinv" => 0,
+                    "doc" => $doc,
                 ];
                 $commission = new Commission(0, $array);
                 $ret = $commission->save();

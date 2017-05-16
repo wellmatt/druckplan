@@ -95,7 +95,7 @@ class InvoiceOut extends Model{
             $colinv->save();
             $commissionpartners = CommissionLink::getAllForBC($colinv->getBusinesscontact());
             if (count($commissionpartners)>0)
-                Commission::generateCommission($colinv, $netvalue);
+                Commission::generateCommission($colinv, $netvalue, $doc);
         }
         return $invout;
     }

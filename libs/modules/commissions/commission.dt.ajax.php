@@ -19,7 +19,7 @@
     require_once 'thirdparty/phpfastcache/phpfastcache.php';
     session_start();
 
-    $aColumns = array( 'id', 'partner', 'crtdate', 'colinvnumber', 'customer', 'percentage', 'value', 'creditdate', 'creditcolinvnumber' );
+    $aColumns = array( 'id', 'partner', 'crtdate', 'colinvnumber', 'doc_name', 'customer', 'percentage', 'value', 'creditdate', 'creditcolinvnumber', 'doc_storno_date' );
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -209,13 +209,16 @@
             c1.id AS colinvid,
             c1.number AS colinvnumber,
             c2.id AS creditcolinvid,
-            c2.number AS creditcolinvnumber
+            c2.number AS creditcolinvnumber,
+			d1.doc_name,
+			d1.doc_storno_date
         FROM
             commissions
         INNER JOIN businesscontact AS b1 ON commissions.partner = b1.id
         INNER JOIN businesscontact AS b2 ON commissions.businesscontact = b2.id
         INNER JOIN collectiveinvoice AS c1 ON commissions.colinv = c1.id
         LEFT JOIN collectiveinvoice AS c2 ON commissions.creditcolinv = c2.id
+		LEFT JOIN documents AS d1 ON commissions.doc = d1.id
         ) t1
         $sWhere
         $sOrder
@@ -248,13 +251,16 @@ $status = mysql_fetch_assoc($test);
             c1.id AS colinvid,
             c1.number AS colinvnumber,
             c2.id AS creditcolinvid,
-            c2.number AS creditcolinvnumber
+            c2.number AS creditcolinvnumber,
+			d1.doc_name,
+			d1.doc_storno_date
         FROM
             commissions
         INNER JOIN businesscontact AS b1 ON commissions.partner = b1.id
         INNER JOIN businesscontact AS b2 ON commissions.businesscontact = b2.id
         INNER JOIN collectiveinvoice AS c1 ON commissions.colinv = c1.id
         LEFT JOIN collectiveinvoice AS c2 ON commissions.creditcolinv = c2.id
+		LEFT JOIN documents AS d1 ON commissions.doc = d1.id
         ) t1
         $sWhere
     ";
@@ -281,13 +287,16 @@ $status = mysql_fetch_assoc($test);
             c1.id AS colinvid,
             c1.number AS colinvnumber,
             c2.id AS creditcolinvid,
-            c2.number AS creditcolinvnumber
+            c2.number AS creditcolinvnumber,
+			d1.doc_name,
+			d1.doc_storno_date
         FROM
             commissions
         INNER JOIN businesscontact AS b1 ON commissions.partner = b1.id
         INNER JOIN businesscontact AS b2 ON commissions.businesscontact = b2.id
         INNER JOIN collectiveinvoice AS c1 ON commissions.colinv = c1.id
         LEFT JOIN collectiveinvoice AS c2 ON commissions.creditcolinv = c2.id
+		LEFT JOIN documents AS d1 ON commissions.doc = d1.id
         ) t1
     ";
 //     var_dump($sQuery);
@@ -305,7 +314,7 @@ $status = mysql_fetch_assoc($test);
         "aaData" => array()
     );
 
-//$aColumns = array( 'id', 'partner', 'crtdate', 'colinvnumber', 'customer', 'percentage', 'value', 'creditdate', 'creditcolinvnumber' );
+//$aColumns = array( 'id', 'partner', 'crtdate', 'colinvnumber', 'customer', 'percentage', 'value', 'creditdate', 'creditcolinvnumber', 'doc_name', 'doc_storno_date' );
     while ( $aRow = mysql_fetch_array( $rResult ) )
     {
         $row = array();
@@ -351,12 +360,23 @@ $status = mysql_fetch_assoc($test);
             else if ( $aColumns[$i] == 'creditcolinvid' )
             {
             }
+            else if ( $aColumns[$i] == 'doc_name' )
+            {
+                if ($aRow['doc_storno_date'] > 0){
+                    $row[] = "<s>".$aRow[ $aColumns[$i] ]."</s>";
+                } else {
+                    $row[] = $aRow[ $aColumns[$i] ];
+                }
+            }
+            else if ( $aColumns[$i] == 'doc_storno_date' )
+            {
+            }
             else
             {
                 $row[] = nl2br(htmlentities(utf8_encode($aRow[ $aColumns[$i] ])));
             }
         }
-        if (!$aRow['creditcolinvid']){
+        if (!$aRow['creditcolinvid'] && !($aRow['doc_storno_date'] > 0)){
             $row[] = '<button class="btn btn-xs btn-success" type="button" onclick="createGS('.$aRow['id'].',this)"><span class="glyphicons glyphicons-plus"></span>GS-Erstellen</button>';
         } else {
             $row[] = '';

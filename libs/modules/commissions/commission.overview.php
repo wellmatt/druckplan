@@ -78,6 +78,7 @@
                 				<th>Empfänger</th>
                 				<th>Datum</th>
                 				<th>Ursprung</th>
+                				<th>RE</th>
                 				<th>Kunde</th>
                 				<th>Prozent</th>
                 				<th>Betrag</th>
@@ -181,6 +182,7 @@
             "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
             "pageLength": <?php echo $perf->getDt_show_default();?>,
             "dom": 'T<"clear">lrtip',
+            "aaSorting": [[ 2, "desc" ]],
             "tableTools": {
                 "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
                 "aButtons": [
@@ -197,6 +199,7 @@
             },
             "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
             "columns": [
+                null,
                 null,
                 null,
                 null,
