@@ -111,6 +111,7 @@ class Group {
       foreach (Group::getAllGroups() as $group) {
          $memberidarray = [];
          foreach ($group->getMembers() as $member) {
+            Cachehandler::removeCache(Cachehandler::genKeyword($member));
             if (!in_array($member->getId(),$memberidarray) && $member->getId() > 0)
                $memberidarray[] = $member->getId();
          }
@@ -118,7 +119,6 @@ class Group {
          foreach ($memberidarray as $userid) {
             $tmp_user = new User($userid);
             $group->addMember($tmp_user);
-            Cachehandler::removeCache(Cachehandler::genKeyword($tmp_user));
          }
          $group->save();
       }
