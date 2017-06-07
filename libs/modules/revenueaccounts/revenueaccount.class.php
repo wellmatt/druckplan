@@ -75,6 +75,34 @@ class RevenueAccount extends Model{
     }
 
     /**
+     * @param $revenueaccountCategory RevenueaccountCategory
+     * @param $taxKey TaxKey
+     * @return RevenueAccount
+     */
+    public static function fetchAffiliatedForCategoryAndTaxkeyOrDefault(RevenueaccountCategory $revenueaccountCategory, TaxKey $taxKey)
+    {
+        $ret = self::fetchSingle([
+            [
+                "column" => "revenueaccountcategory",
+                "value" => $revenueaccountCategory->getId()
+            ],
+            [
+                "column" => "taxkey",
+                "value" => $taxKey->getId()
+            ],
+            [
+                "column" => "affiliatedcompany",
+                "value" => 1
+            ]
+        ]);
+        if ($ret->getId() == 0){
+            return self::fetchForCategoryAndTaxkeyOrDefault($revenueaccountCategory, $taxKey);
+        } else {
+            return $ret;
+        }
+    }
+
+    /**
      * @param $category RevenueaccountCategory
      * @return RevenueAccount
      */

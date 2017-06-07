@@ -676,10 +676,10 @@ echo $quickmove->generate();
 								$costobjects = CostObject::getAll();
 								foreach ($costobjects as $costobject) { ?>
 									<?php
-										if ($costobject->getId() == $perf->getDefaultRevenue()->getId()) { ?>
+										if ($costobject->getId() == $perf->getDefaultCostobject()->getId()) { ?>
 											<option
-												value="<?php echo $perf->getDefaultRevenue()->getId(); ?>"
-												selected><?php echo $perf->getDefaultRevenue()->getTitle(); ?></option>
+												value="<?php echo $perf->getDefaultCostobject()->getId(); ?>"
+												selected><?php echo $perf->getDefaultCostobject()->getTitle(); ?></option>
 										<?php } else { ?>
 											<option
 												value="<?php echo $costobject->getId(); ?>"><?php echo $costobject->getTitle(); ?></option>

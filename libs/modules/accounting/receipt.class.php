@@ -108,6 +108,10 @@ class Receipt extends Model{
                     if ($revenue->getId() > 0 && $revenueaccount->getId() == $revenueaccount_default->getId()){
                         $warning[] = 'Keine Übereinstimmung Erlöskategorie + Steuerschlüssel, benutze Standard der Kategorie: '.$revenue->getTitle();
                     }
+                    if ($this->getOrigin()->getColinv()->getBusinesscontact()->getIsaffiliatedcompany() == 1){
+                        $revenueaccount = RevenueAccount::fetchAffiliatedForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                        $info[] = 'Erlöskonto überschrieben da Kunde ein verbundenes Unternehmen ist!';
+                    }
                     if ($revenueaccount->getId() == 0){
                         $fatal[] = 'Erlöskonto nicht gesetzt!';
                     }
@@ -180,6 +184,10 @@ class Receipt extends Model{
                 if ($revenue->getId() > 0 && $revenueaccount->getId() == $revenueaccount_default->getId()){
                     $warning[] = 'Keine Übereinstimmung Erlöskategorie + Steuerschlüssel, benutze Standard der Kategorie: '.$revenue->getTitle();
                 }
+                if ($this->getOrigin()->getColinv()->getBusinesscontact()->getIsaffiliatedcompany() == 1){
+                    $revenueaccount = RevenueAccount::fetchAffiliatedForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                    $info[] = 'Erlöskonto überschrieben da Kunde ein verbundenes Unternehmen ist!';
+                }
                 if ($revenueaccount->getId() == 0){
                     $fatal[] = 'Erlöskonto nicht gesetzt!';
                 }
@@ -234,15 +242,15 @@ class Receipt extends Model{
         $date = $origin->getCrtdate();
 
         if ($origin_type == self::ORIGIN_INVOICE)
-            $description = 'Rechnung zu Auftrag '.$origin->getColinv()->getNumber();
+            $description = 'Auftrag '.$origin->getColinv()->getNumber();
         else
-            $description = 'Gutschrift zu Auftrag '.$origin->getColinv()->getNumber();
-        $positions = Orderposition::getAllOrderposition($origin->getColinv()->getId());
+            $description = 'Auftrag '.$origin->getColinv()->getNumber();
+/*        $positions = Orderposition::getAllOrderposition($origin->getColinv()->getId());
         if (count($positions)>0){
             $description_tmp = substr($positions[0]->getCommentStripped(),0,49);
             if (strlen($description_tmp)>0)
                 $description = $description_tmp;
-        }
+        }*/
 
         $array = [
             'number' => $number,
@@ -287,10 +295,10 @@ class Receipt extends Model{
 
                     if ($position->getType() == 1){
                         $netto = $position->getPrice();
-                        $gross = $netto * (1+($position->getTax()/100));
+                        $gross = round($netto * (1+($position->getTax()/100)),2);
                     } else {
                         $netto = $position->getPrice() * $position->getAmount();
-                        $gross = $netto * (1+($position->getTax()/100));
+                        $gross = round($netto * (1+($position->getTax()/100)),2);
                     }
 
                     $creditposition['amount'] = $creditposition['amount'] + $gross;
@@ -314,10 +322,13 @@ class Receipt extends Model{
                             $revenue = $article->getRevenueaccount();
                     }
                     if ($article->getId() == 0){
-                        $costobject = $perf->getDefaultCostobject();
+                        $costobject = $perf->getDefaultCostobject()->getNumber();
                         $revenue = $perf->getDefaultRevenue();
                     }
                     $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                    if ($this->getOrigin()->getColinv()->getBusinesscontact()->getIsaffiliatedcompany() == 1){
+                        $revenueaccount = RevenueAccount::fetchAffiliatedForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                    }
                     $array = [
                         'receipt' => $this->getId(),
                         'type' => 2,
@@ -347,7 +358,7 @@ class Receipt extends Model{
                 $deliv = $this->getOrigin()->getColinv()->getDeliveryterm();
                 if ($deliv->getCharges() > 0){
                     $netvalue = $deliv->getCharges();
-                    $grossvalue = $deliv->getCharges() + ($deliv->getCharges()/100*$deliv->getTaxkey()->getValue());
+                    $grossvalue = round($deliv->getCharges() + ($deliv->getCharges()/100*$deliv->getTaxkey()->getValue()),2);
 
                     $creditposition['amount'] = $creditposition['amount'] + $grossvalue;
 
@@ -355,6 +366,9 @@ class Receipt extends Model{
                     if ($deliv->getRevenueaccount()->getId()>0)
                         $revenue = $deliv->getRevenueaccount();
                     $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $deliv->getTaxkey());
+                    if ($this->getOrigin()->getColinv()->getBusinesscontact()->getIsaffiliatedcompany() == 1){
+                        $revenueaccount = RevenueAccount::fetchAffiliatedForCategoryAndTaxkeyOrDefault($revenue, $deliv->getTaxkey());
+                    }
 
                     $array = [
                         'receipt' => $this->getId(),
@@ -410,7 +424,7 @@ class Receipt extends Model{
             foreach ($positions as $position) {
 
                 $netto = $position->getPrice();
-                $gross = $netto * (1+($position->getTaxkey()->getValue()/100));
+                $gross = round($netto * (1+($position->getTaxkey()->getValue()/100)),2);
 
                 $creditposition['amount'] = $creditposition['amount'] + $gross;
 
@@ -433,10 +447,13 @@ class Receipt extends Model{
                         $revenue = $article->getRevenueaccount();
                 }
                 if ($article->getId() == 0){
-                    $costobject = $perf->getDefaultCostobject();
+                    $costobject = $perf->getDefaultCostobject()->getNumber();
                     $revenue = $perf->getDefaultRevenue();
                 }
                 $revenueaccount = RevenueAccount::fetchForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                if ($this->getOrigin()->getColinv()->getBusinesscontact()->getIsaffiliatedcompany() == 1){
+                    $revenueaccount = RevenueAccount::fetchAffiliatedForCategoryAndTaxkeyOrDefault($revenue, $position->getTaxkey());
+                }
                 $array = [
                     'receipt' => $this->getId(),
                     'type' => 2,
