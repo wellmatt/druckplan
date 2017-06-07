@@ -103,7 +103,13 @@ class FibuXML{
             $Belegkopf->addChild('belegart','RA');
             $Belegkopf->addChild('belegnummer',$receipt->getNumber());
             $Belegkopf->addChild('belegdatum',date('d.m.Y',$receipt->getDate()));
-            $Belegkopf->addChild('belegperiode',date('Y',$receipt->getDate()).'/'.date('m',$receipt->getDate()));
+            if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE){
+                if ($receipt->getOrigin()->getColinv()->getDeliverydate()>0)
+                    $Belegkopf->addChild('belegperiode',date('Y',$receipt->getOrigin()->getColinv()->getDeliverydate()).'/'.date('m',$receipt->getOrigin()->getColinv()->getDeliverydate()));
+                else
+                    $Belegkopf->addChild('belegperiode',date('Y',$receipt->getDate()).'/'.date('m',$receipt->getDate()));
+            } else
+                $Belegkopf->addChild('belegperiode',date('Y',$receipt->getDate()).'/'.date('m',$receipt->getDate()));
             $Belegkopf->addChild('belegwaehrung',$receipt->getCurrency());
             $Belegkopf->addChild('bruttoErfassung','j');
             $Belegkopf->addChild('buchungstext',$receipt->getDescription());

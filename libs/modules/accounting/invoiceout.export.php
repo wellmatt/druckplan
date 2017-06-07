@@ -64,6 +64,7 @@ if (count($objects)>0){
         'Erstellt',
         'Zahlbar bis',
         'Bezahlt am',
+        'Buchungsperiode',
         'Status',
         'Bemerkung'
     ];
@@ -88,6 +89,19 @@ if (count($objects)>0){
             case 3:
                 $status = 'storniert';
                 break;
+            default:
+                $status = 'Unbekannt';
+                break;
+        }
+
+        $periode = '';
+        if (is_a($object,'InvoiceOut')){
+            if ($object->getColinv()->getDeliverydate()>0)
+                $periode = date('Y',$object->getColinv()->getDeliverydate()).'/'.date('m',$object->getColinv()->getDeliverydate());
+            else
+                $periode = date('Y',$object->getColinv()->getDate()).'/'.date('m',$object->getColinv()->getDate());
+        } else {
+            $periode = date('Y',$object->getCrtdate()).'/'.date('m',$object->getCrtdate());
         }
 
         $writer->writeRow(array(
@@ -102,6 +116,7 @@ if (count($objects)>0){
             date('d.m.y',$object->getCrtdate()),
             date('d.m.y',$object->getDuedate()),
             $payeddate,
+            $periode,
             $status,
             ''
         ));
