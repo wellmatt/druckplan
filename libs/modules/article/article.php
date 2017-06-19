@@ -185,7 +185,6 @@ switch ($_REQUEST["exec"]) {
 	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesEnvelope()->getName() . '<br>';
 	            }
 				$artdesc .= '<br>Verarbeitung: '.$firstcalc->getTextProcessing().'<br>';
-				$artdesc .= '</tr></table>';
 	            $article->setDesc($artdesc);
 				$article->setTags($tags);
 	            

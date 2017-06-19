@@ -443,16 +443,22 @@ echo $quickmove->generate();
                                                 <td id="td-papersize-<? echo $x;?>">
                                                     <div class="form-group">
                                                         <?php
-                                                        if ($mach->getPart() == Calculation::PAPER_CONTENT)
+                                                        if ($mach->getPart() == Calculation::PAPER_CONTENT) {
                                                             $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperContent()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT) {
                                                             $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ENVELOPE)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ENVELOPE) {
                                                             $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen(), $calc->getPaperEnvelope()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutEnvelope());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2) {
                                                             $sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent2()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3) {
                                                             $sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent3()->getRolle(), $calc->getProductFormatHeightOpen());
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3());
+                                                        }
 
                                                         echo '<select name="mach_papersize_'.$x.'" class="form-control">';
                                                         foreach($sizes as $s)
@@ -469,7 +475,7 @@ echo $quickmove->generate();
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
                                                                 if ($s["width"].'x'.$s["height"] == $calc->getPaperAddContent3Width().'x'.$calc->getPaperAddContent3Height()) echo 'selected';
                                                             echo '>';
-                                                            echo $s["width"].' x '.$s["height"].'</option>';
+                                                            echo $s["width"].' x '.$s["height"].' ('.$ppp.' Nutzen)</option>';
                                                         }
                                                         echo '</select>';
 
@@ -610,20 +616,37 @@ echo $quickmove->generate();
                                                 <td id="td-papersize-<? echo $x;?>">
                                                     <div class="form-group">
                                                         <?php
-                                                        if ($mach->getPart() == Calculation::PAPER_CONTENT)
+                                                        if ($mach->getPart() == Calculation::PAPER_CONTENT) {
                                                             $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperContent()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT) {
                                                             $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ENVELOPE)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ENVELOPE) {
                                                             $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen(), $calc->getPaperEnvelope()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutEnvelope());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2) {
                                                             $sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent2()->getRolle(), $calc->getProductFormatHeightOpen());
-                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2());
+                                                        } else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3) {
                                                             $sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent3()->getRolle(), $calc->getProductFormatHeightOpen());
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3());
+                                                        }
+//                                                        if ($mach->getPart() == Calculation::PAPER_CONTENT)
+//                                                            $sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperContent()->getRolle(), $calc->getProductFormatHeightOpen());
+//                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT)
+//                                                            $sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent()->getRolle(), $calc->getProductFormatHeightOpen());
+//                                                        else if ($mach->getPart() == Calculation::PAPER_ENVELOPE)
+//                                                            $sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getEnvelopeWidthOpen(), $calc->getEnvelopeHeightOpen(), $calc->getPaperEnvelope()->getRolle(), $calc->getProductFormatHeightOpen());
+//                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2)
+//                                                            $sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent2()->getRolle(), $calc->getProductFormatHeightOpen());
+//                                                        else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
+//                                                            $sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($mach->getMachine(), $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent3()->getRolle(), $calc->getProductFormatHeightOpen());
 
                                                         echo '<select name="mach_papersize_'.$x.'" class="form-control">';
                                                         foreach($sizes as $s)
                                                         {
+                                                            $ppp = CalculationService::ProductsPerPaperSimple($s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent());
                                                             echo '<option value="'.$s["width"].'x'.$s["height"].'" ';
                                                             if($mach->getPart() == Calculation::PAPER_CONTENT)
                                                                 if ($s["width"].'x'.$s["height"] == $calc->getPaperContentWidth().'x'.$calc->getPaperContentHeight()) echo 'selected';
@@ -636,7 +659,7 @@ echo $quickmove->generate();
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
                                                                 if ($s["width"].'x'.$s["height"] == $calc->getPaperAddContent3Width().'x'.$calc->getPaperAddContent3Height()) echo 'selected';
                                                             echo '>';
-                                                            echo $s["width"].' x '.$s["height"].'</option>';
+                                                            echo $s["width"].' x '.$s["height"].' ('.$ppp.' Nutzen)</option>';
                                                         }
                                                         echo '</select>';
 

@@ -14,6 +14,7 @@ class Perferences
     private $ZuschussProDP = 0.0; // Zuschuss pro Druckplatte
     private $ZuschussPercent = 0.0; // Zuschuss prozentual auf auflage
     private $calc_detailed_printpreview = 0;
+    private $inkusage = 3.00;
 
     // Formats
 
@@ -105,6 +106,7 @@ class Perferences
             $this->mailtext_confirmation = $r["mailtext_confirmation"];
             $this->default_revenue = new RevenueaccountCategory((int)$r["default_revenue"]);
             $this->default_costobject = new CostObject((int)$r["default_costobject"]);
+            $this->inkusage = $r["inkusage"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -177,6 +179,7 @@ class Perferences
                mailtext_confirmation 	= '{$this->mailtext_confirmation}',
                default_revenue 	= '{$this->default_revenue->getId()}',
                default_costobject 	= '{$this->default_costobject->getId()}',
+               inkusage = '{$this->inkusage}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -660,5 +663,21 @@ class Perferences
     public function setDefaultCostobject($default_costobject)
     {
         $this->default_costobject = $default_costobject;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkusage()
+    {
+        return $this->inkusage;
+    }
+
+    /**
+     * @param float $inkusage
+     */
+    public function setInkusage($inkusage)
+    {
+        $this->inkusage = $inkusage;
     }
 }

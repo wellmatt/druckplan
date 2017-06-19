@@ -120,6 +120,7 @@ if($_REQUEST["subexec"] == "save")
     $product->setLoadDymmyData((int)$_REQUEST["load_dummydata"]);
     $product->setSingleplateset((int)$_REQUEST["singleplateset"]);
     $product->setBlockplateset((int)$_REQUEST["blockplateset"]);
+    $product->setInkcoverage(tofloat($_REQUEST["inkcoverage"]));
 
     if ((int)$_REQUEST["load_dummydata"] == 1){
     	$product->setPagesFrom(1);
@@ -367,6 +368,12 @@ echo $quickmove->generate();
                                       <input type="checkbox" value="1" name="blockplateset" <?if($product->getBlockplateset()) echo 'checked="checked"';?> title="" >
                                   </label>
                               </div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Farbdeckung in %</label>
+                          <div class="col-sm-9">
+                              <input name="inkcoverage" value="<?=$product->getInkcoverage()?>" class="form-control">
                           </div>
                       </div>
                   </div> <!-- Rechts ende -->

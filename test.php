@@ -51,20 +51,14 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$textblocks = TextBlock::fetch([
-    ['column' => 'mod_ticket', 'value' => 1]
-]);
-
-?>
-
-<select name="tktc_textblock" id="tktc_textblock" class="form-control">
-    <?php
-    foreach ($textblocks as $textblock) {
-        foreach ($textblock->getGroups() as $group) {
-            if ($group->getGroup()->hasMember($_USER)){?>
-                <option value="<?php echo $textblock->getId();?>"><?php echo $textblock->getName();?></option>
-            <?php }
-        }
-    }
-    ?>
-</select>
+$array = [
+    2 => [ 144000 => "450x320", 262300 => "430x610" ],
+    1 => [ 88250 => "250x353", 131150 => "430x305", 124740 => "420x297" ],
+    4 => [ 277200 => "440x630",288000 => "450x640",299000 => "460x650",303600 => "460x660",294400 => "460x640",350000 => "700x500" ]
+];
+ksort($array, SORT_NUMERIC);
+$array = $array[max(array_keys($array))];
+ksort($array, SORT_NUMERIC);
+prettyPrint($array);
+$array = $array[min(array_keys($array))];
+prettyPrint($array);

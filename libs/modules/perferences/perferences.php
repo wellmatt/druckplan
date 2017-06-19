@@ -47,6 +47,7 @@ if ($_REQUEST["exec"] == "save")
 	
 	$perf->setZuschussProDP(str_replace(",",".",str_replace(".","",$_REQUEST["zuschussprodp"])));
 	$perf->setZuschussPercent(str_replace(",",".",str_replace(".","",$_REQUEST["zuschusspercent"])));
+	$perf->setInkusage(str_replace(",",".",str_replace(".","",$_REQUEST["inkusage"])));
 	$perf->setCalc_detailed_printpreview($_REQUEST["calc_detailed_printpreview"]);
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
@@ -363,6 +364,15 @@ echo $quickmove->generate();
 						<div class="col-sm-4">
 							<div class="input-group">
 								<input type="text" name="zuschusspercent" class="form-control" id="zuschusspercent" value="<?= str_replace(".", ",", $perf->getZuschussPercent()); ?>"/>
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Farbverbrauch g/m²:</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" name="inkusage" class="form-control" id="inkusage" value="<?=str_replace(".", ",", $perf->getInkusage()); ?>"/>
 								<span class="input-group-addon">%</span>
 							</div>
 						</div>

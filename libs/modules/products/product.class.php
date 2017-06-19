@@ -51,9 +51,9 @@ class Product {
     private $tradegroup = 0;
     private $loadDymmyData = 0;
     private $isIndivual = 0;
-    
     private $singleplateset = 0;
     private $blockplateset = 0;
+    private $inkcoverage = 40.00;
 	
     function __construct($id = 0){
         global $DB;
@@ -95,7 +95,8 @@ class Product {
                 $this->singleplateset = $res["singleplateset"];
                 $this->blockplateset = $res["blockplateset"];
                 $this->loadDymmyData = $res["load_dummydata"];
-                
+                $this->inkcoverage = $res["inkcoverage"];
+
                 //-------------------------------------------------------------------
                 // Get Machines
                 $sql = "SELECT * FROM products_machines WHERE product_id = {$this->id}";
@@ -251,6 +252,7 @@ class Product {
                         is_individual = '{$this->isIndivual}',
                         singleplateset = '{$this->singleplateset}',
                         blockplateset = '{$this->blockplateset}',
+                        inkcoverage = '{$this->inkcoverage}',
                         load_dummydata = {$this->loadDymmyData}
                     WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -344,7 +346,7 @@ class Product {
                          has_content, has_addcontent, has_envelope, factor_width, factor_height,
                          grant_paper, type, text_offer, text_offerconfirm, text_invoice,
                          text_processing, shop_rel, tradegroup, is_individual, 
-                         has_addcontent2, has_addcontent3, load_dummydata )
+                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage )
                     VALUES
                         ('{$this->name}', 1, '{$this->description}', '{$this->picture}',
                          {$this->pagesFrom}, {$this->pagesTo}, {$this->pagesStep}, {$this->hasContent},
@@ -352,7 +354,7 @@ class Product {
                          {$this->grantPaper}, {$this->type}, '{$this->textOffer}',
                          '{$this->textOfferconfirm}', '{$this->textInvoice}', '{$this->textProcessing}',
                          {$this->shoprel}, {$this->getTradegroup()->getId()}, {$this->isIndivual},
-                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData} )";
+                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage} )";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -889,5 +891,21 @@ class Product {
     public function setAvailableChromaticities($availableChromaticities)
     {
         $this->availableChromaticities = $availableChromaticities;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkcoverage()
+    {
+        return $this->inkcoverage;
+    }
+
+    /**
+     * @param float $inkcoverage
+     */
+    public function setInkcoverage($inkcoverage)
+    {
+        $this->inkcoverage = $inkcoverage;
     }
 }

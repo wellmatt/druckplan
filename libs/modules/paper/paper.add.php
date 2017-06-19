@@ -614,63 +614,47 @@ echo $quickmove->generate();
                                           $prices[] = Array("size_width" => $s["width"], "size_height" => $s["height"]);
 
                                       $x = 0;
-                                      foreach($prices as $price)
-                                      {
+                                      foreach ($prices as $price) {
 
-                                          echo '<tr id="price_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$price["quantity_from"].'">
-                    <td>';
+                                          echo '<tr id="price_' . $s["width"] . 'x' . $s["height"] . '_' . $w . '_' . $price["quantity_from"] . '"><td>';
 
                                           if ($firstSize)
-                                              echo $s["width"]." x ".$s["height"];
+                                              echo $s["width"] . " x " . $s["height"];
                                           else
                                               echo "&nbsp;";
                                           $firstSize = false;
                                           echo '<td>';
 
                                           if ($firstWeight)
-                                              echo $w.' g';
+                                              echo $w . ' g';
                                           else
                                               echo '&nbsp;';
 
-                                          if ($price["price"]<=0)
+                                          if ($price["price"] <= 0)
                                               $price["price"] = 1;
-
-
-
-
-
-
 
 
                                           echo '<td>
 
-                                                <input name="count_quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'" value="'.count($prices).'" type="hidden" id="count_quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'">
+                                                <input name="count_quantity_' . $s["width"] . 'x' . $s["height"] . '_' . $w . '" value="' . count($prices) . '" type="hidden" id="count_quantity_' . $s["width"] . 'x' . $s["height"] . '_' . $w . '">
                                             <div class="form-group">
                                               <div class="col-sm-12">
                                                    <div class="input-group">
-                                                      <input name="quantity_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="form-control" value="'.printPrice($price["quantity_from"],2).'">
-                                                       <span class="input-group-addon">';  if ($paper->getRolle() == 0){
-                                                                                              echo $_LANG->get('Bogen')." ";
-                                                                                          } else {
-                                                                                              echo $_LANG->get('Rolle')." ";
-                                      }'</span>
-                                                  </div>
-                                            </div>
-
-                      </td>';
-
-
-
-                                          echo '</td>
-                      <td>';
-
-
+                                                      <input name="quantity_' . $s["width"] . 'x' . $s["height"] . '_' . $w . '_' . $x . '" class="form-control" value="' . printPrice($price["quantity_from"], 2) . '">
+                                                       <span class="input-group-addon">';
+                                          if ($paper->getRolle() == 0) {
+                                              echo $_LANG->get('Bogen') . " ";
+                                          } else {
+                                              echo $_LANG->get('Rolle') . " ";
+                                          }
+                                          echo '</span></div></div></td>';
+                                          echo '</td><td>';
                                           echo '
                                           <div class="form-group">
                                               <div class="col-sm-12">
                                                   <div class="input-group">
-                                                      <input name="priceperthousand_'.$s["width"].'x'.$s["height"].'_'.$w.'_'.$x.'" class="form-control" value="'.printPrice($price["price"]).'">
-                                                       <span class="input-group-addon">'.$_USER->getClient()->getCurrency().'</span>
+                                                      <input name="priceperthousand_' . $s["width"] . 'x' . $s["height"] . '_' . $w . '_' . $x . '" class="form-control" value="' . printPrice($price["price"]) . '">
+                                                       <span class="input-group-addon">' . $_USER->getClient()->getCurrency() . '</span>
                                                   </div>
                                               </div>
                                           </div>
@@ -681,7 +665,7 @@ echo $quickmove->generate();
                     <td>';
 
 
-                                          echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow(\''.$s["width"].'x'.$s["height"].'_'.$w.'\', \''.$price["quantity_from"].'\')"></span>';
+                                          echo '<span class="glyphicons glyphicons-plus pointer" onclick="addPriceRow(\'' . $s["width"] . 'x' . $s["height"] . '_' . $w . '\', \'' . $price["quantity_from"] . '\')"></span>';
                                           $firstWeight = false;
                                           $x++;
                                       }

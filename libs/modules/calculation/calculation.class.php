@@ -13,6 +13,7 @@ require_once 'libs/modules/calculation/order.class.php';
 require_once 'calculation.machineentry.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'calculation.position.class.php';
+require_once 'calculation.service.class.php';
 
 class Calculation
 {
@@ -118,6 +119,14 @@ class Calculation
 
     private $pricesub = 0.0;
     private $pricetotal = 0.0;
+
+    // Farbe
+
+    private $inkusedcontent = 0.00;
+    private $inkusedenvelope = 0.00;
+    private $inkusedaddcontent = 0.00;
+    private $inkusedaddcontent2 = 0.00;
+    private $inkusedaddcontent3 = 0.00;
 
 	// other
 
@@ -271,6 +280,12 @@ class Calculation
 
                     $this->pricesub = $r["pricesub"];
                     $this->pricetotal = $r["pricetotal"];
+
+                    $this->inkusedcontent = $r["inkusedcontent"];
+                    $this->inkusedenvelope = $r["inkusedenvelope"];
+                    $this->inkusedaddcontent = $r["inkusedaddcontent"];
+                    $this->inkusedaddcontent2 = $r["inkusedaddcontent2"];
+                    $this->inkusedaddcontent3 = $r["inkusedaddcontent3"];
                 }
 
                 //--------------------------Artikel----------------------------------------------
@@ -437,6 +452,11 @@ class Calculation
 						title =	'{$this->title}',
 						pricesub = {$this->pricesub},
 						pricetotal = {$this->pricetotal},
+						inkusedcontent = {$this->inkusedcontent},
+						inkusedenvelope = {$this->inkusedenvelope},
+						inkusedaddcontent = {$this->inkusedaddcontent},
+						inkusedaddcontent2 = {$this->inkusedaddcontent2},
+						inkusedaddcontent3 = {$this->inkusedaddcontent3},
         				color_control = {$this->colorControl}, ";
         
         if($this->id > 0){
@@ -1374,19 +1394,19 @@ class Calculation
             $hasAddContent3 = true;
 
         if ($hasContent) {
-            $sum += $calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_CONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront()));
+            $sum += $calc->getChromaticitiesContent()->getPricekg() * $calc->getInkusedcontent() / 1000;
         }
         if ($hasAddContent){
-            $sum += $calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront()));
+            $sum += $calc->getChromaticitiesAddContent()->getPricekg() * $calc->getInkusedaddcontent() / 1000;
         }
         if ($hasEnvelope){
-            $sum += $calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ENVELOPE))*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront()));
+            $sum += $calc->getChromaticitiesEnvelope()->getPricekg() * $calc->getInkusedenvelope() / 1000;
         }
         if ($hasAddContent2){
-            $sum += $calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront()));
+            $sum += $calc->getChromaticitiesAddContent2()->getPricekg() * $calc->getInkusedaddcontent2() / 1000;
         }
         if ($hasAddContent3){
-            $sum += $calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront()));
+            $sum += $calc->getChromaticitiesAddContent3()->getPricekg() * $calc->getInkusedaddcontent3() / 1000;
         }
         return tofloat($sum);
     }
@@ -2518,5 +2538,85 @@ class Calculation
     public function setPricesub($pricesub)
     {
         $this->pricesub = $pricesub;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkusedcontent()
+    {
+        return $this->inkusedcontent;
+    }
+
+    /**
+     * @param float $inkusedcontent
+     */
+    public function setInkusedcontent($inkusedcontent)
+    {
+        $this->inkusedcontent = $inkusedcontent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkusedenvelope()
+    {
+        return $this->inkusedenvelope;
+    }
+
+    /**
+     * @param float $inkusedenvelope
+     */
+    public function setInkusedenvelope($inkusedenvelope)
+    {
+        $this->inkusedenvelope = $inkusedenvelope;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkusedaddcontent()
+    {
+        return $this->inkusedaddcontent;
+    }
+
+    /**
+     * @param float $inkusedaddcontent
+     */
+    public function setInkusedaddcontent($inkusedaddcontent)
+    {
+        $this->inkusedaddcontent = $inkusedaddcontent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkusedaddcontent2()
+    {
+        return $this->inkusedaddcontent2;
+    }
+
+    /**
+     * @param float $inkusedaddcontent2
+     */
+    public function setInkusedaddcontent2($inkusedaddcontent2)
+    {
+        $this->inkusedaddcontent2 = $inkusedaddcontent2;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInkusedaddcontent3()
+    {
+        return $this->inkusedaddcontent3;
+    }
+
+    /**
+     * @param float $inkusedaddcontent3
+     */
+    public function setInkusedaddcontent3($inkusedaddcontent3)
+    {
+        $this->inkusedaddcontent3 = $inkusedaddcontent3;
     }
 }

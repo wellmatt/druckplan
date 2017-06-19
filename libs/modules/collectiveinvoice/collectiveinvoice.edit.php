@@ -26,27 +26,34 @@ if($collectinv->getId()==0){
 	$collectinv->setBusinesscontact($selected_customer);
 	$tmp_presel_cp = new ContactPerson((int)$_REQUEST["order_contactperson"]);
 	$collectinv->setCustContactperson($tmp_presel_cp);
+	$collectinv->setCrtuser($_USER);
+	$collectinv->setCrtdate(time());
 	if ($_REQUEST["order_title"])
 	    $collectinv->setTitle($_REQUEST["order_title"]);
     if ($_REQUEST["order_startart"] != "")
     {
-        $tmp_startart = new Article($_REQUEST["order_startart"]);
-        $tmp_orderamounts = json_encode($tmp_startart->getOrderamounts());
-        $tmp_type = 2;
-        if ($tmp_startart->getOrderid()>0)
-            $tmp_type = 1;
-        ?>
-        <script type="text/javascript">
-        $(document).ready(function() {
-        	var orderamounts = new Array(<?php echo implode(',', $tmp_startart->getOrderamounts()); ?>);
-            addPositionRow(<?php echo $tmp_type;?>,<?php echo $tmp_startart->getId();?>,"<?php echo $tmp_startart->getTitle()?>",orderamounts,<?php echo $tmp_startart->getOrderid();?>);
-        });
-        </script>
-        <?php
+		$tmp_startart = new Article($_REQUEST["order_startart"]);
+		$collectinv->setTitle($tmp_startart->getTitle());
+		$collectinv->setClient($_USER->getClient());
+    	$collectinv->save();
+		$startpos = new Orderposition();
+		$startpos->setCollectiveinvoice($collectinv->getId());
+		$startpos->setComment($tmp_startart->getDesc());
+		$startpos->setObjectid($tmp_startart->getId());
+		$startpos->setPrice($tmp_startart->getPrice(1));
+		if (count($tmp_startart->getOrderamounts())>0){
+			$startpos->setQuantity($tmp_startart->getOrderamounts()[0]);
+		} else {
+			$startpos->setQuantity(1);
+		}
+		$startpos->setSequence(1);
+		$startpos->setTaxkey($tmp_startart->getTaxkey());
+		if ($tmp_startart->getOrderid()>0)
+			$startpos->setType(1);
+		else
+			$startpos->setType(2);
+		Orderposition::saveMultipleOrderpositions([$startpos]);
     }
-	//Datum und Benutzer setzen, wer erstellt hat
-	$collectinv->setCrtuser($_USER);
-	$collectinv->setCrtdate(time());
 	$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact());
 }else{//Falls eine bestehende Rechnung veraendert werden soll
 	$selected_customer = new BusinessContact($collectinv->getBusinesscontact()->getId());

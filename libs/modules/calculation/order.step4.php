@@ -345,7 +345,7 @@ echo $quickmove->generate();
                         <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 1')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
-                                <?=printPrice($calc->getChromaticitiesContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_CONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesContent()->getColorsBack() + $calc->getChromaticitiesContent()->getColorsFront())))?>
+                                <?=printPrice($calc->getChromaticitiesContent()->getPricekg() * $calc->getInkusedcontent()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>
@@ -406,7 +406,7 @@ echo $quickmove->generate();
                         <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 2')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
-                                <?=printPrice($calc->getChromaticitiesAddContent()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent()->getColorsBack() + $calc->getChromaticitiesAddContent()->getColorsFront())))?>
+                                <?=printPrice($calc->getChromaticitiesAddContent()->getPricekg() * $calc->getInkusedaddcontent()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>
@@ -462,7 +462,7 @@ echo $quickmove->generate();
                         <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 3')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
-                                <?=printPrice($calc->getChromaticitiesAddContent2()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent2()->getColorsBack() + $calc->getChromaticitiesAddContent2()->getColorsFront())))?>
+                                <?=printPrice($calc->getChromaticitiesAddContent2()->getPricekg() * $calc->getInkusedaddcontent2()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>
@@ -516,7 +516,7 @@ echo $quickmove->generate();
                         <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Inhalt 4')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
-                                <?=printPrice($calc->getChromaticitiesAddContent3()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3))*(1.4*0.5/1000) * ($calc->getChromaticitiesAddContent3()->getColorsBack() + $calc->getChromaticitiesAddContent3()->getColorsFront())))?>
+                                <?=printPrice($calc->getChromaticitiesAddContent3()->getPricekg() * $calc->getInkusedaddcontent3()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>
@@ -572,7 +572,7 @@ echo $quickmove->generate();
                         <td class="content_row_clear"><?=$_LANG->get('Preis Farbe Umschlag')?></td>
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
-                                <?=printPrice($calc->getChromaticitiesEnvelope()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight()/1000000) * ($calc->getPaperCount(Calculation::PAPER_ENVELOPE))*(1.4*0.5/1000) * ($calc->getChromaticitiesEnvelope()->getColorsBack() + $calc->getChromaticitiesEnvelope()->getColorsFront())))?>
+                                <?=printPrice($calc->getChromaticitiesEnvelope()->getPricekg() * $calc->getInkusedenvelope()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>
