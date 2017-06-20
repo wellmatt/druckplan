@@ -56,6 +56,8 @@ class Perferences
     private $imap_tls = 0;
     private $system_signature = '';
 
+    private $mailtext_senddocs = '';
+
     // Shop
 
     private $mailtext_confirmation = '';
@@ -104,6 +106,7 @@ class Perferences
             $this->deactivate_manual_articles = $r["deactivate_manual_articles"];
             $this->decativate_manual_delivcost = $r["decativate_manual_delivcost"];
             $this->mailtext_confirmation = $r["mailtext_confirmation"];
+            $this->mailtext_senddocs = $r["mailtext_senddocs"];
             $this->default_revenue = new RevenueaccountCategory((int)$r["default_revenue"]);
             $this->default_costobject = new CostObject((int)$r["default_costobject"]);
             $this->inkusage = $r["inkusage"];
@@ -125,6 +128,9 @@ class Perferences
                                             Kostenstelle: %KOSTENSTELLE%<br>
                                             Hinweis: %HINWEIS%<br>
                                             %DATEI%';
+        }
+        if (strlen($this->mailtext_senddocs) == 0 || $this->mailtext_senddocs == NULL){
+            $this->mailtext_senddocs = 'Sehr geehrte/r Frau/Herr %CP%<br><br>bitte entnehmen Sie die Dokumente zum oben genannten Vorgang aus dem Anhang.<br>';
         }
 
     }
@@ -177,6 +183,7 @@ class Perferences
                deactivate_manual_articles 	= '{$this->deactivate_manual_articles}',
                decativate_manual_delivcost 	= '{$this->decativate_manual_delivcost}',
                mailtext_confirmation 	= '{$this->mailtext_confirmation}',
+               mailtext_senddocs 	= '{$this->mailtext_senddocs}',
                default_revenue 	= '{$this->default_revenue->getId()}',
                default_costobject 	= '{$this->default_costobject->getId()}',
                inkusage = '{$this->inkusage}',
@@ -679,5 +686,21 @@ class Perferences
     public function setInkusage($inkusage)
     {
         $this->inkusage = $inkusage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailtextSenddocs()
+    {
+        return $this->mailtext_senddocs;
+    }
+
+    /**
+     * @param string $mailtext_senddocs
+     */
+    public function setMailtextSenddocs($mailtext_senddocs)
+    {
+        $this->mailtext_senddocs = $mailtext_senddocs;
     }
 }

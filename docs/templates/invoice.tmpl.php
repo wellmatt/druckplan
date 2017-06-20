@@ -41,6 +41,22 @@ foreach ($calcs as $calc) {
     }
 }
 
+// Skonto & Zahlungsbedingungen
+$nettodays = $order->getPaymentterm()->getNettodays();
+
+$now = time();
+$aday = 86400;
+$duedate = date('d.m.y',($now + ($nettodays * $aday)));
+
+$sk1days = $order->getPaymentterm()->getSkontodays1();
+$sk1daysduedate = date('d.m.y',($now + ($sk1days * $aday)));
+
+$sk2days = $order->getPaymentterm()->getSkontodays2();
+$sk2daysduedate = date('d.m.y',($now + ($sk2days * $aday)));
+
+$sk1_percent = $order->getPaymentterm()->getSkonto1();
+$sk2_percent = $order->getPaymentterm()->getSkonto2();
+
 // Einbindung der generellen Variablen im Templatesystem
 
 require 'docs/templates/generel.tmpl.php';
@@ -48,6 +64,12 @@ $tmp = 'docs/tmpl_files/invoice.tmpl';
 $datei = ckeditor_to_smarty($tmp);
 
 $smarty->assign('Calcs', $calcs);
+
+$smarty->assign('DueDate', $duedate);
+$smarty->assign('Sk1duedate', $sk1daysduedate);
+$smarty->assign('Sk2duedate', $sk2daysduedate);
+$smarty->assign('Sk1percent', $sk1_percent);
+$smarty->assign('Sk2percent', $sk2_percent);
 
 $taxes = $order->getProduct()->getTaxes() * $sum_price / 100;
 $doc_sum = $sum_price + $taxes;

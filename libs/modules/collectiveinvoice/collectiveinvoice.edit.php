@@ -35,6 +35,8 @@ if($collectinv->getId()==0){
 		$tmp_startart = new Article($_REQUEST["order_startart"]);
 		$collectinv->setTitle($tmp_startart->getTitle());
 		$collectinv->setClient($_USER->getClient());
+        if ($tmp_startart->getOrderid()>0)
+            $collectinv->setNeeds_planning(1);
     	$collectinv->save();
 		$startpos = new Orderposition();
 		$startpos->setCollectiveinvoice($collectinv->getId());

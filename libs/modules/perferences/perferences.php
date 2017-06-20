@@ -99,6 +99,7 @@ if ($_REQUEST["exec"] == "save")
 	}
 
 	$perf->setMailtextConfirmation(trim(addslashes($_REQUEST["mailtext_confirmation"])));
+	$perf->setMailtextSenddocs(trim(addslashes($_REQUEST["mailtext_senddocs"])));
 	$perf->setDefaultRevenue(new RevenueaccountCategory($_REQUEST["revenueaccount"]));
 	$perf->setDefaultCostobject(new CostObject($_REQUEST["costobject"]));
 
@@ -280,7 +281,7 @@ echo $quickmove->generate();
 					<li><a href="#tabs-5"><? echo $_LANG->get('Kalender'); ?></a></li>
 					<li><a href="#tabs-6"><? echo $_LANG->get('Update Funktionen'); ?></a></li>
 					<li><a href="#tabs-7"><? echo $_LANG->get('Schalter'); ?></a></li>
-					<li><a href="#tabs-8"><? echo $_LANG->get('Shop'); ?></a></li>
+					<li><a href="#tabs-8"><? echo $_LANG->get('Texte'); ?></a></li>
 					<li><a href="#tabs-9"><? echo $_LANG->get('Buchhaltung'); ?></a></li>
 				</ul>
 
@@ -655,6 +656,14 @@ echo $quickmove->generate();
 							** Verfügbare Variablen: %POSITIONEN%, %KOSTENSTELLE%, %HINWEIS%, %DATEI%
 						</div>
 					</div>
+					Vorgang:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Dokumente versenden</label>
+						<div class="col-sm-10">
+							<textarea rows="10" id="mailtext_senddocs" name="mailtext_senddocs" class="form-control"><?= $perf->getMailtextSenddocs() ?></textarea>
+							** Verfügbare Variablen: %CP%
+						</div>
+					</div>
 				</div>
 				<div id="tabs-9">
 					Buchhaltung:<br>
@@ -708,6 +717,7 @@ echo $quickmove->generate();
 <script>
 	$(function () {
 		CKEDITOR.replace( 'mailtext_confirmation' );
+		CKEDITOR.replace( 'mailtext_senddocs' );
 		$("#revenueaccount").select2();
 		$("#costobject").select2();
 	});

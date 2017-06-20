@@ -13,6 +13,22 @@ require_once 'thirdparty/tcpdf/tcpdf.php';
 // $orderpos = $order->getPositions();
 $orderpos = $order->getPositions(false,true);
 
+// Skonto & Zahlungsbedingungen
+$nettodays = $order->getPaymentterm()->getNettodays();
+
+$now = time();
+$aday = 86400;
+$duedate = date('d.m.Y',($now + ($nettodays * $aday)));
+
+$sk1days = $order->getPaymentterm()->getSkontodays1();
+$sk1daysduedate = date('d.m.Y',($now + ($sk1days * $aday)));
+
+$sk2days = $order->getPaymentterm()->getSkontodays2();
+$sk2daysduedate = date('d.m.Y',($now + ($sk2days * $aday)));
+
+$sk1_percent = $order->getPaymentterm()->getSkonto1();
+$sk2_percent = $order->getPaymentterm()->getSkonto2();
+
 require 'docs/templates/generel.tmpl.php';
 $tmp = 'docs/tmpl_files/colinvoice.tmpl';
 $datei = ckeditor_to_smarty($tmp);
@@ -38,6 +54,12 @@ $smarty->assign('SumBrutto',$sum);
 $smarty->assign('PaymentTerm',$order->getPaymentTerm());
 $smarty->assign('PayComment',$order->getPaymentTerm()->getComment());
 $smarty->assign('PayNetTodays',$order->getPaymentTerm()->getNettodays());
+
+$smarty->assign('DueDate', $duedate);
+$smarty->assign('Sk1duedate', $sk1daysduedate);
+$smarty->assign('Sk2duedate', $sk2daysduedate);
+$smarty->assign('Sk1percent', $sk1_percent);
+$smarty->assign('Sk2percent', $sk2_percent);
 
 // Werte setzen
 if ($order->getPaymentTerm())

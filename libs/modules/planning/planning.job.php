@@ -376,7 +376,7 @@ function createSelects(id,count,workload)
                                     </tr>
                                     <?php
                                     if ($opos_article->getOrderid()>0)
-                                    {
+                                    { // Kalkulation
                                         $order = new Order($opos_article->getOrderid());
                                         $calcs = Calculation::getAllCalculations($order);
 
@@ -387,6 +387,8 @@ function createSelects(id,count,workload)
                                                 $mes = Machineentry::getAllMachineentries($calc->getId());
                                                 foreach ($mes as $me)
                                                 {
+                                                    $qusers = $me->getMachine()->getQualified_users();
+                                                    $qgroups = $me->getMachine()->getQualifiedGroups();
                                                     ?>
                                                     <tr>
                                                         <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?php echo PlanningJob::TYPE_K;?>"/>
@@ -412,13 +414,13 @@ function createSelects(id,count,workload)
                                                                     <select class="form-control" name="crt_job[<?php echo $x;?>][workers][assigned][0]" required>
                                                                         <option disabled>-- Users --</option>
                                                                         <?php
-                                                                        foreach ($all_user as $tkt_user){
+                                                                        foreach ($qusers as $tkt_user){
                                                                             echo '<option value="u_'.$tkt_user->getId().'">'.$tkt_user->getNameAsLine().'</option>';
                                                                         }
                                                                         ?>
                                                                         <option disabled>-- Groups --</option>
                                                                         <?php
-                                                                        foreach ($all_groups as $tkt_groups){
+                                                                        foreach ($qgroups as $tkt_groups){
                                                                             echo '<option value="g_'.$tkt_groups->getId().'">'.$tkt_groups->getName().'</option>';
                                                                         }
                                                                         ?>
@@ -436,7 +438,7 @@ function createSelects(id,count,workload)
                                                 }
                                             }
                                         }
-                                    } else {
+                                    } else { // Arbeitszeitartikel
                                         ?>
                                         <tr>
                                             <input type="hidden" name="crt_job[<?php echo $x;?>][type]" value="<?php echo PlanningJob::TYPE_V;?>"/>

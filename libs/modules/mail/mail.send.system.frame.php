@@ -86,9 +86,8 @@ if ($_REQUEST["fromColinv"] > 0){
     $preset_mail_to = $colinv->getCustContactperson()->getEmail();
     $preset_mail_subject = 'Ihr Vorgang: '.$colinv->getNumber().' - '.$colinv->getTitle();
 
-    $preset_mail_content = 'Sehr geehrte/r Frau/Herr '. $colinv->getCustContactperson()->getName1().',';
-    $preset_mail_content .= '<br><br>bitte entnehmen Sie die Dokumente zum oben genannten Vorgang aus dem Anhang.';
-    $preset_mail_content .= '<br>';
+    $preset_mail_content = $perf->getMailtextSenddocs().'<br>'.$perf->getSystemSignature();
+    $preset_mail_content = str_replace('%CP%',$colinv->getCustContactperson()->getName1(),$preset_mail_content);
     $preset_mail_content .= $perf->getSystemSignature();
 }
 

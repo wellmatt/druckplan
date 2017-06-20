@@ -110,7 +110,8 @@ class Machine
 	private $breaks_time = 0;
 	
 	private $qualified_users = Array();
-	
+	private $qualified_groups = Array();
+
 	private $color = "3a87ad";
 	
 	private $runninghours = Array();
@@ -184,10 +185,22 @@ class Machine
                 {
                     foreach($DB->select($sql) as $r)
                     {
-                        $tmp_qusrs[] = new User((int)$r["user"]);	//gln
+                        $tmp_qusrs[] = new User((int)$r["user"]);
                     }
                 }
                 $this->qualified_users = $tmp_qusrs;
+
+                // Gruppen
+                $tmp_qgroups = Array();
+                $sql = "SELECT * FROM machines_qualified_groups WHERE machine = {$this->id}";
+                if($DB->num_rows($sql))
+                {
+                    foreach($DB->select($sql) as $r)
+                    {
+                        $tmp_qgroups[] = new Group((int)$r["group"]);
+                    }
+                }
+                $this->qualified_groups = $tmp_qgroups;
                 
                 // Laufzeiten
                 
@@ -433,6 +446,18 @@ class Machine
                     ({$this->id}, {$qusr->getId()})";
                     $DB->no_result($sql);
                 }
+
+                $sql = "DELETE FROM machines_qualified_groups WHERE machine = {$this->id}";
+                $DB->no_result($sql);
+
+                foreach($this->qualified_groups as $qgrp)
+                {
+                    $sql = "INSERT INTO machines_qualified_groups
+                    (machine, `group`)
+                    VALUES
+                    ({$this->id}, {$qgrp->getId()})";
+                    $DB->no_result($sql);
+                }
                 
                 $sql = "DELETE FROM machines_chromaticities WHERE machine_id = {$this->id}";
                 $DB->no_result($sql);
@@ -512,6 +537,15 @@ class Machine
                     (machine, user)
                     VALUES
                     ({$this->id}, {$qusr->getId()})";
+                    $DB->no_result($sql);
+                }
+
+                foreach($this->qualified_groups as $qgrp)
+                {
+                    $sql = "INSERT INTO machines_qualified_groups
+                    (machine, `group`)
+                    VALUES
+                    ({$this->id}, {$qgrp->getId()})";
                     $DB->no_result($sql);
                 }
                 
@@ -1794,6 +1828,22 @@ class Machine
     public function setInlineheftenpercent($inlineheftenpercent)
     {
         $this->inlineheftenpercent = $inlineheftenpercent;
+    }
+
+    /**
+     * @return array
+     */
+    public function getQualifiedGroups()
+    {
+        return $this->qualified_groups;
+    }
+
+    /**
+     * @param array $qualified_groups
+     */
+    public function setQualifiedGroups($qualified_groups)
+    {
+        $this->qualified_groups = $qualified_groups;
     }
 
 }

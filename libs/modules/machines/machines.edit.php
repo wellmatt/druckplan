@@ -123,6 +123,15 @@ if($_REQUEST["subexec"] == "save")
     }
     $machine->setQualified_users($quser_list);
 
+	$qgroup_list = Array();
+	if ($_REQUEST["qgrp"]){
+		foreach ($_REQUEST["qgrp"] as $qgrp)
+		{
+			$qgroup_list[] = new Group((int)$qgrp);
+		}
+	}
+	$machine->setQualifiedGroups($qgroup_list);
+
 
     $tmp_wtime_arr = Array();
     if ($_REQUEST["wotime"])
@@ -1451,6 +1460,38 @@ echo $quickmove->generate();
 							<div class="col-sm-1">
 								<input type="checkbox" name="qusr[]" <?php if (in_array($qusr->getId(), $qid_arr)) echo ' checked '; ?> value="<?php echo $qusr->getId(); ?>"/>
 							</div>
+						<?php if ($qi == 4) {
+							$qi = -1;
+						} ?>
+						<?php $qi++;
+					} ?>
+				</div>
+			</div>
+
+			<br>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Gruppen
+					</h3>
+				</div>
+				<div class="panel-body">
+					<?php
+					$all_groups = Group::getAllGroups();
+					$qgid_arr = Array();
+					foreach ($machine->getQualifiedGroups() as $qgid) {
+						$qgid_arr[] = $qgid->getId();
+					}
+					$qi = 0;
+					foreach ($all_groups as $qgroup) {
+						if ($qi == 0) echo '';
+						?>
+						<div class="col-sm-2">
+							<?php echo $qgroup->getName(); ?>
+						</div>
+						<div class="col-sm-1">
+							<input type="checkbox" name="qgrp[]" <?php if (in_array($qgroup->getId(), $qgid_arr)) echo ' checked '; ?> value="<?php echo $qgroup->getId(); ?>"/>
+						</div>
 						<?php if ($qi == 4) {
 							$qi = -1;
 						} ?>
