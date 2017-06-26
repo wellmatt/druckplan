@@ -199,7 +199,7 @@ $(document).ready(function() {
     var search_notes = $('#search_notes').DataTable( {
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "libs/modules/search/search.ajax.php?exec=search_notes&query=<?php echo $query;?>&access=<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
+        "sAjaxSource": "libs/modules/search/search.ajax.php?exec=search_notes&query=<?php echo $query;?>&access=<?php if ($_USER->hasRightsByGroup(Permission::BC_NOTES) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
 		"stateSave": false,
 		"pageLength": 10,
 		"dom": 'lrtip',

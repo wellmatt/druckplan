@@ -73,7 +73,7 @@ if ($_REQUEST["exec"])
 					  <h3>Mitarbeiter</h3>
 					  <div style="padding: 10px;">
 						  <?php
-						  if ($_USER->hasRightsByGroup(Group::RIGHT_ALL_CALENDAR) || $_USER->isAdmin()) {
+						  if ($_USER->hasRightsByGroup(Permission::calendar_all) || $_USER->isAdmin()) {
 							  $users = User::getAllUser(User::ORDER_LOGIN);
 							  ?>
 							  <div class="row">
@@ -98,7 +98,7 @@ if ($_REQUEST["exec"])
 							  echo '<select name="sel_user" id="sel_user" style="display: none;"><option value="'.$_USER->getId().'" selected></option></select>';
 						  }
 						  ?>
-						  <?php if ($_USER->hasRightsByGroup(Group::RIGHT_SEE_ALL_CALENDAR) || $_USER->isAdmin()) { ?>
+						  <?php if ($_USER->hasRightsByGroup(Permission::calendar_all_see) || $_USER->isAdmin()) { ?>
 							  Kalender überlappen mit:<br>
 							  <?php
 							  foreach ($users as $user){

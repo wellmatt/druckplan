@@ -759,7 +759,7 @@ function clickContentChromaticity(id)
 
 <?php // Qickmove generation
 $quickmove = new QuickMove();
-if($_USER->hasRightsByGroup(Group::RIGHT_MACHINE_SELECTION)) {
+if($_USER->hasRightsByGroup(Permission::CALC_STEP3)) {
     $quickmove->addItem('Weiter','#',"document.getElementsByName('nextstep')[0].value='3';document.product_config_form.submit();",'glyphicon-chevron-right');
 } else {
     $quickmove->addItem('Weiter','#',"document.getElementsByName('nextstep')[0].value='4';document.product_config_form.submit();",'glyphicon-chevron-right');

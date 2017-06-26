@@ -107,7 +107,7 @@ echo $quickmove->generate();
                             <?php
                             foreach($users as $user)
                             {
-                                if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $user->getId() != $_USER->getId())
+                                if (!$_USER->hasRightsByGroup(Permission::vacation_grant) && $user->getId() != $_USER->getId())
                                     continue;
 
                                 $tmp_vuser = new VacationUser();
@@ -123,10 +123,10 @@ echo $quickmove->generate();
                                         <td><?php echo $tmp_vuser->getUser()->getId(); ?></td>
                                         <td><?php echo $tmp_vuser->getUser()->getNameAsLine(); ?></td>
                                         <td>
-                                            <input class="form-control" type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]" value="<?php echo $tmp_vuser->getDays(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
+                                            <input class="form-control" type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][days]" value="<?php echo $tmp_vuser->getDays(); ?>" <?php if (!$_USER->hasRightsByGroup(Permission::vacation_grant)) echo ' readonly '; ?>>
                                         </td>
                                         <td>
-                                            <input class="form-control" type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION)) echo ' readonly '; ?>>
+                                            <input class="form-control" type="number" step="0.5" name="vacu[<?php echo $user->getId(); ?>][fromlast]" value="<?php echo $tmp_vuser->getFromLast(); ?>" <?php if (!$_USER->hasRightsByGroup(Permission::vacation_grant)) echo ' readonly '; ?>>
                                         </td>
                                         <td><?php echo printPrice($tmp_vuser->getDays()+$tmp_vuser->getFromLast());?></td>
                                         <td><?php echo printPrice(VacationEntry::getDaysByUserAndType($user, 1));?></td>
@@ -204,10 +204,10 @@ echo $quickmove->generate();
                             <tbody>
                             <?php
                             foreach ($vacations as $vacation) {
-                                if (!$_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) && $vacation->getUser()->getId() != $_USER->getId())
+                                if (!$_USER->hasRightsByGroup(Permission::vacation_grant) && $vacation->getUser()->getId() != $_USER->getId())
                                     continue;
                                 ?>
-                                <tr class="pointer" <?php if ($_USER->hasRightsByGroup(GROUP::RIGHT_APPROVE_VACATION) || $vacation->getState()==VacationEntry::STATE_OPEN) echo ' onclick="callBoxFancy(\'libs/modules/vacation/vacation.new.frame.php?eventid='.$vacation->getId().'\');" ';?>>
+                                <tr class="pointer" <?php if ($_USER->hasRightsByGroup(Permission::vacation_grant) || $vacation->getState()==VacationEntry::STATE_OPEN) echo ' onclick="callBoxFancy(\'libs/modules/vacation/vacation.new.frame.php?eventid='.$vacation->getId().'\');" ';?>>
                                     <td><?php echo $vacation->getId();?></td>
                                     <td><?php echo $vacation->getUser()->getNameAsLine();?></td>
                                     <td><?php echo $vacation->getDays();?></td>
@@ -338,7 +338,7 @@ echo $quickmove->generate();
                 $('#calendar').fullCalendar('unselect');
             },
             eventClick: function(calEvent, jsEvent, view) {
-                if (!calEvent.holiday <?php if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION)) echo '&& calEvent.userid == '.$_USER->getId().' && calEvent.state == 1';?>) {
+                if (!calEvent.holiday <?php if (!$_USER->hasRightsByGroup(Permission::vacation_grant)) echo '&& calEvent.userid == '.$_USER->getId().' && calEvent.state == 1';?>) {
                     callBoxFancy('libs/modules/vacation/vacation.new.frame.php?eventid='+calEvent.id);
                 };
             },

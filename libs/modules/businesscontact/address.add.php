@@ -154,7 +154,7 @@ $countries = Country::getAllCountries();
 					  <?}?>
 				  </div>
 				  <div class="col-sm-4">
-					  <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){ ?>
+					  <? if($_USER->hasRightsByGroup(Permission::BC_DELETE) || $_USER->isAdmin()){ ?>
 						  <?if($_REQUEST["exec"] != "new"){?>
 							  <button class="btn btn-origin btn-danger" type="button" onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=delete_a&id_a=<?=$address->getId()?>&id=<?=$address->getBusinessContact()->getID()?>')">
 								  <?=$_LANG->get('L&ouml;schen')?>

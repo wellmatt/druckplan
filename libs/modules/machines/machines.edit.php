@@ -600,7 +600,7 @@ echo $quickmove->generate();
 										echo '<li id="as_' . $as . '"><a href="index.php?page=' . $link_href . $object->getId() . '">';
 										echo $object_name;
 										echo '</a>';
-										if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+										if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Permission::ASSOCIATION_DELETE))
 											echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'></span>';
 										echo '</li>';
 										$as++;

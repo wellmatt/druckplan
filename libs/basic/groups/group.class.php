@@ -1,43 +1,33 @@
 <?php
-class Group {
-   private $name;
-   private $description;
-   private $members = Array();
-   private $rights;
-   private $id = 0;
-   private $db;
-   
-   const ORDER_ID = "id";
-   const ORDER_NAME = "group_name";
-   
-   const RIGHT_URLAUB = 1; // Urlaub genehmigen
-   const RIGHT_MACHINE_SELECTION = 2; // Maschinenauswahl anzeigen
-   const RIGHT_DETAILED_CALCULATION = 4; // Ausführliche Kalkulation anzeigen
-   const RIGHT_SEE_TARGETTIME = 8; // Darf Sollzeiten sehen
-   const RIGHT_PARTS_EDIT = 16; // Darf Teilauftr#ge planen
-   const RIGHT_ALL_CALENDAR = 32; // Darf alle Kalender bearbeiten
-   const RIGHT_SEE_ALL_CALENDAR = 131072; // Darf alle Kalender einsehen
-   const RIGHT_EDIT_BC = 64; // Darf Geschäftskontakte bearbeiten
-   const RIGHT_DELETE_BC = 128; // Darf Geschäftskontakte löschen
-   const RIGHT_EDIT_CP = 256; // Darf Geschäftskontakte bearbeiten
-   const RIGHT_DELETE_CP = 512; // Darf Geschäftskontakte löschen
-   const RIGHT_DELETE_SCHEDULE = 1024;
-   const RIGHT_DELETE_ORDER = 2048;
-   const RIGHT_DELETE_COLINV = 4096;
-   const RIGHT_COMBINE_COLINV = 8192;
-   const RIGHT_TICKET_CHANGE_OWNER = 16384;
-   const RIGHT_ASSO_DELETE = 32768;
-   const RIGHT_NOTES_BC = 65536;
-   const RIGHT_APPROVE_VACATION = 262144;
-   const RIGHT_TICKET_EDIT_INTERNAL = 524288;
-   const RIGHT_TICKET_EDIT_OFFICAL = 1048576;
-   const RIGHT_FIBU_ADMIN = 2097152;
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
+require_once 'permission.class.php';
+require_once 'role.permission.class.php';
+require_once 'role.class.php';
+require_once 'group.role.class.php';
+require_once 'group.user.class.php';
 
-   function __construct($id = 0, $adduser = true)
-   {
+class Group {
+    private $name;
+    private $description;
+    private $id = 0;
+    private $db;
+    private $_rights = [];
+    private $_rights_slugs = [];
+
+    const ORDER_ID = "id";
+    const ORDER_NAME = "group_name";
+
+    function __construct($id = 0)
+    {
       global $DB;
       $this->db = $DB;
-      
+
       if ($id > 0)
       {
          $sql = " SELECT * FROM groups WHERE id = {$id} AND group_status = 1";
@@ -46,32 +36,20 @@ class Group {
             $res = $this->db->select($sql);
             $this->id = $res[0]["id"];
             $this->name = $res[0]["group_name"];
-            $this->rights = $res[0]["group_rights"];
             $this->description = $res[0]["group_description"];
-
-            if($adduser)
-            {
-               $sql = " SELECT * FROM user_groups WHERE group_id = {$this->id}";
-               if ($this->db->num_rows($sql) > 0)
-               {
-                  $res = $this->db->select($sql);
-                  foreach ($res as $r)
-                     $this->members[] = new User($r["user_id"]);
-               }
-            }
          }
       }
-   }
+    }
 
-   /**
+    /**
     * @param int $order
     * @param int $client
     * @return Group[]
     */
-   static function getAllGroups($order = 1, $client = 0) {
+    static function getAllGroups($order = 1, $client = 0) {
       global $DB;
       $groups = Array();
-      
+
       $sql = "SELECT id FROM groups WHERE group_status = 1";
       if ($client > 0)
          $sql .= " AND client = {$client}";
@@ -86,12 +64,12 @@ class Group {
          }
       }
       return $groups;
-   }
-   
-   static function getAllGroupsFiltered($filter = null) {
+    }
+
+    static function getAllGroupsFiltered($filter = null) {
       global $DB;
       $groups = Array();
-      
+
       $sql = "SELECT id FROM groups WHERE group_status = 1 " . $filter;
 
       if ($DB->num_rows($sql))
@@ -103,158 +81,114 @@ class Group {
          }
       }
       return $groups;
-   }
+    }
 
-   public static function refreshAndCleanup()
-   {
-      global $DB;
-      foreach (Group::getAllGroups() as $group) {
-         $memberidarray = [];
-         foreach ($group->getMembers() as $member) {
-            Cachehandler::removeCache(Cachehandler::genKeyword($member));
-            if (!in_array($member->getId(),$memberidarray) && $member->getId() > 0)
-               $memberidarray[] = $member->getId();
-         }
-         $group->clearMembers();
-         foreach ($memberidarray as $userid) {
-            $tmp_user = new User($userid);
-            $group->addMember($tmp_user);
-         }
-         $group->save();
-      }
-
-      $sql = " DELETE FROM user_groups WHERE group_id = 0 ";
-      $DB->no_result($sql);
-   }
-
-   /**
+    /**
     * @param User $user
     * @return bool
     */
-   public function hasMember(User $user)
-   {
-      foreach ($this->members as $member) {
-         if ($member->getId() == $user->getId())
+    public function hasMember(User $user)
+    {
+        $ids = GroupUser::getUserIdsForGroup($this);
+        if (in_array($user->getId(),$ids))
             return true;
-      }
-      return false;
-   }
+        else
+            return false;
+    }
 
-   public function clearMembers()
-   {
-      $this->members = [];
-   }
-   
-   function getId() {
-      return $this->id;
-   }
-   
-   function getName() {
-      return $this->name;
-   }
-   
-   function getDescription () {
-      return $this->description;
-   }
+    /**
+     * @return Permission[]
+     */
+    public function getAllRights()
+    {
+        if (count($this->_rights)>0)
+            return $this->_rights;
+        else {
+            $rightids = [];
+            $rights = [];
+            $slugs = [];
+            $roles = GroupRole::getRolesForGroup($this);
+            foreach ($roles as $role) {
+                $perms = RolePermission::getPermissionsForRole($role);
+                foreach ($perms as $perm) {
+                    if (!in_array($perm->getId(),$rightids)){
+                        $rightids[] = $perm->getId();
+                        $rights[] = $perm;
+                        $slugs[] = $perm->getSlug();
+                    }
+                }
+            }
+            $this->_rights = $rights;
+            $this->_rights_slugs = $slugs;
+            return $this->_rights;
+        }
+    }
 
-   /**
-    * @return User[]
-    */
-   function getMembers() {
-      return $this->members;
-   }
-   
-   function hasRight($r) {
-      return $this->rights & $r;
-   }
-   
-   function setName($val) {
-      $this->name = $val;
-   }
-   
-   function setDescription($val) {
-      $this->description = $val;
-   }
-   
-   function addMember($val) {
-      $this->members[] = $val;
-   }
-   
-   function delMember($val) {
-      $new = Array();
-      foreach ($this->members as $m)
-      {
-         if ($m->getId() != $val->getId())
-         {
-            $new[] = $m;
-         }
-      }
-      $this->members = $new;
-   }
-   
-   function setRight($r, $v)
-   {
-      if ($v == 1 || $v === true)
-      {
-         $this->rights |= $r;
-      } else
-      {
-         $this->rights &= ~$r;
-      }
-   }
-   
-   function save() {
-      if($this->id > 0)
-      {
-         $sql = " UPDATE groups SET 
+
+    function save() {
+        if($this->id > 0)
+        {
+            $sql = " UPDATE groups SET 
                      group_name = '{$this->name}',
                      group_description = '{$this->description}',
                      group_rights = '{$this->rights}'
                   WHERE id = {$this->id}";
-         $res = $this->db->no_result($sql);
-         
-         $sql = " DELETE FROM user_groups WHERE group_id = {$this->id}";
-         $this->db->no_result($sql);
-         
-         foreach ($this->members as $m)
-         {
-            $sql = " INSERT INTO user_groups 
-                        (user_id, group_id)
-                     VALUES
-                        ({$m->getId()}, {$this->id})";
-            $this->db->no_result($sql);
-         }
-      } else
-      {
-         $sql = " INSERT INTO groups
+            $res = $this->db->no_result($sql);
+        } else
+        {
+            $sql = " INSERT INTO groups
                      (group_name, group_description, group_status, group_rights)
                   VALUES
                      ('{$this->name}', '{$this->description}', 1, '{$this->rights}')";
-         $res = $this->db->no_result($sql);
-//          echo $sql . "</br>";
-         if ($res)
-         {
-            $sql = " SELECT max(id) id FROM groups";
-            $thisid = $this->db->select($sql);
-            $this->id = $thisid[0]["id"];
-            //echo "NEW ID = ".$this->id;
-         }
-      }
-      
-      if ($res)
-         return true;
-      else
-         return false;
-   }
- 
-   function delete() {
-      $sql = "UPDATE groups SET group_status = 0 WHERE id = {$this->id}";
-      $res = $this->db->no_result($sql);
-      unset($this);
-      if ($res)
-         return true;
-      else
-         return false;
-   }
- 
+            $res = $this->db->no_result($sql);
+            if ($res)
+            {
+                $sql = " SELECT max(id) id FROM groups";
+                $thisid = $this->db->select($sql);
+                $this->id = $thisid[0]["id"];
+            }
+        }
+
+        if ($res)
+            return true;
+        else
+            return false;
+    }
+
+    function delete() {
+        $sql = "UPDATE groups SET group_status = 0 WHERE id = {$this->id}";
+        $res = $this->db->no_result($sql);
+        unset($this);
+        if ($res)
+            return true;
+        else
+            return false;
+    }
+   
+    function getId() {
+      return $this->id;
+    }
+
+    function getName() {
+      return $this->name;
+    }
+
+    function getDescription () {
+      return $this->description;
+    }
+
+    /**
+    * @return User[]
+    */
+    function getMembers() {
+      return GroupUser::getUsersForGroup($this);
+    }
+
+    function setName($val) {
+      $this->name = $val;
+    }
+
+    function setDescription($val) {
+      $this->description = $val;
+    }
 }

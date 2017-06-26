@@ -157,11 +157,11 @@ class Model {
             foreach ($filterarray as $array) {
                 if ($array){
                     if (array_key_exists('column',$array) && array_key_exists('operator',$array) && array_key_exists('value',$array)){
-                        if (property_exists($class, $array['column'])){
+                        if (property_exists($class, str_replace('`','',$array['column']))){
                             $filter[] = ' '.$array['column']." {$array['operator']} "."'{$array['value']}' ";
                         }
                     } elseif (array_key_exists('column',$array) && array_key_exists('value',$array)){
-                        if (property_exists($class, $array['column'])){
+                        if (property_exists($class, str_replace('`','',$array['column']))){
                             $filter[] = ' '.$array['column']." = "."'{$array['value']}' ";
                         }
                     } elseif (array_key_exists('orderby',$array) && array_key_exists('orderbydir',$array)){
@@ -199,6 +199,7 @@ class Model {
             }
         } else {
             $sql = "SELECT id FROM {$table} {$orderby} {$limit}";
+//            prettyPrint($sql);
             if ($DB->num_rows($sql)){
                 foreach($DB->select($sql) as $r){
                     $obj = new $class($r['id']);

@@ -174,7 +174,7 @@ $(function() {
 						<button class="btn btn-xs btn-success" type="submit">
 							<?=$_LANG->get('Speichern')?>
 						</button>
-						<? if($vacation->getId() && ($vacation->getState() == VacationEntry::STATE_OPEN || $_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))) {?>
+						<? if($vacation->getId() && ($vacation->getState() == VacationEntry::STATE_OPEN || $_USER->hasRightsByGroup(Permission::vacation_grant))) {?>
 						<button class="btn btn-xs btn-danger" type="submit">
 							<?=$_LANG->get('L&ouml;schen')?>
 						</button>
@@ -189,7 +189,7 @@ $(function() {
 				  <div class="col-sm-4">
 					  <select name="vac_user" id="vac_user" class="form-control">
 						  <?php
-						  if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))
+						  if (!$_USER->hasRightsByGroup(Permission::vacation_grant))
 						  {
 							  echo '<option value="' . $_USER->getId() . '" selected>' . $_USER->getNameAsLine() . '</option>';
 						  } else {
@@ -230,7 +230,7 @@ $(function() {
 				  <div class="col-sm-4">
 					  <select name="vac_state" class="form-control">
 						  <?php
-						  if (!$_USER->hasRightsByGroup(Group::RIGHT_APPROVE_VACATION))
+						  if (!$_USER->hasRightsByGroup(Permission::vacation_grant))
 						  {
 							  if ($vacation->getId()>0)
 							  {

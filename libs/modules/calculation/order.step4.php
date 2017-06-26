@@ -141,7 +141,7 @@ elseif ($order->getArticleid()>0){
 }
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#step4_form').submit();",'glyphicon-floppy-disk');
-if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){
+if($_USER->hasRightsByGroup(Permission::calc_delete) || $_USER->isAdmin()){
     $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/calculation/order.php&exec=delete&id=".$order->getId()."')", 'glyphicon-trash', true);
 }
 echo $quickmove->generate();
@@ -215,7 +215,7 @@ echo $quickmove->generate();
                             <span class="glyphicons glyphicons-pencil pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=2'"></span>
                             <span class="glyphicons glyphicons-file pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&subexec=copy&step=2'"></span>
 
-                            <? if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_ORDER) || $_USER->isAdmin()){ ?>
+                            <? if($_USER->hasRightsByGroup(Permission::calc_delete) || $_USER->isAdmin()){ ?>
                                 <a class="icon-link" href="#"	onclick="askDel('index.php?page=<?=$_REQUEST['page']?>&exec=edit&id=<?=$order->getId()?>&subexec=delete&calc_id=<?=$calc->getId()?>&step=4')"><span style="color:red" class="glyphicons glyphicons-remove"></span></a>
                             <?}?>
                         </td>
@@ -716,7 +716,7 @@ echo $quickmove->generate();
                 <? // -------- ENDE ---------------- Positionskosten ---------------------------- ?>
 
 
-                <? if($_USER->hasRightsByGroup(Group::RIGHT_DETAILED_CALCULATION)) { ?>
+                <? if($_USER->hasRightsByGroup(Permission::calc_detail)) { ?>
 
 
                     <tr>

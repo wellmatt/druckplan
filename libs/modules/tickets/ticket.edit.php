@@ -1128,7 +1128,7 @@ echo $quickmove->generate();
                                             echo '<li id="as_' . $as . '"><a href="index.php?page=' . $link_href . $object->getId() . '">';
                                             echo $object_name;
                                             echo '</a>';
-                                            if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+                                            if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Permission::ASSOCIATION_DELETE))
                                                 echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'/></span>';
                                             echo '</li>';
                                             $as++;
@@ -1322,7 +1322,7 @@ echo $quickmove->generate();
                                 <div class="form-group">
                                     <label for="" class="col-sm-2 control-label">Erstellt</label>
                                     <?php
-                                    if ($_USER->hasRightsByGroup(Group::RIGHT_TICKET_CHANGE_OWNER) || $_USER->isAdmin()) {
+                                    if ($_USER->hasRightsByGroup(Permission::ticket_crtuser_edit) || $_USER->isAdmin()) {
                                         ?>
                                         <div class="col-sm-5">
                                             <select name="tkt_crtusr" id="tkt_crtusr" class="form-control">
@@ -1875,7 +1875,7 @@ echo $quickmove->generate();
                                                       ?>
                                                       <?php echo date("d.m.Y H:i", $comment->getCrtdate()); ?>
                                                       <?php
-                                                      if (($_USER->isAdmin() || $_USER == $comment->getCrtuser()) || ($comment->getVisability() == Comment::VISABILITY_INTERNAL && $_USER->hasRightsByGroup(Group::RIGHT_TICKET_EDIT_INTERNAL)) || ($comment->getVisability() == Comment::VISABILITY_PUBLIC && $_USER->hasRightsByGroup(Group::RIGHT_TICKET_EDIT_OFFICAL)) || ($comment->getVisability() == Comment::VISABILITY_PUBLICMAIL && $_USER->hasRightsByGroup(Group::RIGHT_TICKET_EDIT_OFFICAL))) {
+                                                      if (($_USER->isAdmin() || $_USER == $comment->getCrtuser()) || ($comment->getVisability() == Comment::VISABILITY_INTERNAL && $_USER->hasRightsByGroup(Permission::ticket_commentinternal_edit)) || ($comment->getVisability() == Comment::VISABILITY_PUBLIC && $_USER->hasRightsByGroup(Permission::ticket_commentoffical_edit)) || ($comment->getVisability() == Comment::VISABILITY_PUBLICMAIL && $_USER->hasRightsByGroup(Permission::ticket_commentoffical_edit))) {
                                                           echo '<span class="glyphicons glyphicons-pencil pointer" onclick="callBoxFancytktc(\'libs/modules/comment/comment.edit.php?cid=' . $comment->getId() . '&tktid=' . $ticket->getId() . '\');"/></span>';
                                                       }
                                                       ?>

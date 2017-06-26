@@ -29,7 +29,7 @@ if($_REQUEST["cpid"] == 0){
 
 $contactperson->setBusinessContact(new BusinessContact((int)$_REQUEST["id"]));
 
-if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)){
+if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Permission::CP_EDIT)){
     $contactperson->setActive(1);
     $contactperson->setTitle(trim(addslashes($_REQUEST["title"])));
     $contactperson->setName1(trim(addslashes($_REQUEST["name1"])));
@@ -206,10 +206,10 @@ $(function() {
 $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','#',"document.location='index.php?page=".$_REQUEST['page']."&exec=edit&id=".$_REQUEST["id"]."&tabshow=4'",'glyphicon-step-backward');
-if($_USER->hasRightsByGroup(Group::RIGHT_EDIT_CP)) {
+if($_USER->hasRightsByGroup(Permission::CP_EDIT)) {
 	$quickmove->addItem('Speichern', '#', "$('#user_form').submit();", 'glyphicon-floppy-disk');
 }
-if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_CP) || $_USER->isAdmin()){
+if($_USER->hasRightsByGroup(Permission::CP_DELETE) || $_USER->isAdmin()){
 	if($_REQUEST["exec"] != "new"){
 		$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete_cp&cpid=".$contactperson->getId()."&id=".$contactperson->getBusinessContact()->getID()."');", 'glyphicon-trash', true);
 	}

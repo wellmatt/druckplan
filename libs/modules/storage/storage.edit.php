@@ -45,7 +45,7 @@ $quickmove = new QuickMove();
 $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page=libs/modules/storage/storage.overview.php',null,'glyphicon-step-backward');
 $quickmove->addItem('Speichern','#',"$('#storagearea_form').submit();",'glyphicon-floppy-disk');
-if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
+if($_USER->hasRightsByGroup(Permission::colinv_delete) || $_USER->isAdmin()){
     $quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/storage/storage.overview.php&exec=delete&id=".$storagearea->getId()."');", 'glyphicon-trash', true);
 }
 echo $quickmove->generate();

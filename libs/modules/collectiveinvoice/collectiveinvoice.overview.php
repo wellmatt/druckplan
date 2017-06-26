@@ -198,7 +198,7 @@ $(document).ready(function() {
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				Vorgänge
-				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_COMBINE_COLINV)) { ?>
+				<?php if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Permission::colinv_combine)) { ?>
 					<span class="pull-right">
 					<button class="btn btn-xs btn-success" type="button"
 							onclick="document.location.href='index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php';">

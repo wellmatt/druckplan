@@ -130,7 +130,7 @@ if ($_USER == false)
 {
 
 //    if ($_USER->getLogin() != "ascherer")
-//        die('contilas2 ist im Wartungsmodus (11.06.2017 by A.Scherer)');
+//        die('contilas2 ist im Wartungsmodus (22.06.2017 by A.Scherer)');
      
     // Sprache laden
     $_LANG = $_USER->getLang();

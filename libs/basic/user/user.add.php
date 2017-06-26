@@ -8,17 +8,6 @@
 require_once 'emailaddress.class.php';
 $_REQUEST["id"] = (int)$_REQUEST["id"];
 $user = new User($_REQUEST["id"]);
-if ($_REQUEST["subexec"] == "removegroup")
-{
-    $user->delGroup(new Group($_REQUEST["gid"]));
-    $savemsg = getSaveMessage($user->save());
-}
-
-if ($_REQUEST["subexec"] == "addgroup")
-{
-    $user->addGroup(new Group($_REQUEST["gid"]));
-    $savemsg = getSaveMessage($user->save());
-}
 
 if ($_REQUEST["subexec"] == "deletemail")
 {
@@ -122,6 +111,18 @@ if ($_REQUEST["subexec"] == "save")
 		$saver = $user->save();
 
 		if($saver){
+
+			GroupUser::wipeForUser($user);
+			$newgroups = $_REQUEST["group"];
+			foreach ($newgroups as $key => $value) {
+				$array = [
+					"user" => $user->getId(),
+					"group" => $key
+				];
+				$groupuser = new GroupUser(0, $array);
+				$groupuser->save();
+			}
+
 			if ($_REQUEST["mailaddress"]){
 				$usermailaddresses = Emailaddress::getAllEmailaddressForUser($user);
 				$e = 0;
@@ -677,78 +678,47 @@ echo $quickmove->generate();
 				</div>
 			</div>
 
-			<? if ($user->getId()) { ?>
+			<? if ($user->getId()) {
+
+				$groups = Group::getAllGroups();
+				$gids = GroupUser::getGroupIdsForUser($user);
+				?>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">Gruppen</h3>
 					</div>
-					<div class="panel-body">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">Mitglied von</h3>
-							</div>
-							<div class="table-responsive">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th><?= $_LANG->get('Gruppenname') ?></th>
-											<th><?= $_LANG->get('Beschreibung') ?></th>
-											<th><?= $_LANG->get('Optionen') ?></th>
-										</tr>
-									</thead>
-									<tbody>
-										<? foreach ($groups as $g) {
-											if ($user->isInGroup($g)) {
-												?>
-												<tr>
-													<td><?= $g->getName() ?></td>
-													<td><?= $g->getDescription() ?></td>
-													<td>
-														<a href="#" class="icon-link" onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $user->getId() ?>&subexec=removegroup&gid=<?= $g->getId() ?>'">
-															<span class="glyphicons glyphicons-minus pointer"></span>
-														</a>
-													</td>
-												</tr>
-											<? }
-										} ?>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">Verfügbar</h3>
-							</div>
-							<div class="table-responsive">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th><?= $_LANG->get('Gruppenname') ?></th>
-											<th><?= $_LANG->get('Beschreibung') ?></th>
-											<th><?= $_LANG->get('Optionen') ?></th>
-										</tr>
-									</thead>
-									<tbody>
-										<? foreach ($groups as $g) {
-											if (!$user->isInGroup($g)) {
-												?>
-												<tr>
-													<td><?= $g->getName() ?></td>
-													<td><?= $g->getDescription() ?></td>
-													<td>
-														<a href="#" class="icon-link" onclick="document.location='index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $user->getId() ?>&subexec=addgroup&gid=<?= $g->getId() ?>'">
-															<span class="glyphicons glyphicons-plus pointer"></span>
-														</a>
-													</td>
-												</tr>
-											<? }
-										} ?>
-									</tbody>
-								</table>
-							</div>
-						</div>
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+							<tr>
+								<th>Name</th>
+								<th>Mitglied</th>
+							</tr>
+							</thead>
+							<tbody>
+							<?php foreach ($groups as $group) {?>
+								<tr>
+									<td><?php echo $group->getName();?></td>
+									<td>
+										<div class="form-group">
+											<label for="" class="col-sm-2 control-label"></label>
+											<div class="col-sm-10">
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" name="group[<?php echo $group->getId();?>]" id="group_<?php echo $group->getId();?>" value="1"
+															<?php if (in_array($group->getId(),$gids)){ echo ' checked ';}?>>
+													</label>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+							<?php }?>
+							</tbody>
+						</table>
 					</div>
 				</div>
+
 				<?php
 				$dashboard_rows = DashBoard::countRowsForUser($user);
 				?>

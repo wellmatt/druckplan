@@ -279,7 +279,7 @@ $(document).ready(function() {
     var search_tickets = $('#comment_table').DataTable( {
         "processing": true,
         "bServerSide": true,
-        "sAjaxSource": "libs/modules/businesscontact/businesscontact.comments.dt.ajax.php?bcid=<?php echo $businessContact->getId();?>&access=<?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
+        "sAjaxSource": "libs/modules/businesscontact/businesscontact.comments.dt.ajax.php?bcid=<?php echo $businessContact->getId();?>&access=<?php if ($_USER->hasRightsByGroup(Permission::BC_NOTES) || $_USER->isAdmin()) echo '1'; else echo '0';?>&userid=<?php echo $_USER->getId();?>",
 		"stateSave": false,
 		"pageLength": 10,
 		"dom": 'lrtip',
@@ -503,10 +503,10 @@ if ($_REQUEST["returntosales"] == 1)
 else
 	$quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 
-if ($_USER->hasRightsByGroup(Group::RIGHT_EDIT_BC) || $_USER->isAdmin()) {
+if ($_USER->hasRightsByGroup(Permission::BC_EDIT) || $_USER->isAdmin()) {
 	$quickmove->addItem('Speichern', '#', "$('#user_form').submit();", 'glyphicon-floppy-disk');
 }
-if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){
+if($_USER->hasRightsByGroup(Permission::BC_DELETE) || $_USER->isAdmin()){
 	if($_REQUEST["exec"] != "new"){
 		$quickmove->addItem('Löschen', '#',  "askDel('index.php?page=".$_REQUEST['page']."&exec=delete&id=".$businessContact->getId()."');", 'glyphicon-trash', true);
 }
@@ -536,7 +536,7 @@ echo $quickmove->generate();
 			<li><a href="#tabs-5"><? echo $_LANG->get('Merkmale');?></a></li>
 			<li><a href="#tabs-2"><? echo $_LANG->get('Adressen');?></a></li>
 			<li><a href="#tabs-3"><? echo $_LANG->get('Ansprechpartner');?></a></li>
-			<?php if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_BC) || $_USER->isAdmin()){?>
+			<?php if($_USER->hasRightsByGroup(Permission::BC_DELETE) || $_USER->isAdmin()){?>
 		    <li><a href="#tabs-12"><? echo $_LANG->get('Notizen');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.Comment::getCommentCountForObject("BusinessContact", $businessContact->getId()).'</span>';?></a></li>
             <?php } ?>
 			<li><a href="#tabs-7"><? echo $_LANG->get('Tickets');?><?php if ($businessContact->getId()) echo ' <span id="notify_count" class="badge">'.$ticketcount.'</span>';?></a></li>
@@ -1488,7 +1488,7 @@ echo $quickmove->generate();
 						<h3 class="panel-title">
 							Notizen
 							<span class="pull-right">
-				 <?php if ($_USER->hasRightsByGroup(Group::RIGHT_NOTES_BC) || $_USER->isAdmin()){?>
+				 <?php if ($_USER->hasRightsByGroup(Permission::BC_NOTES) || $_USER->isAdmin()){?>
 								<span>
 									<button class="btn btn-xs btn-success" onclick="callBoxFancytktc('libs/modules/comment/comment.new.php?tktid=0&tktc_module=<?php echo get_class($businessContact);?>&tktc_objectid=<?php echo $businessContact->getId();?>');">
 										<span class="glyphicons glyphicons-plus pointer"></span>

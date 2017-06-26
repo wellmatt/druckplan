@@ -205,7 +205,7 @@ if ($_REQUEST["subexec"] == "export"){
                                         <?php echo Receipt::formatValidation($errors,'<br/>');?>
                                     </div>
                                     <button class="btn btn-xs btn-info" type="button" onclick="InfoModal(<?php echo $receipt->getId();?>);">Info</button>
-                                    <?php if ($_USER->hasRightsByGroup(Group::RIGHT_FIBU_ADMIN) || $_USER->isAdmin()){?>
+                                    <?php if ($_USER->hasRightsByGroup(Permission::ACCOUNTING_ADMIN) || $_USER->isAdmin()){?>
                                         <?php if ($receipt->getExported()>0){?>
                                             <button class="btn btn-xs btn-warning" type="button" onclick="Reset(<?php echo $receipt->getId();?>);">Reset</button>
                                         <?php } ?>

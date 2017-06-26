@@ -285,7 +285,7 @@ $quickmove->addItem('Seitenanfang','#top',null,'glyphicon-chevron-up');
 $quickmove->addItem('Zurück','index.php?page='.$_REQUEST['page'],null,'glyphicon-step-backward');
 if ($collectinv->getLocked() == 0){
 	$quickmove->addItem('Speichern','#',"$('#form_collectiveinvoices').submit();",'glyphicon-floppy-disk');
-	if($_USER->hasRightsByGroup(Group::RIGHT_DELETE_COLINV) || $_USER->isAdmin()){
+	if($_USER->hasRightsByGroup(Permission::colinv_delete) || $_USER->isAdmin()){
 		$quickmove->addItem('Löschen', '#', "askDel('index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=delete&del_id=".$collectinv->getId()."');", 'glyphicon-trash', true);
 	}
 }
@@ -359,7 +359,7 @@ echo $quickmove->generate();
 											echo '<li id="as_' . $as . '"><a href="index.php?page=' . $link_href . $object->getId() . '">';
 											echo $object_name;
 											echo '</a>';
-											if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Group::RIGHT_ASSO_DELETE))
+											if ($_USER->isAdmin() || $_USER->hasRightsByGroup(Permission::ASSOCIATION_DELETE))
 												echo '<span class="glyphicons glyphicons-remove pointer" onclick=\'removeAsso(' . $association->getId() . '); $("#as_' . $as . '").remove();\'></span>';
 											echo '</li>';
 											$as++;

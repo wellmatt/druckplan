@@ -31,7 +31,6 @@ class User {
     private $active;
     private $password;
     private $forwardmail;
-    private $groups = Array();
     private $lang;
     private $telefonIP;
     private $emailAdresses = null;
@@ -71,6 +70,9 @@ class User {
 	const WEEKDAY_SATURDAY = 6;
 
 	private $workinghours = Array();
+    private $_rights = [];
+    private $_rights_slugs = [];
+    private $_groups = [];
 
     // Dashboard & Starting Page
     private $homepage = 'libs/basic/home.php';
@@ -94,6 +96,7 @@ class User {
                 $cached = Cachehandler::fromCache(Cachehandler::genKeyword($this,$id));
                 if (get_class($cached) == get_class($this)){
                     $vars = array_keys(get_class_vars(get_class($this)));
+                    $vars = array_filter($vars, function($item){ return substr($item,0,1) != "_";});
                     foreach ($vars as $var)
                     {
                         $method = "get".ucfirst($var);
@@ -175,13 +178,6 @@ class User {
                     }
                     $this->workinghours = $tmp_worktimes;
 
-                    $sql = " SELECT * FROM user_groups WHERE user_id = {$this->id}";
-                    if ($DB->num_rows($sql) > 0) {
-                        $res = $DB->select($sql);
-                        foreach ($res as $r)
-                            $this->groups[] = new Group($r["group_id"], false);
-                    }
-
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                     return true;
                 }
@@ -228,18 +224,6 @@ class User {
             telefon_ip = '{$this->telefonIP}'
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
-
-            $sql = " DELETE FROM user_groups WHERE user_id = {$this->id}";
-            $DB->no_result($sql);
-
-            foreach ($this->groups as $g)
-            {
-                $sql = " INSERT INTO user_groups
-                (user_id, group_id)
-                VALUES
-                ({$this->id}, {$g->getId()})";
-                $DB->no_result($sql);
-            }
         } else
         {
             $this->userlevel |= self::USER_NORMAL;
@@ -506,7 +490,12 @@ class User {
      
     // Gruppen des Benutzers
     function getGroups() {
-        return $this->groups;
+        if (count($this->_groups) > 0)
+            return $this->_groups;
+        else {
+            $this->_groups = GroupUser::getGroupsForUser($this);
+            return $this->_groups;
+        }
     }
      
     // Translator f�r den Benutzer
@@ -525,16 +514,46 @@ class User {
     // Ist benutzer in Gruppe?
     // Erwartet Gruppenobjekt
     function isInGroup($val) {
-        $userGroups = $this->getGroups();
-        foreach ($userGroups as $g)
-        {
-            if ($g->getId() == $val->getId())
-                return true;
-        }
-        return false;
+        $ids = GroupUser::getGroupIdsForUser($this);
+        if (in_array($val->getId(),$ids))
+            return true;
+        else
+            return false;
     }
-     
-    function hasRightsByGroup($right)
+
+    /**
+     * @return Permission[]
+     */
+    public function getAllRights()
+    {
+        if (count($this->_rights)>0)
+            return $this->_rights;
+        else {
+            $rightids = [];
+            $rights = [];
+            $slugs = [];
+            $groups = GroupUser::getGroupsForUser($this);
+            foreach ($groups as $group) {
+                $roles = GroupRole::getRolesForGroup($group);
+                foreach ($roles as $role) {
+                    $perms = RolePermission::getPermissionsForRole($role);
+                    foreach ($perms as $perm) {
+                        if (!in_array($perm->getId(),$rightids)){
+                            $rightids[] = $perm->getId();
+                            $rights[] = $perm;
+                            $slugs[] = $perm->getSlug();
+                        }
+                    }
+                }
+            }
+            $this->_rights_slugs = $slugs;
+            $this->_rights = $rights;
+            return $this->_rights;
+        }
+    }
+
+
+/*    function hasRightsByGroup($right)
     {
         if ($this->isAdmin())
             return true;
@@ -544,6 +563,24 @@ class User {
             if ($g->hasRight($right))
                 $hasright = true;
         return $hasright;
+    }*/
+
+    /**
+     * @param $slug
+     * @return bool
+     */
+    function hasRightsByGroup($slug)
+    {
+        if ($this->isAdmin())
+            return true;
+
+        if (count($this->_rights_slugs) == 0)
+            self::getAllRights();
+
+        if (in_array($slug,$this->_rights_slugs))
+            return true;
+        else
+            return false;
     }
     
     /* SETTER FUNCTION */
@@ -607,22 +644,6 @@ class User {
      
     function setLang($val) {
         $this->lang = $val;
-    }
-     
-    function addGroup($val) {
-        $this->groups[] = $val;
-    }
-     
-    function delGroup($val) {
-        $new = Array();
-        foreach ($this->groups as $g)
-        {
-            if ($g->getId() != $val->getId())
-            {
-                $new[] = $g;
-            }
-        }
-        $this->groups = $new;
     }
 
 	public function getTelefonIP()
@@ -1057,4 +1078,5 @@ class User {
     {
         $this->loginagent = $loginagent;
     }
+
 }
