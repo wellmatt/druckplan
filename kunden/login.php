@@ -52,10 +52,8 @@ if($_REQUEST["exec"] == "login"){
 		//----------------------------------------------------------------------------------
 		
 		$tmp_anspr = ContactPerson::getBusinessContactsByShoplogin($username, $pass);
-	   	error_log( "Hallo1");
 
 		if($tmp_anspr != false){  
-	      	error_log("  Hallo 2");
 
 			// falls es eine Ansprechpartner mit den Login-Daten gibt, Daten setzen
 			$_SESSION["contactperson"]		= $tmp_anspr;
@@ -77,71 +75,180 @@ if($_REQUEST["exec"] == "login"){
     }
 }?>
 
-<script language="Javascript">
-function checkform(obj){
-	var xc = 0;
-	for(x=0; x < obj.length; x++){
-		if(obj[x].value == ''){
-			xc++;
-			obj[x].style.backgroundColor  = '#d3d3d3';
-			obj[x].style.borderColor      = '#FF6600';
-			if(xc==1){
-				obj[x].focus();
-			}
-		} else {
-			obj[x].style.backgroundColor  = '';
-			obj[x].style.borderColor      = '';
-		}
-	}
-	if(xc>0){
-		alert("Bitte fehlende Daten eingeben.");
-		return false;
-	}
-	return true;
-}
-</script>
 <link rel="stylesheet" type="text/css" href="../css/login_new.css">
 
-<!-- Loginform -->
-<form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_login">
-	<div id="loginform">
-		<input name="exec" type="hidden" value="login">
-		<div class="login-window">
-			<div class="inner">
-				<p class="login-row">
-					<input type="text" name="user" placeholder="User Name" onLoad="focus()"/>
-				</p>
-				<p class="pass-row">
-					<input type="password" name="password" placeholder="Passwort" onLoad="focus()"/>
-				</p>
-				<p class="logo-row">
-					<span class="error"><? if($_USER) echo $_USER->getError()?></span>
-					<img src="../images/page/Logo_Contilas_Kundenportal.png" alt="logo" />
-				<p class="submit-row">
-					<input type="submit" name="submit" value=""/>
-				</p>
-			</div>
-		</div>
+
+<!-- jQuery -->
+<link type="text/css" href="../jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="../jscripts/jquery/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="../jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="../jscripts/jquery/js/jquery.blockUI.js"></script>
+<script language="JavaScript" src="./jscripts/jquery/local/jquery.ui.datepicker-<?=$_LANG->getCode()?>.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="../jscripts/moment/moment-with-locales.min.js"></script>
+<!-- /jQuery -->
+
+<!-- MegaNavbar -->
+<link href="../thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="../thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="../thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="../thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../jscripts/jquery.bootstrap.wizard.min.js"></script>
+<!-- /MegaNavbar -->
+
+
+<style>
+	@import url('http://fonts.googleapis.com/css?family=Roboto');
+
+	* {
+		font-family: 'Roboto', sans-serif;
+	}
+
+	#login-modal .modal-dialog {
+		width: 350px;
+	}
+
+	#login-modal input[type=text], input[type=password] {
+		margin-top: 10px;
+	}
+
+	#div-login-msg,
+	#div-lost-msg,
+	#div-register-msg {
+		border: 1px solid #dadfe1;
+		height: 30px;
+		line-height: 28px;
+		transition: all ease-in-out 500ms;
+	}
+
+	#div-login-msg.success,
+	#div-lost-msg.success,
+	#div-register-msg.success {
+		border: 1px solid #68c3a3;
+		background-color: #c8f7c5;
+	}
+
+	#div-login-msg.error,
+	#div-lost-msg.error,
+	#div-register-msg.error {
+		border: 1px solid #eb575b;
+		background-color: #ffcad1;
+	}
+
+	#icon-login-msg,
+	#icon-lost-msg,
+	#icon-register-msg {
+		width: 30px;
+		float: left;
+		line-height: 28px;
+		text-align: center;
+		background-color: #dadfe1;
+		margin-right: 5px;
+		transition: all ease-in-out 500ms;
+	}
+
+	#icon-login-msg.success,
+	#icon-lost-msg.success,
+	#icon-register-msg.success {
+		background-color: #68c3a3 !important;
+	}
+
+	#icon-login-msg.error,
+	#icon-lost-msg.error,
+	#icon-register-msg.error {
+		background-color: #eb575b !important;
+	}
+
+	/* #########################################
+       #    override the bootstrap configs     #
+       ######################################### */
+
+	.modal-header {
+		min-height: 16.43px;
+		padding: 15px 15px 15px 15px;
+		border-bottom: 0px;
+	}
+
+	.modal-body {
+		position: relative;
+		padding: 5px 15px 5px 15px;
+	}
+
+	.modal-footer {
+		padding: 15px 15px 15px 15px;
+		text-align: left;
+		border-top: 0px;
+	}
+
+	.btn {
+		border-radius: 0px;
+	}
+
+	.btn:focus,
+	.btn:active:focus,
+	.btn.active:focus,
+	.btn.focus,
+	.btn:active.focus,
+	.btn.active.focus {
+		outline: none;
+	}
+
+	.btn-lg, .btn-group-lg>.btn {
+		border-radius: 0px;
+	}
+
+	.glyphicon {
+		top: 0px;
+	}
+
+	.form-control {
+		border-radius: 0px;
+	}
+</style>
+
+<div class="container" style="
+    width: 400px;
+    background-color: #ececec;
+    border: 1px solid #bdc3c7;
+    border-radius: 0px;
+    outline: 0;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    ">
+	<div class="modal-header" align="center">
+		<img id="img_logo" src="../images/shop_logo.jpg">
 	</div>
-</form>
 
-<script language="javascript">
-if (document.body.clientHeight)
-{
-   clientWidth = document.body.clientWidth;
-   clientHeight = document.body.clientHeight;
-}
-else
-{
-   clientWidth = window.innerWidth;
-   clientHeight = window.innerHeight;
-}
+	<!-- Begin # DIV Form -->
+	<div id="div-forms">
 
-var centerWidth   = Math.round(clientWidth / 2);
-var centerHeight  = Math.round(clientHeight / 2);
-var posLeft = centerWidth - 150;
-var posTop = centerHeight - 100;
+		<!-- Begin # Login Form -->
+		<form id="login-form" action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="xform_login">
+			<input name="exec" type="hidden" value="login">
+			<div class="modal-body">
+				<div id="div-login-msg">
+					<div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
+					<?php if ($loginfailed){?>
+						<span id="text-login-msg" style="color: #d9534f;">Benutzername oder Password prüfen!</span>
+					<? } else {?>
+						<span id="text-login-msg">Bitte loggen Sie sich ein.</span>
+					<?php } ?>
+				</div>
+				<input id="login_username" name="user" class="form-control" placeholder="Username" required="" type="text">
+				<input id="login_password" name="password" class="form-control" placeholder="Password" required="" type="password">
+			</div>
+			<div class="modal-footer">
+				<div>
+					<button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+				</div>
+			</div>
+		</form>
+		<!-- End # Login Form -->
 
-document.getElementById('loginform').style.left = posLeft+'px';
-document.getElementById('loginform').style.top = posTop+'px';;
-</script>
+	</div>
+	<!-- End # DIV Form -->
+
+</div>

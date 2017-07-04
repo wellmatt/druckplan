@@ -145,9 +145,12 @@ if ($_SESSION["login_type"] == "businesscontact"){
 if ($_REQUEST["exec"] == "register_tmp"){
 	require_once('kunden/register_tmp.php');
 } else {
-	if(!$_SESSION["cust_logontime"])
-	    require_once('kunden/login.php');
-	else {	
+	if(!$_SESSION["cust_logontime"]) {
+		if (file_exists('custom/login_shop/login.php'))
+			require_once('custom/login_shop/login.php');
+		else
+			require_once('kunden/login.php');
+	} else {
 	
 	    Global $_USER;
 	    if ($_BUSINESSCONTACT->getSupervisor()->getId() > 0){

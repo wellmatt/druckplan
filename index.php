@@ -101,6 +101,8 @@ if ($_REQUEST["doLogout"] == 1)
             $_USER->setLoginip($_SESSION['ipadress']);
             $_USER->setLoginagent($_SESSION['useragent']);
             $_USER->save();
+        } else {
+            $loginfailed = true;
         }
     } else
     {
@@ -125,7 +127,10 @@ if ($_REQUEST["doLogout"] == 1)
 
 if ($_USER == false)
 {
-    require_once('./libs/basic/user/login.php');
+    if (file_exists('./custom/login/login.php'))
+        require_once('./custom/login/login.php');
+    else
+        require_once('./libs/basic/user/login.php');
 } else
 {
 

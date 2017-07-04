@@ -27,6 +27,9 @@ if ($_REQUEST["exec"] == "save")
 	if($_FILES["shop_logo"]){
 		move_uploaded_file($_FILES["shop_logo"]["tmp_name"], "./images/shop_logo.jpg");
 	}
+	if($_FILES["login_logo"]){
+		move_uploaded_file($_FILES["login_logo"]["tmp_name"], "./images/login_logo.jpg");
+	}
 	if($_FILES["shop_bg"]){
 		move_uploaded_file($_FILES["shop_bg"]["tmp_name"], "./images/shop_bg.jpg");
 	}
@@ -328,6 +331,19 @@ echo $quickmove->generate();
 						<div class="col-sm-10">
 							vorhandenen in neuem Fenster <a target="_blank"	href="images/shop_logo.jpg"><b>öffnen</b></a></br></br>
 							Bild wird auf eine Höhe von 50px skaliert! </br>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Login Logo</label>
+						<div class="col-sm-10">
+							<input type="file" name="login_logo" id="login_logo"/>
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							vorhandenen in neuem Fenster <a target="_blank"	href="images/login_logo.jpg"><b>öffnen</b></a></br></br>
 						</div>
 					</div>
 					<div class="form-group">
