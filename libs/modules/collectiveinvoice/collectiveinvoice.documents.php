@@ -96,6 +96,11 @@ if ($_REQUEST["subexec"] == "doc_texts")
     $collectinv->save();
 }
 
+$margin_warning = false;
+if ($collectinv->getId()>0 && $collectinv->getLocked() == 0){
+	$margin_warning = Orderposition::checkMarginWarn($collectinv);
+}
+
 ?>
 
 <script>
@@ -242,7 +247,16 @@ if ($_REQUEST["subexec"] == "doc_texts")
 		  </div>
 	</div>
 </form>
-<br>
+<?php
+if ($margin_warning){
+	?>
+	<div class="alert alert-danger" role="alert" style="margin-bottom: 0px;">
+		<strong>Warnung!</strong></br>
+		Die Marge in diesem Vorgang ist unter der minimal Grenze! Nur jemand mit der nötigen Berechtigung kann Dokumente generieren!
+	</div>
+	<?php
+}
+?>
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -329,6 +343,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 						<td>- - -</td>
 						<td>- - -</td>
 						<td>
+							<?php if (!$margin_warning || $_USER->hasRightsByGroup('colinv_ignoremargin')){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(1);
@@ -347,6 +362,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=offer"
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offer').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
+							<?php } ?>
 						</td>
 					</tr>
 					</tbody>
@@ -429,6 +445,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 						<td>- - -</td>
 						<td>- - -</td>
 						<td>
+							<?php if (!$margin_warning || $_USER->hasRightsByGroup('colinv_ignoremargin')){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(Document::TYPE_OFFERCONFIRM);
@@ -447,6 +464,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=offerconfirm"
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offerconfirm').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
+							<?php } ?>
 						</td>
 
 					</tr>
@@ -533,6 +551,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 						<td>- - -</td>
 						<td>- - -</td>
 						<td>
+							<?php if (!$margin_warning || $_USER->hasRightsByGroup('colinv_ignoremargin')){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(Document::TYPE_FACTORY);
@@ -551,6 +570,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=factory"
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_factory').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
+							<?php } ?>
 						</td>
 					</tr>
 					</tbody>
@@ -634,6 +654,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 						<td>- - -</td>
 						<td>- - -</td>
 						<td>
+							<?php if (!$margin_warning || $_USER->hasRightsByGroup('colinv_ignoremargin')){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(Document::TYPE_DELIVERY);
@@ -652,6 +673,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=delivery"
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_delivery').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
+							<?php } ?>
 						</td>
 					</tr>
 					</tbody>
@@ -746,6 +768,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 							</div>
 						</td>
 						<td>
+							<?php if (!$margin_warning || $_USER->hasRightsByGroup('colinv_ignoremargin')){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(Document::TYPE_LABEL);
@@ -764,6 +787,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=label"
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_label').val()+'&label_box_amount='+$('#label_box_amount').val()+'&label_print_logo='+$('#label_print_logo').val()+'&label_title='+$('#label_title').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
+							<?php } ?>
 						</td>
 					</tr>
 					</tbody>
@@ -847,7 +871,7 @@ if ($_REQUEST["subexec"] == "doc_texts")
 						<td>- - -</td>
 						<td>- - -</td>
 						<td>
-							<?php if ($collectinv->getLocked() == 0){?>
+							<?php if ($collectinv->getLocked() == 0 && (!$margin_warning || $_USER->hasRightsByGroup('colinv_ignoremargin'))){?>
 							<ul class="postnav_text_save">
 								<?php
 								$letterheads = Letterhead::getAllForType(Document::TYPE_INVOICE);

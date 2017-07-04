@@ -102,6 +102,7 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setMailtextSenddocs(trim(addslashes($_REQUEST["mailtext_senddocs"])));
 	$perf->setDefaultRevenue(new RevenueaccountCategory($_REQUEST["revenueaccount"]));
 	$perf->setDefaultCostobject(new CostObject($_REQUEST["costobject"]));
+	$perf->setMinmargin(str_replace(",",".",str_replace(".","",$_REQUEST["minmargin"])));
 
 	$savemsg = getSaveMessage($perf->save());
 	
@@ -705,6 +706,12 @@ echo $quickmove->generate();
 										<?php } ?>
 								<?php } ?>
 							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Marge (minimum) %</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="minmargin" id="minmargin" placeholder="" value="<?php echo printPrice($perf->getMinmargin());?>">
 						</div>
 					</div>
 				</div>

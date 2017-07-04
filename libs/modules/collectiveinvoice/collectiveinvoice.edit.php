@@ -429,6 +429,21 @@ echo $quickmove->generate();
 		<input type="hidden" name="asso_object" value="<?php echo $_REQUEST["asso_object"];?>">
 		<input 	type="hidden" name="colinv_businesscontact"  value="<?=$collectinv->getBusinesscontact()->getId()?>">
 
+		<?php
+		$margin_warning = false;
+		if ($collectinv->getId()>0 && $collectinv->getLocked() == 0){ //  && $_USER->hasRightsByGroup('colinv_ignoremargin') == false
+			$margin_warning = Orderposition::checkMarginWarn($collectinv);
+		}
+		if ($margin_warning){
+			?>
+			<div class="alert alert-danger" role="alert" style="margin-bottom: 0px;">
+				<strong>Warnung!</strong></br>
+				Die Marge in diesem Vorgang ist unter der minimal Grenze! Nur jemand mit der nötigen Berechtigung kann Dokumente generieren!
+			</div>
+			<?php
+		}
+		?>
+
 		<div class="panel-body">
 			<div class="panel panel-default">
 				<div class="panel-heading">

@@ -345,6 +345,29 @@ class Orderposition{
 			return new Article();
 		}
 	}
+
+    /**
+     * @param $colinv CollectiveInvoice
+     * @return bool
+     */
+    public static function checkMarginWarn($colinv)
+    {
+        $orderpositions = self::getAllOrderposition($colinv->getId());
+        $perf = new Perferences();
+        $price = 0.0;
+        $buy = 0.0;
+
+        foreach ($orderpositions as $orderposition) {
+            $price += $orderposition->getPrice();
+            $buy += $orderposition->getMyArticle()->getCost($orderposition->getQuantity());
+        }
+
+        if ($price < ($buy * ( 1+$perf->getMinmargin()/100 ))){
+            return true;
+        } else {
+            return false;
+        }
+	}
 	
 	/****************************************************************
 	 * 						GETTER u. SETTER						*

@@ -67,6 +67,10 @@ class Perferences
     private $default_revenue;
     private $default_costobject;
 
+    // Allgemeines
+
+    private $minmargin = 0.0;
+
     function __construct()
     {
         global $DB;
@@ -110,6 +114,7 @@ class Perferences
             $this->default_revenue = new RevenueaccountCategory((int)$r["default_revenue"]);
             $this->default_costobject = new CostObject((int)$r["default_costobject"]);
             $this->inkusage = $r["inkusage"];
+            $this->minmargin = $r["minmargin"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -187,6 +192,7 @@ class Perferences
                default_revenue 	= '{$this->default_revenue->getId()}',
                default_costobject 	= '{$this->default_costobject->getId()}',
                inkusage = '{$this->inkusage}',
+               minmargin = '{$this->minmargin}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -702,5 +708,21 @@ class Perferences
     public function setMailtextSenddocs($mailtext_senddocs)
     {
         $this->mailtext_senddocs = $mailtext_senddocs;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMinmargin()
+    {
+        return $this->minmargin;
+    }
+
+    /**
+     * @param float $minmargin
+     */
+    public function setMinmargin($minmargin)
+    {
+        $this->minmargin = $minmargin;
     }
 }
