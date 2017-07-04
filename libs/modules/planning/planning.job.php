@@ -73,6 +73,7 @@ if ($_REQUEST["delete"])
                         $pj->setSubobject(new Order((int)$job["subobject"]));
                         $pj->setArtmach(new Machine((int)$job["artmach"]));
                     }
+                    $pj->setMe(new Machineentry((int)$job["me"]));
                     $pj->setTplanned(tofloat($job["workers"]["load"][$i]));
                     $pj->setStart(strtotime($job["start"]));
                     if (substr($job["workers"]["assigned"][$i], 0, 2) == "u_"){
@@ -396,6 +397,7 @@ function createSelects(id,count,workload)
                                                         <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
                                                         <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getOrderid();?>"/>
                                                         <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $me->getMachine()->getId();?>"/>
+                                                        <input type="hidden" name="crt_job[<?php echo $x;?>][me]" value="<?php echo $me->getId();?>"/>
                                                         <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $me->getTime()/60;?>"/>
                                                         <td><?php echo $me->getMachine()->getName();?><?php if ($me->getPart()>0) echo ' - '.$me->getPartName();?></td>
                                                         <td>
@@ -446,6 +448,7 @@ function createSelects(id,count,workload)
                                             <input type="hidden" name="crt_job[<?php echo $x;?>][opos]" value="<?php echo $opos->getId();?>"/>
                                             <input type="hidden" name="crt_job[<?php echo $x;?>][subobject]" value="<?php echo $opos_article->getId();?>"/>
                                             <input type="hidden" name="crt_job[<?php echo $x;?>][artmach]" value="<?php echo $opos_article->getId();?>"/>
+                                            <input type="hidden" name="crt_job[<?php echo $x;?>][me]" value="0"/>
                                             <input type="hidden" id="crt_job_workload_<?php echo $x;?>" value="<?php echo $opos->getQuantity();?>"/>
                                             <td class="content_row" valign="top"><?php echo $opos_article->getTitle();?></td>
                                             <td class="content_row" valign="top">

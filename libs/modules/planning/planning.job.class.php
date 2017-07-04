@@ -29,6 +29,7 @@ class PlanningJob {
     private $tactual = 0;
     private $state = 1;
     private $artmach;
+    private $me;
     
     const TYPE_V = 1;
     const TYPE_K = 2;
@@ -95,6 +96,7 @@ class PlanningJob {
                         $this->subobject = new Order((int)$r["subobject"]);
                         $this->artmach = new Machine((int)$r["artmach"]);
                     }
+                    $this->me = new Machineentry((int)$r["me"]);
                     $this->assigned_user = new User((int)$r["assigned_user"]);
                     $this->assigned_group = new Group((int)$r["assigned_group"]);
                     $this->ticket = new Ticket((int)$r["ticket"]);
@@ -109,6 +111,10 @@ class PlanningJob {
         }
     }
 
+    /**
+     * @param null $filter
+     * @return PlanningJob[]
+     */
     static function getAllJobs($filter = null)
     {
         global $DB;
@@ -268,8 +274,8 @@ class PlanningJob {
                 tplanned = {$this->tplanned},
                 tactual = {$this->tactual},
                 artmach = {$this->artmach->getId()},
+                me = {$this->me->getId()},
                 state = {$this->state}";
-        
         if ($this->id > 0) {
             $sql = "UPDATE planning_jobs SET " . $set . " WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -362,7 +368,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $object
+     * @return CollectiveInvoice $object
      */
     public function getObject()
     {
@@ -370,7 +376,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $type
+     * @return int $type
      */
     public function getType()
     {
@@ -378,7 +384,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $subobject
+     * @return Order|Article $subobject
      */
     public function getSubobject()
     {
@@ -386,7 +392,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $assigned_user
+     * @return User $assigned_user
      */
     public function getAssigned_user()
     {
@@ -398,7 +404,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $ticket
+     * @return Ticket $ticket
      */
     public function getTicket()
     {
@@ -406,7 +412,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $start
+     * @return int $start
      */
     public function getStart()
     {
@@ -414,7 +420,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $tplanned
+     * @return int $tplanned
      */
     public function getTplanned()
     {
@@ -422,7 +428,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $tactual
+     * @return int $tactual
      */
     public function getTactual()
     {
@@ -438,7 +444,7 @@ class PlanningJob {
     }
 
 	/**
-     * @return the $artmach
+     * @return Article|Machine $artmach
      */
     public function getArtmach()
     {
@@ -526,7 +532,7 @@ class PlanningJob {
     }
     
 	/**
-     * @return the $opos
+     * @return Orderposition $opos
      */
     public function getOpos()
     {
@@ -559,6 +565,22 @@ class PlanningJob {
     public function setAssigned_group($assigned_group)
     {
         $this->assigned_group = $assigned_group;
+    }
+
+    /**
+     * @return Machineentry
+     */
+    public function getMe()
+    {
+        return $this->me;
+    }
+
+    /**
+     * @param Machineentry $me
+     */
+    public function setMe($me)
+    {
+        $this->me = $me;
     }
 }
 ?>

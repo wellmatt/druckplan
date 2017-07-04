@@ -95,6 +95,8 @@ foreach ($dates as $date)
     {
         foreach ($jobs as $pj)
         {
+            $subhtml .= '<div class="panel panel-default">';
+
             $subhtml .= '<div class="table-responsive">';
             $subhtml .= '<table class="table table-hover">';
             $subhtml .= '<thead>';
@@ -129,11 +131,54 @@ foreach ($dates as $date)
             if ($pj->getTactual()>$pj->getTplanned())
                 $style = ' style="background-color: red;"';
             $subhtml .= '<td '.$style.'>'.number_format($pj->getTactual(), 2, ",", "").'</td>';
-            $subhtml .= '<td><span style="display: inline-block; vertical-align: top; background-color: '.$pj->getTicket()->getState()->getColorcode().'" class="label">';
+            $subhtml .= '<td><span style="display: inline-block; font-size: medium; vertical-align: top; background-color: '.$pj->getTicket()->getState()->getColorcode().'" class="label">';
             $subhtml .= $pj->getTicket()->getState()->getTitle().'</span></td>';
             $subhtml .= '</tr>';
             $subhtml .= '</table>';
             $subhtml .= '</div>';
+
+
+            if ($pj->getType()==2){
+                $contents = Calculation::contentArray();
+                $me = $pj->getMe();
+                $calc = new Calculation($me->getCalcId());
+                if ($calc->getId()>0){
+                    foreach ($contents as $content) {
+                        if ($content['const'] == $me->getPart()){
+                            if ($calc->$content['id']()->getId()>0) {
+                                $subhtml .= '<div class="table-responsive">';
+                                $subhtml .= '<table class="table table-hover" id="art_table">';
+                                $subhtml .= '<thead>';
+                                $subhtml .= '<tr>';
+                                $subhtml .= '<td>Material</td>';
+                                $subhtml .= '<td>Grammatur</td>';
+                                $subhtml .= '<td>Farbigkeit</td>';
+                                $subhtml .= '<td>Bogenformat</td>';
+                                $subhtml .= '<td>Produktformat</td>';
+                                $subhtml .= '<td>Produktformat offen</td>';
+                                $subhtml .= '<td>Nutzen</td>';
+                                $subhtml .= '<td>Druckbogen insgesamt</td>';
+                                $subhtml .= '</tr>';
+                                $subhtml .= '</thead>';
+
+                                $subhtml .= '<tr>';
+                                $subhtml .= '<td>'.$calc->$content['id']()->getName().'</td>';
+                                $subhtml .= '<td>'.$calc->$content['weight']().'g</td>';
+                                $subhtml .= '<td>'.$calc->$content['chr']()->getName().'</td>';
+                                $subhtml .= '<td>'.$calc->$content['width']().'mm x '.$calc->$content['height']().'mm</td>';
+                                $subhtml .= '<td>'.$calc->getProductFormatWidth().'mm x '.$calc->getProductFormatHeight().'mm</td>';
+                                $subhtml .= '<td>'.$calc->getProductFormatWidthOpen().'mm x '.$calc->getProductFormatHeightOpen().'mm</td>';
+                                $subhtml .= '<td>'.$calc->getProductsPerPaper($content['const']).'</td>';
+                                $subhtml .= '<td>'.printBigInt($calc->getPaperCount($content['const']) + $calc->$content['grant']()).'</td>';
+                                $subhtml .= '</tr>';
+
+                                $subhtml .= '</table>';
+                                $subhtml .= '</div>';
+                            }
+                        }
+                    }
+                }
+            }
             
             if ($pj->getType() == PlanningJob::TYPE_K && $statsenabled == 1)
             {
@@ -145,6 +190,8 @@ foreach ($dates as $date)
                     $stats[$pj->getArtmach()->getId()] = Array('Name'=>$pj->getArtmach()->getName(),'ptime'=>$pj->getTplanned(),'atime'=>$pj->getTactual(),'avtime'=>$pj->getArtmach()->getRunningtimeForDay($day_start)/60/60);
                 }
             }
+
+            $subhtml .= '</div>';
         }
         if (count($stats)>0 && $statsenabled == 1)
         { 
@@ -168,14 +215,16 @@ foreach ($dates as $date)
             $statshtml .= '</table></div>';
         }
     } else {
-        $subhtml .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">keine Jobs</h3></div></div>';
+//            $subhtml .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">keine Jobs</h3></div></div>';
     }
-    
-    $html .= '<div class="row" style="margin-left:0px;margin-right:0px;"><h3>'.$date.'</h3>';
-    if ($statsenabled == 1)
-        $html .= $statshtml;
-    $html .= $subhtml;
-    $html .= '</div></br>';
+
+    if (count($jobs)>0){
+        $html .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">'.$date.'</h3></div><div class="panel-body">';
+        if ($statsenabled == 1)
+            $html .= $statshtml;
+        $html .= $subhtml;
+        $html .= '</div></div>';
+    }
 }
 
 echo $html;
@@ -204,17 +253,22 @@ echo $html;
         {
             foreach ($jobs as $pj)
             {
+                if ($pj->getStart() < time())
+                    $subhtml .= '<div class="panel panel-warning" style="background-color: #f2dede;">';
+                else
+                    $subhtml .= '<div class="panel panel-default">';
+
                 $subhtml .= '<div class="table-responsive">';
                 $subhtml .= '<table class="table table-hover" id="art_table">';
-                $subhtml .= '<thead>';
+                $subhtml .= '<thead style="font-weight: bold;">';
                 $subhtml .= '<tr>';
                 $subhtml .= '<td width="20">ID</td>';
                 $subhtml .= '<td width="400">Objekt</td>';
                 $subhtml .= '<td width="150">MA</td>';
                 $subhtml .= '<td width="50">Vorgang</td>';
                 $subhtml .= '<td width="50">Ticket</td>';
-                $subhtml .= '<td width="80">Prod. Beginn</td>';
-                $subhtml .= '<td width="70">Lief.-Datum</td>';
+                $subhtml .= '<td width="90">Prod. Beginn</td>';
+                $subhtml .= '<td width="80">Lief.-Datum</td>';
                 $subhtml .= '<td width="50">S-Zeit</td>';
                 $subhtml .= '<td width="50">I-Zeit</td>';
                 $subhtml .= '<td width="80">Status</td>';
@@ -238,7 +292,7 @@ echo $html;
                 if ($pj->getTactual()>$pj->getTplanned())
                     $style = ' style="background-color: red;"';
                 $subhtml .= '<td '.$style.'>'.number_format($pj->getTactual(), 2, ",", "").'</td>';
-                $subhtml .= '<td><span style="display: inline-block; vertical-align: top; background-color: '.$pj->getTicket()->getState()->getColorcode().'" class="label">';
+                $subhtml .= '<td><span style="display: inline-block; font-size: medium; vertical-align: top; background-color: '.$pj->getTicket()->getState()->getColorcode().'" class="label">';
                 $subhtml .= $pj->getTicket()->getState()->getTitle().'</span></td>';
                 $subhtml .= '<td>';
                 if ($pj->getTicket()->getState()->getId() == TicketState::STATE_OPEN)
@@ -253,6 +307,49 @@ echo $html;
                 $subhtml .= '</div>';
 
 
+                if ($pj->getType()==2){
+                    $contents = Calculation::contentArray();
+                    $me = $pj->getMe();
+                    $calc = new Calculation($me->getCalcId());
+                    if ($calc->getId()>0){
+                        foreach ($contents as $content) {
+                            if ($content['const'] == $me->getPart()){
+                                if ($calc->$content['id']()->getId()>0) {
+                                    $subhtml .= '<div class="table-responsive">';
+                                    $subhtml .= '<table class="table table-hover" id="art_table">';
+                                    $subhtml .= '<thead style="font-weight: bold;">';
+                                    $subhtml .= '<tr>';
+                                    $subhtml .= '<td>Material</td>';
+                                    $subhtml .= '<td>Grammatur</td>';
+                                    $subhtml .= '<td>Farbigkeit</td>';
+                                    $subhtml .= '<td>Bogenformat</td>';
+                                    $subhtml .= '<td>Produktformat</td>';
+                                    $subhtml .= '<td>Produktformat offen</td>';
+                                    $subhtml .= '<td>Nutzen</td>';
+                                    $subhtml .= '<td>Druckbogen insgesamt</td>';
+                                    $subhtml .= '</tr>';
+                                    $subhtml .= '</thead>';
+
+                                    $subhtml .= '<tr>';
+                                    $subhtml .= '<td>'.$calc->$content['id']()->getName().'</td>';
+                                    $subhtml .= '<td>'.$calc->$content['weight']().'g</td>';
+                                    $subhtml .= '<td>'.$calc->$content['chr']()->getName().'</td>';
+                                    $subhtml .= '<td>'.$calc->$content['width']().'mm x '.$calc->$content['height']().'mm</td>';
+                                    $subhtml .= '<td>'.$calc->getProductFormatWidth().'mm x '.$calc->getProductFormatHeight().'mm</td>';
+                                    $subhtml .= '<td>'.$calc->getProductFormatWidthOpen().'mm x '.$calc->getProductFormatHeightOpen().'mm</td>';
+                                    $subhtml .= '<td>'.$calc->getProductsPerPaper($content['const']).'</td>';
+                                    $subhtml .= '<td>'.printBigInt($calc->getPaperCount($content['const']) + $calc->$content['grant']()).'</td>';
+                                    $subhtml .= '</tr>';
+
+                                    $subhtml .= '</table>';
+                                    $subhtml .= '</div>';
+                                }
+                            }
+                        }
+                    }
+                }
+
+
     
                 if ($pj->getType() == PlanningJob::TYPE_K && $statsenabled == 1)
                 {
@@ -264,6 +361,9 @@ echo $html;
                         $stats[$pj->getArtmach()->getId()] = Array('Name'=>$pj->getArtmach()->getName(),'ptime'=>$pj->getTplanned(),'atime'=>$pj->getTactual(),'avtime'=>$pj->getArtmach()->getRunningtimeForDay($day_start)/60/60);
                     }
                 }
+
+                $subhtml .= '</div>';
+
             }
             if (count($stats)>0 && $statsenabled == 1)
             {
@@ -287,16 +387,17 @@ echo $html;
                 $statshtml .= '</table></div>';
             }
         } else {
-            $subhtml .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">keine Jobs</h3></div></div>';
+//            $subhtml .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">keine Jobs</h3></div></div>';
         }
-    
-        $html .= '<div class="row" style="margin-left:0px;margin-right:0px;"><h3>'.$date.'</h3>';
-        if ($statsenabled == 1)
-            $html .= $statshtml;
-        $html .= $subhtml;
-        $html .= '</div></br>';
+
+        if (count($jobs)>0){
+            $html .= '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">'.$date.'</h3></div><div class="panel-body">';
+            if ($statsenabled == 1)
+                $html .= $statshtml;
+            $html .= $subhtml;
+            $html .= '</div></div>';
+        }
     }
-    
     echo $html;
 }
 

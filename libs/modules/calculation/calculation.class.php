@@ -337,6 +337,27 @@ class Calculation
         }
         return $retval;
     }
+
+    /**
+     * @param $order
+     * @param int $amount
+     * @return Calculation
+     */
+    static function getAllCalcWithAmount($order, $amount)
+    {
+        global $DB;
+        $retval = Array();
+
+        $sql = "SELECT id FROM orders_calculations 
+                WHERE order_id = {$order->getId()} {$sqlamount} AND product_amount = {$amount}";
+        if($DB->num_rows($sql))
+        {
+            $r = $DB->select($sql);
+            $r = $r[0];
+            return new Calculation($r["id"]);
+        }
+        return new Calculation();
+    }
     
 	//gln, speziell f�r Niemann, 
 	//um geaenderte Werte in einem Teilauftrag automatisch in alle anderen Teilauftraege zu uebertragen

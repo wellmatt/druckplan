@@ -119,7 +119,23 @@ Editor::inst( $db, 'collectiveinvoice_orderposition' )
             ->setFormatter( 'Format::fromDecimalChar' ),
         Field::inst( 'collectiveinvoice_orderposition.price' )
             ->validator( 'Validate::numeric' )
-            ->getFormatter( 'Format::toDecimalChar' )
+            ->getFormatter( function ( $val, $data, $opts ) {
+                if($data["collectiveinvoice_orderposition.type"] == 1 || $data["collectiveinvoice_orderposition.type"] == 3) {
+                    return printPrice($data["collectiveinvoice_orderposition.price"]);
+                } else {
+                    return printPrice(tofloat($data["collectiveinvoice_orderposition.price"]) * tofloat($data["collectiveinvoice_orderposition.quantity"]));
+                }
+            }, 'Format::toDecimalChar')
+            ->setFormatter( 'Format::fromDecimalChar' ),
+        Field::inst( 'collectiveinvoice_orderposition.price', 'price_single' )
+            ->validator( 'Validate::numeric' )
+            ->getFormatter( function ( $val, $data, $opts ) {
+                if($data["collectiveinvoice_orderposition.type"] == 1 || $data["collectiveinvoice_orderposition.type"] == 3) {
+                    return printPrice(tofloat($data["collectiveinvoice_orderposition.price"]) / tofloat($data["collectiveinvoice_orderposition.quantity"]));
+                } else {
+                    return printPrice(tofloat($data["collectiveinvoice_orderposition.price"]));
+                }
+            }, 'Format::toDecimalChar')
             ->setFormatter( 'Format::fromDecimalChar' ),
         Field::inst( 'taxkeys.value' )->set(false),
         Field::inst( 'collectiveinvoice_orderposition.taxkey' )

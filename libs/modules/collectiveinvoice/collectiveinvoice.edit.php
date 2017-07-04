@@ -8,6 +8,7 @@
  */
 
 require_once 'libs/modules/attachment/attachment.class.php';
+require_once 'libs/modules/partslists/partslist.class.php';
 
 
 $all_user = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
@@ -118,6 +119,8 @@ $attributes = $collectinv->getActiveAttributeItemsInput();
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/tagit/tag-it.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/tagit/jquery.tagit.css" media="screen" />
 
 <script>
 	$(function() {

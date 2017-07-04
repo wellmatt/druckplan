@@ -51,14 +51,40 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$array = [
-    2 => [ 144000 => "450x320", 262300 => "430x610" ],
-    1 => [ 88250 => "250x353", 131150 => "430x305", 124740 => "420x297" ],
-    4 => [ 277200 => "440x630",288000 => "450x640",299000 => "460x650",303600 => "460x660",294400 => "460x640",350000 => "700x500" ]
-];
-ksort($array, SORT_NUMERIC);
-$array = $array[max(array_keys($array))];
-ksort($array, SORT_NUMERIC);
-prettyPrint($array);
-$array = $array[min(array_keys($array))];
-prettyPrint($array);
+?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">DATUM</h3>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>test</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>test</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>test</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>test</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

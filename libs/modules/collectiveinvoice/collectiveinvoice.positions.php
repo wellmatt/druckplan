@@ -7,7 +7,20 @@
  *
  */
 
-
+function printSubTradegroupsForSelect($parentId, $depth){
+    $all_subgroups = Tradegroup::getAllTradegroups($parentId);
+    foreach ($all_subgroups AS $subgroup)
+    {
+        global $x;
+        $x++; ?>
+        <option value="<?=$subgroup->getId()?>">
+            <?for ($i=0; $i<$depth+1;$i++) echo "&emsp;"?>
+            <?= $subgroup->getTitle()?>
+        </option>
+        <? printSubTradegroupsForSelect($subgroup->getId(), $depth+1);
+    }
+}
+$partslists = Partslist::getAll();
 
 ?>
 
@@ -27,8 +40,8 @@
 <!-- /DataTables Editor -->
 
 <script>
-    function addArticle(){
-        var article = $('#article_selector').val();
+    function addArticle(article){
+        console.log("received: "+article);
         $.ajax({
             type: 'GET',
             url: 'libs/modules/collectiveinvoice/orderposition.ajax.php',
@@ -43,8 +56,7 @@
         });
     }
 
-    function addPartslist(){
-        var partslist = $('#partslist_selector').val();
+    function addPartslist(partslist){
         $.ajax({
             type: 'GET',
             url: 'libs/modules/collectiveinvoice/orderposition.ajax.php',
@@ -75,21 +87,205 @@
     }
 </script>
 
+<div class="panel panel-default" id="search_art" style="display: none">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Hinzufügen: Artikel
+            <span class="pull-right">
+                <!-- Suche -->
+                <label for="" class="control-label">Suche</label>
+                <input id="article_search" class="form-control" style="display: inline-block; width: 200px">
+            </span>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Filter
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-4">
+                            <input type="hidden" id="ajax_tags" name="ajax_tags"/>
+                            <input name="art_tags" id="art_tags" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Warengruppe</label>
+                        <div class="col-sm-4">
+                            <input type="hidden" id="ajax_tradegroup" name="ajax_tradegroup" value="0"/>
+                            <select name="tradegroup" id="tradegroup" class="form-control"
+                                    onchange="$('#ajax_tradegroup').val($('#tradegroup').val());$('#art_table').dataTable().fnDraw();"
+                                    onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                                <option value="0">- Alle -</option>
+                                <?php
+                                $all_tradegroups = Tradegroup::getAllTradegroups();
+                                foreach ($all_tradegroups as $tg) {
+                                    ?>
+                                    <option value="<?= $tg->getId() ?>">
+                                        <?= $tg->getTitle() ?></option>
+                                    <? printSubTradegroupsForSelect($tg->getId(), 0);
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Kunde/Ansprechpartner</label>
+                        <div class="col-sm-4">
+                            <input type="hidden" id="ajax_bc" name="ajax_bc" value="0"/>
+                            <input type="hidden" id="ajax_cp" name="ajax_cp" value="0"/>
+                            <input name="bc_cp" id="bc_cp" class="form-control"
+                                   onchange="Javascript: if($('#bc_cp').val()==''){$('#ajax_bc').val(0);$('#ajax_cp').val(0);$('#art_table').dataTable().fnDraw();}"
+                                   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="inpt_search_art" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                    <?php
+                    $article_fields = CustomField::fetch([
+                        [
+                            'column'=>'class',
+                            'value'=>'Article'
+                        ]
+                    ]);
+                    if (count($article_fields) > 0){?>
+                        <br>
+                        <div class="panel panel-default collapseable">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Freifeld Filter
+                                    <span class="pull-right clickable panel-collapsed"><i class="glyphicon glyphicon glyphicon-chevron-down"></i></span>
+                                </h3>
+                            </div>
+                            <div class="panel-body" style="display: none;">
+                                <div id="cfield_div"></div>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-2 control-label">Neuer Filter</label>
+                                    <div class="col-sm-4">
+                                        <select id="addfilterselect" class="form-control">
+                                            <?php
+                                            foreach ($article_fields as $article_field) {
+                                                echo '<option value="' . $article_field->getId() . '">' . $article_field->getName() . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                        <select id="addfilter_backup" style="display: none;">
+                                            <?php
+                                            foreach ($article_fields as $article_field) {
+                                                echo '<option value="' . $article_field->getId() . '">' . $article_field->getName() . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button class="btn btn-sm btn-success" onclick="addFilter();">
+                                            Hinzufügen
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                    <div class="col-sm-12">
+                         <span class="pull-right">
+                             <button class="btn btn-xs btn-warning"
+                                     onclick="resetFilter();">
+                                 <span class="glyphicons glyphicons-ban-circle pointer"></span>
+                                 <?= $_LANG->get('Reset') ?>
+                             </button>
+                         </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover" id="art_table">
+            <thead>
+                <tr>
+                    <th><?= $_LANG->get('ID') ?></th>
+                    <th><?= $_LANG->get('Bild') ?></th>
+                    <th><?= $_LANG->get('Titel') ?></th>
+                    <th><?= $_LANG->get('Art.-Nr.') ?></th>
+                    <th><?= $_LANG->get('Tags') ?></th>
+                    <th><?= $_LANG->get('Warengruppe') ?></th>
+                    <th><?= $_LANG->get('Shop-Freigabe') ?></th>
+                    <th><?= $_LANG->get('Optionen') ?></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<div class="panel panel-default" id="search_plist" style="display: none">
+    <div class="panel-heading">
+        <h3 class="panel-title">Hinzufügen: Stücklisten</h3>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Filter
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">Suche</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="inpt_search_plist" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover" id="partslisttable">
+            <thead>
+            <tr>
+                <th><?=$_LANG->get('ID')?></th>
+                <th><?=$_LANG->get('Name')?></th>
+                <th><?=$_LANG->get('Datum')?></th>
+                <th><?=$_LANG->get('User')?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <? foreach($partslists as $partslist){?>
+                <tr>
+                    <td><?=$partslist->getId()?></td>
+                    <td><?=$partslist->getTitle()?></td>
+                    <td><?=date('d.m.y',$partslist->getCrtdate())?></td>
+                    <td><?=$partslist->getCrtuser()->getNameAsLine()?></td>
+                </tr>
+            <? } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
             Positionen
             <?php if ($collectinv->getLocked() == 0 && $collectinv->getId() > 0){?>
                 <span class="pull-right" style="width: 75%; text-align: right; white-space: nowrap;">
-                    <!-- Artikel -->
-                    <label for="" class="control-label">Artikel</label>
-                    <select id="article_selector" style="width: 200px"></select>
-                    <button class="btn btn-xs btn-success" id="article_add_btn" disabled type="button" onclick="addArticle();"><span class="glyphicons glyphicons-plus"></span></button>
-
-                    <!-- Stücklisten -->
-                    <label for="" class="control-label">Stückliste</label>
-                    <select id="partslist_selector" style="width: 200px"></select>
-                    <button class="btn btn-xs btn-success" id="partslist_add_btn" disabled type="button" onclick="addPartslist();"><span class="glyphicons glyphicons-plus"></span></button>
+                    <button class="btn btn-xs btn-success" id="add_btn" type="button" onclick="$('#search_art').toggle();$('#search_art').focus()">Artikel</button>
+                    <button class="btn btn-xs btn-success" id="add_btn" type="button" onclick="$('#search_plist').toggle();$('#search_plist').focus()">Stückliste</button>
                     <?php if ($perf->getDeactivateManualArticles() == 0){?>
                         <button class="btn btn-xs btn-success" type="button" onclick="addManually();"><span class="glyphicons glyphicons-plus"></span>Manuell</button>
                     <?php } ?>
@@ -107,7 +303,8 @@
                 <th>Status</th>
                 <th>Artikel</th>
                 <th>Menge</th>
-                <th>Nettopreis (€)</th>
+                <th>GP (€)</th>
+                <th>EP (€)</th>
                 <th>Steuer</th>
                 <th></th>
             </tr>
@@ -123,11 +320,282 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
             </tfoot>
         </table>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var partslisttable = $('#partslisttable').DataTable( {
+            "paging": true,
+            "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+            "pageLength": <?php echo $perf->getDt_show_default();?>,
+            "dom": 'T<"clear">lrtip',
+            "tableTools": {
+                "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                    "copy",
+                    "csv",
+                    "xls",
+                    {
+                        "sExtends": "pdf",
+                        "sPdfOrientation": "landscape",
+                        "sPdfMessage": "Contilas - Articles"
+                    },
+                    "print"
+                ]
+            },
+            "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+            "language":
+            {
+                "emptyTable":     "Keine Daten vorhanden",
+                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": 	  "Keine Seiten vorhanden",
+                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix":    "",
+                "thousands":      ".",
+                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing":     "Verarbeite...",
+                "search":         "Suche:",
+                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+                "paginate": {
+                    "first":      "Erste",
+                    "last":       "Letzte",
+                    "next":       "N&auml;chste",
+                    "previous":   "Vorherige"
+                },
+                "aria": {
+                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        } );
+        $('#inpt_search_plist').keyup(function(){
+            partslisttable.search( $(this).val() ).draw();
+        });
+
+        $("#partslisttable tbody td").live('click',function(){
+            var aPos = $('#partslisttable').dataTable().fnGetPosition(this);
+            var aData = $('#partslisttable').dataTable().fnGetData(aPos[0]);
+            addPartslist(aData[0]);
+            $('#search_plist').hide();
+        });
+    } );
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var art_table = $('#art_table').DataTable( {
+            // "scrollY": "600px",
+            "autoWidth": false,
+            "processing": true,
+            "bServerSide": true,
+            "sAjaxSource": "libs/modules/article/article.dt.ajax.php",
+            "paging": true,
+            "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+            "pageLength": 10,
+            "dom": 'T<"clear">lrtip',
+            "tableTools": {
+                "sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                    "copy",
+                    "csv",
+                    "xls",
+                    {
+                        "sExtends": "pdf",
+                        "sPdfOrientation": "landscape",
+                        "sPdfMessage": "Contilas - Articles"
+                    },
+                    "print"
+                ]
+            },
+            "lengthMenu": [ [10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "Alle"] ],
+            "columns": [
+                null,
+                { "visible": false },
+                null,
+                null,
+                { "sortable": false },
+                null,
+                { "visible": false },
+                { "visible": false }
+            ],
+            "fnServerData": function ( sSource, aoData, fnCallback ) {
+                var tags = document.getElementById('ajax_tags').value;
+                var tg = document.getElementById('ajax_tradegroup').value;
+                var bc = document.getElementById('ajax_bc').value;
+                var cp = document.getElementById('ajax_cp').value;
+                aoData.push( { "name": "search_tags", "value": tags, } );
+                aoData.push( { "name": "tradegroup", "value": tg, } );
+                aoData.push( { "name": "bc", "value": bc, } );
+                aoData.push( { "name": "cp", "value": cp, } );
+
+                // Custom Fields
+                var cfields = $("[data-fieldid]");
+                cfields.each(function(){
+                    if ($(this).data("type") == "checkbox" && $(this).is( ":checked" )){
+                        aoData.push( { "name": "cfield_"+$(this).data("fieldid"), "value": 1 } );
+                    } else if ($(this).data("type") != "checkbox") {
+                        aoData.push( { "name": "cfield_"+$(this).data("fieldid"), "value": $(this).val() } );
+                    }
+                });
+
+                $.getJSON( sSource, aoData, function (json) {
+                    fnCallback(json)
+                } );
+            },
+            "language":
+            {
+                "emptyTable":     "Keine Daten vorhanden",
+                "info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
+                "infoEmpty": 	  "Keine Seiten vorhanden",
+                "infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
+                "infoPostFix":    "",
+                "thousands":      ".",
+                "lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
+                "loadingRecords": "Lade...",
+                "processing":     "Verarbeite...",
+                "search":         "Suche:",
+                "zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
+                "paginate": {
+                    "first":      "Erste",
+                    "last":       "Letzte",
+                    "next":       "N&auml;chste",
+                    "previous":   "Vorherige"
+                },
+                "aria": {
+                    "sortAscending":  ": aktivieren um aufsteigend zu sortieren",
+                    "sortDescending": ": aktivieren um absteigend zu sortieren"
+                }
+            }
+        } );
+
+        $("#art_table tbody td").live('click',function(){
+            var aPos = $('#art_table').dataTable().fnGetPosition(this);
+            var aData = $('#art_table').dataTable().fnGetData(aPos[0]);
+            addArticle(aData[0]);
+            $('#search_art').hide();
+        });
+
+        $('#inpt_search_art').keyup(function(){
+            art_table.search( $(this).val() ).draw();
+        })
+    } );
+</script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#art_tags").tagit({
+            singleField: true,
+            singleFieldNode: $('#art_tags'),
+            singleFieldDelimiter: ";",
+            allowSpaces: true,
+            minLength: 2,
+            removeConfirmation: true,
+            tagSource: function( request, response ) {
+                $.ajax({
+                    url: "libs/modules/article/article.ajax.php?ajax_action=search_tags",
+                    data: { term:request.term },
+                    dataType: "json",
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label: item.label,
+                                value: item.value
+                            }
+                        }));
+                    }
+                });
+            },
+            afterTagAdded: function(event, ui) {
+                $('#ajax_tags').val($("#art_tags").tagit("assignedTags"));
+                $('#art_table').dataTable().fnDraw();
+            },
+            afterTagRemoved: function(event, ui) {
+                $('#ajax_tags').val($("#art_tags").tagit("assignedTags"));
+                $('#art_table').dataTable().fnDraw();
+            }
+        });
+    });
+</script>
+
+<script>
+    $(function() {
+        $( "#bc_cp" ).autocomplete({
+            delay: 0,
+            source: 'libs/modules/article/article.ajax.php?ajax_action=search_bc_cp',
+            minLength: 2,
+            dataType: "json",
+            select: function(event, ui) {
+                if (ui.item.type == 1)
+                {
+                    $('#ajax_bc').val(ui.item.value);
+                    $('#bc_cp').val(ui.item.label);
+                    $('#art_table').dataTable().fnDraw();
+                }
+                else
+                {
+                    $('#ajax_cp').val(ui.item.value);
+                    $('#bc_cp').val(ui.item.label);
+                    $('#art_table').dataTable().fnDraw();
+                }
+                return false;
+            }
+        });
+    });
+</script>
+
+
+<script>
+    function resetFilter(){
+        $('#bc_cp').val('');
+        $('#ajax_bc').val(0);
+        $('#ajax_cp').val(0);
+        $('#cfield_div').html("");
+
+        var $options = $("#addfilter_backup > option").clone();
+        $('#addfilterselect').html("");
+        $('#addfilterselect').append($options);
+
+        $('#art_table').dataTable().fnDraw();
+    }
+    function addFilter(){
+        var filterid = $('#addfilterselect').val();
+        $('#addfilterselect option:selected').remove();
+
+        $.ajax({
+            type: "GET",
+            url: "libs/modules/customfields/custom.field.ajax.php",
+            data: { ajax_action: "getFilterField", id: filterid },
+            success: function(data)
+            {
+                $('#cfield_div').append(data);
+                $("[data-fieldid]").each(function(){
+                    $(this).change(function(){
+                        $('#art_table').dataTable().fnDraw();
+                    });
+                });
+            }
+        });
+    }
+    $(document).on('click', '.panel-heading span.clickable', function(e){
+        var $this = $(this);
+        if(!$this.hasClass('panel-collapsed')) {
+            $this.parents('.collapseable').find('.panel-body').slideUp();
+            $this.addClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        } else {
+            $this.parents('.collapseable').find('.panel-body').slideDown();
+            $this.removeClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        }
+    })
+</script>
+
 
 
 <script type="text/javascript" language="javascript" class="init">
@@ -135,70 +603,6 @@
     var table; // use global for table
 
     $(document).ready(function() {
-
-        $("#article_selector").select2({
-            ajax: {
-                url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_article",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term, // search term
-                        page: params.page
-                    };
-                },
-                processResults: function (data, params) {
-                    params.page = params.page || 1;
-                    return {
-                        results: data,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 0,
-            language: "de",
-            multiple: false,
-            allowClear: false,
-            tags: false
-        });
-        $('#article_selector').on('select2:select', function (evt) {
-            $('#article_add_btn').prop('disabled', false);
-        });
-
-        $("#partslist_selector").select2({
-            ajax: {
-                url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_partslist",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term, // search term
-                        page: params.page
-                    };
-                },
-                processResults: function (data, params) {
-                    params.page = params.page || 1;
-                    return {
-                        results: data,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 0,
-            language: "de",
-            multiple: false,
-            allowClear: false,
-            tags: false
-        });
-        $('#partslist_selector').on('select2:select', function (evt) {
-            $('#partslist_add_btn').prop('disabled', false);
-        });
 
         editor = new $.fn.dataTable.Editor( {
             ajax: {
@@ -247,6 +651,7 @@
                 { data: "title", orderable: false, className: 'pointer' },
                 { data: "collectiveinvoice_orderposition.quantity", orderable: false, className: 'pointer' },
                 { data: "collectiveinvoice_orderposition.price", orderable: false, className: 'pointer' },
+                { data: "price_single", orderable: false, className: 'pointer' },
                 { data: "collectiveinvoice_orderposition.taxkey", orderable: false, className: 'pointer' },
                 { data: "options", orderable: false }
             ],
@@ -272,7 +677,7 @@
                     .column( 6 )
                     .data()
                     .reduce( function (a, b) {
-                        return parseFloat(a) + parseFloat(b.replace(".","").replace(",","."));
+                        return parseFloat(a) + parseFloat(b.toString().replace(".","").replace(",","."));
                     }, 0 );
 
                 // Total over all pages
@@ -280,7 +685,7 @@
                     .column( 5 )
                     .data()
                     .reduce( function (a, b) {
-                        return parseFloat(a) + parseFloat(b.replace(".","").replace(",","."));
+                        return parseFloat(a) + parseFloat(b.toString().replace(".","").replace(",","."));
                     }, 0 );
 
                 // Update footer
