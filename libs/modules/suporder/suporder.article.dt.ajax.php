@@ -47,7 +47,7 @@ require_once '../../../config.php';
         fatal_error( 'Could not open connection to server' );
     }
  
-    if ( ! mysqli_select_db( $gaSql['db'], $gaSql['link'] ) )
+    if ( ! mysqli_select_db( $gaSql['link'], $gaSql['db'] ) )
     {
         fatal_error( 'Could not select database ' );
     }
