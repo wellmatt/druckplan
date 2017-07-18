@@ -218,7 +218,7 @@
     
 //     var_dump($sQuery);
     
-    $rResult = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $rResult = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
      
     /* Data set length after filtering */
     $sQuery = " SELECT COUNT(id)
@@ -233,7 +233,7 @@
                 ) t1
     ";
 //     var_dump($sQuery);
-    $rResultFilterTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $rResultFilterTotal = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
     $aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
     $iFilteredTotal = $aResultFilterTotal[0];
     
@@ -251,7 +251,7 @@
                 ) t1
     ";
 //     var_dump($sQuery);
-    $rResultTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $rResultTotal = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
     $aResultTotal = mysqli_fetch_array($rResultTotal);
     $iTotal = $aResultTotal[0];
      
@@ -276,7 +276,7 @@
             {
                 $pic_sql = "SELECT url FROM article_pictures WHERE articleid = {$aRow[ $aColumns[0] ]} LIMIT 1";
 				
-				$rResultPics = mysqli_query( $pic_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+				$rResultPics = mysqli_query( $gaSql['link'], $pic_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
 				$aResultPics = mysqli_fetch_array($rResultPics);
 				
                 if(count($aResultPics) > 0){
@@ -301,7 +301,7 @@
                              LEFT JOIN businesscontact ON article_shop_approval.bc = businesscontact.id
                              WHERE article = {$aRow[ $aColumns[0] ]}";
 
-                $rResultShop = mysqli_query( $shop_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+                $rResultShop = mysqli_query( $gaSql['link'], $shop_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
                 $shop_rows_bc = array();
                 $shop_rows_cp = array();
                 while ($shop_row = mysqli_fetch_array($rResultShop))
@@ -344,7 +344,7 @@
             {
                 $tag_sql = "SELECT DISTINCT tag FROM article_tags WHERE article = {$aRow[ $aColumns[0] ]}";
 				
-				$rResultTags = mysqli_query( $tag_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+				$rResultTags = mysqli_query( $gaSql['link'], $tag_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
 				$tag_rows = array();
                 while ($tag_row = mysqli_fetch_array($rResultTags))
                 {

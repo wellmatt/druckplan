@@ -207,7 +207,7 @@ require_once '../../../config.php';
     
 //     var_dump($sQuery);
     
-    $rResult = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $rResult = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
      
     /* Data set length after filtering */
     $sQuery = "
@@ -218,7 +218,7 @@ require_once '../../../config.php';
         $sWhere
     ";
 //     var_dump($sQuery);
-    $rResultFilterTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $rResultFilterTotal = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
     $aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
     $iFilteredTotal = $aResultFilterTotal[0];
     
@@ -231,7 +231,7 @@ require_once '../../../config.php';
                LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup WHERE article.usesstorage = 1 AND article.status = 1) t1
     ";
 //     var_dump($sQuery);
-    $rResultTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $rResultTotal = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
     $aResultTotal = mysqli_fetch_array($rResultTotal);
     $iTotal = $aResultTotal[0];
      

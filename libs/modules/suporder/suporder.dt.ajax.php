@@ -149,7 +149,7 @@ $sQuery = "SELECT * FROM (SELECT
 
 //     var_dump($sQuery);
 
-$rResult = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+$rResult = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
 
 /* Data set length after filtering */
 $sQuery = "SELECT COUNT(id)
@@ -165,7 +165,7 @@ $sQuery = "SELECT COUNT(id)
             INNER JOIN businesscontact ON suporders.supplier = businesscontact.id) t1
            $sWhere";
 //     var_dump($sQuery);
-$rResultFilterTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+$rResultFilterTotal = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
 $aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
 $iFilteredTotal = $aResultFilterTotal[0];
 
@@ -175,7 +175,7 @@ $sQuery = "SELECT COUNT(suporders.id)
            FROM suporders
            INNER JOIN businesscontact ON suporders.supplier = businesscontact.id";
 //     var_dump($sQuery);
-$rResultTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+$rResultTotal = mysqli_query( $gaSql['link'], $sQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
 $aResultTotal = mysqli_fetch_array($rResultTotal);
 $iTotal = $aResultTotal[0];
 
