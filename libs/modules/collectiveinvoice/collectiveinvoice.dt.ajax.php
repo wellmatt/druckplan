@@ -332,7 +332,7 @@
                     LEFT JOIN groups ON tickets.assigned_group = groups.id
                     WHERE association.objectid2 = {$aRow['id']} AND association.module2 = 'CollectiveInvoice' 
                     ";
-                    $rResultPjState = mysqli_query( $pj_state_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+                    $rResultPjState = mysqli_query( $gaSql['link'], $pj_state_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
                     while ($data = mysqli_fetch_array($rResultPjState)){
                         if ($data["tktstateid"] != 1)
                         {

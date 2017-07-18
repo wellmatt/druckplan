@@ -159,7 +159,7 @@
         $selected_tgs[] = $_REQUEST["tradegroup"];
         $tg_sql = "SELECT id FROM tradegroup WHERE tradegroup_parentid = {$_REQUEST["tradegroup"]}";
 
-        $rResulttg = mysqli_query( $tg_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+        $rResulttg = mysqli_query( $gaSql['link'], $tg_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
         while ($stg_row = mysqli_fetch_array($rResulttg))
         {
             $selected_tgs[] = $stg_row["id"];
@@ -176,7 +176,7 @@
             $bccp_sql = "SELECT article FROM `article_shop_approval` WHERE bc = {$_REQUEST["bc"]}";
         
         $bccp_articles = Array();
-        $rResultbccp = mysqli_query( $bccp_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+        $rResultbccp = mysqli_query( $gaSql['link'], $bccp_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
         while ($sbccp_row = mysqli_fetch_array($rResultbccp))
         {
             $bccp_articles[] = $sbccp_row["article"];
