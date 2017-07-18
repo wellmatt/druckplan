@@ -183,7 +183,7 @@ case 'createFromTicket':
         
         $savemsg = getSaveMessage($collectinv->save());
         
-        echo mysql_error();
+//        echo mysql_error();
         
         if($collectinv->getId()==NULL){
             $collectinv = CollectiveInvoice::getLastSavedCollectiveInvoice();
@@ -434,7 +434,7 @@ case 'createFromTicketComments':
 
 		$savemsg = getSaveMessage($collectinv->save());
 
-		echo mysql_error();
+//		echo mysql_error();
 
 		if($collectinv->getId()==NULL){
 			$collectinv = CollectiveInvoice::getLastSavedCollectiveInvoice();

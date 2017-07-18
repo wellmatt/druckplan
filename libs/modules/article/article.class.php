@@ -666,7 +666,7 @@ class Article {
 				$retval[] = new Article($r["id"]);
 			}
 		}
-		echo mysql_error();
+//		echo $DB->getLastError();
 		return $retval;
 	}
 

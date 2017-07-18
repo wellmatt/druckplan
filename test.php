@@ -39,7 +39,10 @@ $autoloader = new Horde_Autoloader();
 $autoloader->addClassPathMapper(new Horde_Autoloader_ClassPathMapper_Default('vendor'));
 $autoloader->registerAutoloader();
 
+require_once 'vendor/autoload.php';
+use \Curl\Curl;
 require_once('vendor/simpleCalDAV/SimpleCalDAVClient.php');
+require_once 'libs/modules/saxoprint/saxoprint.class.php';
 
 error_reporting(-1);
 ini_set('display_errors', 1);
@@ -51,40 +54,17 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-?>
+$saxo = new Saxoprint();
+$orders = $saxo->getRemoteOrders();
+prettyPrint($orders);
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">DATUM</h3>
-    </div>
-    <div class="panel-body">
-        <div class="panel panel-default">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>test</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>test</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>test</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>test</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+//$curl = new Curl();
+//$curl->setBasicAuthentication('e11a9546a0d2584b5f7c326462e220d2', '');
+//$curl->get('https://saxoscout1.staging.saxoprint.com/api/v3/printjobs');
+//
+//if ($curl->error) {
+//    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+//} else {
+//    prettyPrint($curl->response);
+//}
+?>

@@ -42,12 +42,12 @@ require_once '../../../config.php';
     /*
      * MySQL connection
      */
-    if ( ! $gaSql['link'] = mysql_pconnect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) )
+    if ( ! $gaSql['link'] = mysqli_connect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) )
     {
         fatal_error( 'Could not open connection to server' );
     }
  
-    if ( ! mysql_select_db( $gaSql['db'], $gaSql['link'] ) )
+    if ( ! mysqli_select_db( $gaSql['db'], $gaSql['link'] ) )
     {
         fatal_error( 'Could not select database ' );
     }
@@ -103,7 +103,7 @@ require_once '../../../config.php';
         {
             if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "shop_customer" && $aColumns[$i] != "art_picture" && $aColumns[$i] != "article_tags" )
             {
-                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
+                $sWhere .= $aColumns[$i]." LIKE '%".mysqli_real_escape_string( $gaSql['link'], $_GET['sSearch'] )."%' OR ";
             }
         }
         $sWhere = substr_replace( $sWhere, "", -3 );
@@ -123,7 +123,7 @@ require_once '../../../config.php';
             {
                 $sWhere .= " AND ";
             }
-            $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
+            $sWhere .= $aColumns[$i]." LIKE '%".mysqli_real_escape_string( $gaSql['link'], $_GET['sSearch_'.$i])."%' ";
         }
     }
 
@@ -146,8 +146,8 @@ require_once '../../../config.php';
         }
         $sTagArticles = Array();
         $tQuery = "SELECT article, count(article) as count FROM article_tags WHERE 1=2 {$tag_where} GROUP BY article";
-        $rResultStags = mysql_query( $tQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-        while ($stag_row = mysql_fetch_array($rResultStags))
+        $rResultStags = mysqli_query( $tQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+        while ($stag_row = mysqli_fetch_array($rResultStags))
         {
             if ($stag_row["count"] >= count($tags))
                 $sTagArticles[] = $stag_row["article"];
@@ -166,8 +166,8 @@ require_once '../../../config.php';
         $selected_tgs[] = $_REQUEST["tradegroup"];
         $tg_sql = "SELECT id FROM tradegroup WHERE tradegroup_parentid = {$_REQUEST["tradegroup"]}";
 
-        $rResulttg = mysql_query( $tg_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-        while ($stg_row = mysql_fetch_array($rResulttg))
+        $rResulttg = mysqli_query( $tg_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+        while ($stg_row = mysqli_fetch_array($rResulttg))
         {
             $selected_tgs[] = $stg_row["id"];
         }
@@ -181,8 +181,8 @@ require_once '../../../config.php';
             $bccp_sql = "SELECT article FROM `article_pricescale` WHERE type = 2 AND supplier = {$_REQUEST["bc"]}";
         
         $bccp_articles = Array();
-        $rResultbccp = mysql_query( $bccp_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-        while ($sbccp_row = mysql_fetch_array($rResultbccp))
+        $rResultbccp = mysqli_query( $bccp_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+        while ($sbccp_row = mysqli_fetch_array($rResultbccp))
         {
             $bccp_articles[] = $sbccp_row["article"];
         }
@@ -207,7 +207,7 @@ require_once '../../../config.php';
     
 //     var_dump($sQuery);
     
-    $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+    $rResult = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
      
     /* Data set length after filtering */
     $sQuery = "
@@ -218,8 +218,8 @@ require_once '../../../config.php';
         $sWhere
     ";
 //     var_dump($sQuery);
-    $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-    $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+    $rResultFilterTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
     $iFilteredTotal = $aResultFilterTotal[0];
     
      
@@ -231,8 +231,8 @@ require_once '../../../config.php';
                LEFT JOIN tradegroup ON tradegroup.id = article.tradegroup WHERE article.usesstorage = 1 AND article.status = 1) t1
     ";
 //     var_dump($sQuery);
-    $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-    $aResultTotal = mysql_fetch_array($rResultTotal);
+    $rResultTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $aResultTotal = mysqli_fetch_array($rResultTotal);
     $iTotal = $aResultTotal[0];
      
      
@@ -246,7 +246,7 @@ require_once '../../../config.php';
         "aaData" => array()
     );
      
-    while ( $aRow = mysql_fetch_array( $rResult ) )
+    while ( $aRow = mysqli_fetch_array( $rResult ) )
     {
 //         echo "Durchlauf f�r :" . $aRow[ $aColumns[0] ] . "</br> </br>";
         $row = array();
@@ -256,8 +256,8 @@ require_once '../../../config.php';
             {
                 $pic_sql = "SELECT url FROM article_pictures WHERE articleid = {$aRow[ $aColumns[0] ]} LIMIT 1";
 				
-				$rResultPics = mysql_query( $pic_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-				$aResultPics = mysql_fetch_array($rResultPics);
+				$rResultPics = mysqli_query( $pic_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+				$aResultPics = mysqli_fetch_array($rResultPics);
 				
                 if(count($aResultPics) > 0){
                     $row[] = '<a href="images/products/'.$aResultPics[0].'" target="_blank">
@@ -281,10 +281,10 @@ require_once '../../../config.php';
                              LEFT JOIN businesscontact ON article_shop_approval.bc = businesscontact.id
                              WHERE article = {$aRow[ $aColumns[0] ]}";
 
-                $rResultShop = mysql_query( $shop_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+                $rResultShop = mysqli_query( $shop_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
                 $shop_rows_bc = array();
                 $shop_rows_cp = array();
-                while ($shop_row = mysql_fetch_array($rResultShop))
+                while ($shop_row = mysqli_fetch_array($rResultShop))
                 {
                     if ((int)$shop_row['bc']>0)
                         $shop_rows_bc[] = $shop_row['bc_name'];
@@ -319,9 +319,9 @@ require_once '../../../config.php';
             {
                 $tag_sql = "SELECT DISTINCT tag FROM article_tags WHERE article = {$aRow[ $aColumns[0] ]}";
 				
-				$rResultTags = mysql_query( $tag_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+				$rResultTags = mysqli_query( $tag_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
 				$tag_rows = array();
-                while ($tag_row = mysql_fetch_array($rResultTags))
+                while ($tag_row = mysqli_fetch_array($rResultTags))
                 {
                     $tag_rows[] = $tag_row["tag"];
                 }

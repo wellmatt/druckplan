@@ -108,7 +108,7 @@ class API
 	{
 	    global $DB;
 	    $retval = new API();
-	    $token = mysql_escape_string($token);
+	    $token = $DB->escape($token);
 	    $sql = "SELECT id FROM apis WHERE token = '{$token}'";
 	    if($DB->num_rows($sql))
 	    {

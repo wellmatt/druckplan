@@ -107,6 +107,10 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setDefaultCostobject(new CostObject($_REQUEST["costobject"]));
 	$perf->setMinmargin(str_replace(",",".",str_replace(".","",$_REQUEST["minmargin"])));
 
+	$perf->setSaxoapikey($_REQUEST["saxoapikey"]);
+	$perf->setSaxocp($_REQUEST["saxo_contactperson"]);
+	$perf->setSaxobc($_REQUEST["saxo_customer"]);
+
 	$savemsg = getSaveMessage($perf->save());
 	
 	HolidayEvent::removeAll();
@@ -128,6 +132,21 @@ $holidays = HolidayEvent::getAll();
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 
+
+<script>
+	$(function() {
+		$( "#search_saxobc" ).autocomplete({
+			delay: 0,
+			source: 'libs/modules/tickets/ticket.ajax.php?ajax_action=search_customer_and_cp',
+			minLength: 2,
+			dataType: "json",
+			select: function(event, ui) {
+				$('#saxo_customer').val(ui.item.bid);
+				$('#saxo_contactperson').val(ui.item.cid);
+			}
+		});
+	});
+</script>
 <script language="JavaScript">
 $(function() {
 	$('.cal').datetimepicker({
@@ -287,6 +306,7 @@ echo $quickmove->generate();
 					<li><a href="#tabs-7"><? echo $_LANG->get('Schalter'); ?></a></li>
 					<li><a href="#tabs-8"><? echo $_LANG->get('Texte'); ?></a></li>
 					<li><a href="#tabs-9"><? echo $_LANG->get('Buchhaltung'); ?></a></li>
+					<li><a href="#tabs-10"><? echo $_LANG->get('Schnittstellen'); ?></a></li>
 				</ul>
 
 				<div id="tabs-0">
@@ -728,6 +748,30 @@ echo $quickmove->generate();
 						<label for="" class="col-sm-2 control-label">Marge (minimum) %</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" name="minmargin" id="minmargin" placeholder="" value="<?php echo printPrice($perf->getMinmargin());?>">
+						</div>
+					</div>
+				</div>
+				<div id="tabs-10">
+					Saxoprint:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">API Key</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="saxoapikey" id="saxoapikey" placeholder="" value="<?php echo $perf->getSaxoapikey();?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">GK / ASP für Aufträge</label>
+						<div class="col-sm-10">
+							<?php
+							if ($perf->getSaxobc()>0 && $perf->getSaxocp()>0){
+								$saxobc = new BusinessContact($perf->getSaxobc());
+								$saxocp = new ContactPerson($perf->getSaxocp());
+								$saxostring = $saxobc->getNameAsLine() . ' - ' . $saxocp->getNameAsLine();
+							}
+							?>
+							<input type="text" name="search_saxobc" id="search_saxobc" class="form-control" value="<?php echo $saxostring;?>">
+							<input type="hidden" name="saxo_customer" id="saxo_customer" value="<?php echo $perf->getSaxobc();?>">
+							<input type="hidden" name="saxo_contactperson" id="saxo_contactperson" value="<?php echo $perf->getSaxocp();?>">
 						</div>
 					</div>
 				</div>

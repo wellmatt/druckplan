@@ -71,6 +71,11 @@ class Perferences
 
     private $minmargin = 0.0;
 
+    // Saxoprint
+    private $saxoapikey = '';
+    private $saxobc = 0;        // Kunde für saxo aufträge
+    private $saxocp = 0;        // Asp für saxo aufträge
+
     function __construct()
     {
         global $DB;
@@ -115,6 +120,9 @@ class Perferences
             $this->default_costobject = new CostObject((int)$r["default_costobject"]);
             $this->inkusage = $r["inkusage"];
             $this->minmargin = $r["minmargin"];
+            $this->saxoapikey = $r["saxoapikey"];
+            $this->saxobc = $r["saxobc"];
+            $this->saxocp = $r["saxocp"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -193,6 +201,9 @@ class Perferences
                default_costobject 	= '{$this->default_costobject->getId()}',
                inkusage = '{$this->inkusage}',
                minmargin = '{$this->minmargin}',
+               saxocp = '{$this->saxocp}',
+               saxobc = '{$this->saxobc}',
+               saxoapikey = '{$this->saxoapikey}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -724,5 +735,53 @@ class Perferences
     public function setMinmargin($minmargin)
     {
         $this->minmargin = $minmargin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSaxoapikey()
+    {
+        return $this->saxoapikey;
+    }
+
+    /**
+     * @param string $saxoapikey
+     */
+    public function setSaxoapikey($saxoapikey)
+    {
+        $this->saxoapikey = $saxoapikey;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSaxobc()
+    {
+        return $this->saxobc;
+    }
+
+    /**
+     * @param int $saxobc
+     */
+    public function setSaxobc($saxobc)
+    {
+        $this->saxobc = $saxobc;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSaxocp()
+    {
+        return $this->saxocp;
+    }
+
+    /**
+     * @param int $saxocp
+     */
+    public function setSaxocp($saxocp)
+    {
+        $this->saxocp = $saxocp;
     }
 }

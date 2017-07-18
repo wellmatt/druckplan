@@ -9,6 +9,7 @@
 
 require_once 'libs/modules/attachment/attachment.class.php';
 require_once 'libs/modules/partslists/partslist.class.php';
+require_once 'libs/modules/saxoprint/saxoprint.class.php';
 
 
 $all_user = User::getAllUser(User::ORDER_NAME, $_USER->getClient()->getId());
@@ -758,6 +759,24 @@ echo $quickmove->generate();
 									<textarea name="colinv_comment" id="colinv_comment" class="form-control"><?php echo $collectinv->getComment();?></textarea>
 								</div>
 							</div>
+
+							<?php if ($collectinv->getSaxoid()>0){
+								$saxo = new Saxoprint();
+								$state = $saxo->getOrderState($collectinv->getSaxoid());
+								?>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Saxo #</label>
+									<div class="col-sm-8 form-text">
+										<?php echo $collectinv->getSaxoid();?>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Saxo Status</label>
+									<div class="col-sm-8 form-text">
+										<?php echo $state;?>
+									</div>
+								</div>
+							<?php }?>
 						</div> <!-- ENDE COL RECHTS -->
 					</div>
 				</div>

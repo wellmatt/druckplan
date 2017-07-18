@@ -37,12 +37,12 @@
     /*
      * MySQL connection
      */
-    if ( ! $gaSql['link'] = mysql_pconnect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) )
+    if ( ! $gaSql['link'] = mysqli_connect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) )
     {
         fatal_error( 'Could not open connection to server' );
     }
  
-    if ( ! mysql_select_db( $gaSql['db'], $gaSql['link'] ) )
+    if ( ! mysqli_select_db( $gaSql['db'], $gaSql['link'] ) )
     {
         fatal_error( 'Could not select database ' );
     }
@@ -98,7 +98,7 @@
         {
             if ( isset($_GET['bSearchable_'.$i]) && $_GET['bSearchable_'.$i] == "true" && $aColumns[$i] != "id" && $aColumns[$i] != "art_picture" )
             {
-                $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
+                $sWhere .= $aColumns[$i]." LIKE '%".mysqli_real_escape_string( $gaSql['link'], $_GET['sSearch'] )."%' OR ";
             }
         }
         $sWhere = substr_replace( $sWhere, "", -3 );
@@ -118,7 +118,7 @@
             {
                 $sWhere .= " AND ";
             }
-            $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
+            $sWhere .= $aColumns[$i]." LIKE '%".mysqli_real_escape_string( $gaSql['link'], $_GET['sSearch_'.$i])."%' ";
         }
     }
     
@@ -152,7 +152,7 @@
     
 //     var_dump($sQuery);
     
-    $rResult = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
+    $rResult = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
      
     /* Data set length after filtering */
     $sQuery = "
@@ -169,8 +169,8 @@
         $sWhere
     ";
 //     var_dump($sQuery);
-    $rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-    $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+    $rResultFilterTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $aResultFilterTotal = mysqli_fetch_array($rResultFilterTotal);
     $iFilteredTotal = $aResultFilterTotal[0];
     
      
@@ -189,8 +189,8 @@
         WHERE active = 1
     ";
 //     var_dump($sQuery);
-    $rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysql_errno() );
-    $aResultTotal = mysql_fetch_array($rResultTotal);
+    $rResultTotal = mysqli_query( $sQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+    $aResultTotal = mysqli_fetch_array($rResultTotal);
     $iTotal = $aResultTotal[0];
      
      
@@ -204,7 +204,7 @@
         "aaData" => array()
     );
      
-    while ( $aRow = mysql_fetch_array( $rResult ) )
+    while ( $aRow = mysqli_fetch_array( $rResult ) )
     {
         $row = array();
         $row[] = '<span class="glyphicons glyphicons-exclamation-sign"></span>'.nl2br(htmlentities(utf8_encode($aRow['bname'])));

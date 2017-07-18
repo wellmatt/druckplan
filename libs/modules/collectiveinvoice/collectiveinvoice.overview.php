@@ -79,6 +79,7 @@ $(document).ready(function() {
 			aoData.push( { "name": "filter_attrib", "value": $('#filter_attrib').val() } );
 			aoData.push( { "name": "filter_attrib_busicon", "value": $('#filter_attrib_busicon').val() } );
 			aoData.push( { "name": "filter_status", "value": $('#filter_status').val() } );
+			aoData.push( { "name": "filter_type", "value": $('#filter_type').val() } );
 		    aoData.push( { "name": "start", "value": iMin, } );
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "user", "value": user, } );
@@ -139,6 +140,9 @@ $(document).ready(function() {
 		$('#colinv').dataTable().fnDraw();
 	});
 	$('#filter_status').on("change", function () {
+		$('#colinv').dataTable().fnDraw();
+	});
+	$('#filter_type').on("change", function () {
 		$('#colinv').dataTable().fnDraw();
 	});
 
@@ -302,6 +306,27 @@ $(document).ready(function() {
 								];
 								foreach ($colstates AS $index => $value) {
 									if ($_REQUEST['filter_status'] == $index)
+										echo '<option value="' . $index . '" selected>' . $value . '</option>';
+									else
+										echo '<option value="' . $index . '">' . $value . '</option>';
+								} ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Typ</label>
+						<div class="col-sm-10">
+							<select id="filter_type" name="filter_type" onfocus="markfield(this,0)"
+									onblur="markfield(this,1)" class="form-control">
+								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
+								<?
+								$colstates = [
+									1 => 'Manuell',
+									2 => 'Kundenportal',
+									3 => 'Saxoprint',
+								];
+								foreach ($colstates AS $index => $value) {
+									if ($_REQUEST['filter_type'] == $index)
 										echo '<option value="' . $index . '" selected>' . $value . '</option>';
 									else
 										echo '<option value="' . $index . '">' . $value . '</option>';
