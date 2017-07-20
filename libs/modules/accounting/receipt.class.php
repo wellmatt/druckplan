@@ -416,7 +416,7 @@ class Receipt extends Model{
             $creditposition = [
                 'receipt'=>$this->getId(),
                 'type'=>1,
-                'postingkey'=>210,
+                'postingkey'=>250,
                 'accountnumber'=>$this->getOrigin()->getColinv()->getBusinesscontact()->getCustomernumber(),
                 'amount' => 0.0
             ];

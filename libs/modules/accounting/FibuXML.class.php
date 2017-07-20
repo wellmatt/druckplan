@@ -125,10 +125,7 @@ class FibuXML{
                 else
                     $FibuBelegposition->addChild('kontonummer',$receiptposition->getRevenueaccount());
 
-                if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
-                    $FibuBelegposition->addChild('betrag',$receiptposition->getAmount());
-                else
-                    $FibuBelegposition->addChild('betrag',"-".$receiptposition->getAmount());
+                $FibuBelegposition->addChild('betrag',$receiptposition->getAmount());
 
                 if ($receiptposition->getType() == ReceiptPosition::TYPE_CREDIT){
                     $sk1date = '';
@@ -155,17 +152,12 @@ class FibuXML{
                 } else {
                     $FibuBelegposition->addChild('steuerschluessel',$receiptposition->getTaxKey());
                     if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
-                        $FibuBelegposition->addChild('steuerbetrag',$receiptposition->getTaxAmount());
-                    else
-                        $FibuBelegposition->addChild('steuerbetrag',"-".$receiptposition->getTaxAmount());
+                    $FibuBelegposition->addChild('steuerbetrag',$receiptposition->getTaxAmount());
 
                     $FibuKoreBelegposition = $FibuBelegposition->addChild('FibuKoreBelegposition');
                     $FibuKoreBelegposition->addChild('kostentraeger',$receiptposition->getAccountnumber());
 
-                    if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
-                        $FibuKoreBelegposition->addChild('nettobetrag',$receiptposition->getAmount());
-                    else
-                        $FibuKoreBelegposition->addChild('nettobetrag',"-".$receiptposition->getAmount());
+                    $FibuKoreBelegposition->addChild('nettobetrag',$receiptposition->getAmount());
                 }
             }
 
@@ -175,10 +167,7 @@ class FibuXML{
                 $FibuSteuerposition = $FibuSteuerpositionen->addChild('FibuSteuerposition');
                 $FibuSteuerposition->addChild('stposSchluessel',$receipttaxposition->getKey());
 
-                if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
-                    $FibuSteuerposition->addChild('stposBetrag',$receipttaxposition->getAmount());
-                else
-                    $FibuSteuerposition->addChild('stposBetrag',"-".$receipttaxposition->getAmount());
+                $FibuSteuerposition->addChild('stposBetrag',$receipttaxposition->getAmount());
 
                 $FibuSteuerposition->addChild('stposProzent',$receipttaxposition->getPercent());
             }
