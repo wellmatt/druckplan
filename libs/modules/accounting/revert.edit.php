@@ -171,7 +171,7 @@ echo $quickmove->generate();
     <div class="col-md-12">
         <?php
         $fibuxml = new FibuXML([Receipt::getForOrigin($revert)]);
-        $xml = $fibuxml->generateXML1();
+        $xml = $fibuxml->generateReceiptXML();
         $dom = dom_import_simplexml($xml)->ownerDocument;
         $dom->formatOutput = true;
         prettyPrint(htmlentities($dom->saveXML(NULL, LIBXML_NOEMPTYTAG)));
