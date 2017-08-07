@@ -175,6 +175,20 @@
         else
             $fWhere .= " AND collectiveinvoice.`type` = {$_GET['filter_type']} ";
     }
+
+    if (strlen($_GET['search_saxoprodgrp']) > 0){
+        if ( $fWhere == "" )
+            $fWhere .= " WHERE collectiveinvoice.`saxoprodgrp` LIKE '%{$_GET['search_saxoprodgrp']}%' ";
+        else
+            $fWhere .= " AND collectiveinvoice.`saxoprodgrp` LIKE '%{$_GET['search_saxoprodgrp']}%' ";
+    }
+
+    if (strlen($_GET['search_saxomaterial']) > 0){
+        if ( $fWhere == "" )
+            $fWhere .= " WHERE collectiveinvoice.`saxomaterial` LIKE '%{$_GET['search_saxomaterial']}%' ";
+        else
+            $fWhere .= " AND collectiveinvoice.`saxomaterial` LIKE '%{$_GET['search_saxomaterial']}%' ";
+    }
     
     
     /*

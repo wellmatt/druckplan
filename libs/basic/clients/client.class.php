@@ -354,6 +354,92 @@ class Client {
             return false;
     }
 
+    /**
+     * Increments number counter in client table
+     * DAFUQ Stupid glgn FIX!!!
+     * @param $type
+     */
+    function incrementOrderNumber($type){
+        global $DB;
+
+        $fields = [
+            self::NUMBER_ORDER => ['number_format_order','number_counter_order'],
+            self::NUMBER_COLINV => ['number_format_colinv','number_counter_colinv'],
+            self::NUMBER_OFFER => ['number_format_offer','number_counter_offer'],
+            self::NUMBER_OFFERCONFIRM => ['number_format_offerconfirm','number_counter_offerconfirm'],
+            self::NUMBER_DELIVERY => ['number_format_delivery','number_counter_delivery'],
+            self::NUMBER_PAPER_ORDER => ['number_format_paper_order','number_counter_paper_order'],
+            self::NUMBER_INVOICE => ['number_format_invoice','number_counter_invoice'],
+            self::NUMBER_REVERT => ['number_format_revert','number_counter_revert'],
+            self::NUMBER_WARNING => ['number_format_warning','number_counter_warning'],
+            self::NUMBER_WORK => ['number_format_work','number_counter_work'],
+            self::NUMBER_SUPORDER => ['number_format_suporder','number_counter_suporder'],
+            self::NUMBER_BULKLETTER => ['number_format_bulkletter','number_counter_bulkletter']
+        ];
+        $nfield = $fields[$type][1];
+
+        $sql = " BEGIN WORK";
+        $DB->no_result($sql);
+
+        $sql = " update clients
+                        set {$nfield} = {$nfield} +1
+                    where
+                        id = {$this->id}";
+        $res = $DB->no_result($sql);
+
+        $sql = "COMMIT";
+        $DB->no_result($sql);
+    }
+
+
+    /**
+     * Creates new number from client table
+     * DAFUQ Stupid glgn FIX!!!
+     * @param $type
+     * @return string|boolean
+     */
+    function generateOrderNumber($type){
+        global $DB;
+
+        $fields = [
+            self::NUMBER_ORDER => ['number_format_order','number_counter_order'],
+            self::NUMBER_COLINV => ['number_format_colinv','number_counter_colinv'],
+            self::NUMBER_OFFER => ['number_format_offer','number_counter_offer'],
+            self::NUMBER_OFFERCONFIRM => ['number_format_offerconfirm','number_counter_offerconfirm'],
+            self::NUMBER_DELIVERY => ['number_format_delivery','number_counter_delivery'],
+            self::NUMBER_PAPER_ORDER => ['number_format_paper_order','number_counter_paper_order'],
+            self::NUMBER_INVOICE => ['number_format_invoice','number_counter_invoice'],
+            self::NUMBER_REVERT => ['number_format_revert','number_counter_revert'],
+            self::NUMBER_WARNING => ['number_format_warning','number_counter_warning'],
+            self::NUMBER_WORK => ['number_format_work','number_counter_work'],
+            self::NUMBER_SUPORDER => ['number_format_suporder','number_counter_suporder'],
+            self::NUMBER_BULKLETTER => ['number_format_bulkletter','number_counter_bulkletter']
+        ];
+
+        $ffield = $fields[$type][0];
+        $nfield = $fields[$type][1];
+
+        $sql = "SELECT {$ffield}, {$nfield} 
+                FROM clients 
+                WHERE id = {$this->id}";
+        $ordernumber = $DB->select($sql);
+
+        if($ordernumber[0][$ffield] != "")
+        {
+            $ordernumber = (int)$ordernumber[0]["{$nfield}"] +1;
+            $order_number_format = $ordernumber[0]["{$ffield}"];
+            $numlen = strlen($ordernumber) *-1;
+            $order_number_format = substr($order_number_format, 0, $numlen);
+            $order_number_format = $order_number_format.$ordernumber;
+            $order_number_format = str_replace("X","0", $order_number_format);
+            $order_number_format = str_replace("YYYY",date('Y'), $order_number_format);
+            $order_number_format = str_replace("YY",date('y'), $order_number_format);
+            $order_number_format = str_replace("MM",date('m'), $order_number_format);
+            return $order_number_format;
+        } else
+            return false;
+    }
+
     function createOrderNumber($type)
     {
         global $DB;

@@ -29,6 +29,10 @@ class ComposerStaticInit4e587a7223f521f1dc76974e46816cc5
             'Sabre\\CardDAV\\' => 14,
             'Sabre\\CalDAV\\' => 13,
         ),
+        'F' => 
+        array (
+            'Faker\\' => 6,
+        ),
         'C' => 
         array (
             'Curl\\' => 5,
@@ -71,6 +75,10 @@ class ComposerStaticInit4e587a7223f521f1dc76974e46816cc5
         'Sabre\\CalDAV\\' => 
         array (
             0 => __DIR__ . '/..' . '/sabre/dav/lib/CalDAV',
+        ),
+        'Faker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
         'Curl\\' => 
         array (

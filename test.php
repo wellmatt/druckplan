@@ -55,16 +55,23 @@ $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domai
 $_LANG = $_USER->getLang();
 
 $saxo = new Saxoprint();
-$orders = $saxo->getRemoteOrders();
-prettyPrint($orders);
 
-//$curl = new Curl();
-//$curl->setBasicAuthentication('e11a9546a0d2584b5f7c326462e220d2', '');
-//$curl->get('https://saxoscout1.staging.saxoprint.com/api/v3/printjobs');
-//
-//if ($curl->error) {
-//    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
-//} else {
-//    prettyPrint($curl->response);
-//}
+//$order = $saxo->getRemoteOrder("301175645");
+//prettyPrint($order);
+
+//$post = [
+//            [
+//                "OrderNumber" => (int)$order[0]->getOrderNumber(),
+//                "WorkingState" => Saxoprint::Cancelled
+//            ]
+//];
+//$saxo->postOrderStatusMultiple($post);
+//$saxo->postOrderStatus($order[0],Saxoprint::Received);
+
+//$order = $saxo->getRemoteOrder("301175645");
+//prettyPrint($order);
+
+$remoteOrders = $saxo->getRemoteOrders(Saxoprint::Registered);
+prettyPrint($remoteOrders);
+
 ?>

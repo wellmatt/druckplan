@@ -1,5 +1,6 @@
 {
     "require": {
-        "php-curl-class/php-curl-class": "^7.3"
+        "php-curl-class/php-curl-class": "^7.3",
+        "fzaninotto/faker": "^1.6"
     }
 }

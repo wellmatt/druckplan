@@ -504,7 +504,7 @@
                                     LEFT JOIN groups ON tickets.assigned_group = groups.id
                                     WHERE association.objectid1 = {$aRow['id']}
                                     ";
-                    $rResultPjState = mysqli_query( $pj_state_sql, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+                    $rResultPjState = mysqli_query(  $gaSql['link'], $pj_state_sql ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
                     while ($data = mysqli_fetch_array($rResultPjState)){
                         $pj_title .= utf8_encode($data["tktstate"]).': '.utf8_encode($data["number"]).' - '.utf8_encode($data["title"]); // 
                         if ($data["user_name"] != '')

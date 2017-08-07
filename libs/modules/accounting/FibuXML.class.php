@@ -151,7 +151,6 @@ class FibuXML{
                     $OpInfos->addChild('faelligAm',date('d.m.Y',$receipt->getOrigin()->getDuedate()));
                 } else {
                     $FibuBelegposition->addChild('steuerschluessel',$receiptposition->getTaxKey());
-                    if ($receipt->getOriginType() == Receipt::ORIGIN_INVOICE)
                     $FibuBelegposition->addChild('steuerbetrag',$receiptposition->getTaxAmount());
 
                     $FibuKoreBelegposition = $FibuBelegposition->addChild('FibuKoreBelegposition');

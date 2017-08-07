@@ -7,6 +7,13 @@
  *
  */
 
+
+if ($_REQUEST["exec"] == "delete")
+{
+    $delrole = new Role($_REQUEST["delid"]);
+    $delrole->delete();
+}
+
 $roles = Role::fetch();
 ?>
 

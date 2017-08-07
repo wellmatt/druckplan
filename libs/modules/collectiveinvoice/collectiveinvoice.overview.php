@@ -76,6 +76,8 @@ $(document).ready(function() {
 			var iMax = document.getElementById('ajax_date_max').value;
 			var user = document.getElementById('ajax_user').value;
 			var customer = document.getElementById('ajax_customer').value;
+			var search_saxoprodgrp = document.getElementById('search_saxoprodgrp').value;
+			var search_saxomaterial = document.getElementById('search_saxomaterial').value;
 			aoData.push( { "name": "filter_attrib", "value": $('#filter_attrib').val() } );
 			aoData.push( { "name": "filter_attrib_busicon", "value": $('#filter_attrib_busicon').val() } );
 			aoData.push( { "name": "filter_status", "value": $('#filter_status').val() } );
@@ -84,6 +86,8 @@ $(document).ready(function() {
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "user", "value": user, } );
 		    aoData.push( { "name": "customer", "value": customer, } );
+		    aoData.push( { "name": "search_saxoprodgrp", "value": search_saxoprodgrp, } );
+		    aoData.push( { "name": "search_saxomaterial", "value": search_saxomaterial, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
@@ -143,6 +147,13 @@ $(document).ready(function() {
 		$('#colinv').dataTable().fnDraw();
 	});
 	$('#filter_type').on("change", function () {
+		$('#colinv').dataTable().fnDraw();
+	});
+
+	$('#search_saxoprodgrp').on("change", function () {
+		$('#colinv').dataTable().fnDraw();
+	});
+	$('#search_saxomaterial').on("change", function () {
 		$('#colinv').dataTable().fnDraw();
 	});
 
@@ -334,6 +345,21 @@ $(document).ready(function() {
 							</select>
 						</div>
 					</div>
+					<?php
+					if ($perf->getSaxoapikey() != ''){?>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">SP Product Gruppe</label>
+							<div class="col-sm-10">
+								<input type="text" id="search_saxoprodgrp" class="form-control" placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">SP Material</label>
+							<div class="col-sm-10">
+								<input type="text" id="search_saxomaterial" class="form-control" placeholder="">
+							</div>
+						</div>
+					<?php } ?>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Suche</label>
 						<div class="col-sm-10">

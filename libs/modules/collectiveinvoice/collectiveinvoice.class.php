@@ -63,6 +63,8 @@ class CollectiveInvoice{
 	private $locked = 0;				// Gesperrt da Rechnung generiert
 
     private $saxoid = 0;                // Saxoprint OrderNumber
+    private $saxoprodgrp = '';          // Saxoprint Product Group
+    private $saxomaterial = '';         // Saxoprint Material
     
     // Doc texts
 
@@ -175,6 +177,8 @@ class CollectiveInvoice{
 					$this->savedcost = $r["savedcost"];
 					$this->locked = $r["locked"];
 					$this->saxoid = $r["saxoid"];
+					$this->saxoprodgrp = $r["saxoprodgrp"];
+					$this->saxomaterial = $r["saxomaterial"];
 
 					// doc texts
 					$this->offer_header = $r["offer_header"];
@@ -245,6 +249,8 @@ class CollectiveInvoice{
                     ticket = {$this->ticket},
                     savedcost = {$this->savedcost},
                     saxoid = '{$this->saxoid}',
+                    saxoprodgrp = '{$this->saxoprodgrp}',
+                    saxomaterial = '{$this->saxomaterial}',
                     locked = {$this->locked},
 
 					intent = '{$this->intent}'
@@ -263,7 +269,7 @@ class CollectiveInvoice{
 				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
-				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost,locked,saxoid)
+				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost,locked,saxoid,saxoprodgrp,saxomaterial)
 			VALUES
 				({$this->status}, {$this->type},'{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
@@ -273,7 +279,7 @@ class CollectiveInvoice{
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
 				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}',
-				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0, 0, '{$this->saxoid}')";
+				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0, 0, '{$this->saxoid}', '{$this->saxoprodgrp}', '{$this->saxomaterial}')";
 			$res = $DB->no_result($sql);
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
@@ -1157,7 +1163,7 @@ class CollectiveInvoice{
 	}
 
 	/**
-     * @param field_type $needs_planning
+     * @param int $needs_planning
      */
     public function setNeeds_planning($needs_planning)
     {
@@ -1165,7 +1171,7 @@ class CollectiveInvoice{
     }
     
 	/**
-     * @return the $deliverydate
+     * @return int $deliverydate
      */
     public function getDeliverydate()
     {
@@ -1574,5 +1580,37 @@ class CollectiveInvoice{
     public function setSaxoid($saxoid)
     {
         $this->saxoid = $saxoid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSaxoprodgrp()
+    {
+        return $this->saxoprodgrp;
+    }
+
+    /**
+     * @param string $saxoprodgrp
+     */
+    public function setSaxoprodgrp($saxoprodgrp)
+    {
+        $this->saxoprodgrp = $saxoprodgrp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSaxomaterial()
+    {
+        return $this->saxomaterial;
+    }
+
+    /**
+     * @param string $saxomaterial
+     */
+    public function setSaxomaterial($saxomaterial)
+    {
+        $this->saxomaterial = $saxomaterial;
     }
 }

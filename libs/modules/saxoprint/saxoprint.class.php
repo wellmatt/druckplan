@@ -52,6 +52,8 @@ class Saxoprint{
         $this->api_key = $perf->getSaxoapikey();
         $curl = new Curl();
         $curl->setBasicAuthentication($this->api_key, '');
+        $curl->setUserAgent("Contilas-Druckplan API Webservice");
+        $curl->setHeader("Content-Type", "application/json");
         $this->curl = $curl;
     }
 
@@ -66,6 +68,7 @@ class Saxoprint{
 
         if ($this->curl->error) {
             $this->error = 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage . "\n";
+            prettyPrint($this->error);
             return false;
         } else {
             return $this->curl->response->WorkingStateText;
@@ -87,10 +90,70 @@ class Saxoprint{
 
         if ($this->curl->error) {
             $this->error = 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage . "\n";
+            prettyPrint($this->error);
             return false;
         } else {
             $orders = self::parseOrders($this->curl->response);
             return $orders;
+        }
+    }
+
+    /**
+     * Changes a remote order state
+     * @param $order SaxoprintOrder
+     * @param $workingstate int
+     * @return bool
+     */
+    public function postOrderStatus($order, $workingstate)
+    {
+        $post = [
+            "WorkingState" => $workingstate
+        ];
+        $post = json_encode($post);
+
+        $this->curl->post($this->baseurl.'api/v3/printjobs/'.$order->getOrderNumber().'/workingstate', $post);
+
+
+        if ($this->curl->error) {
+            $this->error = 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage . "\n";
+            prettyPrint($this->error);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Changes a remote order state
+     * @param $postarray array
+     * @return bool
+     *
+     * $postarray needs to be of format:
+     *
+     *   [
+     *      {
+     *          "OrderNumber": 1,
+     *          "WorkingState": 0
+     *      },
+     *      {
+     *          "OrderNumber": 1,
+     *          "WorkingState": 0
+     *      }
+     *  ]
+     *
+     */
+    public function postOrderStatusMultiple($postarray)
+    {
+        $post = json_encode($postarray);
+
+        $this->curl->post($this->baseurl.'api/v3/printjobs/workingstate', $post);
+
+        if ($this->curl->error) {
+            $this->error = 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage . "\n";
+            prettyPrint($this->error);
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -105,6 +168,7 @@ class Saxoprint{
 
         if ($this->curl->error) {
             $this->error = 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage . "\n";
+            prettyPrint($this->error);
             return false;
         } else {
             $orders = self::parseOrders($this->curl->response);

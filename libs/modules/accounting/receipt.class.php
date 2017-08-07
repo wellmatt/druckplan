@@ -478,17 +478,17 @@ class Receipt extends Model{
                 $receipt_positions[] = $rctp_pos_tax;
             }
 
-            foreach ($receipt_positions as $receipt_position) {
-                $res = $receipt_position->save();
-                if ($res === false)
-                    return false;
-            }
-
             // create credit positon
             $rctp_pos_credit = new ReceiptPosition(0,$creditposition);
             $rctp_pos_credit = $rctp_pos_credit->save();
             if ($rctp_pos_credit === false)
                 return false;
+
+            foreach ($receipt_positions as $receipt_position) {
+                $res = $receipt_position->save();
+                if ($res === false)
+                    return false;
+            }
 
         }
         return true;

@@ -28,6 +28,7 @@ if ($_REQUEST["exec"] == "save"){
             $roleperm->save();
         }
     }
+    $_REQUEST['id'] = $role->getId();
 }
 
 ?>

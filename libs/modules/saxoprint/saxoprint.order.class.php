@@ -77,15 +77,27 @@ class SaxoprintOrder{
 "CountryCodeISO": '.$deliveryAddress->CountryCodeISO.'';
         }
 
+        $prodgrp = '';
+        $material = '';
+
+        foreach ($this->getProductDetails()->ProductCharacteristics as $productCharacteristic) {
+            if ($productCharacteristic->getPropertyId() == 6)
+                $prodgrp = $productCharacteristic->getPropertyValueName();
+            if ($productCharacteristic->getPropertyId() == 8)
+                $material = $productCharacteristic->getPropertyValueName();
+        }
+
         $col_inv = new CollectiveInvoice();
         $col_inv->setBusinesscontact($saxobc);
         $col_inv->setCustContactperson($saxocp);
-        $col_inv->setTitle("Saxoprint #".$this->getOrderNumber());
+        $col_inv->setTitle("Saxoprint #".$this->getOrderNumber()." / ".$prodgrp." / ".$material);
         $col_inv->setPaymentterm($saxobc->getPaymentTerms());
         $col_inv->setClient(new Client(1));
         $col_inv->setType(3);
         $col_inv->setComment($comment);
         $col_inv->setSaxoid($this->getOrderNumber());
+        $col_inv->setSaxomaterial($material);
+        $col_inv->setSaxoprodgrp($prodgrp);
         $col_inv->setStatus(3);
         $col_inv->setDeliverydate(strtotime($this->CompletionDate));
         $col_inv->setNeeds_planning(1);

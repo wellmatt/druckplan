@@ -1,5 +1,5 @@
 <?
-require_once('libs/basic/translator/translator.class.php');
+//require_once('libs/basic/translator/translator.class.php');
 function getSaveMessage($r)
 {
   global $_LANG;
@@ -418,6 +418,10 @@ function prettyPrint($a) {
 	echo "<pre>";
 	print_r($a);
 	echo "</pre>";
+}
+
+function evalBoolean($val){
+    return ($val) ? 'true' : 'false';
 }
 
 function generateRandomString($length = 10) {

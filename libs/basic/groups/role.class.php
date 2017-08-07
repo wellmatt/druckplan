@@ -36,6 +36,8 @@ class Role extends Model{
      */
     public function getSlugs()
     {
+        if (count($this->_permissions) == 0)
+            $this->getPermissions();
         $slugs = [];
         foreach ($this->_permissions as $permission) {
             $slugs[] = $permission->getSlug();

@@ -8,8 +8,14 @@
  */
 require_once 'libs/modules/saxoprint/saxoprint.class.php';
 
+if (strstr(__DIR__, "contilas2"))
+{
+    dd('Import im Testsysten nicht möglich!');
+}
+
 $saxo = new Saxoprint();
 $remoteOrders = $saxo->getRemoteOrders(Saxoprint::Registered);
+$postarray = [];
 
 if ($perf->getSaxoapikey() != '' && $perf->getSaxobc()>0 && $perf->getSaxocp()>0 ){
 
@@ -48,12 +54,16 @@ if ($perf->getSaxoapikey() != '' && $perf->getSaxobc()>0 && $perf->getSaxocp()>0
                             <?php
                             if ($col_inv === false)
                                 echo 'Fehler beim Import';
-                            else
-                                echo '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid='.$col_inv->getId().'">'.$col_inv->getNumber().'</a>';
+                            else {
+                                $postarray[] = [ "OrderNumber" => (int)$col_inv->getSaxoid(), "WorkingState" => Saxoprint::Cancelled ];
+                                echo '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=' . $col_inv->getId() . '">' . $col_inv->getNumber() . '</a>';
+                            }
                             ?>
                         </td>
                     </tr>
-                <?php } ?>
+                <?php }
+                $saxo->postOrderStatusMultiple($postarray);
+                ?>
             </tbody>
         </table>
     </div>
