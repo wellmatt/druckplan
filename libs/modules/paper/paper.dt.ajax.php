@@ -189,7 +189,7 @@
                 $sQuerySizes = 'SELECT * FROM papers_sizes 
                                 WHERE paper_id = '.$aRow[ $aColumns[0] ].'
                                 ORDER BY width';
-                $rAttributes = mysqli_query( $sQuerySizes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+                $rAttributes = mysqli_query( $gaSql['link'], $sQuerySizes ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
                 while ($data = mysqli_fetch_row($rAttributes)){
                     $tmp_row .= $data[1] . "x" . $data[2] . "\n";
                 }
@@ -201,7 +201,7 @@
                 $sQuerySizes = 'SELECT * FROM papers_weights 
                                 WHERE paper_id = '.$aRow[ $aColumns[0] ].' 
                                 ORDER BY weight';
-                $rAttributes = mysqli_query( $sQuerySizes, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+                $rAttributes = mysqli_query( $gaSql['link'], $sQuerySizes ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
                 while ($data = mysqli_fetch_row($rAttributes)){
                     $tmp_row .= $data[1] . "g \n";
                 }
