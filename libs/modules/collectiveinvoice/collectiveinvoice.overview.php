@@ -76,8 +76,12 @@ $(document).ready(function() {
 			var iMax = document.getElementById('ajax_date_max').value;
 			var user = document.getElementById('ajax_user').value;
 			var customer = document.getElementById('ajax_customer').value;
+			<?php if ($perf->getSaxoapikey() != ''){?>
 			var search_saxoprodgrp = document.getElementById('search_saxoprodgrp').value;
 			var search_saxomaterial = document.getElementById('search_saxomaterial').value;
+			aoData.push( { "name": "search_saxoprodgrp", "value": search_saxoprodgrp, } );
+			aoData.push( { "name": "search_saxomaterial", "value": search_saxomaterial, } );
+			<?php } ?>
 			aoData.push( { "name": "filter_attrib", "value": $('#filter_attrib').val() } );
 			aoData.push( { "name": "filter_attrib_busicon", "value": $('#filter_attrib_busicon').val() } );
 			aoData.push( { "name": "filter_status", "value": $('#filter_status').val() } );
@@ -86,8 +90,6 @@ $(document).ready(function() {
 		    aoData.push( { "name": "end", "value": iMax, } );
 		    aoData.push( { "name": "user", "value": user, } );
 		    aoData.push( { "name": "customer", "value": customer, } );
-		    aoData.push( { "name": "search_saxoprodgrp", "value": search_saxoprodgrp, } );
-		    aoData.push( { "name": "search_saxomaterial", "value": search_saxomaterial, } );
 		    $.getJSON( sSource, aoData, function (json) {
 		        fnCallback(json)
 		    } );
