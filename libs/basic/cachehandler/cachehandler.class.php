@@ -55,7 +55,7 @@ class Cachehandler
                     $method = str_replace("_", "", $method);
                     if (method_exists($object,$method))
                     {
-                        $object->$var = $cached->$method();
+                        $object->{$var} = $cached->{$method}();
                     } else {
                         prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
                     }

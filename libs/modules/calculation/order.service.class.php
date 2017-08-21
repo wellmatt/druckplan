@@ -35,7 +35,7 @@ class OrderService{
         foreach ($params as $method => $value) {
             if (method_exists($order,$method))
             {
-                $order->$method($value);
+                $order->{$method}($value);
             }
         }
         $this->order = $order;
@@ -55,7 +55,7 @@ class OrderService{
             foreach ($paramscalc as $method => $value) {
                 if (method_exists($calc,$method))
                 {
-                    $calc->$method($value);
+                    $calc->{$method}($value);
                 }
             }
             $this->calculations[] = $calc;

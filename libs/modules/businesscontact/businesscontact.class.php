@@ -145,18 +145,18 @@ class BusinessContact {
 						$method = str_replace("_", "", $method);
 						if (method_exists($this,$method))
 						{
-							if(is_object($cached->$method()) === false) {
-								$this->$var = $cached->$method();
+							if(is_object($cached->{$method}()) === false) {
+								$this->{$var} = $cached->{$method}();
 							} else {
-								$class = get_class($cached->$method());
-								$this->$var = new $class($cached->$method()->getId());
+								$class = get_class($cached->{$method}());
+								$this->{$var} = new $class($cached->{$method}()->getId());
 							}
 						} elseif (method_exists($this,$method2)){
-							if(is_object($cached->$method2()) === false) {
-								$this->$var = $cached->$method2();
+							if(is_object($cached->{$method2}()) === false) {
+								$this->{$var} = $cached->{$method2}();
 							} else {
-								$class = get_class($cached->$method2());
-								$this->$var = new $class($cached->$method2()->getId());
+								$class = get_class($cached->{$method2}());
+								$this->{$var} = new $class($cached->{$method2}()->getId());
 							}
 						} else {
 							prettyPrint('Cache Error: Method "'.$method.'" not found in Class "'.get_called_class().'"');
@@ -545,12 +545,12 @@ class BusinessContact {
 	
 	public function delContactPersons($contactPerson)
 	{
-		foreach ($this->$contactPersons as $i => $cp)
+		foreach ($this->{$contactPersons} as $i => $cp)
 		{
-			if ($this->$contactPersons[$i]->getID() == $cp->getID())
+			if ($this->{$contactPersons[$i]}->getID() == $cp->getID())
 			{
 				$cp.delete();
-				unset($this->$contactPersons[$i]);
+				unset($this->{$contactPersons[$i]});
 			}
 		}
 	}

@@ -83,7 +83,7 @@ class CleanJsonSerializer
         $properties = $this->getClassPropertyGetters($object);
         $data = array();
         foreach ($properties as $name => $property) {
-            $data[$name] = $this->serializeInternal($object->$property());
+            $data[$name] = $this->serializeInternal($object->{$property}());
         }
         return $data;
     }

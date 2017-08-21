@@ -145,7 +145,7 @@ foreach ($dates as $date)
                 if ($calc->getId()>0){
                     foreach ($contents as $content) {
                         if ($content['const'] == $me->getPart()){
-                            if ($calc->$content['id']()->getId()>0) {
+                            if ($calc->{$content['id']}()->getId()>0) {
                                 $subhtml .= '<div class="table-responsive">';
                                 $subhtml .= '<table class="table table-hover" id="art_table">';
                                 $subhtml .= '<thead>';
@@ -162,14 +162,14 @@ foreach ($dates as $date)
                                 $subhtml .= '</thead>';
 
                                 $subhtml .= '<tr>';
-                                $subhtml .= '<td>'.$calc->$content['id']()->getName().'</td>';
-                                $subhtml .= '<td>'.$calc->$content['weight']().'g</td>';
-                                $subhtml .= '<td>'.$calc->$content['chr']()->getName().'</td>';
-                                $subhtml .= '<td>'.$calc->$content['width']().'mm x '.$calc->$content['height']().'mm</td>';
+                                $subhtml .= '<td>'.$calc->{$content['id']}()->getName().'</td>';
+                                $subhtml .= '<td>'.$calc->{$content['weight']}().'g</td>';
+                                $subhtml .= '<td>'.$calc->{$content['chr']}()->getName().'</td>';
+                                $subhtml .= '<td>'.$calc->{$content['width']}().'mm x '.$calc->{$content['height']}().'mm</td>';
                                 $subhtml .= '<td>'.$calc->getProductFormatWidth().'mm x '.$calc->getProductFormatHeight().'mm</td>';
                                 $subhtml .= '<td>'.$calc->getProductFormatWidthOpen().'mm x '.$calc->getProductFormatHeightOpen().'mm</td>';
                                 $subhtml .= '<td>'.$calc->getProductsPerPaper($content['const']).'</td>';
-                                $subhtml .= '<td>'.printBigInt($calc->getPaperCount($content['const']) + $calc->$content['grant']()).'</td>';
+                                $subhtml .= '<td>'.printBigInt($calc->getPaperCount($content['const']) + $calc->{$content['grant']}()).'</td>';
                                 $subhtml .= '</tr>';
 
                                 $subhtml .= '</table>';
@@ -314,7 +314,7 @@ echo $html;
                     if ($calc->getId()>0){
                         foreach ($contents as $content) {
                             if ($content['const'] == $me->getPart()){
-                                if ($calc->$content['id']()->getId()>0) {
+                                if ($calc->{$content['id']}()->getId()>0) {
                                     $subhtml .= '<div class="table-responsive">';
                                     $subhtml .= '<table class="table table-hover" id="art_table">';
                                     $subhtml .= '<thead style="font-weight: bold;">';
@@ -331,14 +331,14 @@ echo $html;
                                     $subhtml .= '</thead>';
 
                                     $subhtml .= '<tr>';
-                                    $subhtml .= '<td>'.$calc->$content['id']()->getName().'</td>';
-                                    $subhtml .= '<td>'.$calc->$content['weight']().'g</td>';
-                                    $subhtml .= '<td>'.$calc->$content['chr']()->getName().'</td>';
-                                    $subhtml .= '<td>'.$calc->$content['width']().'mm x '.$calc->$content['height']().'mm</td>';
+                                    $subhtml .= '<td>'.$calc->{$content['id']}()->getName().'</td>';
+                                    $subhtml .= '<td>'.$calc->{$content['weight']}().'g</td>';
+                                    $subhtml .= '<td>'.$calc->{$content['chr']}()->getName().'</td>';
+                                    $subhtml .= '<td>'.$calc->{$content['width']}().'mm x '.$calc->{$content['height']}().'mm</td>';
                                     $subhtml .= '<td>'.$calc->getProductFormatWidth().'mm x '.$calc->getProductFormatHeight().'mm</td>';
                                     $subhtml .= '<td>'.$calc->getProductFormatWidthOpen().'mm x '.$calc->getProductFormatHeightOpen().'mm</td>';
                                     $subhtml .= '<td>'.$calc->getProductsPerPaper($content['const']).'</td>';
-                                    $subhtml .= '<td>'.printBigInt($calc->getPaperCount($content['const']) + $calc->$content['grant']()).'</td>';
+                                    $subhtml .= '<td>'.printBigInt($calc->getPaperCount($content['const']) + $calc->{$content['grant']}()).'</td>';
                                     $subhtml .= '</tr>';
 
                                     $subhtml .= '</table>';

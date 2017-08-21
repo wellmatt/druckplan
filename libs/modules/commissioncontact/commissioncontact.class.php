@@ -402,12 +402,12 @@ class CommissionContact {
 	
 	public function delContactPersons($contactPerson)
 	{
-		foreach ($this->$contactPersons as $i => $cp)
+		foreach ($this->{$contactPersons} as $i => $cp)
 		{
-			if ($this->$contactPersons[$i]->getID() == $cp->getID())
+			if ($this->{$contactPersons[$i]}->getID() == $cp->getID())
 			{
 				$cp.delete();
-				unset($this->$contactPersons[$i]);
+				unset($this->{$contactPersons[$i]});
 			}
 		}
 	}

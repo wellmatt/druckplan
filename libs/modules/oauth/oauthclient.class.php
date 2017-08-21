@@ -83,7 +83,7 @@ class oAuthClient extends Model {
 
                 foreach ($r as $key => $value) {
                     if (property_exists(get_class($this), $key)) {
-                        $this->$key = $value;
+                        $this->{$key} = $value;
                     }
                 }
                 $this->_exists = true;
@@ -93,7 +93,7 @@ class oAuthClient extends Model {
         if (is_array($params)) {
             foreach ($params as $index => $param) {
                 if (property_exists(get_class($this),$index)){
-                    $this->$index = $param;
+                    $this->{$index} = $param;
                 }
             }
         }

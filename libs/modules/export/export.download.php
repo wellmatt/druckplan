@@ -29,9 +29,9 @@ if ($_REQUEST["function"]){
             $exporter = new ExportJson($datefrom, $dateto);
             if ((int)$_REQUEST["colinvid"] > 0){
                 $colinv = new CollectiveInvoice((int)$_REQUEST["colinvid"]);
-                $json = $exporter->$func($colinv);
+                $json = $exporter->{$func}($colinv);
             } else {
-                $json = $exporter->$func();
+                $json = $exporter->{$func}();
             }
             break;
         default:

@@ -46,7 +46,7 @@ class CalDavEvent {
     {
         foreach ($array as $index => $item) {
             if (property_exists("CalDavEvent",$index)){
-                $this->$index = $item;
+                $this->{$index} = $item;
             }
         }
         $this->created = self::convertTimestamp(time());

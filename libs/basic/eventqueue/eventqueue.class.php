@@ -83,7 +83,7 @@ class EventQueue {
         if (is_array($params)) {
             foreach ($params as $index => $param) {
                 if (property_exists(get_class($this),$index)){
-                    $this->$index = $param;
+                    $this->{$index} = $param;
                 }
             }
         }
@@ -101,9 +101,9 @@ class EventQueue {
             foreach ($params as $index => $param) {
                 if (property_exists(get_class($event),$index)){
                     if ($index == "eventargs")
-                        $event->$index = unserialize($param);
+                        $event->{$index} = unserialize($param);
                     else
-                        $event->$index = $param;
+                        $event->{$index} = $param;
                 }
             }
         }

@@ -18,7 +18,7 @@ abstract class EventClass implements EventClassInterface {
     public function fire($function, $args)
     {
         if (get_class_methods(get_called_class()) != null && in_array($function,get_class_methods(get_called_class()))){
-            return $this->$function($args);
+            return $this->{$function}($args);
         } else {
             return false;
         }

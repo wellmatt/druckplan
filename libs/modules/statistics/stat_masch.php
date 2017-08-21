@@ -129,9 +129,9 @@ $mgroups = MachineGroup::getAllMachineGroups();
 //                                 foreach ($machstats as $item) {?>
                                     <tr>
 <!--                                        <td>--><?php //echo $item->getID();?><!--</td>-->
-                                        <td><?php echo $machstat->$_REQUEST["stat_mname"];?></td>
-                                        <td><?php echo $machstat->$_REQUEST["stat_mplanned"];?></td>
-                                        <td><?php echo $machstat->$_REQUEST["stat_mtactual"];?></td>
+                                        <td><?php echo $machstat->{$_REQUEST["stat_mname"]};?></td>
+                                        <td><?php echo $machstat->{$_REQUEST["stat_mplanned"]};?></td>
+                                        <td><?php echo $machstat->{$_REQUEST["stat_mtactual"]};?></td>
                                         <td></td>
                                         <td></td>
                                       </tr>

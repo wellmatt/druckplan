@@ -416,7 +416,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                       <div class="row">
                           <?php
                           foreach ($contents as $content) {
-                              if ($calc->$content['id']()->getId()>0) {
+                              if ($calc->{$content['id']}()->getId()>0) {
                                   ?>
                                   <div class="col-md-3">
                                       <div class="panel panel-default">
@@ -425,19 +425,19 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                           </div>
                                           <ul class="list-group">
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['id']()->getName();?></span>
+                                                  <span class="badge"><?php echo $calc->{$content['id']}()->getName();?></span>
                                                   Material
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['weight']();?> g</span>
+                                                  <span class="badge"><?php echo $calc->{$content['weight']}();?> g</span>
                                                   Grammatur
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['chr']()->getName();?></span>
+                                                  <span class="badge"><?php echo $calc->{$content['chr']}()->getName();?></span>
                                                   Farbigkeit
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?= $calc->$content['width']() ?> mm x <?= $calc->$content['height']() ?> mm</span>
+                                                  <span class="badge"><?= $calc->{$content['width']}() ?> mm x <?= $calc->{$content['height']}() ?> mm</span>
                                                   Bogenformat
                                               </li>
                                               <li class="list-group-item">
@@ -455,28 +455,28 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                               <li class="list-group-item">
                                                   <span class="badge">
                                                       <?php
-                                                      if ($calc->$content['chr']()->getReversePrinting() == 0 AND $calc->$content['chr']()->getColorsBack() == 0) {
-                                                          echo $calc->getPaperCount($content['const']) + $calc->$content['grant']();
+                                                      if ($calc->{$content['chr']}()->getReversePrinting() == 0 AND $calc->{$content['chr']}()->getColorsBack() == 0) {
+                                                          echo $calc->getPaperCount($content['const']) + $calc->{$content['grant']}();
                                                       } else {
-                                                          echo 2 * ($calc->getPaperCount($content['const']) + $calc->$content['grant']());
+                                                          echo 2 * ($calc->getPaperCount($content['const']) + $calc->{$content['grant']}());
                                                       } ?>
                                                   </span>
                                                   Druckleistung insgesamt
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printBigInt($calc->$content['grant']());?></span>
+                                                  <span class="badge"><?php echo printBigInt($calc->{$content['grant']}());?></span>
                                                   Zuschuss
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printBigInt($calc->getPaperCount($content['const']) + $calc->$content['grant']());?></span>
+                                                  <span class="badge"><?php echo printBigInt($calc->getPaperCount($content['const']) + $calc->{$content['grant']}());?></span>
                                                   Druckbogen insgesamt
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->$content['width']() * $calc->$content['height']() * $calc->$content['weight']() / 10000 / 100) * $calc->getAmount() / 10000);?>kg</span>
+                                                  <span class="badge"><?php echo printPrice(($calc->{$content['width']}() * $calc->{$content['height']}() * $calc->{$content['weight']}() / 10000 / 100) * $calc->getAmount() / 10000);?>kg</span>
                                                   Papiergewicht
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice((($calc->getProductFormatWidth() * $calc->getProductFormatHeight()) * $calc->$content['weight']() / 100000) / 1000);?>kg</span>
+                                                  <span class="badge"><?php echo printPrice((($calc->getProductFormatWidth() * $calc->getProductFormatHeight()) * $calc->{$content['weight']}() / 100000) / 1000);?>kg</span>
                                                   Papiergewicht pro Stück
                                               </li>
                                               <li class="list-group-item">
@@ -484,15 +484,15 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                   kg pro Farbton
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice((($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->$content['chr']()->getColorsBack() + $calc->$content['chr']()->getColorsFront())));?>kg</span>
+                                                  <span class="badge"><?php echo printPrice((($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->{$content['chr']}()->getColorsBack() + $calc->{$content['chr']}()->getColorsFront())));?>kg</span>
                                                   Farbe Gesamt
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->$content['chr']()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000))));?>€</span>
+                                                  <span class="badge"><?php echo printPrice(($calc->{$content['chr']}()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000))));?>€</span>
                                                   Farbe Kosten pro Farbe
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->$content['chr']()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->$content['chr']()->getColorsBack() + $calc->$content['chr']()->getColorsFront()))));?>€</span>
+                                                  <span class="badge"><?php echo printPrice(($calc->{$content['chr']}()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->{$content['chr']}()->getColorsBack() + $calc->{$content['chr']}()->getColorsFront()))));?>€</span>
                                                   Farbe Kosten Gesamt
                                               </li>
                                           </ul>
@@ -514,7 +514,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                       <div class="row">
                           <?php
                           foreach ($contents as $content) {
-                              if ($calc->$content['id']()->getId()>0) {
+                              if ($calc->{$content['id']}()->getId()>0) {
                                   ?>
                                   <div class="col-md-3">
                                       <div class="panel panel-default">
@@ -523,11 +523,11 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                           </div>
                                           <ul class="list-group">
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['id']()->getName();?></span>
+                                                  <span class="badge"><?php echo $calc->{$content['id']}()->getName();?></span>
                                                   Material
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['weight']();?>g</span>
+                                                  <span class="badge"><?php echo $calc->{$content['weight']}();?>g</span>
                                                   Grammatur
                                               </li>
                                               <li class="list-group-item">
@@ -537,13 +537,13 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                       if ($calc->getPaperContent()->getRolle() != 1) {
                                           ?>
 
-                                          <?= printPrice($calc->$content['id']()->getSumPrice($calc->getPaperCount($content['const']) + $calc->$content['grant']()));?>
+                                          <?= printPrice($calc->{$content['id']}()->getSumPrice($calc->getPaperCount($content['const']) + $calc->{$content['grant']}()));?>
                                           <?= $_USER->getClient()->getCurrency() ?>
                                           <?php
                                       } else {
                                           ?>
 
-                                          <?= printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount($content['const']) * $calc->$content['height']() / 1000))) ?>
+                                          <?= printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount($content['const']) * $calc->{$content['height']}() / 1000))) ?>
                                           <?= $_USER->getClient()->getCurrency() ?>
                                           <?php
                                       }
@@ -552,7 +552,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                   Preis
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['pages']();?></span>
+                                                  <span class="badge"><?php echo $calc->{$content['pages']}();?></span>
                                                   Umfang
                                               </li>
                                               <li class="list-group-item">
@@ -560,7 +560,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                   Format
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo $calc->$content['chr']()->getName();?></span>
+                                                  <span class="badge"><?php echo $calc->{$content['chr']}()->getName();?></span>
                                                   Farbigkeit
                                               </li>
                                               <li class="list-group-item">

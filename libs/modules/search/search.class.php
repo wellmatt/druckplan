@@ -26,7 +26,7 @@ class Search {
         global $_USER;
         
         foreach($parameters as $key => $value) {
-            $this->$key = $value;
+            $this->{$key} = $value;
         }
     }
     
