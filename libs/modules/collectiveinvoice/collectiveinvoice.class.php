@@ -369,7 +369,13 @@ class CollectiveInvoice{
 		}
 	}
 
-
+    /**
+     * @return SaxoprintCollectiveinvoiceInfo
+     */
+    public function getSaxoInfo()
+    {
+        return SaxoprintCollectiveinvoiceInfo::getForColinv($this);
+	}
 
 
 	static function getAllCustomerWithColInvs(){
@@ -460,6 +466,39 @@ class CollectiveInvoice{
 	    }
 	    return false;
 	}
+
+    /**
+     * Alle Colinv die von Saxo kommen und noch nicht versandt sind
+     * @param $date_min
+     * @param $date_max
+     * @param $saxomaterial
+     * @param $saxoformat
+     * @param $saxoprodgrp
+     * @return array
+     */
+    public static function getAllSaxoOpen($date_min,$date_max,$saxomaterial,$saxoformat,$saxoprodgrp){
+        global $DB;
+        $where = '';
+        if ($date_min > 0)
+            $where .= " AND collectiveinvoice_saxoinfo.compldate >= {$date_min}";
+        if ($date_max > 0)
+            $where .= " AND collectiveinvoice_saxoinfo.compldate <= {$date_max}";
+        if ($saxomaterial != 'null')
+            $where .= " AND collectiveinvoice_saxoinfo.material LIKE '{$saxomaterial}'";
+        if ($saxoformat != 'null')
+            $where .= " AND collectiveinvoice_saxoinfo.format LIKE '{$saxoformat}'";
+        if ($saxoprodgrp != 'null')
+            $where .= " AND collectiveinvoice_saxoinfo.prodgrp LIKE '{$saxoprodgrp}'";
+        $sql = "SELECT collectiveinvoice.id FROM collectiveinvoice LEFT JOIN collectiveinvoice_saxoinfo ON collectiveinvoice_saxoinfo.colinvoice = collectiveinvoice.id WHERE collectiveinvoice.saxoid <> 0 AND collectiveinvoice.`status` < 4 {$where}";
+        $collectiveInvoices = Array();
+        if($DB->no_result($sql)){
+            $result = $DB->select($sql);
+            foreach($result as $r){
+                $collectiveInvoices[] = new CollectiveInvoice($r["id"]);
+            }
+        }
+        return $collectiveInvoices;
+    }
 	
 	public static function duplicate($id)
 	{

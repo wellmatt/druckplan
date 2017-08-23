@@ -16,6 +16,7 @@ require_once 'saxoprint.productcharacteristic.class.php';
 require_once 'saxoprint.specialcolor.class.php';
 require_once 'saxoprint.workingstate.class.php';
 require_once 'saxoprint.productdetails.class.php';
+require_once 'saxoprint.collectiveinvoice.info.class.php';
 
 class Saxoprint{
     public $api_key = '';
@@ -247,10 +248,14 @@ class Saxoprint{
                     );
                 }
 
+                $compdate = new DateTime($order->CompletionDate);
+                $compdate = $compdate->format('U');
+
                 $ret[] = new SaxoprintOrder(
                     $order->OrderNumber,
+                    $order->ReferenceNumber,
                     $order->PortalId,
-                    $order->CompletionDate,
+                    $compdate,
                     $delivadr,
                     $senderadr,
                     $proddetails,

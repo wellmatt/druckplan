@@ -12,6 +12,7 @@ chdir("../../../");
 require_once 'libs/basic/basic.importer.php';
 require_once 'libs/modules/taxkeys/taxkey.class.php';
 require_once 'libs/modules/partslists/partslist.class.php';
+require_once 'libs/modules/saxoprint/saxoprint.class.php';
 
 
 if ($_REQUEST["ajax_action"] == "search_cp"){
@@ -87,6 +88,84 @@ if ($_REQUEST["ajax_action"] == "search_cp"){
     $partslists = Partslist::fetch();
     foreach ($partslists as $partslist){
         $items[] = Array("id" => $partslist->getId(), "text" =>$partslist->getTitle());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
+}elseif ($_REQUEST["ajax_action"] == "search_saxomaterial"){
+    $items = [];
+    $items[] = Array("id" => 'null', "text" =>'Alle');
+    if (strlen($_REQUEST['term']) > 0)
+        $filter = [
+            [
+                'column'=>'material',
+                'value'=>'%'.$_REQUEST['term'].'%',
+                'operator'=>' LIKE '
+            ]
+        ];
+    else
+        $filter = [];
+    $saxoinfos = SaxoprintCollectiveinvoiceInfo::fetch();
+    foreach ($saxoinfos as $saxoinfo){
+        $exists = false;
+        foreach ($items as $item) {
+            if ($item['id'] == $saxoinfo->getMaterial())
+                $exists = true;
+        }
+        if ($exists == false)
+            $items[] = Array("id" => $saxoinfo->getMaterial(), "text" =>$saxoinfo->getMaterial());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
+}elseif ($_REQUEST["ajax_action"] == "search_saxoformat"){
+    $items = [];
+    $items[] = Array("id" => 'null', "text" =>'Alle');
+    if (strlen($_REQUEST['term']) > 0)
+        $filter = [
+            [
+                'column'=>'format',
+                'value'=>'%'.$_REQUEST['term'].'%',
+                'operator'=>' LIKE '
+            ]
+        ];
+    else
+        $filter = [];
+    $saxoinfos = SaxoprintCollectiveinvoiceInfo::fetch();
+    foreach ($saxoinfos as $saxoinfo){
+        $exists = false;
+        foreach ($items as $item) {
+            if ($item['id'] == $saxoinfo->getFormat())
+                $exists = true;
+        }
+        if ($exists == false)
+            $items[] = Array("id" => $saxoinfo->getFormat(), "text" =>$saxoinfo->getFormat());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
+}elseif ($_REQUEST["ajax_action"] == "search_saxoprodgrp"){
+    $items = [];
+    $items[] = Array("id" => 'null', "text" =>'Alle');
+    if (strlen($_REQUEST['term']) > 0)
+        $filter = [
+            [
+                'column'=>'prodgrp',
+                'value'=>'%'.$_REQUEST['term'].'%',
+                'operator'=>' LIKE '
+            ]
+        ];
+    else
+        $filter = [];
+    $saxoinfos = SaxoprintCollectiveinvoiceInfo::fetch();
+    foreach ($saxoinfos as $saxoinfo){
+        $exists = false;
+        foreach ($items as $item) {
+            if ($item['id'] == $saxoinfo->getProdgrp())
+                $exists = true;
+        }
+        if ($exists == false)
+            $items[] = Array("id" => $saxoinfo->getProdgrp(), "text" =>$saxoinfo->getProdgrp());
     }
     $retval['items'] = $items;
     header("Content-Type: application/json");

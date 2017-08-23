@@ -43,12 +43,12 @@ if ($perf->getSaxoapikey() != '' && $perf->getSaxobc()>0 && $perf->getSaxocp()>0
                 <?php foreach ($remoteOrders as $remoteOrder){
                     $states = $remoteOrder->getWorkingStates();
                     $latest = $states[count($states)-1];
-                    $date = new DateTime($remoteOrder->getCompletionDate());
+                    $date = date('d-m-Y H:i:s',$remoteOrder->getCompletionDate());
                     $col_inv = $remoteOrder->createColinv();
                     ?>
                     <tr id="<?php echo $remoteOrder->getOrderNumber();?>">
                         <td><?php echo $remoteOrder->getOrderNumber();?></td>
-                        <td><?php echo $date->format('d-m-Y H:i:s');?></td>
+                        <td><?php echo $date;?></td>
                         <td><?php echo $latest->getWorkingStateText();?></td>
                         <td id="vo_<?php echo $remoteOrder->getOrderNumber();?>">
                             <?php

@@ -37,11 +37,11 @@ $remoteOrders = $saxo->getRemoteOrders(Saxoprint::Registered);
                 <?php foreach ($remoteOrders as $remoteOrder){
                     $states = $remoteOrder->getWorkingStates();
                     $latest = $states[count($states)-1];
-                    $date = new DateTime($remoteOrder->getCompletionDate());
+                    $date = date('d-m-Y H:i:s',$remoteOrder->getCompletionDate());
                     ?>
                     <tr id="<?php echo $remoteOrder->getOrderNumber();?>">
                         <td><?php echo $remoteOrder->getOrderNumber();?></td>
-                        <td><?php echo $date->format('d-m-Y H:i:s');?></td>
+                        <td><?php echo $date;?></td>
                         <td><?php echo $latest->getWorkingStateText();?></td>
                     </tr>
                 <?php } ?>

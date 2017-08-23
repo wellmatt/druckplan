@@ -10,6 +10,7 @@
 
 class SaxoprintOrder{
     public $OrderNumber;
+    public $ReferenceNumber;
     public $PortalId;
     public $CompletionDate;
     public $DeliveryAddresses;
@@ -20,6 +21,7 @@ class SaxoprintOrder{
     /**
      * SaxoprintOrder constructor.
      * @param integer $OrderNumber
+     * @param string $ReferenceNumber
      * @param integer $PortalId
      * @param $CompletionDate
      * @param SaxoprintAddress[] $DeliveryAddresses
@@ -27,9 +29,10 @@ class SaxoprintOrder{
      * @param SaxoprintProductDetails $ProductDetails
      * @param SaxoprintWorkingState[] $WorkingStates
      */
-    public function __construct($OrderNumber, $PortalId, $CompletionDate, $DeliveryAddresses, $SenderAddress, $ProductDetails, $WorkingStates)
+    public function __construct($OrderNumber, $ReferenceNumber, $PortalId, $CompletionDate, $DeliveryAddresses, $SenderAddress, $ProductDetails, $WorkingStates)
     {
         $this->OrderNumber = $OrderNumber;
+        $this->ReferenceNumber = $ReferenceNumber;
         $this->PortalId = $PortalId;
         $this->CompletionDate = $CompletionDate;
         $this->DeliveryAddresses = $DeliveryAddresses;
@@ -79,12 +82,25 @@ class SaxoprintOrder{
 
         $prodgrp = '';
         $material = '';
+        $format = '';
+        $amount = $this->getProductDetails()->Circulation;
+        $chroma = '';
+        $logistic = '';
+        $form = '';
 
         foreach ($this->getProductDetails()->ProductCharacteristics as $productCharacteristic) {
             if ($productCharacteristic->getPropertyId() == 6)
                 $prodgrp = $productCharacteristic->getPropertyValueName();
             if ($productCharacteristic->getPropertyId() == 8)
                 $material = $productCharacteristic->getPropertyValueName();
+            if ($productCharacteristic->getPropertyId() == 9)
+                $format = $productCharacteristic->getPropertyValueName();
+            if ($productCharacteristic->getPropertyId() == 7)
+                $chroma = $productCharacteristic->getPropertyValueName();
+            if ($productCharacteristic->getPropertyId() == 13)
+                $logistic = $productCharacteristic->getPropertyValueName();
+            if ($productCharacteristic->getPropertyId() == 75)
+                $form = $productCharacteristic->getPropertyValueName();
         }
 
         $col_inv = new CollectiveInvoice();
@@ -99,7 +115,7 @@ class SaxoprintOrder{
         $col_inv->setSaxomaterial($material);
         $col_inv->setSaxoprodgrp($prodgrp);
         $col_inv->setStatus(3);
-        $col_inv->setDeliverydate(strtotime($this->CompletionDate));
+        $col_inv->setDeliverydate($this->CompletionDate);
         $col_inv->setNeeds_planning(1);
 
         $res = $col_inv->save();
@@ -115,6 +131,7 @@ class SaxoprintOrder{
             $pos->setType(Orderposition::TYPE_MANUELL);
             $pos->setComment($this->formatDetails());
             Orderposition::saveMultipleOrderpositions([$pos]);
+            SaxoprintCollectiveinvoiceInfo::createInfo($col_inv->getId(),$col_inv->getNumber(),'',$this->ReferenceNumber,$this->CompletionDate,$material,$format,$amount,$chroma,0,$form,0,$logistic,$prodgrp);
             return $col_inv;
         } else
             return false;
