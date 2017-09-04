@@ -535,6 +535,11 @@ class BusinessContact {
 	{
 		return $this->getCustomer() == 3;
 	}
+
+    public function isPartnerCustomer()
+    {
+        return $this->getCustomer() == 4;
+    }
 	
 	public function addContactPersons($contactPerson)
 	{

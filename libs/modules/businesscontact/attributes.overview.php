@@ -37,6 +37,7 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 					<td><?= $_LANG->get('Bei Kunden');?></td>
 					<td><?= $_LANG->get('Bei Ansprechpartner');?></td>
 					<td><?= $_LANG->get('Bei Vorgängen');?></td>
+					<td><?= $_LANG->get('Bei Kalkulationen');?></td>
 					<td><?= $_LANG->get('Optionen');?></td>
 				</tr>
 				<?	$x=0;
@@ -59,6 +60,12 @@ if($_REQUEST["exec"] == "edit" || $_REQUEST["exec"] == "new"){
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
 							<? if ($attribute->getEnable_colinv() == 1 ){
+								echo "<span class=\"glyphicons glyphicons-ok\"></span>";
+							}
+							?>
+						</td>
+						<td class="content_row pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&exec=edit&aid=<?=$attribute->getId()?>'" align="center">
+							<? if ($attribute->getEnableOrder() == 1 ){
 								echo "<span class=\"glyphicons glyphicons-ok\"></span>";
 							}
 							?>

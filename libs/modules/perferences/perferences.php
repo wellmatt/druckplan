@@ -55,6 +55,16 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
 
+	$perf->setCalcPercentMaterial(str_replace(",",".",str_replace(".","",$_REQUEST["calc_percent_material"])));
+	$perf->setCalcPercentProcessing(str_replace(",",".",str_replace(".","",$_REQUEST["calc_percent_processing"])));
+	$perf->setCalcMargin(str_replace(",",".",str_replace(".","",$_REQUEST["calc_margin"])));
+	$perf->setCalcDiscount(str_replace(",",".",str_replace(".","",$_REQUEST["calc_discount"])));
+
+	if ($_REQUEST["calc_material_processing_charge"] == 1){
+		$perf->setCalcMaterialProcessingCharge(1);
+	} else {
+		$perf->setCalcMaterialProcessingCharge(0);
+	}
 
 	if ($_REQUEST["deactivate_manual_articles"] == 1){
 		$perf->setDeactivateManualArticles(1);
@@ -420,6 +430,50 @@ echo $quickmove->generate();
 						<div class="col-sm-1">
 							<input type="checkbox" name="calc_detailed_printpreview" class="form-control" id="calc_detailed_printpreview"
 								   value="1" <? if ($perf->getCalc_detailed_printpreview()) echo "checked"; ?>/>
+						</div>
+					</div>
+					<hr>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Manueller Auf-/Abschlag Material und Fertigung:</label>
+						<div class="col-sm-1">
+							<input type="checkbox" name="calc_material_processing_charge" class="form-control" id="calc_material_processing_charge"
+								   value="1" <? if ($perf->getCalcMaterialProcessingCharge()) echo "checked"; ?>/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Maximaler Aufschlag Material:</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" name="calc_percent_material" class="form-control" id="calc_percent_material" value="<?=str_replace(".", ",", $perf->getCalcPercentMaterial()); ?>"/>
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Maximaler Aufschlag Fertigung:</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" name="calc_percent_processing" class="form-control" id="calc_percent_processing" value="<?=str_replace(".", ",", $perf->getCalcPercentProcessing()); ?>"/>
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Maximale Marge:</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" name="calc_margin" class="form-control" id="calc_margin" value="<?=str_replace(".", ",", $perf->getCalcMargin()); ?>"/>
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Maximaler Rabatt:</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" name="calc_discount" class="form-control" id="calc_discount" value="<?=str_replace(".", ",", $perf->getCalcDiscount()); ?>"/>
+								<span class="input-group-addon">%</span>
+							</div>
 						</div>
 					</div>
 				</div>

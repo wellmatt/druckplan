@@ -34,6 +34,13 @@ Class Permission extends Model{
     const ticket_commentoffical_edit = 'ticket_commentoffical_edit';
     const ticket_commentinternal_edit = 'ticket_commentinternal_edit';
     const vacation_grant = 'vacation_grant';
+    const calc_manoverride = 'calc_manoverride';
+    const calc_margin = 'calc_margin';
+    const calc_processingcharges = 'calc_processingcharges';
+    const calc_materialcharges = 'calc_materialcharges';
+    const calc_discount = 'calc_discount';
+    const calc_addcharge = 'calc_addcharge';
+
 
     /**
      * @return string

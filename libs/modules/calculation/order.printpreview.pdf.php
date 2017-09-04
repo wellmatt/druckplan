@@ -387,7 +387,7 @@ if($tmp_farbrand > 0){
 
 // Durckma�e etc auf dem PDF ausgeben:
 
-$text= "Auftrag: " . $order->getNumber() . " | " . "Titel: " . $order->getTitle();
+$text= "Auftrag: " . $order->getNumber();
 
 if($rolldir == 0)
 {
@@ -403,9 +403,10 @@ if($rolldir == 0)
 {
     $laufrichtung = "schmale Bahn";
 }
-		
+
+$pdf->setColor(0, 0, 0);
 $text_options=array(left=>50,right=>50,justification=>"center");
-$pdf->ezText($text, 40, $text_options);
+$pdf->ezText($text, 50, $text_options);
 
 // Laufrichtung einzeichnen
 $pdf->y = $mach_top - 30;
@@ -429,8 +430,17 @@ $pdf->y = $mach_top - 160;
  else
 	$crt_date = "";
 
+$data[] = Array(	"Eigenschaft"		=> "Auftrag: ",
+					"Wert" 				=> $order->getNumber());
+
+$data[] = Array(	"Eigenschaft"		=> "Titel: ",
+					"Wert" 				=> $order->getTitle());
+
  $data[] = Array(	"Eigenschaft"		=> "Auft.-Datum: ",
 					"Wert" 				=> $crt_date);
+
+$data[] = Array(	"Eigenschaft"		=> " ",
+					"Wert" 				=> " ");
 					
  $data[] = Array(	"Eigenschaft"		=> "Maschine: ",
 					"Wert" 				=> $mach->getName());
@@ -455,7 +465,7 @@ $pdf->y = $mach_top - 160;
         					"Wert" 				=> "Schoen & Wider");
      }
  }
-					
+
  $data[] = Array(	"Eigenschaft"		=> " ",
 					"Wert" 				=> " ");
 					
@@ -542,9 +552,11 @@ $pdf->y = $mach_top - 160;
  
  $data[] = Array(	"Eigenschaft"		=> "Anz. Roh-Bogen: ",
 					"Wert" 				=> printPrice($roh2));
- 
+
+$pdf->ezNewPage();
 					
  $pdf->ezTable($data,$type,$dummy,$attr);
+
 
 
 // Senden der Datei an den Browser

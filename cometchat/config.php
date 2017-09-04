@@ -73,6 +73,7 @@ $trayicon[] = array('chatrooms','Chatrooms','modules/chatrooms/index.php','_popu
 // $trayicon[] = array('games','Single Player Games','modules/games/index.php','_popup','465','300','','1','');
 // $trayicon[] = array('share','Share This Page','modules/share/index.php','_popup','350','50','','1','');
 $trayicon[] = array('scrolltotop','Scroll To Top','javascript:jqcc.cometchat.scrollToTop();','','','','','','');
+//$trayicon[] = array('contilasversion','Contilas v3.2.9','#','','','','','','');
 
 /* ICONS END */
 

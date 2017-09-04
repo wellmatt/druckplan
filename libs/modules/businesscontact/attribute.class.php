@@ -29,7 +29,8 @@ class Attribute{
 	private $enable_customer = 0;	// Aktivierung fuer Geschaeftskontakte
 	private $enable_contact = 0;	// Aktivierung fuer Kontaktpersonen
 	private $enable_colinv = 0;	    // Aktivierung fuer Vorgänge
-	
+	private $enable_order = 0;	    // Aktivierung fuer Kalk
+
 	function __construct($id){
 		global $DB;
 		
@@ -53,6 +54,7 @@ class Attribute{
 				$this->enable_contact = $res["enable_contacts"];
 				$this->enable_customer = $res["enable_customer"];
 				$this->enable_colinv = $res["enable_colinv"];
+				$this->enable_order = $res["enable_order"];
 			}
 		}
 		
@@ -69,6 +71,7 @@ class Attribute{
                     enable_contacts = {$this->enable_contact},
                     enable_customer = {$this->enable_customer},
                     enable_colinv = {$this->enable_colinv},
+                    enable_order = {$this->enable_order},
                     state = {$this->state}
                     WHERE id = {$this->id}";
 
@@ -76,10 +79,10 @@ class Attribute{
         } else {
             $sql = "INSERT INTO attributes
                         (state, title, comment, crtdate, crtuser, 
-                         enable_contacts, enable_customer, enable_colinv)
+                         enable_contacts, enable_customer, enable_colinv, enable_order)
                     VALUES
                         (1, '{$this->title}', '{$this->comment}', UNIX_TIMESTAMP(), {$_USER->getId()}, 
-            			 {$this->enable_contact}, {$this->enable_customer}, {$this->enable_colinv} )";
+            			 {$this->enable_contact}, {$this->enable_customer}, {$this->enable_colinv}, {$this->enable_order} )";
             $res = $DB->no_result($sql);
 
             if($res) {
@@ -171,6 +174,30 @@ class Attribute{
 				AND enable_contacts = 1
 				ORDER BY {$order} ";
 	
+		if($DB->num_rows($sql)){
+			foreach($DB->select($sql) as $r){
+				$retval[] = new Attribute($r["id"]);
+			}
+		}
+		return $retval;
+	}
+
+	/**
+	 * ... liefert alle Attribute, die fuer Kalkulation freigeschaltet sind
+	 *
+	 * @param String $order: Sortierung
+	 * @return multitype:Attribute
+	 */
+	static function getAllAttributesForCalculation($order = self::ORDER_TITLE){
+		$retval = Array();
+		global $DB;
+
+		$sql = "SELECT id FROM attributes
+				WHERE
+				state > 0
+				AND enable_order = 1
+				ORDER BY {$order} ";
+
 		if($DB->num_rows($sql)){
 			foreach($DB->select($sql) as $r){
 				$retval[] = new Attribute($r["id"]);
@@ -416,5 +443,21 @@ class Attribute{
     {
         $this->enable_colinv = $enable_colinv;
     }
+
+	/**
+	 * @return int
+	 */
+	public function getEnableOrder()
+	{
+		return $this->enable_order;
+	}
+
+	/**
+	 * @param int $enable_order
+	 */
+	public function setEnableOrder($enable_order)
+	{
+		$this->enable_order = $enable_order;
+	}
 }
 ?>

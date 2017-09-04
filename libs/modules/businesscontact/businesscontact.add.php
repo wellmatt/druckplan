@@ -566,7 +566,10 @@ echo $quickmove->generate();
 			    } else if($businessContact->isPotentialCustomer())
 			    {
 			        echo "label label-info";
-			    }
+			    } else if($businessContact->isPartnerCustomer())
+				{
+					echo "label label-info";
+				}
 			    ?>">
 			    <?php
 			    if($businessContact->isExistingCustomer())
@@ -575,7 +578,10 @@ echo $quickmove->generate();
 			    } else if($businessContact->isPotentialCustomer())
 			    {
 			        echo $_LANG->get('Interessent');
-			    }
+			    } else if($businessContact->isPartnerCustomer())
+				{
+					echo $_LANG->get('Partner');
+				}
 			    ?>
 			    </span></small>
 			    <?php
@@ -923,6 +929,9 @@ echo $quickmove->generate();
 											 </option>
 											 <option value="2" <? if($businessContact->isPotentialCustomer()) echo "selected";?>>
 												 <?=$_LANG->get('Interessent')?>
+											 </option>
+											 <option value="4" <? if($businessContact->isPartnerCustomer()) echo "selected";?>>
+												 <?=$_LANG->get('Partner')?>
 											 </option>
 										 </select>
 									 </div>

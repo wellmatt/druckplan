@@ -75,7 +75,10 @@ function printPage() {
 			    } else if($businessContact->isPotentialCustomer())
 			    {
 			        echo "label label-info";
-			    }
+			    } else if($businessContact->isPartnerCustomer())
+				{
+					echo "label label-info";
+				}
 			    ?>">
 			    <?php 
 			    if($businessContact->isExistingCustomer())
@@ -84,7 +87,10 @@ function printPage() {
 			    } else if($businessContact->isPotentialCustomer())
 			    {
 			        echo $_LANG->get('Interessent');
-			    }
+			    } else if($businessContact->isPartnerCustomer())
+				{
+					echo $_LANG->get('Partner');
+				}
 			    ?>
 			    </span></small></h3>
 			</td>

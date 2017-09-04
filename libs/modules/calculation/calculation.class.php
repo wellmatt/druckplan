@@ -57,7 +57,11 @@ class Calculation
     private $envelopeHeightOpen = 0;
     private $envelopeWidthOpen = 0;
     private $folding;
-    private $addCharge = 0;
+    private $addCharge = 0.0;
+    private $materialCharge = 0.0;
+    private $materialPercent = 0.0;
+    private $processCharge = 0.0;
+    private $processPercent = 0.0;
     private $margin = 0;
     private $discount = 0;
     private $calcAutoValues = 1;
@@ -221,6 +225,10 @@ class Calculation
                     $this->envelopeWidthOpen = $r["envelope_width_open"];
                     $this->folding = new Foldtype($r["product_folding"]);
                     $this->addCharge = $r["add_charge"];
+                    $this->materialCharge = $r["materialCharge"];
+                    $this->materialPercent = $r["materialPercent"];
+                    $this->processCharge = $r["processCharge"];
+                    $this->processPercent = $r["processPercent"];
                     $this->margin = $r["margin"];
                     $this->discount = $r["discount"];
                     $this->state = $r["state"];
@@ -427,6 +435,10 @@ class Calculation
                         envelope_height_open = {$this->envelopeHeightOpen},
                         envelope_width_open = {$this->envelopeWidthOpen},
                         add_charge = {$this->addCharge},
+                        materialCharge = {$this->materialCharge},
+                        materialPercent = {$this->materialPercent},
+                        processCharge = {$this->processCharge},
+                        processPercent = {$this->processPercent},
                         margin = {$this->margin},
                         discount = {$this->discount},
                         chromaticities_content = {$this->chromaticitiesContent->getId()},
@@ -1441,56 +1453,50 @@ class Calculation
         return $sum;
     }
 
-    public function getMachTotal()
+    public function getSubProcessing()
     {
-        $sum = 0;
-
         $me = Machineentry::getAllMachineentries($this->getId());
+        $processing = 0.0;
         foreach($me as $m){
-            $sum += $m->getPrice();
+            $processing += $m->getPrice();
         }
+        $processing += $this->getProcessCharge();
+        $processing = $processing * ($this->getProcessPercent() / 100 + 1);
+        return $processing;
+    }
 
-        return $sum;
+    public function getSubMaterial()
+    {
+        $material = 0.0;
+        if ($this->getPaperContent()->getRolle() != 1){
+            $material += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) + $this->paperContentGrant);
+            $material += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) + $this->paperAddContentGrant);
+            $material += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) + $this->paperEnvelopeGrant);
+            $material += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContent2Grant);
+            $material += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContent3Grant);
+        } else {
+            $material += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) * $this->getPaperContentHeight() / 1000);
+            $material += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) * $this->getPaperAddContentHeight() / 1000);
+            $material += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) * $this->getPaperEnvelopeHeight() / 1000);
+            $material += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) * $this->getPaperAddContent2Height() / 1000);
+            $material += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) * $this->getPaperAddContent3Height() / 1000);
+        }
+        $colorcost = $this->getColorCost();
+        $material += $colorcost;
+        $material += $this->getMaterialCharge();
+        $material = $material * ($this->getMaterialPercent() / 100 + 1);
+        return $material;
     }
     
     public function getSubTotal(){
     	$sum = 0;
-        $machines = Array();
-    	
-        $me = Machineentry::getAllMachineentries($this->getId());
-        foreach($me as $m){
-            $machines[$m->getMachine()->getId()] += $m->getPrice();
-        }
-        
-        // Kosten der Positionen aufsummieren
-        $total_position_price = 0;
-        $all_positions = CalculationPosition::getAllCalculationPositions($this->id);
-        if (count($all_positions) > 0){
-        	foreach ($all_positions AS $pos){
-        		$total_position_price += $pos->getCalculatedPrice();
-        	}
-        }
-        $sum += $total_position_price;
 
+        $processing = $this->getSubProcessing();
+        $sum += $processing;
 
-        if ($this->getPaperContent()->getRolle() != 1){
-            $sum += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) + $this->paperContentGrant);
-            $sum += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) + $this->paperAddContentGrant);
-            $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) + $this->paperEnvelopeGrant);
-            $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $this->paperAddContent2Grant);
-            $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $this->paperAddContent3Grant);
-        } else {
-            $sum += $this->getPaperContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_CONTENT) * $this->getPaperContentHeight() / 1000);
-            $sum += $this->getPaperAddContent()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT) * $this->getPaperAddContentHeight() / 1000);
-            $sum += $this->getPaperEnvelope()->getSumPrice($this->getPaperCount(Calculation::PAPER_ENVELOPE) * $this->getPaperEnvelopeHeight() / 1000);
-            $sum += $this->getPaperAddContent2()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT2) * $this->getPaperAddContent2Height() / 1000);
-            $sum += $this->getPaperAddContent3()->getSumPrice($this->getPaperCount(Calculation::PAPER_ADDCONTENT3) * $this->getPaperAddContent3Height() / 1000);
-        }
-        $colorcost = $this->getColorCost();
-        $sum += $colorcost;
-        foreach ($machines as $m) {
-            $sum += $m;
-        }
+        $material = $this->getSubMaterial();
+        $sum += $material;
+
         return $sum;
     }
     
@@ -2639,5 +2645,69 @@ class Calculation
     public function setInkusedaddcontent3($inkusedaddcontent3)
     {
         $this->inkusedaddcontent3 = $inkusedaddcontent3;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaterialCharge()
+    {
+        return $this->materialCharge;
+    }
+
+    /**
+     * @param float $materialCharge
+     */
+    public function setMaterialCharge($materialCharge)
+    {
+        $this->materialCharge = $materialCharge;
+    }
+
+    /**
+     * @return float
+     */
+    public function getProcessCharge()
+    {
+        return $this->processCharge;
+    }
+
+    /**
+     * @param float $processCharge
+     */
+    public function setProcessCharge($processCharge)
+    {
+        $this->processCharge = $processCharge;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaterialPercent()
+    {
+        return $this->materialPercent;
+    }
+
+    /**
+     * @param float $materialPercent
+     */
+    public function setMaterialPercent($materialPercent)
+    {
+        $this->materialPercent = $materialPercent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getProcessPercent()
+    {
+        return $this->processPercent;
+    }
+
+    /**
+     * @param float $processPercent
+     */
+    public function setProcessPercent($processPercent)
+    {
+        $this->processPercent = $processPercent;
     }
 }

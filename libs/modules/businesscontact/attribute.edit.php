@@ -12,6 +12,7 @@ if($_REQUEST["subexec"] == "save"){
 	$attribute->setEnable_customer((int)$_REQUEST["enable_cust"]);
 	$attribute->setEnable_contact((int)$_REQUEST["enable_contact"]);
 	$attribute->setEnable_colinv((int)$_REQUEST["enable_colinv"]);
+	$attribute->setEnableOrder((int)$_REQUEST["enable_order"]);
 	$savemsg = getSaveMessage($attribute->save()).$DB->getLastError();
 	
 	$attribute_items = Array();
@@ -120,6 +121,15 @@ echo $quickmove->generate();
 					<input name="enable_colinv" type="checkbox" class="form-control" value="1"
 						   onfocus="markfield(this,0)" onblur="markfield(this,1)"
 						<? if ($attribute->getEnable_colinv()) echo "checked"; ?>>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="" class="col-sm-2 control-label">Sichtbar bei Kalkulation</label>
+				<div class="col-sm-1">
+					<input name="enable_order" type="checkbox" class="form-control" value="1"
+						   onfocus="markfield(this,0)" onblur="markfield(this,1)"
+						<? if ($attribute->getEnableOrder()) echo "checked"; ?>>
 				</div>
 			</div>
 			<br/>

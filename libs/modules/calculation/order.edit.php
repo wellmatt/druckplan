@@ -1565,12 +1565,21 @@ if((int)$_REQUEST["step"] == 4)
 		{
 			if(preg_match("/add_charge_(?P<id>\d+)/", $key, $m))
 			{
-				// print_r($m);
 				$calc = new Calculation($m["id"]);
-				$calc->setAddCharge((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["add_charge_{$m["id"]}"]))));
+				if (isset($_REQUEST["add_charge_{$m["id"]}"]))
+					$calc->setAddCharge((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["add_charge_{$m["id"]}"]))));
+				if (isset($_REQUEST["material_charge_{$m["id"]}"]))
+					$calc->setMaterialCharge((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["material_charge_{$m["id"]}"]))));
+				if (isset($_REQUEST["process_charge_{$m["id"]}"]))
+					$calc->setProcessCharge((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["process_charge_{$m["id"]}"]))));
+				if (isset($_REQUEST["material_percent_{$m["id"]}"]))
+					$calc->setMaterialPercent((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["material_percent_{$m["id"]}"]))));
+				if (isset($_REQUEST["process_percent_{$m["id"]}"]))
+					$calc->setProcessPercent((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["process_percent_{$m["id"]}"]))));
 				if($_REQUEST["margin_{$m["id"]}"] != "")
 					$calc->setMargin((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["margin_{$m["id"]}"]))));
-				$calc->setDiscount((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["discount_{$m["id"]}"]))));
+				if (isset($_REQUEST["discount_{$m["id"]}"]))
+					$calc->setDiscount((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["discount_{$m["id"]}"]))));
 				$calc->setState((int)$_REQUEST["state_{$m["id"]}"]);
 				$calc->setTitle($_REQUEST["calc_title_{$m["id"]}"]);
 				$calc->setPricesub(tofloat($calc->getSubTotal()));

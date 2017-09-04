@@ -231,6 +231,9 @@
                     case 3:
                         $row[] = 'Spezial';
                         break;
+                    case 4:
+                        $row[] = 'Partner';
+                        break;
                 }
             }
             else if ( $aColumns[$i] == 'supplier' )

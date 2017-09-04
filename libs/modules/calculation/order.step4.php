@@ -25,6 +25,40 @@ foreach ($calculations as $c){
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 
 <script>
+    function checkPercentMax(type,ele){
+        var element = $(ele);
+        var notify = false;
+        switch (type){
+            case 'material':
+                if (parseFloat(element.val()) > <?php echo $perf->getCalcPercentMaterial();?>) {
+                    element.val(printPriceJs(<?php echo $perf->getCalcPercentMaterial();?>));
+                    notify = true;
+                }
+                break;
+            case 'process':
+                if (parseFloat(element.val()) > <?php echo $perf->getCalcPercentProcessing();?>) {
+                    element.val(printPriceJs(<?php echo $perf->getCalcPercentProcessing();?>));
+                    notify = true;
+                }
+                break;
+            case 'margin':
+                if (parseFloat(element.val()) > <?php echo $perf->getCalcMargin();?>) {
+                    element.val(printPriceJs(<?php echo $perf->getCalcMargin();?>));
+                    notify = true;
+                }
+                break;
+            case 'discount':
+                if (parseFloat(element.val()) > <?php echo $perf->getCalcDiscount();?>) {
+                    element.val(printPriceJs(<?php echo $perf->getCalcDiscount();?>));
+                    notify = true;
+                }
+                break;
+        }
+        if (notify == true)
+            alert('Eingabe überschreitet maximalen Wert!');
+    }
+</script>
+<script>
     $(function () {
         $('#idx_delivery_date').datetimepicker({
             lang: 'de',
@@ -50,6 +84,36 @@ foreach ($calculations as $c){
     });
 </script>
 
+<script>
+    $(function() {
+        $("a#hiddenclicker_artframe").fancybox({
+            'type'    : 'iframe',
+            'transitionIn'	:	'elastic',
+            'transitionOut'	:	'elastic',
+            'speedIn'		:	600,
+            'speedOut'		:	200,
+            'padding'		:	25,
+            'margin'        :   25,
+            'scrolling'     :   'auto',
+            'width'		    :	1000,
+            'height'        :   900,
+            'onComplete'    :   function() {
+                $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+// 	                		      $('#fancybox-content').height($(this).contents().find('body').height()+300);
+                    $('#fancybox-wrap').css('top','25px');
+                });
+            },
+            'overlayShow'	:	true,
+            'helpers'		:   { overlay:null, closeClick:true }
+        });
+    });
+    function callBoxFancyArtFrame(my_href) {
+        var j1 = document.getElementById("hiddenclicker_artframe");
+        j1.href = my_href;
+        $('#hiddenclicker_artframe').trigger('click');
+    }
+</script>
+<div id="hidden_clicker95" style="display:none"><a id="hiddenclicker_artframe" href="http://www.google.com" >Hidden Clicker</a></div>
 <script language="javascript">
     function updateCosts(val)
     {
@@ -96,29 +160,6 @@ foreach ($calculations as $c){
 
         output = output.toString().replace(".",",");
         document.getElementById('add_charge_'+id).value = output;
-
-
-//        calc_ele = obj.name;
-//        var id;
-//        id = calc_ele.match(/^man_override_(\d+)/)[1];
-//        var charge = document.getElementById('add_charge_'+id).value;
-//        charge = charge.replace(".","");
-//        charge = parseFloat(charge.replace(",","."));
-//        var endprice = document.getElementById('hidden_endprice_'+id).value;
-//        endprice = endprice.replace(".","");
-//        endprice = parseFloat(endprice.replace(",","."));
-//        var override = parseFloat(obj.value.replace(",","."));
-//        var add = "";
-//        var new_charge = 0;
-//        if (endprice > override) {
-//            add = "-";
-//            new_charge = endprice - override;
-//        } else {
-//            new_charge = override - endprice;
-//        }
-//        new_charge = new_charge.toString().replace(".",",");
-//        var output = add+new_charge;
-//        document.getElementById('add_charge_'+id).value = output;
     }
 
     $(document).ready(function() {
@@ -146,7 +187,6 @@ if($_USER->hasRightsByGroup(Permission::calc_delete) || $_USER->isAdmin()){
 }
 echo $quickmove->generate();
 // end of Quickmove generation ?>
-
 
 <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" id="step4_form" name="step4_form">
     <input name="step" value="4" type="hidden">
@@ -178,6 +218,15 @@ echo $quickmove->generate();
                     <?= $order->getProduct()->getDescription() ?>
                 </div>
             </div>
+            <?php if ($order->getId()>0){
+                $attributes = $order->getActiveAttributeItemsInput();?>
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Merkmale</label>
+                    <div class="col-sm-10 form-text">
+                        <span class="pointer" onclick="callBoxFancyArtFrame('libs/modules/calculation/order.attribute.frame.php?oid=<?php echo $order->getId();?>');"><a>anzeigen</a> (<?php echo count($attributes);?>)</span>
+                    </div>
+                </div>
+            <?php }?>
         </div>
     </div>
 
@@ -579,32 +628,42 @@ echo $quickmove->generate();
                     </tr>
                 <? } ?>
 
-<!--                <tr>-->
-<!--                    <td class="content_row_header">--><?//=$_LANG->get('Farbkosten')?><!--</td>-->
-<!--                    --><?// foreach($calculations as $calc) { ?>
-<!--                        <td class="content_row_header value" align="center">-->
-<!--                            --><?php //echo printPrice($calc->getColorCost(),2);?><!-- €-->
-<!--                        </td>-->
-<!--                    --><?//  } ?>
-<!--                </tr>-->
-
+                <?php if ($_USER->hasRightsByGroup(Permission::calc_materialcharges)){?>
+                    <?php if ($perf->getCalcMaterialProcessingCharge() == 1){?>
+                        <tr>
+                            <td class="content_row_header"><?=$_LANG->get('Material Auf-/Abschlag')?></td>
+                            <? foreach($calculations as $calc) { ?>
+                                <td class="content_row_clear value">
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <input name="material_charge_<?=$calc->getId()?>" id="material_charge_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getMaterialCharge())?>">
+                                            <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            <?  } ?>
+                        </tr>
+                    <?php } ?>
+                <tr>
+                    <td class="content_row_clear"></td>
+                    <? foreach($calculations as $calc) { ?>
+                        <td class="content_row_clear value">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <input onchange="checkPercentMax('material',this)" name="material_percent_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getMaterialPercent())?>">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    <?  } ?>
+                </tr>
+                <?php } ?>
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Materialkosten')?></td>
                     <? foreach($calculations as $calc) { ?>
                         <td class="content_row_header value">
-                            <?php
-                            if ($calc->getPaperContent()->getRolle() != 1){
-                                ?>
-                                <?=printPrice($calc->getPaperContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_CONTENT) + $calc->getPaperContentGrant()) + $calc->getPaperAddContent()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) + $calc->getPaperAddContentGrant()) + $calc->getPaperAddContent2()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) + $calc->getPaperAddContent2Grant()) + $calc->getPaperAddContent3()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) + $calc->getPaperAddContent3Grant()) + $calc->getPaperEnvelope()->getSumPrice($calc->getPaperCount(Calculation::PAPER_ENVELOPE) + $calc->getPaperEnvelopeGrant()) + $calc->getColorCost()) ; ?>
-                                <?=$_USER->getClient()->getCurrency()?>
-                                <?php
-                            } else {
-                                ?>
-                                <?=printPrice($calc->getPaperContent()->getSumPrice(($calc->getPaperCount(Calculation::PAPER_CONTENT) * $calc->getPaperContentHeight())/1000 + $calc->getColorCost(),2))?>
-                                <?=$_USER->getClient()->getCurrency()?>
-                                <?php
-                            }
-                            ?>
+                            <?=printPrice($calc->getSubMaterial()) ; ?>
+                            <?=$_USER->getClient()->getCurrency()?>
                         </td>
                     <? } ?>
                 </tr>
@@ -660,10 +719,40 @@ echo $quickmove->generate();
                 <!-- / Fertigungsprozess                                                    -->
                 <!-- ---------------------------------------------------------------------- -->
 
+                <?php if ($_USER->hasRightsByGroup(Permission::calc_processingcharges)){?>
+                    <?php if ($perf->getCalcMaterialProcessingCharge() == 1){?>
+                        <tr>
+                            <td class="content_row_header"><?=$_LANG->get('Fertigung Auf-/Abschlag')?></td>
+                            <? foreach($calculations as $calc) { ?>
+                                <td class="content_row_clear value">
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <input name="process_charge_<?=$calc->getId()?>" id="process_charge_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getProcessCharge())?>">
+                                            <span class="input-group-addon"><?=$_USER->getClient()->getCurrency()?></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            <?  } ?>
+                        </tr>
+                    <?php } ?>
+                <tr>
+                    <td class="content_row_clear"></td>
+                    <? foreach($calculations as $calc) { ?>
+                        <td class="content_row_clear value">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <input onchange="checkPercentMax('process',this)" name="process_percent_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getProcessPercent())?>">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </td>
+                    <?  } ?>
+                </tr>
+                <?php } ?>
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Fertigungskosten')?></td>
                     <? foreach($calculations as $calc) { ?>
-                        <td class="content_row_header value" align="center"><?=printPrice($calc->getMachTotal());?> <?=$_USER->getClient()->getCurrency()?></td>
+                        <td class="content_row_header value" align="center"><?=printPrice($calc->getSubProcessing());?> <?=$_USER->getClient()->getCurrency()?></td>
                     <? } ?>
                 </tr>
 
@@ -672,77 +761,13 @@ echo $quickmove->generate();
                 </tr>
 
 
-
-                <!--<? // -------- START --------------- Positionskosten ---------------------------- ?>
-                <tr>
-                    <td class="content_row_header"><?=$_LANG->get('Zus. Positionen')?></td>
-                </tr>
-                <tr class="color1">
-                    <td class="content_row_clear">&ensp;</td>
-                    <? foreach($calculations as $calc) {
-                        $all_calc_positions = $calc->getPositions()?>
-                        <td class="content_row_clear value" align="center">
-                            <?if (count($all_calc_positions) > 0 && $all_calc_positions != false){
-                                foreach ($all_calc_positions AS $calc_pos){
-                                    $tmpart_amount = $calc_pos->getQuantity();
-                                    $tmpart_scale = $calc_pos->getScale();
-
-                                    echo $calc_pos->getComment() ." : ";
-
-                                    if($calc_pos->getType() == CalculationPosition::TYPE_ARTICLE){
-                                        // falls Position ein Artikel ist
-                                        $tmp_art =  new Article($calc_pos->getObjectID());
-                                        if ($tmpart_scale == CalculationPosition::SCALE_PER_KALKULATION){
-                                            echo printPrice($tmpart_amount * $calc_pos->getPrice($tmpart_amount));
-                                        } elseif ($tmpart_scale == CalculationPosition::SCALE_PER_PIECE){
-                                            echo printPrice($tmpart_amount * $calc_pos->getPrice($tmpart_amount * $calc->getAmount()) * $calc->getAmount());
-                                        }
-                                    } else {
-                                        // falls Position manuell ist
-                                        if ($tmpart_scale == CalculationPosition::SCALE_PER_KALKULATION){
-                                            echo printPrice($tmpart_amount * $calc_pos->getPrice($tmpart_amount));
-                                        } elseif ($tmpart_scale == CalculationPosition::SCALE_PER_PIECE){
-                                            echo printPrice($tmpart_amount * $calc_pos->getPrice($tmpart_amount) * $calc->getAmount());
-                                        }
-                                    }
-                                    echo " ".$_USER->getClient()->getCurrency()."<br/>";
-                                }?>
-                            <?} else {
-                                echo printPrice(0)." ".$_USER->getClient()->getCurrency();
-                            }?>
-                        </td>
-                    <?}?>
-                </tr>-->
-                <? // -------- ENDE ---------------- Positionskosten ---------------------------- ?>
-
-
                 <? if($_USER->hasRightsByGroup(Permission::calc_detail)) { ?>
 
-
                     <tr>
-                        <td class="content_row_header"><?=$_LANG->get('Zusatzkosten')?></td>
-                    </tr>
-                    <tr class="color1">
-                        <td class="content_row_clear"><?=$_LANG->get('Marge')?></td>
-                        <? foreach($calculations as $calc) { ?>
-                            <td class="content_row_clear value">
-                                <div class="col-sm-12">
-                                    <div class="input-group">
-                                        <input name="margin_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getMargin())?>">
-                                        <span class="input-group-addon">%</span>
-                                    </div>
-                                </div>
-                            </td>
-                        <?  } ?>
-                    </tr>
-                    <tr>
-                        <td class="content_row_clear">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td class="content_row_header"><?=$_LANG->get('Selbstkosten')?></td>
+                        <td class="content_row_header"><?=$_LANG->get('Zwischensumme')?></td>
 
                         <? foreach($calculations as $calc) { ?>
-                            <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub() + ($calc->getPricesub() / 100 * $calc->getMargin()))?> <?=$_USER->getClient()->getCurrency()?></td>
+                            <td class="content_row_header value" align="center"><?=printPrice($calc->getPricesub())?> <?=$_USER->getClient()->getCurrency()?></td>
                         <? } ?>
                     </tr>
                     <tr>
@@ -752,19 +777,37 @@ echo $quickmove->generate();
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Preiskorrekturen')?></td>
                 </tr>
+                <?php if ($_USER->hasRightsByGroup(Permission::calc_margin)){?>
+                    <tr class="color1">
+                        <td class="content_row_clear"><?=$_LANG->get('Marge')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <div class="col-sm-12">
+                                    <div class="input-group">
+                                        <input onchange="checkPercentMax('margin',this)" name="margin_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getMargin())?>">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </td>
+                        <?  } ?>
+                    </tr>
+                <?php } ?>
+                <?php if ($_USER->hasRightsByGroup(Permission::calc_discount)){?>
                 <tr class="color1">
                     <td class="content_row_clear"><?=$_LANG->get('Rabatt')?></td>
                     <? foreach($calculations as $calc) { ?>
                         <td class="content_row_clear value">
                             <div class="col-sm-12">
                                 <div class="input-group">
-                                    <input name="discount_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getDiscount())?>">
+                                    <input onchange="checkPercentMax('discount',this)" name="discount_<?=$calc->getId()?>" class="form-control" style="text-align:center" value="<?=printPrice($calc->getDiscount())?>">
                                     <span class="input-group-addon">%</span>
                                 </div>
                             </div>
                         </td>
                     <?  } ?>
                 </tr>
+                <?php } ?>
+                <?php if ($_USER->hasRightsByGroup(Permission::calc_addcharge)){?>
                 <tr class="color1">
                     <td class="content_row_clear"><?=$_LANG->get('sonst. Auf-/Abschlag')?></td>
                     <? foreach($calculations as $calc) { ?>
@@ -780,6 +823,7 @@ echo $quickmove->generate();
                         </td>
                     <?  } ?>
                 </tr>
+                <?php } ?>
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Endsumme')?></td>
                     <? foreach($calculations as $calc) { ?>
@@ -791,6 +835,7 @@ echo $quickmove->generate();
                         </td>
                     <? } ?>
                 </tr>
+                <?php if ($_USER->hasRightsByGroup(Permission::calc_manoverride)){?>
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Man. Endpreis')?></td>
                     <? foreach($calculations as $calc) { ?>
@@ -804,6 +849,7 @@ echo $quickmove->generate();
                         </td>
                     <? } ?>
                 </tr>
+                <?php } ?>
 
                 <tr>
                     <td class="content_row_clear"><?=$_LANG->get('St&uuml;ckpreis')?></td>

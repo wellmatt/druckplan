@@ -54,24 +54,71 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$saxo = new Saxoprint();
-
-//$order = $saxo->getRemoteOrder("301175645");
-//prettyPrint($order);
-
-//$post = [
-//            [
-//                "OrderNumber" => (int)$order[0]->getOrderNumber(),
-//                "WorkingState" => Saxoprint::Cancelled
-//            ]
-//];
-//$saxo->postOrderStatusMultiple($post);
-//$saxo->postOrderStatus($order[0],Saxoprint::Received);
-
-//$order = $saxo->getRemoteOrder("301175645");
-//prettyPrint($order);
-
-$remoteOrders = $saxo->getRemoteOrders(Saxoprint::Registered);
-prettyPrint($remoteOrders);
+$order = new Order(244);
+prettyPrint($order->getOverviewData());
 
 ?>
+<link rel="stylesheet" type="text/css" href="./css/matze.css" />
+<link rel="stylesheet" type="text/css" href="./css/ticket.css" />
+<link rel="stylesheet" type="text/css" href="./css/menu.css" />
+<link rel="stylesheet" type="text/css" href="./css/main.print.css" media="print"/>
+<link rel="stylesheet" type="text/css" href="./css/quickmove.css" />
+
+<!-- jQuery -->
+<link type="text/css" href="jscripts/jquery/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="jscripts/jquery/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="jscripts/jquery/js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="jscripts/jquery/js/jquery.blockUI.js"></script>
+<script language="JavaScript" src="./jscripts/jquery/local/jquery.ui.datepicker-<?=$_LANG->getCode()?>.js"></script>
+<script type="text/javascript" src="jscripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="jscripts/moment/moment-with-locales.min.js"></script>
+<!-- /jQuery -->
+<!-- FancyBox -->
+<script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+<script type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+<!-- /FancyBox -->
+<script language="javascript" src="jscripts/basic.js"></script>
+<script language="javascript" src="jscripts/loadingscreen.js"></script>
+
+<link type="text/css" href="/cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
+<script type="text/javascript" src="/cometchat/cometchatjs.php" charset="utf-8"></script>
+
+<!-- MegaNavbar -->
+<link href="thirdparty/MegaNavbar/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="thirdparty/MegaNavbar/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="thirdparty/MegaNavbar/assets/css/MegaNavbar.css"/>
+<link rel="stylesheet" type="text/css" href="thirdparty/MegaNavbar/assets/css/skins/navbar-default.css" title="inverse">
+<script src="thirdparty/MegaNavbar/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="jscripts/jquery.bootstrap.wizard.min.js"></script>
+<!-- /MegaNavbar -->
+
+<!-- PACE -->
+<script src="jscripts/pace/pace.min.js"></script>
+<link href="jscripts/pace/pace-theme-big-counter.css" rel="stylesheet" />
+<!-- /PACE -->
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-halflings.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-filetypes.css" />
+<link rel="stylesheet" type="text/css" href="./css/glyphicons-social.css" />
+<link rel="stylesheet" type="text/css" href="./css/main.css" />
+
+<!-- FLOT -->
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="jscripts/flot/excanvas.min.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.pie.js"></script>
+<script language="javascript" type="text/javascript" src="jscripts/flot/jquery.flot.categories.js"></script>
+<!-- /FLOT -->
+
+<!-- Select2 -->
+<link href="jscripts/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="jscripts/select2/dist/js/select2.min.js"></script>
+<script src="jscripts/select2/dist/js/i18n/de.js"></script>
+<!-- /Select2 -->
+
+<!-- CKEditor -->
+<script type="text/javascript" src="jscripts/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="jscripts/ckeditor/config.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/ckeditor/skins/bootstrapck/editor.css"/>
+<!-- /CKEditor -->

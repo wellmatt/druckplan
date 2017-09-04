@@ -529,6 +529,64 @@ class Order {
         return $retval;
     }
 
+    /**
+     * ... loescht alle aktivierten Attribut-Optionen der Kalkulation
+     * @return boolean
+     */
+    public function clearAttributes(){
+        global $DB;
+        $sql = "DELETE FROM orders_attributes WHERE order_id = {$this->id} ";
+        return $DB->no_result($sql);
+    }
+
+    /**
+     * ... liefert Alle aktivierten Optionen inkl. Input von Merkmalen zu einer Kalkulation
+     *
+     * @return boolean|Array
+     */
+    public function getActiveAttributeItemsInput(){
+        global $DB;
+        $retval = Array();
+        $sql = "SELECT * FROM orders_attributes 
+				WHERE 
+				order_id = {$this->id}";
+
+        if($DB->num_rows($sql)){
+            $res = $DB->select($sql);
+            foreach ($res AS $r){
+                $retval["{$r["attribute_id"]}_{$r["item_id"]}"]["value"] = $r["value"];
+                $retval["{$r["attribute_id"]}_{$r["item_id"]}"]["inputvalue"] = $r["inputvalue"];
+            }
+        }
+// 		print_r($retval);
+        return $retval;
+    }
+
+    /**
+     * ... speichert alle aktivierten Merkmals-Optionen
+     *
+     * @param Array $active_items
+     */
+    public function saveActiveAttributes($active_items){
+        global $DB;
+
+        foreach($active_items as $item){
+            if((int)$item["id"] > 0){
+                $sql = "UPDATE orders_attributes SET
+	                    value = '{$item["value"]}', 
+	                    inputvalue = '{$item["inputvalue"]}' 
+	                    WHERE id = {$item["id"]}";
+                $DB->no_result($sql);
+            } else {
+                $sql = "INSERT INTO orders_attributes
+	                        (value, item_id, attribute_id, order_id, inputvalue )
+	                    VALUES
+	                        ({$item["value"]}, {$item["item_id"]}, {$item["attribute_id"]}, {$this->id}, '{$item["inputvalue"]}' )";
+                $DB->no_result($sql);
+            }
+        }
+    }
+
 
     /**
      * @param $order

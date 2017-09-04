@@ -15,6 +15,11 @@ class Perferences
     private $ZuschussPercent = 0.0; // Zuschuss prozentual auf auflage
     private $calc_detailed_printpreview = 0;
     private $inkusage = 3.00;
+    private $calc_percent_material = 0.00;
+    private $calc_percent_processing = 0.00;
+    private $calc_margin = 0.00;
+    private $calc_discount = 0.00;
+    private $calc_material_processing_charge = 1;
 
     // Formats
 
@@ -123,6 +128,11 @@ class Perferences
             $this->saxoapikey = $r["saxoapikey"];
             $this->saxobc = $r["saxobc"];
             $this->saxocp = $r["saxocp"];
+            $this->calc_percent_material = $r["calc_percent_material"];
+            $this->calc_percent_processing = $r["calc_percent_processing"];
+            $this->calc_margin = $r["calc_margin"];
+            $this->calc_discount = $r["calc_discount"];
+            $this->calc_material_processing_charge = $r["calc_material_processing_charge"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -204,6 +214,11 @@ class Perferences
                saxocp = '{$this->saxocp}',
                saxobc = '{$this->saxobc}',
                saxoapikey = '{$this->saxoapikey}',
+               calc_discount = '{$this->calc_discount}',
+               calc_margin = '{$this->calc_margin}',
+               calc_percent_material = '{$this->calc_percent_material}',
+               calc_percent_processing = '{$this->calc_percent_processing}',
+               calc_material_processing_charge = '{$this->calc_material_processing_charge}',
                imap_password 	= '{$this->imap_password}'
               ";
         return $DB->no_result($sql);
@@ -783,5 +798,85 @@ class Perferences
     public function setSaxocp($saxocp)
     {
         $this->saxocp = $saxocp;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCalcPercentMaterial()
+    {
+        return $this->calc_percent_material;
+    }
+
+    /**
+     * @param float $calc_percent_material
+     */
+    public function setCalcPercentMaterial($calc_percent_material)
+    {
+        $this->calc_percent_material = $calc_percent_material;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCalcPercentProcessing()
+    {
+        return $this->calc_percent_processing;
+    }
+
+    /**
+     * @param float $calc_percent_processing
+     */
+    public function setCalcPercentProcessing($calc_percent_processing)
+    {
+        $this->calc_percent_processing = $calc_percent_processing;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCalcMargin()
+    {
+        return $this->calc_margin;
+    }
+
+    /**
+     * @param float $calc_margin
+     */
+    public function setCalcMargin($calc_margin)
+    {
+        $this->calc_margin = $calc_margin;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCalcDiscount()
+    {
+        return $this->calc_discount;
+    }
+
+    /**
+     * @param float $calc_discount
+     */
+    public function setCalcDiscount($calc_discount)
+    {
+        $this->calc_discount = $calc_discount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCalcMaterialProcessingCharge()
+    {
+        return $this->calc_material_processing_charge;
+    }
+
+    /**
+     * @param int $calc_material_processing_charge
+     */
+    public function setCalcMaterialProcessingCharge($calc_material_processing_charge)
+    {
+        $this->calc_material_processing_charge = $calc_material_processing_charge;
     }
 }
