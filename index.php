@@ -542,6 +542,11 @@ function sleep(millis, callback) {
                               ?>
                           </div>
                       </li>
+                    <li class="user-header" style="height: 60px;">
+                        <p>
+                            <small>Contilas <?php echo $_CONFIG->cversion; ?></small>
+                        </p>
+                    </li>
                   </li>
                 </ul>
               </div>
