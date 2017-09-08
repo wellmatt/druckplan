@@ -85,6 +85,9 @@ class Client {
     private $number_counter_customer;
     private $number_format_bulkletter;
     private $number_counter_bulkletter;
+
+    private $uptdate = 0;
+    private $uptuser = 0;
      
     function __construct($id = 0) {
         global $DB;
@@ -167,6 +170,9 @@ class Client {
                     $this->bankBic3 = $res[0]["client_bic3"];
                     $this->bankIban3 = $res[0]["client_iban3"];
 
+                    $this->uptdate = $res[0]["uptdate"];
+                    $this->uptuser = $res[0]["uptuser"];
+
                     $this->number_format_order = $res[0]["number_format_order"];
                     $this->number_counter_order = $res[0]["number_counter_order"];
                     $this->number_format_colinv = $res[0]["number_format_colinv"];
@@ -223,6 +229,11 @@ class Client {
      
     function save() {
         global $DB;
+        global $_USER;
+        $time = time();
+        $user = $_USER->getId();
+        $this->setUptuser($user);
+        $this->setUptdate($time);
         if ($this->id > 0)
         {
             $sql = "UPDATE clients SET
@@ -257,54 +268,57 @@ class Client {
             client_bank3 = '{$this->bankName3}', 
             client_bic3  = '{$this->bankBic3}', 
 			client_iban3 = '{$this->bankIban3}',
+			
+			uptuser = '{$this->uptuser}', 
+			uptdate = '{$this->uptdate}', 
 
-            number_format_order  = '{$this->number_format_order}',
-            number_counter_order  = '{$this->number_counter_order}',
-            number_format_colinv  = '{$this->number_format_colinv}',
-            number_counter_colinv  = '{$this->number_counter_colinv}',
-            number_format_offer  = '{$this->number_format_offer}',
-            number_counter_offer  = '{$this->number_counter_offer}',
-            number_format_offerconfirm  = '{$this->number_format_offerconfirm}',
-            number_counter_offerconfirm  = '{$this->number_counter_offerconfirm}',
-            number_format_delivery  = '{$this->number_format_delivery}',
-            number_counter_delivery  = '{$this->number_counter_delivery}',
-            number_format_paper_order  = '{$this->number_format_paper_order}',
-            number_counter_paper_order  = '{$this->number_counter_paper_order}',
-            number_format_invoice  = '{$this->number_format_invoice}',
-            number_counter_invoice  = '{$this->number_counter_invoice}',
-            number_format_revert  = '{$this->number_format_revert}',
-            number_counter_revert  = '{$this->number_counter_revert}',
-            number_format_warning  = '{$this->number_format_warning}',
-            number_counter_warning  = '{$this->number_counter_warning}',
-            number_format_work  = '{$this->number_format_work}',
-            number_counter_work  = '{$this->number_counter_work}',
-            number_format_suporder  = '{$this->number_format_suporder}',
-            number_counter_suporder  = '{$this->number_counter_suporder}',
-            number_counter_customer = '{$this->number_counter_customer}',
-            number_counter_bulkletter = '{$this->number_counter_bulkletter}',
-            number_format_bulkletter = '{$this->number_format_bulkletter}'
+            number_format_order  = '{$this->number_format_order}', 
+            number_counter_order  = '{$this->number_counter_order}', 
+            number_format_colinv  = '{$this->number_format_colinv}', 
+            number_counter_colinv  = '{$this->number_counter_colinv}', 
+            number_format_offer  = '{$this->number_format_offer}', 
+            number_counter_offer  = '{$this->number_counter_offer}', 
+            number_format_offerconfirm  = '{$this->number_format_offerconfirm}', 
+            number_counter_offerconfirm  = '{$this->number_counter_offerconfirm}', 
+            number_format_delivery  = '{$this->number_format_delivery}', 
+            number_counter_delivery  = '{$this->number_counter_delivery}', 
+            number_format_paper_order  = '{$this->number_format_paper_order}', 
+            number_counter_paper_order  = '{$this->number_counter_paper_order}', 
+            number_format_invoice  = '{$this->number_format_invoice}', 
+            number_counter_invoice  = '{$this->number_counter_invoice}', 
+            number_format_revert  = '{$this->number_format_revert}', 
+            number_counter_revert  = '{$this->number_counter_revert}', 
+            number_format_warning  = '{$this->number_format_warning}', 
+            number_counter_warning  = '{$this->number_counter_warning}', 
+            number_format_work  = '{$this->number_format_work}', 
+            number_counter_work  = '{$this->number_counter_work}', 
+            number_format_suporder  = '{$this->number_format_suporder}', 
+            number_counter_suporder  = '{$this->number_counter_suporder}', 
+            number_counter_customer = '{$this->number_counter_customer}', 
+            number_counter_bulkletter = '{$this->number_counter_bulkletter}', 
+            number_format_bulkletter = '{$this->number_format_bulkletter}' 
 
             WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
         } else
         {
             $sql = "INSERT INTO clients
-            (client_name, client_street1, client_street2, client_street3,
+            (client_name, client_street1, client_street2, client_street3, 
             client_postcode, client_city, client_phone, client_fax, client_email, 
             client_website, client_bank_name, client_bank_blz, client_bank_kto, 
             client_bank_iban, client_bank_bic, client_gericht, client_steuernummer, 
             client_ustid, client_country, active, client_decimal, client_thousand, 
             client_currency, client_taxes, client_margin, 
             client_bank2, client_bic2, client_iban2, 
-            client_bank3, client_bic3, client_iban3,
-            number_format_order, number_counter_order, number_format_colinv,
-            number_counter_colinv, number_format_offer, number_counter_offer,
-            number_format_offerconfirm, number_counter_offerconfirm, number_format_delivery,
-            number_counter_delivery, number_format_paper_order, number_counter_paper_order,
-            number_format_invoice, number_counter_invoice, number_format_revert, number_counter_revert,
-            number_format_warning, number_counter_warning, number_format_work, number_counter_work,
-            number_format_suporder, number_counter_suporder, number_counter_customer,
-            number_counter_bulkletter, number_format_bulkletter )
+            client_bank3, client_bic3, client_iban3, 
+            number_format_order, number_counter_order, number_format_colinv, 
+            number_counter_colinv, number_format_offer, number_counter_offer, 
+            number_format_offerconfirm, number_counter_offerconfirm, number_format_delivery, 
+            number_counter_delivery, number_format_paper_order, number_counter_paper_order, 
+            number_format_invoice, number_counter_invoice, number_format_revert, number_counter_revert, 
+            number_format_warning, number_counter_warning, number_format_work, number_counter_work, 
+            number_format_suporder, number_counter_suporder, number_counter_customer, 
+            number_counter_bulkletter, number_format_bulkletter, uptuser, uptdate )
             VALUES
             ('{$this->name}', '{$this->street1}', '{$this->street2}', '{$this->street3}',
             '{$this->postcode}', '{$this->city}', '{$this->phone}', '{$this->fax}', '{$this->email}',
@@ -321,7 +335,7 @@ class Client {
             '{$this->number_format_invoice}','{$this->number_counter_invoice}','{$this->number_format_revert}',
             '{$this->number_counter_revert}','{$this->number_format_warning}','{$this->number_counter_warning}',
             '{$this->number_format_work}','{$this->number_counter_work}', '{$this->number_format_suporder}','{$this->number_counter_suporder}',
-            '{$this->number_counter_customer}', '{$this->number_counter_bulkletter}', '{$this->number_format_bulkletter}')";
+            '{$this->number_counter_customer}', '{$this->number_counter_bulkletter}', '{$this->number_format_bulkletter}', '{$this->uptuser}', '{$this->uptdate}')";
             $res = $DB->no_result($sql);
              
             if ($res)
@@ -1358,5 +1372,37 @@ class Client {
     public function setNumberCounterBulkletter($number_counter_bulkletter)
     {
         $this->number_counter_bulkletter = $number_counter_bulkletter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUptdate()
+    {
+        return $this->uptdate;
+    }
+
+    /**
+     * @param int $uptdate
+     */
+    public function setUptdate($uptdate)
+    {
+        $this->uptdate = $uptdate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUptuser()
+    {
+        return $this->uptuser;
+    }
+
+    /**
+     * @param int $uptuser
+     */
+    public function setUptuser($uptuser)
+    {
+        $this->uptuser = $uptuser;
     }
 }

@@ -3,6 +3,8 @@ $_REQUEST["id"] = (int)$_REQUEST["id"];
 $client = new Client($_REQUEST["id"]);
 $cl_streets = $client->getStreets();
 
+$uptuser = new User($client->getUptuser());
+
 if($_REQUEST["subexec"] == "save")
 {
     $cl_streets[0] = trim(addslashes($_REQUEST["client_street1"]));
@@ -348,6 +350,14 @@ if($_REQUEST["subexec"] == "save")
 								 <input name="client_bank_bic3" class="form-control" value="<?=$client->getBankBic3()?>"
 										onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							 </div>
+						 </div>
+						 <div class="form-group">
+							 <label for="" class="col-sm-4 control-label">Geändert von</label>
+							 <div class="col-sm-8 form-text"><?php echo $uptuser->getNameAsLine();?></div>
+						 </div>
+						 <div class="form-group">
+							 <label for="" class="col-sm-4 control-label">Geändert am</label>
+							 <div class="col-sm-8 form-text"><?php echo date('d.m.y H:i',$client->getUptdate());?></div>
 						 </div>
 					 </div>
 				 </div>
