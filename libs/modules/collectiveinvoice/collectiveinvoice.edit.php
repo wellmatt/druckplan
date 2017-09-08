@@ -444,8 +444,23 @@ echo $quickmove->generate();
 			<?php
 		}
 		?>
-
 		<div class="panel-body">
+			<?php
+			if ($collectinv->getCombineid()>0){
+				$combinecolinv = new CollectiveInvoice($collectinv->getCombineid());
+				?>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Sammelvorgang</h3>
+					</div>
+					<div class="panel-body">
+						Dieser Vorgang ist Teil des Sammelvorgangs <a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=<?php echo $combinecolinv->getId();?>">
+							<?php echo $combinecolinv->getNumber(); ?></a>.
+					</div>
+				</div>
+				<?php
+			}
+			?>
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Kopfdaten</h3>

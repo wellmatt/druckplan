@@ -22,6 +22,7 @@ class TaxKey extends Model{
     const TYPE_INTRACOM = 3; // Innergemeinschaftlich 0%
     const TYPE_REVERSECHARGE = 4; // Reverse Charge 0%
     const TYPE_EXPORT = 5; // Ausfuhr 0%
+    const TYPE_NOVATDELIV = 6; // UST Frei 0% Porto
 
     const ARTICLE_TYPE_SERVICE = 1;
     const ARTICLE_TYPE_DELIVERY = 2;
@@ -80,6 +81,8 @@ class TaxKey extends Model{
                 return 'Reverse Charge';
             case self::TYPE_EXPORT:
                 return 'Ausfuhr';
+            case self::TYPE_NOVATDELIV:
+                return 'USt Frei Porto';
             default:
                 return '';
         }

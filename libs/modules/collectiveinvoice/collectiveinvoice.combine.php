@@ -36,6 +36,7 @@ $customers = CollectiveInvoice::getAllCustomerWithColInvs();
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
 <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+<script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.select.min.js"></script>
 
 <script type="text/javascript" charset="utf8" src="jscripts/moment/moment-with-locales.min.js"></script>
 <script type="text/javascript" charset="utf8" src="jscripts/datatable/date-uk.js"></script>
@@ -62,31 +63,18 @@ jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
     return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
 };
 
+var selected = [];
+var comb_colinv;
 $(document).ready(function() {
-    var comb_colinv = $('#comb_colinv').DataTable( {
-        // "scrollY": "1000px",
+    comb_colinv = $('#comb_colinv').DataTable( {
         "processing": true,
         "bServerSide": true,
         "sAjaxSource": "libs/modules/collectiveinvoice/collectiveinvoice.combine.dt.ajax.php",
         "paging": true,
 		"stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
-		"pageLength": <?php echo $perf->getDt_show_default();?>,
-		"dom": 'T<"clear">flrtip',
+		"pageLength": 10,
+		"dom": 'flrtip',
 		"order": [[ 4, "desc" ]],
-		"tableTools": {
-			"sSwfPath": "jscripts/datatable/copy_csv_xls_pdf.swf",
-            "aButtons": [
-                         "copy",
-                         "csv",
-                         "xls",
-                         {
-                             "sExtends": "pdf",
-                             "sPdfOrientation": "landscape",
-                             "sPdfMessage": "Contilas - Orders"
-                         },
-                         "print"
-                     ]
-                 },
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
 			var iMin = document.getElementById('ajax_date_min').value;
 			var iMax = document.getElementById('ajax_date_max').value;
@@ -98,48 +86,34 @@ $(document).ready(function() {
 		        fnCallback(json)
 		    } );
 		},
+        "rowCallback": function( row, data ) {
+            if ( $.inArray(data[0], selected) !== -1 ) {
+                $(row).addClass('selected');
+            }
+        },
 		"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
-		"columns": [
-		            null,
-		            null,
-		            null,
-		            null,
-		            null,
-		            null
-		          ],
+		"columns": [ null, null, null, null, null, null ],
 		"language": 
 					{
-						"emptyTable":     "Keine Daten vorhanden",
-						"info":           "Zeige _START_ bis _END_ von _TOTAL_ Eintr&auml;gen",
-						"infoEmpty": 	  "Keine Seiten vorhanden",
-						"infoFiltered":   "(gefiltert von _MAX_ gesamten Eintr&auml;gen)",
-						"infoPostFix":    "",
-						"thousands":      ".",
-						"lengthMenu":     "Zeige _MENU_ Eintr&auml;ge",
-						"loadingRecords": "Lade...",
-						"processing":     "Verarbeite...",
-						"search":         "Suche:",
-						"zeroRecords":    "Keine passenden Eintr&auml;ge gefunden",
-						"paginate": {
-							"first":      "Erste",
-							"last":       "Letzte",
-							"next":       "N&auml;chste",
-							"previous":   "Vorherige"
-						},
-						"aria": {
-							"sortAscending":  ": aktivieren um aufsteigend zu sortieren",
-							"sortDescending": ": aktivieren um absteigend zu sortieren"
-						}
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"
 					}
     } );
 
     $("#comb_colinv tbody td").live('click',function(){
         var aPos = $('#comb_colinv').dataTable().fnGetPosition(this);
         var aData = $('#comb_colinv').dataTable().fnGetData(aPos[0]);
-        $("#sel_colinv").append('<span onclick="$(this).remove();">'+aData[1]+' - '+aData[3]+'<span class="glyphicons glyphicons-remove"></span></br>'+
-                      		    '<input type="hidden" value="'+aData[0]+'" name="comb_ids[]"/></span>');
-	    $('#btn_submit').show();
-    });
+        var id = aData[0];
+        var index = $.inArray(id, selected);
+
+        if ( index === -1 ) {
+            selected.push( id );
+        } else {
+            selected.splice( index, 1 );
+        }
+
+        $(this).parent().toggleClass('selected');
+        $('#selcount').text(selected.length.toString());
+    } );
 
 	$.datepicker.setDefaults($.datepicker.regional['<?=$_LANG->getCode()?>']);
 	$('#date_min').datepicker(
@@ -147,12 +121,9 @@ $(document).ready(function() {
             showOtherMonths: true,
             selectOtherMonths: true,
             dateFormat: 'dd.mm.yy',
-//            showOn: "button",
-//			buttonImage: "images/icons/calendar-blue.svg",
-//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_min').val(moment($('#date_min').val(), "DD-MM-YYYY").unix());
-                $('#colinv').dataTable().fnDraw();
+                $('#comb_colinv').dataTable().fnDraw();
             }
 	});
 	$('#date_max').datepicker(
@@ -160,77 +131,97 @@ $(document).ready(function() {
             showOtherMonths: true,
             selectOtherMonths: true,
             dateFormat: 'dd.mm.yy',
-//            showOn: "button",
-//			buttonImage: "images/icons/calendar-blue.svg",
-//            buttonImageOnly: true,
             onSelect: function(selectedDate) {
                 $('#ajax_date_max').val(moment($('#date_max').val(), "DD-MM-YYYY").unix()+86340);
-                $('#colinv').dataTable().fnDraw();
+                $('#comb_colinv').dataTable().fnDraw();
             }
 	});
 	$('#customer').change(function(){	
 		$('#ajax_customer').val($(this).val()); 
-		$('#comb_colinv').dataTable().fnDraw();  
+		$('#comb_colinv').dataTable().fnDraw();
 	})
 	
 } );
+
+function resetSelected(){
+    $('#comb_colinv > tbody  > tr').each(function(){
+        if ($(this).hasClass('selected'))
+            $(this).removeClass('selected');
+    });
+    selected = [];
+    $('#selcount').text(selected.length.toString());
+}
+
+function combineNow(){
+    if (getConfirmation('Vorgänge jetzt zusammenführen?')){
+        var data = '';
+        for (var i = 0; i < selected.length; i++) {
+            data += '&comb_ids[]='+selected[i];
+        }
+        window.location.href = 'index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.combine.php&exec=combine'+data;
+    }
+}
+
+function selectAll(){
+    $('#comb_colinv > tbody  > tr').each(function(){
+        $(this).addClass('selected');
+        var id = $(this).find('td:eq(0)').text();
+        var index = $.inArray(id, selected);
+
+        if ( index === -1 ) {
+            selected.push( id );
+        }
+        $('#selcount').text(selected.length.toString());
+    });
+}
 </script>
  <div class="panel panel-default">
  	  <div class="panel-heading">
  			<h3 class="panel-title">
-                <?=$_LANG->get('Vorg&auml;nge zusammenf&uuml;gen')?>
+                <?=$_LANG->get('Vorg&auml;nge zusammenf&uuml;gen')?> (<span id="selcount">0</span> ausgewählt)
+                <span class="pull-right">
+                    <button class="btn btn-small btn-success" type="button" onclick="selectAll();">Alle Auswählen</button>
+                    <button class="btn btn-small btn-info" type="button" onclick="resetSelected();">Zurücksetzen</button>
+                    <button class="btn btn-small btn-warning" type="button" onclick="combineNow();">Zusammenführen</button>
+                </span>
             </h3>
  	  </div>
  	  <div class="panel-body">
-
           <div class="panel panel-default">
-              <div class="panel-heading">
-                  <h3 class="panel-title">
-                      Ausgewählte Vorgänge:<br>
-                      <form action="index.php?page=<?=$_REQUEST['page']?>" method="post" name="form_comb_colinv">
-                          <input 	type="hidden" name="exec" value="combine">
-                          <span id="sel_colinv"></span>
-                          <br>
-                          <br>
-                          <input id="btn_submit" class="button" style="display: none" type="submit" value="Zusammenführen"/><br>
-                          Kopfdaten werden vom ersten ausgewählten Vorgang übernommen!
-                  </h3>
-              </div>
+              <div class="panel-body">
+                  ** Bitte beachten Sie, es können nur Vorgänge zusammengeführt werden die noch nicht im Status "Erledigt" bzw. wo noch keine Rechnung geschrieben wurde!<br>
+                  ** Zusammengeführte Vorgänge werden automatisch auf "Erledigt" gestellt.<br>
+                  ** Es ist nicht möglich mehrere Sammelvorgänge zusammenzuführen.<br><br>
+                  <div class="form-group">
 
-                  <div class="panel-body">
-                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Datum Filter &nbsp;&nbsp;Von:</label>
+                          <div class="col-sm-2">
+                              <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
+                              <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
+                          </div>
 
-                              <label for="" class="col-sm-2 control-label">Datum Filter &nbsp;&nbsp;Von:</label>
-                              <div class="col-sm-2">
-                                  <input name="ajax_date_min" id="ajax_date_min" type="hidden"/>
-                                  <input name="date_min" id="date_min" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('von');?>">&nbsp;&nbsp;
-                              </div>
-
-                              <label for="" class="col-sm-1 control-label">Bis:</label>
-                              <div class="col-sm-2">
-                                  <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
-                                  <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
-                              </div>
-                        </div>
-                      <label for="" class="col-sm-2 control-label">Kunde:</label>
-                      <div class="col-sm-3">
-                          <select id="filter_attrib" name="filter_attrib" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
-                              <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
-                              <?php
-                              foreach ($customers as $customer){
-                                  echo '<option value="'.$customer->getId().'"';
-                                  echo '>'.$customer->getNameAsLine().'</option>';
-                              }
-                              ?>
-                          </select>
-                      </div>
-
+                          <label for="" class="col-sm-1 control-label">Bis:</label>
+                          <div class="col-sm-2">
+                              <input name="ajax_date_max" id="ajax_date_max" type="hidden"/>
+                              <input name="date_max" id="date_max" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)" title="<?=$_LANG->get('bis');?>">&nbsp;&nbsp;
+                          </div>
+                    </div>
+                  <label for="" class="col-sm-2 control-label">Kunde:</label>
+                  <div class="col-sm-3">
+                      <input name="ajax_customer" id="ajax_customer" type="hidden"/>
+                      <select id="customer" name="customer" onfocus="markfield(this,0)" onblur="markfield(this,1)" class="form-control">
+                          <option value="0">&lt; <?=$_LANG->get('Bitte w&auml;hlen')?> &gt;</option>
+                          <?php
+                          foreach ($customers as $customer){
+                              echo '<option value="'.$customer->getId().'"';
+                              echo '>'.$customer->getNameAsLine().'</option>';
+                          }
+                          ?>
+                      </select>
                   </div>
-
-
-                  <br>
+              </div>
               <div class="table-responsive">
-                  <table id="colinv" class="table table-hover" >
+                  <table id="comb_colinv" class="table table-hover" >
                       <thead>
                       <tr>
                           <th><?=$_LANG->get('ID')?></th>
@@ -244,7 +235,6 @@ $(document).ready(function() {
                       </thead>
                   </table>
               </div>
-
-              <br>
+          </div>
  	  </div>
   </div>

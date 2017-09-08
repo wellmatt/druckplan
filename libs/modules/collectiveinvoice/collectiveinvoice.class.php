@@ -27,9 +27,14 @@ class CollectiveInvoice{
 	const TAX_ARTICLE			= 19;
 	const TAX_PEROSALIZATION	= 19;
 
+    const TYPE_MANUAL           = 1;
+    const TYPE_SHOP             = 2;
+    const TYPE_SAXO             = 3;
+    const TYPE_COMBINED         = 4;
+
 	private $id = 0;
 	private $status	= 1;
-	private $type = 1;					// Vorgangstyp 1: Manuell 2: Bestellung aus Kundenportal 3: Saxoprint
+	private $type = 1;					// Vorgangstyp 1: Manuell 2: Bestellung aus Kundenportal 3: Saxoprint 4: Sammel
 	private $title = "";
 	private $number = "- - -";
 	private $crtdate;
@@ -65,6 +70,8 @@ class CollectiveInvoice{
     private $saxoid = 0;                // Saxoprint OrderNumber
     private $saxoprodgrp = '';          // Saxoprint Product Group
     private $saxomaterial = '';         // Saxoprint Material
+
+    private $combineid = 0;             // Id des Sammelvorgangs falls vorhanden
     
     // Doc texts
 
@@ -179,6 +186,7 @@ class CollectiveInvoice{
 					$this->saxoid = $r["saxoid"];
 					$this->saxoprodgrp = $r["saxoprodgrp"];
 					$this->saxomaterial = $r["saxomaterial"];
+					$this->combineid = $r["combineid"];
 
 					// doc texts
 					$this->offer_header = $r["offer_header"];
@@ -251,6 +259,7 @@ class CollectiveInvoice{
                     saxoid = '{$this->saxoid}',
                     saxoprodgrp = '{$this->saxoprodgrp}',
                     saxomaterial = '{$this->saxomaterial}',
+                    combineid = '{$this->combineid}',
                     locked = {$this->locked},
 
 					intent = '{$this->intent}'
@@ -269,7 +278,7 @@ class CollectiveInvoice{
 				 intent, needs_planning, deliverydate, ext_comment, rdyfordispatch,
 				 offer_header, offer_footer, offerconfirm_header, offerconfirm_footer,
 				 factory_header, factory_footer, delivery_header, delivery_footer,
-				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost,locked,saxoid,saxoprodgrp,saxomaterial)
+				 invoice_header, invoice_footer, revert_header, revert_footer,thirdparty,thirdpartycomment,ticket,savedcost,locked,saxoid,saxoprodgrp,saxomaterial,combineid)
 			VALUES
 				({$this->status}, {$this->type},'{$this->title}', '{$this->number}', {$now}, {$_USER->getId()},
 				 {$this->deliverycosts}, '{$this->comment}', {$this->businesscontact->getId()}, {$this->client->getId()},
@@ -279,7 +288,7 @@ class CollectiveInvoice{
 				 '{$this->offer_header}','{$this->offer_footer}','{$this->offerconfirm_header}','{$this->offerconfirm_footer}',
 				 '{$this->factory_header}','{$this->factory_footer}','{$this->delivery_header}','{$this->delivery_footer}',
 				 '{$this->invoice_header}','{$this->invoice_footer}','{$this->revert_header}','{$this->revert_footer}',
-				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0, 0, '{$this->saxoid}', '{$this->saxoprodgrp}', '{$this->saxomaterial}')";
+				 {$this->thirdparty},'{$this->thirdpartycomment}', {$this->ticket}, 0, 0, '{$this->saxoid}', '{$this->saxoprodgrp}', '{$this->saxomaterial}', {$this->combineid})";
 			$res = $DB->no_result($sql);
 			if($res){
 				$sql = "SELECT max(id) id FROM collectiveinvoice WHERE status > 0 ";
@@ -394,18 +403,18 @@ class CollectiveInvoice{
 		global $_USER;
 	    $maininv = new CollectiveInvoice($ids[0]);
 		$needs_planning = false;
-	    
+        $combinedfrom = [];
+
 	    $newinv = new CollectiveInvoice();
-	    $newinv->setNumber($maininv->getClient()->createOrderNumber(1));
+	    $newinv->setNumber($maininv->getClient()->createOrderNumber(Client::NUMBER_COLINV));
 	    $newinv->setClient($_USER->getClient());
 	    $newinv->setBusinesscontact($maininv->getBusinesscontact());
 	    $newinv->setDeliveryterm($maininv->getDeliveryterm());
 	    $newinv->setDeliverycosts($maininv->getDeliverycosts());
 	    $newinv->setPaymentterm($maininv->getPaymentterm());
-	    $newinv->setTitle("K: " . $maininv->getTitle());
+	    $newinv->setTitle("SV: " . $maininv->getTitle());
 	    $newinv->setIntent($maininv->getIntent());
-	    $newinv->setComment($maininv->getComment());
-	    $newinv->setExt_comment($maininv->getExt_comment());
+        $newinv->setComment($maininv->getComment());
 	    $newinv->setDeliveryaddress($maininv->getDeliveryaddress());
 	    $newinv->setInternContact($maininv->getInternContact());
 	    $newinv->setCustMessage($maininv->getCustMessage());
@@ -413,6 +422,8 @@ class CollectiveInvoice{
 	    $newinv->setInvoiceAddress($maininv->getInvoiceAddress());
 	    $newinv->setCustContactperson($maininv->getCustContactperson());
 	    $newinv->setDeliverydate($maininv->getDeliverydate());
+        $newinv->setType(self::TYPE_COMBINED);
+        $newinv->setStatus(3);
 	    
 	    $savemsg = getSaveMessage($newinv->save());
 	    
@@ -425,6 +436,10 @@ class CollectiveInvoice{
 	       foreach ($ids as $id){
 	           $tmp_colinv = new CollectiveInvoice($id);
                $tmp_positions = Orderposition::getAllOrderposition($tmp_colinv->getId());
+               $tmp_colinv->setStatus(7);
+               $tmp_colinv->setCombineid($collectinv->getId());
+               $tmp_colinv->save();
+               $combinedfrom[] = $tmp_colinv->getNumber();
 	           
                foreach ($tmp_positions as $position){
     	           $newpos = new Orderposition();
@@ -462,6 +477,8 @@ class CollectiveInvoice{
 	           $newinv->setNeeds_planning(1);
 	           $newinv->save();
 	       }
+            $collectinv->setExt_comment('Sammelvorgang aus '.implode(', ',$combinedfrom));
+            $collectinv->save();
 	       return $collectinv;
 	    }
 	    return false;
@@ -1651,5 +1668,21 @@ class CollectiveInvoice{
     public function setSaxomaterial($saxomaterial)
     {
         $this->saxomaterial = $saxomaterial;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCombineid()
+    {
+        return $this->combineid;
+    }
+
+    /**
+     * @param int $combineid
+     */
+    public function setCombineid($combineid)
+    {
+        $this->combineid = $combineid;
     }
 }

@@ -337,6 +337,7 @@ $(document).ready(function() {
 									1 => 'Manuell',
 									2 => 'Kundenportal',
 									3 => 'Saxoprint',
+									4 => 'Sammelvorgang',
 								];
 								foreach ($colstates AS $index => $value) {
 									if ($_REQUEST['filter_type'] == $index)

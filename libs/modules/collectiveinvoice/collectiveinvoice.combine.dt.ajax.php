@@ -147,7 +147,8 @@
     $sQuery = "SELECT * FROM
                (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,collectiveinvoice.title,
                collectiveinvoice.crtdate as crtdat,collectiveinvoice.`status`, businesscontact.id as bcid 
-               FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a   
+               FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0
+                AND collectiveinvoice.`status` < 7 AND collectiveinvoice.type != 4) a   
                $sWhere
                $sOrder
                $sLimit";
@@ -165,7 +166,8 @@
         FROM   
         (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
         collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`, businesscontact.id as bcid 
-        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0
+         AND collectiveinvoice.`status` < 7 AND collectiveinvoice.type != 4) a
         $sWhere
     ";
 //     var_dump($sQuery);
@@ -181,7 +183,8 @@
         FROM   
         (SELECT collectiveinvoice.id,collectiveinvoice.number,CONCAT(businesscontact.name1,' ',businesscontact.name2) as cust_name,
         collectiveinvoice.title,collectiveinvoice.crtdate,collectiveinvoice.`status`
-        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0) a
+        FROM collectiveinvoice INNER JOIN businesscontact ON collectiveinvoice.businesscontact = businesscontact.id WHERE collectiveinvoice.`status` > 0
+         AND collectiveinvoice.`status` < 7 AND collectiveinvoice.type != 4) a
         WHERE status > 0
     ";
 //     var_dump($sQuery);

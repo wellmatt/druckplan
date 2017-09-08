@@ -113,3 +113,9 @@ function printPriceJs(zahl,nks = 2){
 	ret = ret.replace(".",",");
 	return ret;
 }
+
+function getConfirmation(message)
+{
+	var retVal = confirm(message);
+	return !!retVal;
+}

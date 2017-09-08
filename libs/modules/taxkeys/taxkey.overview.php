@@ -81,6 +81,7 @@ $taxkeys = TaxKey::getAll();
                                           <option value="3">Innergemeinschaftlich</option>
                                           <option value="4">Reverse Charge</option>
                                           <option value="5">Ausfuhr</option>
+                                          <option value="6">USt Frei Porto</option>
                                       </select>
                                   </div>
                               </div>
