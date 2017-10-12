@@ -891,6 +891,21 @@ echo $quickmove->generate();
                             Höhe und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
                     </tr>
 
+                    <tr>
+                        <td><?= $_LANG->get('Rohbogen') ?></td>
+                        <td valign="top">
+                            <select id="content_rawformat" name="content_rawformat" class="form-control">
+                                <option value="auto">Automatisch</option>
+                                <?php foreach ($perf->getFormats_raw() as $rawformat){
+                                    if ($calc->getFormat_in_content() == $rawformat['width'].'x'.$rawformat['height'] || $calc->getFormat_in_content() == (int)$rawformat['width'].'x'.(int)$rawformat['height']){?>
+                                        <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>" selected><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                    <?php } else {?>
+                                        <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>"><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                <?php }} ?>
+                            </select>
+                        </td>
+                    </tr>
+
                     <?
                     // Matrial Inhalt
                     if ($order->getProduct()->getHasContent()) {
@@ -1081,6 +1096,22 @@ echo $quickmove->generate();
 
                             </td>
                         </tr>
+
+                        <tr>
+                            <td><?= $_LANG->get('Rohbogen') ?></td>
+                            <td valign="top">
+                                <select id="addcontent_rawformat" name="addcontent_rawformat" class="form-control">
+                                    <option value="auto">Automatisch</option>
+                                    <?php foreach ($perf->getFormats_raw() as $rawformat){
+                                        if ($calc->getFormat_in_addcontent() == $rawformat['width'].'x'.$rawformat['height'] || $calc->getFormat_in_addcontent() == (int)$rawformat['width'].'x'.(int)$rawformat['height']){?>
+                                            <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>" selected><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                        <?php } else {?>
+                                            <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>"><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                        <?php }} ?>
+                                </select>
+                            </td>
+                        </tr>
+
                         <tr id="tr_addcontent_weight"<? if ($calc->getPaperAddContent()->getId() == 0)
                             echo ' style="display:none"'; ?>>
                             <td><?= $_LANG->get('Inhalt 2 Gewicht') ?>
@@ -1242,6 +1273,22 @@ echo $quickmove->generate();
                                 </div>
                             </td>
                         </tr>
+
+                        <tr>
+                            <td><?= $_LANG->get('Rohbogen') ?></td>
+                            <td valign="top">
+                                <select id="envelope_rawformat" name="envelope_rawformat" class="form-control">
+                                    <option value="auto">Automatisch</option>
+                                    <?php foreach ($perf->getFormats_raw() as $rawformat){
+                                        if ($calc->getFormat_in_envelope() == $rawformat['width'].'x'.$rawformat['height'] || $calc->getFormat_in_envelope() == (int)$rawformat['width'].'x'.(int)$rawformat['height']){?>
+                                            <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>" selected><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                        <?php } else {?>
+                                            <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>"><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                        <?php }} ?>
+                                </select>
+                            </td>
+                        </tr>
+
                         <tr id="tr_envelope_weight" <? if ($calc->getPaperEnvelope()->getId() == 0)
                             echo ' style="display:none"'; ?>>
                             <td><?= $_LANG->get('Mat. Umschlag Gewicht') ?>

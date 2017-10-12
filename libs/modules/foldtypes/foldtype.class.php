@@ -1,219 +1,121 @@
-<?
-//----------------------------------------------------------------------------------
-// Author:        iPactor GmbH
-// Updated:       14.03.2012
-// Copyright:     2012 by iPactor GmbH. All Rights Reserved.
-// Any unauthorized redistribution, reselling, modifying or reproduction of part
-// or all of the contents in any form is strictly prohibited.
-//----------------------------------------------------------------------------------
-class Foldtype
-{
-    const ORDER_NAME = "name";
-    const ORDER_ID = "id";
+<?php
+/**
+ *  Copyright (c) 2017 Teuber Consult + IT GmbH - All Rights Reserved
+ *  * Unauthorized modification or copying of this file, via any medium is strictly prohibited
+ *  * Proprietary and confidential
+ *  * Written by Alexander Scherer <alexander.scherer@teuber-consult.de>, 2017
+ *
+ */
+require_once 'libs/basic/model.php';
 
-    private $id = 0;
-    private $name;
-    private $description;
-    private $vertical = 0;
-    private $horizontal = 0;
-    private $status;
-    private $picture;
-    private $breaks;
+class FoldType extends Model{
+    public $_table = 'foldtypes';
 
-    function __construct($id = 0)
-    {
-        global $DB;
-        if($id > 0)
-        {
-            $sql = "SELECT * FROM foldtypes WHERE status=1 AND id={$id}";
-            if($DB->num_rows($sql))
-            {
-                $res = $DB->select($sql);
-                $res = $res[0];
+    public $name = '';
+    public $description = '';
+    public $type = 0;
+    public $imageid = 0;
+    public $breaks = 0;
 
-                $this->id = $res["id"];
-                $this->name = $res["name"];
-                $this->description = $res["beschreibung"];
-                $this->vertical = $res["vertical"];
-                $this->horizontal = $res["horizontal"];
-                $this->status = $res["status"];
-                $this->picture = $res["picture"];
-                $this->breaks = $res["breaks"];
-            }
-        }
-    }
+    const TYPE_Kreuzfalz = 1;
+    const TYPE_Wickelfalz = 2;
+    const TYPE_Zickzackfalz = 3;
+    const TYPE_Fensterfalz = 4;
+    const TYPE_Parallelmittenfalz = 5;
+
+    public $_types = [
+        ['id' => 1, 'name' => 'Kreuzfalz'],
+        ['id' => 2, 'name' => 'Wickelfalz'],
+        ['id' => 3, 'name' => 'Zickzackfalz'],
+        ['id' => 4, 'name' => 'Fensterfalz'],
+        ['id' => 5, 'name' => 'Parallelmittenfalz'],
+    ];
 
     /**
-     * @param string $order
-     * @return Foldtype[]
+     * @return string
      */
-    static function getAllFoldTypes($order = self::ORDER_ID)
-    {
-        global $DB;
-        $retval = Array();
-        $sql = "SELECT id FROM foldtypes WHERE status=1 
-        ORDER BY {$order}";
-        if($DB->num_rows($sql))
-        {
-            foreach($DB->select($sql)as $r)
-            {
-                $retval[] = new Foldtype($r["id"]);
-            }
-        }
-        return $retval;
-    }
-
-    static function getFoldTypesForPages($pages)
-    {
-        global $DB;
-        $retval = Array();
-        $sql = "SELECT id FROM foldtypes WHERE status=1 
-                AND 
-                    (vertical + 1) * (horizontal + 1) = {$pages}
-                    OR (vertical + 1) * (horizontal + 1) * 2 = {$pages}";
-        if($DB->num_rows($sql))
-        {
-            foreach($DB->select($sql)as $r)
-            {
-                $retval[] = new Foldtype($r["id"]);
-            }
-        }
-        return $retval;
-        
-    }
-    
-    function save()
-    {
-        global $DB;
-        if($this->id > 0)
-        {
-            $sql = "UPDATE foldtypes SET
-                        name = '{$this->name}',
-                        beschreibung = '{$this->description}',
-                        status = {$this->status},
-                        vertical = {$this->vertical},
-                        horizontal = {$this->horizontal},
-                        breaks = {$this->breaks},
-                        picture = '{$this->picture}'
-                    WHERE id = {$this->id}";
-            return $DB->no_result($sql);
-        } else
-        {
-            $sql = "INSERT INTO foldtypes
-                        (name, beschreibung, status, vertical, horizontal, picture, breaks)
-                    VALUES
-                        ('{$this->name}', '{$this->description}', 1, {$this->vertical},
-                         {$this->horizontal}, '{$this->picture}', {$this->breaks})";
-            $res = $DB->no_result($sql);
-            
-            if($res)
-            {
-                $sql = "SELECT max(id) id FROM foldtypes WHERE name = '{$this->name}'";
-                $thisid = $DB->select($sql);
-                $this->id = $thisid[0]["id"];
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    function delete()
-    {
-        global $DB;
-        $sql = "UPDATE foldtypes SET status = 0 WHERE id = {$this->id}";
-        if($DB->no_result($sql))
-        {
-            unset($this);
-            return true;
-        } else
-            return false;
-    }
-    
-    function clearId()
-    {
-        $this->id = 0;
-    }
-    
-    public function getId()
-    {
-        return $this->id;
-    }
-
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     * @param string $description
+     */
     public function setDescription($description)
     {
         $this->description = $description;
     }
 
-    public function getVertical()
+    /**
+     * @return int
+     */
+    public function getType()
     {
-        return $this->vertical;
+        return $this->type;
     }
 
-    public function setVertical($vertical)
+    /**
+     * @param int $type
+     */
+    public function setType($type)
     {
-        $this->vertical = $vertical;
+        $this->type = $type;
     }
 
-    public function getHorizontal()
+    /**
+     * @return int
+     */
+    public function getImageid()
     {
-        return $this->horizontal;
+        return $this->imageid;
     }
 
-    public function setHorizontal($horizontal)
+    /**
+     * @param int $imageid
+     */
+    public function setImageid($imageid)
     {
-        $this->horizontal = $horizontal;
+        $this->imageid = $imageid;
     }
 
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    public function getPicture()
-    {
-        return $this->picture;
-    }
-
-    public function setPicture($picture)
-    {
-        $this->picture = $picture;
-    }
-    
-	/**
-     * @return the $breaks
+    /**
+     * @return int
      */
     public function getBreaks()
     {
         return $this->breaks;
     }
 
-	/**
-     * @param field_type $breaks
+    /**
+     * @param int $breaks
      */
     public function setBreaks($breaks)
     {
         $this->breaks = $breaks;
     }
-    
+
+    /**
+     * @return array
+     */
+    public function getTypes()
+    {
+        return $this->_types;
+    }
 }
-?>

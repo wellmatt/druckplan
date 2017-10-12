@@ -63,6 +63,22 @@ if ($order->getProduct()->getHasAddContent2()) {?>
                             </div>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td><?= $_LANG->get('Rohbogen') ?></td>
+                        <td valign="top">
+                            <select id="addcontent2_rawformat" name="addcontent2_rawformat" class="form-control">
+                                <option value="auto">Automatisch</option>
+                                <?php foreach ($perf->getFormats_raw() as $rawformat){
+                                    if ($calc->getFormat_in_addcontent2() == $rawformat['width'].'x'.$rawformat['height'] || $calc->getFormat_in_addcontent2() == (int)$rawformat['width'].'x'.(int)$rawformat['height']){?>
+                                        <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>" selected><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                    <?php } else {?>
+                                        <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>"><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                                    <?php }} ?>
+                            </select>
+                        </td>
+                    </tr>
+
                     <tr id="tr_addcontent2_weight"<? if ($calc->getPaperAddContent2()->getId() == 0)
                         echo ' style="display:none"'; ?>>
                         <td><?= $_LANG->get('Inhalt 3 Gewicht') ?>
@@ -219,6 +235,22 @@ if ($order->getProduct()->getHasAddContent3()) {?>
                     </div>
                 </td>
             </tr>
+
+            <tr>
+                <td><?= $_LANG->get('Rohbogen') ?></td>
+                <td valign="top">
+                    <select id="addcontent3_rawformat" name="addcontent3_rawformat" class="form-control">
+                        <option value="auto">Automatisch</option>
+                        <?php foreach ($perf->getFormats_raw() as $rawformat){
+                            if ($calc->getFormat_in_addcontent3() == $rawformat['width'].'x'.$rawformat['height'] || $calc->getFormat_in_addcontent3() == (int)$rawformat['width'].'x'.(int)$rawformat['height']){?>
+                                <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>" selected><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                            <?php } else {?>
+                                <option value="<?php echo (int)$rawformat['width'].'x'.(int)$rawformat['height'];?>"><?php echo (int)$rawformat['width'].' x '.(int)$rawformat['height'].' mm';?></option>
+                            <?php }} ?>
+                    </select>
+                </td>
+            </tr>
+
             <tr id="tr_addcontent3_weight"<? if ($calc->getPaperAddContent3()->getId() == 0)
                 echo ' style="display:none"'; ?>>
                 <td><?= $_LANG->get('Inhalt 4 Gewicht') ?>

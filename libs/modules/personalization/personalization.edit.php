@@ -121,8 +121,8 @@ if($_REQUEST["subexec"] == "save"){
 	$doc->save();
 }
 
-$all_article = Article::getAllArticle(Article::ORDER_TITLE);
-$all_customer = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, BusinessContact::FILTER_ALL);
+//$all_article = Article::getAllArticle(Article::ORDER_TITLE);
+//$all_customer = BusinessContact::getAllBusinessContactsForLists(BusinessContact::ORDER_NAME, BusinessContact::FILTER_ALL);
 $all_items = Personalizationitem::getAllPersonalizationitems($perso->getId(), "id", Personalizationitem::SITE_ALL);
 $all_fonts = PersoFont::getAllPersoFonts(PersoFont::ORDER_TITLE);
 $allprices = $perso->getPrices();
@@ -338,7 +338,6 @@ echo $quickmove->generate();
 			<h3 class="panel-title">
 				<? if ($_REQUEST["exec"] == "new") echo $_LANG->get('Personalisierung hinzuf&uuml;gen') ?>
 				<? if ($_REQUEST["exec"] == "edit") echo $_LANG->get('Personalisierung bearbeiten') ?>
-				<? //if ($_REQUEST["exec"] == "copy")  echo $_LANG->get('Artikel kopieren')?>
 				<span class="pull-right">
 					<?= $savemsg ?>
 				</span>
@@ -365,11 +364,9 @@ echo $quickmove->generate();
 						<label for="" class="col-sm-3 control-label">Artikel</label>
 						<div class="col-sm-9">
 							<select id="perso_article" name="perso_article" class="form-control">
-								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-								<? foreach ($all_article as $art) { ?>
-									<option value="<?= $art->getId() ?>"
-										<? if ($perso->getArticle()->getId() == $art->getId()) echo "selected" ?>><?= $art->getTitle() ?></option>
-								<? } ?>
+								<?php if ($perso->getArticle()->getId() > 0){?>
+									<option value="<?php echo $perso->getArticle()->getId();?>"><?php echo $perso->getArticle()->getTitle().' ('.$perso->getArticle()->getNumber().')';?></option>
+								<?php }	?>
 							</select>
 						</div>
 					</div>
@@ -377,11 +374,9 @@ echo $quickmove->generate();
 						<label for="" class="col-sm-3 control-label">Kunde</label>
 						<div class="col-sm-9">
 							<select id="perso_customer" name="perso_customer" class="form-control">
-								<option value="0">&lt; <?= $_LANG->get('Bitte w&auml;hlen') ?> &gt;</option>
-								<? foreach ($all_customer as $cust) { ?>
-									<option <? if ($perso->getCustomer()->getId() == $cust->getId()) echo "selected" ?>
-										value="<?= $cust->getId() ?>"><?= $cust->getNameAsLine() ?></option>
-								<? }//Ende else?>
+								<?php if ($perso->getCustomer()->getId() > 0){?>
+									<option value="<?php echo $perso->getCustomer()->getId();?>"><?php echo $perso->getCustomer()->getNameAsLine();?></option>
+								<?php }	?>
 							</select>
 						</div>
 					</div>
@@ -827,3 +822,79 @@ echo $quickmove->generate();
 	</div>
 <? } ?>
 </form>
+
+<script>
+	$(function () {
+		$("#perso_article").select2({
+			ajax: {
+				url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_article",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						term: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					// parse the results into the format expected by Select2
+					// since we are using custom formatting functions we do not need to
+					// alter the remote JSON data, except to indicate that infinite
+					// scrolling can be used
+					params.page = params.page || 1;
+
+					return {
+						results: data,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				cache: true
+			},
+			minimumInputLength: 3,
+			language: "de",
+			multiple: false,
+			allowClear: false,
+			tags: false
+		}).val(<?php echo $perso->getArticle()->getId();?>).trigger('change');
+	});
+</script>
+
+<script>
+	$(function () {
+		$("#perso_customer").select2({
+			ajax: {
+				url: "libs/basic/ajax/select2.ajax.php?ajax_action=search_businesscontact",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						term: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					// parse the results into the format expected by Select2
+					// since we are using custom formatting functions we do not need to
+					// alter the remote JSON data, except to indicate that infinite
+					// scrolling can be used
+					params.page = params.page || 1;
+
+					return {
+						results: data,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				cache: true
+			},
+			minimumInputLength: 3,
+			language: "de",
+			multiple: false,
+			allowClear: false,
+			tags: false
+		}).val(<?php echo $perso->getCustomer()->getId();?>).trigger('change');
+	});
+</script>

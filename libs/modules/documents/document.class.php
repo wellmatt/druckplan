@@ -706,6 +706,9 @@ class Document
             case self::TYPE_INVOICE:
                 $filename .= 'invoice/' . $_USER->getClient()->getId() . '.' . $this->hash;
                 break;
+            case self::TYPE_REVERT:
+                $filename .= 'revert/' . $_USER->getClient()->getId() . '.' . $this->hash;
+                break;
             case self::TYPE_DELIVERY:
                 $filename .= 'delivery/' . $_USER->getClient()->getId() . '.' . $this->hash;
                 break;

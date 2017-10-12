@@ -1079,6 +1079,7 @@ echo $quickmove->generate();
                                 {
                                     echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                     if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_content()) echo 'selected';
+                                    if ((int)$size['width'].'x'.(int)$size['height'] == $calc->getFormat_in_content()) echo 'selected';
                                     echo '>';
                                     echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                                 }
@@ -1092,6 +1093,7 @@ echo $quickmove->generate();
                                 {
                                     echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                     if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_addcontent()) echo 'selected';
+                                    if ((int)$size['width'].'x'.(int)$size['height'] == $calc->getFormat_in_addcontent()) echo 'selected';
                                     echo '>';
                                     echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                                 }
@@ -1105,6 +1107,7 @@ echo $quickmove->generate();
                                 {
                                     echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                     if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_addcontent2()) echo 'selected';
+                                    if ((int)$size['width'].'x'.(int)$size['height'] == $calc->getFormat_in_addcontent2()) echo 'selected';
                                     echo '>';
                                     echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                                 }
@@ -1118,6 +1121,7 @@ echo $quickmove->generate();
                                 {
                                     echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                     if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_addcontent3()) echo 'selected';
+                                    if ((int)$size['width'].'x'.(int)$size['height'] == $calc->getFormat_in_addcontent3()) echo 'selected';
                                     echo '>';
                                     echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                                 }
@@ -1132,6 +1136,7 @@ echo $quickmove->generate();
                                 {
                                     echo '<option value="'.$size['width'].'x'.$size['height'].'" ';
                                     if ($size['width'].'x'.$size['height'] == $calc->getFormat_in_envelope()) echo 'selected';
+                                    if ((int)$size['width'].'x'.(int)$size['height'] == $calc->getFormat_in_envelope()) echo 'selected';
                                     echo '>';
                                     echo printPrice($size['width']).'x'.printPrice($size['height']).'</option>';
                                 }

@@ -360,6 +360,10 @@ if((int)$_REQUEST["step"] == 2){
 						$calc->setPaperContentWidth($smallest_paper[0]);
 						$calc->setFormat_in_content($smallest_paper[0].'x'.$smallest_paper[1]);
 
+
+						if ($_REQUEST['content_rawformat'] && $_REQUEST['content_rawformat'] != 'auto')
+							$calc->setFormat_in_content($_REQUEST['content_rawformat']);
+
 						// Update Papersize
 //						$sizes = $calc->getPaperContent()->getMaxPaperSizeForMachine($m);
 //						$calc->setPaperContentHeight($sizes["height"]);
@@ -435,6 +439,10 @@ if((int)$_REQUEST["step"] == 2){
 						$calc->setPaperAddContentHeight($smallest_paper[1]);
 						$calc->setPaperAddContentWidth($smallest_paper[0]);
 						$calc->setFormat_in_addcontent($smallest_paper[0].'x'.$smallest_paper[1]);
+
+
+						if ($_REQUEST['addcontent_rawformat'] && $_REQUEST['addcontent_rawformat'] != 'auto')
+							$calc->setFormat_in_addcontent($_REQUEST['addcontent_rawformat']);
 
 						// Update Papersize
 //						$calc->setPaperAddContentHeight($sizes["height"]);
@@ -514,6 +522,10 @@ if((int)$_REQUEST["step"] == 2){
 						$calc->setPaperEnvelopeWidth($smallest_paper[0]);
 						$calc->setFormat_in_envelope($smallest_paper[0].'x'.$smallest_paper[1]);
 
+
+						if ($_REQUEST['envelope_rawformat'] && $_REQUEST['envelope_rawformat'] != 'auto')
+							$calc->setFormat_in_envelope($_REQUEST['envelope_rawformat']);
+
 						// Update Papersize
 //						$calc->setPaperEnvelopeHeight($sizes["height"]);
 //						$calc->setPaperEnvelopeWidth($sizes["width"]);
@@ -590,6 +602,10 @@ if((int)$_REQUEST["step"] == 2){
 						$calc->setPaperAddContent2Width($smallest_paper[0]);
 						$calc->setFormat_in_addcontent2($smallest_paper[0].'x'.$smallest_paper[1]);
 
+
+						if ($_REQUEST['addcontent2_rawformat'] && $_REQUEST['addcontent2_rawformat'] != 'auto')
+							$calc->setFormat_in_addcontent2($_REQUEST['addcontent2_rawformat']);
+
 						// Update Papersize
 //						$calc->setPaperAddContent2Height($sizes["height"]);
 //						$calc->setPaperAddContent2Width($sizes["width"]);
@@ -665,6 +681,10 @@ if((int)$_REQUEST["step"] == 2){
 						$calc->setPaperAddContent3Height($smallest_paper[1]);
 						$calc->setPaperAddContent3Width($smallest_paper[0]);
 						$calc->setFormat_in_addcontent3($smallest_paper[0].'x'.$smallest_paper[1]);
+
+
+						if ($_REQUEST['addcontent3_rawformat'] && $_REQUEST['addcontent3_rawformat'] != 'auto')
+							$calc->setFormat_in_addcontent3($_REQUEST['addcontent3_rawformat']);
 
 						// Update Papersize
 //						$calc->setPaperAddContent3Height($sizes["height"]);

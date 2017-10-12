@@ -25,6 +25,7 @@ require_once("./libs/basic/translator/translator.class.php");
 require_once("./libs/basic/countries/country.class.php");
 require_once("./libs/basic/license/license.class.php");
 require_once("./vendor/autoload.php");
+require_once 'libs/basic/model.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/associations/association.class.php';
 require_once 'libs/modules/timer/timer.class.php';
@@ -42,6 +43,7 @@ require_once 'libs/modules/costobjects/costobject.class.php';
 require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
 require_once 'libs/modules/accounting/receipt.class.php';
 require_once 'libs/modules/textblocks/textblock.class.php';
+require_once 'libs/modules/filestorage/filestorage.class.php';
 
 // Mail Stuff
 require_once 'libs/modules/mail/mailmassage.class.php';
@@ -285,6 +287,33 @@ function sleep(millis, callback) {
 
 <a name="top"></a> 
 <div id="idx_loadinghide" style="display:none">
+
+    <script>
+        $(function() {
+            $("a#upload_hidden_clicker").fancybox({
+                'type'          :   'iframe',
+                'transitionIn'	:	'elastic',
+                'transitionOut'	:	'elastic',
+                'speedIn'		:	600,
+                'speedOut'		:	200,
+                'width'         :   1024,
+                'height'		:	800,
+                'scrolling'     :   'yes',
+// 			'overlayShow'	:	true,
+// 		    'fitToView'     :   true,
+// 		    'autoSize'      :   true,
+// 		    'autoCenter'    :   true,
+// 		    'height'        :   'auto',
+                'helpers'		:   { overlay:null, closeClick:true }
+            });
+        });
+        function callBoxFancyUploadFile(my_href) {
+            var j1 = document.getElementById("upload_hidden_clicker");
+            j1.href = my_href;
+            $('#upload_hidden_clicker').trigger('click');
+        }
+    </script>
+    <div id="upload_hiddenclicker" style="display:none"><a id="upload_hidden_clicker" href="http://www.google.com" >Hidden Clicker</a></div>
 
 <!--   <div class="container"> -->
     <nav class="navbar navbar-default" id="main_navbar" role="navigation">

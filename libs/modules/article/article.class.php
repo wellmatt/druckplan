@@ -430,6 +430,42 @@ class Article {
 		return false;
 	}
 
+    public function updateFromIgepa(MaterialPaperIgepa $igepa, $type)
+    {
+        $artupt = false;
+        if ($type == 1)
+            $title = utf8_encode($igepa->bezeichnung).' '.utf8_encode($igepa->farbe).' '.$igepa->grammatur.'g '.$igepa->papierbreite.'x'.$igepa->papierhoehe.'mm '.$igepa->laufrichtung;
+        else
+            $title = utf8_encode($igepa->bezeichnung).' '.utf8_encode($igepa->farbe).' '.$igepa->grammatur.'g '.$igepa->papierbreite.'mm '.$igepa->laufrichtung;
+        if ($this->getTitle() != $title){
+            $this->setTitle($title);
+            $artupt = true;
+        }
+        if ($this->getDesc() != utf8_encode($igepa->zusatzbezeichnung)){
+            $this->setDesc(utf8_encode($igepa->zusatzbezeichnung));
+            $artupt = true;
+        }
+        if ($this->getOrderunit() != $igepa->abpapiermenge1){
+            $this->setOrderunit($igepa->abpapiermenge1);
+            $artupt = true;
+        }
+        if ($this->getMatchcode() != $igepa->artikelnummer){
+            $this->setMatchcode($igepa->artikelnummer);
+            $artupt = true;
+        }
+        $orderamounts = [$igepa->abpapiermenge1,$igepa->abpapiermenge2,$igepa->abpapiermenge3,$igepa->abpapiermenge4,$igepa->abpapiermenge5,$igepa->abpapiermenge6,$igepa->abpapiermenge7,$igepa->abpapiermenge8];
+        $orderamounts = array_unique($orderamounts);
+        if ($this->getOrderamounts() != $orderamounts){
+            $this->setOrderamounts($orderamounts);
+            $artupt = true;
+        }
+        if ($artupt) {
+            $this->save();
+            return true;
+        } else
+            return false;
+	}
+
 	/**
 	 * Liefert alle Lagerartikel.
 	 *
@@ -450,6 +486,27 @@ class Article {
 		}
 		return $retval;
 	}
+
+    /**
+     * Suchfunktion fuer Artikel. Sucht in nummer.
+     *
+     * @param string $number
+     * @return Article
+     */
+    static function getArticleByNumber($number){
+        global $DB;
+        $retval = new Article();
+        $sql = "SELECT id, number, status FROM article
+				WHERE status > 0 AND 
+				number = '{$number}' 
+				LIMIT 1";
+        if($DB->num_rows($sql)){
+            $r = $DB->select($sql);
+            $r = $r[0];
+            $retval = new Article($r['id']);
+        }
+        return $retval;
+    }
 
 	/**
 	 * Suchfunktion fuer Artikel. Sucht in Titel und Auftragsnummer.

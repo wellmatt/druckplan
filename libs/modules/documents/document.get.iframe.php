@@ -64,6 +64,8 @@ if($doc->getType() == Document::TYPE_LABEL)
 	$filename .= "label/".$_USER->getClient()->getId().'.'.$doc->getHash();
 if($doc->getType() == Document::TYPE_INVOICEWARNING)
 	$filename .= "invoicewarning/".$_USER->getClient()->getId().'.'.$doc->getHash();
+if($doc->getType() == Document::TYPE_REVERT)
+    $filename .= "revert/".$_USER->getClient()->getId().'.'.$doc->getHash();
 
 if($_REQUEST["version"] == "email")
     $filename .= '_e';

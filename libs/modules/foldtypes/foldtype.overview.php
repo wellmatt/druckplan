@@ -7,16 +7,14 @@
  *
  */
 
-
 if ($_REQUEST['exec'] == 'delete'){
     if ($_REQUEST['delid']){
-        $deltb = new TextBlock($_REQUEST['delid']);
-        $deltb->delete();
+        $delft = new FoldType($_REQUEST['delid']);
+        $delft->delete();
     }
 }
 
 ?>
-
 <!-- DataTables Editor -->
 <link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/datatables.min.css"/>
 <script type="text/javascript" src="jscripts/datatableeditor/datatables.min.js"></script>
@@ -25,21 +23,16 @@ if ($_REQUEST['exec'] == 'delete'){
 <link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.css"/>
 <script type="text/javascript" src="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.js"></script>
 <script type="text/javascript" src="jscripts/datatableeditor/FieldType-datetimepicker-2/editor.datetimepicker-2.js"></script>
-
-<script type="text/javascript" src="jscripts/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src="jscripts/ckeditor/config.js"></script>
-<link rel="stylesheet" type="text/css" href="jscripts/ckeditor/skins/bootstrapck/editor.css"/>
-<script type="text/javascript" src="jscripts/datatableeditor/FieldType-ckeditor/editor.ckeditor.js"></script>
 <!-- /DataTables Editor -->
 
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            Textbausteine
-			<span class="pull-right">
-				<button class="btn btn-xs btn-success" type="button" onclick="window.location.href='index.php?page=libs/modules/textblocks/textblock.edit.php';">
+            Falzarten
+            <span class="pull-right">
+				<button class="btn btn-xs btn-success" type="button" onclick="window.location.href='index.php?page=libs/modules/foldtypes/foldtype.edit.php';">
                     <span class="glyphicons glyphicons-plus"></span>
-                    Textbaustein hinzufügen
+                    Falzart hinzufügen
                 </button>
 			</span>
         </h3>
@@ -50,22 +43,21 @@ if ($_REQUEST['exec'] == 'delete'){
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>erstellt</th>
-                <th>geändert</th>
+                <th>Typ</th>
+                <th>Bild</th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>erstellt</th>
-                <th>geändert</th>
+                <th>Typ</th>
+                <th>Bild</th>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-
 <script type="text/javascript" language="javascript" class="init">
     var editor; // use a global for the submit and return data rendering in the examples
     var table; // use global for table
@@ -73,33 +65,19 @@ if ($_REQUEST['exec'] == 'delete'){
     $(document).ready(function() {
 
         table = $('#datatable').DataTable( {
-            dom: "<'row'<'col-sm-4'l><'col-sm-4'B><'col-sm-4'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
+            dom: "<'row'<'col-sm-4'l><'col-sm-4'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
             ajax: {
-                url: 'libs/basic/datatables/textblocks.php',
+                url: 'libs/basic/datatables/foldtypes.php',
                 data: {	}
             },
             order: [[ 1, 'desc' ]],
             columns: [
-                { data: "id", orderable: true },
-                { data: "name", orderable: true },
-                { data: "crtdate", orderable: true },
-                { data: "uptdate", orderable: true },
+                { data: "foldtypes.id", orderable: true },
+                { data: "foldtypes.name", orderable: true },
+                { data: "foldtypes.type", orderable: true },
+                { data: "picture", orderable: false },
             ],
             select: false,
-            buttons: [
-                // Export Button
-                {
-                    extend: 'collection',
-                    text: 'Export',
-                    buttons: [
-                        'copy',
-                        'excel',
-                        'csv',
-                        'pdf',
-                        'print'
-                    ]
-                }
-            ],
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.10.13/i18n/German.json'
             }
@@ -107,8 +85,8 @@ if ($_REQUEST['exec'] == 'delete'){
 
         $("#datatable").on('click', 'tbody td', function(){
             var data = table.row( this ).data();
-            var id = data.id;
-            document.location='index.php?page=libs/modules/textblocks/textblock.edit.php&id='+id;
+            var id = data.foldtypes.id;
+            document.location='index.php?page=libs/modules/foldtypes/foldtype.edit.php&id='+id;
         });
     } );
 </script>
