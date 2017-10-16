@@ -720,19 +720,20 @@ echo $quickmove->generate();
                                                     }
 
                                                     // Falzart
+                                                    $foldurls = [];
                                                     echo '<div class="col-md-4"><div class="form-group">';
                                                     echo '<label class="control-label">Falzart</label><div class="input-group">';
-                                                    echo '<select name="mach_foldtype_'.$x.'" class="form-control">';
+                                                    echo '<select name="mach_foldtype_'.$x.'" class="form-control" onchange="updateFoldButton(this);">';
                                                     echo '<option value="0">&lt; '.$_LANG->get('Bitte w&auml;hlen').' &gt;</option>';
                                                     foreach($foldtypes as $ft)
                                                     {
                                                         if ($mach->getMachine()->getBreaks() >= $ft->getBreaks()){
-                                                            echo '<option value="'.$ft->getId().'" ';
+                                                            echo '<option data-url="'.$ft->getPicture().'" value="'.$ft->getId().'" ';
                                                             if($mach->getFoldtype()->getId() == $ft->getId()) echo "selected";
                                                             echo '>'.$ft->getName().'</option>';
                                                         }
                                                     }
-                                                    echo '</select>';
+                                                    echo '</select><a id="foldpreview" href="" target="_blank" style="display: none;">Falz Vorschau</a>';
                                                     echo '</div></div></div>';
 
                                                     // Doppelter Nutzen
@@ -1259,7 +1260,15 @@ echo $quickmove->generate();
 
 
 <script language="javascript">
-	function switchUmschUmst(id)
+    function updateFoldButton(ele) {
+        var url = $(ele).children('option:selected').data('url');
+        if (url) {
+            url = 'images/foldtypes/'+url;
+            $('#foldpreview').show();
+            $('#foldpreview').attr('href', url);
+        }
+    }
+    function switchUmschUmst(id)
 	{
 		if ($('#umschl_'+id).prop('checked'))
 		{
