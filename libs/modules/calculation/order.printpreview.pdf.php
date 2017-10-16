@@ -69,35 +69,41 @@ if ($mach == null)
 $product_max_open = (int)$_REQUEST["max"];
 $product_counted = (bool)$_REQUEST["counted"];
 
-
 // Basisdaten auslesen
 if($part == Calculation::PAPER_CONTENT) {
 	$paper = $calc->getPaperContent();
 	$paper_weight = $calc->getPaperContentWeight();
 	$paperH = $calc->getPaperContentHeight();
 	$paperW = $calc->getPaperContentWidth();
+	$pagecount = $calc->getPagesContent();
 } else if ($part == Calculation::PAPER_ADDCONTENT) {
 	$paper = $calc->getPaperAddContent();
 	$paper_weight = $calc->getPaperAddContentWeight();
 	$paperH = $calc->getPaperAddContentHeight();
 	$paperW = $calc->getPaperAddContentWidth();
+	$pagecount = $calc->getPagesAddContent();
 } else if ($part == Calculation::PAPER_ADDCONTENT2) {
 	$paper = $calc->getPaperAddContent2();
 	$paper_weight = $calc->getPaperAddContent2Weight();
 	$paperH = $calc->getPaperAddContent2Height();
 	$paperW = $calc->getPaperAddContent2Width();
+	$pagecount = $calc->getPagesAddContent2();
 } else if ($part == Calculation::PAPER_ADDCONTENT3) {
 	$paper = $calc->getPaperAddContent3();
 	$paper_weight = $calc->getPaperAddContent3Weight();
 	$paperH = $calc->getPaperAddContent3Height();
 	$paperW = $calc->getPaperAddContent3Width();
+	$pagecount = $calc->getPagesAddContent3();
 } else if ($part == Calculation::PAPER_ENVELOPE) {
 	$paper = $calc->getPaperEnvelope();
 	$paper_weight = $calc->getPaperEnvelopeWeight();
 	$paperH = $calc->getPaperEnvelopeHeight();
 	$paperW = $calc->getPaperEnvelopeWidth();
+	$pagecount = $calc->getPagesEnvelope();
 } else
 	die('Wrong part');
+
+$pagecount = 2;
 
 if($part != Calculation::PAPER_ENVELOPE){
 	$width = $calc->getProductFormatWidthOpen();
@@ -298,6 +304,7 @@ $posY = ($paperH - ( ($product_height + $tmp_anschnitt * 2 * $multiCols) * $prod
 // error_log("".$posY);
 // $posY = ($tmp_freespaceH/2) + $mach->getBorder_bottom();
 
+
 $pdf->setColor(0.9, 0.9, 0.9);
 $pdf->setStrokeColor(0.4, 0.4, 0.4);
 $product_count1 = 0;
@@ -321,7 +328,7 @@ for($x = 0; $x < $product_rows; $x++){
 		$posX += $product_width + $tmp_anschnitt * 2;
 		$product_count1 = $product_count1 +1;
 	}
-	
+
 	$posY += $product_height + $tmp_anschnitt * 2;
 }
 

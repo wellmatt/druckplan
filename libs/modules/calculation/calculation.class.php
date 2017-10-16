@@ -884,26 +884,32 @@ class Calculation
     {
         global $_CONFIG;
         // Papiergroesse auswaehlen
+        $pages = 0;
         if($ptype == Calculation::PAPER_CONTENT)
         {
             $paperH = $this->paperContentHeight;
             $paperW = $this->paperContentWidth;
+            $pages = $this->getPagesContent();
         } else if ($ptype == Calculation::PAPER_ADDCONTENT)
         {
             $paperH = $this->paperAddContentHeight;
             $paperW = $this->paperAddContentWidth;
+            $pages = $this->getPagesAddContent();
         } elseif($ptype == Calculation::PAPER_ENVELOPE)
         {
             $paperH = $this->paperEnvelopeHeight;
             $paperW = $this->paperEnvelopeWidth;
+            $pages = $this->getPagesEnvelope();
         } else if ($ptype == Calculation::PAPER_ADDCONTENT2)
         {
             $paperH = $this->paperAddContent2Height;
             $paperW = $this->paperAddContent2Width;
+            $pages = $this->getPagesAddContent2();
         } else if ($ptype == Calculation::PAPER_ADDCONTENT3)
         {
             $paperH = $this->paperAddContent3Height;
             $paperW = $this->paperAddContent3Width;
+            $pages = $this->getPagesAddContent3();
         } 
             
         if($ptype != Calculation::PAPER_ENVELOPE)
@@ -1003,6 +1009,14 @@ class Calculation
 //            echo '$productPerPaper2:' . $productPerPaper2 . '</br>';
 
 //            echo 'produkte: ' . $rv . '</br>';
+
+            // check for max
+            $product_max = floor($pages / 4);
+            $order = new Order($this->getOrderId());
+            if ($order->getProduct()->getSetmaxproducts())
+                if ($rv > $product_max)
+                    $rv = $product_max;
+
             return $rv;
         } else
 //            echo 'produkte: 0</br>';

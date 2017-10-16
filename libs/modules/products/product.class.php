@@ -54,6 +54,7 @@ class Product {
     private $singleplateset = 0;
     private $blockplateset = 0;
     private $inkcoverage = 40.00;
+    private $setmaxproducts = 0;
 	
     function __construct($id = 0){
         global $DB;
@@ -96,6 +97,7 @@ class Product {
                 $this->blockplateset = $res["blockplateset"];
                 $this->loadDymmyData = $res["load_dummydata"];
                 $this->inkcoverage = $res["inkcoverage"];
+                $this->setmaxproducts = $res["setmaxproducts"];
 
                 //-------------------------------------------------------------------
                 // Get Machines
@@ -251,6 +253,7 @@ class Product {
                         tradegroup = {$this->getTradegroup()->getId()},
                         is_individual = '{$this->isIndivual}',
                         singleplateset = '{$this->singleplateset}',
+                        setmaxproducts = '{$this->setmaxproducts}',
                         blockplateset = '{$this->blockplateset}',
                         inkcoverage = '{$this->inkcoverage}',
                         load_dummydata = {$this->loadDymmyData}
@@ -346,7 +349,7 @@ class Product {
                          has_content, has_addcontent, has_envelope, factor_width, factor_height,
                          grant_paper, type, text_offer, text_offerconfirm, text_invoice,
                          text_processing, shop_rel, tradegroup, is_individual, 
-                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage )
+                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage, setmaxproducts )
                     VALUES
                         ('{$this->name}', 1, '{$this->description}', '{$this->picture}',
                          {$this->pagesFrom}, {$this->pagesTo}, {$this->pagesStep}, {$this->hasContent},
@@ -354,7 +357,7 @@ class Product {
                          {$this->grantPaper}, {$this->type}, '{$this->textOffer}',
                          '{$this->textOfferconfirm}', '{$this->textInvoice}', '{$this->textProcessing}',
                          {$this->shoprel}, {$this->getTradegroup()->getId()}, {$this->isIndivual},
-                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage} )";
+                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, {$this->setmaxproducts} )";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -907,5 +910,21 @@ class Product {
     public function setInkcoverage($inkcoverage)
     {
         $this->inkcoverage = $inkcoverage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproducts()
+    {
+        return $this->setmaxproducts;
+    }
+
+    /**
+     * @param int $setmaxproducts
+     */
+    public function setSetmaxproducts($setmaxproducts)
+    {
+        $this->setmaxproducts = $setmaxproducts;
     }
 }

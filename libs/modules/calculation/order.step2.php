@@ -51,7 +51,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     function clickProductFormat(type, id)
     {
         var buttons = $('[name=format]');
-        for (let x=0;x<buttons.length;x++){
+        for (var x=0;x<buttons.length;x++){
             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
         }
         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -101,7 +101,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     {
 
         var buttons = $('[name=paperprops]');
-        for (let x=0;x<buttons.length;x++){
+        for (var x=0;x<buttons.length;x++){
             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
         }
         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -124,7 +124,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     {
 
         var buttons = $('[name=paperweight]');
-        for (let x=0;x<buttons.length;x++){
+        for (var x=0;x<buttons.length;x++){
             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
         }
         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -147,7 +147,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     {
 
         var buttons = $('[name=numberpages_content]');
-        for (let x=0;x<buttons.length;x++){
+        for (var x=0;x<buttons.length;x++){
             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
         }
         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -167,7 +167,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
             });
 
             var buttons = $('[name=chroma]');
-            for (let x=0;x<buttons.length;x++){
+            for (var x=0;x<buttons.length;x++){
                 $(buttons[x]).removeClass("btn-success").addClass("btn-info");
             }
             $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -181,7 +181,7 @@ if(isset($_GET['cloneProduct']) && isset($_GET['paperId'])) {
     {
 
         var buttons = $('[name=chroma]');
-        for (let x=0;x<buttons.length;x++){
+        for (var x=0;x<buttons.length;x++){
             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
         }
         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -219,7 +219,7 @@ function clickContentChromaticity(id)
             {
 
                 var buttons = $('[name=chroma]');
-                for (let x=0;x<buttons.length;x++){
+                for (var x=0;x<buttons.length;x++){
                     $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                 }
                 $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -307,7 +307,7 @@ function clickContentChromaticity(id)
             {
 
                 var buttons = $('[name=addpaper]');
-                for (let x=0;x<buttons.length;x++){
+                for (var x=0;x<buttons.length;x++){
                     $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                 }
                 $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -356,7 +356,7 @@ function clickContentChromaticity(id)
                 {
 
                     var buttons = $('[name=addpaperweight]');
-                    for (let x=0;x<buttons.length;x++){
+                    for (var x=0;x<buttons.length;x++){
                         $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                     }
                     $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -381,7 +381,7 @@ function clickContentChromaticity(id)
                 {
 
                     var buttons = $('[name=addpaperchroma]');
-                    for (let x=0;x<buttons.length;x++){
+                    for (var x=0;x<buttons.length;x++){
                         $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                     }
                     $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -418,7 +418,7 @@ function clickContentChromaticity(id)
             {
 
                 var buttons = $('[name=addpaperpages]');
-                for (let x=0;x<buttons.length;x++){
+                for (var x=0;x<buttons.length;x++){
                     $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                 }
                 $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -478,7 +478,7 @@ function clickContentChromaticity(id)
             function clickEnvelopePaper(id)
             {
                 var buttons = $('[name=envpaper]');
-                for (let x=0;x<buttons.length;x++){
+                for (var x=0;x<buttons.length;x++){
                     $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                 }
                 $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -516,7 +516,7 @@ function clickContentChromaticity(id)
                     {
 
                         var buttons = $('[name=envpaperweight]');
-                        for (let x=0;x<buttons.length;x++){
+                        for (var x=0;x<buttons.length;x++){
                             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                         }
                         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -542,7 +542,7 @@ function clickContentChromaticity(id)
                     function clickEnvelopeChromaticity(id)
                     {
                         var buttons = $('[name=envpaperchroma]');
-                        for (let x=0;x<buttons.length;x++){
+                        for (var x=0;x<buttons.length;x++){
                             $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                         }
                         $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -628,7 +628,7 @@ function clickContentChromaticity(id)
                 function clickEnvelopePages(id)
                 {
                     var buttons = $('[name=envpaperpages]');
-                    for (let x=0;x<buttons.length;x++){
+                    for (var x=0;x<buttons.length;x++){
                         $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                     }
                     $("#"+id).removeClass("btn-info").addClass("btn-success");
@@ -694,7 +694,7 @@ function clickContentChromaticity(id)
             function clickFolding(id)
             {
                 var buttons = $('[name=foldtype]');
-                for (let x=0;x<buttons.length;x++){
+                for (var x=0;x<buttons.length;x++){
                     $(buttons[x]).removeClass("btn-success").addClass("btn-info");
                 }
                 $("#"+id).removeClass("btn-info").addClass("btn-success");

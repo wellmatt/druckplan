@@ -84,8 +84,8 @@ $perf = new Perferences();
                 	        $machentry = $me;
                 	    }
                 	}
-                	$product_max = 0;
-                	$product_counted = false;
+                	$product_counted = $order->getProduct()->getSetmaxproducts();
+					$product_max = floor($calc->getPagesContent() / 4);
 
                 	include('scheme.php');
                 	?>
@@ -117,7 +117,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_CONTENT?>&max=<?=$schemes[$i]['nutzen']?>&counted=true"
+                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_CONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
                 						width="700" height="700" ></object>
                 		</td></tr></br>
                 		<?
@@ -146,8 +146,8 @@ $perf = new Perferences();
                 	        $machentry = $me;
                 	    }
                 	}
-                	$product_max = 0;
-                	$product_counted = false;
+					$product_counted = $order->getProduct()->getSetmaxproducts();
+					$product_max = floor($calc->getPagesAddContent() / 4);
 
                 	include('scheme.php');
                 	?>
@@ -179,7 +179,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT?>&max=<?=$schemes[$i]['nutzen']?>&counted=true"
+                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
                 					width="700" height="700" ></object>
                 		</td></tr></br>
                 		<?
@@ -208,8 +208,8 @@ $perf = new Perferences();
                 	        $machentry = $me;
                 	    }
                 	}
-                	$product_max = 0;
-                	$product_counted = false;
+					$product_counted = $order->getProduct()->getSetmaxproducts();
+					$product_max = floor($calc->getPagesEnvelope() / 4);
 
                 	include('scheme.php');
                 	?>
@@ -242,7 +242,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-            				<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ENVELOPE?>&max=<?=$schemes[$i]['nutzen']?>&counted=true"
+            				<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ENVELOPE?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
                 					width="700" height="700" ></object>
                 		</td></tr></br>
                 		<?
@@ -271,8 +271,8 @@ $perf = new Perferences();
                 	        $machentry = $me;
                 	    }
                 	}
-            		$product_max = 0;
-            		$product_counted = false;
+					$product_counted = $order->getProduct()->getSetmaxproducts();
+					$product_max = floor($calc->getPagesAddContent2() / 4);
 
             		include('scheme.php');
             		?>
@@ -305,7 +305,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT2?>"
+        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT2?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
             						width="700" height="700" ></object>
                 		</td></tr></br>
             			<?
@@ -334,8 +334,8 @@ $perf = new Perferences();
                 	        $machentry = $me;
                 	    }
                 	}
-            		$product_max = 0;
-            		$product_counted = false;
+					$product_counted = $order->getProduct()->getSetmaxproducts();
+					$product_max = floor($calc->getPagesAddContent3() / 4);
 
             		include('scheme.php');
             		?>
@@ -368,7 +368,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT3?>"
+        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT3?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
             						width="700" height="700" ></object>
                 		</td></tr></br>
             			<?
