@@ -8,7 +8,7 @@
  */
 
 
-class MachineQualifieduser extends Model{
+class MachineQualifiedgroup extends Model{
     public $_table = 'machines_qualifiedgroups';
 
     public $machine;

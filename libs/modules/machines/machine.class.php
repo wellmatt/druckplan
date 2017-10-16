@@ -7,21 +7,83 @@
  *
  */
 
+require_once 'machine.production.information.class.php';
+require_once 'machine.chromaticity.class.php';
+require_once 'machine.locktime.class.php';
+require_once 'machine.qualifiedgroup.class.php';
+require_once 'machine.qualifieduser.class.php';
+require_once 'machine.workstep.class.php';
+require_once 'machine.worktimes.class.php';
 
 class Machine extends Model{
+    public $_table = 'machines';
+
     public $state = 1;
-    public $class = 0;
     public $type = 0;
+    public $prodinfo;
     public $title = '';
-    public $pricebase = 0;
-    public $papersizeheight = 0.0;
-    public $papersizewidth = 0.0;
-    public $papersizeminheight = 0.0;
-    public $papersizeminwidth = 0.0;
     public $description = '';
-    public $model = '';
-    public $constructionyear = 0;
     public $interfaceurl = '';
+
+    public $types = [
+        [ 'id' => 1, 'cat' => 1, 'name' => 'Fotostudio'],
+        [ 'id' => 2, 'cat' => 1, 'name' => 'Texten'],
+        [ 'id' => 3, 'cat' => 1, 'name' => 'Reinzeichnen'],
+        [ 'id' => 4, 'cat' => 1, 'name' => 'Konzeptionieren'],
+        [ 'id' => 5, 'cat' => 2, 'name' => 'Datenverarbeitung'],
+        [ 'id' => 6, 'cat' => 3, 'name' => 'Montage'],
+        [ 'id' => 7, 'cat' => 3, 'name' => 'CTF'],
+        [ 'id' => 8, 'cat' => 3, 'name' => 'CTP'],
+        [ 'id' => 9, 'cat' => 3, 'name' => 'Kopierrahmen'],
+        [ 'id' => 10, 'cat' => 3, 'name' => 'Entwicklung'],
+        [ 'id' => 11, 'cat' => 4, 'name' => 'Bogenoffset'],
+        [ 'id' => 12, 'cat' => 4, 'name' => 'Rollenoffset'],
+        [ 'id' => 13, 'cat' => 4, 'name' => 'Rollentiefdruck'],
+        [ 'id' => 14, 'cat' => 4, 'name' => 'Rollenhochdruck'],
+        [ 'id' => 15, 'cat' => 4, 'name' => 'Siebdruck'],
+        [ 'id' => 16, 'cat' => 4, 'name' => 'Transferdruck'],
+        [ 'id' => 17, 'cat' => 4, 'name' => 'Buchdruck'],
+        [ 'id' => 18, 'cat' => 5, 'name' => 'Rolleninkjet'],
+        [ 'id' => 19, 'cat' => 5, 'name' => 'Bogeninkjet'],
+        [ 'id' => 20, 'cat' => 5, 'name' => 'Platteninkjet'],
+        [ 'id' => 21, 'cat' => 6, 'name' => 'Schneidemaschine'],
+        [ 'id' => 22, 'cat' => 6, 'name' => 'Falzmaschine'],
+        [ 'id' => 23, 'cat' => 6, 'name' => 'Rüttler'],
+        [ 'id' => 24, 'cat' => 6, 'name' => 'Stanze'],
+        [ 'id' => 25, 'cat' => 6, 'name' => 'Tiegel'],
+        [ 'id' => 26, 'cat' => 6, 'name' => 'Zylinder'],
+        [ 'id' => 27, 'cat' => 6, 'name' => 'Kaschiermaschine'],
+        [ 'id' => 28, 'cat' => 6, 'name' => 'Bohrer'],
+        [ 'id' => 29, 'cat' => 6, 'name' => 'Sammelhefter'],
+        [ 'id' => 30, 'cat' => 6, 'name' => 'Turmsammler'],
+        [ 'id' => 31, 'cat' => 6, 'name' => 'Klebebinder'],
+        [ 'id' => 32, 'cat' => 6, 'name' => 'Trimmer'],
+        [ 'id' => 33, 'cat' => 6, 'name' => 'Perforiermaschine'],
+        [ 'id' => 34, 'cat' => 6, 'name' => 'Cellophaniermaschine'],
+        [ 'id' => 35, 'cat' => 6, 'name' => 'Heftmaschine'],
+        [ 'id' => 36, 'cat' => 6, 'name' => 'Spiralbinder'],
+        [ 'id' => 37, 'cat' => 6, 'name' => 'Themobinder'],
+    ];
+
+    protected function bootClasses()
+    {
+        $this->prodinfo = new MachineProductionInformation($this->prodinfo);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypename()
+    {
+        $retval = 'Unbekannt';
+        foreach ($this->types as $type) {
+            if ($this->type == $type['id']){
+                $retval = $type['name'];
+                break;
+            }
+        }
+        return $retval;
+    }
 
     /**
      * @return int
@@ -37,22 +99,6 @@ class Machine extends Model{
     public function setState($state)
     {
         $this->state = $state;
-    }
-
-    /**
-     * @return int
-     */
-    public function getClass()
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param int $class
-     */
-    public function setClass($class)
-    {
-        $this->class = $class;
     }
 
     /**
@@ -88,86 +134,6 @@ class Machine extends Model{
     }
 
     /**
-     * @return int
-     */
-    public function getPricebase()
-    {
-        return $this->pricebase;
-    }
-
-    /**
-     * @param int $pricebase
-     */
-    public function setPricebase($pricebase)
-    {
-        $this->pricebase = $pricebase;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPapersizeheight()
-    {
-        return $this->papersizeheight;
-    }
-
-    /**
-     * @param float $papersizeheight
-     */
-    public function setPapersizeheight($papersizeheight)
-    {
-        $this->papersizeheight = $papersizeheight;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPapersizewidth()
-    {
-        return $this->papersizewidth;
-    }
-
-    /**
-     * @param float $papersizewidth
-     */
-    public function setPapersizewidth($papersizewidth)
-    {
-        $this->papersizewidth = $papersizewidth;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPapersizeminheight()
-    {
-        return $this->papersizeminheight;
-    }
-
-    /**
-     * @param float $papersizeminheight
-     */
-    public function setPapersizeminheight($papersizeminheight)
-    {
-        $this->papersizeminheight = $papersizeminheight;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPapersizeminwidth()
-    {
-        return $this->papersizeminwidth;
-    }
-
-    /**
-     * @param float $papersizeminwidth
-     */
-    public function setPapersizeminwidth($papersizeminwidth)
-    {
-        $this->papersizeminwidth = $papersizeminwidth;
-    }
-
-    /**
      * @return string
      */
     public function getDescription()
@@ -186,38 +152,6 @@ class Machine extends Model{
     /**
      * @return string
      */
-    public function getModel()
-    {
-        return $this->model;
-    }
-
-    /**
-     * @param string $model
-     */
-    public function setModel($model)
-    {
-        $this->model = $model;
-    }
-
-    /**
-     * @return int
-     */
-    public function getConstructionyear()
-    {
-        return $this->constructionyear;
-    }
-
-    /**
-     * @param int $constructionyear
-     */
-    public function setConstructionyear($constructionyear)
-    {
-        $this->constructionyear = $constructionyear;
-    }
-
-    /**
-     * @return string
-     */
     public function getInterfaceurl()
     {
         return $this->interfaceurl;
@@ -229,5 +163,37 @@ class Machine extends Model{
     public function setInterfaceurl($interfaceurl)
     {
         $this->interfaceurl = $interfaceurl;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypes()
+    {
+        return $this->types;
+    }
+
+    /**
+     * @param array $types
+     */
+    public function setTypes($types)
+    {
+        $this->types = $types;
+    }
+
+    /**
+     * @return MachineProductionInformation
+     */
+    public function getProdinfo()
+    {
+        return $this->prodinfo;
+    }
+
+    /**
+     * @param MachineProductionInformation $prodinfo
+     */
+    public function setProdinfo($prodinfo)
+    {
+        $this->prodinfo = $prodinfo;
     }
 }
