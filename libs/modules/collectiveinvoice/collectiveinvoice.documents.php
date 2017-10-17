@@ -22,9 +22,9 @@ if((int)$_REQUEST["deleteDoc"] > 0){
 if($_REQUEST["createDoc"]){
 
 	if ($_REQUEST["createDoc"] == "invoice"){
-		$tmpdocs = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
+		$tmpdocs = Document::getDocuments(Array("type" => Document::TYPE_INVOICE, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER, "storno" => false));
 		if (count($tmpdocs)>0){
-			die('Es kann nur eine Rechnung erstellt werden!');
+			dd('Es kann nur eine Rechnung erstellt werden!');
 		}
 	}
 
