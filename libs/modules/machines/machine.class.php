@@ -25,7 +25,7 @@ class Machine extends Model{
     public $description = '';
     public $interfaceurl = '';
 
-    public $types = [
+    public $_types = [
         [ 'id' => 1, 'cat' => 1, 'name' => 'Fotostudio'],
         [ 'id' => 2, 'cat' => 1, 'name' => 'Texten'],
         [ 'id' => 3, 'cat' => 1, 'name' => 'Reinzeichnen'],
@@ -76,7 +76,7 @@ class Machine extends Model{
     public function getTypename()
     {
         $retval = 'Unbekannt';
-        foreach ($this->types as $type) {
+        foreach ($this->_types as $type) {
             if ($this->type == $type['id']){
                 $retval = $type['name'];
                 break;
@@ -170,7 +170,7 @@ class Machine extends Model{
      */
     public function getTypes()
     {
-        return $this->types;
+        return $this->_types;
     }
 
     /**

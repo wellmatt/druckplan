@@ -12,12 +12,9 @@ class MachineLocktime extends Model{
     public $_table = 'machines_locktimes';
 
     public $machine;
-    public $title = '';
-    public $type = 1;
-    public $datestart = 0;
-    public $dateend = 0;
-    public $repeat = 0;
-    public $repeatday = 0;
+    public $note = '';
+    public $start = 0;
+    public $end = 0;
 
     const DAY_MONDAY = 1;
     const DAY_TUESDAY = 2;
@@ -46,5 +43,53 @@ class MachineLocktime extends Model{
     public function setMachine($machine)
     {
         $this->machine = $machine;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+    /**
+     * @param int $start
+     */
+    public function setStart($start)
+    {
+        $this->start = $start;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEnd()
+    {
+        return $this->end;
+    }
+
+    /**
+     * @param int $end
+     */
+    public function setEnd($end)
+    {
+        $this->end = $end;
     }
 }

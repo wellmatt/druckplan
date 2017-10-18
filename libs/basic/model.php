@@ -128,6 +128,31 @@ class Model {
     }
 
     /**
+     * @return bool
+     */
+    public function deleteSoft()
+    {
+        global $DB;
+        if($this->id)
+        {
+            if (isset($this->state)){
+                $sql = "UPDATE {$this->_table} SET state = 0 WHERE id = {$this->id}";
+                $res = $DB->no_result($sql);
+                if($res)
+                {
+                    unset($this);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Gibt ein Array aus Objekten zurück bei dem die angegebene Spalte dem angegebenen Wert entspricht
      *
      * $filterarray format: Array( Array('column'=>'Spalte','operator'=>'>','value'=>'0') )
