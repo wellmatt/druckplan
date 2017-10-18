@@ -16,9 +16,11 @@ Class CalculationService {
      * @param $pheight
      * @param float $bleed
      * @param int $direction
+     * @param int $pages
+     * @param int $setmax
      * @return int
      */
-    public static function ProductsPerPaperSimple($width, $height, $pwidth, $pheight, $bleed = 0.0, $direction = 0)
+    public static function ProductsPerPaperSimple($width, $height, $pwidth, $pheight, $bleed = 0.0, $direction = 0, $pages = 0, $setmax = 0)
     {
         $ppp = 0; // products per paper
         $pwidth += $bleed*2; // add bleed to product width
@@ -29,6 +31,13 @@ Class CalculationService {
             $ppp = $ppp1;
         else
             $ppp = $ppp2;
+
+        if ($setmax){
+            $product_max = floor($pages / 4);
+            if ($ppp > $product_max)
+                $ppp = $product_max;
+        }
+
         return $ppp;
     }
 
