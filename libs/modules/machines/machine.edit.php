@@ -387,6 +387,10 @@ echo $quickmove->generate();
                     default: '<?php echo $machine->getId();?>'
                 },
                 {
+                    name: 'sequence',
+                    label: '#',
+                },
+                {
                     label: 'Name',
                     name: 'title',
                     type: "text"
@@ -435,21 +439,6 @@ echo $quickmove->generate();
             }
         } );
 
-        worksteps_editor
-            .on( 'postCreate postRemove', function () {
-                // After create or edit, a number of other rows might have been effected -
-                // so we need to reload the table, keeping the paging in the current position
-                worksteps_table.ajax.reload( null, false );
-            } )
-            .on( 'initCreate', function () {
-                // Enable order for create
-                worksteps_editor.field( 'readingOrder' ).enable();
-            } )
-            .on( 'initEdit', function () {
-                // Disable for edit (re-ordering is performed by click and drag)
-                worksteps_editor.field( 'readingOrder' ).disable();
-            } );
-
         // Activate an inline edit on click of a table cell
         $('#worksteps_datatable').on( 'click', 'tbody td', function (e) {
             worksteps_editor.inline( this, {
@@ -468,7 +457,7 @@ echo $quickmove->generate();
             paging: false,
             searching: false,
             columns: [
-                { data: 'sequence', orderable: false },
+                { data: 'sequence', className: 'reorder' },
                 { data: 'title', orderable: false },
                 { data: 'timeadded', orderable: false },
                 { data: 'timesaving', orderable: false },
@@ -488,5 +477,22 @@ echo $quickmove->generate();
                 url: '//cdn.datatables.net/plug-ins/1.10.13/i18n/German.json'
             }
         } );
+
+        worksteps_editor
+            .on( 'postCreate postRemove', function () {
+                // After create or edit, a number of other rows might have been effected -
+                // so we need to reload the table, keeping the paging in the current position
+                worksteps_table.ajax.reload( null, false );
+            } )
+            .on( 'initCreate', function () {
+                // Enable order for create
+                worksteps_editor.field( 'sequence' ).disable();
+                worksteps_editor.field( 'sequence' ).val(0);
+                worksteps_editor.field( 'sequence' ).hide();
+            } )
+            .on( 'initEdit', function () {
+                // Disable for edit (re-ordering is performed by click and drag)
+                worksteps_editor.field( 'sequence' ).disable();
+            } );
     } );
 </script>

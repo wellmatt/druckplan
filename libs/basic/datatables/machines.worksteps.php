@@ -98,15 +98,19 @@ Editor::inst( $db, 'machines_worksteps' )
         Field::inst( 'type' )->validator( 'Validate::numeric' ),
         Field::inst( 'title' ),
         Field::inst( 'timeadded' )
-            ->validator( 'Validate::numeric' )
+//            ->validator( 'Validate::numeric' )
             ->getFormatter( 'Format::toDecimalChar' )
             ->setFormatter( 'Format::fromDecimalChar' ),
         Field::inst( 'timesaving' )
-            ->validator( 'Validate::numeric' )
+//            ->validator( 'Validate::numeric' )
             ->getFormatter( 'Format::toDecimalChar' )
             ->setFormatter( 'Format::fromDecimalChar' ),
         Field::inst( 'essential' )
-            ->validator( 'Validate::numeric' ),
+            ->validator( 'Validate::numeric' )
+            ->getFormatter( function($val, $data, $opts){
+                if ($val == 1) return 'Ja';
+                else return 'Nein';
+            } ),
         Field::inst( 'sequence' )
             ->validator( 'Validate::numeric' )
     )
