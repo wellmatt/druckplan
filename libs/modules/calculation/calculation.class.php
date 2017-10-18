@@ -1011,11 +1011,13 @@ class Calculation
 //            echo 'produkte: ' . $rv . '</br>';
 
             // check for max
-            $product_max = floor($pages / 4);
-            $order = new Order($this->getOrderId());
-            if ($order->getProduct()->getSetmaxproducts())
-                if ($rv > $product_max)
-                    $rv = $product_max;
+            if($ptype != Calculation::PAPER_ENVELOPE){
+                $product_max = floor($pages / 4);
+                $order = new Order($this->getOrderId());
+                if ($order->getProduct()->getSetmaxproducts())
+                    if ($rv > $product_max)
+                        $rv = $product_max;
+            }
 
             return $rv;
         } else

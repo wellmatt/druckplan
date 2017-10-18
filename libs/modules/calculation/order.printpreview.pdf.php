@@ -314,7 +314,7 @@ for($x = 0; $x < $product_rows; $x++){
 	
 	for($y = 0; $y < $product_per_line; $y++){
 		
-		if ($product_count1 >= $product_max_open && $product_counted == true)
+		if ($product_count1 >= $product_max_open && $product_counted == true && $part != Calculation::PAPER_ENVELOPE)
 			break;
 		
 		$tmp_xpos = convertMmInPx($posX+$tmp_anschnitt*$multiRows);
@@ -348,7 +348,7 @@ for($x = 0; $x < $product_rows_closed; $x++){
 
 	for($y = 0; $y < $product_per_line_closed; $y++){
 	
-		if ($product_count2 >= $product_max_closed && $product_counted == true)
+		if ($product_count2 >= $product_max_closed && $product_counted == true && $part != Calculation::PAPER_ENVELOPE)
 			break;
 	
 		$tmp_xpos = convertMmInPx($posX+$tmp_anschnitt*$multiRows);
