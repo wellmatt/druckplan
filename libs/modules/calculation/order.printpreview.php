@@ -85,7 +85,7 @@ $perf = new Perferences();
                 	    }
                 	}
                 	$product_counted = $order->getProduct()->getSetmaxproducts();
-					$product_max = floor($calc->getPagesContent() / 4);
+					$product_max = floor($calc->getPagesContent());
 
                 	include('scheme.php');
                 	?>
@@ -147,7 +147,7 @@ $perf = new Perferences();
                 	    }
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproducts();
-					$product_max = floor($calc->getPagesAddContent() / 4);
+					$product_max = floor($calc->getPagesAddContent());
 
                 	include('scheme.php');
                 	?>
@@ -209,7 +209,7 @@ $perf = new Perferences();
                 	    }
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproducts();
-					$product_max = floor($calc->getPagesEnvelope() / 4);
+					$product_max = floor($calc->getPagesEnvelope());
 
                 	include('scheme.php');
                 	?>
@@ -272,7 +272,7 @@ $perf = new Perferences();
                 	    }
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproducts();
-					$product_max = floor($calc->getPagesAddContent2() / 4);
+					$product_max = floor($calc->getPagesAddContent2());
 
             		include('scheme.php');
             		?>
@@ -335,7 +335,7 @@ $perf = new Perferences();
                 	    }
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproducts();
-					$product_max = floor($calc->getPagesAddContent3() / 4);
+					$product_max = floor($calc->getPagesAddContent3());
 
             		include('scheme.php');
             		?>

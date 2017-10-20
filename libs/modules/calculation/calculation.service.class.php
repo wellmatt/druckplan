@@ -33,7 +33,7 @@ Class CalculationService {
             $ppp = $ppp2;
 
         if ($setmax){
-            $product_max = floor($pages / 4);
+            $product_max = floor($pages);
             if ($ppp > $product_max)
                 $ppp = $product_max;
         }

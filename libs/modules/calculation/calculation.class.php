@@ -1012,7 +1012,7 @@ class Calculation
 
             // check for max
             if($ptype != Calculation::PAPER_ENVELOPE){
-                $product_max = floor($pages / 4);
+                $product_max = floor($pages);
                 $order = new Order($this->getOrderId());
                 if ($order->getProduct()->getSetmaxproducts())
                     if ($rv > $product_max)
