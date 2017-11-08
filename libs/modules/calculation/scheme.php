@@ -170,9 +170,8 @@ if($product_per_paper2 >= $product_per_paper){ //  || $rolldir == 2
 
 $product_per_paper   = $product_per_line * $product_rows;
 
-if ($product_counted && $part != Calculation::PAPER_ENVELOPE)
-	if ($product_per_paper > $product_max)
-		$product_per_paper = $product_max;
+if ($product_counted)
+	$product_per_paper = $product_max;
 
 // echo "</br>";
 // echo "product_width       = " . $width;

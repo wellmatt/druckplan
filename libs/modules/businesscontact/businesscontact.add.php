@@ -78,9 +78,9 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setNumberatcustomer(trim(addslashes($_REQUEST["numberatcustomer"])));
     $businessContact->setCustomernumber(trim(addslashes($_REQUEST["customernumber"])));
 
-	if ($businessContact->getCustomernumber() == '' || $businessContact->getCustomernumber() == null){
-		$businessContact->setCustomernumber($_USER->getClient()->generadeCustomerNumber());
-	}
+//	if ($businessContact->getCustomernumber() == '' || $businessContact->getCustomernumber() == null){
+//		$businessContact->setCustomernumber($_USER->getClient()->generadeCustomerNumber());
+//	}
 
     $businessContact->setKreditor((int)($_REQUEST["kreditor"]));
     $businessContact->setDebitor((int)($_REQUEST["debitor"]));
@@ -890,11 +890,11 @@ echo $quickmove->generate();
 								 <div class="form-group">
 									 <label for="" class="col-sm-4 control-label">Kundennummer</label>
 									 <div class="col-sm-6">
-										 <input class="form-control" name="customernumber" id="customernumber" value="<?=$businessContact->getCustomernumber()?>">
+										 <input readonly class="form-control" name="customernumber" id="customernumber" value="<?=$businessContact->getCustomernumber()?>">
 									 </div>
-									 <div class="col-sm-2">
-										 <span class="glyphicons glyphicons-unshare pointer" onclick="generadeCustomerNumber()" title="<?=$_LANG->get('Neue Kunden-Nr. erzeugen');?>"></span>
-									 </div>
+<!--									 <div class="col-sm-2">-->
+<!--										 <span class="glyphicons glyphicons-unshare pointer" onclick="generadeCustomerNumber()" title="--><?//=$_LANG->get('Neue Kunden-Nr. erzeugen');?><!--"></span>-->
+<!--									 </div>-->
 								 </div>
 								 <div class="form-group">
 									 <label for="" class="col-sm-4 control-label">Betreuer Vertrieb</label>

@@ -108,6 +108,8 @@ class Machine
 	
 	private $breaks = 0;
 	private $breaks_time = 0;
+    private $addworkerprice = 0.0;
+    private $addworkeramount = 0;
 	
 	private $qualified_users = Array();
 	private $qualified_groups = Array();
@@ -177,6 +179,9 @@ class Machine
                 $this->machurl = $r["machurl"];
                 $this->inlineheften = $r["inlineheften"];
                 $this->inlineheftenpercent = $r["inlineheftenpercent"];
+                $this->addworkeramount = $r["addworkeramount"];
+                $this->addworkerprice = $r["addworkerprice"];
+
 
                 // Arbeiter
                 $tmp_qusrs = Array();
@@ -419,6 +424,8 @@ class Machine
                 umschl_umst = {$this->umschlUmst},
                 maxstacksize = {$this->maxstacksize},
                 inlineheften = {$this->inlineheften},
+                addworkeramount = {$this->addworkeramount},
+                addworkerprice = {$this->addworkerprice},
                 inlineheftenpercent = {$this->inlineheftenpercent},
                 machurl = '{$this->machurl}',
                 color = '{$this->color}', ";
@@ -1156,6 +1163,24 @@ class Machine
             echo '$price = '.$price.' </br>';
         }
 
+        // Hilfsarbeiter hinzurechnen
+        if ($machineEntry->getAddworkeramount() > 0){
+            $addworkeramount = $machineEntry->getAddworkeramount();
+        } else {
+            $addworkeramount = $this->getAddworkeramount();
+        }
+        $addworkerprice = $addworkeramount * (($machineEntry->getTime()/60) * $this->addworkerprice);
+        $price = $price + $addworkerprice;
+        // ENDE Hilfsarbeiter hinzurechnen
+
+        if ($debug)
+        {
+            echo 'Preis nach Hilfsarbeiter </br>';
+            echo 'Anz. Hilfsarbeiter = '.$addworkeramount.' </br>';
+            echo 'Hilfsarbeiter Preis = '.$addworkerprice.' </br>';
+            echo '$price = '.$price.' </br>';
+        }
+
         // Manueller Aufschlag
         if($machineEntry->getSpecial_margin() > 0){
             $price = $price * (1 + ($machineEntry->getSpecial_margin() / 100));
@@ -1844,6 +1869,38 @@ class Machine
     public function setQualifiedGroups($qualified_groups)
     {
         $this->qualified_groups = $qualified_groups;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAddworkerprice()
+    {
+        return $this->addworkerprice;
+    }
+
+    /**
+     * @param float $addworkerprice
+     */
+    public function setAddworkerprice($addworkerprice)
+    {
+        $this->addworkerprice = $addworkerprice;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAddworkeramount()
+    {
+        return $this->addworkeramount;
+    }
+
+    /**
+     * @param int $addworkeramount
+     */
+    public function setAddworkeramount($addworkeramount)
+    {
+        $this->addworkeramount = $addworkeramount;
     }
 
 }

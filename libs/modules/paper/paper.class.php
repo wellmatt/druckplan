@@ -36,7 +36,9 @@ class Paper {
 	private $price_1qm;
     private $volume;
     private $rolle;
-    
+    private $papertype = '';
+    private $papertypenr = '';
+
     function __construct($id = 0) {
         global $DB;
         global $_USER;
@@ -59,7 +61,9 @@ class Paper {
                 $this->price_1qm = $res[0]["price_1qm"];
                 $this->price_1qm = $res[0]["volume"];
                 $this->rolle = $res[0]["rolle"];
-                
+                $this->papertype = $res[0]["papertype"];
+                $this->papertypenr = $res[0]["papertypenr"];
+
                 $sql = "SELECT * FROM papers_weights 
                         WHERE paper_id = {$this->id}
                         ORDER BY weight";
@@ -483,6 +487,8 @@ class Paper {
                         price_1qm = '{$this->price_1qm}',
                         volume = '{$this->volume}',
                         rolle = {$this->rolle},
+                        papertype = '{$this->papertype}',
+                        papertypenr = '{$this->papertypenr}',
                         pricebase = {$this->priceBase}
                     WHERE
                         id = {$this->id}";
@@ -845,5 +851,36 @@ class Paper {
         $this->rolle = $rolle;
     }
 
+    /**
+     * @return string
+     */
+    public function getPapertype()
+    {
+        return $this->papertype;
+    }
+
+    /**
+     * @param string $papertype
+     */
+    public function setPapertype($papertype)
+    {
+        $this->papertype = $papertype;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPapertypenr()
+    {
+        return $this->papertypenr;
+    }
+
+    /**
+     * @param string $papertypenr
+     */
+    public function setPapertypenr($papertypenr)
+    {
+        $this->papertypenr = $papertypenr;
+    }
 }
 ?>

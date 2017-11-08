@@ -555,6 +555,69 @@ class Calculation
         }
     }
 
+    public function getChromaFor($part)
+    {
+        switch ($part){
+            case Calculation::PAPER_CONTENT:
+                return $this->getChromaticitiesContent();
+                break;
+            case Calculation::PAPER_ADDCONTENT:
+                return $this->getChromaticitiesAddContent();
+                break;
+            case Calculation::PAPER_ADDCONTENT2:
+                return $this->getChromaticitiesAddContent2();
+                break;
+            case Calculation::PAPER_ADDCONTENT3:
+                return $this->getChromaticitiesAddContent3();
+                break;
+            case Calculation::PAPER_ENVELOPE:
+                return $this->getChromaticitiesEnvelope();
+                break;
+        }
+    }
+
+    public function getPagesFor($part)
+    {
+        switch ($part){
+            case Calculation::PAPER_CONTENT:
+                return $this->getPagesContent();
+                break;
+            case Calculation::PAPER_ADDCONTENT:
+                return $this->getPagesAddContent();
+                break;
+            case Calculation::PAPER_ADDCONTENT2:
+                return $this->getPagesAddContent2();
+                break;
+            case Calculation::PAPER_ADDCONTENT3:
+                return $this->getPagesAddContent3();
+                break;
+            case Calculation::PAPER_ENVELOPE:
+                return $this->getPagesEnvelope();
+                break;
+        }
+    }
+
+    public function getCutFor($part)
+    {
+        switch ($part){
+            case Calculation::PAPER_CONTENT:
+                return $this->getCutContent();
+                break;
+            case Calculation::PAPER_ADDCONTENT:
+                return $this->getCutAddContent();
+                break;
+            case Calculation::PAPER_ADDCONTENT2:
+                return $this->getCutAddContent2();
+                break;
+            case Calculation::PAPER_ADDCONTENT3:
+                return $this->getCutAddContent3();
+                break;
+            case Calculation::PAPER_ENVELOPE:
+                return $this->getCutEnvelope();
+                break;
+        }
+    }
+
     public static function contentArray()
     {
 
@@ -568,6 +631,7 @@ class Calculation
                 'height'=>'getPaperContentHeight',
                 'pages'=>'getPagesContent',
                 'grant'=>'getPaperContentGrant',
+                'cut'=>'getCutContent',
                 'const'=>Calculation::PAPER_CONTENT,
             ],
             [
@@ -579,6 +643,7 @@ class Calculation
                 'height'=>'getPaperAddContentHeight',
                 'pages'=>'getPagesAddContent',
                 'grant'=>'getPaperAddContentGrant',
+                'cut'=>'getCutAddContent',
                 'const'=>Calculation::PAPER_ADDCONTENT,
             ],
             [
@@ -590,6 +655,7 @@ class Calculation
                 'height'=>'getPaperAddContent2Height',
                 'pages'=>'getPagesAddContent2',
                 'grant'=>'getPaperAddContent2Grant',
+                'cut'=>'getCutAddContent2',
                 'const'=>Calculation::PAPER_ADDCONTENT2,
             ],
             [
@@ -601,6 +667,7 @@ class Calculation
                 'height'=>'getPaperAddContent3Height',
                 'pages'=>'getPagesAddContent3',
                 'grant'=>'getPaperAddContent3Grant',
+                'cut'=>'getCutAddContent3',
                 'const'=>Calculation::PAPER_ADDCONTENT3,
             ],
             [
@@ -612,6 +679,7 @@ class Calculation
                 'height'=>'getPaperEnvelopeHeight',
                 'pages'=>'getPagesEnvelope',
                 'grant'=>'getPaperEnvelopeGrant',
+                'cut'=>'getCutEnvelope',
                 'const'=>Calculation::PAPER_ENVELOPE,
             ],
         ];
@@ -883,6 +951,7 @@ class Calculation
     function getProductsPerPaper($ptype)
     {
         global $_CONFIG;
+        $order = new Order($this->orderId);
         // Papiergroesse auswaehlen
         $pages = 0;
         if($ptype == Calculation::PAPER_CONTENT)
@@ -1007,17 +1076,11 @@ class Calculation
 
 //            echo '$productPerPaper1:' . $productPerPaper1 . '</br>';
 //            echo '$productPerPaper2:' . $productPerPaper2 . '</br>';
-
 //            echo 'produkte: ' . $rv . '</br>';
 
             // check for max
-            if($ptype != Calculation::PAPER_ENVELOPE){
-                $product_max = floor($pages);
-                $order = new Order($this->getOrderId());
-                if ($order->getProduct()->getSetmaxproducts())
-                    if ($rv > $product_max)
-                        $rv = $product_max;
-            }
+//            prettyPrint('$rv: '.$rv);
+            $rv = $order->getProduct()->evalMaxProducts($rv, $ptype, $pages);
 
             return $rv;
         } else

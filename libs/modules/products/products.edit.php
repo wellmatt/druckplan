@@ -122,10 +122,37 @@ if($_REQUEST["subexec"] == "save")
     $product->setBlockplateset((int)$_REQUEST["blockplateset"]);
     $product->setInkcoverage(tofloat($_REQUEST["inkcoverage"]));
 
-    if ($_REQUEST['setmaxproducts'] == 1)
-        $product->setSetmaxproducts(1);
+    if ($_REQUEST['setmaxproducts_content'] == 1)
+        $product->setSetmaxproductsContent(1);
     else
-        $product->setSetmaxproducts(0);
+        $product->setSetmaxproductsContent(0);
+
+    if ($_REQUEST['setmaxproducts_addcontent'] == 1)
+        $product->setSetmaxproductsAddcontent(1);
+    else
+        $product->setSetmaxproductsAddcontent(0);
+
+    if ($_REQUEST['setmaxproducts_addcontent2'] == 1)
+        $product->setSetmaxproductsAddcontent2(1);
+    else
+        $product->setSetmaxproductsAddcontent2(0);
+
+    if ($_REQUEST['setmaxproducts_addcontent3'] == 1)
+        $product->setSetmaxproductsAddcontent3(1);
+    else
+        $product->setSetmaxproductsAddcontent3(0);
+
+    if ($_REQUEST['setmaxproducts_envelope'] == 1)
+        $product->setSetmaxproductsEnvelope(1);
+    else
+        $product->setSetmaxproductsEnvelope(0);
+
+    $product->setSetmaxproductsContentDiv((int)$_REQUEST["setmaxproducts_content_div"]);
+    $product->setSetmaxproductsAddcontentDiv((int)$_REQUEST["setmaxproducts_addcontent_div"]);
+    $product->setSetmaxproductsAddcontent2Div((int)$_REQUEST["setmaxproducts_addcontent2_div"]);
+    $product->setSetmaxproductsAddcontent3Div((int)$_REQUEST["setmaxproducts_addcontent3_div"]);
+    $product->setSetmaxproductsEnvelopeDiv((int)$_REQUEST["setmaxproducts_envelope_div"]);
+
 
     if ((int)$_REQUEST["load_dummydata"] == 1){
     	$product->setPagesFrom(1);
@@ -272,25 +299,25 @@ echo $quickmove->generate();
                       <div class="form-group">
                           <label for="" class="col-sm-3 control-label"></label>
                           <div class="col-sm-9">
-                              <input type="checkbox" value="1" name="product_hascontent"<?if($product->getHasContent()) echo " checked ";?>> <?=$_LANG->get('Inhalt')?>
+                              <input type="checkbox" value="1" name="product_hascontent"<?if($product->getHasContent()) echo " checked ";?>> <?=$_LANG->get('Inhalt 1')?>
                           </div>
                       </div>
                       <div class="form-group">
                           <label for="" class="col-sm-3 control-label"></label>
                           <div class="col-sm-9">
-                              <input type="checkbox" value="1" name="product_hasaddcontent"<?if($product->getHasAddContent()) echo " checked ";?>> <?=$_LANG->get('zus&auml;tzlichem Inhalt')?>
+                              <input type="checkbox" value="1" name="product_hasaddcontent"<?if($product->getHasAddContent()) echo " checked ";?>> <?=$_LANG->get('Inhalt 2')?>
                           </div>
                       </div>
                       <div class="form-group">
                           <label for="" class="col-sm-3 control-label"></label>
                           <div class="col-sm-9">
-                              <input type="checkbox" value="1" name="product_hasaddcontent2"<?if($product->getHasAddContent2()) echo " checked ";?>> <?=$_LANG->get('zus&auml;tzlichem Inhalt 2')?>
+                              <input type="checkbox" value="1" name="product_hasaddcontent2"<?if($product->getHasAddContent2()) echo " checked ";?>> <?=$_LANG->get('Inhalt 3')?>
                           </div>
                       </div>
                       <div class="form-group">
                           <label for="" class="col-sm-3 control-label"></label>
                           <div class="col-sm-9">
-                              <input type="checkbox" value="1" name="product_hasaddcontent3"<?if($product->getHasAddContent3()) echo " checked ";?>> <?=$_LANG->get('zus&auml;tzlichem Inhalt 3')?>
+                              <input type="checkbox" value="1" name="product_hasaddcontent3"<?if($product->getHasAddContent3()) echo " checked ";?>> <?=$_LANG->get('Inhalt 4')?>
                           </div>
                       </div>
                       <div class="form-group">
@@ -381,14 +408,70 @@ echo $quickmove->generate();
                               <input name="inkcoverage" value="<?=$product->getInkcoverage()?>" class="form-control">
                           </div>
                       </div>
+                      <div class="form-text"><b>Maximale Produkte begrenzen</b></div>
                       <div class="form-group">
-                          <label for="" class="col-sm-3 control-label">Maximale Produkte begrenzen</label>
-                          <div class="col-sm-9">
+                          <label for="" class="col-sm-3 control-label">Inhalt 1</label>
+                          <div class="col-sm-1">
                               <div class="checkbox">
                                   <label>
-                                      <input type="checkbox" name="setmaxproducts" id="setmaxproducts" value="1" <?php if ($product->getSetmaxproducts()) echo ' checked ';?>>
+                                      <input type="checkbox" name="setmaxproducts_content" id="setmaxproducts_content" value="1" <?php if ($product->getSetmaxproductsContent()) echo ' checked ';?>>
                                   </label>
                               </div>
+                          </div>
+                          <div class="col-sm-8">
+                              <input name="setmaxproducts_content_div" value="<?=$product->getSetmaxproductsContentDiv()?>" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Inhalt 2</label>
+                          <div class="col-sm-1">
+                              <div class="checkbox">
+                                  <label>
+                                      <input type="checkbox" name="setmaxproducts_addcontent" id="setmaxproducts_addcontent" value="1" <?php if ($product->getSetmaxproductsAddcontent()) echo ' checked ';?>>
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="col-sm-8">
+                              <input name="setmaxproducts_addcontent_div" value="<?=$product->getSetmaxproductsAddcontentDiv()?>" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Inhalt 3</label>
+                          <div class="col-sm-1">
+                              <div class="checkbox">
+                                  <label>
+                                      <input type="checkbox" name="setmaxproducts_addcontent2" id="setmaxproducts_addcontent2" value="1" <?php if ($product->getSetmaxproductsAddcontent2()) echo ' checked ';?>>
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="col-sm-8">
+                              <input name="setmaxproducts_addcontent2_div" value="<?=$product->getSetmaxproductsAddcontent2Div()?>" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Inhalt 4</label>
+                          <div class="col-sm-1">
+                              <div class="checkbox">
+                                  <label>
+                                      <input type="checkbox" name="setmaxproducts_addcontent3" id="setmaxproducts_addcontent3" value="1" <?php if ($product->getSetmaxproductsAddcontent3()) echo ' checked ';?>>
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="col-sm-8">
+                              <input name="setmaxproducts_addcontent3_div" value="<?=$product->getSetmaxproductsAddcontent3Div()?>" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Umschlag</label>
+                          <div class="col-sm-1">
+                              <div class="checkbox">
+                                  <label>
+                                      <input type="checkbox" name="setmaxproducts_envelope" id="setmaxproducts_envelope" value="1" <?php if ($product->getSetmaxproductsEnvelope()) echo ' checked ';?>>
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="col-sm-8">
+                              <input name="setmaxproducts_envelope_div" value="<?=$product->getSetmaxproductsEnvelopeDiv()?>" class="form-control">
                           </div>
                       </div>
                   </div> <!-- Rechts ende -->

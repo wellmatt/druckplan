@@ -54,8 +54,8 @@ $DB->connect($_CONFIG->db);
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$order = new Order(244);
-prettyPrint($order->getOverviewData());
+$me = new Machineentry(4298);
+prettyPrint($me);
 
 ?>
 <link rel="stylesheet" type="text/css" href="./css/matze.css" />

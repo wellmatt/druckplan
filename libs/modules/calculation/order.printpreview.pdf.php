@@ -75,35 +75,29 @@ if($part == Calculation::PAPER_CONTENT) {
 	$paper_weight = $calc->getPaperContentWeight();
 	$paperH = $calc->getPaperContentHeight();
 	$paperW = $calc->getPaperContentWidth();
-	$pagecount = $calc->getPagesContent();
 } else if ($part == Calculation::PAPER_ADDCONTENT) {
 	$paper = $calc->getPaperAddContent();
 	$paper_weight = $calc->getPaperAddContentWeight();
 	$paperH = $calc->getPaperAddContentHeight();
 	$paperW = $calc->getPaperAddContentWidth();
-	$pagecount = $calc->getPagesAddContent();
 } else if ($part == Calculation::PAPER_ADDCONTENT2) {
 	$paper = $calc->getPaperAddContent2();
 	$paper_weight = $calc->getPaperAddContent2Weight();
 	$paperH = $calc->getPaperAddContent2Height();
 	$paperW = $calc->getPaperAddContent2Width();
-	$pagecount = $calc->getPagesAddContent2();
 } else if ($part == Calculation::PAPER_ADDCONTENT3) {
 	$paper = $calc->getPaperAddContent3();
 	$paper_weight = $calc->getPaperAddContent3Weight();
 	$paperH = $calc->getPaperAddContent3Height();
 	$paperW = $calc->getPaperAddContent3Width();
-	$pagecount = $calc->getPagesAddContent3();
 } else if ($part == Calculation::PAPER_ENVELOPE) {
 	$paper = $calc->getPaperEnvelope();
 	$paper_weight = $calc->getPaperEnvelopeWeight();
 	$paperH = $calc->getPaperEnvelopeHeight();
 	$paperW = $calc->getPaperEnvelopeWidth();
-	$pagecount = $calc->getPagesEnvelope();
 } else
 	die('Wrong part');
 
-$pagecount = 2;
 
 if($part != Calculation::PAPER_ENVELOPE){
 	$width = $calc->getProductFormatWidthOpen();
@@ -314,7 +308,7 @@ for($x = 0; $x < $product_rows; $x++){
 	
 	for($y = 0; $y < $product_per_line; $y++){
 		
-		if ($product_count1 >= $product_max_open && $product_counted == true && $part != Calculation::PAPER_ENVELOPE)
+		if ($product_count1 >= $product_max_open && $product_counted == true)
 			break;
 		
 		$tmp_xpos = convertMmInPx($posX+$tmp_anschnitt*$multiRows);
@@ -348,7 +342,7 @@ for($x = 0; $x < $product_rows_closed; $x++){
 
 	for($y = 0; $y < $product_per_line_closed; $y++){
 	
-		if ($product_count2 >= $product_max_closed && $product_counted == true && $part != Calculation::PAPER_ENVELOPE)
+		if ($product_count2 >= $product_max_closed && $product_counted == true)
 			break;
 	
 		$tmp_xpos = convertMmInPx($posX+$tmp_anschnitt*$multiRows);
@@ -567,6 +561,7 @@ $pdf->ezNewPage();
 
 
 // Senden der Datei an den Browser
+ob_clean();
 $pdf->ezStream();
 //imagejpeg($im2);
 //imagedestroy($im2);

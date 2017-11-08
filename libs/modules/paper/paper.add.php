@@ -130,6 +130,9 @@ if($_REQUEST["subexec"] == "save")
     $paper->setVolume(trim(addslashes($_REQUEST["paper_volume"])));
     $paper->setRolle((int)trim(addslashes($_REQUEST["paper_rolle"])));
 
+    $paper->setPapertype(trim(addslashes($_REQUEST["papertype"])));
+    $paper->setPapertypenr(trim(addslashes($_REQUEST["papertypenr"])));
+
     $paper->setWeights($weights);
     $paper->setSizes($sizes);
     $savemsg = getSaveMessage($paper->save());
@@ -387,6 +390,18 @@ echo $quickmove->generate();
                                   <label for="" class="col-sm-3 control-label">Rolle</label>
                                   <div class="col-sm-2">
                                       <input name="paper_rolle" value="1" class="form-control" <?php if ($paper->getRolle()) echo ' checked ';?> type="checkbox">
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label for="" class="col-sm-3 control-label">Sorte</label>
+                                  <div class="col-sm-9">
+                                      <input name="papertype" value="<?php echo $paper->getPapertype();?>" class="form-control">
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label for="" class="col-sm-3 control-label">Sorten-Nr.</label>
+                                  <div class="col-sm-9">
+                                      <input name="papertypenr" value="<?php echo $paper->getPapertypenr();?>" class="form-control">
                                   </div>
                               </div>
                           </div>

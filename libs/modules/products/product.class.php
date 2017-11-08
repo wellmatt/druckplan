@@ -54,8 +54,17 @@ class Product {
     private $singleplateset = 0;
     private $blockplateset = 0;
     private $inkcoverage = 40.00;
-    private $setmaxproducts = 0;
-	
+    private $setmaxproducts_content = 0;
+    private $setmaxproducts_content_div = 0;
+    private $setmaxproducts_addcontent = 0;
+    private $setmaxproducts_addcontent_div = 0;
+    private $setmaxproducts_addcontent2 = 0;
+    private $setmaxproducts_addcontent2_div = 0;
+    private $setmaxproducts_addcontent3 = 0;
+    private $setmaxproducts_addcontent3_div = 0;
+    private $setmaxproducts_envelope = 0;
+    private $setmaxproducts_envelope_div = 0;
+
     function __construct($id = 0){
         global $DB;
         global $_USER;
@@ -97,7 +106,16 @@ class Product {
                 $this->blockplateset = $res["blockplateset"];
                 $this->loadDymmyData = $res["load_dummydata"];
                 $this->inkcoverage = $res["inkcoverage"];
-                $this->setmaxproducts = $res["setmaxproducts"];
+                $this->setmaxproducts_content = $res["setmaxproducts_content"];
+                $this->setmaxproducts_content_div = $res["setmaxproducts_content_div"];
+                $this->setmaxproducts_addcontent = $res["setmaxproducts_addcontent"];
+                $this->setmaxproducts_addcontent_div = $res["setmaxproducts_addcontent_div"];
+                $this->setmaxproducts_addcontent2 = $res["setmaxproducts_addcontent2"];
+                $this->setmaxproducts_addcontent2_div = $res["setmaxproducts_addcontent2_div"];
+                $this->setmaxproducts_addcontent3 = $res["setmaxproducts_addcontent3"];
+                $this->setmaxproducts_addcontent3_div = $res["setmaxproducts_addcontent3_div"];
+                $this->setmaxproducts_envelope = $res["setmaxproducts_envelope"];
+                $this->setmaxproducts_envelope_div = $res["setmaxproducts_envelope_div"];
 
                 //-------------------------------------------------------------------
                 // Get Machines
@@ -253,7 +271,16 @@ class Product {
                         tradegroup = {$this->getTradegroup()->getId()},
                         is_individual = '{$this->isIndivual}',
                         singleplateset = '{$this->singleplateset}',
-                        setmaxproducts = '{$this->setmaxproducts}',
+                        setmaxproducts_content = '{$this->setmaxproducts_content}',
+                        setmaxproducts_content_div = '{$this->setmaxproducts_content_div}',
+                        setmaxproducts_addcontent = '{$this->setmaxproducts_addcontent}',
+                        setmaxproducts_addcontent_div = '{$this->setmaxproducts_addcontent_div}',
+                        setmaxproducts_addcontent2 = '{$this->setmaxproducts_addcontent2}',
+                        setmaxproducts_addcontent2_div = '{$this->setmaxproducts_addcontent2_div}',
+                        setmaxproducts_addcontent3 = '{$this->setmaxproducts_addcontent3}',
+                        setmaxproducts_addcontent3_div = '{$this->setmaxproducts_addcontent3_div}',
+                        setmaxproducts_envelope = '{$this->setmaxproducts_envelope}',
+                        setmaxproducts_envelope_div = '{$this->setmaxproducts_envelope_div}',
                         blockplateset = '{$this->blockplateset}',
                         inkcoverage = '{$this->inkcoverage}',
                         load_dummydata = {$this->loadDymmyData}
@@ -349,7 +376,10 @@ class Product {
                          has_content, has_addcontent, has_envelope, factor_width, factor_height,
                          grant_paper, type, text_offer, text_offerconfirm, text_invoice,
                          text_processing, shop_rel, tradegroup, is_individual, 
-                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage, setmaxproducts )
+                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage,
+                         setmaxproducts_content, setmaxproducts_content_div, setmaxproducts_addcontent, setmaxproducts_addcontent_div,
+                         setmaxproducts_addcontent2, setmaxproducts_addcontent2_div, setmaxproducts_addcontent3, setmaxproducts_addcontent3_div,
+                         setmaxproducts_envelope, setmaxproducts_envelope_div)
                     VALUES
                         ('{$this->name}', 1, '{$this->description}', '{$this->picture}',
                          {$this->pagesFrom}, {$this->pagesTo}, {$this->pagesStep}, {$this->hasContent},
@@ -357,7 +387,10 @@ class Product {
                          {$this->grantPaper}, {$this->type}, '{$this->textOffer}',
                          '{$this->textOfferconfirm}', '{$this->textInvoice}', '{$this->textProcessing}',
                          {$this->shoprel}, {$this->getTradegroup()->getId()}, {$this->isIndivual},
-                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, {$this->setmaxproducts} )";
+                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, 
+                          {$this->setmaxproducts_content}, {$this->setmaxproducts_content_div}, {$this->setmaxproducts_addcontent}, {$this->setmaxproducts_addcontent_div},
+                          {$this->setmaxproducts_addcontent2}, {$this->setmaxproducts_addcontent2_div}, {$this->setmaxproducts_addcontent3}, {$this->setmaxproducts_addcontent3_div},
+                          {$this->setmaxproducts_envelope}, {$this->setmaxproducts_envelope_div})";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -379,7 +412,7 @@ class Product {
                     else 
                         $sql .= "0, 0, 0)";
                     
-                    $DB->no_result($sql);         
+                    $DB->no_result($sql);
                 }
                 
                 //---------------------------------------------------------------------
@@ -491,6 +524,57 @@ class Product {
         }
 
         return false;
+    }
+
+    public function evalMaxProducts($ppp, $part, $pages, $debug = false)
+    {
+        if ($debug) prettyPrint("++## evalMaxProducts started... ##++");
+        switch ($part){
+            case Calculation::PAPER_CONTENT:
+                $active = $this->getSetmaxproductsContent();
+                $div = $this->getSetmaxproductsContentDiv();
+                break;
+            case Calculation::PAPER_ADDCONTENT:
+                $active = $this->getSetmaxproductsAddcontent();
+                $div = $this->getSetmaxproductsAddcontentDiv();
+                break;
+            case Calculation::PAPER_ADDCONTENT2:
+                $active = $this->getSetmaxproductsAddcontent2();
+                $div = $this->getSetmaxproductsAddcontent2Div();
+                break;
+            case Calculation::PAPER_ADDCONTENT3:
+                $active = $this->getSetmaxproductsAddcontent3();
+                $div = $this->getSetmaxproductsAddcontent3Div();
+                break;
+            case Calculation::PAPER_ENVELOPE:
+                $active = $this->getSetmaxproductsEnvelope();
+                $div = $this->getSetmaxproductsEnvelopeDiv();
+                break;
+            default:
+                $active = 0;
+                $div = 0;
+                break;
+        }
+        if ($active){
+            if ($debug) prettyPrint('Restrict Max Products is active:');
+            $maxcalced = floor($pages / $div);
+            if ($debug) prettyPrint('maxcalced: '.$maxcalced);
+            if ($ppp > $maxcalced && $maxcalced > 0){
+                if ($debug) prettyPrint("products per paper is > maxcalced   ( {$ppp} > {$maxcalced} )");
+                if (($ppp / $maxcalced) > 2){
+                    if ($debug) prettyPrint("products per paper / maxcalced is greather than 2  ( ({$ppp}/{$maxcalced})>2 )");
+                    $tosub = $ppp % $maxcalced;
+                    if ($debug) prettyPrint("check if we need to subtract remainder: tosub = {$tosub}");
+                    $retval = $ppp-$tosub;
+                    if ($debug) prettyPrint("returning {$retval}");
+                    return $retval;
+                }
+                if ($debug) prettyPrint("returning maxcalced: {$maxcalced}");
+                return $maxcalced;
+            }
+        }
+        if ($debug) prettyPrint("returning ppp: {$ppp}");
+        return $ppp;
     }
     
     function getMaxForDefaultMachine($mach)
@@ -915,16 +999,160 @@ class Product {
     /**
      * @return int
      */
-    public function getSetmaxproducts()
+    public function getSetmaxproductsContent()
     {
-        return $this->setmaxproducts;
+        return $this->setmaxproducts_content;
     }
 
     /**
-     * @param int $setmaxproducts
+     * @param int $setmaxproducts_content
      */
-    public function setSetmaxproducts($setmaxproducts)
+    public function setSetmaxproductsContent($setmaxproducts_content)
     {
-        $this->setmaxproducts = $setmaxproducts;
+        $this->setmaxproducts_content = $setmaxproducts_content;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsContentDiv()
+    {
+        return $this->setmaxproducts_content_div;
+    }
+
+    /**
+     * @param int $setmaxproducts_content_div
+     */
+    public function setSetmaxproductsContentDiv($setmaxproducts_content_div)
+    {
+        $this->setmaxproducts_content_div = $setmaxproducts_content_div;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsAddcontent()
+    {
+        return $this->setmaxproducts_addcontent;
+    }
+
+    /**
+     * @param int $setmaxproducts_addcontent
+     */
+    public function setSetmaxproductsAddcontent($setmaxproducts_addcontent)
+    {
+        $this->setmaxproducts_addcontent = $setmaxproducts_addcontent;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsAddcontentDiv()
+    {
+        return $this->setmaxproducts_addcontent_div;
+    }
+
+    /**
+     * @param int $setmaxproducts_addcontent_div
+     */
+    public function setSetmaxproductsAddcontentDiv($setmaxproducts_addcontent_div)
+    {
+        $this->setmaxproducts_addcontent_div = $setmaxproducts_addcontent_div;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsAddcontent2()
+    {
+        return $this->setmaxproducts_addcontent2;
+    }
+
+    /**
+     * @param int $setmaxproducts_addcontent2
+     */
+    public function setSetmaxproductsAddcontent2($setmaxproducts_addcontent2)
+    {
+        $this->setmaxproducts_addcontent2 = $setmaxproducts_addcontent2;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsAddcontent2Div()
+    {
+        return $this->setmaxproducts_addcontent2_div;
+    }
+
+    /**
+     * @param int $setmaxproducts_addcontent2_div
+     */
+    public function setSetmaxproductsAddcontent2Div($setmaxproducts_addcontent2_div)
+    {
+        $this->setmaxproducts_addcontent2_div = $setmaxproducts_addcontent2_div;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsAddcontent3()
+    {
+        return $this->setmaxproducts_addcontent3;
+    }
+
+    /**
+     * @param int $setmaxproducts_addcontent3
+     */
+    public function setSetmaxproductsAddcontent3($setmaxproducts_addcontent3)
+    {
+        $this->setmaxproducts_addcontent3 = $setmaxproducts_addcontent3;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsAddcontent3Div()
+    {
+        return $this->setmaxproducts_addcontent3_div;
+    }
+
+    /**
+     * @param int $setmaxproducts_addcontent3_div
+     */
+    public function setSetmaxproductsAddcontent3Div($setmaxproducts_addcontent3_div)
+    {
+        $this->setmaxproducts_addcontent3_div = $setmaxproducts_addcontent3_div;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsEnvelope()
+    {
+        return $this->setmaxproducts_envelope;
+    }
+
+    /**
+     * @param int $setmaxproducts_envelope
+     */
+    public function setSetmaxproductsEnvelope($setmaxproducts_envelope)
+    {
+        $this->setmaxproducts_envelope = $setmaxproducts_envelope;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSetmaxproductsEnvelopeDiv()
+    {
+        return $this->setmaxproducts_envelope_div;
+    }
+
+    /**
+     * @param int $setmaxproducts_envelope_div
+     */
+    public function setSetmaxproductsEnvelopeDiv($setmaxproducts_envelope_div)
+    {
+        $this->setmaxproducts_envelope_div = $setmaxproducts_envelope_div;
     }
 }

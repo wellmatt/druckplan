@@ -449,7 +449,8 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                   Produktformat offen
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?= $calc->getProductsPerPaper($content['const']) ?></span>
+                                                  <span class="badge"><?=CalculationService::ProductsPerPaperSimple($order, $calc->{$content['width']}(),$calc->{$content['height']}(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->{$content['cut']}(),0,$calc->{$content['pages']}(),$content['const']); ?></span>
+<!--                                                  <span class="badge">--><?//= $calc->getProductsPerPaper($content['const']) ?><!--</span>-->
                                                   Nutzen pro Bogen
                                               </li>
                                               <li class="list-group-item">

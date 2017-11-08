@@ -67,6 +67,8 @@ class Machineentry {
     private $corediameter = 0.0;
     private $rolldiameter = 0.0;
 
+    private $addworkeramount = 0;
+
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
         $this->machine = new Machine();
@@ -155,6 +157,7 @@ class Machineentry {
                     $this->inlineheften = $r["inlineheften"];
                     $this->corediameter = $r["corediameter"];
                     $this->rolldiameter = $r["rolldiameter"];
+                    $this->addworkeramount = $r["addworkeramount"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -296,6 +299,7 @@ class Machineentry {
         				umschl = {$this->umschl},
         				corediameter = {$this->corediameter},
         				rolldiameter = {$this->rolldiameter},
+        				addworkeramount = {$this->addworkeramount},
         				doubleutilization = {$this->doubleutilization},
         				umst = {$this->umst} 		 ";		//gln, umschlagen/umstuelpen
         if($this->id > 0)
@@ -303,9 +307,11 @@ class Machineentry {
             $sql = "UPDATE orders_machines SET
                     {$set}
                     WHERE id = {$this->id}";
+//            prettyPrint($sql);
             $res = $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO orders_machines SET {$set}";
+//            prettyPrint($sql);
             $res = $DB->no_result($sql);
             if($res)
             {
@@ -534,6 +540,29 @@ class Machineentry {
                 break;
             case 5: // PAPER_ADDCONTENT3
                 return $calc->getPaperAddContent3Height();
+                break;
+        }
+    }
+
+    public function getMyPaperWidth()
+    {
+        $calc = new Calculation($this->calcId);
+        switch ($this->part)
+        {
+            case 1: // PAPER_CONTENT
+                return $calc->getPaperContentWidth();
+                break;
+            case 2: // PAPER_ADDCONTENT
+                return $calc->getPaperAddContentWidth();
+                break;
+            case 3: // PAPER_ENVELOPE
+                return $calc->getPaperEnvelopeWidth();
+                break;
+            case 4: // PAPER_ADDCONTENT2
+                return $calc->getPaperAddContent2Width();
+                break;
+            case 5: // PAPER_ADDCONTENT3
+                return $calc->getPaperAddContent3Width();
                 break;
         }
     }
@@ -1108,5 +1137,25 @@ class Machineentry {
     public function setRolldiameter($rolldiameter)
     {
         $this->rolldiameter = $rolldiameter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAddworkeramount()
+    {
+        if ($this->addworkeramount == 0){
+            return $this->getMachine()->getAddworkeramount();
+        } else {
+            return $this->addworkeramount;
+        }
+    }
+
+    /**
+     * @param int $addworkeramount
+     */
+    public function setAddworkeramount($addworkeramount)
+    {
+        $this->addworkeramount = $addworkeramount;
     }
 }

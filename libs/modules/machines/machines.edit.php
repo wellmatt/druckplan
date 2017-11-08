@@ -114,6 +114,9 @@ if($_REQUEST["subexec"] == "save")
 	$machine->setInlineheften((int)$_REQUEST["inlineheften"]);
 	$machine->setInlineheftenpercent((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["inlineheften_percent"]))));
 
+	$machine->setAddworkeramount((int)$_REQUEST["addworkeramount"]);
+	$machine->setAddworkerprice((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["addworkerprice"]))));
+
     $quser_list = Array();
     if ($_REQUEST["qusr"]){
         foreach ($_REQUEST["qusr"] as $qusr)
@@ -811,6 +814,18 @@ echo $quickmove->generate();
 											   value="<?= $machine->getMaxstacksize(); ?>" class="form-control">
 										<span class="input-group-addon">mm</span>
 									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Anz. Hilfsarbeiter</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" name="addworkeramount" id="addworkeramount" value="<?php echo $machine->getAddworkeramount();?>">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Hilfsarb. Std. Lohn</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" name="addworkerprice" id="addworkerprice" value="<?php echo printPrice($machine->getAddworkerprice());?>">
 								</div>
 							</div>
 						</div>

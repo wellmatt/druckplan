@@ -48,6 +48,15 @@ function smarty_function_printPrice2($params, Smarty_Internal_Template $template
     return printPrice($params['var'],1);
 }
 
+function smarty_function_printPrice3($params, Smarty_Internal_Template $template)
+{
+    if (empty($params['var'])) {
+        trigger_error("missing 'var' parameter");
+        return "";
+    }
+    return printPrice($params['var'],4);
+}
+
 function smarty_function_replace_ln($params, Smarty_Internal_Template $template)
 {
     if (empty($params['var'])) {
