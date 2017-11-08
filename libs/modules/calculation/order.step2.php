@@ -887,8 +887,7 @@ echo $quickmove->generate();
                                 </div>
                             </div>
                         </td>
-                        <td>Bitte beachten Sie bei einer Kalkulation von Rollenprodukten folgendes:<br/>
-                            Höhe und Breite des Produktes sind inkl. Anschnitt und Rapport anzugeben.</td>
+                        <td>Bitte beachten Sie: Sollte Ihr Produkt nicht auf eine Druckform passen (Inhalt1), verwenden Sie für die weiteren Formen die Auswahlmöglichkeiten Inhalt 2-4.</td>
                     </tr>
 
                     <?

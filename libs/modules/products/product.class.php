@@ -555,6 +555,15 @@ class Product {
                 $div = 0;
                 break;
         }
+//        if ($active){
+//            if ($debug) prettyPrint('Restrict Max Products is active:');
+//            if ($debug) prettyPrint("starting out with {$ppp}");
+//            $tosub = $ppp % $div;
+//            if ($debug) prettyPrint("check if we need to subtract remainder: tosub = {$tosub}");
+//            $retval = $ppp-$tosub;
+//            if ($debug) prettyPrint("returning {$retval}");
+//            return $retval;
+//        }
         if ($active){
             if ($debug) prettyPrint('Restrict Max Products is active:');
             $maxcalced = floor($pages / $div);

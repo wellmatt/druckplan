@@ -88,7 +88,7 @@ $perf = new Perferences();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperContentWidth(),$calc->getPaperContentHeight(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(),0,$calc->getPagesContent(),$part);
 					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesContent(),true);
 
-					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
+//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
                 	include('scheme.php');
                 	?>
@@ -153,7 +153,7 @@ $perf = new Perferences();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContentWidth(),$calc->getPaperAddContentHeight(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent(),0,$calc->getPagesAddContent(),$part);
 					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent(),true);
 
-					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
+//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
                 	include('scheme.php');
                 	?>
@@ -218,7 +218,7 @@ $perf = new Perferences();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperEnvelopeWidth(),$calc->getPaperEnvelopeHeight(),$calc->getEnvelopeWidthOpen(),$calc->getEnvelopeHeightOpen(),$calc->getCutEnvelope(),0,$calc->getPagesEnvelope(),$part);
 					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesEnvelope(),true);
 
-					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
+//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
                 	include('scheme.php');
                 	?>
@@ -284,7 +284,7 @@ $perf = new Perferences();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContent2Width(),$calc->getPaperAddContent2Height(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2(),0,$calc->getPagesAddContent2(),$part);
 					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent2(),true);
 
-					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
+//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
             		include('scheme.php');
             		?>
@@ -350,7 +350,7 @@ $perf = new Perferences();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContent3Width(),$calc->getPaperAddContent3Height(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3(),0,$calc->getPagesAddContent3(),$part);
 					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent3(),true);
 
-					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
+//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
             		include('scheme.php');
             		?>
