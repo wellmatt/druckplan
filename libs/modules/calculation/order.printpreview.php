@@ -86,7 +86,7 @@ $perf = new Perferences();
                 	}
                 	$product_counted = $order->getProduct()->getSetmaxproductsContent();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperContentWidth(),$calc->getPaperContentHeight(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(),0,$calc->getPagesContent(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesContent(),true);
+					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesContent(),false);
 
 //					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
@@ -151,7 +151,7 @@ $perf = new Perferences();
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContentWidth(),$calc->getPaperAddContentHeight(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent(),0,$calc->getPagesAddContent(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent(),true);
+					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent(),false);
 
 //					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
@@ -216,7 +216,7 @@ $perf = new Perferences();
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproductsEnvelope();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperEnvelopeWidth(),$calc->getPaperEnvelopeHeight(),$calc->getEnvelopeWidthOpen(),$calc->getEnvelopeHeightOpen(),$calc->getCutEnvelope(),0,$calc->getPagesEnvelope(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesEnvelope(),true);
+					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesEnvelope(),false);
 
 //					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
@@ -282,7 +282,7 @@ $perf = new Perferences();
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent2();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContent2Width(),$calc->getPaperAddContent2Height(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2(),0,$calc->getPagesAddContent2(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent2(),true);
+					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent2(),false);
 
 //					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
@@ -348,7 +348,7 @@ $perf = new Perferences();
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent3();
 					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContent3Width(),$calc->getPaperAddContent3Height(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3(),0,$calc->getPagesAddContent3(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent3(),true);
+					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent3(),false);
 
 //					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
 
