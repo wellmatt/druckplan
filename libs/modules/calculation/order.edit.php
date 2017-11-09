@@ -355,7 +355,7 @@ if((int)$_REQUEST["step"] == 2){
 
 
 						$sizes = $calc->getPaperContent()->getAvailablePaperSizesForMachine($m, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperContent()->getRolle(), $calc->getProductFormatHeightOpen());
-						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($order, $sizes, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getCutContent(), $calc->getPagesContent(), $me->getPart()));
+						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($calc, $sizes, $me->getPart()));
 						$calc->setPaperContentHeight($smallest_paper[1]);
 						$calc->setPaperContentWidth($smallest_paper[0]);
 						$calc->setFormat_in_content($smallest_paper[0].'x'.$smallest_paper[1]);
@@ -431,7 +431,7 @@ if((int)$_REQUEST["step"] == 2){
 						}
 
 						$sizes = $calc->getPaperAddContent()->getAvailablePaperSizesForMachine($m, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent()->getRolle(), $calc->getProductFormatHeightOpen());
-						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($order, $sizes,$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(), $calc->getPagesContent(), $me->getPart()));
+						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($calc, $sizes, $me->getPart()));
 						$calc->setPaperAddContentHeight($smallest_paper[1]);
 						$calc->setPaperAddContentWidth($smallest_paper[0]);
 						$calc->setFormat_in_addcontent($smallest_paper[0].'x'.$smallest_paper[1]);
@@ -509,7 +509,7 @@ if((int)$_REQUEST["step"] == 2){
 						}
 
 						$sizes = $calc->getPaperEnvelope()->getAvailablePaperSizesForMachine($m, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperEnvelope()->getRolle(), $calc->getProductFormatHeightOpen());
-						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($order,$sizes,$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(), $calc->getPagesContent(), $me->getPart()));
+						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($calc, $sizes, $me->getPart()));
 						$calc->setPaperEnvelopeHeight($smallest_paper[1]);
 						$calc->setPaperEnvelopeWidth($smallest_paper[0]);
 						$calc->setFormat_in_envelope($smallest_paper[0].'x'.$smallest_paper[1]);
@@ -585,7 +585,7 @@ if((int)$_REQUEST["step"] == 2){
 						}
 
 						$sizes = $calc->getPaperAddContent2()->getAvailablePaperSizesForMachine($m, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent2()->getRolle(), $calc->getProductFormatHeightOpen());
-						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($order,$sizes,$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(), $calc->getPagesContent(), $me->getPart()));
+						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($calc, $sizes, $me->getPart()));
 						$calc->setPaperAddContent2Height($smallest_paper[1]);
 						$calc->setPaperAddContent2Width($smallest_paper[0]);
 						$calc->setFormat_in_addcontent2($smallest_paper[0].'x'.$smallest_paper[1]);
@@ -661,7 +661,7 @@ if((int)$_REQUEST["step"] == 2){
 						}
 
 						$sizes = $calc->getPaperAddContent3()->getAvailablePaperSizesForMachine($m, $calc->getProductFormatWidthOpen(), $calc->getProductFormatHeightOpen(), $calc->getPaperAddContent3()->getRolle(), $calc->getProductFormatHeightOpen());
-						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($order,$sizes,$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(), $calc->getPagesContent(), $me->getPart()));
+						$smallest_paper = explode('x',CalculationService::SelectSmallestPaperForMaxPPP($calc, $sizes, $me->getPart()));
 						$calc->setPaperAddContent3Height($smallest_paper[1]);
 						$calc->setPaperAddContent3Width($smallest_paper[0]);
 						$calc->setFormat_in_addcontent3($smallest_paper[0].'x'.$smallest_paper[1]);

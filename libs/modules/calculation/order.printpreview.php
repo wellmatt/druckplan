@@ -75,20 +75,22 @@ $perf = new Perferences();
                 	$part = Calculation::PAPER_CONTENT;
                 	$calc = $c;
                 	$mach_entry = Machineentry::getMachineForPapertype($part, $c->getId());
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
+					$foldtype = new Foldtype();
+					foreach ($mach_entry as $me)
+					{
+						if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+							$me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+						{
+							$mach = $me->getMachine();
+							$machentry = $me;
+						}
+						if($me->getMachine()->getType() == Machine::TYPE_FOLDER){
+							$foldtype = $me->getFoldtype();
+						}
+					}
                 	$product_counted = $order->getProduct()->getSetmaxproductsContent();
-					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperContentWidth(),$calc->getPaperContentHeight(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(),0,$calc->getPagesContent(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesContent(),false);
-
-//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
+					$product_max = $calc->getUsagePerPaper($part);
+					$papercount = $calc->getPaperCount($part,$machentry);
 
                 	include('scheme.php');
                 	?>
@@ -99,7 +101,7 @@ $perf = new Perferences();
                 		?>
                 		<tr><td>
                 			<? /*<u><?=$_LANG->get('Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-                			<u><?=$_LANG->get('Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br>
+                			<u><?=$_LANG->get('Inhalt 1')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
                 			<?=$c->getPaperContent()->getName()?>, <?=$c->getPaperContentWeight()?> g,<br>
                 			<?=$c->getPaperContentWidth()?> x <?=$c->getPaperContentHeight()?> <?=$_LANG->get('mm')?>,
                 			<?=printPrice($c->getCutContent())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?> <br>
@@ -120,7 +122,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_CONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
+                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_CONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
                 						width="700" height="700" ></object>
                 		</td></tr></br>
                 		<?
@@ -140,22 +142,24 @@ $perf = new Perferences();
                 	$part = Calculation::PAPER_ADDCONTENT;
                 	$calc = $c;
                 	$mach_entry = Machineentry::getMachineForPapertype($part, $c->getId());
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
+					$foldtype = new Foldtype();
+					foreach ($mach_entry as $me)
+					{
+						if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+							$me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+						{
+							$mach = $me->getMachine();
+							$machentry = $me;
+						}
+						if($me->getMachine()->getType() == Machine::TYPE_FOLDER){
+							$foldtype = $me->getFoldtype();
+						}
+					}
 					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent();
-					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContentWidth(),$calc->getPaperAddContentHeight(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent(),0,$calc->getPagesAddContent(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent(),false);
+					$product_max = $calc->getUsagePerPaper($part);
+					$papercount = $calc->getPaperCount($part,$machentry);
 
-//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
-
-                	include('scheme.php');
+					include('scheme.php');
                 	?>
                 	<table>
                 	<?
@@ -164,7 +168,7 @@ $perf = new Perferences();
                 		?>
                 		<tr><td>
                 			<? /*<u><?=$_LANG->get('zus. Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-                			<u><?=$_LANG->get('zus. Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br>
+								<u><?=$_LANG->get('Inhalt 2')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
                 			<?=$c->getPaperAddContent()->getName()?>, <?=$c->getPaperAddContentWeight()?> <?=$_LANG->get('g')?>,<br>
                 			<?=$c->getPaperAddContentWidth()?> x <?=$c->getPaperAddContentHeight()?> <?=$_LANG->get('mm')?>,
                 			<?=printPrice($c->getCutAddContent())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
@@ -185,7 +189,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
+                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
                 					width="700" height="700" ></object>
                 		</td></tr></br>
                 		<?
@@ -205,22 +209,24 @@ $perf = new Perferences();
                 	$part = Calculation::PAPER_ENVELOPE;
                 	$calc = $c;
                 	$mach_entry = Machineentry::getMachineForPapertype($part, $c->getId());
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
+					$foldtype = new Foldtype();
+					foreach ($mach_entry as $me)
+					{
+						if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+							$me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+						{
+							$mach = $me->getMachine();
+							$machentry = $me;
+						}
+						if($me->getMachine()->getType() == Machine::TYPE_FOLDER){
+							$foldtype = $me->getFoldtype();
+						}
+					}
 					$product_counted = $order->getProduct()->getSetmaxproductsEnvelope();
-					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperEnvelopeWidth(),$calc->getPaperEnvelopeHeight(),$calc->getEnvelopeWidthOpen(),$calc->getEnvelopeHeightOpen(),$calc->getCutEnvelope(),0,$calc->getPagesEnvelope(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesEnvelope(),false);
+					$product_max = $calc->getUsagePerPaper($part);
+					$papercount = $calc->getPaperCount($part,$machentry);
 
-//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
-
-                	include('scheme.php');
+					include('scheme.php');
                 	?>
                 	<table>
                 	<?
@@ -230,7 +236,7 @@ $perf = new Perferences();
                 	?>
                 		<tr><td>
                 			<? /*<u><?=$_LANG->get('Umschlag')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-                			<u><?=$_LANG->get('Umschlag')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br>
+								<u><?=$_LANG->get('Umschlag')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
                 			<?=$c->getPaperEnvelope()->getName()?>, <?=$c->getPaperEnvelopeWeight()?> <?=$_LANG->get('g')?>,<br>
                 			<?=$c->getPaperEnvelopeWidth()?> x <?=$c->getPaperEnvelopeHeight()?> <?=$_LANG->get('mm')?>,
                 			<?=printPrice($c->getCutEnvelope())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
@@ -251,7 +257,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-            				<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ENVELOPE?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
+            				<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ENVELOPE?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
                 					width="700" height="700" ></object>
                 		</td></tr></br>
                 		<?
@@ -271,22 +277,24 @@ $perf = new Perferences();
             		$part = Calculation::PAPER_ADDCONTENT2;
             		$calc = $c;
                 	$mach_entry = Machineentry::getMachineForPapertype($part, $c->getId());
-                	foreach ($mach_entry as $me)
-                	{
-                	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
-                	        $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
-                	    {
-                	        $mach = $me->getMachine();
-                	        $machentry = $me;
-                	    }
-                	}
+					$foldtype = new Foldtype();
+					foreach ($mach_entry as $me)
+					{
+						if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
+							$me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+						{
+							$mach = $me->getMachine();
+							$machentry = $me;
+						}
+						if($me->getMachine()->getType() == Machine::TYPE_FOLDER){
+							$foldtype = $me->getFoldtype();
+						}
+					}
 					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent2();
-					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContent2Width(),$calc->getPaperAddContent2Height(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2(),0,$calc->getPagesAddContent2(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent2(),false);
+					$product_max = $calc->getUsagePerPaper($part);
+					$papercount = $calc->getPaperCount($part,$machentry);
 
-//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
-
-            		include('scheme.php');
+					include('scheme.php');
             		?>
             		<table>
             		<?
@@ -296,7 +304,7 @@ $perf = new Perferences();
             		?>
                 		<tr><td>
             				<? /*<u><?=$_LANG->get('zus. Inhalt 2')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-            				<u><?=$_LANG->get('zus. Inhalt 2')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br>
+								<u><?=$_LANG->get('Inhalt 3')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
             				<?=$c->getPaperAddContent2()->getName()?>, <?=$c->getPaperAddContent2Weight()?> <?=$_LANG->get('g')?>,<br>
             				<?=$c->getPaperAddContent2Width()?> x <?=$c->getPaperAddContent2Height()?> <?=$_LANG->get('mm')?>,
             				<?=$_CONFIG->anschnitt?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
@@ -317,7 +325,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT2?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
+        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT2?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
             						width="700" height="700" ></object>
                 		</td></tr></br>
             			<?
@@ -337,6 +345,7 @@ $perf = new Perferences();
             		$part = Calculation::PAPER_ADDCONTENT3;
             		$calc = $c;
                 	$mach_entry = Machineentry::getMachineForPapertype($part, $c->getId());
+					$foldtype = new Foldtype();
                 	foreach ($mach_entry as $me)
                 	{
                 	    if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL ||
@@ -345,14 +354,15 @@ $perf = new Perferences();
                 	        $mach = $me->getMachine();
                 	        $machentry = $me;
                 	    }
+                	    if($me->getMachine()->getType() == Machine::TYPE_FOLDER){
+							$foldtype = $me->getFoldtype();
+						}
                 	}
 					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent3();
-					$ppp = CalculationService::ProductsPerPaperSimple($order, $calc->getPaperAddContent3Width(),$calc->getPaperAddContent3Height(),$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3(),0,$calc->getPagesAddContent3(),$part);
-					$product_max = $order->getProduct()->evalMaxProducts($ppp,$part,$calc->getPagesAddContent3(),false);
+					$product_max = $calc->getUsagePerPaper($part);
+					$papercount = $calc->getPaperCount($part,$machentry);
 
-//					prettyPrint('new: '.CalculationService::calcUsagePerSheet($order,$calc,$machentry,true));
-
-            		include('scheme.php');
+					include('scheme.php');
             		?>
             		<table>
             		<?
@@ -362,7 +372,7 @@ $perf = new Perferences();
             		?>
                 		<tr><td>
             				<? /*<u><?=$_LANG->get('zus. Inhalt 3')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-            				<u><?=$_LANG->get('zus. Inhalt 3')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br>
+								<u><?=$_LANG->get('Inhalt 4')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
             				<?=$c->getPaperAddContent3()->getName()?>, <?=$c->getPaperAddContent3Weight()?> <?=$_LANG->get('g')?>,<br>
             				<?=$c->getPaperAddContent3Width()?> x <?=$c->getPaperAddContent3Height()?> <?=$_LANG->get('mm')?>,
             				<?=$_CONFIG->anschnitt?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
@@ -383,7 +393,7 @@ $perf = new Perferences();
                 			    }
                 				?>
                 			</br>
-        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT3?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>"
+        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT3?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
             						width="700" height="700" ></object>
                 		</td></tr></br>
             			<?

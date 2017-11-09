@@ -555,9 +555,16 @@ $data[] = Array(	"Eigenschaft"		=> " ",
 					"Wert" 				=> printPrice($roh2));
 
 $pdf->ezNewPage();
-					
- $pdf->ezTable($data,$type,$dummy,$attr);
 
+$pdf->ezTable($data,$type,$dummy,$attr);
+
+// find folder and check if a foldtype is selected
+if ($_REQUEST['foldtype'] && $_REQUEST['foldtype'] > 0){
+	$foldtype = new Foldtype((int)$_REQUEST['foldtype']);
+	if ($foldtype->getId() > 0){
+		$pdf->ezImage('images/foldtypes/'.$foldtype->getPicture());
+	}
+}
 
 
 // Senden der Datei an den Browser

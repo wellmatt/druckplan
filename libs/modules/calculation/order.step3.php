@@ -468,25 +468,21 @@ echo $quickmove->generate();
                                                         echo '<select name="mach_papersize_'.$x.'" class="form-control">';
                                                         foreach($sizes as $s)
                                                         {
+                                                            $ppp = $calc->getUsagePerPaper($mach->getPart(),$s["width"],$s["height"]);
                                                             echo '<option value="'.$s["width"].'x'.$s["height"].'" ';
                                                             if($mach->getPart() == Calculation::PAPER_CONTENT) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(),0,$calc->getPagesContent(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperContentWidth() . 'x' . $calc->getPaperContentHeight()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent(),0,$calc->getPagesAddContent(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContentWidth() . 'x' . $calc->getPaperAddContentHeight()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ENVELOPE) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutEnvelope(),0,$calc->getPagesEnvelope(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperEnvelopeWidth() . 'x' . $calc->getPaperEnvelopeHeight()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT2) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2(),0,$calc->getPagesAddContent2(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContent2Width() . 'x' . $calc->getPaperAddContent2Height()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT3) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3(),0,$calc->getPagesAddContent3(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContent3Width() . 'x' . $calc->getPaperAddContent3Height()) echo 'selected';
                                                             }
                                                             echo '>';
@@ -663,26 +659,21 @@ echo $quickmove->generate();
                                                         echo '<select name="mach_papersize_'.$x.'" class="form-control">';
                                                         foreach($sizes as $s)
                                                         {
-//                                                            $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(),0,$mach->getPart());
+                                                            $ppp = $calc->getUsagePerPaper($mach->getPart(),$s["width"],$s["height"]);
                                                             echo '<option value="'.$s["width"].'x'.$s["height"].'" ';
                                                             if($mach->getPart() == Calculation::PAPER_CONTENT){
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutContent(),0,$calc->getPagesContent(),$mach->getPart());
                                                                 if ($s["width"].'x'.$s["height"] == $calc->getPaperContentWidth().'x'.$calc->getPaperContentHeight()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent(),0,$calc->getPagesAddContent(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContentWidth() . 'x' . $calc->getPaperAddContentHeight()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ENVELOPE) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutEnvelope(),0,$calc->getPagesEnvelope(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperEnvelopeWidth() . 'x' . $calc->getPaperEnvelopeHeight()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT2) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent2(),0,$calc->getPagesAddContent2(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContent2Width() . 'x' . $calc->getPaperAddContent2Height()) echo 'selected';
                                                             }
                                                             if($mach->getPart() == Calculation::PAPER_ADDCONTENT3) {
-                                                                $ppp = CalculationService::ProductsPerPaperSimple($order, $s["width"],$s["height"],$calc->getProductFormatWidthOpen(),$calc->getProductFormatHeightOpen(),$calc->getCutAddContent3(),0,$calc->getPagesAddContent3(),$mach->getPart());
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperAddContent3Width() . 'x' . $calc->getPaperAddContent3Height()) echo 'selected';
                                                             }
                                                             echo '>';

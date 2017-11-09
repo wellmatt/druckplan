@@ -77,49 +77,18 @@ Class CalculationService {
 
         return $ppp;
     }
-    
-    
-    /**
-     * @param Order $order
-     * @param $width
-     * @param $height
-     * @param $pwidth
-     * @param $pheight
-     * @param float $bleed
-     * @param int $direction
-     * @param int $pages
-     * @param int $part
-     * @return float|int
-     */
-    public static function ProductsPerPaperSimple($order, $width, $height, $pwidth, $pheight, $bleed = 0.0, $direction = 0, $pages = 0, $part = 0)
-    {
-        $ppp = 0; // products per paper
-        $pwidth += $bleed*2; // add bleed to product width
-        $pheight += $bleed*2; // add bleed to product height
-        $ppp1 = floor($width / $pwidth) * floor($height / $pheight); // calc products per paper
-        $ppp2 = floor($width / $pheight) * floor($height / $pwidth); // calc products per paper with width and height of product swapped
-        if ($ppp1>$ppp2)
-            $ppp = $ppp1;
-        else
-            $ppp = $ppp2;
-
-//        $ppp = $order->getProduct()->evalMaxProducts($ppp, $part, $pages);
-
-        return $ppp;
-    }
 
     /**
+     * @param Calculation $calc
      * @param $sizes
-     * @param $pwidth
-     * @param $pheight
-     * @param int $bleed
-     * @return string
+     * @param int $part
+     * @return array|mixed
      */
-    public static function SelectSmallestPaperForMaxPPP($order, $sizes, $pwidth, $pheight, $bleed = 0, $pages = 0, $part = 0)
+    public static function SelectSmallestPaperForMaxPPP(Calculation $calc, $sizes, $part = 0)
     {
         $array = [];
         foreach ($sizes as $size){
-            $ppp = self::ProductsPerPaperSimple($order, $size["width"], $size["height"], $pwidth, $pheight, $bleed, $pages, $part);
+            $ppp = $calc->getUsagePerPaper($part,$size["width"],$size["height"]);
             $array[$ppp][$size["width"]*$size["height"]] = $size["width"].'x'.$size["height"];
         }
         ksort($array, SORT_NUMERIC);
