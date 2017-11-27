@@ -28,6 +28,7 @@ $product = new Product($_REQUEST["id"]);
 $machgroups = MachineGroup::getAllMachineGroups(MachineGroup::ORDER_POSITION);
 $papers = Paper::getAllPapers(Paper::ORDER_NAME);
 $all_tradegroups = Tradegroup::getAllTradegroups();
+$foldtypes = Foldtype::getAllFoldTypes();
 
 // Falls kopieren, ID loeschen -> Maschine wird neu angelegt
 if($_REQUEST["exec"] == "copy")
@@ -146,6 +147,8 @@ if($_REQUEST["subexec"] == "save")
         $product->setSetmaxproductsEnvelope(1);
     else
         $product->setSetmaxproductsEnvelope(0);
+
+    $product->setDefaultFolding(new Foldtype((int)$_REQUEST['default_folding']));
 
     $product->setSetmaxproductsContentDiv((int)$_REQUEST["setmaxproducts_content_div"]);
     $product->setSetmaxproductsAddcontentDiv((int)$_REQUEST["setmaxproducts_addcontent_div"]);
@@ -324,6 +327,22 @@ echo $quickmove->generate();
                           <label for="" class="col-sm-3 control-label"></label>
                           <div class="col-sm-9">
                               <input type="checkbox" value="1" name="product_hasenvelope" onChange="togglePaperEnvelope()" id="product_hasenvelope"<?if($product->getHasEnvelope()) echo " checked ";?>> <?=$_LANG->get('Umschlag')?>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">Standard Falzart</label>
+                          <div class="col-sm-10">
+                              <select name="default_folding" id="default_folding" class="form-control">
+                                  <option value="0">- KEINE -</option>
+                                  <?php
+                                  foreach ($foldtypes as $foldtype) {
+                                      if ($foldtype->getId() == $product->getDefaultFolding()->getId())
+                                          echo '<option selected value="' . $foldtype->getId() . '">' . $foldtype->getName() . '</option>';
+                                      else
+                                          echo '<option value="' . $foldtype->getId() . '">' . $foldtype->getName() . '</option>';
+                                  }
+                                  ?>
+                              </select>
                           </div>
                       </div>
                   </div> <!-- Links ende -->

@@ -467,8 +467,8 @@ echo $quickmove->generate();
 
                                                         echo '<select name="mach_papersize_'.$x.'" class="form-control">';
                                                         foreach($sizes as $s)
-                                                        {
-                                                            $ppp = $calc->getUsagePerPaper($mach->getPart(),$s["width"],$s["height"]);
+                                                        { // rolldir
+                                                            $ppp = $calc->getUsagePerPaper($mach->getPart(),$s["height"],$s["width"]);
                                                             echo '<option value="'.$s["width"].'x'.$s["height"].'" ';
                                                             if($mach->getPart() == Calculation::PAPER_CONTENT) {
                                                                 if ($s["width"] . 'x' . $s["height"] == $calc->getPaperContentWidth() . 'x' . $calc->getPaperContentHeight()) echo 'selected';
@@ -659,7 +659,7 @@ echo $quickmove->generate();
                                                         echo '<select name="mach_papersize_'.$x.'" class="form-control">';
                                                         foreach($sizes as $s)
                                                         {
-                                                            $ppp = $calc->getUsagePerPaper($mach->getPart(),$s["width"],$s["height"]);
+                                                            $ppp = $calc->getUsagePerPaper($mach->getPart(),$s["height"],$s["width"]);
                                                             echo '<option value="'.$s["width"].'x'.$s["height"].'" ';
                                                             if($mach->getPart() == Calculation::PAPER_CONTENT){
                                                                 if ($s["width"].'x'.$s["height"] == $calc->getPaperContentWidth().'x'.$calc->getPaperContentHeight()) echo 'selected';
@@ -748,6 +748,7 @@ echo $quickmove->generate();
                                                         if ($mach->getMachine()->getBreaks() >= $ft->getBreaks()){
                                                             echo '<option data-url="'.$ft->getPicture().'" value="'.$ft->getId().'" ';
                                                             if($mach->getFoldtype()->getId() == $ft->getId()) echo "selected";
+                                                            elseif($mach->getFoldtype()->getId() == 0 && $ft->getId() == $order->getProduct()->getDefaultFolding()->getId()) echo "selected";
                                                             echo '>'.$ft->getName().'</option>';
                                                         }
                                                     }

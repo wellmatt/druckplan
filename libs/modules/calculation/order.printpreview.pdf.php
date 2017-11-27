@@ -111,31 +111,7 @@ if($part != Calculation::PAPER_ENVELOPE){
 $width_closed     = $calc->getProductFormatWidth();
 $height_closed     = $calc->getProductFormatHeight();
 
-if ($rolldir == 0)
-    $direction = $paper->getPaperDirection($calc, $part);
-elseif ($rolldir == 1) // breite bahn
-{
-    $direction = Paper::PAPER_DIRECTION_SMALL;
-    if ($paperH > $paperW)
-    {
-        $paperH_temp = $paperH;
-        $paperW_temp = $paperW;
-        $paperH = $paperW;
-        $paperW = $paperH_temp;
-    }
-}
-else // schmale bahn
-{ 
-    $direction = Paper::PAPER_DIRECTION_WIDE;
-    if ($paperW > $paperH)
-    {
-        $paperH_temp = $paperH;
-        $paperW_temp = $paperW;
-        $paperW = $paperH;
-        $paperH = $paperW_temp;
-    }
-}
-    
+
 if ($height == $height_closed && $width == $width_closed){
     $product_max_closed = $product_max_open;
 } else {
@@ -223,8 +199,7 @@ $product_per_line2_closed   = floor(($paperW - $mach->getBorder_left() - $mach->
 $product_rows2_closed       = floor(($paperH - $mach->getBorder_top() - $mach->getBorder_bottom() - $tmp_farbrand) / $usesize_height2) * $multiRows;
 $product_per_paper2  = $product_per_line2 * $product_rows2;
 
-
-if($product_per_paper2 >= $product_per_paper){ //  || $rolldir == 1
+if(($product_per_paper2 >= $product_per_paper & $rolldir == 0) || $rolldir == 2){ // rolldir
 	$flipped = true;
 	$product_rows     = $product_rows2;
 	$product_per_line = $product_per_line2;
@@ -276,11 +251,11 @@ if ($tmp_anschnitt > 0){
 
 
 // PDF initialisieren
-if ($direction == Paper::PAPER_DIRECTION_SMALL){
+//if ($direction == Paper::PAPER_DIRECTION_SMALL){
 	$pdf_direction = 'landscape';
-} else {
-	$pdf_direction = 'portrait';
-}
+//} else {
+//	$pdf_direction = 'portrait';
+//}
 $format[0] = $paperW/10;
 $format[1] = $paperH/10;
 
@@ -450,15 +425,10 @@ $data[] = Array(	"Eigenschaft"		=> " ",
 					"Wert" 				=> $laufrichtung);
  
  if($mach->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET) {
-     if ((int)$machentry->getUmschl() == 1)
+     if ((int)$machentry->getUmschlagenUmstuelpen() == 1)
      {
          $data[] = Array(	"Eigenschaft"		=> "Druckart: ",
-        					"Wert" 				=> "Umschlagen");
-     }
-     elseif ((int)$machentry->getUmst() == 1)
-     {
-         $data[] = Array(	"Eigenschaft"		=> "Druckart: ",
-        					"Wert" 				=> "Umschtuelpen");
+        					"Wert" 				=> "Umschlagen / Umschtuelpen");
      }
      else
      {

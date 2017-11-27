@@ -39,6 +39,7 @@ class Perferences
 
     private $deactivate_manual_articles = 0;
     private $decativate_manual_delivcost = 0;
+    private $toggle_useadrmail = 0;
 
     // Mail
 
@@ -61,11 +62,12 @@ class Perferences
     private $imap_tls = 0;
     private $system_signature = '';
 
-    private $mailtext_senddocs = '';
 
-    // Shop
+    // Texte
 
-    private $mailtext_confirmation = '';
+    private $mailtext_senddocs = ''; // Vorgang Dokumente Mail senden
+    private $mailtext_senddocs_title = ''; // Vorgang Dokumente Mail senden Titel
+    private $mailtext_confirmation = ''; // Shop Bestätigung
 
     // Buchhaltung
 
@@ -121,6 +123,7 @@ class Perferences
             $this->decativate_manual_delivcost = $r["decativate_manual_delivcost"];
             $this->mailtext_confirmation = $r["mailtext_confirmation"];
             $this->mailtext_senddocs = $r["mailtext_senddocs"];
+            $this->mailtext_senddocs_title = $r["mailtext_senddocs_title"];
             $this->default_revenue = new RevenueaccountCategory((int)$r["default_revenue"]);
             $this->default_costobject = new CostObject((int)$r["default_costobject"]);
             $this->inkusage = $r["inkusage"];
@@ -133,6 +136,7 @@ class Perferences
             $this->calc_margin = $r["calc_margin"];
             $this->calc_discount = $r["calc_discount"];
             $this->calc_material_processing_charge = $r["calc_material_processing_charge"];
+            $this->toggle_useadrmail = $r["toggle_useadrmail"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -154,6 +158,9 @@ class Perferences
         }
         if (strlen($this->mailtext_senddocs) == 0 || $this->mailtext_senddocs == NULL){
             $this->mailtext_senddocs = 'Sehr geehrte/r Frau/Herr %CP%<br><br>bitte entnehmen Sie die Dokumente zum oben genannten Vorgang aus dem Anhang.<br>';
+        }
+        if (strlen($this->mailtext_senddocs_title) == 0 || $this->mailtext_senddocs_title == NULL){
+            $this->mailtext_senddocs_title = 'Ihr Vorgang: %VONR% - %VONAME%';
         }
 
     }
@@ -207,12 +214,14 @@ class Perferences
                decativate_manual_delivcost 	= '{$this->decativate_manual_delivcost}',
                mailtext_confirmation 	= '{$this->mailtext_confirmation}',
                mailtext_senddocs 	= '{$this->mailtext_senddocs}',
+               mailtext_senddocs_title 	= '{$this->mailtext_senddocs_title}',
                default_revenue 	= '{$this->default_revenue->getId()}',
                default_costobject 	= '{$this->default_costobject->getId()}',
                inkusage = '{$this->inkusage}',
                minmargin = '{$this->minmargin}',
                saxocp = '{$this->saxocp}',
                saxobc = '{$this->saxobc}',
+               toggle_useadrmail = '{$this->toggle_useadrmail}',
                saxoapikey = '{$this->saxoapikey}',
                calc_discount = '{$this->calc_discount}',
                calc_margin = '{$this->calc_margin}',
@@ -878,5 +887,37 @@ class Perferences
     public function setCalcMaterialProcessingCharge($calc_material_processing_charge)
     {
         $this->calc_material_processing_charge = $calc_material_processing_charge;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailtextSenddocsTitle()
+    {
+        return $this->mailtext_senddocs_title;
+    }
+
+    /**
+     * @param string $mailtext_senddocs_title
+     */
+    public function setMailtextSenddocsTitle($mailtext_senddocs_title)
+    {
+        $this->mailtext_senddocs_title = $mailtext_senddocs_title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getToggleUseadrmail()
+    {
+        return $this->toggle_useadrmail;
+    }
+
+    /**
+     * @param int $toggle_useadrmail
+     */
+    public function setToggleUseadrmail($toggle_useadrmail)
+    {
+        $this->toggle_useadrmail = $toggle_useadrmail;
     }
 }

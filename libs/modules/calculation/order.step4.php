@@ -664,6 +664,7 @@ echo $quickmove->generate();
                         <td class="content_row_header value">
                             <?=printPrice($calc->getSubMaterial()) ; ?>
                             <?=$_USER->getClient()->getCurrency()?>
+                            ( <?php echo printPrice(($calc->getSubMaterial() / $calc->getPricesub() * 100));?>% )
                         </td>
                     <? } ?>
                 </tr>
@@ -752,7 +753,10 @@ echo $quickmove->generate();
                 <tr>
                     <td class="content_row_header"><?=$_LANG->get('Fertigungskosten')?></td>
                     <? foreach($calculations as $calc) { ?>
-                        <td class="content_row_header value" align="center"><?=printPrice($calc->getSubProcessing());?> <?=$_USER->getClient()->getCurrency()?></td>
+                        <td class="content_row_header value" align="center">
+                            <?=printPrice($calc->getSubProcessing());?> <?=$_USER->getClient()->getCurrency()?>
+                            ( <?php echo printPrice(($calc->getSubProcessing() / $calc->getPricesub() * 100));?>% )
+                        </td>
                     <? } ?>
                 </tr>
 

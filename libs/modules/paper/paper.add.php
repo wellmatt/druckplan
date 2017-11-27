@@ -626,7 +626,7 @@ echo $quickmove->generate();
 
                                       // Falls noch keine Preise existieren, Preise vorgaukeln
                                       if(count($prices) == 0)
-                                          $prices[] = Array("size_width" => $s["width"], "size_height" => $s["height"]);
+                                          $prices[] = Array("size_width" => $s["width"], "size_height" => $s["height"], "quantity_from" => 1);
 
                                       $x = 0;
                                       foreach ($prices as $price) {

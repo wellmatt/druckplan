@@ -29,6 +29,7 @@ if ($_REQUEST["exec"] == "save_a")
     $address->setMobil(trim(addslashes($_REQUEST["mobil"])));
     $address->setPhone(trim(addslashes($_REQUEST["phone"])));
     $address->setFax(trim(addslashes($_REQUEST["fax"])));
+    $address->setEmail(trim(addslashes($_REQUEST["email"])));
     $address->setCountry(new Country (trim(addslashes($_REQUEST["country"]))));
     $address->setShoprel($_REQUEST["adr_shoprel"]);
     $address->setDefault($_REQUEST["adr_default"]);
@@ -124,6 +125,12 @@ $countries = Country::getAllCountries();
 				  <label for="" class="col-sm-3 control-label">Mobil</label>
 				  <div class="col-sm-4">
 					  <input name="mobil" class="form-control" value="<?=$address->getMobil()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-3 control-label">E-Mail</label>
+				  <div class="col-sm-4">
+					  <input name="email" class="form-control" value="<?=$address->getEmail()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 				  </div>
 			  </div>
 			  <div class="form-group">

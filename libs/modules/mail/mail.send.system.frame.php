@@ -83,8 +83,20 @@ if ($_REQUEST["fromColinv"] > 0){
     foreach ($docs as $doc) {
         $attachments[] = ["name"=>$doc->getName(), "filename"=>$doc->getFilename(Document::VERSION_EMAIL), "docid"=>$doc->getId()];
     }
-    $preset_mail_to = $colinv->getCustContactperson()->getEmail();
-    $preset_mail_subject = 'Ihr Vorgang: '.$colinv->getNumber().' - '.$colinv->getTitle();
+
+    if ($perf->getToggleUseadrmail() == 0)
+        $preset_mail_to = $colinv->getCustContactperson()->getEmail();
+    else {
+        if ($colinv->getInvoiceAddress()->getEmail() != '')
+            $preset_mail_to = $colinv->getInvoiceAddress()->getEmail();
+        else
+            $preset_mail_to = $colinv->getCustContactperson()->getEmail();
+    }
+
+    $tmp_title = $perf->getMailtextSenddocsTitle();
+    $tmp_title = str_replace('%VONR%',$colinv->getNumber(),$tmp_title);
+    $tmp_title = str_replace('%VONAME%',$colinv->getTitle(),$tmp_title);
+    $preset_mail_subject = $tmp_title;
 
     $preset_mail_content = $perf->getMailtextSenddocs().'<br>'.$perf->getSystemSignature();
     $preset_mail_content = str_replace('%CP%',$colinv->getCustContactperson()->getName1(),$preset_mail_content);

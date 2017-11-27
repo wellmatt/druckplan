@@ -681,10 +681,10 @@ class Machine
             } else if($this->unit == Machine::UNIT_PERHOUR_BOGEN)
             {
                 if($machineEntry->getPart() > 0){
-                    $time = 60 / ($this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) / $calc->getPaperCount($machineEntry->getPart()));
+                    $time = 60 / ($this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) / $calc->getPaperCountTotalRuns($machineEntry->getPart(),$machineEntry));
                     if ($debug) {
-                        echo '$time = 60 / (' . $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) . ' / ' . $calc->getPaperCount($machineEntry->getPart()) . ') </br>';
-                        echo 'zu Druckende Seiten (Auflage*Umfang/Produkte pro Seite) = ' . $calc->getPaperCount($machineEntry->getPart()) . '</br>';
+                        echo '$time = 60 / (' . $this->getUnitsPerHour($calc->getPaperCount($machineEntry->getPart())) . ' / ' . $calc->getPaperCountTotalRuns($machineEntry->getPart(),$machineEntry) . ') </br>';
+                        echo 'zu Druckende Seiten (Auflage*Umfang/Produkte pro Seite) = ' . $calc->getPaperCountTotalRuns($machineEntry->getPart(),$machineEntry) . '</br>';
                         echo 'Produkte pro Seite = ' . $calc->getProductsPerPaper($machineEntry->getPart()) . '</br>';
                     }
                 }

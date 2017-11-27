@@ -76,7 +76,11 @@ if ($_REQUEST["exec"] == "save")
 	} else {
 		$perf->setDecativateManualDelivcost(0);
 	}
-
+	if ($_REQUEST["toggle_useadrmail"] == 1){
+		$perf->setToggleUseadrmail(1);
+	} else {
+		$perf->setToggleUseadrmail(0);
+	}
 
 	$perf->setMailSender($_REQUEST["mail_sender"]);
 	$perf->setSmtpAddress($_REQUEST["smtp_address"]);
@@ -113,6 +117,7 @@ if ($_REQUEST["exec"] == "save")
 
 	$perf->setMailtextConfirmation(trim(addslashes($_REQUEST["mailtext_confirmation"])));
 	$perf->setMailtextSenddocs(trim(addslashes($_REQUEST["mailtext_senddocs"])));
+	$perf->setMailtextSenddocsTitle(trim(addslashes($_REQUEST["mailtext_senddocs_title"])));
 	$perf->setDefaultRevenue(new RevenueaccountCategory($_REQUEST["revenueaccount"]));
 	$perf->setDefaultCostobject(new CostObject($_REQUEST["costobject"]));
 	$perf->setMinmargin(str_replace(",",".",str_replace(".","",$_REQUEST["minmargin"])));
@@ -737,6 +742,16 @@ echo $quickmove->generate();
 							</div>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Nutze Adress-Email statt ASP Email beim Versenden von Dokumenten</label>
+						<div class="col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="toggle_useadrmail" id="toggle_useadrmail" value="1" <?php if ($perf->getToggleUseadrmail()) echo ' checked ';?>>
+								</label>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div id="tabs-8">
 					Kundenportal:<br>
@@ -748,6 +763,13 @@ echo $quickmove->generate();
 						</div>
 					</div>
 					Vorgang:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Dokumente versenden Betreff</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="mailtext_senddocs_title" id="mailtext_senddocs_title" value="<?= $perf->getMailtextSenddocsTitle() ?>">
+							** Verfügbare Variablen: %VONR%, %VONAME%
+						</div>
+					</div>
 					<div class="form-group">
 						<label for="" class="col-sm-2 control-label">Dokumente versenden</label>
 						<div class="col-sm-10">

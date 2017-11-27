@@ -139,7 +139,8 @@
         }
         $sTagArticles = Array();
         $tQuery = "SELECT article, count(article) as count FROM article_tags WHERE 1=2 {$tag_where} GROUP BY article";
-        $rResultStags = mysqli_query( $tQuery, $gaSql['link'] ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
+//        var_dump($tQuery);
+        $rResultStags = mysqli_query( $gaSql['link'], $tQuery ) or fatal_error( 'MySQL Error: ' . mysqli_errno( $gaSql['link'] ) );
         while ($stag_row = mysqli_fetch_array($rResultStags))
         {
             if ($stag_row["count"] >= count($tags))

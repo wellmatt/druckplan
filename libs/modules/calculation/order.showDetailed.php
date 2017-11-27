@@ -212,10 +212,8 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                               <li class="list-group-item">
                                                                   <span class="badge">
                                                                       <?php
-                                                                      if ((int)$me->getUmschl() == 1)
-                                                                          echo 'Umschlagen';
-                                                                      elseif ((int)$me->getUmst() == 1)
-                                                                          echo 'Umscht&uuml;lpen';
+                                                                      if ((int)$me->getUmschlagenUmstuelpen() == 1)
+                                                                          echo 'Umschlagen / Umscht&uuml;lpen';
                                                                       else
                                                                           echo 'Sch&ouml;n & Wider';
                                                                       ?>

@@ -30,6 +30,7 @@ class Address {
 	private $phone;
 	private $mobil;
 	private $fax;
+	private $email;
 	private $shoprel;	//gln, Shopfreigabe (nur fuer Lieferadresse)
 	private $default = 0;
 
@@ -57,6 +58,7 @@ class Address {
                 $this->zip = $res[0]["zip"];
                 $this->city = $res[0]["city"];
                 $this->fax = $res[0]["fax"];
+                $this->email = $res[0]["email"];
                 $this->phone = $res[0]["phone"];
                 $this->mobil = $res[0]["mobile"];
                 $this->shoprel = $res[0]["shoprel"];
@@ -156,6 +158,7 @@ class Address {
             zip = '{$this->zip}',
             city = '{$this->city}',
             fax = '{$this->fax}',
+            email = '{$this->email}',
             phone = '{$this->phone}',
             mobile = '{$this->mobil}',
             country = '{$this->country->getId()}',		
@@ -170,11 +173,11 @@ class Address {
 			$sql = " INSERT INTO address
 		            (active, businesscontact, name1, name2, 
 		            address1, address2, zip, city, 
-		            country, fax, phone, mobile, shoprel, is_default)
+		            country, fax, email, phone, mobile, shoprel, is_default)
 		            VALUES
 		            ('{$this->active}', '{$this->businessContact->getID()}', '{$this->name1}', '{$this->name2}', 
 		            '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}',  
-					'{$this->country->getId()}', '{$this->fax}', '{$this->phone}','{$this->mobil}','{$this->shoprel}','{$this->default}')";
+					'{$this->country->getId()}', '{$this->fax}', '{$this->email}', '{$this->phone}','{$this->mobil}','{$this->shoprel}','{$this->default}')";
 					//gln, neu: shoprel
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
 			if ($res)
@@ -336,5 +339,21 @@ class Address {
 	{
 	    $this->default = $default;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
 }
 ?>
