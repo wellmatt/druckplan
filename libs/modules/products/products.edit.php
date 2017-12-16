@@ -148,6 +148,11 @@ if($_REQUEST["subexec"] == "save")
     else
         $product->setSetmaxproductsEnvelope(0);
 
+    if ($_REQUEST['usageoverride'] == 1)
+        $product->setUsageoverride(1);
+    else
+        $product->setUsageoverride(0);
+
     $product->setDefaultFolding(new Foldtype((int)$_REQUEST['default_folding']));
 
     $product->setSetmaxproductsContentDiv((int)$_REQUEST["setmaxproducts_content_div"]);
@@ -330,8 +335,8 @@ echo $quickmove->generate();
                           </div>
                       </div>
                       <div class="form-group">
-                          <label for="" class="col-sm-2 control-label">Standard Falzart</label>
-                          <div class="col-sm-10">
+                          <label for="" class="col-sm-3 control-label">Standard Falzart</label>
+                          <div class="col-sm-9">
                               <select name="default_folding" id="default_folding" class="form-control">
                                   <option value="0">- KEINE -</option>
                                   <?php
@@ -343,6 +348,16 @@ echo $quickmove->generate();
                                   }
                                   ?>
                               </select>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Nutzen überschreibbar</label>
+                          <div class="col-sm-9">
+                              <div class="checkbox">
+                                  <label>
+                                      <input type="checkbox" name="usageoverride" id="usageoverride" value="1" <?php if ($product->getUsageoverride() == 1) echo ' checked ';?>>
+                                  </label>
+                              </div>
                           </div>
                       </div>
                   </div> <!-- Links ende -->

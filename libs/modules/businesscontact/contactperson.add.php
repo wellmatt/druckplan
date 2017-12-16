@@ -16,7 +16,8 @@ $all_attributes = Attribute::getAllAttributesForContactperson();
 
 // Bei neuem Ansprechpartner sollen die Daten der Firma kopiert werden, da sich dort meist nciht viel aendert
 if($_REQUEST["cpid"] == 0){
-	$contactperson->setAddress1($business->getAddress1());
+	$contactperson->setStreet($business->getStreet());
+	$contactperson->setHouseno($business->getHouseno());
 	$contactperson->setAddress2($business->getAddress2());
 	$contactperson->setZip($business->getZip());
 	$contactperson->setCity($business->getCity());
@@ -34,7 +35,8 @@ if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Permission::CP_ED
     $contactperson->setTitle(trim(addslashes($_REQUEST["title"])));
     $contactperson->setName1(trim(addslashes($_REQUEST["name1"])));
     $contactperson->setName2(trim(addslashes($_REQUEST["name2"])));
-    $contactperson->setAddress1(trim(addslashes($_REQUEST["address1"])));
+    $contactperson->setStreet(trim(addslashes($_REQUEST["street"])));
+    $contactperson->setHouseno(trim(addslashes($_REQUEST["houseno"])));
     $contactperson->setAddress2(trim(addslashes($_REQUEST["address2"])));
     $contactperson->setZip(trim(addslashes($_REQUEST["zip"])));
     $contactperson->setCity(trim(addslashes($_REQUEST["city"])));
@@ -61,7 +63,8 @@ if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Permission::CP_ED
     
     $contactperson->setAlt_name1(trim(addslashes($_REQUEST["alt_name1"])));
     $contactperson->setAlt_name2(trim(addslashes($_REQUEST["alt_name2"])));
-    $contactperson->setAlt_address1(trim(addslashes($_REQUEST["alt_address1"])));
+    $contactperson->setAltStreet(trim(addslashes($_REQUEST["alt_street"])));
+    $contactperson->setAltHouseno(trim(addslashes($_REQUEST["alt_houseno"])));
     $contactperson->setAlt_address2(trim(addslashes($_REQUEST["alt_address2"])));
     $contactperson->setAlt_zip(trim(addslashes($_REQUEST["alt_zip"])));
     $contactperson->setAlt_city(trim(addslashes($_REQUEST["alt_city"])));
@@ -73,7 +76,8 @@ if ($_REQUEST["exec"] == "save_cp" && $_USER->hasRightsByGroup(Permission::CP_ED
     
     $contactperson->setPriv_name1(trim(addslashes($_REQUEST["priv_name1"])));
     $contactperson->setPriv_name2(trim(addslashes($_REQUEST["priv_name2"])));
-    $contactperson->setPriv_address1(trim(addslashes($_REQUEST["priv_address1"])));
+    $contactperson->setPrivStreet(trim(addslashes($_REQUEST["priv_street"])));
+    $contactperson->setPrivHouseno(trim(addslashes($_REQUEST["priv_houseno"])));
     $contactperson->setPriv_address2(trim(addslashes($_REQUEST["priv_address2"])));
     $contactperson->setPriv_zip(trim(addslashes($_REQUEST["priv_zip"])));
     $contactperson->setPriv_city(trim(addslashes($_REQUEST["priv_city"])));
@@ -266,9 +270,15 @@ echo $quickmove->generate();
 						   </div>
 					   </div>
 					   <div class="form-group">
-						   <label for="" class="col-sm-3 control-label">Adresse.1</label>
+						   <label for="" class="col-sm-3 control-label">Straße</label>
 						   <div class="col-sm-9">
-							   <input name="address1" class="form-control" value="<?=$contactperson->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							   <input name="street" class="form-control" value="<?=$contactperson->getStreet()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Hausnummer</label>
+						   <div class="col-sm-9">
+							   <input name="houseno" class="form-control" value="<?=$contactperson->getHouseno()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						   </div>
 					   </div>
 					   <div class="form-group">
@@ -427,9 +437,15 @@ echo $quickmove->generate();
 						   </div>
 					   </div>
 					   <div class="form-group">
-						   <label for="" class="col-sm-3 control-label">Adresse.1</label>
+						   <label for="" class="col-sm-3 control-label">Straße</label>
 						   <div class="col-sm-9">
-							   <input name="alt_address1" class="form-control" value="<?=$contactperson->getAlt_address1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							   <input name="alt_street" class="form-control" value="<?=$contactperson->getAltStreet()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Hausnummer</label>
+						   <div class="col-sm-9">
+							   <input name="alt_houseno" class="form-control" value="<?=$contactperson->getAltHouseno()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						   </div>
 					   </div>
 					   <div class="form-group">
@@ -555,9 +571,15 @@ echo $quickmove->generate();
 						   </div>
 					   </div>
 					   <div class="form-group">
-						   <label for="" class="col-sm-3 control-label">Adresse.1</label>
+						   <label for="" class="col-sm-3 control-label">Straße</label>
 						   <div class="col-sm-9">
-							   <input name="priv_address1" class="form-control" value="<?=$contactperson->getPriv_address1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							   <input name="priv_street" class="form-control" value="<?=$contactperson->getPrivStreet()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Hausnummer</label>
+						   <div class="col-sm-9">
+							   <input name="priv_houseno" class="form-control" value="<?=$contactperson->getPrivHouseno()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						   </div>
 					   </div>
 					   <div class="form-group">

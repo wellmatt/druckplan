@@ -15,6 +15,7 @@ $positions = Orderposition::getAllOrderposition($origin->getId());
         $article = new Article($position->getObjectid());
         if ($article->getUsesstorage()){
             $storages = StorageArea::getStoragesPrioArticle($article);
+//            prettyPrint($storages);
             $bookamount = StorageBookEnrty::calcutateToBookAmount($position);
             if ($bookamount>0){?>
 

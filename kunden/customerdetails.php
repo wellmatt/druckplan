@@ -52,7 +52,8 @@ if($_REQUEST["subexec"] == "save"){
 		$address->setShoprel(1);	//gln
     	$address->setName1(trim(addslashes($_REQUEST["name1"])));
 	    $address->setName2(trim(addslashes($_REQUEST["name2"])));
-    	$address->setAddress1(trim(addslashes($_REQUEST["address1"])));
+    	$address->setStreet(trim(addslashes($_REQUEST["street"])));
+    	$address->setHouseno(trim(addslashes($_REQUEST["houseno"])));
 	    $address->setAddress2(trim(addslashes($_REQUEST["address2"])));
 	    $address->setZip(trim(addslashes($_REQUEST["zip"])));
 	    $address->setCity(trim(addslashes($_REQUEST["city"])));
@@ -73,7 +74,8 @@ if($_REQUEST["subexec"] == "save"){
 		$r_address->setShoprel(1);	//gln
     	$r_address->setName1(trim(addslashes($_REQUEST["r_name1"])));
 	    $r_address->setName2(trim(addslashes($_REQUEST["r_name2"])));
-    	$r_address->setAddress1(trim(addslashes($_REQUEST["r_address1"])));
+		$r_address->setStreet(trim(addslashes($_REQUEST["r_street"])));
+		$r_address->setHouseno(trim(addslashes($_REQUEST["r_houseno"])));
 	    $r_address->setAddress2(trim(addslashes($_REQUEST["r_address2"])));
 	    $r_address->setZip(trim(addslashes($_REQUEST["r_zip"])));
 	    $r_address->setCity(trim(addslashes($_REQUEST["r_city"])));
@@ -228,7 +230,13 @@ function askDel(myurl)
 					  <div class="row">
 						  <div class="col-sm-3">Straße</div>
 						  <div class="col-sm-4 ">
-							  <?=$busicon->getAddress1()?>
+							  <?=$busicon->getStreet()?>
+						  </div>
+					  </div>
+					  <div class="row">
+						  <div class="col-sm-3">Hausnummer</div>
+						  <div class="col-sm-4 ">
+							  <?=$busicon->getHouseno()?>
 						  </div>
 					  </div>
 					  <div class="row">
@@ -316,10 +324,19 @@ function askDel(myurl)
 						</div>
 
 						<div class="form-group">
-							<label for="" class="col-sm-2 control-label">Adresse</label>
+							<label for="" class="col-sm-2 control-label">Straße</label>
 							<div class="col-sm-5">
-								<input name="address1"
-									   class="form-control" value="<?=$address->getAddress1()?>"
+								<input name="street"
+									   class="form-control" value="<?=$address->getStreet()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Hausnummer</label>
+							<div class="col-sm-5">
+								<input name="houseno"
+									   class="form-control" value="<?=$address->getHouseno()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
 						</div>
@@ -427,10 +444,19 @@ function askDel(myurl)
 						</div>
 
 						<div class="form-group">
-							<label for="" class="col-sm-2 control-label">Adresse</label>
+							<label for="" class="col-sm-2 control-label">Straße</label>
 							<div class="col-sm-5">
-								<input name="r_address1"
-									   class="form-control" value="<?=$address->getAddress1()?>"
+								<input name="r_street"
+									   class="form-control" value="<?=$address->getStreet()?>"
+									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Hausnummer</label>
+							<div class="col-sm-5">
+								<input name="r_houseno"
+									   class="form-control" value="<?=$address->getHouseno()?>"
 									   onfocus="markfield(this,0)" onblur="markfield(this,1)">
 							</div>
 						</div>
@@ -553,7 +579,7 @@ function askDel(myurl)
 										  <? if ($deliv->getDefault() == 1) echo ' (Standard)'; ?>
 									  </td>
 									  <td>
-										  <?=$deliv->getAddress1()?> <?=$deliv->getAddress2()?>
+										  <?=$deliv->getStreet()?> <?=$deliv->getHouseno()?> <?=$deliv->getAddress2()?>
 									  </td>
 									  <td>
 										  <?=$deliv->getZip()?> <?=$deliv->getCity()?>
@@ -614,7 +640,7 @@ function askDel(myurl)
 											  <? if ($invoiceadr->getDefault() == 1) echo ' (Standard)'; ?>
 										  </td>
 										  <td>
-											  <?=$invoiceadr->getAddress1()?> <?=$invoiceadr->getAddress2()?>
+											  <?=$invoiceadr->getStreet()?> <?=$invoiceadr->getHouseno()?> <?=$invoiceadr->getAddress2()?>
 										  </td>
 										  <td>
 											  <?=$invoiceadr->getZip()?> <?=$invoiceadr->getCity()?>

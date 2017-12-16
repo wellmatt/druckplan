@@ -889,7 +889,7 @@ class CollectiveInvoice{
 		// add delivery cost to equation
 		if ($this->deliveryterm->getId() > 0) {
 			$delivtax = $this->deliveryterm->getTaxkey()->getValue();
-			$tax[$delivtax][] = [roundPrice($this->deliveryterm->getCharges()),roundPrice($this->deliveryterm->getCharges() + $this->deliveryterm->getCharges() / 100 * 19),0];
+			$tax[$delivtax][] = [roundPrice($this->deliveryterm->getCharges()),roundPrice($this->deliveryterm->getCharges() + $this->deliveryterm->getCharges() / 100 * $delivtax),0];
 		}
 
 		// sum up values of different taxkeys

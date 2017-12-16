@@ -1048,6 +1048,11 @@ if((int)$_REQUEST["step"] == 3){
 
 					$entry->setAddworkeramount((int)$_REQUEST["mach_addworkeramount_{$id}"]);
 
+					if ((int)$_REQUEST["mach_usageoverride_{$id}"] > 0)
+						$entry->setUsageoverride((int)$_REQUEST["mach_usageoverride_{$id}"]);
+					else
+						$entry->setUsageoverride(0);
+
 					$entry->save();
 					if($entry->getMachine()->getPriceBase() == Machine::PRICE_VARIABEL){
 						$entry->setPrice((float)sprintf("%.4f", (float)str_replace(",", ".", str_replace(".", "", $_REQUEST["mach_manprice_{$id}"]))));

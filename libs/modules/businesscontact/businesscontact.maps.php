@@ -56,7 +56,7 @@ $bc = new BusinessContact($_REQUEST["bcid"]);
   var geocoder;
   var map;
   function initialize() {
-    var address = "<?=$bc->getAddress1()?> <?=$bc->getAddress2()?>, <?=$bc->getZip()?> <?=$bc->getCity()?>";
+    var address = "<?=$bc->getStreet()?> <?=$bc->getHouseno()?> <?=$bc->getAddress2()?>, <?=$bc->getZip()?> <?=$bc->getCity()?>";
     geocoder = new google.maps.Geocoder();
     var latlng = new google.maps.LatLng(-34.397, 150.644);
     var myOptions = {

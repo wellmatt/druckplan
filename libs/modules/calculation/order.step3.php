@@ -441,6 +441,12 @@ echo $quickmove->generate();
                                                     echo '<input name="mach_addworkeramount_'.$x.'" id="mach_addworkeramount_'.$x.'" class="form-control" value="'.$mach->getAddworkeramount().'">';
                                                     echo '</div></div></div>';
 
+                                                    // Nutzen ueberschreiben
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Nutzen überschreiben</label><div class="input-group col-md-4">';
+                                                    echo '<input name="mach_usageoverride_'.$x.'" id="mach_usageoverride_'.$x.'" class="form-control" value="'.$mach->getUsageoverride().'">';
+                                                    echo '</div></div></div>';
+
                                                     // Hinweise
                                                     echo '<div class="col-md-12"><div class="form-group">';
                                                     echo '<label class="control-label">Hinweise</label><div class="input-group col-md-12">';
@@ -621,6 +627,12 @@ echo $quickmove->generate();
                                                     echo '<div class="col-md-4"><div class="form-group">';
                                                     echo '<label class="control-label">Anz. Hilfsarb.</label><div class="input-group col-md-4">';
                                                     echo '<input name="mach_addworkeramount_'.$x.'" id="mach_addworkeramount_'.$x.'" class="form-control" value="'.$mach->getAddworkeramount().'">';
+                                                    echo '</div></div></div>';
+
+                                                    // Nutzen ueberschreiben
+                                                    echo '<div class="col-md-4"><div class="form-group">';
+                                                    echo '<label class="control-label">Nutzen überschreiben</label><div class="input-group col-md-4">';
+                                                    echo '<input name="mach_usageoverride_'.$x.'" id="mach_usageoverride_'.$x.'" class="form-control" value="'.$mach->getUsageoverride().'">';
                                                     echo '</div></div></div>';
 
                                                     // Hinweise

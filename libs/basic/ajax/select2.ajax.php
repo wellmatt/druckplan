@@ -33,6 +33,15 @@ if ($_REQUEST["ajax_action"] == "search_cp"){
     $retval['items'] = $items;
     header("Content-Type: application/json");
     echo json_encode($items);
+} elseif ($_REQUEST["ajax_action"] == "search_collectiveinvoice"){
+    $items = [];
+    $allcolinvs = CollectiveInvoice::getAllCollectiveInvoice( CollectiveInvoice::ORDER_NUMBER, " AND (number LIKE '%{$_REQUEST['term']}%' OR title LIKE '%{$_REQUEST['term']}%') AND `status` = 5 ");
+    foreach ($allcolinvs as $ci){
+        $items[] = Array("id" => $ci->getId(), "text" => $ci->getNumber() . ' - ' . $ci->getTitle());
+    }
+    $retval['items'] = $items;
+    header("Content-Type: application/json");
+    echo json_encode($items);
 } elseif ($_REQUEST["ajax_action"] == "search_commissionpartner"){
     $items = [];
     $allcommissionpartners = BusinessContact::getAllCommissionpartners(" (name1 LIKE '%{$_REQUEST['term']}%' OR name2 LIKE '%{$_REQUEST['term']}%') ");

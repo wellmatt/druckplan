@@ -56,7 +56,7 @@ class ExportJson{
                 "customer" => [
                     "name" => $colinv->getCustomer()->getNameAsLine(),
                     "number" => $colinv->getCustomer()->getCustomernumber(),
-                    "street" => $colinv->getCustomer()->getAddress1(),
+                    "street" => $colinv->getCustomer()->getStreet().' '.$colinv->getCustomer()->getHouseno(),
                     "zipcode" => $colinv->getCustomer()->getZip(),
                     "city" => $colinv->getCustomer()->getCity()
                 ],

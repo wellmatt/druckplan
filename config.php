@@ -45,6 +45,8 @@ $_CONFIG->cache->mail_getNewCount = 60*5; // New Mail Count in Menubar
 $_CONFIG->cache->user_contruct = 60*5; // User Class Data Caching
 $_CONFIG->cache->menu = 60*15; // User Menu Caching
 
+// Misc
+$_CONFIG->dpv3user = 5;
 
 error_reporting(E_ALL &~E_NOTICE & ~E_DEPRECATED);
 

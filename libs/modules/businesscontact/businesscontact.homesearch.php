@@ -52,7 +52,7 @@ if ($main_searchstring != "" && $main_searchstring!=NULL){
 				<?=$bc->getCity()?>&nbsp;
 			</td>
 			<td class="content_row pointer" onclick="document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$bc->getId()?>'">
-				<?=$bc->getAddress1()?>&nbsp;
+				<?=$bc->getStreet()?>&nbsp;<?=$bc->getHouseno()?>
 			</td>
 			<td class="content_row">
 			<? 
@@ -91,7 +91,7 @@ if ($main_searchstring != "" && $main_searchstring!=NULL){
 							<?=$bc->getCity()?>&nbsp;
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$bc->getId()?>'">
-							<?=$bc->getAddress1()?>&nbsp;
+							<?=$bc->getStreet()?>&nbsp;<?=$bc->getHouseno()?>
 						</td>
 						<td class="content_row pointer" onclick="document.location='index.php?page=libs/modules/businesscontact/businesscontact.php&exec=edit&id=<?=$bc->getId()?>'">
 							&ensp;

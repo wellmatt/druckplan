@@ -59,7 +59,8 @@ if ($_REQUEST["subexec"] == "save")
     $businessContact->setSupplier(trim(addslashes($_REQUEST["supplier"])));
     $businessContact->setName1(trim(addslashes($_REQUEST["name1"])));
     $businessContact->setName2(trim(addslashes($_REQUEST["name2"])));
-    $businessContact->setAddress1(trim(addslashes($_REQUEST["address1"])));
+    $businessContact->setStreet(trim(addslashes($_REQUEST["street"])));
+    $businessContact->setHouseno(trim(addslashes($_REQUEST["houseno"])));
     $businessContact->setAddress2(trim(addslashes($_REQUEST["address2"])));
     $businessContact->setZip(trim(addslashes($_REQUEST["zip"])));
     $businessContact->setCity(trim(addslashes($_REQUEST["city"])));
@@ -111,7 +112,8 @@ if ($_REQUEST["subexec"] == "save")
     
     $businessContact->setAlt_name1(trim(addslashes($_REQUEST["alt_name1"])));
     $businessContact->setAlt_name2(trim(addslashes($_REQUEST["alt_name2"])));
-    $businessContact->setAlt_address1(trim(addslashes($_REQUEST["alt_address1"])));
+    $businessContact->setAltStreet(trim(addslashes($_REQUEST["alt_street"])));
+    $businessContact->setAltHouseno(trim(addslashes($_REQUEST["alt_houseno"])));
     $businessContact->setAlt_address2(trim(addslashes($_REQUEST["alt_address2"])));
     $businessContact->setAlt_zip(trim(addslashes($_REQUEST["alt_zip"])));
     $businessContact->setAlt_city(trim(addslashes($_REQUEST["alt_city"])));
@@ -122,7 +124,8 @@ if ($_REQUEST["subexec"] == "save")
     
     $businessContact->setPriv_name1(trim(addslashes($_REQUEST["priv_name1"])));
     $businessContact->setPriv_name2(trim(addslashes($_REQUEST["priv_name2"])));
-    $businessContact->setPriv_address1(trim(addslashes($_REQUEST["priv_address1"])));
+    $businessContact->setPrivStreet(trim(addslashes($_REQUEST["priv_street"])));
+    $businessContact->setPrivHouseno(trim(addslashes($_REQUEST["priv_houseno"])));
     $businessContact->setPriv_address2(trim(addslashes($_REQUEST["priv_address2"])));
     $businessContact->setPriv_zip(trim(addslashes($_REQUEST["priv_zip"])));
     $businessContact->setPriv_city(trim(addslashes($_REQUEST["priv_city"])));
@@ -168,12 +171,13 @@ if ($_REQUEST["subexec"] == "save")
     }
     
     if (count(Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_INVC)) < 1) {
-        if ($_REQUEST["name1"] && $_REQUEST["address1"] && $_REQUEST["zip"] && $_REQUEST["city"] && $_REQUEST["country"]) {
+        if ($_REQUEST["name1"] && $_REQUEST["street"] && $_REQUEST["houseno"] && $_REQUEST["zip"] && $_REQUEST["city"] && $_REQUEST["country"]) {
             $address = new Address();
             $address->setActive(1);
             $address->setName1(trim(addslashes($_REQUEST["name1"])));
             $address->setName2(trim(addslashes($_REQUEST["name2"])));
-            $address->setAddress1(trim(addslashes($_REQUEST["address1"])));
+            $address->setStreet(trim(addslashes($_REQUEST["street"])));
+            $address->setHouseno(trim(addslashes($_REQUEST["houseno"])));
             $address->setAddress2(trim(addslashes($_REQUEST["address2"])));
             $address->setZip(trim(addslashes($_REQUEST["zip"])));
             $address->setCity(trim(addslashes($_REQUEST["city"])));
@@ -186,12 +190,13 @@ if ($_REQUEST["subexec"] == "save")
         }
     }
     if (count(Address::getAllAddresses($businessContact,Address::ORDER_NAME,Address::FILTER_DELIV)) < 1) {
-        if ($_REQUEST["name1"] && $_REQUEST["address1"] && $_REQUEST["zip"] && $_REQUEST["city"] && $_REQUEST["country"]) {
+        if ($_REQUEST["name1"] && $_REQUEST["street"] && $_REQUEST["houseno"] && $_REQUEST["zip"] && $_REQUEST["city"] && $_REQUEST["country"]) {
             $address = new Address();
             $address->setActive(2);
             $address->setName1(trim(addslashes($_REQUEST["name1"])));
             $address->setName2(trim(addslashes($_REQUEST["name2"])));
-            $address->setAddress1(trim(addslashes($_REQUEST["address1"])));
+            $address->setStreet(trim(addslashes($_REQUEST["street"])));
+            $address->setHouseno(trim(addslashes($_REQUEST["houseno"])));
             $address->setAddress2(trim(addslashes($_REQUEST["address2"])));
             $address->setZip(trim(addslashes($_REQUEST["zip"])));
             $address->setCity(trim(addslashes($_REQUEST["city"])));
@@ -611,7 +616,7 @@ echo $quickmove->generate();
 						</colgroup>
 						<tr>
 							<td class="content_row_clear" valign="top">
-								<?=$businessContact->getAddress1()?> <?=$businessContact->getAddress2()?> <br>
+								<?=$businessContact->getStreet()?> <?=$businessContact->getHouseno()?> <?=$businessContact->getAddress2()?> <br>
 								<?=$businessContact->getZip()?> <?=$businessContact->getCity()?><br>
 								<?=$businessContact->getCountry()->getName()?>
 							</td>
@@ -795,9 +800,15 @@ echo $quickmove->generate();
 									 </div>
 								 </div>
 								 <div class="form-group">
-									 <label for="" class="col-sm-3 control-label">Adresse</label>
+									 <label for="" class="col-sm-3 control-label">Straße</label>
 									 <div class="col-sm-9">
-										 <input name="address1" class="form-control" value="<?=$businessContact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+										 <input name="street" class="form-control" value="<?=$businessContact->getStreet()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+									 </div>
+								 </div>
+								 <div class="form-group">
+									 <label for="" class="col-sm-3 control-label">Hausnummer</label>
+									 <div class="col-sm-9">
+										 <input name="houseno" class="form-control" value="<?=$businessContact->getHouseno()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 									 </div>
 								 </div>
 								 <div class="form-group">
@@ -1152,7 +1163,7 @@ echo $quickmove->generate();
                                 <td><? echo $ai->getName1() . ' ' . $ai->getName2();
                                     if ($ai->getDefault() == 1) echo ' (Standard)';?>
                                 </td>
-                                <td><? echo $ai->getAddress1() ." ". $ai->getAddress2();?></td>
+                                <td><? echo $ai->getStreet() ." ". $ai->getHouseno() ." ". $ai->getAddress2();?></td>
                                 <td><? echo $ai->getZip()." ".$ai->getCity();?></td>
                                 <td>
                                     <a class="icon-link" href="index.php?page=<?=$_REQUEST['page']?>&exec=edit_ai&id_a=<?=$ai->getId()?>&id=<?=$businessContact->getID()?>"><span class="glyphicons glyphicons-pencil"></span></a>
@@ -1192,7 +1203,7 @@ echo $quickmove->generate();
                                     <td><? echo $ad->getName1() . ' ' . $ad->getName2();
                                         if ($ad->getDefault() == 1) echo ' (Standard)'; ?>
                                     </td>
-                                    <td><? echo $ad->getAddress1() . " " . $ad->getAddress2(); ?></td>
+									<td><? echo $ad->getStreet() ." ". $ad->getHouseno() ." ". $ad->getAddress2();?></td>
                                     <td><? echo $ad->getZip() . " " . $ad->getCity(); ?></td>
                                     <td>
                                         <?/*gln*/

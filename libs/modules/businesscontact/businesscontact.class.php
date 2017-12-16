@@ -40,7 +40,8 @@ class BusinessContact {
 	private $client; 		// Mandant
 	private $name1; 		// Firma
 	private $name2; 		// Firmenzusatz
-	private $address1;
+	private $street;
+	private $houseno;
 	private $address2;
 	private $zip;
 	private $city;
@@ -80,7 +81,8 @@ class BusinessContact {
 
 	private $alt_name1;  // Alternative-Adresse
 	private $alt_name2; 
-	private $alt_address1;
+	private $alt_street;
+	private $alt_houseno;
 	private $alt_address2;
 	private $alt_zip;
 	private $alt_city;
@@ -91,7 +93,8 @@ class BusinessContact {
 	
 	private $priv_name1; 	// Private Adresse
 	private $priv_name2;
-	private $priv_address1;
+	private $priv_street;
+	private $priv_houseno;
 	private $priv_address2;
 	private $priv_zip;
 	private $priv_city;
@@ -182,7 +185,8 @@ class BusinessContact {
 				$this->supplier = $res[0]["supplier"];
 				$this->name1 = $res[0]["name1"];
 				$this->name2 = $res[0]["name2"];
-				$this->address1 = $res[0]["address1"];
+				$this->street = $res[0]["street"];
+				$this->houseno = $res[0]["houseno"];
 				$this->address2 = $res[0]["address2"];
 				$this->zip = $res[0]["zip"];
 				$this->city = $res[0]["city"];
@@ -228,7 +232,8 @@ class BusinessContact {
 
 					$this->alt_name1 = $res[0]["alt_name1"];
 					$this->alt_name2 = $res[0]["alt_name2"];
-					$this->alt_address1 = $res[0]["alt_address1"];
+					$this->alt_street = $res[0]["alt_street"];
+					$this->alt_houseno = $res[0]["alt_houseno"];
 					$this->alt_address2 = $res[0]["alt_address2"];
 					$this->alt_zip = $res[0]["alt_zip"];
 					$this->alt_city = $res[0]["alt_city"];
@@ -239,7 +244,8 @@ class BusinessContact {
 
 					$this->priv_name1 = $res[0]["priv_name1"];
 					$this->priv_name2 = $res[0]["priv_name2"];
-					$this->priv_address1 = $res[0]["priv_address1"];
+					$this->priv_street = $res[0]["priv_street"];
+					$this->priv_houseno = $res[0]["priv_houseno"];
 					$this->priv_address2 = $res[0]["priv_address2"];
 					$this->priv_zip = $res[0]["priv_zip"];
 					$this->priv_city = $res[0]["priv_city"];
@@ -370,7 +376,7 @@ class BusinessContact {
      *
      * @param unknown_type $order : Reihenfolge
      * @param STRING $search_string : Suchtext
-     * @return multitype:BusinessContact
+     * @return BusinessContact[]
      */
 	//
 	// REMOVED 11.08.14 by ascherer
@@ -388,7 +394,7 @@ class BusinessContact {
     			AND
     			(  t1.name1 LIKE '%{$search_string}%' 
     			 OR t1.name2 LIKE '%{$search_string}%' 
-    			 OR t1.address1 LIKE '%{$search_string}%' 
+    			 OR t1.street LIKE '%{$search_string}%' 
     			 OR t1.address2 LIKE '%{$search_string}%'  
     			 OR t1.city LIKE '%{$search_string}%' 
     			 OR t1.zip LIKE '%{$search_string}%'
@@ -503,7 +509,7 @@ class BusinessContact {
 	
 	public function getAddressAsLine()
 	{
-		$retval = $this->address1;
+		$retval = $this->street . ' ' . $this->houseno;
         if($this->address2 != "")
             $retval .= "\n".$this->address2;
         if($this->postcode || $this->city)
@@ -589,7 +595,8 @@ class BusinessContact {
 		            client = '{$this->client->getID()}',
 		            name1 = '{$this->name1}',
 		            name2 = '{$this->name2}',
-		            address1 = '{$this->address1}',
+		            street = '{$this->street}',
+		            houseno = '{$this->houseno}',
 		            address2 = '{$this->address2}',
 		            zip = '{$this->zip}',
 		            city = '{$this->city}',
@@ -599,7 +606,8 @@ class BusinessContact {
 		            email = '{$this->email}',
 		            alt_name1 = '{$this->alt_name1}',
 		            alt_name2 = '{$this->alt_name2}',
-		            alt_address1 = '{$this->alt_address1}',
+		            alt_street = '{$this->alt_street}',
+		            alt_houseno = '{$this->alt_houseno}',
 		            alt_address2 = '{$this->alt_address2}',
 		            alt_zip = '{$this->alt_zip}',
 		            alt_city = '{$this->alt_city}',
@@ -609,7 +617,8 @@ class BusinessContact {
 		            alt_email = '{$this->alt_email}',
 		            priv_name1 = '{$this->priv_name1}',
 		            priv_name2 = '{$this->priv_name2}',
-		            priv_address1 = '{$this->priv_address1}',
+		            priv_street = '{$this->priv_street}',
+		            priv_houseno = '{$this->priv_houseno}',
 		            priv_address2 = '{$this->priv_address2}',
 		            priv_zip = '{$this->priv_zip}',
 		            priv_city = '{$this->priv_city}',
@@ -619,7 +628,7 @@ class BusinessContact {
 		            priv_email = '{$this->priv_email}',
 		            web = '{$this->web}',
 		            iban = '{$this->iban}', 
-					bic= '{$this->bic}', 
+					bic = '{$this->bic}', 
 		            comment = '{$this->comment}',
 		            language = '{$this->language->getID()}',
 		            lector_id = {$this->lectorId},
@@ -661,10 +670,10 @@ class BusinessContact {
 			$this->customernumber = $_USER->getClient()->generadeCustomerNumber();
 			$sql = " INSERT INTO businesscontact
 		            (active, commissionpartner, customer, supplier, client, name1,
-		            name2, address1, address2, zip, city, country, phone,
-		            fax, email, alt_name1, alt_name2, alt_address1, alt_address2, 
+		            name2, street, houseno, address2, zip, city, country, phone,
+		            fax, email, alt_name1, alt_name2, alt_street, alt_houseno, alt_address2, 
 		            alt_zip, alt_city, alt_country, alt_phone, alt_fax, alt_email, 
-		            priv_name1, priv_name2, priv_address1, priv_address2, priv_zip, priv_city, 
+		            priv_name1, priv_name2, priv_street, priv_houseno, priv_address2, priv_zip, priv_city, 
 		            priv_country, priv_phone, priv_fax, priv_email,  web, 
 		            comment, language, discount, iban, bic, 
 		            payment_terms, lector_id, ticket_enabled, enabled_article, 
@@ -675,10 +684,10 @@ class BusinessContact {
 		            vatidentnumber, vatnumber )
 		            VALUES
 		            ('{$this->active}', '{$this->commissionpartner}', '{$this->customer}', '{$this->supplier}', '{$this->client->getID()}', '{$this->name1}',
-		            '{$this->name2}', '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
-		            '{$this->fax}', '{$this->email}',  '{$this->alt_name1}', '{$this->alt_name2}', '{$this->alt_address1}', '{$this->alt_address2}', 
+		            '{$this->name2}', '{$this->street}', '{$this->houseno}', '{$this->address2}', '{$this->zip}', '{$this->city}', '{$this->country->getId()}', '{$this->phone}',
+		            '{$this->fax}', '{$this->email}',  '{$this->alt_name1}', '{$this->alt_name2}', '{$this->alt_street}', '{$this->alt_houseno}', '{$this->alt_address2}', 
 		            '{$this->alt_zip}', '{$this->alt_city}',  '{$this->alt_country->getId()}', '{$this->alt_phone}', '{$this->alt_fax}', '{$this->alt_email}',
-		             '{$this->priv_name1}', '{$this->priv_name2}', '{$this->priv_address1}', '{$this->priv_address2}', '{$this->priv_zip}', '{$this->priv_city}', 
+		             '{$this->priv_name1}', '{$this->priv_name2}', '{$this->priv_street}', '{$this->priv_houseno}', '{$this->priv_address2}', '{$this->priv_zip}', '{$this->priv_city}', 
 		            '{$this->priv_country->getId()}', '{$this->priv_phone}', '{$this->priv_fax}', '{$this->priv_email}', '{$this->web}', 
 		            '{$this->comment}', {$this->language->getID()}, {$this->discount}, '{$this->iban}', '{$this->bic}',  
 		            '{$this->paymentTerms->getId()}', '{$this->lectorId}', {$this->ticketenabled}, {$this->articleenabled}, 
@@ -882,7 +891,7 @@ class BusinessContact {
 				],
 				"Anschrift" => [
 					"name3" => "",
-					"strasse" => $this->getAddress1() . " " .$this->getAddress2(),
+					"strasse" => $this->getStreet() . " " . $this->getHouseno() . " " . $this->getAddress2(),
 					"plz" => $this->getZip(),
 					"ort" => $this->getCity(),
 					"postfach" => "",
@@ -1000,16 +1009,6 @@ class BusinessContact {
 	public function setName2($name2)
 	{
 	    $this->name2 = $name2;
-	}
-
-	public function getAddress1()
-	{
-	    return $this->address1;
-	}
-
-	public function setAddress1($address1)
-	{
-	    $this->address1 = $address1;
 	}
 
 	public function getAddress2()
@@ -1312,16 +1311,6 @@ class BusinessContact {
 	    $this->alt_name2 = $alt_name2;
 	}
 
-	public function getAlt_address1()
-	{
-	    return $this->alt_address1;
-	}
-
-	public function setAlt_address1($alt_address1)
-	{
-	    $this->alt_address1 = $alt_address1;
-	}
-
 	public function getAlt_address2()
 	{
 	    return $this->alt_address2;
@@ -1410,16 +1399,6 @@ class BusinessContact {
 	public function setPriv_name2($priv_name2)
 	{
 	    $this->priv_name2 = $priv_name2;
-	}
-
-	public function getPriv_address1()
-	{
-	    return $this->priv_address1;
-	}
-
-	public function setPriv_address1($priv_address1)
-	{
-	    $this->priv_address1 = $priv_address1;
 	}
 
 	public function getPriv_address2()
@@ -1762,4 +1741,100 @@ class BusinessContact {
 	{
 		$this->vatnumber = $vatnumber;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    /**
+     * @param mixed $street
+     */
+    public function setStreet($street)
+    {
+        $this->street = $street;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHouseno()
+    {
+        return $this->houseno;
+    }
+
+    /**
+     * @param mixed $houseno
+     */
+    public function setHouseno($houseno)
+    {
+        $this->houseno = $houseno;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAltStreet()
+    {
+        return $this->alt_street;
+    }
+
+    /**
+     * @param mixed $alt_street
+     */
+    public function setAltStreet($alt_street)
+    {
+        $this->alt_street = $alt_street;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAltHouseno()
+    {
+        return $this->alt_houseno;
+    }
+
+    /**
+     * @param mixed $alt_houseno
+     */
+    public function setAltHouseno($alt_houseno)
+    {
+        $this->alt_houseno = $alt_houseno;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrivStreet()
+    {
+        return $this->priv_street;
+    }
+
+    /**
+     * @param mixed $priv_street
+     */
+    public function setPrivStreet($priv_street)
+    {
+        $this->priv_street = $priv_street;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrivHouseno()
+    {
+        return $this->priv_houseno;
+    }
+
+    /**
+     * @param mixed $priv_houseno
+     */
+    public function setPrivHouseno($priv_houseno)
+    {
+        $this->priv_houseno = $priv_houseno;
+    }
 }

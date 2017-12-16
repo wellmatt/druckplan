@@ -63,7 +63,7 @@ class FibuXML{
 
             $Anschrift = $Geschaeftspartner->addChild('Anschrift');
             $Anschrift->addChild('name3','');
-            $Anschrift->addChild('strasse',$busicon->getAddress1() . " " .$busicon->getAddress2());
+            $Anschrift->addChild('strasse',$busicon->getStreet() . " " . $busicon->getHouseno() . " " . $busicon->getAddress2());
             $Anschrift->addChild('plz',$busicon->getZip());
             $Anschrift->addChild('ort',$busicon->getCity());
             $Anschrift->addChild('postfach','');

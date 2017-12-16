@@ -88,52 +88,59 @@ $perf = new Perferences();
 							$foldtype = $me->getFoldtype();
 						}
 					}
-                	$product_counted = $order->getProduct()->getSetmaxproductsContent();
-					$product_max = $calc->getUsagePerPaper($part);
-					$papercount = $calc->getPaperCount($part,$machentry);
 
-                	include('scheme.php');
-                	?>
-                	<table>
-                	<?
-                	for ($i = 0; $i < count($schemes); $i++)
-                	{ // vorschau pro anweichender Produkzahl pro Bogen
-                		?>
-                		<tr><td>
-                			<? /*<u><?=$_LANG->get('Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-                			<u><?=$_LANG->get('Inhalt 1')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
-                			<?=$c->getPaperContent()->getName()?>, <?=$c->getPaperContentWeight()?> g,<br>
-                			<?=$c->getPaperContentWidth()?> x <?=$c->getPaperContentHeight()?> <?=$_LANG->get('mm')?>,
-                			<?=printPrice($c->getCutContent())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?> <br>
-                			<?
-                			    if ($machentry->getRoll_dir() == 0)
-                			    {
-                    			    if($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                    				} else {
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                    				}
-                			    } elseif ($machentry->getRoll_dir() == 1)
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                			    } else
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                			    }
-                				?>
-                			</br>
-                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_CONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
-                						width="700" height="700" ></object>
-                		</td></tr></br>
-                		<?
-                		if ($perf->getCalc_detailed_printpreview() == 0){
-                		  break;
-                		}
-                	}
-                	?>
-                	</table>
-                	<?
-                	$part_count++;
+					if ($machentry->getUsageoverride() == 0){
+
+						$product_counted = $order->getProduct()->getSetmaxproductsContent();
+						$product_max = $calc->getUsagePerPaper($part);
+						$papercount = $calc->getPaperCount($part,$machentry);
+
+						include('scheme.php');
+						?>
+						<table>
+							<?
+							for ($i = 0; $i < count($schemes); $i++)
+							{ // vorschau pro anweichender Produkzahl pro Bogen
+								?>
+								<tr><td>
+										<? /*<u><?=$_LANG->get('Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
+										<u><?=$_LANG->get('Inhalt 1')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
+										<?=$c->getPaperContent()->getName()?>, <?=$c->getPaperContentWeight()?> g,<br>
+										<?=$c->getPaperContentWidth()?> x <?=$c->getPaperContentHeight()?> <?=$_LANG->get('mm')?>,
+										<?=printPrice($c->getCutContent())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?> <br>
+										<?
+										if ($machentry->getRoll_dir() == 0)
+										{
+											if($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
+												echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
+											} else {
+												echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
+											}
+										} elseif ($machentry->getRoll_dir() == 1)
+										{
+											echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
+										} else
+										{
+											echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
+										}
+										?>
+										</br>
+										<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_CONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
+												width="700" height="700" ></object>
+									</td></tr></br>
+								<?
+								if ($perf->getCalc_detailed_printpreview() == 0){
+									break;
+								}
+							}
+							?>
+						</table>
+						<?
+						$part_count++;
+
+					} else {
+						echo 'Deaktiviert aufgrund von überschriebenen Nutzen!';
+					}
             	} ?>
         	</div>
         	<div id="innertabs<?=$x?>-1">
@@ -155,52 +162,63 @@ $perf = new Perferences();
 							$foldtype = $me->getFoldtype();
 						}
 					}
-					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent();
-					$product_max = $calc->getUsagePerPaper($part);
-					$papercount = $calc->getPaperCount($part,$machentry);
 
-					include('scheme.php');
-                	?>
-                	<table>
-                	<?
-                	for ($i = 0; $i < count($schemes); $i++)
-                	{ // vorschau pro anweichender Produkzahl pro Bogen
-                		?>
-                		<tr><td>
-                			<? /*<u><?=$_LANG->get('zus. Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-								<u><?=$_LANG->get('Inhalt 2')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
-                			<?=$c->getPaperAddContent()->getName()?>, <?=$c->getPaperAddContentWeight()?> <?=$_LANG->get('g')?>,<br>
-                			<?=$c->getPaperAddContentWidth()?> x <?=$c->getPaperAddContentHeight()?> <?=$_LANG->get('mm')?>,
-                			<?=printPrice($c->getCutAddContent())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
-                			<?
-                			    if ($machentry->getRoll_dir() == 0)
-                			    {
-                    			    if($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                    				} else {
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                    				}
-                			    } elseif ($machentry->getRoll_dir() == 1)
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                			    } else
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                			    }
-                				?>
-                			</br>
-                			<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
-                					width="700" height="700" ></object>
-                		</td></tr></br>
-                		<?
-                		if ($perf->getCalc_detailed_printpreview() == 0){
-                		  break;
-                		}
-                	}
-                	?>
-                	</table>
-                	<?
-                	$part_count++;
+					if ($machentry->getUsageoverride() == 0) {
+
+						$product_counted = $order->getProduct()->getSetmaxproductsAddcontent();
+						$product_max = $calc->getUsagePerPaper($part);
+						$papercount = $calc->getPaperCount($part, $machentry);
+
+						include('scheme.php');
+						?>
+						<table>
+							<?
+							for ($i = 0; $i < count($schemes); $i++) { // vorschau pro anweichender Produkzahl pro Bogen
+								?>
+								<tr>
+									<td>
+										<? /*<u><?=$_LANG->get('zus. Inhalt')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */
+										?>
+										<u><?= $_LANG->get('Inhalt 2') ?> (<?= $papercount; ?> Seiten
+											mit <?= $product_max; ?> Nutzen):</u><br>
+										<?= $c->getPaperAddContent()->getName() ?>
+										, <?= $c->getPaperAddContentWeight() ?> <?= $_LANG->get('g') ?>,<br>
+										<?= $c->getPaperAddContentWidth() ?>
+										x <?= $c->getPaperAddContentHeight() ?> <?= $_LANG->get('mm') ?>,
+										<?= printPrice($c->getCutAddContent()) ?> <?= $_LANG->get('mm') ?> <?= $_LANG->get('Anschitt') ?>
+										<br>
+										<?
+										if ($machentry->getRoll_dir() == 0) {
+											if ($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL) {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+											} else {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+											}
+										} elseif ($machentry->getRoll_dir() == 1) {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+										} else {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+										}
+										?>
+										</br>
+										<object
+											data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?= $c->getId() ?>&part=<?= Calculation::PAPER_ADDCONTENT ?>&max=<?= $product_max; ?>&counted=<?= $product_counted; ?>&foldtype=<?= $foldtype->getId(); ?>"
+											width="700" height="700"></object>
+									</td>
+								</tr></br>
+								<?
+								if ($perf->getCalc_detailed_printpreview() == 0) {
+									break;
+								}
+							}
+							?>
+						</table>
+						<?
+						$part_count++;
+
+					} else {
+						echo 'Deaktiviert aufgrund von überschriebenen Nutzen!';
+					}
             	} ?>
         	</div>
         	<div id="innertabs<?=$x?>-4">
@@ -222,53 +240,64 @@ $perf = new Perferences();
 							$foldtype = $me->getFoldtype();
 						}
 					}
-					$product_counted = $order->getProduct()->getSetmaxproductsEnvelope();
-					$product_max = $calc->getUsagePerPaper($part);
-					$papercount = $calc->getPaperCount($part,$machentry);
 
-					include('scheme.php');
-                	?>
-                	<table>
-                	<?
+					if ($machentry->getUsageoverride() == 0) {
 
-                	for ($i = 0; $i < count($schemes); $i++)
-                	{ // vorschau pro anweichender Produkzahl pro Bogen
-                	?>
-                		<tr><td>
-                			<? /*<u><?=$_LANG->get('Umschlag')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-								<u><?=$_LANG->get('Umschlag')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
-                			<?=$c->getPaperEnvelope()->getName()?>, <?=$c->getPaperEnvelopeWeight()?> <?=$_LANG->get('g')?>,<br>
-                			<?=$c->getPaperEnvelopeWidth()?> x <?=$c->getPaperEnvelopeHeight()?> <?=$_LANG->get('mm')?>,
-                			<?=printPrice($c->getCutEnvelope())?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
-                			<?
-                			    if ($machentry->getRoll_dir() == 0)
-                			    {
-                    			    if($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                    				} else {
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                    				}
-                			    } elseif ($machentry->getRoll_dir() == 1)
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                			    } else
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                			    }
-                				?>
-                			</br>
-            				<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ENVELOPE?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
-                					width="700" height="700" ></object>
-                		</td></tr></br>
-                		<?
-                		if ($perf->getCalc_detailed_printpreview() == 0){
-                		  break;
-                		}
-                	}
-                	?>
-                	</table>
-                	<?
-                	$part_count++;
+						$product_counted = $order->getProduct()->getSetmaxproductsEnvelope();
+						$product_max = $calc->getUsagePerPaper($part);
+						$papercount = $calc->getPaperCount($part, $machentry);
+
+						include('scheme.php');
+						?>
+						<table>
+							<?
+
+							for ($i = 0; $i < count($schemes); $i++) { // vorschau pro anweichender Produkzahl pro Bogen
+								?>
+								<tr>
+									<td>
+										<? /*<u><?=$_LANG->get('Umschlag')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */
+										?>
+										<u><?= $_LANG->get('Umschlag') ?> (<?= $papercount; ?> Seiten
+											mit <?= $product_max; ?> Nutzen):</u><br>
+										<?= $c->getPaperEnvelope()->getName() ?>
+										, <?= $c->getPaperEnvelopeWeight() ?> <?= $_LANG->get('g') ?>,<br>
+										<?= $c->getPaperEnvelopeWidth() ?>
+										x <?= $c->getPaperEnvelopeHeight() ?> <?= $_LANG->get('mm') ?>,
+										<?= printPrice($c->getCutEnvelope()) ?> <?= $_LANG->get('mm') ?> <?= $_LANG->get('Anschitt') ?>
+										<br>
+										<?
+										if ($machentry->getRoll_dir() == 0) {
+											if ($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL) {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+											} else {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+											}
+										} elseif ($machentry->getRoll_dir() == 1) {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+										} else {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+										}
+										?>
+										</br>
+										<object
+											data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?= $c->getId() ?>&part=<?= Calculation::PAPER_ENVELOPE ?>&max=<?= $product_max; ?>&counted=<?= $product_counted; ?>&foldtype=<?= $foldtype->getId(); ?>"
+											width="700" height="700"></object>
+									</td>
+								</tr></br>
+								<?
+								if ($perf->getCalc_detailed_printpreview() == 0) {
+									break;
+								}
+							}
+							?>
+						</table>
+						<?
+						$part_count++;
+
+					} else {
+						echo 'Deaktiviert aufgrund von überschriebenen Nutzen!';
+					}
             	} ?>
         	</div>
         	<div id="innertabs<?=$x?>-2">
@@ -290,53 +319,64 @@ $perf = new Perferences();
 							$foldtype = $me->getFoldtype();
 						}
 					}
-					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent2();
-					$product_max = $calc->getUsagePerPaper($part);
-					$papercount = $calc->getPaperCount($part,$machentry);
 
-					include('scheme.php');
-            		?>
-            		<table>
-            		<?
+					if ($machentry->getUsageoverride() == 0) {
 
-            		for ($i = 0; $i < count($schemes); $i++)
-            		{ // vorschau pro anweichender Produkzahl pro Bogen
-            		?>
-                		<tr><td>
-            				<? /*<u><?=$_LANG->get('zus. Inhalt 2')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-								<u><?=$_LANG->get('Inhalt 3')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
-            				<?=$c->getPaperAddContent2()->getName()?>, <?=$c->getPaperAddContent2Weight()?> <?=$_LANG->get('g')?>,<br>
-            				<?=$c->getPaperAddContent2Width()?> x <?=$c->getPaperAddContent2Height()?> <?=$_LANG->get('mm')?>,
-            				<?=$_CONFIG->anschnitt?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
-                			<?
-                			    if ($machentry->getRoll_dir() == 0)
-                			    {
-                    			    if($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                    				} else {
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                    				}
-                			    } elseif ($machentry->getRoll_dir() == 1)
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                			    } else
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                			    }
-                				?>
-                			</br>
-        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT2?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
-            						width="700" height="700" ></object>
-                		</td></tr></br>
-            			<?
-                		if ($perf->getCalc_detailed_printpreview() == 0){
-                		  break;
-                		}
-            		}
-            		?>
-            		</table>
-            		<?
-            	   $part_count++;
+						$product_counted = $order->getProduct()->getSetmaxproductsAddcontent2();
+						$product_max = $calc->getUsagePerPaper($part);
+						$papercount = $calc->getPaperCount($part, $machentry);
+
+						include('scheme.php');
+						?>
+						<table>
+							<?
+
+							for ($i = 0; $i < count($schemes); $i++) { // vorschau pro anweichender Produkzahl pro Bogen
+								?>
+								<tr>
+									<td>
+										<? /*<u><?=$_LANG->get('zus. Inhalt 2')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */
+										?>
+										<u><?= $_LANG->get('Inhalt 3') ?> (<?= $papercount; ?> Seiten
+											mit <?= $product_max; ?> Nutzen):</u><br>
+										<?= $c->getPaperAddContent2()->getName() ?>
+										, <?= $c->getPaperAddContent2Weight() ?> <?= $_LANG->get('g') ?>,<br>
+										<?= $c->getPaperAddContent2Width() ?>
+										x <?= $c->getPaperAddContent2Height() ?> <?= $_LANG->get('mm') ?>,
+										<?= $_CONFIG->anschnitt ?> <?= $_LANG->get('mm') ?> <?= $_LANG->get('Anschitt') ?>
+										<br>
+										<?
+										if ($machentry->getRoll_dir() == 0) {
+											if ($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL) {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+											} else {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+											}
+										} elseif ($machentry->getRoll_dir() == 1) {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+										} else {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+										}
+										?>
+										</br>
+										<object
+											data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?= $c->getId() ?>&part=<?= Calculation::PAPER_ADDCONTENT2 ?>&max=<?= $product_max; ?>&counted=<?= $product_counted; ?>&foldtype=<?= $foldtype->getId(); ?>"
+											width="700" height="700"></object>
+									</td>
+								</tr></br>
+								<?
+								if ($perf->getCalc_detailed_printpreview() == 0) {
+									break;
+								}
+							}
+							?>
+						</table>
+						<?
+						$part_count++;
+
+					} else {
+						echo 'Deaktiviert aufgrund von überschriebenen Nutzen!';
+					}
             	} ?>
         	</div>
         	<div id="innertabs<?=$x?>-3">
@@ -358,53 +398,64 @@ $perf = new Perferences();
 							$foldtype = $me->getFoldtype();
 						}
                 	}
-					$product_counted = $order->getProduct()->getSetmaxproductsAddcontent3();
-					$product_max = $calc->getUsagePerPaper($part);
-					$papercount = $calc->getPaperCount($part,$machentry);
 
-					include('scheme.php');
-            		?>
-            		<table>
-            		<?
+					if ($machentry->getUsageoverride() == 0) {
 
-            		for ($i = 0; $i < count($schemes); $i++)
-            		{ // vorschau pro anweichender Produkzahl pro Bogen
-            		?>
-                		<tr><td>
-            				<? /*<u><?=$_LANG->get('zus. Inhalt 3')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */?>
-								<u><?=$_LANG->get('Inhalt 4')?> (<?=$papercount;?> Seiten mit <?=$product_max;?> Nutzen):</u><br>
-            				<?=$c->getPaperAddContent3()->getName()?>, <?=$c->getPaperAddContent3Weight()?> <?=$_LANG->get('g')?>,<br>
-            				<?=$c->getPaperAddContent3Width()?> x <?=$c->getPaperAddContent3Height()?> <?=$_LANG->get('mm')?>,
-            				<?=$_CONFIG->anschnitt?> <?=$_LANG->get('mm')?> <?=$_LANG->get('Anschitt')?><br>
-                			<?
-                			    if ($machentry->getRoll_dir() == 0)
-                			    {
-                    			    if($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL){
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                    				} else {
-                    					echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                    				}
-                			    } elseif ($machentry->getRoll_dir() == 1)
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('breite Bahn');
-                			    } else
-                			    {
-                			        echo $_LANG->get('Laufrichtung').":".$_LANG->get('schmale Bahn');
-                			    }
-                				?>
-                			</br>
-        					<object data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?=$c->getId()?>&part=<?=Calculation::PAPER_ADDCONTENT3?>&max=<?=$product_max;?>&counted=<?=$product_counted;?>&foldtype=<?=$foldtype->getId();?>"
-            						width="700" height="700" ></object>
-                		</td></tr></br>
-            			<?
-                		if ($perf->getCalc_detailed_printpreview() == 0){
-                		  break;
-                		}
-            		}
-            		?>
-            		</table>
-            		<?
-            	$part_count++;
+						$product_counted = $order->getProduct()->getSetmaxproductsAddcontent3();
+						$product_max = $calc->getUsagePerPaper($part);
+						$papercount = $calc->getPaperCount($part, $machentry);
+
+						include('scheme.php');
+						?>
+						<table>
+							<?
+
+							for ($i = 0; $i < count($schemes); $i++) { // vorschau pro anweichender Produkzahl pro Bogen
+								?>
+								<tr>
+									<td>
+										<? /*<u><?=$_LANG->get('zus. Inhalt 3')?> (<?=$schemes[$i]['count']?> Seite(n) mit <?=$schemes[$i]['nutzen']?> Nutzen):</u><br> */
+										?>
+										<u><?= $_LANG->get('Inhalt 4') ?> (<?= $papercount; ?> Seiten
+											mit <?= $product_max; ?> Nutzen):</u><br>
+										<?= $c->getPaperAddContent3()->getName() ?>
+										, <?= $c->getPaperAddContent3Weight() ?> <?= $_LANG->get('g') ?>,<br>
+										<?= $c->getPaperAddContent3Width() ?>
+										x <?= $c->getPaperAddContent3Height() ?> <?= $_LANG->get('mm') ?>,
+										<?= $_CONFIG->anschnitt ?> <?= $_LANG->get('mm') ?> <?= $_LANG->get('Anschitt') ?>
+										<br>
+										<?
+										if ($machentry->getRoll_dir() == 0) {
+											if ($c->getPaperContent()->getPaperDirection($c, Calculation::PAPER_CONTENT) == Paper::PAPER_DIRECTION_SMALL) {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+											} else {
+												echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+											}
+										} elseif ($machentry->getRoll_dir() == 1) {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('breite Bahn');
+										} else {
+											echo $_LANG->get('Laufrichtung') . ":" . $_LANG->get('schmale Bahn');
+										}
+										?>
+										</br>
+										<object
+											data="libs/modules/calculation/order.printpreview.pdf.php?calc_id=<?= $c->getId() ?>&part=<?= Calculation::PAPER_ADDCONTENT3 ?>&max=<?= $product_max; ?>&counted=<?= $product_counted; ?>&foldtype=<?= $foldtype->getId(); ?>"
+											width="700" height="700"></object>
+									</td>
+								</tr></br>
+								<?
+								if ($perf->getCalc_detailed_printpreview() == 0) {
+									break;
+								}
+							}
+							?>
+						</table>
+						<?
+						$part_count++;
+
+					} else {
+						echo 'Deaktiviert aufgrund von überschriebenen Nutzen!';
+					}
             	} ?>
         	</div>
        </div>

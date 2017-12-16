@@ -22,7 +22,8 @@ if ($_REQUEST["exec"] == "save_a")
     $address->setActive(trim(addslashes($_REQUEST["active"])));
     $address->setName1(trim(addslashes($_REQUEST["name1"])));
     $address->setName2(trim(addslashes($_REQUEST["name2"])));
-    $address->setAddress1(trim(addslashes($_REQUEST["address1"])));
+    $address->setStreet(trim(addslashes($_REQUEST["street"])));
+    $address->setHouseno(trim(addslashes($_REQUEST["houseno"])));
     $address->setAddress2(trim(addslashes($_REQUEST["address2"])));
     $address->setZip(trim(addslashes($_REQUEST["zip"])));
     $address->setCity(trim(addslashes($_REQUEST["city"])));
@@ -71,9 +72,15 @@ $countries = Country::getAllCountries();
 				  </div>
 			  </div>
 			  <div class="form-group">
-				  <label for="" class="col-sm-3 control-label">Adresse</label>
+				  <label for="" class="col-sm-3 control-label">Straße</label>
 				  <div class="col-sm-4">
-					  <input name="address1" class="form-control" value="<?=$address->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+					  <input name="street" class="form-control" value="<?=$address->getStreet()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+				  </div>
+			  </div>
+			  <div class="form-group">
+				  <label for="" class="col-sm-3 control-label">Hausnummer</label>
+				  <div class="col-sm-4">
+					  <input name="houseno" class="form-control" value="<?=$address->getHouseno()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 				  </div>
 			  </div>
 			  <div class="form-group">

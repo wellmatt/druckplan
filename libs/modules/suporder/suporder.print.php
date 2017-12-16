@@ -60,7 +60,7 @@ if ($_REQUEST["id"]){
           <p style="font-size: small"><?php echo $_USER->getClient()->getName();?> // <?php echo $_USER->getClient()->getStreet1();?> // <?php echo $_USER->getClient()->getCountry()->getCode();?>-<?php echo $_USER->getClient()->getPostcode();?> <?php echo $_USER->getClient()->getCity();?></p>
           <p style="font-size: smaller">
               <?php echo $suporder->getSupplier()->getNameAsLine(); ?><br>
-              <?php echo $suporder->getSupplier()->getAddress1(); ?><br>
+              <?php echo $suporder->getSupplier()->getStreet(); ?> <?php echo $suporder->getSupplier()->getHouseno(); ?><br>
               <?php if ($suporder->getSupplier()->getAddress2() != "") { ?>
                   <?php echo $suporder->getSupplier()->getAddress2(); ?><br>
               <?php } ?>

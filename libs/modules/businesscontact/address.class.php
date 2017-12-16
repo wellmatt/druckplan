@@ -22,7 +22,8 @@ class Address {
 	private $businessContact;
 	private $name1;
 	private $name2;
-	private $address1;
+	private $street;
+    private $houseno;
 	private $address2;
 	private $zip;
 	private $city;
@@ -53,7 +54,8 @@ class Address {
                 $this->active = $res[0]["active"];
                 $this->name1 = $res[0]["name1"];
                 $this->name2 = $res[0]["name2"];
-                $this->address1 = $res[0]["address1"];
+                $this->street = $res[0]["street"];
+                $this->houseno = $res[0]["houseno"];
                 $this->address2 = $res[0]["address2"];
                 $this->zip = $res[0]["zip"];
                 $this->city = $res[0]["city"];
@@ -74,7 +76,13 @@ class Address {
             }
         }
     }
-    
+
+    /**
+     * @param null $businessContact
+     * @param int $order
+     * @param string $filter
+     * @return Address[]
+     */
 	public static function getAllAddresses($businessContact = NULL, $order = Address::ORDER_ID, $filter = Address::FILTER_ALL)
 	{
 		global $DB;
@@ -87,7 +95,12 @@ class Address {
     	
     	return $addresses;
 	}
-	
+
+    /**
+     * @param null $businessContact
+     * @param string $filter
+     * @return Address
+     */
 	public static function getDefaultAddress($businessContact = NULL, $filter = Address::FILTER_ALL)
 	{
 	    global $DB;
@@ -106,7 +119,7 @@ class Address {
 	
 	public function getAddressAsLine()
 	{
-        $retval = $this->address1;
+        $retval = $this->street . ' ' . $this->houseno;
         if($this->address2 != "")
             $retval .= "\n".$this->address2;
         if($this->zip || $this->city)
@@ -153,7 +166,8 @@ class Address {
             businesscontact = '{$this->businessContact->getID()}',
             name1 = '{$this->name1}',
             name2 = '{$this->name2}',
-            address1 = '{$this->address1}',
+            street = '{$this->street}',
+            houseno = '{$this->houseno}',
             address2 = '{$this->address2}',
             zip = '{$this->zip}',
             city = '{$this->city}',
@@ -172,11 +186,11 @@ class Address {
 		{
 			$sql = " INSERT INTO address
 		            (active, businesscontact, name1, name2, 
-		            address1, address2, zip, city, 
+		            street, houseno, address2, zip, city, 
 		            country, fax, email, phone, mobile, shoprel, is_default)
 		            VALUES
 		            ('{$this->active}', '{$this->businessContact->getID()}', '{$this->name1}', '{$this->name2}', 
-		            '{$this->address1}', '{$this->address2}', '{$this->zip}', '{$this->city}',  
+		            '{$this->street}', '{$this->houseno}', '{$this->address2}', '{$this->zip}', '{$this->city}',  
 					'{$this->country->getId()}', '{$this->fax}', '{$this->email}', '{$this->phone}','{$this->mobil}','{$this->shoprel}','{$this->default}')";
 					//gln, neu: shoprel
 			$res = $DB->no_result($sql); //Datensatz neu einfuegen
@@ -238,16 +252,6 @@ class Address {
 	public function setName2($name2)
 	{
 	    $this->name2 = $name2;
-	}
-
-	public function getAddress1()
-	{
-	    return $this->address1;
-	}
-
-	public function setAddress1($address1)
-	{
-	    $this->address1 = $address1;
 	}
 
 	public function getAddress2()
@@ -354,6 +358,38 @@ class Address {
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    /**
+     * @param string $street
+     */
+    public function setStreet($street)
+    {
+        $this->street = $street;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHouseno()
+    {
+        return $this->houseno;
+    }
+
+    /**
+     * @param string $houseno
+     */
+    public function setHouseno($houseno)
+    {
+        $this->houseno = $houseno;
     }
 }
 ?>

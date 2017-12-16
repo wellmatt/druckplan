@@ -88,7 +88,7 @@ Class CalculationService {
     {
         $array = [];
         foreach ($sizes as $size){
-            $ppp = $calc->getUsagePerPaper($part,$size["width"],$size["height"]);
+            $ppp = $calc->getUsagePerPaper($part,$size["height"],$size["width"]);
             $array[$ppp][$size["width"]*$size["height"]] = $size["width"].'x'.$size["height"];
         }
         ksort($array, SORT_NUMERIC);
@@ -111,17 +111,35 @@ Class CalculationService {
      */
     public static function CalculateColorUsed($auflage, $pages, $pwidth, $pheight, $inkcoverage, $colorcount, $sorts = 1, $bleed = 0)
     {
+        $debug = false;
         $perf = new Perferences();
         $inkusage = $perf->getInkusage();
 
         // Fläche m2 = Produkt Länge m * Produkt Breite m * Seiten (inkl. Anschnitt)
         $m2 = (($pwidth+2*$bleed)/1000) * (($pheight+2*$bleed)/1000) * $pages;
+        if ($debug){
+            prettyPrint('(($pwidth+2*$bleed)/1000) * (($pheight+2*$bleed)/1000) * $pages');
+            prettyPrint("(({$pwidth}+2*{$bleed})/1000) * (({$pheight}+2*{$bleed})/1000) * {$pages}");
+            prettyPrint("m2 = {$m2}");
+        }
 
         // Farbverbrauch g = Bedruckte Fläche m2 * Farbdeckung % * Farbverbrauch g/m2 * Auflage * Sorten
         $ink = $m2 * ($inkcoverage/100) * $inkusage * $auflage * $sorts;
+        if ($debug) {
+            prettyPrint('$m2 * ($inkcoverage/100) * $inkusage * $auflage * $sorts');
+            prettyPrint("{$m2} * ({$inkcoverage}/100) * {$inkusage} * {$auflage} * {$sorts}");
+            prettyPrint("ink = {$ink}");
+        }
 
         // Farbverbrauch * Anzahl Farben
+        if ($debug){
+            prettyPrint('$ink * $colorcount');
+            prettyPrint("{$ink} * {$colorcount}");
+        }
         $ink = $ink * $colorcount;
+        if ($debug){
+            prettyPrint("ink = {$ink}");
+        }
 
         // Ausgabe Farbverbrauch in g
         return $ink;

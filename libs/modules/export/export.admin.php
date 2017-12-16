@@ -35,7 +35,7 @@ if (isset($_REQUEST["export"])){
                             $cparray[] = Array(
                                 $cp->getNameAsLineAlt(),
                                 $cp->getBusinessContact()->getNameAsLine(),
-                                $cp->getAlt_address1(),
+                                $cp->getAltStreet().' '.$cp->getAltHouseno(),
                                 $cp->getAlt_address2(),
                                 $cp->getAlt_zip(),
                                 $cp->getAlt_city(),
@@ -51,7 +51,7 @@ if (isset($_REQUEST["export"])){
                             $cparray[] = Array(
                                 $cp->getNameAsLinePrivate(),
                                 $cp->getBusinessContact()->getNameAsLine(),
-                                $cp->getPriv_address1(),
+                                $cp->getPrivStreet().' '.$cp->getPrivHouseno(),
                                 $cp->getPriv_address2(),
                                 $cp->getPriv_zip(),
                                 $cp->getPriv_city(),
@@ -67,7 +67,7 @@ if (isset($_REQUEST["export"])){
                             $cparray[] = Array(
                                 $cp->getNameAsLine(),
                                 $cp->getBusinessContact()->getNameAsLine(),
-                                $cp->getAddress1(),
+                                $cp->getStreet().' '.$cp->getHouseno(),
                                 $cp->getAddress2(),
                                 $cp->getZip(),
                                 $cp->getCity(),

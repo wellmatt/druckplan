@@ -112,7 +112,7 @@ function printPage() {
 						</colgroup>
 						<tr>
 							<td class="content_row_clear" valign="top">
-								<?=$businessContact->getAddress1()?> <?=$businessContact->getAddress2()?> <br>
+								<?=$businessContact->getStreet()?> <?=$businessContact->getHouseno()?> <?=$businessContact->getAddress2()?> <br>
 								<?=$businessContact->getZip()?> <?=$businessContact->getCity()?><br>
 								<?=$businessContact->getCountry()->getName()?>
 							</td>

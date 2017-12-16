@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------------
 require_once('libs/modules/documents/document.class.php');
 require_once('libs/modules/organizer/nachricht.class.php');
+require_once('libs/modules/shipment/shipment.class.php');
 
 // Pr�fung ob eine Reservierung oder eine Rechnung vorhanden sind
 $docsofferconfirm = Document::getDocuments(Array("type" => Document::TYPE_OFFERCONFIRM, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER));
@@ -979,6 +980,70 @@ if ($margin_warning){
 								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=createNewRevert"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
 						</td>
+
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="panel panel-default" style="margin-bottom: -2px;">
+			<div class="panel-heading">
+				<h3 class="panel-title" style="font-size: 16px;">
+					Paketlabel
+				</h3>
+			</div>
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
+					</tr>
+					</thead>
+					<tbody>
+					<?
+					//---------------------------------------------------------------------------
+					// Paketlabel
+					//---------------------------------------------------------------------------
+					$shipments = Shipment::getAllForColinv($collectinv); ?>
+
+					<?
+					if (count($shipments) > 0) {
+						foreach ($shipments AS $shipment) { ?>
+							<tr class="<?= getRowColor(0) ?>">
+								<td>
+									<span class="ok"><?= $shipment->getParcelNumber() ?></span>
+								</td>
+								<td></td>
+								<td></td>
+								<td>
+									<?= date('d.m.Y H:m', $shipment->getShipDate()) ?>
+								</td>
+								<td>
+									<table cellpaddin="0" cellspacing="0" width="100%">
+										<tr>
+											<td width="30%">
+												<ul class="postnav_text">
+													<a href="libs/modules/shipment/getlabel.php?id=<?=$shipment->getId() ?>"><?= $_LANG->get('Print') ?></a>
+												</ul>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<? $x++;
+						}
+					}
+					?>
+					<tr class="<?= getRowColor(0) ?>">
+						<td><?= $_LANG->get('nicht vorhanden') ?> &ensp;</td>
+						<td>&nbsp;</td>
+						<td>- - -</td>
+						<td>- - -</td>
+						<td></td>
 
 					</tr>
 					</tbody>

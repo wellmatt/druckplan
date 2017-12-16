@@ -874,6 +874,16 @@ class Calculation
                 $duplex = 2;
             else
                 $duplex = 1;
+
+            // Usage override
+            if ($mach[0]->getUsageoverride() > 0){
+                if ($usage == 0){
+                    return $mach[0]->getUsageoverride() * $anz_cols * $anz_rows * $duplex;
+                } else {
+                    return $mach[0]->getUsageoverride();
+                }
+            }
+
             // Anschnitt setzen
             $tmp_anschnitt = $_CONFIG->anschnitt;
             if ($ptype == Calculation::PAPER_CONTENT) {

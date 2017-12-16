@@ -44,7 +44,8 @@ if($_REQUEST["test_exec"]=="test_vancy"){
 	$newContact->setCustomer((int)$_REQUEST["customer"]);
 	$newContact->setName1(trim(addslashes($_REQUEST["name1"])));
 	$newContact->setName2(trim(addslashes($_REQUEST["name2"])));
-	$newContact->setAddress1(trim(addslashes($_REQUEST["address1"])));
+	$newContact->setStreet(trim(addslashes($_REQUEST["street"])));
+	$newContact->setHouseno(trim(addslashes($_REQUEST["houseno"])));
 	$newContact->setAddress2(trim(addslashes($_REQUEST["address2"])));
 	$newContact->setZip(trim(addslashes($_REQUEST["zip"])));
 	$newContact->setCity(trim(addslashes($_REQUEST["city"])));
@@ -169,9 +170,15 @@ function checkform(obj) {
 						   </div>
 					   </div>
 					   <div class="form-group">
-						   <label for="" class="col-sm-3 control-label">Adressfeld 1</label>
+						   <label for="" class="col-sm-3 control-label">Straße</label>
 						   <div class="col-sm-5">
-							   <input name="address1" class="form-control" value="<?=$newContact->getAddress1()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+							   <input name="street" class="form-control" value="<?=$newContact->getStreet()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						   </div>
+					   </div>
+					   <div class="form-group">
+						   <label for="" class="col-sm-3 control-label">Hausnummer</label>
+						   <div class="col-sm-5">
+							   <input name="houseno" class="form-control" value="<?=$newContact->getHouseno()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						   </div>
 					   </div>
 					   <div class="form-group">

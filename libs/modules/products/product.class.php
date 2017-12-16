@@ -65,6 +65,7 @@ class Product {
     private $setmaxproducts_envelope = 0;
     private $setmaxproducts_envelope_div = 0;
     private $default_folding = 0;
+    private $usageoverride = 0;
 
     function __construct($id = 0){
         global $DB;
@@ -119,6 +120,7 @@ class Product {
                 $this->setmaxproducts_envelope = $res["setmaxproducts_envelope"];
                 $this->setmaxproducts_envelope_div = $res["setmaxproducts_envelope_div"];
                 $this->default_folding = new Foldtype($res["default_folding"]);
+                $this->usageoverride = $res["usageoverride"];
 
                 //-------------------------------------------------------------------
                 // Get Machines
@@ -285,6 +287,7 @@ class Product {
                         setmaxproducts_envelope = '{$this->setmaxproducts_envelope}',
                         setmaxproducts_envelope_div = '{$this->setmaxproducts_envelope_div}',
                         blockplateset = '{$this->blockplateset}',
+                        usageoverride = '{$this->usageoverride}',
                         default_folding = '{$this->getDefaultFolding()->getId()}',
                         inkcoverage = '{$this->inkcoverage}',
                         load_dummydata = {$this->loadDymmyData}
@@ -383,7 +386,7 @@ class Product {
                          has_addcontent2, has_addcontent3, load_dummydata, inkcoverage,
                          setmaxproducts_content, setmaxproducts_content_div, setmaxproducts_addcontent, setmaxproducts_addcontent_div,
                          setmaxproducts_addcontent2, setmaxproducts_addcontent2_div, setmaxproducts_addcontent3, setmaxproducts_addcontent3_div,
-                         setmaxproducts_envelope, setmaxproducts_envelope_div, default_folding)
+                         setmaxproducts_envelope, setmaxproducts_envelope_div, default_folding, usageoverride)
                     VALUES
                         ('{$this->name}', 1, '{$this->description}', '{$this->picture}',
                          {$this->pagesFrom}, {$this->pagesTo}, {$this->pagesStep}, {$this->hasContent},
@@ -394,7 +397,7 @@ class Product {
                          {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, 
                           {$this->setmaxproducts_content}, {$this->setmaxproducts_content_div}, {$this->setmaxproducts_addcontent}, {$this->setmaxproducts_addcontent_div},
                           {$this->setmaxproducts_addcontent2}, {$this->setmaxproducts_addcontent2_div}, {$this->setmaxproducts_addcontent3}, {$this->setmaxproducts_addcontent3_div},
-                          {$this->setmaxproducts_envelope}, {$this->setmaxproducts_envelope_div}, {$this->getDefaultFolding()->getId()})";
+                          {$this->setmaxproducts_envelope}, {$this->setmaxproducts_envelope_div}, {$this->getDefaultFolding()->getId()}, {$this->usageoverride})";
             $res = $DB->no_result($sql);
             
             if($res)
@@ -1183,5 +1186,21 @@ class Product {
     public function setDefaultFolding($default_folding)
     {
         $this->default_folding = $default_folding;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsageoverride()
+    {
+        return $this->usageoverride;
+    }
+
+    /**
+     * @param int $usageoverride
+     */
+    public function setUsageoverride($usageoverride)
+    {
+        $this->usageoverride = $usageoverride;
     }
 }

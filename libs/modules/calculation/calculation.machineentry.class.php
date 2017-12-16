@@ -68,6 +68,7 @@ class Machineentry {
     private $rolldiameter = 0.0;
 
     private $addworkeramount = 0;
+    private $usageoverride = 0;
 
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
@@ -158,6 +159,7 @@ class Machineentry {
                     $this->corediameter = $r["corediameter"];
                     $this->rolldiameter = $r["rolldiameter"];
                     $this->addworkeramount = $r["addworkeramount"];
+                    $this->usageoverride = $r["usageoverride"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -298,6 +300,7 @@ class Machineentry {
         				inlineheften = {$this->inlineheften},
         				umschl = {$this->umschl},
         				corediameter = {$this->corediameter},
+        				usageoverride = {$this->usageoverride},
         				rolldiameter = {$this->rolldiameter},
         				addworkeramount = {$this->addworkeramount},
         				doubleutilization = {$this->doubleutilization},
@@ -1157,5 +1160,21 @@ class Machineentry {
     public function setAddworkeramount($addworkeramount)
     {
         $this->addworkeramount = $addworkeramount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsageoverride()
+    {
+        return $this->usageoverride;
+    }
+
+    /**
+     * @param int $usageoverride
+     */
+    public function setUsageoverride($usageoverride)
+    {
+        $this->usageoverride = $usageoverride;
     }
 }
