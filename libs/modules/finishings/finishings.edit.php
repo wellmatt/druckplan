@@ -65,10 +65,10 @@ echo $quickmove->generate();
 			  </div>
 
 			  <div class="form-group">
-				  <label for="" class="col-sm-2 control-label">Kosten</label>
+				  <label for="" class="col-sm-2 control-label">Preis / KG</label>
 				  <div class="col-sm-4">
 					  <div class="input-group">
-						  <input type="text" class="form-control" id="finishing_kosten" name="finishing_kosten" value="<?=printPrice($finishing->getKosten())?>" placeholder="bitte Lacknamen eintragen...">
+						  <input type="text" class="form-control" id="finishing_kosten" name="finishing_kosten" value="<?=printPrice($finishing->getKosten())?>">
 						  <span class="input-group-addon">€</span>
 					  </div>
 				  </div>

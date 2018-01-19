@@ -376,6 +376,23 @@ if((int)$_REQUEST["step"] == 2){
 						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_CONTENT) / 100 * $perference->getZuschussPercent());
 						$calc->setPaperContentGrant($grant);
 
+						// Lackberechnung
+						if ($me->getMachine()->getFinish()){
+							if ($me->getFinishing()->getId()>0){
+								$finishcontent = CalculationService::CalculateFinishUsed(
+									$calc->getAmount(),
+									$calc->getPagesContent(),
+									$calc->getProductFormatWidthOpen(),
+									$calc->getProductFormatHeightOpen(),
+									$order->getProduct()->getFinishingcoverage(),
+									$calc->getSorts(),
+									$calc->getCutContent()
+								);
+								$calc->setFinishusedcontent($finishcontent);
+								$calc->setFinishAddContent($me->getFinishing());
+							}
+						}
+
 						$calc->save();
 					}
 					if($calc->getPagesAddContent())
@@ -449,6 +466,23 @@ if((int)$_REQUEST["step"] == 2){
 
 						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT) / 100 * $perference->getZuschussPercent());
 						$calc->setPaperAddContentGrant($grant);
+
+						// Lackberechnung
+						if ($me->getMachine()->getFinish()){
+							if ($me->getFinishing()->getId()>0){
+								$finishaddcontent = CalculationService::CalculateFinishUsed(
+									$calc->getAmount(),
+									$calc->getPagesAddContent(),
+									$calc->getProductFormatWidthOpen(),
+									$calc->getProductFormatHeightOpen(),
+									$order->getProduct()->getFinishingcoverage(),
+									$calc->getSorts(),
+									$calc->getCutAddContent()
+								);
+								$calc->setFinishusedaddcontent($finishaddcontent);
+								$calc->setFinishAddContent($me->getFinishing());
+							}
+						}
 
 						$calc->save();
 					}
@@ -528,6 +562,23 @@ if((int)$_REQUEST["step"] == 2){
 						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ENVELOPE) / 100 * $perference->getZuschussPercent());
 						$calc->setPaperEnvelopeGrant($grant);
 
+						// Lackberechnung
+						if ($me->getMachine()->getFinish()){
+							if ($me->getFinishing()->getId()>0){
+								$finishenvelope = CalculationService::CalculateFinishUsed(
+									$calc->getAmount(),
+									$calc->getPagesEnvelope(),
+									$calc->getProductFormatWidthOpen(),
+									$calc->getProductFormatHeightOpen(),
+									$order->getProduct()->getFinishingcoverage(),
+									$calc->getSorts(),
+									$calc->getCutEnvelope()
+								);
+								$calc->setFinishusedenvelope($finishenvelope);
+								$calc->setFinishAddContent($me->getFinishing());
+							}
+						}
+
 						$calc->save();
 					}
 
@@ -603,6 +654,23 @@ if((int)$_REQUEST["step"] == 2){
 
 						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT2) / 100 * $perference->getZuschussPercent());
 						$calc->setPaperAddContent2Grant($grant);
+
+						// Lackberechnung
+						if ($me->getMachine()->getFinish()){
+							if ($me->getFinishing()->getId()>0){
+								$finishaddcontent2 = CalculationService::CalculateFinishUsed(
+									$calc->getAmount(),
+									$calc->getPagesAddContent2(),
+									$calc->getProductFormatWidthOpen(),
+									$calc->getProductFormatHeightOpen(),
+									$order->getProduct()->getFinishingcoverage(),
+									$calc->getSorts(),
+									$calc->getCutAddContent2()
+								);
+								$calc->setFinishusedaddcontent2($finishaddcontent2);
+								$calc->setFinishAddContent($me->getFinishing());
+							}
+						}
 
 						$calc->save();
 					}
@@ -680,7 +748,28 @@ if((int)$_REQUEST["step"] == 2){
 						$grant = ($perference->getZuschussProDP() * $calc->getPlateCount($me)) + ($calc->getPaperCount(Calculation::PAPER_ADDCONTENT3) / 100 * $perference->getZuschussPercent());
 						$calc->setPaperAddContent3Grant($grant);
 
+						// Lackberechnung
+						if ($me->getMachine()->getFinish()){
+							if ($me->getFinishing()->getId()>0){
+								$finishaddcontent3 = CalculationService::CalculateFinishUsed(
+									$calc->getAmount(),
+									$calc->getPagesAddContent3(),
+									$calc->getProductFormatWidthOpen(),
+									$calc->getProductFormatHeightOpen(),
+									$order->getProduct()->getFinishingcoverage(),
+									$calc->getSorts(),
+									$calc->getCutAddContent3()
+								);
+								$calc->setFinishusedaddcontent3($finishaddcontent3);
+								$calc->setFinishAddContent($me->getFinishing());
+							}
+						}
+
 						$calc->save();
+					}
+					if ($me->getMachine()->getFinish()){
+						$me->setFinishingcoverage($order->getProduct()->getFinishingcoverage());
+						$me->save();
 					}
 					unset($sizes);
 				} else if($m->getType() == Machine::TYPE_FOLDER) // Falzmaschine
@@ -1052,6 +1141,7 @@ if((int)$_REQUEST["step"] == 3){
 						$entry->setUsageoverride((int)$_REQUEST["mach_usageoverride_{$id}"]);
 					else
 						$entry->setUsageoverride(0);
+					$entry->setFinishingcoverage(tofloat($_REQUEST["mach_finishingcoverage_{$id}"]));
 
 					$entry->save();
 					if($entry->getMachine()->getPriceBase() == Machine::PRICE_VARIABEL){
@@ -1140,6 +1230,24 @@ if((int)$_REQUEST["step"] == 3){
 							} else {
 								$calc->setPaperContentGrant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
+
+							// Lackberechnung
+							if ($entry->getMachine()->getFinish()){
+								if ($entry->getFinishing()->getId()>0){
+									$finishcontent = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesContent(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$entry->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutContent()
+									);
+									$calc->setFinishusedcontent($finishcontent);
+									$calc->setFinishContent($entry->getFinishing());
+								}
+							}
+
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT)
 						{
 							// Update Papersize
@@ -1156,6 +1264,23 @@ if((int)$_REQUEST["step"] == 3){
 								$calc->setPaperAddContentGrant($grant);
 							} else {
 								$calc->setPaperAddContentGrant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
+							}
+
+							// Lackberechnung
+							if ($entry->getMachine()->getFinish()){
+								if ($entry->getFinishing()->getId()>0){
+									$finishaddcontent = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesAddContent(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$entry->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutAddContent()
+									);
+									$calc->setFinishusedaddcontent($finishaddcontent);
+									$calc->setFinishAddContent($entry->getFinishing());
+								}
 							}
 						} else if ($entry->getPart() == Calculation::PAPER_ENVELOPE)
 						{
@@ -1174,6 +1299,23 @@ if((int)$_REQUEST["step"] == 3){
 							} else { 
 								$calc->setPaperEnvelopeGrant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
+
+							// Lackberechnung
+							if ($entry->getMachine()->getFinish()){
+								if ($entry->getFinishing()->getId()>0){
+									$finishenvelope = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesEnvelope(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$entry->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutEnvelope()
+									);
+									$calc->setFinishusedenvelope($finishenvelope);
+									$calc->setFinishEnvelope($entry->getFinishing());
+								}
+							}
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT2)
 						{
 							// Update Papersize
@@ -1191,6 +1333,23 @@ if((int)$_REQUEST["step"] == 3){
 							} else {
 								$calc->setPaperAddContent2Grant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
 							}
+
+							// Lackberechnung
+							if ($entry->getMachine()->getFinish()){
+								if ($entry->getFinishing()->getId()>0){
+									$finishaddcontent2 = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesAddContent2(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$entry->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutAddContent2()
+									);
+									$calc->setFinishusedaddcontent2($finishaddcontent2);
+									$calc->setFinishAddContent2($entry->getFinishing());
+								}
+							}
 						} else if ($entry->getPart() == Calculation::PAPER_ADDCONTENT3)
 						{
 							// Update Papersize
@@ -1207,6 +1366,23 @@ if((int)$_REQUEST["step"] == 3){
 								$calc->setPaperAddContent3Grant($grant);
 							} else {
 								$calc->setPaperAddContent3Grant($order->getProduct()->getGrantPaper()+$entry->getDigigrant()); //Zuschuss
+							}
+
+							// Lackberechnung
+							if ($entry->getMachine()->getFinish()){
+								if ($entry->getFinishing()->getId()>0){
+									$finishaddcontent3 = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesAddContent3(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$entry->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutAddContent3()
+									);
+									$calc->setFinishusedaddcontent3($finishaddcontent3);
+									$calc->setFinishAddContent3($entry->getFinishing());
+								}
 							}
 						}
 

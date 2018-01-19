@@ -132,6 +132,20 @@ class Calculation
     private $inkusedaddcontent2 = 0.00;
     private $inkusedaddcontent3 = 0.00;
 
+    // Lack
+
+    private $finishContent;
+    private $finishAddContent;
+    private $finishAddContent2;
+    private $finishAddContent3;
+    private $finishEnvelope;
+
+    private $finishusedcontent = 0.00;
+    private $finishusedenvelope = 0.00;
+    private $finishusedaddcontent = 0.00;
+    private $finishusedaddcontent2 = 0.00;
+    private $finishusedaddcontent3 = 0.00;
+
     // other
 
     private $title; // Kalkulation's Titel
@@ -148,12 +162,15 @@ class Calculation
         $this->chromaticitiesContent = new Chromaticity();
         $this->chromaticitiesAddContent = new Chromaticity();
         $this->chromaticitiesEnvelope = new Chromaticity();
-
         $this->paperAddContent2 = new Paper();
         $this->chromaticitiesAddContent2 = new Chromaticity();
-
         $this->paperAddContent3 = new Paper();
         $this->chromaticitiesAddContent3 = new Chromaticity();
+        $this->finishContent = new Finishing();
+        $this->finishAddContent = new Finishing();
+        $this->finishAddContent2 = new Finishing();
+        $this->finishAddContent3 = new Finishing();
+        $this->finishEnvelope = new Finishing();
 
         if ($id > 0) {
             $valid_cache = true;
@@ -292,6 +309,18 @@ class Calculation
                     $this->inkusedaddcontent = $r["inkusedaddcontent"];
                     $this->inkusedaddcontent2 = $r["inkusedaddcontent2"];
                     $this->inkusedaddcontent3 = $r["inkusedaddcontent3"];
+
+                    // Lack
+                    $this->finishContent = new Finishing((int)$r["finishContent"]);
+                    $this->finishAddContent = new Finishing((int)$r["finishAddContent"]);
+                    $this->finishAddContent2 = new Finishing((int)$r["finishAddContent2"]);
+                    $this->finishAddContent3 = new Finishing((int)$r["finishAddContent3"]);
+                    $this->finishEnvelope = new Finishing((int)$r["finishEnvelope"]);
+                    $this->finishusedcontent = $r["finishusedcontent"];
+                    $this->finishusedenvelope = $r["finishusedenvelope"];
+                    $this->finishusedaddcontent = $r["finishusedaddcontent"];
+                    $this->finishusedaddcontent2 = $r["finishusedaddcontent2"];
+                    $this->finishusedaddcontent3 = $r["finishusedaddcontent3"];
                 }
 
                 //--------------------------Artikel----------------------------------------------
@@ -482,6 +511,19 @@ class Calculation
 						inkusedaddcontent = {$this->inkusedaddcontent},
 						inkusedaddcontent2 = {$this->inkusedaddcontent2},
 						inkusedaddcontent3 = {$this->inkusedaddcontent3},
+						
+						finishusedcontent = {$this->finishusedcontent},
+						finishusedenvelope = {$this->finishusedenvelope},
+						finishusedaddcontent = {$this->finishusedaddcontent},
+						finishusedaddcontent2 = {$this->finishusedaddcontent2},
+						finishusedaddcontent3 = {$this->finishusedaddcontent3},
+						
+						finishContent = {$this->finishContent->getId()},
+						finishAddContent = {$this->finishAddContent->getId()},
+						finishAddContent2 = {$this->finishAddContent2->getId()},
+						finishAddContent3 = {$this->finishAddContent3->getId()},
+						finishEnvelope = {$this->finishEnvelope->getId()},
+						
         				color_control = {$this->colorControl}, ";
 
         if ($this->id > 0) {
@@ -1340,6 +1382,39 @@ class Calculation
         return tofloat($sum);
     }
 
+    public function getFinishCost()
+    {
+        $calc = $this;
+        $sum = 0.0;
+        if ($calc->getPagesContent())
+            $hasContent = true;
+        if ($calc->getPagesAddContent())
+            $hasAddContent = true;
+        if ($calc->getPagesEnvelope())
+            $hasEnvelope = true;
+        if ($calc->getPagesAddContent2())
+            $hasAddContent2 = true;
+        if ($calc->getPagesAddContent3())
+            $hasAddContent3 = true;
+
+        if ($hasContent && $calc->getFinishContent()->getId()>0) {
+            $sum += $calc->getFinishContent()->getKosten() * $calc->getFinishusedcontent() / 1000;
+        }
+        if ($hasAddContent && $calc->getFinishAddContent()->getId()>0) {
+            $sum += $calc->getFinishAddContent()->getKosten() * $calc->getFinishusedaddcontent() / 1000;
+        }
+        if ($hasAddContent2 && $calc->getFinishAddContent2()->getId()>0) {
+            $sum += $calc->getFinishAddContent2()->getKosten() * $calc->getFinishusedaddcontent2() / 1000;
+        }
+        if ($hasAddContent3 && $calc->getFinishAddContent3()->getId()>0) {
+            $sum += $calc->getFinishAddContent3()->getKosten() * $calc->getFinishusedaddcontent3() / 1000;
+        }
+        if ($hasEnvelope && $calc->getFinishEnvelope()->getId()>0) {
+            $sum += $calc->getFinishEnvelope()->getKosten() * $calc->getFinishusedenvelope() / 1000;
+        }
+        return tofloat($sum);
+    }
+
     public function getSubProcessing()
     {
         $me = Machineentry::getAllMachineentries($this->getId());
@@ -1370,6 +1445,8 @@ class Calculation
         }
         $colorcost = $this->getColorCost();
         $material += $colorcost;
+        $finishcost = $this->getFinishCost();
+        $material += $finishcost;
         $material += $this->getMaterialCharge();
         $material = $material * ($this->getMaterialPercent() / 100 + 1);
         return $material;
@@ -2592,5 +2669,165 @@ class Calculation
     public function setProcessPercent($processPercent)
     {
         $this->processPercent = $processPercent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishusedcontent()
+    {
+        return $this->finishusedcontent;
+    }
+
+    /**
+     * @param float $finishusedcontent
+     */
+    public function setFinishusedcontent($finishusedcontent)
+    {
+        $this->finishusedcontent = $finishusedcontent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishusedenvelope()
+    {
+        return $this->finishusedenvelope;
+    }
+
+    /**
+     * @param float $finishusedenvelope
+     */
+    public function setFinishusedenvelope($finishusedenvelope)
+    {
+        $this->finishusedenvelope = $finishusedenvelope;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishusedaddcontent()
+    {
+        return $this->finishusedaddcontent;
+    }
+
+    /**
+     * @param float $finishusedaddcontent
+     */
+    public function setFinishusedaddcontent($finishusedaddcontent)
+    {
+        $this->finishusedaddcontent = $finishusedaddcontent;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishusedaddcontent2()
+    {
+        return $this->finishusedaddcontent2;
+    }
+
+    /**
+     * @param float $finishusedaddcontent2
+     */
+    public function setFinishusedaddcontent2($finishusedaddcontent2)
+    {
+        $this->finishusedaddcontent2 = $finishusedaddcontent2;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishusedaddcontent3()
+    {
+        return $this->finishusedaddcontent3;
+    }
+
+    /**
+     * @param float $finishusedaddcontent3
+     */
+    public function setFinishusedaddcontent3($finishusedaddcontent3)
+    {
+        $this->finishusedaddcontent3 = $finishusedaddcontent3;
+    }
+
+    /**
+     * @return Finishing
+     */
+    public function getFinishContent()
+    {
+        return $this->finishContent;
+    }
+
+    /**
+     * @param Finishing $finishContent
+     */
+    public function setFinishContent($finishContent)
+    {
+        $this->finishContent = $finishContent;
+    }
+
+    /**
+     * @return Finishing
+     */
+    public function getFinishAddContent()
+    {
+        return $this->finishAddContent;
+    }
+
+    /**
+     * @param Finishing $finishAddContent
+     */
+    public function setFinishAddContent($finishAddContent)
+    {
+        $this->finishAddContent = $finishAddContent;
+    }
+
+    /**
+     * @return Finishing
+     */
+    public function getFinishAddContent2()
+    {
+        return $this->finishAddContent2;
+    }
+
+    /**
+     * @param Finishing $finishAddContent2
+     */
+    public function setFinishAddContent2($finishAddContent2)
+    {
+        $this->finishAddContent2 = $finishAddContent2;
+    }
+
+    /**
+     * @return Finishing
+     */
+    public function getFinishAddContent3()
+    {
+        return $this->finishAddContent3;
+    }
+
+    /**
+     * @param Finishing $finishAddContent3
+     */
+    public function setFinishAddContent3($finishAddContent3)
+    {
+        $this->finishAddContent3 = $finishAddContent3;
+    }
+
+    /**
+     * @return Finishing
+     */
+    public function getFinishEnvelope()
+    {
+        return $this->finishEnvelope;
+    }
+
+    /**
+     * @param Finishing $finishEnvelope
+     */
+    public function setFinishEnvelope($finishEnvelope)
+    {
+        $this->finishEnvelope = $finishEnvelope;
     }
 }

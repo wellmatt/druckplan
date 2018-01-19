@@ -14,6 +14,7 @@ class InvoiceOut extends Model{
 
     public $number;
     public $colinv = 0;
+    public $businesscontact = 0;
     public $netvalue = 0.0;
     public $grossvalue = 0.0;
     /**
@@ -30,6 +31,7 @@ class InvoiceOut extends Model{
     public $payedskonto = 0.0;
     public $status = 1;
     public $doc;
+    public $bank = '';
 
     const STATE_DELETED = 0;
     const STATE_OPEN = 1;
@@ -40,6 +42,41 @@ class InvoiceOut extends Model{
     protected function bootClasses()
     {
         $this->colinv = new CollectiveInvoice($this->colinv);
+        $this->businesscontact = new BusinessContact($this->businesscontact);
+    }
+
+    /**
+     * @param BusinessContact $businesscontact
+     * @param int $status
+     * @return InvoiceOut[]
+     */
+    public static function getAllForBC(BusinessContact $businesscontact, $status = -1)
+    {
+        $filter = [
+            [
+                'column'=>'businesscontact',
+                'value'=>$businesscontact->getId()
+            ]
+        ];
+        if ($status != -1){
+            $filter[] = [ 'column'=>'status', 'value'=>$status ];
+        }
+        $retval = self::fetch($filter);
+        return $retval;
+    }
+
+    /**
+     * @param BusinessContact $businesscontact
+     * @return float
+     */
+    public static function getTotalOpenForBC(BusinessContact $businesscontact)
+    {
+        $sum = 0;
+        $invoices = self::getAllForBC($businesscontact, self::STATE_OPEN);
+        foreach ($invoices as $invoice) {
+            $sum += $invoice->getGrossvalue();
+        }
+        return $sum;
     }
 
     /**
@@ -74,12 +111,14 @@ class InvoiceOut extends Model{
         $array = [
             'number' => $number,
             'colinv' => $colinv->getId(),
+            'businesscontact' => $colinv->getBusinesscontact()->getId(),
             'netvalue' => roundPrice($netvalue),
             'grossvalue' => roundPrice($grossvalue),
             'cost' => roundPrice($costvalue),
             'crtdate' => time(),
             'duedate' => $duedate,
             'doc' => $doc,
+            'bank' => "",
             'duedatesk1' => $sk1daysduedate,
             'sk1_percent' => $sk1_percent,
             'duedatesk2' => $sk2daysduedate,
@@ -324,5 +363,35 @@ class InvoiceOut extends Model{
         $this->payedskonto = $payedskonto;
     }
 
+    /**
+     * @return BusinessContact
+     */
+    public function getBusinesscontact()
+    {
+        return $this->businesscontact;
+    }
 
+    /**
+     * @param BusinessContact $businesscontact
+     */
+    public function setBusinesscontact($businesscontact)
+    {
+        $this->businesscontact = $businesscontact;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBank()
+    {
+        return $this->bank;
+    }
+
+    /**
+     * @param string $bank
+     */
+    public function setBank($bank)
+    {
+        $this->bank = $bank;
+    }
 }

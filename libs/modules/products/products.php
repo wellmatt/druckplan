@@ -23,6 +23,30 @@ if($_REQUEST["exec"] == "copy" || $_REQUEST["exec"] == "edit")
 
 $products = Product::getAllProducts();
 ?>
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/numeric-comma.js"></script>
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.tableTools.css">
+    <script type="text/javascript" charset="utf8" src="jscripts/datatable/dataTables.tableTools.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.datatablegeneric').DataTable( {
+                "paging": true,
+                "stateSave": <?php if($perf->getDt_state_save()) {echo "true";}else{echo "false";};?>,
+                "pageLength": <?php echo $perf->getDt_show_default();?>,
+                "dom": 'flrtip',
+                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "Alle"] ],
+                "language": {
+                    "url": "jscripts/datatable/German.json"
+                }
+            } );
+        } );
+    </script>
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
@@ -37,16 +61,16 @@ $products = Product::getAllProducts();
             </h3>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover">
-                <tr>
-                    <td class="content_row_header"><?= $_LANG->get('ID') ?></td>
-                    <td class="content_row_header"><?= $_LANG->get('Produkt') ?></td>
-                    <td class="content_row_header"><?= $_LANG->get('Beschreibung') ?></td>
-                    <td class="content_row_header"><?= $_LANG->get('Typ') ?></td>
-                    <? /*if($_CONFIG->shopActivation){?><td class="content_row_header"><?=$_LANG->get('Shop-Freigabe')?></td><?}*/
-                    ?>
-                    <td class="content_row_header"><?= $_LANG->get('Optionen') ?></td>
-                </tr>
+            <table class="table table-hover datatablegeneric">
+                <thead>
+                    <tr>
+                        <th class="content_row_header"><?= $_LANG->get('ID') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Produkt') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Beschreibung') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Typ') ?></th>
+                        <th class="content_row_header"><?= $_LANG->get('Optionen') ?></th>
+                    </tr>
+                </thead>
                 <?
                 $x = 0;
                 foreach ($products as $p) {
@@ -71,19 +95,6 @@ $products = Product::getAllProducts();
                             else if ($p->getType() == Product::TYPE_BOOKPRINT) echo $_LANG->get('Buchdruck');
                             ?>&ensp;
                         </td>
-                        <? /*if($_CONFIG->shopActivation){?>
-            	<td class="content_row pointer" align="center"
-					onclick="document.location='index.php?exec=edit&id=<?=$p->getId()?>'">
-					<img src="images/status/
-					<? if ($p->getShoprel() == 0){
-							echo "red_small.gif";
-						} else {
-							echo "green_small.gif";
-						}
-					?> ">
-				</td>
-			<?}*/
-                        ?>
                         <td class="content_row">
                             <a class="icon-link"
                                href="index.php?page=<?= $_REQUEST['page'] ?>&exec=edit&id=<?= $p->getId() ?>"><span

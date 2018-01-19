@@ -1254,17 +1254,17 @@ echo $quickmove->generate();
 										 <div class="col-sm-3">
 											 <div class="input-group">
 												 <input name="units_from_<?= $x ?>" class="form-control" value="<?= printBigInt($unit["from"]) ?>">
-												 <span class="input-group-addon">St.</span>
+<!--												 <span class="input-group-addon">St.</span>-->
 											 </div>
 										 </div>
-										 <label for="" class="col-sm-1 control-label">bis</label>
+										 <label for="" class="col-sm-1 control-label">=></label>
 										 <div class="col-sm-3">
 											 <div class="input-group">
 												 <input name="units_per_hour_<?= $x ?>" class="form-control" value="<?= printBigInt($unit["per_hour"]) ?>">
-												 <span class="input-group-addon">St.</span>
+<!--												 <span class="input-group-addon">St.</span>-->
 											 </div>
 										 </div>
-										 <label class="col-sm-3 control-label form-text" style="font-size: 14px; height: 34px;">pro Stunde</label>
+										 <label class="col-sm-3 control-label form-text" style="font-size: 14px; height: 34px; text-align:left;">pro Stunde</label>
 										 <? $first = false;
 										 $x++;
 									 } // foreach?>

@@ -7,6 +7,8 @@
  *
  */
 
+$saascustid = $perf->getSaasdoCustomerId();
+if ($saascustid > 0) $enabled = true; else $enabled = false;
 
 ?>
 <!-- DataTables Editor -->
@@ -21,10 +23,18 @@
         src="jscripts/datatableeditor/FieldType-datetimepicker-2/editor.datetimepicker-2.js"></script>
 <!-- /DataTables Editor -->
 
+<?php if (!$enabled){?>
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <strong>Modul deaktiviert!</strong> Bitte tragen Sie zuerst Ihre KundenID in den 'Einstellungen' unter 'Schnittstellen' ein.
+</div>
+<?php } ?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
             Sendungen
+            <?php if ($enabled){?>
             <span class="pull-right">
 				<button class="btn btn-xs btn-success" type="button"
                         onclick="window.location.href='index.php?page=libs/modules/shipment/shipment.new.php';">
@@ -32,6 +42,7 @@
                     Sendungen hinzufügen
                 </button>
 			</span>
+            <?php } ?>
         </h3>
     </div>
     <div class="table-responsive">

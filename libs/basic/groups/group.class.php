@@ -130,16 +130,15 @@ class Group {
         {
             $sql = " UPDATE groups SET 
                      group_name = '{$this->name}',
-                     group_description = '{$this->description}',
-                     group_rights = '{$this->rights}'
+                     group_description = '{$this->description}' 
                   WHERE id = {$this->id}";
             $res = $this->db->no_result($sql);
         } else
         {
             $sql = " INSERT INTO groups
-                     (group_name, group_description, group_status, group_rights)
+                     (group_name, group_description, group_status)
                   VALUES
-                     ('{$this->name}', '{$this->description}', 1, '{$this->rights}')";
+                     ('{$this->name}', '{$this->description}', 1)";
             $res = $this->db->no_result($sql);
             if ($res)
             {

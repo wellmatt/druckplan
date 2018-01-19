@@ -400,6 +400,26 @@ echo $quickmove->generate();
                         <? } ?>
                     </tr>
 
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Lack Inhalt 1')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <? if($calc->getFinishContent()->getId() > 0)
+                                    echo $calc->getFinishContent()->getName().', '.$calc->getFinishContent()->getKosten().' '.$_LANG->get('€/KG').'';?>
+                            </td>
+                        <? }?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Preis Lack Inhalt 1')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <?=printPrice($calc->getFinishContent()->getKosten() * $calc->getFinishusedcontent()/1000)?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                            </td>
+                        <? } ?>
+                    </tr>
+
 
 
 
@@ -461,6 +481,26 @@ echo $quickmove->generate();
                         <? } ?>
                     </tr>
 
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Lack Inhalt 2')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <? if($calc->getFinishAddContent()->getId() > 0)
+                                    echo $calc->getFinishAddContent()->getName().', '.$calc->getFinishAddContent()->getKosten().' '.$_LANG->get('€/KG').'';?>
+                            </td>
+                        <? }?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Preis Lack Inhalt 2')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <?=printPrice($calc->getFinishAddContent()->getKosten() * $calc->getFinishusedaddcontent()/1000)?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                            </td>
+                        <? } ?>
+                    </tr>
+
 
                 <? } ?>
 
@@ -512,6 +552,26 @@ echo $quickmove->generate();
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
                                 <?=printPrice($calc->getChromaticitiesAddContent2()->getPricekg() * $calc->getInkusedaddcontent2()/1000)?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                            </td>
+                        <? } ?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Lack Inhalt 3')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <? if($calc->getFinishAddContent2()->getId() > 0)
+                                    echo $calc->getFinishAddContent2()->getName().', '.$calc->getFinishAddContent2()->getKosten().' '.$_LANG->get('€/KG').'';?>
+                            </td>
+                        <? }?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Preis Lack Inhalt 3')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <?=printPrice($calc->getFinishAddContent2()->getKosten() * $calc->getFinishusedaddcontent2()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>
@@ -570,6 +630,26 @@ echo $quickmove->generate();
                             </td>
                         <? } ?>
                     </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Lack Inhalt 4')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <? if($calc->getFinishAddContent3()->getId() > 0)
+                                    echo $calc->getFinishAddContent3()->getName().', '.$calc->getFinishAddContent3()->getKosten().' '.$_LANG->get('€/KG').'';?>
+                            </td>
+                        <? }?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Preis Lack Inhalt 4')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <?=printPrice($calc->getFinishAddContent3()->getKosten() * $calc->getFinishusedaddcontent3()/1000)?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                            </td>
+                        <? } ?>
+                    </tr>
                 <? } ?>
 
                 <? if ($hasEnvelope) { ?>
@@ -622,6 +702,26 @@ echo $quickmove->generate();
                         <? foreach($calculations as $calc) { ?>
                             <td class="content_row_clear value">
                                 <?=printPrice($calc->getChromaticitiesEnvelope()->getPricekg() * $calc->getInkusedenvelope()/1000)?>
+                                <?=$_USER->getClient()->getCurrency()?>
+                            </td>
+                        <? } ?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Lack Umschlag')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <? if($calc->getFinishEnvelope()->getId() > 0)
+                                    echo $calc->getFinishEnvelope()->getName().', '.$calc->getFinishEnvelope()->getKosten().' '.$_LANG->get('€/KG').'';?>
+                            </td>
+                        <? }?>
+                    </tr>
+
+                    <tr class="color2">
+                        <td class="content_row_clear"><?=$_LANG->get('Preis Lack Umschlag')?></td>
+                        <? foreach($calculations as $calc) { ?>
+                            <td class="content_row_clear value">
+                                <?=printPrice($calc->getFinishEnvelope()->getKosten() * $calc->getFinishusedenvelope()/1000)?>
                                 <?=$_USER->getClient()->getCurrency()?>
                             </td>
                         <? } ?>

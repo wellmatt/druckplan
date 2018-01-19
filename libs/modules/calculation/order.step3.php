@@ -344,6 +344,12 @@ echo $quickmove->generate();
                                                         }
                                                         echo '</select>';
                                                         echo '</div></div></div>';
+
+                                                        // Lackdeckung %
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Lackdeckung</label><div class="input-group">';
+                                                        echo '<input name="mach_finishingcoverage_'.$x.'" id="mach_finishingcoverage_'.$x.'" class="form-control" value="'.str_replace(".", ",", $mach->getFinishingcoverage()).'">';
+                                                        echo '<span class="input-group-addon">%</span></div></div></div>';
                                                     }
 
                                                     // Laufrichtung
@@ -549,6 +555,12 @@ echo $quickmove->generate();
                                                         }
                                                         echo '</select>';
                                                         echo '</div></div></div>';
+
+                                                        // Lackdeckung %
+                                                        echo '<div class="col-md-4"><div class="form-group">';
+                                                        echo '<label class="control-label">Lackdeckung</label><div class="input-group">';
+                                                        echo '<input name="mach_finishingcoverage_'.$x.'" id="mach_finishingcoverage_'.$x.'" class="form-control" value="'.str_replace(".", ",", $mach->getFinishingcoverage()).'">';
+                                                        echo '<span class="input-group-addon">%</span></div></div></div>';
                                                     }
 
 

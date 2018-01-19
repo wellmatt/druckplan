@@ -122,6 +122,7 @@ if($_REQUEST["subexec"] == "save")
     $product->setSingleplateset((int)$_REQUEST["singleplateset"]);
     $product->setBlockplateset((int)$_REQUEST["blockplateset"]);
     $product->setInkcoverage(tofloat($_REQUEST["inkcoverage"]));
+    $product->setFinishingcoverage(tofloat($_REQUEST["finishingcoverage"]));
 
     if ($_REQUEST['setmaxproducts_content'] == 1)
         $product->setSetmaxproductsContent(1);
@@ -440,6 +441,12 @@ echo $quickmove->generate();
                           <label for="" class="col-sm-3 control-label">Farbdeckung in %</label>
                           <div class="col-sm-9">
                               <input name="inkcoverage" value="<?=$product->getInkcoverage()?>" class="form-control">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="" class="col-sm-3 control-label">Lackdeckung in %</label>
+                          <div class="col-sm-9">
+                              <input name="finishingcoverage" value="<?=$product->getFinishingcoverage()?>" class="form-control">
                           </div>
                       </div>
                       <div class="form-text"><b>Maximale Produkte begrenzen</b></div>

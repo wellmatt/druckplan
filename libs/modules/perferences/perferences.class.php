@@ -15,6 +15,7 @@ class Perferences
     private $ZuschussPercent = 0.0; // Zuschuss prozentual auf auflage
     private $calc_detailed_printpreview = 0;
     private $inkusage = 3.00;
+    private $finishingusage = 3.00;
     private $calc_percent_material = 0.00;
     private $calc_percent_processing = 0.00;
     private $calc_margin = 0.00;
@@ -83,6 +84,10 @@ class Perferences
     private $saxobc = 0;        // Kunde für saxo aufträge
     private $saxocp = 0;        // Asp für saxo aufträge
 
+    // Saasdo
+
+    private $SaasdoCustomerId = 0;
+
     function __construct()
     {
         global $DB;
@@ -127,6 +132,7 @@ class Perferences
             $this->default_revenue = new RevenueaccountCategory((int)$r["default_revenue"]);
             $this->default_costobject = new CostObject((int)$r["default_costobject"]);
             $this->inkusage = $r["inkusage"];
+            $this->finishingusage = $r["finishingusage"];
             $this->minmargin = $r["minmargin"];
             $this->saxoapikey = $r["saxoapikey"];
             $this->saxobc = $r["saxobc"];
@@ -137,6 +143,7 @@ class Perferences
             $this->calc_discount = $r["calc_discount"];
             $this->calc_material_processing_charge = $r["calc_material_processing_charge"];
             $this->toggle_useadrmail = $r["toggle_useadrmail"];
+            $this->SaasdoCustomerId = $r["SaasdoCustomerId"];
         }
 
         $sql = "SELECT id,width,height FROM perferences_formats_raw ORDER BY width, height";
@@ -218,9 +225,11 @@ class Perferences
                default_revenue 	= '{$this->default_revenue->getId()}',
                default_costobject 	= '{$this->default_costobject->getId()}',
                inkusage = '{$this->inkusage}',
+               finishingusage = '{$this->finishingusage}',
                minmargin = '{$this->minmargin}',
                saxocp = '{$this->saxocp}',
                saxobc = '{$this->saxobc}',
+               SaasdoCustomerId = '{$this->SaasdoCustomerId}',
                toggle_useadrmail = '{$this->toggle_useadrmail}',
                saxoapikey = '{$this->saxoapikey}',
                calc_discount = '{$this->calc_discount}',
@@ -919,5 +928,37 @@ class Perferences
     public function setToggleUseadrmail($toggle_useadrmail)
     {
         $this->toggle_useadrmail = $toggle_useadrmail;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSaasdoCustomerId()
+    {
+        return $this->SaasdoCustomerId;
+    }
+
+    /**
+     * @param int $SaasdoCustomerId
+     */
+    public function setSaasdoCustomerId($SaasdoCustomerId)
+    {
+        $this->SaasdoCustomerId = $SaasdoCustomerId;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishingusage()
+    {
+        return $this->finishingusage;
+    }
+
+    /**
+     * @param float $finishingusage
+     */
+    public function setFinishingusage($finishingusage)
+    {
+        $this->finishingusage = $finishingusage;
     }
 }

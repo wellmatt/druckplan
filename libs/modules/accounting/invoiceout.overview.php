@@ -29,7 +29,8 @@
         <h3 class="panel-title">
             Rechnungsausgang
             <span class="pull-right">
-                <button class="btn btn-xs btn-success" type="button" id="Export">Export</button>
+                <button class="btn btn-xs btn-success" type="button" id="Export">Export CSV</button>
+                <button class="btn btn-xs btn-success" type="button" id="Export2">Export TXT</button>
                 <button class="btn btn-xs btn-success" type="button" id="printAll">Drucken</button>
                 <button class="btn btn-xs btn-success" type="button" id="printAllEmail">Drucken (eMail)</button>
             </span>
@@ -348,6 +349,15 @@
                 elements.push([data[0],data[14]]);
             } );
             window.open('libs/modules/accounting/invoiceout.export.php?param='+JSON.stringify(elements));
+        } );
+
+        $('#Export2').on( 'click', function () {
+            var elements = [];
+            invouttable.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+                var data = this.data();
+                elements.push([data[0],data[14]]);
+            } );
+            window.open('libs/modules/accounting/invoiceout.export2.php?param='+JSON.stringify(elements));
         } );
 
         $('#search').keyup(function(){

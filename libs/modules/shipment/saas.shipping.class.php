@@ -37,8 +37,8 @@ class SaasShipping{
      */
     public function __construct(Shipment $shipment)
     {
-        global $_CONFIG;
-        $this->customerId = $_CONFIG->saasid;
+        $perf = new Perferences();
+        $this->customerId = $perf->getSaasdoCustomerId();
 
         $this->shippingService = $shipment->getShippingService();
         $this->labelSize = $shipment->getLabelSize();

@@ -28,7 +28,7 @@ class Machineentry {
     private $chromaticity = null;
     private $price = 0.0;
     private $part = 0;
-    private $finishing = null;
+    private $finishing;
     private $info;
     
     private $supplierSendDate = 0;				// Datum, wann die Bestellung zum Subunternehmer raus geht
@@ -69,6 +69,7 @@ class Machineentry {
 
     private $addworkeramount = 0;
     private $usageoverride = 0;
+    private $finishingcoverage = 0;
 
     function __construct($id = 0){
         $this->chromaticity = new Chromaticity();
@@ -160,6 +161,7 @@ class Machineentry {
                     $this->rolldiameter = $r["rolldiameter"];
                     $this->addworkeramount = $r["addworkeramount"];
                     $this->usageoverride = $r["usageoverride"];
+                    $this->finishingcoverage = $r["finishingcoverage"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -268,9 +270,9 @@ class Machineentry {
         $set = "        calc_id = {$this->calcId},
                         machine_id =  {$this->machine->getId()},
                         machine_group = {$this->machineGroup},
-                        time = {$this->time},
+                        time = '{$this->time}',
                         chromaticity_id = {$this->chromaticity->getId()},
-                        price = {$this->price},
+                        price = '{$this->price}',
                         part = {$this->part},
                         finishing = {$this->finishing->getId()},
                         info = '{$this->info}', 
@@ -301,6 +303,7 @@ class Machineentry {
         				umschl = {$this->umschl},
         				corediameter = {$this->corediameter},
         				usageoverride = {$this->usageoverride},
+        				finishingcoverage = {$this->finishingcoverage},
         				rolldiameter = {$this->rolldiameter},
         				addworkeramount = {$this->addworkeramount},
         				doubleutilization = {$this->doubleutilization},
@@ -372,6 +375,29 @@ class Machineentry {
             return $retval;
         } else
             return false;
+    }
+
+    /**
+     * @param $part
+     * @param $calcId
+     * @return Machineentry
+     */
+    static function getPrintingMachineForPart($part, $calcId)
+    {
+        global $DB;
+        $sql = "SELECT orders_machines.id FROM orders_machines 
+                INNER JOIN machines ON orders_machines.machine_id = machines.id 
+                WHERE orders_machines.part = {$part} 
+                AND orders_machines.calc_id = {$calcId} 
+                LIMIT 1";
+
+        if ($DB->num_rows($sql))
+        {
+            $r = $DB->select($sql);
+            if (count($r)>0)
+                return new Machineentry($r[0]["id"]);
+        }
+        return new Machineentry();
     }
 
     public function calcStacks()
@@ -1176,5 +1202,21 @@ class Machineentry {
     public function setUsageoverride($usageoverride)
     {
         $this->usageoverride = $usageoverride;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishingcoverage()
+    {
+        return $this->finishingcoverage;
+    }
+
+    /**
+     * @param float $finishingcoverage
+     */
+    public function setFinishingcoverage($finishingcoverage)
+    {
+        $this->finishingcoverage = $finishingcoverage;
     }
 }

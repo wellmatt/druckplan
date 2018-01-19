@@ -31,6 +31,7 @@ if ($_REQUEST["subexec"] == "save"){
                 'payeddate' => $paydate,
                 'status' => 2,
                 'payedskonto' => $skontovalue,
+                'bank' => $_REQUEST['bank'],
             ];
             $invoiceout = new InvoiceOut((int)$_REQUEST["id"], $array);
             $invoiceout->save();
@@ -192,12 +193,24 @@ echo $quickmove->generate();
                                 <?php echo date('d.m.y',$invoiceout->getPayeddate());?>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Bank</label>
+                            <div class="col-sm-4 form-text">
+                                <?php echo $invoiceout->getBank();?>
+                            </div>
+                        </div>
                     <?php } else if($invoiceout->getStatus() != 3) { ?>
                         <div class="form-group">
                             <label for="" class="col-sm-2 control-label">Bezahlt am</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" name="payeddate" id="payeddate"
                                        value="<?php if ($invoiceout->getPayeddate() > 0) echo date('d.m.y',$invoiceout->getPayeddate());?>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">Bank</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" name="bank" id="bank" value="<?php echo $invoiceout->getBank();?>">
                             </div>
                         </div>
                     <?php } ?>
@@ -231,6 +244,7 @@ echo $quickmove->generate();
     </div>
 </div>
 
+<?php /*
 <div class="row">
     <div class="col-md-12">
         <?php
@@ -242,6 +256,7 @@ echo $quickmove->generate();
         ?>
     </div>
 </div>
+ */ ?>
 
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
 <script>

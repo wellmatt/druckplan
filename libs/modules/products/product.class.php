@@ -54,6 +54,7 @@ class Product {
     private $singleplateset = 0;
     private $blockplateset = 0;
     private $inkcoverage = 40.00;
+    private $finishingcoverage = 40.00;
     private $setmaxproducts_content = 0;
     private $setmaxproducts_content_div = 0;
     private $setmaxproducts_addcontent = 0;
@@ -109,6 +110,7 @@ class Product {
                 $this->blockplateset = $res["blockplateset"];
                 $this->loadDymmyData = $res["load_dummydata"];
                 $this->inkcoverage = $res["inkcoverage"];
+                $this->finishingcoverage = $res["finishingcoverage"];
                 $this->setmaxproducts_content = $res["setmaxproducts_content"];
                 $this->setmaxproducts_content_div = $res["setmaxproducts_content_div"];
                 $this->setmaxproducts_addcontent = $res["setmaxproducts_addcontent"];
@@ -290,6 +292,7 @@ class Product {
                         usageoverride = '{$this->usageoverride}',
                         default_folding = '{$this->getDefaultFolding()->getId()}',
                         inkcoverage = '{$this->inkcoverage}',
+                        finishingcoverage = '{$this->finishingcoverage}',
                         load_dummydata = {$this->loadDymmyData}
                     WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
@@ -383,7 +386,7 @@ class Product {
                          has_content, has_addcontent, has_envelope, factor_width, factor_height,
                          grant_paper, type, text_offer, text_offerconfirm, text_invoice,
                          text_processing, shop_rel, tradegroup, is_individual, 
-                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage,
+                         has_addcontent2, has_addcontent3, load_dummydata, inkcoverage, finishingcoverage,
                          setmaxproducts_content, setmaxproducts_content_div, setmaxproducts_addcontent, setmaxproducts_addcontent_div,
                          setmaxproducts_addcontent2, setmaxproducts_addcontent2_div, setmaxproducts_addcontent3, setmaxproducts_addcontent3_div,
                          setmaxproducts_envelope, setmaxproducts_envelope_div, default_folding, usageoverride)
@@ -394,7 +397,7 @@ class Product {
                          {$this->grantPaper}, {$this->type}, '{$this->textOffer}',
                          '{$this->textOfferconfirm}', '{$this->textInvoice}', '{$this->textProcessing}',
                          {$this->shoprel}, {$this->getTradegroup()->getId()}, {$this->isIndivual},
-                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, 
+                         {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, {$this->finishingcoverage}, 
                           {$this->setmaxproducts_content}, {$this->setmaxproducts_content_div}, {$this->setmaxproducts_addcontent}, {$this->setmaxproducts_addcontent_div},
                           {$this->setmaxproducts_addcontent2}, {$this->setmaxproducts_addcontent2_div}, {$this->setmaxproducts_addcontent3}, {$this->setmaxproducts_addcontent3_div},
                           {$this->setmaxproducts_envelope}, {$this->setmaxproducts_envelope_div}, {$this->getDefaultFolding()->getId()}, {$this->usageoverride})";
@@ -1202,5 +1205,21 @@ class Product {
     public function setUsageoverride($usageoverride)
     {
         $this->usageoverride = $usageoverride;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinishingcoverage()
+    {
+        return $this->finishingcoverage;
+    }
+
+    /**
+     * @param float $finishingcoverage
+     */
+    public function setFinishingcoverage($finishingcoverage)
+    {
+        $this->finishingcoverage = $finishingcoverage;
     }
 }

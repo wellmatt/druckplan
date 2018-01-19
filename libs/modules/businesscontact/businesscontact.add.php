@@ -655,6 +655,9 @@ echo $quickmove->generate();
 							<?	if ($businessContact->getTourmarker()){
 									echo $_LANG->get('Tourenmerkmal').": ".$businessContact->getTourmarker(). " <br/>";
 								} ?>
+							<?	if ($_USER->hasRightsByGroup("bc_displayinvoicetotal") || $_USER->isAdmin()){
+								echo "Offene Posten: ".printPrice(InvoiceOut::getTotalOpenForBC($businessContact)). "€ <br/>";
+							} ?>
 							</td>
 							<td class="content_row_clear" valign="top">
 								<?=$_LANG->get('Tickets:');?>:

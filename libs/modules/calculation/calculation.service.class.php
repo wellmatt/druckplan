@@ -144,4 +144,40 @@ Class CalculationService {
         // Ausgabe Farbverbrauch in g
         return $ink;
     }
+
+    /**
+     * @param $auflage // Auflage
+     * @param $pages // Anzahl Seiten
+     * @param $pwidth // Produktbreite
+     * @param $pheight // Produkthöhe
+     * @param $finishingcoverage // Lackdeckung aus Produkt
+     * @param $sorts // Anzahl Sorten
+     * @param int $bleed // Anschnitt
+     * @return float
+     */
+    public static function CalculateFinishUsed($auflage, $pages, $pwidth, $pheight, $finishingcoverage, $sorts = 1, $bleed = 0)
+    {
+        $debug = false;
+        $perf = new Perferences();
+        $inkusage = $perf->getFinishingusage();
+
+        // Fläche m2 = Produkt Länge m * Produkt Breite m * Seiten (inkl. Anschnitt)
+        $m2 = (($pwidth+2*$bleed)/1000) * (($pheight+2*$bleed)/1000) * $pages;
+        if ($debug){
+            prettyPrint('(($pwidth+2*$bleed)/1000) * (($pheight+2*$bleed)/1000) * $pages');
+            prettyPrint("(({$pwidth}+2*{$bleed})/1000) * (({$pheight}+2*{$bleed})/1000) * {$pages}");
+            prettyPrint("m2 = {$m2}");
+        }
+
+        // Farbverbrauch g = Bedruckte Fläche m2 * Farbdeckung % * Farbverbrauch g/m2 * Auflage * Sorten
+        $ink = $m2 * ($finishingcoverage/100) * $inkusage * $auflage * $sorts;
+        if ($debug) {
+            prettyPrint('$m2 * ($inkcoverage/100) * $inkusage * $auflage * $sorts');
+            prettyPrint("{$m2} * ({$finishingcoverage}/100) * {$inkusage} * {$auflage} * {$sorts}");
+            prettyPrint("ink = {$ink}");
+        }
+
+        // Ausgabe Farbverbrauch in g
+        return $ink;
+    }
 }

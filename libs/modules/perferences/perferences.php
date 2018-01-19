@@ -51,6 +51,7 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setZuschussProDP(str_replace(",",".",str_replace(".","",$_REQUEST["zuschussprodp"])));
 	$perf->setZuschussPercent(str_replace(",",".",str_replace(".","",$_REQUEST["zuschusspercent"])));
 	$perf->setInkusage(str_replace(",",".",str_replace(".","",$_REQUEST["inkusage"])));
+	$perf->setFinishingusage(str_replace(",",".",str_replace(".","",$_REQUEST["finishingusage"])));
 	$perf->setCalc_detailed_printpreview($_REQUEST["calc_detailed_printpreview"]);
 	$perf->setDt_show_default((int)$_REQUEST["datatables_showelements"]);
 	$perf->setDt_state_save((bool)$_REQUEST["datatables_statesave"]);
@@ -125,6 +126,8 @@ if ($_REQUEST["exec"] == "save")
 	$perf->setSaxoapikey($_REQUEST["saxoapikey"]);
 	$perf->setSaxocp($_REQUEST["saxo_contactperson"]);
 	$perf->setSaxobc($_REQUEST["saxo_customer"]);
+
+	$perf->setSaasdoCustomerId($_REQUEST["SaasdoCustomerId"]);
 
 	$savemsg = getSaveMessage($perf->save());
 	
@@ -426,7 +429,14 @@ echo $quickmove->generate();
 						<div class="col-sm-4">
 							<div class="input-group">
 								<input type="text" name="inkusage" class="form-control" id="inkusage" value="<?=str_replace(".", ",", $perf->getInkusage()); ?>"/>
-								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Lackverbrauch g/m²:</label>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<input type="text" name="finishingusage" class="form-control" id="finishingusage" value="<?=str_replace(".", ",", $perf->getFinishingusage()); ?>"/>
 							</div>
 						</div>
 					</div>
@@ -848,6 +858,13 @@ echo $quickmove->generate();
 							<input type="text" name="search_saxobc" id="search_saxobc" class="form-control" value="<?php echo $saxostring;?>">
 							<input type="hidden" name="saxo_customer" id="saxo_customer" value="<?php echo $perf->getSaxobc();?>">
 							<input type="hidden" name="saxo_contactperson" id="saxo_contactperson" value="<?php echo $perf->getSaxocp();?>">
+						</div>
+					</div>
+					Saasdo:<br>
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Kunden ID</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="SaasdoCustomerId" id="SaasdoCustomerId" value="<?php echo $perf->getSaasdoCustomerId();?>">
 						</div>
 					</div>
 				</div>

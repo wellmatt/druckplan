@@ -236,8 +236,13 @@ class Saxoprint{
                         $FreeFormats->Value
                     );
                 }
-                
-                $proddetails = new SaxoprintProductDetails($order->ProductDetails->Circulation,$prodcharacts,$speccolors,$freeforms);
+
+                $proddetails = new SaxoprintProductDetails(
+                    $order->ProductDetails->Circulation,
+                    $prodcharacts,
+                    $speccolors,
+                    $freeforms
+                );
 
                 $wrkstates = [];
                 foreach ($order->WorkingStates as $WorkingState) {
@@ -265,5 +270,4 @@ class Saxoprint{
         }
         return $ret;
     }
-
 }

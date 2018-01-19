@@ -83,7 +83,7 @@ class SaxoprintOrder{
         $prodgrp = '';
         $material = '';
         $format = '';
-        $amount = $this->getProductDetails()->Circulation;
+        $amount = $this->getProductDetails()->getCirculation();
         $chroma = '';
         $logistic = '';
         $form = '';
