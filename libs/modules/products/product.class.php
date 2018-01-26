@@ -389,7 +389,7 @@ class Product {
                          has_addcontent2, has_addcontent3, load_dummydata, inkcoverage, finishingcoverage,
                          setmaxproducts_content, setmaxproducts_content_div, setmaxproducts_addcontent, setmaxproducts_addcontent_div,
                          setmaxproducts_addcontent2, setmaxproducts_addcontent2_div, setmaxproducts_addcontent3, setmaxproducts_addcontent3_div,
-                         setmaxproducts_envelope, setmaxproducts_envelope_div, default_folding, usageoverride)
+                         setmaxproducts_envelope, setmaxproducts_envelope_div, default_folding, usageoverride, singleplateset, blockplateset)
                     VALUES
                         ('{$this->name}', 1, '{$this->description}', '{$this->picture}',
                          {$this->pagesFrom}, {$this->pagesTo}, {$this->pagesStep}, {$this->hasContent},
@@ -400,7 +400,7 @@ class Product {
                          {$this->hasAddContent2}, {$this->hasAddContent3}, {$this->loadDymmyData}, {$this->inkcoverage}, {$this->finishingcoverage}, 
                           {$this->setmaxproducts_content}, {$this->setmaxproducts_content_div}, {$this->setmaxproducts_addcontent}, {$this->setmaxproducts_addcontent_div},
                           {$this->setmaxproducts_addcontent2}, {$this->setmaxproducts_addcontent2_div}, {$this->setmaxproducts_addcontent3}, {$this->setmaxproducts_addcontent3_div},
-                          {$this->setmaxproducts_envelope}, {$this->setmaxproducts_envelope_div}, {$this->getDefaultFolding()->getId()}, {$this->usageoverride})";
+                          {$this->setmaxproducts_envelope}, {$this->setmaxproducts_envelope_div}, {$this->getDefaultFolding()->getId()}, {$this->usageoverride}, '{$this->singleplateset}', '{$this->blockplateset}')";
             $res = $DB->no_result($sql);
             
             if($res)

@@ -661,6 +661,7 @@ class Calculation
                 'grant' => 'getPaperContentGrant',
                 'cut' => 'getCutContent',
                 'const' => Calculation::PAPER_CONTENT,
+                'finish' => 'getFinishContent',
             ],
             [
                 'name' => 'Inhalt 2',
@@ -673,6 +674,7 @@ class Calculation
                 'grant' => 'getPaperAddContentGrant',
                 'cut' => 'getCutAddContent',
                 'const' => Calculation::PAPER_ADDCONTENT,
+                'finish' => 'getFinishAddContent',
             ],
             [
                 'name' => 'Inhalt 3',
@@ -685,6 +687,7 @@ class Calculation
                 'grant' => 'getPaperAddContent2Grant',
                 'cut' => 'getCutAddContent2',
                 'const' => Calculation::PAPER_ADDCONTENT2,
+                'finish' => 'getFinishAddContent2',
             ],
             [
                 'name' => 'Inhalt 4',
@@ -697,6 +700,7 @@ class Calculation
                 'grant' => 'getPaperAddContent3Grant',
                 'cut' => 'getCutAddContent3',
                 'const' => Calculation::PAPER_ADDCONTENT3,
+                'finish' => 'getFinishAddContent3',
             ],
             [
                 'name' => 'Umschlag',
@@ -709,6 +713,7 @@ class Calculation
                 'grant' => 'getPaperEnvelopeGrant',
                 'cut' => 'getCutEnvelope',
                 'const' => Calculation::PAPER_ENVELOPE,
+                'finish' => 'getFinishEnvelope',
             ],
         ];
         return $contents;

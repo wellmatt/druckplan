@@ -158,74 +158,6 @@ if((int)$_REQUEST["step"] == 2){
 		$calc->setMargin($_USER->getClient()->getMargin());
 		$calc->setDiscount(0);
 
-		// Farbkostenberechnung
-
-		if($calc->getPagesContent()){
-			$inkcontent = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesContent(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesContent()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutContent()
-			);
-			$calc->setInkusedcontent($inkcontent);
-		}
-		if($calc->getPagesEnvelope()){
-			$inkenvelope = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesEnvelope(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesEnvelope()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutEnvelope()
-			);
-			$calc->setInkusedenvelope($inkenvelope);
-		}
-		if($calc->getPagesAddContent()){
-			$inkaddcontent = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesAddContent(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesAddContent()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutAddContent()
-			);
-			$calc->setInkusedaddcontent($inkaddcontent);
-		}
-		if($calc->getPagesAddContent2()){
-			$inkaddcontent2 = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesAddContent2(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesAddContent2()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutAddContent2()
-			);
-			$calc->setInkusedaddcontent2($inkaddcontent2);
-		}
-		if($calc->getPagesAddContent3()){
-			$inkaddcontent3 = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesAddContent3(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesAddContent3()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutAddContent3()
-			);
-			$calc->setInkusedaddcontent3($inkaddcontent3);
-		}
-
 		if((int)$_REQUEST["h_folding"] > 0)
 			$calc->setFolding(new Foldtype((int)$_REQUEST["h_folding"]));
 
@@ -969,6 +901,74 @@ if((int)$_REQUEST["step"] == 2){
 			$me->save();
 		}
 
+		// Farbkostenberechnung
+		if($calc->getPagesContent()){
+			$inkcontent = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesContent(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesContent()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutContent()
+			);
+			$calc->setInkusedcontent($inkcontent);
+		}
+		if($calc->getPagesEnvelope()){
+			$inkenvelope = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesEnvelope(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesEnvelope()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutEnvelope()
+			);
+			$calc->setInkusedenvelope($inkenvelope);
+		}
+		if($calc->getPagesAddContent()){
+			$inkaddcontent = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesAddContent(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesAddContent()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutAddContent()
+			);
+			$calc->setInkusedaddcontent($inkaddcontent);
+		}
+		if($calc->getPagesAddContent2()){
+			$inkaddcontent2 = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesAddContent2(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesAddContent2()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutAddContent2()
+			);
+			$calc->setInkusedaddcontent2($inkaddcontent2);
+		}
+		if($calc->getPagesAddContent3()){
+			$inkaddcontent3 = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesAddContent3(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesAddContent3()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutAddContent3()
+			);
+			$calc->setInkusedaddcontent3($inkaddcontent3);
+		}
+		$calc->save();
+
 		// Preise und Zeiten aktualisieren
 		foreach(Machineentry::getAllMachineentries($calc->getId()) as $me)
 		{
@@ -1039,74 +1039,6 @@ if((int)$_REQUEST["step"] == 3){
 		$calc->setFoldschemeAddContent3(trim(addslashes($_REQUEST["foldscheme_addcontent3"])));
 		if($calc->getPagesEnvelope())
 			$calc->setFoldschemeEnvelope("1x".$calc->getPagesEnvelope());
-
-		// Farbkostenberechnung
-
-		if($calc->getPagesContent()){
-			$inkcontent = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesContent(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesContent()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutContent()
-			);
-			$calc->setInkusedcontent($inkcontent);
-		}
-		if($calc->getPagesEnvelope()){
-			$inkenvelope = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesEnvelope(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesEnvelope()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutEnvelope()
-			);
-			$calc->setInkusedenvelope($inkenvelope);
-		}
-		if($calc->getPagesAddContent()){
-			$inkaddcontent = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesAddContent(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesAddContent()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutAddContent()
-			);
-			$calc->setInkusedaddcontent($inkaddcontent);
-		}
-		if($calc->getPagesAddContent2()){
-			$inkaddcontent2 = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesAddContent2(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesAddContent2()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutAddContent2()
-			);
-			$calc->setInkusedaddcontent2($inkaddcontent2);
-		}
-		if($calc->getPagesAddContent3()){
-			$inkaddcontent3 = CalculationService::CalculateColorUsed(
-				$calc->getAmount(),
-				$calc->getPagesAddContent3(),
-				$calc->getProductFormatWidthOpen(),
-				$calc->getProductFormatHeightOpen(),
-				$order->getProduct()->getInkcoverage(),
-				$calc->getChromaticitiesAddContent3()->getColorsFront(),
-				$calc->getSorts(),
-				$calc->getCutAddContent3()
-			);
-			$calc->setInkusedaddcontent3($inkaddcontent3);
-		}
 
 		$calc->save();
 		Machineentry::deleteAllForCalc($calc->getId());
@@ -1475,6 +1407,75 @@ if((int)$_REQUEST["step"] == 3){
 			}
 
 
+		// Farbkostenberechnung
+		if($calc->getPagesContent()){
+			$inkcontent = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesContent(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesContent()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutContent()
+			);
+			$calc->setInkusedcontent($inkcontent);
+		}
+		if($calc->getPagesEnvelope()){
+			$inkenvelope = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesEnvelope(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesEnvelope()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutEnvelope()
+			);
+			$calc->setInkusedenvelope($inkenvelope);
+		}
+		if($calc->getPagesAddContent()){
+			$inkaddcontent = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesAddContent(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesAddContent()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutAddContent()
+			);
+			$calc->setInkusedaddcontent($inkaddcontent);
+		}
+		if($calc->getPagesAddContent2()){
+			$inkaddcontent2 = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesAddContent2(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesAddContent2()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutAddContent2()
+			);
+			$calc->setInkusedaddcontent2($inkaddcontent2);
+		}
+		if($calc->getPagesAddContent3()){
+			$inkaddcontent3 = CalculationService::CalculateColorUsed(
+				$calc->getAmount(),
+				$calc->getPagesAddContent3(),
+				$calc->getProductFormatWidthOpen(),
+				$calc->getProductFormatHeightOpen(),
+				$order->getProduct()->getInkcoverage(),
+				$calc->getChromaticitiesAddContent3()->getColorsFront(),
+				$calc->getSorts(),
+				$calc->getCutAddContent3()
+			);
+			$calc->setInkusedaddcontent3($inkaddcontent3);
+		}
+		$calc->save();
+
+
 		/*
          * TODO: Muss hier nicht eher nach dem Preistyp geschaut werden, nicht nach dem Maschinentyp
          * 		 "Preis variabel" mit Maschinentyp "Andere" wird immer mit 0 ueberschrieben
@@ -1623,7 +1624,6 @@ if((int)$_REQUEST["step"] == 4)
 										$calc->save();
 									} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT)
 									{
-										//
 										$sizes = $calc->getPaperAddContent()->getMaxPaperSizeForMachine($me->getMachine());
 										// Update Papersize
 										$calc->setPaperAddContentHeight($sizes["height"]);
@@ -1705,6 +1705,97 @@ if((int)$_REQUEST["step"] == 4)
 
 				foreach(Machineentry::getAllMachineentries($calc->getId()) as $me)
 				{
+					// Lackberechnung
+					if($me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_DIGITAL || $me->getMachine()->getType() == Machine::TYPE_DRUCKMASCHINE_OFFSET)
+					{
+						if($me->getPart() == Calculation::PAPER_CONTENT)
+						{
+							if ($me->getMachine()->getFinish()){
+								if ($me->getFinishing()->getId()>0){
+									$finishcontent = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesContent(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$me->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutContent()
+									);
+									$calc->setFinishusedcontent($finishcontent);
+									$calc->setFinishContent($me->getFinishing());
+								}
+							}
+						} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT)
+						{
+							if ($me->getMachine()->getFinish()){
+								if ($me->getFinishing()->getId()>0){
+									$finishaddcontent = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesAddContent(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$me->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutAddContent()
+									);
+									$calc->setFinishusedaddcontent($finishaddcontent);
+									$calc->setFinishAddContent($me->getFinishing());
+								}
+							}
+						} elseif($me->getPart() == Calculation::PAPER_ENVELOPE)
+						{
+							if ($me->getMachine()->getFinish()){
+								if ($me->getFinishing()->getId()>0){
+									$finishenvelope = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesEnvelope(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$me->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutEnvelope()
+									);
+									$calc->setFinishusedenvelope($finishenvelope);
+									$calc->setFinishEnvelope($me->getFinishing());
+								}
+							}
+						} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT2)
+						{
+							if ($me->getMachine()->getFinish()){
+								if ($me->getFinishing()->getId()>0){
+									$finishaddcontent2 = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesAddContent2(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$me->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutAddContent2()
+									);
+									$calc->setFinishusedaddcontent2($finishaddcontent2);
+									$calc->setFinishAddContent2($me->getFinishing());
+								}
+							}
+						} elseif($me->getPart() == Calculation::PAPER_ADDCONTENT3)
+						{
+							if ($me->getMachine()->getFinish()){
+								if ($me->getFinishing()->getId()>0){
+									$finishaddcontent3 = CalculationService::CalculateFinishUsed(
+										$calc->getAmount(),
+										$calc->getPagesAddContent3(),
+										$calc->getProductFormatWidthOpen(),
+										$calc->getProductFormatHeightOpen(),
+										$me->getFinishingcoverage(),
+										$calc->getSorts(),
+										$calc->getCutAddContent3()
+									);
+									$calc->setFinishusedaddcontent3($finishaddcontent3);
+									$calc->setFinishAddContent3($me->getFinishing());
+								}
+							}
+						}
+						$calc->save();
+					}
 					if($me->getMachine()->getType() != Machine::TYPE_MANUELL)
 					{
 						$me->setTime($me->getMachine()->getRunningTime($me));
@@ -1713,13 +1804,79 @@ if((int)$_REQUEST["step"] == 4)
 					}
 					unset($me);
 				}
-				
+
+				// Farbkostenberechnung
+				if($calc->getPagesContent()){
+					$inkcontent = CalculationService::CalculateColorUsed(
+						$calc->getAmount(),
+						$calc->getPagesContent(),
+						$calc->getProductFormatWidthOpen(),
+						$calc->getProductFormatHeightOpen(),
+						$order->getProduct()->getInkcoverage(),
+						$calc->getChromaticitiesContent()->getColorsFront(),
+						$calc->getSorts(),
+						$calc->getCutContent()
+					);
+					$calc->setInkusedcontent($inkcontent);
+				}
+				if($calc->getPagesEnvelope()){
+					$inkenvelope = CalculationService::CalculateColorUsed(
+						$calc->getAmount(),
+						$calc->getPagesEnvelope(),
+						$calc->getProductFormatWidthOpen(),
+						$calc->getProductFormatHeightOpen(),
+						$order->getProduct()->getInkcoverage(),
+						$calc->getChromaticitiesEnvelope()->getColorsFront(),
+						$calc->getSorts(),
+						$calc->getCutEnvelope()
+					);
+					$calc->setInkusedenvelope($inkenvelope);
+				}
+				if($calc->getPagesAddContent()){
+					$inkaddcontent = CalculationService::CalculateColorUsed(
+						$calc->getAmount(),
+						$calc->getPagesAddContent(),
+						$calc->getProductFormatWidthOpen(),
+						$calc->getProductFormatHeightOpen(),
+						$order->getProduct()->getInkcoverage(),
+						$calc->getChromaticitiesAddContent()->getColorsFront(),
+						$calc->getSorts(),
+						$calc->getCutAddContent()
+					);
+					$calc->setInkusedaddcontent($inkaddcontent);
+				}
+				if($calc->getPagesAddContent2()){
+					$inkaddcontent2 = CalculationService::CalculateColorUsed(
+						$calc->getAmount(),
+						$calc->getPagesAddContent2(),
+						$calc->getProductFormatWidthOpen(),
+						$calc->getProductFormatHeightOpen(),
+						$order->getProduct()->getInkcoverage(),
+						$calc->getChromaticitiesAddContent2()->getColorsFront(),
+						$calc->getSorts(),
+						$calc->getCutAddContent2()
+					);
+					$calc->setInkusedaddcontent2($inkaddcontent2);
+				}
+				if($calc->getPagesAddContent3()){
+					$inkaddcontent3 = CalculationService::CalculateColorUsed(
+						$calc->getAmount(),
+						$calc->getPagesAddContent3(),
+						$calc->getProductFormatWidthOpen(),
+						$calc->getProductFormatHeightOpen(),
+						$order->getProduct()->getInkcoverage(),
+						$calc->getChromaticitiesAddContent3()->getColorsFront(),
+						$calc->getSorts(),
+						$calc->getCutAddContent3()
+					);
+					$calc->setInkusedaddcontent3($inkaddcontent3);
+				}
+
 				$savemsg = ""; //l�schen
 				$calc->setPricesub(tofloat($calc->getSubTotal()));
 				$calc->setPricetotal(tofloat($calc->getSummaryPrice()));
 				$calc->save();
-				
-				
+
 			} // if ok
 			$calc_i++;
 		} // Foreach amount

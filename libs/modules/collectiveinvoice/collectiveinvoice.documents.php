@@ -52,6 +52,8 @@ if($_REQUEST["createDoc"]){
         $doc->setType(Document::TYPE_LABEL);
     if($_REQUEST["createDoc"] == "factory")
         $doc->setType(Document::TYPE_FACTORY);
+	if($_REQUEST["createDoc"] == "proof")
+		$doc->setType(Document::TYPE_PROOF);
     if($_REQUEST["createDoc"] == "delivery") {
 		$doc->setType(Document::TYPE_DELIVERY);
 		$collectinv->setStatus(5);
@@ -466,6 +468,107 @@ if ($margin_warning){
 								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_offerconfirm').val());"><?= $_LANG->get('Generieren') ?></a>
 							</ul>
 							<?php } ?>
+						</td>
+
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="panel panel-default" style="margin-bottom: -2px;">
+			<div class="panel-heading">
+				<h3 class="panel-title" style="font-size: 16px;">
+					Korrekturabzug
+				</h3>
+			</div>
+			<div class="table-responsive" style="margin: 0px 0px 0px 0px;">
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th width="10%"><?= $_LANG->get('Dokumentenname') ?></th>
+						<th width="10%"><?= $_LANG->get('Versch.') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt von') ?></th>
+						<th width="10%"><?= $_LANG->get('Erstellt am') ?></th>
+						<th width="10%"><?= $_LANG->get('Dokumente') ?></th>
+					</tr>
+					</thead>
+					<tbody>
+					<?
+					//---------------------------------------------------------------------------
+					// Korrekturabzug
+					//---------------------------------------------------------------------------
+					$docs = Document::getDocuments(Array("type" => Document::TYPE_PROOF, "requestId" => $collectinv->getId(), "module" => Document::REQ_MODULE_COLLECTIVEORDER)); ?>
+					<?
+					if (count($docs) > 0) {
+						foreach ($docs AS $doc) { ?>
+							<tr class="<?= getRowColor(0) ?>">
+								<td>
+									<span class="ok"><?= $doc->getName() ?></span>
+								</td>
+								<td>
+									<? if ($doc->getSent())
+										echo '<img src="images/status/green_small.svg">';
+									else
+										echo '<img src="images/status/red_small.svg">'; ?>
+								</td>
+								<td>
+									<?= $doc->getCreateUser()->getNameAsLine() ?>
+								</td>
+								<td>
+									<?= date('d.m.Y H:m', $doc->getCreateDate()) ?>
+								</td>
+								<td>
+									<table cellpaddin="0" cellspacing="0" width="100%">
+										<tr>
+											<td width="30%">
+												<ul class="postnav_text">
+													<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?= $doc->getId() ?>&version=email"><?= $_LANG->get('E-Mail') ?></a>
+												</ul>
+											</td>
+											<td width="30%">
+												<ul class="postnav_text">
+													<a href="libs/modules/documents/document.get.iframe.php?getDoc=<?= $doc->getId() ?>&version=print"><?= $_LANG->get('Print') ?></a>
+												</ul>
+											</td>
+											<td width="40%">
+												<ul class="postnav_text_del">
+													<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&deleteDoc=<?= $doc->getId() ?>"><?= $_LANG->get('L&ouml;schen') ?></a>
+												</ul>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<? $x++;
+						}
+					}
+					?>
+					<tr class="<?= getRowColor(0) ?>">
+						<td>
+							<!-- span class="error"><?= $_LANG->get('nicht vorhanden') ?></span--> &ensp;
+						</td>
+						<td>&nbsp;</td>
+						<td>- - -</td>
+						<td>- - -</td>
+						<td>
+							<ul class="postnav_text_save">
+								<?php
+								$letterheads = Letterhead::getAllForType(Document::TYPE_PROOF);
+								?>
+								<select name="letterhead_proof" id="letterhead_proof" class="form-control"
+										style="margin-bottom: 5px;">
+									<?php
+									foreach ($letterheads as $item) {
+										if ($item->getStd() == 1)
+											echo '<option selected value="' . $item->getId() . '">' . $item->getName() . '</option>';
+										else
+											echo '<option value="' . $item->getId() . '">' . $item->getName() . '</option>';
+									}
+									?>
+								</select>
+								<a href="index.php?page=<?= $_REQUEST['page'] ?>&ciid=<?= $collectinv->getId() ?>&exec=docs&createDoc=proof"
+								   onclick="$(this).attr('href',$(this).attr('href')+'&letterhead='+$('#letterhead_proof').val());"><?= $_LANG->get('Generieren') ?></a>
+							</ul>
 						</td>
 
 					</tr>

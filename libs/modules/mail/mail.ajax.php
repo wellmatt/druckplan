@@ -18,10 +18,11 @@ require_once("libs/basic/translator/translator.class.php");
 require_once 'libs/basic/countries/country.class.php';
 require_once 'libs/modules/businesscontact/businesscontact.class.php';
 require_once 'libs/modules/article/article.class.php';
-require_once "thirdparty/phpfastcache/phpfastcache.php";
 require_once 'libs/modules/privatecontacts/privatecontact.class.php';
 require_once 'libs/modules/tickets/ticket.class.php';
 require_once 'libs/modules/mail/mailmassage.class.php';
+require_once "thirdparty/phpfastcache/phpfastcache.php";
+require_once 'libs/basic/cachehandler/cachehandler.class.php';
 
 
 require_once __DIR__.'/../../../vendor/Horde/Autoloader.php';
@@ -43,7 +44,7 @@ $_USER = new User();
 $_USER = User::login($_SESSION["login"], $_SESSION["password"], $_SESSION["domain"]);
 $_LANG = $_USER->getLang();
 
-$cache = phpFastCache("memcache");
+$cache = phpFastCache("memcached");
 /*
  * Local functions
  */

@@ -1,0 +1,91 @@
+<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:8px">{$CName} // {$CStreet} // {$CCounty-&gt;getCode()}-{$CPostcode} {$CCity}</span></span></p>
+
+<p><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CustomerName}<br />
+{$CustomerAddress}</span></span></p>
+
+<table border="0" cellspacing="1" style="width:450px">
+	<tbody>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihre Nachricht</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Ihr Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Unser Zeichen</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Datum</span></span></td>
+		</tr>
+		<tr>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirMessage}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$TheirSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$OurSign}</span></span></td>
+			<td><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{$CurrentDate}</span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong>AB Nr. {$Id}</strong></span><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span><span style="font-size:14px"><strong>&nbsp; Kunden-Nr. {$CustomerId}</strong></span><br />
+<span style="font-size:12px">Auftrag: {$OrderTitle}</span></p>
+
+<p>&nbsp;</p>
+
+<p><br />
+<span style="font-family:arial,helvetica,sans-serif"><span style="font-size:12px">Sehr geehrte Damen und Herren<br />
+vielen Dank f&uuml;r Ihren Auftrag.</span></span></p>
+
+<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:12px">Wir best&auml;tigen Ihnen wie folgt:</span></span></p>
+
+<table border="0" cellpadding="1" cellspacing="1" style="width:450px">
+	<thead>
+		<tr>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:center; width:25px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Pos.</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:200px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Beschreibung</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:65px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">Menge</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">USt.</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">EP (Netto)</span></span></th>
+			<th scope="col" style="border-color:rgb(0, 0, 0); text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">GP (Netto)</span></span></th>
+		</tr>
+	</thead>
+	<tbody><!-- {foreach $OrderPos as $Pos} -->
+		<tr>
+			<td style="text-align:center; width:25px">
+			<p><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos@iteration}</span></span></p>
+			</td>
+			<td style="text-align:left; width:200px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getComment()}</span></span></td>
+			<td style="text-align:left; width:65px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getQuantity()}</span></span></td>
+			<td style="text-align:left; width:40px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{$Pos-&gt;getTax()} %</span></span></td>
+			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getPrice()} {$Currency}</span></span></td>
+			<td style="text-align:right; width:60px"><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:11px">{PrintPrice var=$Pos-&gt;getNetto()} {$Currency}</span></span></td>
+		</tr>
+		<!-- {/foreach} -->
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<table border="0" cellpadding="1" cellspacing="1" style="height:106px; width:455px">
+	<tbody><!-- {if $DeliveryCosts gt 0} -->
+		<tr>
+			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">Porto und Verpackung</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">{PrintPrice var=$DeliveryCosts} {$Currency}</span></span></td>
+		</tr>
+		<!-- {/if} -->
+		<tr>
+			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Netto)</strong></span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{PrintPrice var=$SumNetto} {$Currency}</strong></span></span></td>
+		</tr>
+		<!-- {foreach key=taxkey item=value from=$Taxes} -->
+		<tr>
+			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">USt. ({$taxkey} %)</span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;{PrintPrice var=$value} {$Currency}</span></span></td>
+		</tr>
+		<!-- {/foreach} -->
+		<tr>
+			<td style="text-align:right; width:300px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>Gesamtsumme (Brutto)</strong></span></span></td>
+			<td style="text-align:right; width:150px"><span style="font-size:11px"><span style="font-family:arial,helvetica,sans-serif"><strong>{PrintPrice var=$SumBrutto} {$Currency}</strong></span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p><span style="font-size:12px"><span style="font-family:arial,helvetica,sans-serif">Mit freundlichen Gr&uuml;&szlig;en<br />
+{$UserFirstname} {$UserLastname}<br />
+<br />
+{$UserClient}</span></span></p>

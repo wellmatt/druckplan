@@ -29,6 +29,8 @@ require_once 'libs/modules/costobjects/costobject.class.php';
 require_once 'libs/modules/revenueaccounts/revenueaccount.class.php';
 require_once 'libs/modules/accounting/receipt.class.php';
 require_once 'libs/modules/textblocks/textblock.class.php';
+require_once "thirdparty/phpfastcache/phpfastcache.php";
+require_once 'libs/basic/cachehandler/cachehandler.class.php';
 
 session_start();
 global $_LANG;
@@ -49,4 +51,5 @@ if ($_USER == false){
 }
 $_LANG = $_USER->getLang();
 
+$_CACHE = phpFastCache("memcached");
 ?>

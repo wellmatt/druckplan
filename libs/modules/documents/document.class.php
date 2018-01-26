@@ -30,6 +30,7 @@ class Document
     const TYPE_LABEL = 15; // Etiketten fuer Kartons/Palette
     const TYPE_PAPER_ORDER = 20; // Etiketten fuer Kartons/Palette
     const TYPE_BULKLETTER = 21; // Etiketten fuer Kartons/Palette
+    const TYPE_PROOF = 22; // Korrekturabzug
 
     const REQ_MODULE_ORDER = 1;
     const REQ_MODULE_MANORDER = 2;
@@ -191,6 +192,9 @@ class Document
                     case self::TYPE_BULKLETTER:
                         $filename .= 'bulkletter/' . $_USER->getClient()->getId() . '.' . $this->hash;
                         break;
+                    case self::TYPE_PROOF:
+                        $filename .= 'proof/' . $_USER->getClient()->getId() . '.' . $this->hash;
+                        break;
                 }
                 
                 if (! $this->requestModule == self::REQ_MODULE_PERSONALIZATION) {
@@ -215,7 +219,8 @@ class Document
             "Gutschrift" => 7,
             "Etikett" => 15,
             "Papierbestellung" => 20,
-            "Serienbrief" => 21
+            "Serienbrief" => 21,
+            "Korrekturabzug" => 22
         ];
     }
 
@@ -508,6 +513,9 @@ class Document
                     case self::TYPE_BULKLETTER:
                         $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_BULKLETTER);
                         break;
+                    case self::TYPE_PROOF:
+                        $this->name = $_USER->getClient()->createOrderNumber(Client::NUMBER_PROOF);
+                        break;
                 }
             }
         }
@@ -650,6 +658,8 @@ class Document
                 require 'docs/templates/invoicewarning.tmpl.php';
             if ($this->type == self::TYPE_REVERT)
                 require 'docs/templates/revert.tmpl.php';
+            if ($this->type == self::TYPE_PROOF)
+                require 'docs/templates/proof.tmpl.php';
         } else if ($this->requestModule == self::REQ_MODULE_BULKLETTER){
             if ($this->type == self::TYPE_BULKLETTER)
                 require 'docs/templates/bulkletter.tmpl.php';
@@ -726,6 +736,9 @@ class Document
                 break;
             case self::TYPE_BULKLETTER:
                 $filename .= 'bulkletter/' . $_USER->getClient()->getId() . '.' . "per_" . $this->hash;
+                break;
+            case self::TYPE_PROOF:
+                $filename .= 'proof/' . $_USER->getClient()->getId() . '.' . $this->hash;
                 break;
         }
         

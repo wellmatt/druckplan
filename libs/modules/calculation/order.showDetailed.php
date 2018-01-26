@@ -487,12 +487,16 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                   Farbe Gesamt
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->{$content['chr']}()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000))));?>€</span>
-                                                  Farbe Kosten pro Farbe
+                                                  <span class="badge"><?=printPrice(($calc->getChromaticitiesContent()->getPricekg() * $calc->getInkusedcontent()/1000)+($calc->getChromaticitiesAddContent()->getPricekg() * $calc->getInkusedaddcontent()/1000)+($calc->getChromaticitiesAddContent2()->getPricekg() * $calc->getInkusedaddcontent2()/1000)+($calc->getChromaticitiesAddContent3()->getPricekg() * $calc->getInkusedaddcontent3()/1000)+($calc->getChromaticitiesEnvelope()->getPricekg() * $calc->getInkusedenvelope()/1000))?>€</span>
+                                                  Farbe Kosten Gesamt
                                               </li>
                                               <li class="list-group-item">
-                                                  <span class="badge"><?php echo printPrice(($calc->{$content['chr']}()->getPricekg() * (($calc->getProductFormatWidth() * $calc->getProductFormatHeight() / 1000000) * ($calc->getPaperCount($content['const'])) * (1.4 * 0.5 / 1000) * ($calc->{$content['chr']}()->getColorsBack() + $calc->{$content['chr']}()->getColorsFront()))));?>€</span>
-                                                  Farbe Kosten Gesamt
+                                                  <span class="badge"><?php echo printPrice(($calc->getFinishusedcontent()+$calc->getFinishusedaddcontent()+$calc->getFinishusedaddcontent2()+$calc->getFinishusedaddcontent3()+$calc->getFinishusedenvelope())/1000);?>Kg</span>
+                                                  Lack Gesamt
+                                              </li>
+                                              <li class="list-group-item">
+                                                  <span class="badge"><?php echo printPrice(($calc->getFinishContent()->getKosten() * $calc->getFinishusedcontent()/1000)+($calc->getFinishAddContent()->getKosten() * $calc->getFinishusedaddcontent()/1000)+($calc->getFinishAddContent2()->getKosten() * $calc->getFinishusedaddcontent2()/1000)+($calc->getFinishAddContent3()->getKosten() * $calc->getFinishusedaddcontent3()/1000)+($calc->getFinishEnvelope()->getKosten() * $calc->getFinishusedenvelope()/1000));?>€</span>
+                                                  Lack Kosten
                                               </li>
                                           </ul>
                                       </div>

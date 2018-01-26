@@ -63,6 +63,8 @@ if($_REQUEST["subexec"] == "save")
 	$client->setNumberCounterCustomer((int)$_REQUEST["number_counter_customer"]);
 	$client->setNumberCounterBulkletter($_REQUEST["number_counter_bulkletter"]);
 	$client->setNumberFormatBulkletter($_REQUEST["number_format_bulkletter"]);
+	$client->setNumberCounterProof($_REQUEST["number_counter_proof"]);
+	$client->setNumberFormatProof($_REQUEST["number_format_proof"]);
 
     $savemsg = getSaveMessage($client->save());
     $savemsg .= $DB->getLastError();
@@ -498,6 +500,15 @@ if($_REQUEST["subexec"] == "save")
 						</td>
 						<td>
 							<input name="number_counter_bulkletter" class="form-control" value="<?=$client->getNumberCounterBulkletter()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+					</tr>
+					<tr>
+						<td><?=$_LANG->get('Korrekturabzug');?></td>
+						<td>
+							<input name="number_format_proof" class="form-control" value="<?=$client->getNumberFormatProof()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
+						</td>
+						<td>
+							<input name="number_counter_proof" class="form-control" value="<?=$client->getNumberCounterProof()?>" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 						</td>
 					</tr>
 				</table>

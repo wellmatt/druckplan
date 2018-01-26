@@ -476,6 +476,20 @@ function dd($var){
 	die();
 }
 
+
+function LogMyError($message){
+    $file = "app.log";
+    if ($message != null && $message != ""){
+        $date = date('Y-m-d H:i:s');
+        $message = $date . ': ' . $message . "\r\n";
+        if (file_exists($file))
+            file_put_contents($file, $message, FILE_APPEND | LOCK_EX);
+        else
+            file_put_contents($file, $message);
+    }
+}
+
+
 /**
  * @param array $data
  * @param SimpleXMLElement $xml_data

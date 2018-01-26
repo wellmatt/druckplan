@@ -94,7 +94,7 @@ echo $quickmove->generate();
 			</div>
 
 			<div class="form-group">
-				<label for="" class="col-sm-2 control-label">Preis/kg'</label>
+				<label for="" class="col-sm-2 control-label">Preis/Kg pro Farbton</label>
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input name="pricekg" type="text" class="form-control" value="<?=printPrice($chr->getPricekg())?>">

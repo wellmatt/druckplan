@@ -1163,6 +1163,30 @@ class Machine
             echo '$price = '.$price.' </br>';
         }
 
+        // Lackplatte
+        switch ($machineEntry->getPart()){
+            case Calculation::PAPER_CONTENT:
+                if ($calc->getFinishContent()->getId()>0)
+                    $price = $price + $machineEntry->getMachine()->getFinishPlateCost();
+                break;
+            case Calculation::PAPER_ADDCONTENT:
+                if ($calc->getFinishAddContent()->getId()>0)
+                    $price = $price + $machineEntry->getMachine()->getFinishPlateCost();
+                break;
+            case Calculation::PAPER_ADDCONTENT2:
+                if ($calc->getFinishAddContent2()->getId()>0)
+                    $price = $price + $machineEntry->getMachine()->getFinishPlateCost();
+                break;
+            case Calculation::PAPER_ADDCONTENT3:
+                if ($calc->getFinishAddContent3()->getId()>0)
+                    $price = $price + $machineEntry->getMachine()->getFinishPlateCost();
+                break;
+            case Calculation::PAPER_ENVELOPE:
+                if ($calc->getFinishEnvelope()->getId()>0)
+                    $price = $price + $machineEntry->getMachine()->getFinishPlateCost();
+                break;
+        }
+
         // Hilfsarbeiter hinzurechnen
         if ($machineEntry->getAddworkeramount() > 0){
             $addworkeramount = $machineEntry->getAddworkeramount();

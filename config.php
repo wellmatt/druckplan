@@ -46,6 +46,7 @@ $_CONFIG->cache->user_contruct = 60*5; // User Class Data Caching
 $_CONFIG->cache->menu = 60*15; // User Menu Caching
 
 error_reporting(E_ALL &~E_NOTICE & ~E_DEPRECATED);
+date_default_timezone_set('Europe/Berlin');
 
 function checkErrors($type, $msg, $file, $line, $context = null) {
     if ($type == 1) {

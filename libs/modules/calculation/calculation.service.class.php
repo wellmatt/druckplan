@@ -111,7 +111,7 @@ Class CalculationService {
      */
     public static function CalculateColorUsed($auflage, $pages, $pwidth, $pheight, $inkcoverage, $colorcount, $sorts = 1, $bleed = 0)
     {
-        $debug = false;
+        $debug = true;
         $perf = new Perferences();
         $inkusage = $perf->getInkusage();
 

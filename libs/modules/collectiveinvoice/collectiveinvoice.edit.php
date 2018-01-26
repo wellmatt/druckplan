@@ -388,6 +388,8 @@ echo $quickmove->generate();
 											<a href="#"
 											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=2');">Auftragsbestätigung</a>
 											<a href="#"
+											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=22');">Korrekturabzug</a>
+											<a href="#"
 											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=5');">Auftragstasche</a>
 											<a href="#"
 											   onclick="callBoxFancyPreview('libs/modules/collectiveinvoice/collectiveinvoice.preview.php?ciid=<?php echo $collectinv->getId(); ?>&type=3');">Lieferschein</a>
