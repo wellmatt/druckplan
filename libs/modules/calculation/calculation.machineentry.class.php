@@ -314,10 +314,12 @@ class Machineentry {
                     {$set}
                     WHERE id = {$this->id}";
 //            prettyPrint($sql);
+//            LogMyError($sql);
             $res = $DB->no_result($sql);
         } else {
             $sql = "INSERT INTO orders_machines SET {$set}";
 //            prettyPrint($sql);
+//            LogMyError($sql);
             $res = $DB->no_result($sql);
             if($res)
             {
@@ -900,7 +902,7 @@ class Machineentry {
     }
 
 	/**
-     * @param field_type $color_detail
+     * @param string $color_detail
      */
     public function setColor_detail($color_detail)
     {

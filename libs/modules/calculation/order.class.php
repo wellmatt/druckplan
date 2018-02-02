@@ -1065,7 +1065,7 @@ class Order {
                             if ((int)$me->getUmschl() == 1)
                                 $html .= 'Umschlagen';
                             elseif ((int)$me->getUmst() == 1)
-                                $html .= 'Umscht&uuml;lpen';
+                                $html .= 'Umstülpen';
                             else
                                 $html .= 'Sch&ouml;n & Wider';
                             $html .= '</br>';

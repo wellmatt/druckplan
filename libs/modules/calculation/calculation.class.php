@@ -548,12 +548,14 @@ class Calculation
                         updusr = {$_USER->getId()}
                     WHERE id = {$this->id}";
             $res = $DB->no_result($sql);
+//            LogMyError($sql);
         } else {
             $sql = "INSERT INTO orders_calculations SET 
                     {$set}
                     crtdat = UNIX_TIMESTAMP(),
                     crtusr = {$_USER->getId()}";
             $res = $DB->no_result($sql);
+//            LogMyError($sql);
             if ($res) {
                 $sql = "SELECT max(id) id FROM orders_calculations WHERE order_id = {$this->orderId}";
                 $thisid = $DB->select($sql);
@@ -719,6 +721,119 @@ class Calculation
         return $contents;
     }
 
+    public static function contentArrayAsso()
+    {
+
+        $contents = [
+            self::PAPER_CONTENT =>
+            [
+                'name' => 'Inhalt 1',
+                'id' => 'getPaperContent',
+                'weight' => 'getPaperContentWeight',
+                'chr' => 'getChromaticitiesContent',
+                'width' => 'getPaperContentWidth',
+                'height' => 'getPaperContentHeight',
+                'pages' => 'getPagesContent',
+                'grant' => 'getPaperContentGrant',
+                'cut' => 'getCutContent',
+                'const' => Calculation::PAPER_CONTENT,
+                'finish' => 'getFinishContent',
+                'setPaperHeight' => 'setPaperContentHeight',
+                'setPaperWidth' => 'setPaperContentWidth',
+                'setFormatIn' => 'setFormat_in_content',
+                'setPaperGrant' => 'setPaperContentGrant',
+                'setFinishused' => 'setFinishusedcontent',
+                'setFinish' => 'setFinishContent',
+                'setInkused' => 'setInkusedcontent'
+            ],
+            self::PAPER_ADDCONTENT =>
+            [
+                'name' => 'Inhalt 2',
+                'id' => 'getPaperAddContent',
+                'weight' => 'getPaperAddContentWeight',
+                'chr' => 'getChromaticitiesAddContent',
+                'width' => 'getPaperAddContentWidth',
+                'height' => 'getPaperAddContentHeight',
+                'pages' => 'getPagesAddContent',
+                'grant' => 'getPaperAddContentGrant',
+                'cut' => 'getCutAddContent',
+                'const' => Calculation::PAPER_ADDCONTENT,
+                'finish' => 'getFinishAddContent',
+                'setPaperHeight' => 'setPaperAddContentHeight',
+                'setPaperWidth' => 'setPaperAddContentWidth',
+                'setFormatIn' => 'setFormat_in_addcontent',
+                'setPaperGrant' => 'setPaperAddContentGrant',
+                'setFinishused' => 'setFinishusedaddcontent',
+                'setFinish' => 'setFinishAddContent',
+                'setInkused' => 'setInkusedaddcontent'
+            ],
+            self::PAPER_ADDCONTENT2 =>
+            [
+                'name' => 'Inhalt 3',
+                'id' => 'getPaperAddContent2',
+                'weight' => 'getPaperAddContent2Weight',
+                'chr' => 'getChromaticitiesAddContent2',
+                'width' => 'getPaperAddContent2Width',
+                'height' => 'getPaperAddContent2Height',
+                'pages' => 'getPagesAddContent2',
+                'grant' => 'getPaperAddContent2Grant',
+                'cut' => 'getCutAddContent2',
+                'const' => Calculation::PAPER_ADDCONTENT2,
+                'finish' => 'getFinishAddContent2',
+                'setPaperHeight' => 'setPaperAddContent2Height',
+                'setPaperWidth' => 'setPaperAddContent2Width',
+                'setFormatIn' => 'setFormat_in_addcontent2',
+                'setPaperGrant' => 'setPaperAddContent2Grant',
+                'setFinishused' => 'setFinishusedaddcontent2',
+                'setFinish' => 'setFinishAddContent2',
+                'setInkused' => 'setInkusedaddcontent2'
+            ],
+            self::PAPER_ADDCONTENT3 =>
+            [
+                'name' => 'Inhalt 4',
+                'id' => 'getPaperAddContent3',
+                'weight' => 'getPaperAddContent3Weight',
+                'chr' => 'getChromaticitiesAddContent3',
+                'width' => 'getPaperAddContent3Width',
+                'height' => 'getPaperAddContent3Height',
+                'pages' => 'getPagesAddContent3',
+                'grant' => 'getPaperAddContent3Grant',
+                'cut' => 'getCutAddContent3',
+                'const' => Calculation::PAPER_ADDCONTENT3,
+                'finish' => 'getFinishAddContent3',
+                'setPaperHeight' => 'setPaperAddContent3Height',
+                'setPaperWidth' => 'setPaperAddContent3Width',
+                'setFormatIn' => 'setFormat_in_addcontent3',
+                'setPaperGrant' => 'setPaperAddContent3Grant',
+                'setFinishused' => 'setFinishusedaddcontent3',
+                'setFinish' => 'setFinishAddContent3',
+                'setInkused' => 'setInkusedaddcontent3'
+            ],
+            self::PAPER_ENVELOPE =>
+            [
+                'name' => 'Umschlag',
+                'id' => 'getPaperEnvelope',
+                'weight' => 'getPaperEnvelopeWeight',
+                'chr' => 'getChromaticitiesEnvelope',
+                'width' => 'getPaperEnvelopeWidth',
+                'height' => 'getPaperEnvelopeHeight',
+                'pages' => 'getPagesEnvelope',
+                'grant' => 'getPaperEnvelopeGrant',
+                'cut' => 'getCutEnvelope',
+                'const' => Calculation::PAPER_ENVELOPE,
+                'finish' => 'getFinishEnvelope',
+                'setPaperHeight' => 'setPaperEnvelopeHeight',
+                'setPaperWidth' => 'setPaperEnvelopeWidth',
+                'setFormatIn' => 'setFormat_in_envelope',
+                'setPaperGrant' => 'setPaperEnvelopeGrant',
+                'setFinishused' => 'setFinishusedenvelope',
+                'setFinish' => 'setFinishEnvelope',
+                'setInkused' => 'setInkusedenvelope'
+            ],
+        ];
+        return $contents;
+    }
+
     public function getPaperCount($papertype, Machineentry $me = null)
     {
         $productsPerPaper = $this->getProductsPerPaper($papertype);
@@ -843,14 +958,23 @@ class Calculation
      * @param $ptype
      * @param int $manpaperH
      * @param int $manpaperW
+     * @param Machineentry $me
      * @return float|int
      */
-    function getUsagePerPaper($ptype, $manpaperH = 0, $manpaperW = 0)
+    function getUsagePerPaper($ptype, $manpaperH = 0, $manpaperW = 0, $me = null)
     {
-        return $this->getProductsPerPaper($ptype, $manpaperH, $manpaperW, 1);
+        return $this->getProductsPerPaper($ptype, $manpaperH, $manpaperW, 1, $me);
     }
 
-    function getProductsPerPaper($ptype, $manpaperH = 0, $manpaperW = 0, $usage = 0)
+    /**
+     * @param $ptype
+     * @param int $manpaperH
+     * @param int $manpaperW
+     * @param int $usage
+     * @param Machineentry $me
+     * @return float|int
+     */
+    function getProductsPerPaper($ptype, $manpaperH = 0, $manpaperW = 0, $usage = 0, $me = null)
     {
         global $_CONFIG;
         $order = new Order($this->orderId);
@@ -903,18 +1027,27 @@ class Calculation
             $anz_cols = 1;
 
         // Maschine fuer ausgewaehlten Papiertyp
-        $mach = Machineentry::getMachineForPapertype($ptype, $this->id);
-        if ($mach) {
-            $calc = new Calculation($mach[0]->getCalcId());
-            if ($mach[0]->getPart() == Calculation::PAPER_CONTENT)
+        if ($me != null && $me->getMachine()->getId()>0) {
+            $mach = $me;
+        } else {
+            $mach = Machineentry::getMachineForPapertype($ptype, $this->id);
+            if ($mach)
+                $mach = $mach[0];
+            else
+                $mach = new Machineentry();
+        }
+
+        if ($mach->getMachine()->getId()>0) {
+            $calc = new Calculation($mach->getCalcId());
+            if ($mach->getPart() == Calculation::PAPER_CONTENT)
                 $chr = $calc->getChromaticitiesContent();
-            else if ($mach[0]->getPart() == Calculation::PAPER_ADDCONTENT)
+            else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT)
                 $chr = $calc->getChromaticitiesAddContent();
-            else if ($mach[0]->getPart() == Calculation::PAPER_ENVELOPE)
+            else if ($mach->getPart() == Calculation::PAPER_ENVELOPE)
                 $chr = $calc->getChromaticitiesEnvelope();
-            else if ($mach[0]->getPart() == Calculation::PAPER_ADDCONTENT2)
+            else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT2)
                 $chr = $calc->getChromaticitiesAddContent2();
-            else if ($mach[0]->getPart() == Calculation::PAPER_ADDCONTENT3)
+            else if ($mach->getPart() == Calculation::PAPER_ADDCONTENT3)
                 $chr = $calc->getChromaticitiesAddContent3();
 
             if ($chr->getReversePrinting())
@@ -923,11 +1056,11 @@ class Calculation
                 $duplex = 1;
 
             // Usage override
-            if ($mach[0]->getUsageoverride() > 0){
+            if ($mach->getUsageoverride() > 0){
                 if ($usage == 0){
-                    return $mach[0]->getUsageoverride() * $anz_cols * $anz_rows * $duplex;
+                    return $mach->getUsageoverride() * $anz_cols * $anz_rows * $duplex;
                 } else {
-                    return $mach[0]->getUsageoverride();
+                    return $mach->getUsageoverride();
                 }
             }
 
@@ -944,7 +1077,7 @@ class Calculation
             } elseif ($ptype == Calculation::PAPER_ENVELOPE) {
                 $tmp_anschnitt = $calc->getCutEnvelope();
             }
-            $rolldir = $mach[0]->getRoll_dir();
+            $rolldir = $mach->getRoll_dir();
 
             $width = $width + $tmp_anschnitt * 2;
             $height = $height + $tmp_anschnitt * 2;
@@ -957,8 +1090,8 @@ class Calculation
             }
 
             // Papier um nicht bedruckbaren Bereich verkleinern
-            $paperH = $paperH - $mach[0]->getMachine()->getBorder_bottom() - $mach[0]->getMachine()->getBorder_top() - $tmp_farbrand;
-            $paperW = $paperW - $mach[0]->getMachine()->getBorder_left() - $mach[0]->getMachine()->getBorder_right();
+            $paperH = $paperH - $mach->getMachine()->getBorder_bottom() - $mach->getMachine()->getBorder_top() - $tmp_farbrand;
+            $paperW = $paperW - $mach->getMachine()->getBorder_left() - $mach->getMachine()->getBorder_right();
 
             $productPerPaper1 = floor($paperW / $height) * floor($paperH / $width); // calc products per paper
             $ppp1 = $order->getProduct()->evalMaxProducts($productPerPaper1, $ptype, $pages, false);
@@ -1255,15 +1388,15 @@ class Calculation
 
                 $papers = 0;
                 if ($machineEntry->getPart() == Calculation::PAPER_CONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0) {
-                    $papers = $this->getPagesContent() / $this->getProductsPerPaper(Calculation::PAPER_CONTENT);
+                    $papers = $this->getPagesContent() / $this->getProductsPerPaper(Calculation::PAPER_CONTENT, 0, 0, 0, $machineEntry);
                 } else if ($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0) {
-                    $papers = $this->getPagesAddContent() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT);
+                    $papers = $this->getPagesAddContent() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT, 0, 0, 0, $machineEntry);
                 } else if ($machineEntry->getPart() == Calculation::PAPER_ENVELOPE && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0) {
-                    $papers = $this->getPagesEnvelope() / $this->getProductsPerPaper(Calculation::PAPER_ENVELOPE);
+                    $papers = $this->getPagesEnvelope() / $this->getProductsPerPaper(Calculation::PAPER_ENVELOPE, 0, 0, 0, $machineEntry);
                 } else if ($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT2 && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0) {
-                    $papers = $this->getPagesAddContent2() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2);
+                    $papers = $this->getPagesAddContent2() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT2, 0, 0, 0, $machineEntry);
                 } else if ($machineEntry->getPart() == Calculation::PAPER_ADDCONTENT3 && $order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0) {
-                    $papers = $this->getPagesAddContent3() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3);
+                    $papers = $this->getPagesAddContent3() / $this->getProductsPerPaper(Calculation::PAPER_ADDCONTENT3, 0, 0, 0, $machineEntry);
                 }
                 if ($order->getProduct()->getSingleplateset() == 0 && $order->getProduct()->getBlockplateset() == 0) {
                     $tmp_plates += $chr->getColorsFront() * ceil($papers);
@@ -1286,7 +1419,7 @@ class Calculation
             }
 
         }
-        return $plates;
+        return (int)$plates;
     }
 
     public function getPlateSetCount($machineEntry = null)
@@ -1352,6 +1485,22 @@ class Calculation
 
         }
         return $platesets;
+    }
+
+    public function getPagesForPart($part)
+    {
+        switch ($part){
+            case self::PAPER_CONTENT:
+                return $this->getPagesContent();
+            case self::PAPER_ADDCONTENT:
+                return $this->getPagesAddContent();
+            case self::PAPER_ADDCONTENT2:
+                return $this->getPagesAddContent2();
+            case self::PAPER_ADDCONTENT3:
+                return $this->getPagesAddContent3();
+            case self::PAPER_ENVELOPE:
+                return $this->getPagesEnvelope();
+        }
     }
 
     public function getColorCost()
@@ -2445,7 +2594,7 @@ class Calculation
     }
 
     /**
-     * @param field_type $format_in_content
+     * @param string $format_in_content
      */
     public function setFormat_in_content($format_in_content)
     {

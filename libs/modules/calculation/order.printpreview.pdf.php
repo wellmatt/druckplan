@@ -428,7 +428,7 @@ $data[] = Array(	"Eigenschaft"		=> " ",
      if ((int)$machentry->getUmschlagenUmstuelpen() == 1)
      {
          $data[] = Array(	"Eigenschaft"		=> "Druckart: ",
-        					"Wert" 				=> "Umschlagen / Umschtuelpen");
+        					"Wert" 				=> "Umschlagen / Umstuelpen");
      }
      else
      {

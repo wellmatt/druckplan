@@ -275,6 +275,12 @@ class Machine
         }
     }
 
+    /**
+     * @param string $order
+     * @param int $group
+     * @param string $filter
+     * @return Machine[]
+     */
     static function getAllMachines($order = self::ORDER_ID, $group = 0, $filter = "")
     {
         global $DB;
@@ -1259,6 +1265,20 @@ class Machine
     	}
     	
     	return $retval;
+    }
+
+    /**
+     * @param Chromaticity $choma
+     * @return bool
+     */
+    public function ColorPossible(Chromaticity $choma)
+    {
+        foreach ($this->getChromaticities() as $chrome){
+            if( $chrome == $choma){
+                return true;
+            }
+        }
+        return false;
     }
     
     public function getId()

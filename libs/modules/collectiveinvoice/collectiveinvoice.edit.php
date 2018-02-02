@@ -793,6 +793,69 @@ echo $quickmove->generate();
 										<?php echo $state;?>
 									</div>
 								</div>
+								<div class="form-group">
+									<label for="" class="col-sm-4 control-label">Saxo Portal</label>
+									<div class="col-sm-8 form-text">
+										<?php
+										switch ($collectinv->getSaxoportalid()){
+											case 0:
+												echo '0 - Invalid';
+												break;
+											case 1:
+												echo '1 - Saxoprint - Germany';
+												break;
+											case 3:
+												echo '3 - Saxoprint - UK';
+												break;
+											case 5:
+												echo '5 - Saxoprint - France';
+												break;
+											case 6:
+												echo '6 - Saxoprint - Spain';
+												break;
+											case 7:
+												echo '7 - Saxoprint - Austria';
+												break;
+											case 8:
+												echo '8 - Saxoprint - Italy';
+												break;
+											case 9:
+												echo '9 - CeWePrint - Netherlands';
+												break;
+											case 10:
+												echo '10 - CeWePrint - German';
+												break;
+											case 12:
+												echo '12 - Saxoprint - CH';
+												break;
+											case 13:
+												echo '13 - CeWePrint - Poland';
+												break;
+											case 15:
+												echo '15 - CeWePrint - Austria';
+												break;
+											case 16:
+												echo '16 - CeWePrint - Italy';
+												break;
+											case 17:
+												echo '17 - SRI - Germany located retailers';
+												break;
+											case 19:
+												echo '19 - CeWePrint - Belgium';
+												break;
+											case 53:
+												echo '53 - Saxoprint Cloud - Germany';
+												break;
+											case 71:
+												echo '71 - Saxoprint Nehterlands';
+												break;
+											case 72:
+												echo '72 - Saxoprint Belgium';
+												break;
+										}
+										echo $collectinv->getSaxoportalid();?>
+									</div>
+								</div>
 							<?php }?>
 						</div> <!-- ENDE COL RECHTS -->
 					</div>

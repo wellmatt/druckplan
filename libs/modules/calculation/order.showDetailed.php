@@ -213,7 +213,7 @@ foreach (Calculation::getAllCalculations($order,Calculation::ORDER_AMOUNT) as $c
                                                                   <span class="badge">
                                                                       <?php
                                                                       if ((int)$me->getUmschlagenUmstuelpen() == 1)
-                                                                          echo 'Umschlagen / Umscht&uuml;lpen';
+                                                                          echo 'Umschlagen / Umstülpen';
                                                                       else
                                                                           echo 'Sch&ouml;n & Wider';
                                                                       ?>

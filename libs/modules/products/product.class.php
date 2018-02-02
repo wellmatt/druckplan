@@ -697,6 +697,9 @@ class Product {
         $this->picture = $picture;
     }
 
+    /**
+     * @return Machine[]
+     */
     public function getMachines()
     {
         return $this->machines;

@@ -80,6 +80,17 @@ class SaxoprintOrder{
 "CountryCodeISO": '.$deliveryAddress->CountryCodeISO.'';
         }
 
+        $comment2 = '';
+        $comment2 .= 'Absenderadresse:
+"CompanyName": '.$this->SenderAddress->CompanyName.',
+"FirstName": '.$this->SenderAddress->FirstName.',
+"LastName": '.$this->SenderAddress->LastName.',
+"Street": '.$this->SenderAddress->Street.',
+"Zipcode": '.$this->SenderAddress->Zipcode.',
+"City": '.$this->SenderAddress->City.',
+"TelephoneNumber": '.$this->SenderAddress->TelephoneNumber.',
+"CountryCodeISO": '.$this->SenderAddress->CountryCodeISO.'';
+
         $prodgrp = '';
         $material = '';
         $format = '';
@@ -111,7 +122,9 @@ class SaxoprintOrder{
         $col_inv->setClient(new Client(1));
         $col_inv->setType(3);
         $col_inv->setComment($comment);
+        $col_inv->setExt_comment($comment2);
         $col_inv->setSaxoid($this->getOrderNumber());
+        $col_inv->setSaxoportalid($this->getPortalId());
         $col_inv->setSaxomaterial($material);
         $col_inv->setSaxoprodgrp($prodgrp);
         $col_inv->setStatus(3);
