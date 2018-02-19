@@ -682,7 +682,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $state
+     * @return TicketState $state
      */
     public function getState()
     {
@@ -690,7 +690,7 @@ class Ticket {
     }
 
 	/**
-     * @return the $category
+     * @return TicketCategory $category
      */
     public function getCategory()
     {

@@ -356,7 +356,7 @@ Class CalculationService {
                     $entry->setInfo(trim(addslashes($request["mach_info_{$id}"])));
                     $entry->setColor_detail(trim(addslashes($request["mach_color_detail_{$id}"])));
                     $entry->setAddworkeramount((int)$request["mach_addworkeramount_{$id}"]);
-                    if ((int)$request["mach_usageoverride_{$id}"] == 1)
+                    if ((int)$request["mach_usageoverride_{$id}"] > 0)
                         $entry->setUsageoverride((int)$request["mach_usageoverride_{$id}"]);
                     else
                         $entry->setUsageoverride(0);

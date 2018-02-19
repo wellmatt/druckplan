@@ -301,7 +301,12 @@ class Machine
         }
         return $retval;
     }
-    
+
+    /**
+     * @param $date
+     * @return int
+     * TODO: Make easily ajax callable
+     */
     public function getRunningtimeForDay($date) // $date unixtimestamp
     {
         $day = date("w",$date);

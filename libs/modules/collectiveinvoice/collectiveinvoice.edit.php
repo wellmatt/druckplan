@@ -852,8 +852,7 @@ echo $quickmove->generate();
 											case 72:
 												echo '72 - Saxoprint Belgium';
 												break;
-										}
-										echo $collectinv->getSaxoportalid();?>
+										} ?>
 									</div>
 								</div>
 							<?php }?>

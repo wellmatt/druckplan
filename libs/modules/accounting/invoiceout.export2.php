@@ -54,16 +54,13 @@ if (count($objects)>0){
     //write header array if needed
     $header = [
         'Belegdatum',
-        'Buchungsdatum',
         'Belegnummernkreis',
         'Belegnummer',
+        'Kundennummer',
         'Buchungstext',
         'Buchungsbetrag',
         'Sollkonto',
         'Habenkonto',
-        'Steuerschlüssel',
-        'Kostenstelle 1',
-        'Kostenstelle 2',
         'Währung'
     ];
     $writer->writeHeader($header);
@@ -81,16 +78,13 @@ if (count($objects)>0){
 
         $writer->writeRow(array(
             date('d.m.y',$object->getCrtdate()), // Belegdatum
-            $payeddate, // Buchungsdatum
             'AR', // Belegnummernkreis
             $object->getNumber(), // Belegnummer
+            $object->colinv->getCustomer()->getCustomernumber(), // Kundennummer
             $object->colinv->getCustomer()->getNameAsLine(), // Buchungstext
             $vz.$object->getGrossvalue(), // Buchungsbetrag
             '', // Sollkonto
             '4400', // Habenkonto
-            '0', // Steuerschlüssel
-            '', // Kostenstelle 1
-            '', // Kostenstelle 2
             'EUR' // Währung
         ));
 

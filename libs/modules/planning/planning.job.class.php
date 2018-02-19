@@ -17,6 +17,7 @@ require_once 'libs/modules/machines/machine.class.php';
 class PlanningJob {
 
     private $id;
+    private $sequence = 0;
     private $object;
     private $type;
     private $opos;
@@ -30,7 +31,8 @@ class PlanningJob {
     private $state = 1;
     private $artmach;
     private $me;
-    
+    private $note = '';
+
     const TYPE_V = 1;
     const TYPE_K = 2;
 
@@ -104,6 +106,8 @@ class PlanningJob {
                     $this->tplanned = $r["tplanned"];
                     $this->tactual = $r["tactual"];
                     $this->state = $r["state"];
+                    $this->sequence = $r["sequence"];
+                    $this->note = $r["note"];
 
                     Cachehandler::toCache(Cachehandler::genKeyword($this),$this);
                 }
@@ -130,6 +134,89 @@ class PlanningJob {
             }
         }
         return $retval;
+    }
+
+    public static function getPlanningTable($start, $end, $object = 0, $cino = '')
+    {
+        $vostring = '';
+        $amstring = '';
+        if ($object > 0)
+            $amstring = ' AND artmach = '.$object;
+        if ($cino != '')
+            $vostring = ' AND object = "'.$cino.'" ';
+        $jobs = self::getAllJobs(" AND start >= {$start} AND start <= {$end} {$amstring} {$vostring}");
+
+        $x = 1;
+        $data = [];
+        foreach ($jobs as $job) {
+            $row = [];
+            $row['sq'] = $job->getSequence();
+            $row['id'] = $job->getId();
+            $row['name'] = $job->fetchName();
+            $row['user'] = $job->fetchAssignedName();
+            $row['vonr'] = $job->getObject()->getNumber();
+            $row['void'] = $job->getObject()->getId();
+            $row['ticketnr'] = $job->getTicket()->getNumber();
+            $row['ticketid'] = $job->getTicket()->getId();
+            $row['date'] = date('d.m.y',$job->getStart());
+            $row['date_prod'] = date('d.m.y H:i',$job->getStart());
+            $row['date_deliv'] = date('d.m.y',$job->getObject()->getDeliverydate());
+            $row['tplanned'] = number_format($job->getTplanned(),2,',','.');
+            $row['tactual'] = number_format($job->getTactual(),2,',','.');
+            $row['state'] = $job->getTicket()->getState()->getTitle();
+            $row['statecolor'] = $job->getTicket()->getState()->getColorcode();
+            $row['note'] = $job->getNote();
+
+            $row['calc_material'] = '';
+            $row['calc_weight'] = '';
+            $row['calc_chroma'] = '';
+            $row['calc_size'] = '';
+            $row['calc_prodformat'] = '';
+            $row['calc_prodformatopen'] = '';
+            $row['calc_ppp'] = '';
+            $row['calc_papercount'] = '';
+
+            if ($job->getType() == 2){
+                $contents = Calculation::contentArray();
+                $calc = new Calculation($job->getMe()->getCalcId());
+                if ($calc->getId()>0) {
+                    foreach ($contents as $content) {
+                        if ($content['const'] == $job->getMe()->getPart()) {
+                            if ($calc->{$content['id']}()->getId() > 0) {
+                                $row['calc_material'] = $calc->{$content['id']}()->getName();
+                                $row['calc_weight'] = $calc->{$content['weight']}();
+                                $row['calc_chroma'] = $calc->{$content['chr']}()->getName();
+                                $row['calc_size'] = $calc->{$content['width']}().' x '.$calc->{$content['height']}();
+                                $row['calc_prodformat'] = $calc->getProductFormatWidth().' x '.$calc->getProductFormatHeight();
+                                $row['calc_prodformatopen'] = $calc->getProductFormatWidthOpen().' x '.$calc->getProductFormatHeightOpen();
+                                $row['calc_ppp'] = $calc->getProductsPerPaper($content['const'],0,0,1,$job->getMe());
+                                $row['calc_papercount'] = $calc->getPaperCount($content['const'],$job->getMe()) + $calc->{$content['grant']}();
+                            }
+                        }
+                    }
+                }
+            }
+            $x++;
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    public function fetchAssignedName()
+    {
+        if ($this->getAssigned_user()->getId()>0)
+            return $this->getAssigned_user()->getNameAsLine();
+        else
+            return $this->getAssigned_group()->getName();
+    }
+
+    public function fetchName()
+    {
+        if ($this->getType() == 2)
+            return $this->getArtmach()->getName();
+        if ($this->getType() == 1)
+            return $this->getArtmach()->getTitle();
+        return '';
     }
 
     static function getJobForTicket($ticketid, $filter = null)
@@ -275,6 +362,8 @@ class PlanningJob {
                 tactual = {$this->tactual},
                 artmach = {$this->artmach->getId()},
                 me = {$this->me->getId()},
+                sequence = {$this->sequence},
+                note = '{$this->note}',
                 state = {$this->state}";
         if ($this->id > 0) {
             $sql = "UPDATE planning_jobs SET " . $set . " WHERE id = {$this->id}";
@@ -548,12 +637,15 @@ class PlanningJob {
     }
     
 	/**
-     * @return the $assigned_group
+     * @return Group $assigned_group
      */
     public function getAssigned_group()
     {
         return $this->assigned_group;
     }
+    /**
+     * @return Group $assigned_group
+     */
     public function getAssignedgroup()
     {
         return $this->assigned_group;
@@ -581,6 +673,38 @@ class PlanningJob {
     public function setMe($me)
     {
         $this->me = $me;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSequence()
+    {
+        return $this->sequence;
+    }
+
+    /**
+     * @param int $sequence
+     */
+    public function setSequence($sequence)
+    {
+        $this->sequence = $sequence;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
     }
 }
 ?>

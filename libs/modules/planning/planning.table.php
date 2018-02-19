@@ -1,10 +1,15 @@
 <?php
 require_once 'libs/modules/planning/planning.job.class.php';
+require_once 'libs/modules/vacation/vacation.entry.class.php';
+
 $date_past = mktime(0,0,0); // -259200
 $date_start = mktime(0,0,0,date('m',$date_past),date('d',$date_past),date('Y',$date_past));
 $date_future = mktime(0,0,0)+604800;
 $date_end = mktime(0,0,0,date('m',$date_future),date('d',$date_future),date('Y',$date_future));
 $pl_artmachs = PlanningJob::getUniqueArtmach();
+
+
+
 ?>
 
 <style>
@@ -28,7 +33,32 @@ $pl_artmachs = PlanningJob::getUniqueArtmach();
 		z-index: 1000;
 		position: absolute;
 	}
+	.group-start td{
+		font-size: medium;
+	}
+	.group-end td{
+		font-size: small;
+		background-color: #f4efe0 !important;
+	}
 </style>
+
+<!-- DataTables Editor -->
+<link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/datatables.min.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/datatables.min.js"></script>
+
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-autoComplete/editor.autoComplete.js"></script>
+<link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-bootstrapDate/editor.bootstrapDate.js"></script>
+<script type="text/javascript" src="jscripts/datatableeditor/FieldType-datetimepicker-2/editor.datetimepicker-2.js"></script>
+
+<link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/ColReorder-1.3.2/css/colReorder.bootstrap.min.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/ColReorder-1.3.2/js/dataTables.colReorder.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="jscripts/datatableeditor/RowGroup-1.0.2/css/rowGroup.bootstrap.min.css"/>
+<script type="text/javascript" src="jscripts/datatableeditor/RowGroup-1.0.2/js/dataTables.rowGroup.min.js"></script>
+
+<script type="text/javascript" src="jscripts/datatableeditor/pdfmake-0.1.18/build/pdfmake.min.js"></script>
+<!-- /DataTables Editor -->
 
 <link rel="stylesheet" type="text/css" href="jscripts/datetimepicker/jquery.datetimepicker.css"/ >
 <script src="jscripts/datetimepicker/jquery.datetimepicker.js"></script>
@@ -126,14 +156,14 @@ $pl_artmachs = PlanningJob::getUniqueArtmach();
 		$('#popUpDiv').css({'top':e.pageY-50,'left':e.pageX, 'position':'absolute', 'border':'1px solid black', 'padding':'5px'});
 
 		var js = "movepj("+jobid+"); return false;";
-		var newclick = new Function(js);
+//		let newclick = new Function(js);
 		// clears onclick then sets click using jQuery
-		$("#popupsave").attr('onclick', '').click(newclick);
-
+		$("#popupsave").attr('onclick', js);
 		$('#popUpDiv').show();
 	}
 
 	function movepj(jobid){
+		console.log('Job #'+jobid+' wird verschoben nach '+$('#date_move').val());
 		$('#movetext_'+jobid).text('auf '+$('#date_move').val());
 		var newinput = '<input type="hidden" name="'+jobid+'" class="jobinput" value="'+$('#date_move').val()+'" id="pj_new_date_'+jobid+'">';
 		$('input[name='+jobid+']').remove();
@@ -190,7 +220,7 @@ $pl_artmachs = PlanningJob::getUniqueArtmach();
 		   onfocus="markfield(this,0)" onblur="markfield(this,1)" value="<? echo date('d.m.Y H:i', $date_start);?>"/>
 	<div class="row">
 		<div class="col-md-6" style="text-align: left;"><span onclick="$('#popUpDiv').hide();" class="btn btn-sm btn-default">Abbrechen</span></div>
-		<div class="col-md-6" style="text-align: right;"><span id="popupsave" onclick="mail_move();" class="btn btn-sm btn-default">Speichern</span></div>
+		<div class="col-md-6" style="text-align: right;"><span id="popupsave" onclick="" class="btn btn-sm btn-default">Speichern</span></div>
 	</div>
 </div>
 
@@ -212,6 +242,54 @@ echo $quickmove->generate();
 		</h3>
 	</div>
 	<div class="panel-body">
+		<?php
+		if ($_USER->hasRightsByGroup(Permission::vacation_grant)){
+			$vacations = VacationEntry::getAll();
+			?>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Urlaube / Krankheit
+					</h3>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-hover" id="vacs">
+						<thead>
+						<tr>
+							<th><?=$_LANG->get('ID')?></th>
+							<th><?=$_LANG->get('Benutzer')?></th>
+							<th><?=$_LANG->get('Tage')?></th>
+							<th><?=$_LANG->get('Von')?></th>
+							<th><?=$_LANG->get('Bis')?></th>
+							<th><?=$_LANG->get('Status')?></th>
+							<th><?=$_LANG->get('Typ')?></th>
+							<th><?=$_LANG->get('Kommentar')?></th>
+						</tr>
+						</thead>
+						<tbody>
+						<?php
+						foreach ($vacations as $vacation) {
+							if ($vacation->getState() == VacationEntry::STATE_APPROVED) {
+								?>
+								<tr>
+									<td><?php echo $vacation->getId(); ?></td>
+									<td><?php echo $vacation->getUser()->getNameAsLine(); ?></td>
+									<td><?php echo $vacation->getDays(); ?></td>
+									<td><?php echo date('d.m.Y', $vacation->getStart()); ?></td>
+									<td><?php echo date('d.m.Y', $vacation->getEnd()); ?></td>
+									<td><?php echo $vacation->getStateFormated(); ?></td>
+									<td><?php echo $vacation->getTypeFormated(); ?></td>
+									<td><?php echo $vacation->getComment(); ?></td>
+								</tr>
+								<?php
+							}
+						}
+						?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		<?php } ?>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">
@@ -259,23 +337,10 @@ echo $quickmove->generate();
 							<input type="text" id="voselector" class="form-control"><input type="hidden" id="vovalue">
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Statistik</label>
-						<div class="col-sm-1">
-							<input type="checkbox" id="chk_statistics" name="chk_statistics"
-								   class="form-control format-d-m-y divider-dot highlight-days-67 no-locale no-transparency dateselect"
-								   onfocus="markfield(this,0)" onblur="markfield(this,1)"
-								   value="1"/>
-						</div>
-					</div>
-						<br>
-							  <span class="pull-right">
-								  <a onclick="print();">
-									  <button type="button" class="btn btn-sm btn-default">Drucken</button>
-								  </a>
-								  <button type="button" class="btn btn-sm btn-success" id="show">anzeigen</button>
-							  </span>
-					</div>
+					<span class="pull-right">
+						<button type="button" class="btn btn-sm btn-success" id="show">anzeigen</button>
+					</span>
+				</form>
 			</div>
 		</div>
 		<div id="planningbox">
