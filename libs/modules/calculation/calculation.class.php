@@ -14,6 +14,7 @@ require_once 'calculation.machineentry.class.php';
 require_once 'libs/modules/article/article.class.php';
 require_once 'calculation.position.class.php';
 require_once 'calculation.service.class.php';
+require_once 'calculation.article.class.php';
 
 class Calculation
 {
@@ -836,7 +837,7 @@ class Calculation
 
     public function getPaperCount($papertype, Machineentry $me = null)
     {
-        $productsPerPaper = $this->getProductsPerPaper($papertype);
+        $productsPerPaper = $this->getProductsPerPaper($papertype, $me);
         // Papiertyp nicht angegeben
         if ($productsPerPaper == 0)
             return 0;
@@ -858,7 +859,7 @@ class Calculation
 
     public function getPaperCountTotalRuns($papertype, Machineentry $me)
     {
-        $papercount = $this->getPaperCount($papertype);
+        $papercount = $this->getPaperCount($papertype, $me);
 
         $mcolorsf = $me->getMachine()->getColors_front();
         $mcolorsb = $me->getMachine()->getColors_back();
@@ -1581,6 +1582,16 @@ class Calculation
         return $processing;
     }
 
+    public function getSubArticles()
+    {
+        $price = 0.0;
+        $articles = CalculationArticle::getAllForCalc($this);
+        foreach ($articles as $article) {
+            $price += $article->getTotalAmount() * $article->getArticle()->getPrice($article->getTotalAmount());
+        }
+        return $price;
+    }
+
     public function getSubMaterial()
     {
         $material = 0.0;
@@ -1615,6 +1626,9 @@ class Calculation
 
         $material = $this->getSubMaterial();
         $sum += $material;
+
+        $articles = $this->getSubArticles();
+        $sum += $articles;
 
         return $sum;
     }

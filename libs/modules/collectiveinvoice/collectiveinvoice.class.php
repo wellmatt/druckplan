@@ -15,6 +15,7 @@ require_once('libs/modules/businesscontact/address.class.php');
 require_once 'libs/modules/collectiveinvoice/orderposition.class.php';
 require_once 'libs/modules/associations/association.class.php';
 require_once 'libs/modules/accounting/invoiceout.class.php';
+require_once 'libs/modules/saxoprint/saxoprint.class.php';
 
 global $_USER;
 
@@ -816,15 +817,25 @@ class CollectiveInvoice{
 	public function getActiveAttributeItemsInput(){
 		global $DB;
 		$retval = Array();
-		$sql = "SELECT * FROM collectiveinvoice_attributes 
+		$sql = "SELECT 
+                collectiveinvoice_attributes.collectiveinvoice_id,
+                collectiveinvoice_attributes.attribute_id,
+                collectiveinvoice_attributes.item_id,
+                collectiveinvoice_attributes.`value`,
+                collectiveinvoice_attributes.inputvalue,
+                attributes_items.title
+                FROM collectiveinvoice_attributes 
+				INNER JOIN attributes_items ON collectiveinvoice_attributes.item_id = attributes_items.id
 				WHERE 
-				collectiveinvoice_id = {$this->id}";
+				collectiveinvoice_attributes.collectiveinvoice_id = {$this->id}
+				";
 		
 		if($DB->num_rows($sql)){
 			$res = $DB->select($sql);
 			foreach ($res AS $r){
 				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["value"] = $r["value"];
 				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["inputvalue"] = $r["inputvalue"];
+				$retval["{$r["attribute_id"]}_{$r["item_id"]}"]["title"] = $r["title"];
 			}
 		}
 // 		print_r($retval);
@@ -1004,6 +1015,25 @@ class CollectiveInvoice{
 	public function setStatus($status)
 	{
 	    $this->status = $status;
+        $perf = new Perferences();
+        if ($this->getSaxoid()>0 && $perf->getSaxoapikey() != '' && $perf->getSaxobc()>0 && $perf->getSaxocp()>0){
+            $saxo = new Saxoprint();
+            switch ($status){
+                case 3: // angenommen
+                    $saxo->postOrderStatusMultiple([[ "OrderNumber" => (int)$this->getSaxoid(), "WorkingState" => Saxoprint::Received ]]);
+                    break;
+                case 4: // in produktion
+                    $saxo->postOrderStatusMultiple([[ "OrderNumber" => (int)$this->getSaxoid(), "WorkingState" => Saxoprint::BeingProcessed ]]);
+                    break;
+                case 5: // versandbereit
+                    $saxo->postOrderStatusMultiple([[ "OrderNumber" => (int)$this->getSaxoid(), "WorkingState" => Saxoprint::Finished ]]);
+                    break;
+                case 6: // ware versand
+                    $saxo->postOrderStatusMultiple([[ "OrderNumber" => (int)$this->getSaxoid(), "WorkingState" => Saxoprint::Dispatched ]]);
+                    $saxo->sendShippingCodes($this);
+                    break;
+            }
+        }
 	}
 
 	public function getTitle()

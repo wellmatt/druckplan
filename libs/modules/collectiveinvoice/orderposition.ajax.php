@@ -68,6 +68,24 @@ if ($_REQUEST['exec'] == 'addPosArticle' && $_REQUEST["ciid"] && $_REQUEST["aid"
     $newpos->setSequence(Orderposition::getNextSequence($colinv));
     $newpos->save();
 
+    if ($article->getOrderid()){
+        $order = new Order($article->getOrderid());
+        $calc = Calculation::getAllCalcWithAmount($order,$quantity);
+        $calcarts = CalculationArticle::getAllForCalc($calc);
+        foreach ($calcarts as $calcart) {
+            $capos = new Orderposition();
+            $capos->setQuantity($calcart->getTotalAmount());
+            $capos->setPrice(0);
+            $capos->setTaxkey(TaxKey::evaluateTax($colinv, $calcart->getArticle()));
+            $capos->setComment($calcart->getArticle()->getDesc());
+            $capos->setCollectiveinvoice($colinv->getId());
+            $capos->setType(2);
+            $capos->setObjectid($calcart->getArticle()->getId());
+            $capos->setSequence(Orderposition::getNextSequence($colinv));
+            $capos->save();
+        }
+    }
+
     if ($article->getIsWorkHourArt() || $newpos->getType() == 1){
         $colinv->setNeeds_planning(1);
         $colinv->save();
@@ -95,6 +113,24 @@ if ($_REQUEST['exec'] == 'addPosPartslist' && $_REQUEST["ciid"] && $_REQUEST["pl
         $newpos->setObjectid($article->getId());
         $newpos->setSequence(Orderposition::getNextSequence($colinv));
         $newpos->save();
+
+        if ($article->getOrderid()){
+            $order = new Order($article->getOrderid());
+            $calc = Calculation::getAllCalcWithAmount($order,$quantity);
+            $calcarts = CalculationArticle::getAllForCalc($calc);
+            foreach ($calcarts as $calcart) {
+                $capos = new Orderposition();
+                $capos->setQuantity($calcart->getTotalAmount());
+                $capos->setPrice(0);
+                $capos->setTaxkey(TaxKey::evaluateTax($colinv, $calcart->getArticle()));
+                $capos->setComment($calcart->getArticle()->getDesc());
+                $capos->setCollectiveinvoice($colinv->getId());
+                $capos->setType(2);
+                $capos->setObjectid($calcart->getArticle()->getId());
+                $capos->setSequence(Orderposition::getNextSequence($colinv));
+                $capos->save();
+            }
+        }
 
         if ($article->getIsWorkHourArt() || $newpos->getType() == 1){
             $colinv->setNeeds_planning(1);

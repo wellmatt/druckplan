@@ -85,7 +85,7 @@ $jobs = PlanningJob::getPlanningTable($date_start,$date_end,$artmach,$vo);
                 foreach ($jobs as $job){?>
                     <tr id="row_<?php echo $job['id'];?>">
                         <td></td>
-                        <td><?php echo $job['sq'];?></td>
+                        <td><?php echo $job['sequence'];?></td>
                         <td><?php echo $job['id'];?></td>
                         <td><?php echo $job['name'];?></td>
                         <td><?php echo $job['user'];?></td>
@@ -108,6 +108,7 @@ $jobs = PlanningJob::getPlanningTable($date_start,$date_end,$artmach,$vo);
                         <td><?php echo $job['note'];?></td>
                         <td><?php echo $job['void'];?></td>
                         <td><?php echo $job['ticketid'];?></td>
+                        <td></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -122,7 +123,13 @@ $jobs = PlanningJob::getPlanningTable($date_start,$date_end,$artmach,$vo);
 
     $(document).ready(function() {
         editor = new $.fn.dataTable.Editor( {
-            ajax: "libs/basic/datatables/planningtable.php",
+            ajax:  {
+                url: 'libs/basic/datatables/planningtable.php',
+                data: function ( d ) {
+                    var id = Object.keys( d.data )[0].substring(4);
+                    d.plid = id;
+                }
+            },
             table: "#pltable",
             fields: [
                 {
@@ -135,6 +142,9 @@ $jobs = PlanningJob::getPlanningTable($date_start,$date_end,$artmach,$vo);
                 }
             ]
         } );
+        editor.on('postSubmit', function (e, json, data, action) {
+            load_content();
+        });
 
         // Activate an inline edit on click of a table cell
         $('#pltable').on( 'click', 'tbody td.editable', function (e) {
@@ -179,28 +189,29 @@ $jobs = PlanningJob::getPlanningTable($date_start,$date_end,$artmach,$vo);
                     "defaultContent": ''
                 },
                 { data: "sequence", editField: "sequence", className: "editable" },
-                null,
-                null,
-                { visible: false },
-                { visible: false },
-                { visible: false },
-                { visible: false },
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                { data: "id", editField: "id" },
                 null,
                 { visible: false },
                 { visible: false },
                 { visible: false },
                 { visible: false },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 { visible: false },
                 { visible: false },
                 { visible: false },
-                { visible: false }
+                { visible: false },
+                { visible: false },
+                { visible: false },
+                { visible: false },
+                { visible: false },
+                { visible: false, data: "DT_RowId", editField: "DT_RowId" }
             ]
         } );
 

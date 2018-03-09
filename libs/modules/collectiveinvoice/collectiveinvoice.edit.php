@@ -57,6 +57,25 @@ if($collectinv->getId()==0){
 		else
 			$startpos->setType(2);
 		Orderposition::saveMultipleOrderpositions([$startpos]);
+
+		if ($tmp_startart->getOrderid()){
+			$order = new Order($tmp_startart->getOrderid());
+			$calc = Calculation::getAllCalcWithAmount($order,$startpos->getQuantity());
+			$calcarts = CalculationArticle::getAllForCalc($calc);
+			foreach ($calcarts as $calcart) {
+				$capos = new Orderposition();
+				$capos->setQuantity($calcart->getTotalAmount());
+				$capos->setPrice(0);
+				$capos->setTaxkey(TaxKey::evaluateTax($collectinv, $calcart->getArticle()));
+				$capos->setComment($calcart->getArticle()->getDesc());
+				$capos->setCollectiveinvoice($collectinv->getId());
+				$capos->setType(2);
+				$capos->setObjectid($calcart->getArticle()->getId());
+				$capos->setSequence(Orderposition::getNextSequence($collectinv));
+				$capos->save();
+			}
+		}
+
     }
 	$all_bc_cp = ContactPerson::getAllContactPersons($collectinv->getBusinesscontact());
 }else{//Falls eine bestehende Rechnung veraendert werden soll

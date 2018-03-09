@@ -108,6 +108,16 @@ switch ($_REQUEST["exec"]) {
     	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesEnvelope()->getName() . '<br>';
     	            }
 					$artdesc .= '<br>Verarbeitung: '.$firstcalc->getTextProcessing().'<br>';
+
+                    $calcarts = CalculationArticle::getAllForCalc($firstcalc);
+                    if ($calcarts){
+                        $artdesc .= '<br>Enthaltene Artikel: ';
+                        foreach ($calcarts as $calcart) {
+                            $artdesc .= $calcart->getArticle()->getTitle().', ';
+                            $tags[] = $calcart->getArticle()->getTitle();
+                        }
+                    }
+
     	            $article->setDesc($artdesc);
     	            $article->setTags($tags);
     	            
@@ -185,6 +195,16 @@ switch ($_REQUEST["exec"]) {
 	                $artdesc .= 'Farbigkeit: ' . $firstcalc->getChromaticitiesEnvelope()->getName() . '<br>';
 	            }
 				$artdesc .= '<br>Verarbeitung: '.$firstcalc->getTextProcessing().'<br>';
+
+                $calcarts = CalculationArticle::getAllForCalc($firstcalc);
+                if ($calcarts){
+                    $artdesc .= '<br>Enthaltene Artikel: ';
+                    foreach ($calcarts as $calcart) {
+                        $artdesc .= $calcart->getArticle()->getTitle().', ';
+                        $tags[] = $calcart->getArticle()->getTitle();
+                    }
+                }
+
 	            $article->setDesc($artdesc);
 				$article->setTags($tags);
 	            

@@ -246,7 +246,7 @@ echo $quickmove->generate();
 						   <div class="col-sm-9">
 							   <select name="title" class="form-control" onfocus="markfield(this,0)" onblur="markfield(this,1)">
 								   <option value="">Bitte w&auml;hlen</option>
-								   <?php $titles = array("Herr", "Herrn", "Frau", "Dr.", "Prof.");
+								   <?php $titles = array("Herr", "Herrn", "Frau", "Frau Dr.", "Herr Dr.", "Frau Dr. med.", "Herr Dr. med.", "Frau Dr. dent.", "Herr Dr. dent.", "Frau Dr. iur.", "Herr Dr. iur.", "Frau Prof.", "Herr Prof.");
 								   foreach ($titles as $title)
 								   {
 									   echo '<option value="'.$title.'"';

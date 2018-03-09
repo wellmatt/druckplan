@@ -219,6 +219,25 @@ case 'createFromTicket':
 
 							$orderpositions[] = $newpos;
 
+                            if ($tmp_art->getOrderid()){
+                                $order = new Order($tmp_art->getOrderid());
+                                $calc = Calculation::getAllCalcWithAmount($order,$newpos->getQuantity());
+                                $calcarts = CalculationArticle::getAllForCalc($calc);
+                                foreach ($calcarts as $calcart) {
+                                    $capos = new Orderposition();
+                                    $capos->setQuantity($calcart->getTotalAmount());
+                                    $capos->setPrice(0);
+                                    $capos->setTaxkey(TaxKey::evaluateTax($collectinv, $calcart->getArticle()));
+                                    $capos->setComment($calcart->getArticle()->getDesc());
+                                    $capos->setCollectiveinvoice($collectinv->getId());
+                                    $capos->setType(2);
+                                    $capos->setObjectid($calcart->getArticle()->getId());
+                                    $capos->setSequence(Orderposition::getNextSequence($sequ));
+                                    $orderpositions[] = $capos;
+                                    $sequ++;
+                                }
+                            }
+
 							$art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
 							$art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();
 							$art_array[$c_article->getArticle()->getId()]["id"] = $c_article->getArticle()->getId();
@@ -247,6 +266,25 @@ case 'createFromTicket':
 								$sequ++;
 
 								$orderpositions[] = $newpos;
+
+                                if ($tmp_art->getOrderid()){
+                                    $order = new Order($tmp_art->getOrderid());
+                                    $calc = Calculation::getAllCalcWithAmount($order,$newpos->getQuantity());
+                                    $calcarts = CalculationArticle::getAllForCalc($calc);
+                                    foreach ($calcarts as $calcart) {
+                                        $capos = new Orderposition();
+                                        $capos->setQuantity($calcart->getTotalAmount());
+                                        $capos->setPrice(0);
+                                        $capos->setTaxkey(TaxKey::evaluateTax($collectinv, $calcart->getArticle()));
+                                        $capos->setComment($calcart->getArticle()->getDesc());
+                                        $capos->setCollectiveinvoice($collectinv->getId());
+                                        $capos->setType(2);
+                                        $capos->setObjectid($calcart->getArticle()->getId());
+                                        $capos->setSequence(Orderposition::getNextSequence($sequ));
+                                        $orderpositions[] = $capos;
+                                        $sequ++;
+                                    }
+                                }
 
 								$art_array[$c_article->getArticle()->getId()]["name"] = $c_article->getArticle()->getTitle();
 								$art_array[$c_article->getArticle()->getId()]["count"] += $c_article->getAmount();

@@ -148,32 +148,33 @@
                         <!-- {/foreach} -->
                     <!-- {/foreach} -->
 
+                    <p></p>
                     <table border="0" cellpadding="1" cellspacing="1" style="background-color:#FFFFFF; width:100%">
                         <tbody>
                             <tr>
-                                <td><strong><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">Verarbeitungshinweise:{if $OrderAttributes.56_311.inputvalue!=""}{$OrderAttributes.56_311.inputvalue}<!--{/if}-->{$Order-&gt;getComment()}</span></span></strong></td>
+                                <td style="text-align:left; width:100%; background-color:#d6d6d6"><strong><span style="font-family:arial,helvetica,sans-serif"><span style="font-size:14px">Merkmale:</strong></span></span></td>
                             </tr>
-                        </tbody>
-                    </table>
-
-                    <table border="0" cellpadding="1" cellspacing="1" style="background-color:#FFFFFF; width:100%">
-                        <tbody>
-                            <tr>
-                                <td style="text-align:left; width:50%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">Lieferadresse:<br/>{if $OrderAttributes.57_312.inputvalue!=""}{$OrderAttributes.57_312.inputvalue}<!--{/if}--><br/>{if $OrderAttributes.57_313.inputvalue!=""}{$OrderAttributes.57_313.inputvalue}<!--{/if}--><br/>{if $OrderAttributes.57_314.inputvalue!=""}{$OrderAttributes.57_314.inputvalue}<!--{/if}--><br/>{if $OrderAttributes.57_315.inputvalue!=""}{$OrderAttributes.57_315.inputvalue}<!--{/if}-->{if $OrderAttributes.57_316.inputvalue!=""}{$OrderAttributes.57_316.inputvalue}<!--{/if}--><br/>{if $OrderAttributes.57_317.inputvalue!=""}{$OrderAttributes.57_317.inputvalue}<!--{/if}--></span></span></td>
-                            {if $OrderAttributes.58_318.inputvalue!=""}
-                                <td style="text-align:left; width:50%"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">{if $OrderAttributes.58_318.inputvalue!=""}Lieferadresse:<br/><!--{/if}-->{if $OrderAttributes.58_318.inputvalue!=""}{$OrderAttributes.58_318.inputvalue}<!--{/if}-->{if $OrderAttributes.58_319.inputvalue!=""}{$OrderAttributes.58_319.inputvalue}<!--{/if}-->{if $OrderAttributes.58_320.inputvalue!=""}{$OrderAttributes.58_320.inputvalue}<!--{/if}-->{if $OrderAttributes.58_321.inputvalue!=""}{$OrderAttributes.58_321.inputvalue}<!--{/if}-->{if $OrderAttributes.58_322.inputvalue!=""}{$OrderAttributes.58_322.inputvalue}<!--{/if}-->{if $OrderAttributes.58_323.inputvalue!=""}{$OrderAttributes.58_323.inputvalue}<!--{/if}--></span></span></td><!--{/if}-->
-                            </tr>
-                        </tbody>
-                    </table>
-		            <hr/>
-
-                    <table border="0" cellpadding="1" cellspacing="1" style="background-color:#FFFFFF; width:100%">
-                        <tbody>
-                            <tr>
-                                <td style="text-align:left; width:33%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">Muster:</span></span></td>
-                                <td style="text-align:left; width:33%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif"><!--{if $OrderAttributes.59_326.inputvalue != ""}-->{$OrderAttributes.59_326.inputvalue}<!--{/if}--></span></span></td>
-                                <td style="text-align:left; width:33%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif"><!--{if $OrderAttributes.59_327.inputvalue != ""}-->{$OrderAttributes.59_327.inputvalue}<!--{/if}--></span></span></td>
-                            </tr>
+                            <!-- {foreach $OrderAttributes as $Oa} -->
+                                <!--{if $Oa.value == 1}-->
+                                    <tr>
+                                    <!--{if $Oa.inputvalue!=""}-->
+                                        <td style="text-align:left; width:25%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">
+                                            {$Oa.title}:
+                                        </span></span></td>
+                                        <td style="text-align:left; width:25%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">
+                                            {$Oa.inputvalue}
+                                        </span></span></td>
+                                    <!--{else}-->
+                                        <td style="text-align:left; width:25%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">
+                                            {$Oa.title}:
+                                        </span></span></td>
+                                        <td style="text-align:left; width:25%"><span style="font-size:10px"><span style="font-family:arial,helvetica,sans-serif">
+                                            Ja
+                                        </span></span></td>
+                                    <!--{/if}-->
+                                    </tr>
+                                <!--{/if}-->
+                            <!--{/foreach}-->
                         </tbody>
                     </table>
 

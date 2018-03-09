@@ -864,6 +864,51 @@ echo $quickmove->generate();
                     <td class="content_row_clear">&nbsp;</td>
                 </tr>
 
+                <tr>
+                    <td class="content_row_header"><?=$_LANG->get('Artikel')?></td>
+                    <? foreach($calculations as $calc) { ?>
+                        <td class="content_row_clear value" align="center">
+                            <span class="glyphicons glyphicons-pencil pointer" onclick="document.location='index.php?page=<?=$_REQUEST['page']?>&id=<?=$order->getId()?>&calc_id=<?=$calc->getId()?>&exec=edit&step=3'"></span>
+                        </td>
+                    <?  } ?>
+                </tr>
+
+                <!-- ---------------------------------------------------------------------- -->
+                <!-- Artikelkosten                                                      -->
+                <tr class="color1">
+                    <td class="content_row_header"></td>
+                    <? foreach($calculations as $calc) { ?>
+                        <td class="content_row_clear value" align="center">
+                            <table style="width: 100%;"><tr>
+                                <?php
+                                $artlist = CalculationArticle::getAllForCalc($calc);
+                                foreach ($artlist as $art){?>
+                                    <td class="content_row_clear" align="center">
+                                        <?php echo $art->getTotalAmount() . 'x ' . $art->getArticle()->getTitle() . ' für ' . printPrice(($art->getTotalAmount()*$art->getArticle()->getPrice($art->getTotalAmount()))) . '€';?>
+                                    </td>
+                                <?php } ?>
+                            </tr></table>
+                        </td>
+                    <?  } ?>
+                </tr>
+                <!-- / Artikelkosten                                                    -->
+                <!-- ---------------------------------------------------------------------- -->
+
+                <tr>
+                    <td class="content_row_header"><?=$_LANG->get('Artikelkosten')?></td>
+                    <? foreach($calculations as $calc) { ?>
+                        <td class="content_row_header value" align="center">
+                            <?=printPrice($calc->getSubArticles());?> <?=$_USER->getClient()->getCurrency()?>
+                            ( <?php echo printPrice(($calc->getSubArticles() / $calc->getPricesub() * 100));?>% )
+                        </td>
+                    <? } ?>
+                </tr>
+
+
+                <tr>
+                    <td class="content_row_clear">&nbsp;</td>
+                </tr>
+
 
                 <? if($_USER->hasRightsByGroup(Permission::calc_detail)) { ?>
 

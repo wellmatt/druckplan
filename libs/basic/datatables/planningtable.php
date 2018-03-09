@@ -36,6 +36,7 @@ require_once 'libs/modules/mail/mailmassage.class.php';
 require_once 'libs/modules/organizer/caldav.service.class.php';
 require_once 'libs/modules/storage/storage.position.class.php';
 require_once 'libs/modules/attachment/attachment.class.php';
+require_once 'libs/modules/planning/planning.job.class.php';
 
 require_once 'vendor/PEAR/Net/SMTP.php';
 require_once 'vendor/PEAR/Net/Socket.php';
@@ -94,7 +95,44 @@ Editor::inst( $db, 'planning_jobs' )
     ->fields(
         Field::inst( 'id' )->set(false)->validator( 'Validate::unique' )->validator( 'Validate::numeric' ),
         Field::inst( 'sequence' )
-            ->validator( 'Validate::numeric' )
+            ->validator( 'Validate::numeric' ),
+        Field::inst( 'id', '1' )->getFormatter( function ( $val, $data, $opts ) { return ''; }),
+        Field::inst( 'id', '2' )->getFormatter( function ( $val, $data, $opts ) { return ''; })
     )
-    ->process( $_POST )
-    ->json();
+    ->process( $_POST );
+
+echo '{"data":[]}';
+
+//$job = new PlanningJob($_REQUEST['plid']);
+//$rowkeyed = PlanningJob::getPlanningRowForTable($job);
+//
+//$row['DT_RowId'] = $rowkeyed['id'];
+//$row['details'] = '';
+//$row['sequence'] = $rowkeyed['sequence'];
+//$row['id'] = $rowkeyed['id'];
+//$row['name'] = $rowkeyed['name'];
+//$row['user'] = $rowkeyed['user'];
+//$row['vonr'] = $rowkeyed['vonr'];
+//$row['ticketnr'] = $rowkeyed['ticketnr'];
+//$row['date'] = $rowkeyed['date'];
+//$row['date_prod'] = $rowkeyed['date_prod'];
+//$row['date_deliv'] = $rowkeyed['date_deliv'];
+//$row['tplanned'] = $rowkeyed['tplanned'];
+//$row['tactual'] = $rowkeyed['tactual'];
+//$row['state'] = '<span style="font-size: medium; background-color: '.$rowkeyed['statecolor'].'" class="label">'.$rowkeyed['state'].'</span>';
+//$row['calc_material'] = $rowkeyed['calc_material'];
+//$row['calc_weight'] = $rowkeyed['calc_weight'];
+//$row['calc_chroma'] = $rowkeyed['calc_chroma'];
+//$row['calc_size'] = $rowkeyed['calc_size'];
+//$row['calc_prodformat'] = $rowkeyed['calc_prodformat'];
+//$row['calc_prodformatopen'] = $rowkeyed['calc_prodformatopen'];
+//$row['calc_ppp'] = $rowkeyed['calc_ppp'];
+//$row['calc_papercount'] = $rowkeyed['calc_papercount'];
+//$row['note'] = $rowkeyed['note'];
+//$row['void'] = $rowkeyed['void'];
+//$row['ticketid'] = $rowkeyed['ticketid'];
+//
+////$resp = ["data"=>[$row]];
+//// {"data":[{"DT_RowId":"row_244","id":"244","sequence":"3"}]}
+//$resp = ["data"=>[$row]];
+//echo json_encode($resp);

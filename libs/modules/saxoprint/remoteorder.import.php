@@ -55,7 +55,7 @@ if ($perf->getSaxoapikey() != '' && $perf->getSaxobc()>0 && $perf->getSaxocp()>0
                             if ($col_inv === false)
                                 echo 'Fehler beim Import';
                             else {
-                                $postarray[] = [ "OrderNumber" => (int)$col_inv->getSaxoid(), "WorkingState" => Saxoprint::Cancelled ];
+                                $postarray[] = [ "OrderNumber" => (int)$col_inv->getSaxoid(), "WorkingState" => Saxoprint::Assigned ];
                                 echo '<a href="index.php?page=libs/modules/collectiveinvoice/collectiveinvoice.php&exec=edit&ciid=' . $col_inv->getId() . '">' . $col_inv->getNumber() . '</a>';
                             }
                             ?>

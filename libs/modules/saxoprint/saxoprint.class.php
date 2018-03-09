@@ -17,6 +17,7 @@ require_once 'saxoprint.specialcolor.class.php';
 require_once 'saxoprint.workingstate.class.php';
 require_once 'saxoprint.productdetails.class.php';
 require_once 'saxoprint.collectiveinvoice.info.class.php';
+require_once 'libs/modules/shipment/shipment.class.php';
 
 class Saxoprint{
     public $api_key = '';
@@ -156,6 +157,105 @@ class Saxoprint{
         } else {
             return true;
         }
+    }
+
+    /**
+     * @param CollectiveInvoice $colinv
+     */
+    public function sendShippingCodes(CollectiveInvoice $colinv)
+    {
+        $shipments = Shipment::getAllForColinv($colinv);
+        $this->postTrackingCodes($shipments);
+    }
+
+    /**
+     * @param $shipments Shipment[]
+     * @return boolean
+     *
+    {
+        "TrackingInformationDto": [
+            {
+                "DeliveryAddress": {
+                    "Address": {
+                        "Salutation": 0,
+                        "CompanyName": "sample string 1",
+                        "FirstName": "sample string 2",
+                        "LastName": "sample string 3",
+                        "Street": "sample string 4",
+                        "Zipcode": "sample string 5",
+                        "City": "sample string 6",
+                        "TelephoneNumber": "sample string 7",
+                        "CountryCodeISO": "sample string 8"
+                    },
+                    "Circulation": 1
+                },
+                "ShipperProduct": 0,
+                "PackageType": 2,
+                "PackageInformation": [
+                    {
+                        "Weight": 1.0,
+                        "TrackingCode": "sample string 2"
+                    }
+                ]
+            }
+        ]
+    }
+     */
+    public function postTrackingCodes($shipments)
+    {
+        $postarray = [];
+        $innerarray = [];
+        $ordernumber = null;
+
+        if (count($shipments) > 0){
+
+            foreach ($shipments as $shipment) {
+                $colinv = $shipment->getColinv();
+                $ordernumber = $colinv->getSaxoid();
+
+                $salutation = ($colinv->getCustContactperson()->getTitle() == 'Herr') ? 1 : 2;
+
+                $innerarray[] = [
+                    "DeliveryAddress" => [
+                        "Address" => [
+                            "Salutation" => $salutation,
+                            "CompanyName" => $colinv->getBusinesscontact()->getNameAsLine(),
+                            "FirstName" => $colinv->getCustContactperson()->getName2(),
+                            "LastName" => $colinv->getCustContactperson()->getName1(),
+                            "Street" => $colinv->getDeliveryaddress()->getStreet(),
+                            "Zipcode" => $colinv->getDeliveryaddress()->getZip(),
+                            "City" => $colinv->getDeliveryaddress()->getCity(),
+                            "TelephoneNumber" => 0,
+                            "CountryCodeISO" => $colinv->getDeliveryaddress()->getCountry()->getCode(),
+                        ],
+                        "Circulation" => 1
+                    ],
+                    "ShipperProduct" =>  6,
+                    "PackageType" => 2,
+                    "PackageInformation" => [
+                        [
+                            "Weight" => $shipment->getWeight(),
+                            "TrackingCode" => $shipment->getParcelNumber()
+                        ]
+                    ]
+                ];
+            }
+
+            $postarray[] = [ "TrackingInformationDto" => [ $innerarray ] ];
+
+            $post = json_encode($postarray);
+
+            $this->curl->post($this->baseurl.'api/v3/printjobs/'.$ordernumber.'/trackingcode', $post);
+
+            if ($this->curl->error) {
+                $this->error = 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage . "\n";
+                prettyPrint($this->error);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

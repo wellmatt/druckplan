@@ -314,16 +314,23 @@ if((int)$_REQUEST["step"] == 4)
 	{
 	    Calculation::deleteCalculationsForUpdate($order->getId(), (int)$_REQUEST["origcalc"]); //gln
 	    $tmp_calcs_arr = Array();
-	    
+
 	    foreach($_REQUEST["addorder_sorts"] as $sorts)
 	    {
 			// Kopie der Kalkulation anlegen
 			$calc = new Calculation((int)$_REQUEST["origcalc"]);
+			$origarts = CalculationArticle::getAllForCalc($calc);
 			if ($sorts <= 0)
 			    $sorts = 1;
 	        $calc->setSorts($sorts);
 			$calc->clearId();
 	        $calc->save();
+
+			foreach ($origarts as $origart) {
+				$origart->setCalc($calc);
+				$origart->clearId();
+				$origart->save();
+			}
 	        
 	        $tmp_calcs_arr[] = $calc->getId();
 	    }

@@ -127,7 +127,7 @@ class SaxoprintOrder{
         $col_inv->setSaxoportalid($this->getPortalId());
         $col_inv->setSaxomaterial($material);
         $col_inv->setSaxoprodgrp($prodgrp);
-        $col_inv->setStatus(3);
+        $col_inv->setStatus(2);
         $col_inv->setDeliverydate($this->CompletionDate);
         $col_inv->setNeeds_planning(1);
 
@@ -139,7 +139,7 @@ class SaxoprintOrder{
             $pos->setStatus(1);
             $pos->setObjectid(0);
             $pos->setCollectiveinvoice($col_inv->getId());
-            $pos->setQuantity(1);
+            $pos->setQuantity($amount);
             $pos->setTaxkey(TaxKey::getDefaultTaxKey());
             $pos->setType(Orderposition::TYPE_MANUELL);
             $pos->setComment($this->formatDetails());

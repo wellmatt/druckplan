@@ -163,8 +163,8 @@ $sQuery = "SELECT
             FROM
             storage_areas
             LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
+            GROUP BY storage_areas.id 
            $sWhere
-            GROUP BY storage_areas.id
            $sOrder
            $sLimit
            ";
@@ -181,12 +181,13 @@ $sQuery = "SELECT
             SELECT
             storage_areas.id,
             storage_areas.`name`,
+            storage_areas.intext,
             COALESCE(SUM(storage_positions.allocation),0) as alloc
             FROM
             storage_areas
             LEFT JOIN storage_positions ON storage_areas.id = storage_positions.area
+            GROUP BY storage_areas.id 
             $sWhere
-            GROUP BY storage_areas.id
             ) t1
             ";
 //     var_dump($sQuery);

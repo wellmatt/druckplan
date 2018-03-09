@@ -1324,6 +1324,20 @@ echo $quickmove->generate();
             </div>
 	  </div>
 </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Artikel
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-success" type="button"  onclick="callBoxFancyArtFrame('libs/modules/calculation/order.article.frame.php?calc_id=<?php echo $calc->getId();?>');">
+                        <span class="glyphicons glyphicons-plus pointer"></span>
+                        <?= $_LANG->get('neuer Artikel') ?>
+                    </button>
+                </span>
+            </h3>
+        </div>
+        <div class="panel-body" id="calculationarticles"></div>
+    </div>
     
 
 
@@ -1331,6 +1345,48 @@ echo $quickmove->generate();
 </form>
 
 
+<script>
+    $(function(){
+        load_content();
+    });
+    function unblock(){
+        $('#calculationarticles').unblock();
+    }
+    function load_content(){
+        $('#calculationarticles').block({ message: '<h3><img src="images/page/busy.gif"/> einen Augenblick...</h3>' });
+        $('#calculationarticles').load( "libs/modules/calculation/calculation.article.list.php?calc_id=<?php echo $calc->getId();?>", null, unblock );
+    }
+</script>
+
+<script>
+    $(function() {
+        $("a#hiddenclicker_artframe").fancybox({
+            'type'    : 'iframe',
+            'transitionIn'	:	'elastic',
+            'transitionOut'	:	'elastic',
+            'speedIn'		:	600,
+            'speedOut'		:	200,
+            'padding'		:	25,
+            'margin'        :   25,
+            'scrolling'     :   'yes',
+            'width'		    :	1000,
+            'height'        :   800,
+            'onComplete'    :   function() {
+                $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                    $('#fancybox-wrap').css('top','25px');
+                });
+            },
+            'overlayShow'	:	true,
+            'helpers'		:   { overlay:null, closeClick:true }
+        });
+    });
+    function callBoxFancyArtFrame(my_href) {
+        var j1 = document.getElementById("hiddenclicker_artframe");
+        j1.href = my_href;
+        $('#hiddenclicker_artframe').trigger('click');
+    }
+</script>
+<div id="hidden_clicker95" style="display:none"><a id="hiddenclicker_artframe" href="http://www.google.com" >Hidden Clicker</a></div>
 
 <script language="javascript">
     function updateFoldButton(ele) {
